@@ -177,6 +177,9 @@
     },
     {
       "id":"original-line-rectangle-path","path":"original/line-rectangle-path.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-19","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"30a00cf1f8c6d75f95fb463321c886a395bbff8d932fa775255d4cf114af8109","materializedSha256":"30a00cf1f8c6d75f95fb463321c886a395bbff8d932fa775255d4cf114af8109","featureTags":["path","line","shape","solid-fill"],"width":3,"height":2,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-line-rectangle-path.json","referenceSha256":"64b5d0d842d442ff60f406903aaf0418a8cece4c94d9c79a484603008566c4d4"
+    },
+    {
+      "id":"original-orthogonal-polygon","path":"original/orthogonal-polygon.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-19","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"5e38391680f5ee73fbd68dd3c9309cc1d289556d4bc56ba928e06c76ccc85aba","materializedSha256":"5e38391680f5ee73fbd68dd3c9309cc1d289556d4bc56ba928e06c76ccc85aba","featureTags":["shape","polygon","axis-aligned","solid-fill"],"width":3,"height":3,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-orthogonal-polygon.json","referenceSha256":"f1e0c64402670fd61383f85c9f500ff622d559f067527bd1fd7b014d459cbf2f"
     }
   ]
 }
