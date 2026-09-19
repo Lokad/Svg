@@ -10,7 +10,10 @@ internal static class SvgRootStyleSheetParser
     {
         if (state.SawStyleableNode || state.HasStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede supported definitions and rendered content.");
         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
-        SvgStyleSheet.Parse(SvgStyleSheet.ReadElementText(reader), maximumRules, state.StyleRules, state.Strings, budget, workCounter, cancellationToken);
+        using (OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken))
+        {
+            SvgStyleSheet.Parse(text.Value, maximumRules, state.StyleRules, state.Strings, budget, workCounter, cancellationToken);
+        }
         if (SvgStyleSheet.TargetsRootId(root.Id, state.StyleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
         state.HasStyleSheet = true;
     }

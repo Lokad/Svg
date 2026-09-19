@@ -65,11 +65,28 @@ internal static class SvgStyleSheet
         return false;
     }
 
-    internal static string ReadElementText(XmlReader reader)
+    internal static OwnedStyleSheetText ReadElementText(XmlReader reader, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         using XmlReader subtree = reader.ReadSubtree();
-        subtree.Read();
-        return subtree.ReadElementContentAsString();
+        if (!subtree.Read()) throw new XmlException("Stylesheet content is missing.");
+        using BudgetedStyleSheetTextBuffer text = new(budget, workCounter, cancellationToken);
+        while (subtree.Read())
+        {
+            switch (subtree.NodeType)
+            {
+                case XmlNodeType.Text:
+                case XmlNodeType.CDATA:
+                case XmlNodeType.Whitespace:
+                case XmlNodeType.SignificantWhitespace:
+                    text.Append(subtree);
+                    break;
+                case XmlNodeType.Element:
+                    throw new XmlException("Stylesheet content must not contain child elements.");
+                case XmlNodeType.EndElement:
+                    return text.Build();
+            }
+        }
+        throw new XmlException("Stylesheet content is not closed.");
     }
 
     internal static bool HasCssClass(string? value, string expected, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -151,6 +168,100 @@ internal static class SvgStyleSheet
     }
 
     private static long GetStringByteCount(int characterCount) => checked(32 + (long)characterCount * sizeof(char));
+
+    /// <summary>Owns the charged mutable character storage used while a stylesheet text node is read incrementally.</summary>
+    private sealed class BudgetedStyleSheetTextBuffer : IDisposable
+    {
+        private const int InitialCapacity = 4_096;
+        private const int CopyCheckpointCharacters = 4_096;
+        private readonly RenderBudget _budget;
+        private readonly ParserWorkCounter _workCounter;
+        private readonly CancellationToken _cancellationToken;
+        private char[] _characters = [];
+        private RenderBudget.BudgetReservation? _reservation;
+        private int _length;
+
+        internal BudgetedStyleSheetTextBuffer(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            _budget = budget;
+            _workCounter = workCounter;
+            _cancellationToken = cancellationToken;
+        }
+
+        internal void Append(XmlReader reader)
+        {
+            while (true)
+            {
+                _workCounter.Consume(_cancellationToken);
+                EnsureCapacity(_length + 1);
+                int read = reader.ReadValueChunk(_characters, _length, _characters.Length - _length);
+                if (read == 0) return;
+                _length += read;
+            }
+        }
+
+        internal OwnedStyleSheetText Build()
+        {
+            if (_length == 0) return new(string.Empty, null);
+            RenderBudget.BudgetReservation reservation = _budget.Reserve(GetStringByteCount(_length), SvgMemoryCategory.Parser);
+            try
+            {
+                string value = string.Create(_length, (Characters: _characters, WorkCounter: _workCounter, CancellationToken: _cancellationToken), static (destination, state) =>
+                {
+                    for (int offset = 0; offset < destination.Length; offset += CopyCheckpointCharacters)
+                    {
+                        state.WorkCounter.Consume(state.CancellationToken);
+                        int count = Math.Min(CopyCheckpointCharacters, destination.Length - offset);
+                        state.Characters.AsSpan(offset, count).CopyTo(destination.Slice(offset, count));
+                    }
+                });
+                return new OwnedStyleSheetText(value, reservation);
+            }
+            catch
+            {
+                reservation.Dispose();
+                throw;
+            }
+        }
+
+        public void Dispose()
+        {
+            _reservation?.Dispose();
+            _reservation = null;
+            _characters = [];
+            _length = 0;
+        }
+
+        private void EnsureCapacity(int required)
+        {
+            if (required <= _characters.Length) return;
+            int capacity;
+            try { capacity = _characters.Length == 0 ? InitialCapacity : checked(_characters.Length * 2); }
+            catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stylesheet text exceeds the supported storage capacity."); }
+            if (capacity < required) capacity = required;
+            RenderBudget.BudgetReservation reservation = _budget.Reserve(GetStringByteCount(capacity), SvgMemoryCategory.Parser);
+            char[] replacement;
+            try { replacement = new char[capacity]; }
+            catch { reservation.Dispose(); throw; }
+            try
+            {
+                for (int offset = 0; offset < _length; offset += CopyCheckpointCharacters)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    int count = Math.Min(CopyCheckpointCharacters, _length - offset);
+                    _characters.AsSpan(offset, count).CopyTo(replacement.AsSpan(offset, count));
+                }
+            }
+            catch
+            {
+                reservation.Dispose();
+                throw;
+            }
+            _reservation?.Dispose();
+            _reservation = reservation;
+            _characters = replacement;
+        }
+    }
 
     private static CssRule ParseSelector(ReadOnlySpan<char> selector, InlineStyle style, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {

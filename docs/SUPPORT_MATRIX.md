@@ -28,8 +28,12 @@ is not a general pixel-fidelity claim.
 Stylesheet declaration/selector copies retained by rules, definition identifiers
 and copied local-reference identifiers reserve their owned string and reservation-
 tracker storage before the copy, then release it with parser document state.
-Reader-provided transient attribute/style strings remain within the documented
-conservative reader allowance; this is not exact BCL-allocation accounting.
+The direct-root stylesheet reader incrementally copies text through charged
+growing character storage and a charged temporary string, checking work and
+cancellation before each read or copy; it releases that temporary string once
+stylesheet parsing completes. Reader-provided transient attribute and inline-style
+strings remain within the documented conservative reader allowance; this is not
+exact BCL-allocation accounting.
 Supported element attributes are validated before stylesheet matching, while the
 selector matcher independently enforces the identifier cap; class-selector scans
 also observe the shared parser-work limit. Each attribute walked by that policy

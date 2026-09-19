@@ -134,7 +134,7 @@ review.
 
 ### Current local verification (2026-09-20)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 232 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 233 unit tests
 and 72 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
@@ -159,9 +159,12 @@ exact BCL-allocation or process-RSS guarantee.
 Parser-owned stylesheet declaration/selector strings, definition identifiers and
 copied local-reference identifiers now reserve both their exact string bytes and
 conservative reservation tracker storage before copying, releasing that accounting
-with document state. Reader-provided transient attribute/style strings remain
-covered only by the conservative reader workspace; exact BCL string accounting is
-still open.
+with document state. The direct-root stylesheet reader incrementally copies text
+through charged growing character storage and a charged temporary string, checking
+work and cancellation before each read or copy, then releases that string once
+stylesheet parsing completes. Reader-provided transient attribute and inline-style
+strings remain covered only by the conservative reader workspace; exact BCL string
+accounting is still open.
 
 Every supported root, group, definition, instance and rendered leaf now validates
 its bounded attributes before constructing the context that evaluates stylesheet
