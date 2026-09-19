@@ -10,6 +10,7 @@ internal readonly record struct SvgRootAttributes(SvgPaint Paint, string? Id, by
         SvgElementAttributePolicy.ValidateRoot(reader, workCounter, cancellationToken);
         SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, workCounter, cancellationToken);
         SvgResolvedContainerPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
-        return new SvgRootAttributes(presentation.Paint, reader.GetAttribute("id"), presentation.Opacity, presentation.IsDisplayed, presentation.IsVisible, SvgGeometrySyntax.ParseLength(reader.GetAttribute("width")), SvgGeometrySyntax.ParseLength(reader.GetAttribute("height")), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio")));
+        SvgRootSyntax syntax = SvgRootSyntax.Parse(reader);
+        return new SvgRootAttributes(presentation.Paint, reader.GetAttribute("id"), presentation.Opacity, presentation.IsDisplayed, presentation.IsVisible, syntax.Width, syntax.Height, syntax.ViewBox);
     }
 }
