@@ -4,9 +4,9 @@
 Every asset needs a stable ID, byte hashes, provenance, rights evidence, dimensions,
 feature tags, expected semantic support and an independent fidelity status.
 
-The initial two SVGs are original CC0 probes. They have no reviewed Chrome image yet,
-so their fidelity status is `oracle-failure`. That status is deliberately not a pass
-and must not be changed merely because a candidate renderer produces an image.
+The initial probes are original CC0 SVGs. A fidelity status is never changed merely
+because a candidate renderer produces an image: it requires a reviewed reference and
+an exact independent comparison.
 
 `original-solid-red` has an admitted stable pinned-Chrome reference and one exact
 candidate comparison. Its manifest records the candidate hash and zero-difference
@@ -17,6 +17,10 @@ is the evidence for its `exact` status.
 explicitly `unsupported`: it uses fractional geometry, which the initial rectangle
 subset does not implement. This is retained in the inventory rather than hidden
 from fidelity reporting.
+
+`original-integer-alpha-overlap` has an admitted stable pinned-Chrome reference and
+an exact candidate comparison. It pins the integer source-over rounding behavior for
+two half-opaque layers on a transparent surface.
 
 When a Chrome reference is admitted, record the pinned browser/archive hash, platform,
 recipe revision, input/materialized hashes, resource hashes and capture options in the

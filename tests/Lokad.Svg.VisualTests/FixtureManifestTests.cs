@@ -20,6 +20,19 @@ public sealed class FixtureManifestTests
     }
 
     [Fact]
+    public void Exact_integer_alpha_overlap_fixture_matches_its_admitted_chrome_reference()
+    {
+        string fixtures = Path.Combine(AppContext.BaseDirectory, "Fixtures");
+        byte[] svg = File.ReadAllBytes(Path.Combine(fixtures, "original", "integer-alpha-overlap.svg"));
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-integer-alpha-overlap.png")), 4);
+        RgbaImage candidate = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None), 4);
+
+        PixelComparison result = PixelComparer.Compare(reference, candidate);
+
+        Assert.True(result.IsExact, "Changed pixels: " + result.ChangedPixelCount);
+    }
+
+    [Fact]
     public void Fractional_overlap_fixture_remains_an_explicit_unsupported_failure()
     {
         byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "fractional-overlap.svg"));

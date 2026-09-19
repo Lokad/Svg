@@ -40,6 +40,26 @@
       "expectedFidelity": "unsupported",
       "oracleIdentity": "tests/References/original-fractional-overlap.json",
       "referenceSha256": "609018c06f337221d8e0d5e943844a668a9c9cbf41df66398b4eaa32869f1b3e"
+    },
+    {
+      "id": "original-integer-alpha-overlap",
+      "path": "original/integer-alpha-overlap.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-19",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "b01cbb1159e2b54f54caf9810b6dcbb5e39005bf8ed2fa3dcfed6502ae5ebabf",
+      "materializedSha256": "b01cbb1159e2b54f54caf9810b6dcbb5e39005bf8ed2fa3dcfed6502ae5ebabf",
+      "featureTags": ["shape", "integer-coordinates", "source-over", "transparency", "fill-opacity"],
+      "width": 2,
+      "height": 2,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-integer-alpha-overlap.json",
+      "referenceSha256": "11a315de7a2661f30c267fa5680ed1c00531633486057738f15b73333b6a0db9"
     }
   ]
 }

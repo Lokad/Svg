@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-integer-alpha-overlap",
+  "referencePng": "original-integer-alpha-overlap.png",
+  "referenceSha256": "11a315de7a2661f30c267fa5680ed1c00531633486057738f15b73333b6a0db9",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "1",
+  "viewport": { "width": 2, "height": 2, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "admittedAt": "2026-09-19",
+  "candidateSha256": "2267cea61b051eb72cfc17748b4a1a1f39fa806c19d5cbc0e070e8be1ba42d0a",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

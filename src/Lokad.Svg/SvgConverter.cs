@@ -103,10 +103,11 @@ public static class SvgConverter
         int sourceAlpha = source.Alpha;
         int destinationAlpha = destination[3];
         int inverseSourceAlpha = 255 - sourceAlpha;
-        int outputAlpha = sourceAlpha + ((destinationAlpha * inverseSourceAlpha + 127) / 255);
-        destination[0] = (byte)((source.Red * sourceAlpha + ((destination[0] * destinationAlpha * inverseSourceAlpha + 127) / 255) + outputAlpha / 2) / outputAlpha);
-        destination[1] = (byte)((source.Green * sourceAlpha + ((destination[1] * destinationAlpha * inverseSourceAlpha + 127) / 255) + outputAlpha / 2) / outputAlpha);
-        destination[2] = (byte)((source.Blue * sourceAlpha + ((destination[2] * destinationAlpha * inverseSourceAlpha + 127) / 255) + outputAlpha / 2) / outputAlpha);
+        // Chrome's 8-bit source-over path truncates the retained destination alpha.
+        int outputAlpha = sourceAlpha + ((destinationAlpha * inverseSourceAlpha) / 255);
+        destination[0] = (byte)((source.Red * sourceAlpha + ((destination[0] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha);
+        destination[1] = (byte)((source.Green * sourceAlpha + ((destination[1] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha);
+        destination[2] = (byte)((source.Blue * sourceAlpha + ((destination[2] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha);
         destination[3] = (byte)outputAlpha;
     }
 

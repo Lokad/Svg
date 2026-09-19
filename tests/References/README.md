@@ -1,1 +1,1 @@
-Reviewed Chrome reference images and oracle metadata will be added in milestone 2.
+Reviewed pinned-Chrome reference PNGs and their oracle metadata are stored here.

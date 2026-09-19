@@ -138,6 +138,16 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
+    public void Half_opacity_layers_truncate_retained_alpha()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red' fill-opacity='0.5'/><rect width='1' height='1' fill='blue' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        RgbaImage image = PngRgbaDecoder.Decode(png, 1);
+
+        Assert.Equal(new byte[] { 85, 0, 170, 191 }, image.Pixels);
+    }
+
+    [Fact]
     public void Integer_fill_opacity_composites_source_over_an_opaque_background()
     {
         SvgRenderOptions options = new(null, 1, new SvgColor(0, 0, 255, 255), SvgRenderLimits.Default);
