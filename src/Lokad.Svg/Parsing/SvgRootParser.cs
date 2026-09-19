@@ -205,14 +205,14 @@ internal static class SvgRootParser
 
     private static UseReference ParseUse(XmlReader reader)
     {
-        if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "href" or "x" or "y") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
+        if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "href" or "x" or "y" or "transform") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
         string href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A use element requires an href.");
         if (href.Length < 2 || href[0] != '#') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local rectangle use references are implemented.");
         double x = ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0"); double y = ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0");
-        return new UseReference(href[1..], x, y);
+        return new UseReference(href[1..], x, y, ParseTransform(reader.GetAttribute("transform")));
     }
 
-    private static SvgRectangle ApplyUseOffset(SvgRectangle rectangle, UseReference reference) => rectangle with { X = rectangle.X + reference.X, Y = rectangle.Y + reference.Y };
+    private static SvgRectangle ApplyUseOffset(SvgRectangle rectangle, UseReference reference) => rectangle with { X = reference.Transform.ScaleX * (rectangle.X + reference.X) + reference.Transform.OffsetX, Y = reference.Transform.ScaleY * (rectangle.Y + reference.Y) + reference.Transform.OffsetY, Width = reference.Transform.ScaleX * rectangle.Width, Height = reference.Transform.ScaleY * rectangle.Height };
 
     private static SvgRectangle[] ParseOrthogonalPath(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, int maximumGeometryElements)
     {
@@ -685,7 +685,7 @@ internal static class SvgRootParser
 
     private readonly record struct InlineStyle(string? Color, string? Fill, string? FillOpacity, string? Stroke, string? Display, string? Visibility, string? Opacity, string? FillRule);
 
-    private readonly record struct UseReference(string Id, double X, double Y);
+    private readonly record struct UseReference(string Id, double X, double Y, AxisTransform Transform);
 
     private readonly record struct PendingUse(int RectangleIndex, int CommandIndex, UseReference Reference);
 
