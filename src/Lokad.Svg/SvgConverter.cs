@@ -83,9 +83,47 @@ public static class SvgConverter
         }
         (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
         long workUnits = 0;
-        foreach (SvgRectangle rectangle in root.Rectangles)
+        int commandIndex = RenderCommands(0, pixels, false);
+        if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
+        return new RasterizedSurface(outputWidth, outputHeight, pixels);
+
+        int RenderCommands(int startIndex, byte[] destination, bool stopsAtGroupEnd)
         {
-            if (!rectangle.HasFill) continue;
+            int index = startIndex;
+            while (index < root.Commands.Length)
+            {
+                SvgDrawCommand command = root.Commands[index++];
+                if (command.Kind == SvgDrawCommandKind.EndGroup)
+                {
+                    if (!stopsAtGroupEnd) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
+                    return index;
+                }
+                if (command.Kind == SvgDrawCommandKind.BeginGroup)
+                {
+                    using RenderBudget.BudgetReservation groupReservation = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
+                    byte[] groupPixels = new byte[checked(pixelCount * 4)];
+                    index = RenderCommands(index, groupPixels, true);
+                    long compositionWork = pixelCount;
+                    if (compositionWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Group opacity composition exceeds the configured limit.");
+                    workUnits += compositionWork;
+                    for (int pixel = 0; pixel < pixelCount; pixel++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        int offset = pixel * 4;
+                        SvgColor source = new(groupPixels[offset], groupPixels[offset + 1], groupPixels[offset + 2], MultiplyAlpha(groupPixels[offset + 3], command.Opacity));
+                        BlendSourceOver(destination.AsSpan(offset, 4), source, false);
+                    }
+                    continue;
+                }
+                RasterizeRectangle(command.Rectangle, destination);
+            }
+            if (stopsAtGroupEnd) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
+            return index;
+        }
+
+        void RasterizeRectangle(SvgRectangle rectangle, byte[] destination)
+        {
+            if (!rectangle.HasFill) return;
             double rectangleY = MapEdge(rectangle.Y, verticalScale, verticalOffset);
             double rectangleBottom = MapEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
             double rectangleX = MapEdge(rectangle.X, horizontalScale, horizontalOffset);
@@ -107,11 +145,10 @@ public static class SvgConverter
                 double horizontalCoverage = Math.Clamp(Math.Min(rectangleRight, x + 1) - Math.Max(rectangleX, x), 0, 1);
                 SvgColor color = WithCoverage(rectangle.Color, horizontalCoverage * verticalCoverage);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(pixels.AsSpan(offset, 4), color, hasFractionalEdge);
+                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
             }
             }
         }
-        return new RasterizedSurface(outputWidth, outputHeight, pixels);
 
         static double MapEdge(double value, double scale, double offset)
         {
@@ -178,6 +215,8 @@ public static class SvgConverter
     }
 
     private static SvgColor WithCoverage(SvgColor color, double coverage) => coverage == 1 ? color : new SvgColor(color.Red, color.Green, color.Blue, checked((byte)Math.Round(color.Alpha * coverage, MidpointRounding.AwayFromZero)));
+
+    private static byte MultiplyAlpha(byte left, byte right) => (byte)((left * right + 127) / 255);
 
     private static byte ComposeFractionalChannel(byte destination, byte source, int destinationAlpha, int sourceAlpha, int inverseSourceAlpha, int outputAlpha)
     {

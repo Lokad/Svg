@@ -126,6 +126,17 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Group_opacity_reserves_an_isolated_surface_before_allocation()
+    {
+        SvgRenderLimits limits = new(4, 1024, 2, 4, 1024, 16, 16, 16);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><g opacity='0.5'><rect width='1' height='1'/></g></svg>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public async Task Async_cancellation_returns_a_canceled_task()
     {
         using CancellationTokenSource cancellation = new();

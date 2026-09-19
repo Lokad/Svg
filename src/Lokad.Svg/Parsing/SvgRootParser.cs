@@ -24,9 +24,10 @@ internal static class SvgRootParser
             double? width = ParseLength(reader.GetAttribute("width"));
             double? height = ParseLength(reader.GetAttribute("height"));
             SvgViewBox? viewBox = ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
-            if (reader.IsEmptyElement) return new SvgRoot(width, height, viewBox, [], false);
+            if (reader.IsEmptyElement) return new SvgRoot(width, height, viewBox, [], [], false);
             int rootDepth = reader.Depth;
             List<SvgRectangle> rectangles = [];
+            List<SvgDrawCommand> commands = [];
             List<GroupScope> groupDepths = [];
             int nodeCount = 0;
             bool unsupported = false;
@@ -42,17 +43,20 @@ internal static class SvgRootParser
                     if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        rectangles.Add(ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform));
+                        SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform);
+                        rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "path")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        rectangles.AddRange(ParseOrthogonalPath(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, limits.MaximumPathCommands));
+                        SvgRectangle[] pathRectangles = ParseOrthogonalPath(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, limits.MaximumPathCommands);
+                        rectangles.AddRange(pathRectangles); foreach (SvgRectangle rectangle in pathRectangles) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "polygon" or "polyline")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        rectangles.AddRange(ParseOrthogonalPointList(reader, reader.LocalName, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, limits.MaximumPathCommands));
+                        SvgRectangle[] pointRectangles = ParseOrthogonalPointList(reader, reader.LocalName, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, limits.MaximumPathCommands);
+                        rectangles.AddRange(pointRectangles); foreach (SvgRectangle rectangle in pointRectangles) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
@@ -61,15 +65,17 @@ internal static class SvgRootParser
                         bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(GetProperty(reader, style.Display, "display"));
                         bool visibility = ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
                         AxisTransform transform = groupDepths.Count == 0 ? ParseTransform(reader.GetAttribute("transform")) : groupDepths[^1].Transform.Compose(ParseTransform(reader.GetAttribute("transform")));
-                        if (!reader.IsEmptyElement) groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility, transform));
+                        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity"));
+                        bool isolatesOpacity = opacity != 255;
+                        if (!reader.IsEmptyElement) { if (isolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, opacity)); groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility, transform, isolatesOpacity)); }
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
                     else if (directChild || nestedInGroup) unsupported = true;
                 }
                 if (reader.NodeType == XmlNodeType.EndElement)
                 {
-                    if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) groupDepths.RemoveAt(groupDepths.Count - 1);
-                    if (reader.Depth == rootDepth) return new SvgRoot(width, height, viewBox, rectangles.ToArray(), unsupported);
+                    if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveAt(groupDepths.Count - 1); if (group.IsolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); }
+                    if (reader.Depth == rootDepth) return new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported);
                 }
             }
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
@@ -84,12 +90,12 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility" or "style" or "transform") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
+                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
         }
-        ValidateNonGroupStyle(style);
+        if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
         ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
         return ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), inheritedPaint);
     }
@@ -501,7 +507,7 @@ internal static class SvgRootParser
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.");
     }
 
-    private readonly record struct GroupScope(int Depth, SvgPaint Paint, bool IsDisplayed, bool IsVisible, AxisTransform Transform);
+    private readonly record struct GroupScope(int Depth, SvgPaint Paint, bool IsDisplayed, bool IsVisible, AxisTransform Transform, bool IsolatesOpacity);
 
     private readonly record struct AxisTransform(int ScaleX, int ScaleY, int OffsetX, int OffsetY)
     {

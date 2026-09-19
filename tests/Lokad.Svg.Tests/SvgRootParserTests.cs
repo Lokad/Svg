@@ -56,9 +56,9 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_group_attributes_that_change_rendering()
+    public void Rejects_group_attributes_that_remain_unimplemented()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5'><rect width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#clip)'><rect width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
@@ -242,10 +242,18 @@ public sealed class SvgRootParserTests
     public void Rejects_inline_styles_that_are_not_in_the_supported_rectangle_subset()
     {
         SvgException unknownProperty = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' style='stroke-width: 1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-        SvgException groupOpacity = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g style='opacity: 0.5'><rect width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
         Assert.Equal(SvgErrorCode.UnsupportedFeature, unknownProperty.ErrorCode);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, groupOpacity.ErrorCode);
+    }
+
+    [Fact]
+    public void Represents_group_opacity_as_an_isolated_scene_command()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5'><rect width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Commands,
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, 128), command),
+            command => Assert.Equal(SvgDrawCommandKind.Rectangle, command.Kind),
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255), command));
     }
 
     [Fact]
