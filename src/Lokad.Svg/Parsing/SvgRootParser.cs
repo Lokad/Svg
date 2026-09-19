@@ -68,11 +68,12 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "color" or "fill" or "fill-opacity" or "display" or "visibility") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
+                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
         }
+        ValidateStroke(reader.GetAttribute("stroke"));
         return ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), reader.GetAttribute("color"), inheritedPaint);
     }
 
@@ -83,11 +84,12 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "color" or "fill" or "fill-opacity" or "display" or "visibility") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG root attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
         }
+        ValidateStroke(reader.GetAttribute("stroke"));
         return ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), reader.GetAttribute("color"), SvgPaint.Default);
     }
 
