@@ -27,14 +27,14 @@ internal static class SvgRenderedLeafParser
                 using (SvgParsedGeometry path = SvgLeafParser.ParseOrthogonalPath(reader, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, limits.MaximumPathCommands - state.GeometryElementCount, budget, workCounter, cancellationToken, namedColors))
                 {
                     state.GeometryElementCount += path.ElementCount;
-                    state.Scene.AddRectangles(path.Rectangles);
+                    state.Scene.AddGeometries(path.Geometries);
                 }
                 return true;
             case "polygon" or "polyline":
                 using (SvgParsedGeometry pointList = SvgLeafParser.ParseOrthogonalPointList(reader, reader.LocalName, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, limits.MaximumPathCommands - state.GeometryElementCount, budget, workCounter, cancellationToken, namedColors))
                 {
                     state.GeometryElementCount += pointList.ElementCount;
-                    state.Scene.AddRectangles(pointList.Rectangles);
+                    state.Scene.AddGeometries(pointList.Geometries);
                 }
                 return true;
             default:

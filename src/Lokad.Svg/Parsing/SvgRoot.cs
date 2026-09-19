@@ -133,6 +133,13 @@ internal sealed class SvgSceneBuilder : IDisposable
         for (int index = 0; index < rectangles.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255));
     }
 
+    internal void AddGeometries(ReadOnlySpan<SvgGeometry> geometries)
+    {
+        int firstGeometryIndex = _geometries.Count;
+        _geometries.AddRange(geometries);
+        for (int index = 0; index < geometries.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255));
+    }
+
     internal SvgSceneSlot AddReferencePlaceholder()
     {
         SvgSceneSlot slot = new(_geometries.Count, _commands.Count);

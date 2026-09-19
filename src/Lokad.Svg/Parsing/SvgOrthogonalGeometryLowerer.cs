@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 internal ref struct SvgOrthogonalGeometryLowering
 {
     private const int IntegerStorageBytes = 4;
-    private const int RectangleStorageBytes = 56;
+    private const int GeometryStorageBytes = 64;
 
     private readonly BudgetedParserList<SvgPoint> _points;
     private readonly string _elementName;
@@ -16,7 +16,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     private readonly CancellationToken _cancellationToken;
     private readonly BudgetedParserList<int> _boundaries;
     private readonly BudgetedParserList<int> _intersections;
-    private readonly BudgetedParserList<SvgRectangle> _rectangles;
+    private readonly BudgetedParserList<SvgGeometry> _geometries;
     private int _geometryElementCount;
 
     internal SvgOrthogonalGeometryLowering(BudgetedParserList<SvgPoint> points, string elementName, bool isPath, bool validateContour, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -37,7 +37,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             _intersections = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, IntegerStorageBytes, workCounter, cancellationToken);
             try
             {
-                _rectangles = new BudgetedParserList<SvgRectangle>(budget, SvgMemoryCategory.Geometry, RectangleStorageBytes, workCounter, cancellationToken);
+                _geometries = new BudgetedParserList<SvgGeometry>(budget, SvgMemoryCategory.Geometry, GeometryStorageBytes, workCounter, cancellationToken);
             }
             catch
             {
@@ -75,16 +75,16 @@ internal ref struct SvgOrthogonalGeometryLowering
                 int left = _intersections[intersectionIndex]; int right = _intersections[intersectionIndex + 1];
                 if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
                 if (_geometryElementCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path rectangle-band count exceeds the configured path-command limit." : _elementName + " rectangle-band count exceeds the configured path-command limit.");
-                _rectangles.Add(new SvgRectangle(SvgGeometrySyntax.ApplyTransform(transform.ScaleX, left, transform.OffsetX), SvgGeometrySyntax.ApplyTransform(transform.ScaleY, top, transform.OffsetY), SvgGeometrySyntax.ApplyTransformScale(transform.ScaleX, (long)right - left), SvgGeometrySyntax.ApplyTransformScale(transform.ScaleY, (long)bottom - top), color, hasFill, null));
+                _geometries.Add(SvgGeometry.FromRectangle(new SvgRectangle(SvgGeometrySyntax.ApplyTransform(transform.ScaleX, left, transform.OffsetX), SvgGeometrySyntax.ApplyTransform(transform.ScaleY, top, transform.OffsetY), SvgGeometrySyntax.ApplyTransformScale(transform.ScaleX, (long)right - left), SvgGeometrySyntax.ApplyTransformScale(transform.ScaleY, (long)bottom - top), color, hasFill, null)));
                 _geometryElementCount++;
             }
         }
-        return new SvgParsedGeometry(_rectangles.Detach(), _geometryElementCount);
+        return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
     }
 
     public void Dispose()
     {
-        _rectangles.Dispose();
+        _geometries.Dispose();
         _intersections.Dispose();
         _boundaries.Dispose();
     }
@@ -118,10 +118,10 @@ internal ref struct SvgOrthogonalGeometryLowering
     private string SimpleShapeMessage() => _isPath ? "Only simple closed absolute axis-aligned integer paths are implemented." : "Only simple closed axis-aligned integer " + _elementName + " elements are implemented.";
 }
 
-/// <summary>Owns the exact retained rectangle-band array produced by one lowered orthogonal shape.</summary>
-internal readonly record struct SvgParsedGeometry(OwnedParserArray<SvgRectangle> Storage, int ElementCount) : IDisposable
+/// <summary>Owns the exact retained typed-geometry array produced by one lowered orthogonal shape.</summary>
+internal readonly record struct SvgParsedGeometry(OwnedParserArray<SvgGeometry> Storage, int ElementCount) : IDisposable
 {
-    internal ReadOnlySpan<SvgRectangle> Rectangles => Storage.Items;
+    internal ReadOnlySpan<SvgGeometry> Geometries => Storage.Items;
 
     public void Dispose() => Storage.Dispose();
 }
