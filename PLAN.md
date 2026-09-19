@@ -137,7 +137,7 @@ review.
 
 ### Current local verification (2026-09-20)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 235 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 236 unit tests
 and 72 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
@@ -146,7 +146,8 @@ installed-package behavior.
 
 Public P0.3 boundary tests now include structural denials, XML-reader traversal,
 and long stylesheet or geometry-token scans that exhaust the one shared work
-limit before rendering.
+limit before rendering. The incremental root-stylesheet reader also denies an
+exhausted work ceiling before reserving its first owned character buffer.
 The isolated memory probe additionally rejects metadata input one byte below its
 four-times-input XML workspace allowance, then starts its parser-cancellation
 timer after input is loaded and cancels a 4 MiB stylesheet scan without producing
