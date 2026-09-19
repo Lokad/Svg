@@ -48,6 +48,102 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-diagonal-triangle-8x8",
+      "path": "diagonal-triangle-8x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-19",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+      "featureTags": ["geometry", "path", "diagonal-edge", "coverage", "calibration"],
+      "width": 8,
+      "height": 8,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/diagonal-triangle-8x8.png",
+        "referenceSha256": "6d2ef5419855b4817c8fa98ae45c301372ecb8dc1aae98cedbb667bf11863e86",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "win64",
+        "captureRecipeRevision": "2",
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-cubic-arch-8x8",
+      "path": "cubic-arch-8x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-19",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "1b969b42830d300e48345377fd85ee5033e81f0f3a6f0838066ab94f24b0e0ad",
+      "featureTags": ["geometry", "path", "cubic-curve", "coverage", "calibration"],
+      "width": 8,
+      "height": 8,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/cubic-arch-8x8.png",
+        "referenceSha256": "85a99a3939c0928043bd96d829b30b012facf19f25be414ae7cde0b192d2a5fc",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "win64",
+        "captureRecipeRevision": "2",
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-evenodd-hole-8x8",
+      "path": "evenodd-hole-8x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-19",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "bd91efc0164ca2dc4eb79b70721e471650c075eaf55223c771450aef34481ed9",
+      "featureTags": ["geometry", "path", "evenodd", "multiple-subpaths", "calibration"],
+      "width": 8,
+      "height": 8,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/evenodd-hole-8x8.png",
+        "referenceSha256": "643bcbca2e0b0831032c13a3ae5e05cb016e9acbcdfbd55efeb98e1cf1f4064a",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "win64",
+        "captureRecipeRevision": "2",
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-round-join-8x8",
+      "path": "round-join-8x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-19",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "9cad69c255dea9a3c1cb221b5c8731f8ea1088d13b26863675d3d39527e8493d",
+      "featureTags": ["geometry", "path", "stroke", "round-join", "calibration"],
+      "width": 8,
+      "height": 8,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/round-join-8x8.png",
+        "referenceSha256": "4e7fe812183668a582ea0b2d25ba7022af4671e3602f74516dfd4b79d306b37a",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "win64",
+        "captureRecipeRevision": "2",
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }

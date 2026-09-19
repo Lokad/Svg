@@ -48,3 +48,15 @@ every pixel. A 16-pixel repeat had 12 mismatched pixels, each by one channel,
 showing a backend-specific fixed-point interpolation rule rather than a rounding
 choice that is safely inferable from the short probe. Linear gradients remain
 unsupported until that rule is calibrated across dimensions and color pairs.
+
+## General-path calibration inventory
+
+The research inventory also retains three-capture, byte- and decoded-pixel-stable
+Windows-pinned-Chrome references for an
+[8×8 diagonal triangle](../tests/Research/diagonal-triangle-8x8.svg),
+[cubic arch](../tests/Research/cubic-arch-8x8.svg),
+[even-odd hole](../tests/Research/evenodd-hole-8x8.svg), and
+[round stroke join](../tests/Research/round-join-8x8.svg). They supply the first
+coverage, subdivision, multi-subpath/winding, and outline targets for P1.3. The
+current converter asserts `UnsupportedFeature` for each; neither their stable
+browser captures nor this inventory admits a general path or stroke feature.
