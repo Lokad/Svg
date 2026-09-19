@@ -7,6 +7,23 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgPaintableElementContextTests
 {
     [Fact]
+    public void Resolves_one_typed_shape_element_after_style_and_transform_syntax()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<rect fill='currentColor' color='blue' display='none' transform='translate(4, 5)'/>"));
+        Assert.True(reader.Read());
+        IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase) { ["blue"] = new SvgColor(0, 0, 255, 255) };
+        SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), default, namedColors, new ParserWorkCounter(100), CancellationToken.None);
+
+        SvgComputedStyle style = context.ResolveStyle(reader);
+        SvgResolvedPaintableElement element = context.ResolveShape(reader, style, true);
+
+        Assert.Equal(style, element.Style);
+        Assert.Equal(new AxisTransform(1, 1, 4, 5), element.Transform);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), element.Presentation.Color);
+        Assert.False(element.Presentation.IsPainted);
+    }
+
+    [Fact]
     public void Uses_the_root_or_current_group_as_one_inherited_presentation()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<svg xmlns='http://www.w3.org/2000/svg'><g><rect/></g></svg>"));

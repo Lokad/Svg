@@ -12,10 +12,9 @@ internal static class SvgOrthogonalShapeParser
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, "path", context.WorkCounter, context.CancellationToken);
         SvgComputedStyle style = context.ResolveStyle(reader);
-        AxisTransform transform = context.ResolveTransform(reader);
-        SvgResolvedShapePresentation presentation = context.ResolvePresentation(style, false);
+        SvgResolvedPaintableElement element = context.ResolveShape(reader, style, false);
         using SvgOrthogonalGeometryLowering lowering = new(points, "path", true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-        return lowering.Lower(presentation.Color, presentation.HasFill, transform);
+        return lowering.Lower(element.Presentation.Color, element.Presentation.HasFill, element.Transform);
     }
 
     internal static SvgParsedGeometry ParsePointList(XmlReader reader, string elementName, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget)
@@ -24,8 +23,7 @@ internal static class SvgOrthogonalShapeParser
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(points, elementName, false, true, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         SvgComputedStyle style = context.ResolveStyle(reader);
-        AxisTransform transform = context.ResolveTransform(reader);
-        SvgResolvedShapePresentation presentation = context.ResolvePresentation(style, false);
-        return lowering.Lower(presentation.Color, presentation.HasFill, transform);
+        SvgResolvedPaintableElement element = context.ResolveShape(reader, style, false);
+        return lowering.Lower(element.Presentation.Color, element.Presentation.HasFill, element.Transform);
     }
 }
