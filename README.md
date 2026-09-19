@@ -32,6 +32,18 @@ Run the current-subset allocation and throughput benchmarks with:
 dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks
 ```
 
+Run an isolated conversion probe, optionally with a conversion budget or a
+timed cancellation request, with:
+
+```powershell
+dotnet run -c Release --project tools/Lokad.Svg.MemoryProbe -- tests/Fixtures/original/solid-red.svg $env:TEMP/lokad-svg-probe.png --maximum-accounted-bytes 1048576
+```
+
+The probe emits machine-readable elapsed-time and OS peak-working-set fields.
+The latter is an observation for bounded child-process scenarios, not a renderer
+memory guarantee; `--cancel-after-ms` is timing dependent and should be used for
+stress evidence rather than an exact unit-test assertion.
+
 To smoke-test the packed package from a clean consumer directory:
 
 ```powershell

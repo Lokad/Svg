@@ -1,26 +1,89 @@
+using System.Diagnostics;
+
 namespace Lokad.Svg.MemoryProbe;
 
 internal static class Program
 {
     private static int Main(string[] arguments)
     {
-        if (arguments.Length != 2)
+        if (!TryParseArguments(arguments, out ProbeOptions? options) || options is null)
         {
-            Console.Error.WriteLine("Usage: Lokad.Svg.MemoryProbe <input.svg> <output.png>");
+            Console.Error.WriteLine("Usage: Lokad.Svg.MemoryProbe <input.svg> <output.png> [--maximum-accounted-bytes <positive-int64>] [--cancel-after-ms <positive-int32>]");
             return 2;
         }
 
+        using Process process = Process.GetCurrentProcess();
+        using CancellationTokenSource? cancellation = options.CancelAfterMilliseconds is int delay ? new CancellationTokenSource(delay) : null;
+        Stopwatch stopwatch = Stopwatch.StartNew();
         try
         {
-            byte[] png = SvgConverter.ConvertToPng(File.ReadAllBytes(arguments[0]), SvgRenderOptions.Default, CancellationToken.None).ToArray();
-            File.WriteAllBytes(arguments[1], png);
-            Console.WriteLine(png.Length);
+            ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(File.ReadAllBytes(options.InputPath), CreateOptions(options.MaximumAccountedBytes), cancellation?.Token ?? CancellationToken.None);
+            File.WriteAllBytes(options.OutputPath, png.Span);
+            WriteReport("success", stopwatch, process, png.Length, null);
             return 0;
         }
         catch (SvgException exception)
         {
-            Console.Error.WriteLine(exception.ErrorCode + ": " + exception.Message);
+            WriteReport("svg-error", stopwatch, process, null, exception.ErrorCode);
             return 1;
         }
+        catch (OperationCanceledException) when (cancellation is { IsCancellationRequested: true })
+        {
+            WriteReport("cancelled", stopwatch, process, null, null);
+            return 3;
+        }
+        catch (Exception exception)
+        {
+            WriteReport("unhandled-" + exception.GetType().Name, stopwatch, process, null, null);
+            return 4;
+        }
     }
+
+    private static bool TryParseArguments(string[] arguments, out ProbeOptions? options)
+    {
+        options = null;
+        if (arguments.Length < 2) return false;
+        long? maximumAccountedBytes = null;
+        int? cancelAfterMilliseconds = null;
+        for (int index = 2; index < arguments.Length; index += 2)
+        {
+            if (index + 1 >= arguments.Length) return false;
+            string option = arguments[index];
+            string value = arguments[index + 1];
+            if (option == "--maximum-accounted-bytes" && long.TryParse(value, out long parsedMaximum) && parsedMaximum > 0)
+            {
+                maximumAccountedBytes = parsedMaximum;
+            }
+            else if (option == "--cancel-after-ms" && int.TryParse(value, out int parsedDelay) && parsedDelay > 0)
+            {
+                cancelAfterMilliseconds = parsedDelay;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        options = new ProbeOptions(arguments[0], arguments[1], maximumAccountedBytes, cancelAfterMilliseconds);
+        return true;
+    }
+
+    private static SvgRenderOptions CreateOptions(long? maximumAccountedBytes)
+    {
+        if (maximumAccountedBytes is null) return SvgRenderOptions.Default;
+        SvgRenderLimits defaults = SvgRenderLimits.Default;
+        SvgRenderLimits limits = new(maximumAccountedBytes.Value, defaults.MaximumInputBytes, defaults.MaximumDimension, defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands, defaults.MaximumWorkUnits, defaults.MaximumXmlDepth);
+        return new SvgRenderOptions(null, 1, SvgColor.Transparent, limits);
+    }
+
+    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode)
+    {
+        process.Refresh();
+        Console.WriteLine("outcome=" + outcome);
+        Console.WriteLine("elapsedMilliseconds=" + stopwatch.ElapsedMilliseconds);
+        Console.WriteLine("peakWorkingSetBytes=" + process.PeakWorkingSet64);
+        if (pngBytes is not null) Console.WriteLine("pngBytes=" + pngBytes.Value);
+        if (svgErrorCode is not null) Console.WriteLine("svgErrorCode=" + svgErrorCode.Value);
+    }
+
+    private sealed record ProbeOptions(string InputPath, string OutputPath, long? MaximumAccountedBytes, int? CancelAfterMilliseconds);
 }
