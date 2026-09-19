@@ -156,6 +156,9 @@
     {
       "id": "original-viewbox-slice", "path": "original/viewbox-slice.svg", "sourceUrl": null, "creator": "Lokad.Svg contributors", "retrievalDate": "2026-09-19", "license": "CC0-1.0", "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
       "originalSha256": "0d30018dc75541402ba60a9236856895eb2dd166926ee89fcf640cf2c63f35f1", "materializedSha256": "0d30018dc75541402ba60a9236856895eb2dd166926ee89fcf640cf2c63f35f1", "featureTags": ["viewport", "viewbox", "preserve-aspect-ratio", "shape"], "width": 4, "height": 4, "scale": 1, "background": "transparent", "expectedSupport": "exact", "expectedFidelity": "exact", "oracleIdentity": "tests/References/original-viewbox-slice.json", "referenceSha256": "6de43a49529d8cbc27d069de533bcb04712eb9f018bba0386f499987a37a1562"
+    },
+    {
+      "id":"original-integer-transforms","path":"original/integer-transforms.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-19","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"89c0c8af516d5b79a43368d327b95131877b333dd3c85e26023d736c70edff1d","materializedSha256":"89c0c8af516d5b79a43368d327b95131877b333dd3c85e26023d736c70edff1d","featureTags":["transform","structure","shape"],"width":4,"height":3,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-integer-transforms.json","referenceSha256":"fc25fd3a36ce3563f38c5df9a327356a5eaaeed8b547e245f4646d385ceda067"
     }
   ]
 }

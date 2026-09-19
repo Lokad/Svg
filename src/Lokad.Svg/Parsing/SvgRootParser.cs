@@ -40,7 +40,8 @@ internal static class SvgRootParser
                     bool nestedInGroup = groupDepths.Count > 0;
                     if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
-                        rectangles.Add(ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible));
+                        (int offsetX, int offsetY) = groupDepths.Count == 0 ? (0, 0) : (groupDepths[^1].OffsetX, groupDepths[^1].OffsetY);
+                        rectangles.Add(ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, offsetX, offsetY));
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
@@ -48,7 +49,9 @@ internal static class SvgRootParser
                         SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, style);
                         bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(GetProperty(reader, style.Display, "display"));
                         bool visibility = ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
-                        if (!reader.IsEmptyElement) groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility));
+                        (int offsetX, int offsetY) = ParseTranslation(reader.GetAttribute("transform"));
+                        if (groupDepths.Count > 0) { offsetX = checked(offsetX + groupDepths[^1].OffsetX); offsetY = checked(offsetY + groupDepths[^1].OffsetY); }
+                        if (!reader.IsEmptyElement) groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility, offsetX, offsetY));
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
                     else if (directChild || nestedInGroup) unsupported = true;
@@ -71,7 +74,7 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility" or "style") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
+                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility" or "style" or "transform") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -98,14 +101,14 @@ internal static class SvgRootParser
         return ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), SvgPaint.Default);
     }
 
-    private static SvgRectangle ParseRectangle(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility)
+    private static SvgRectangle ParseRectangle(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, int inheritedOffsetX, int inheritedOffsetY)
     {
         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style"));
         if (reader.HasAttributes)
         {
             while (reader.MoveToNextAttribute())
             {
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -114,6 +117,8 @@ internal static class SvgRootParser
         int y = ParseInteger(reader.GetAttribute("y") ?? "0");
         int width = ParseInteger(reader.GetAttribute("width") ?? "0");
         int height = ParseInteger(reader.GetAttribute("height") ?? "0");
+        (int offsetX, int offsetY) = ParseTranslation(reader.GetAttribute("transform"));
+        x = checked(x + inheritedOffsetX + offsetX); y = checked(y + inheritedOffsetY + offsetY);
         ValidateSquareCorners(reader.GetAttribute("rx"));
         ValidateSquareCorners(reader.GetAttribute("ry"));
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
@@ -126,6 +131,16 @@ internal static class SvgRootParser
     }
 
     private static string? GetProperty(XmlReader reader, string? inlineValue, string name) => inlineValue ?? reader.GetAttribute(name);
+
+    private static (int X, int Y) ParseTranslation(string? value)
+    {
+        if (value is null) return (0, 0);
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (!token.StartsWith("translate(", StringComparison.OrdinalIgnoreCase) || !token.EndsWith(')')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate() transforms are implemented.");
+        string[] values = token[10..^1].ToString().Split([',', ' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (values.Length is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "translate() requires one or two coordinates.");
+        return (ParseInteger(values[0]), values.Length == 2 ? ParseInteger(values[1]) : 0);
+    }
 
     private static void ValidateNonGroupStyle(InlineStyle style)
     {
@@ -339,7 +354,7 @@ internal static class SvgRootParser
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.");
     }
 
-    private readonly record struct GroupScope(int Depth, SvgPaint Paint, bool IsDisplayed, bool IsVisible);
+    private readonly record struct GroupScope(int Depth, SvgPaint Paint, bool IsDisplayed, bool IsVisible, int OffsetX, int OffsetY);
 
     private readonly record struct SvgPaint(SvgColor Color, bool HasFill, SvgColor CurrentColor)
     {
