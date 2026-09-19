@@ -10,7 +10,7 @@ have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 | Area | Status |
 | --- | --- |
 | Public options, limits and failure categories | Initial contract and categorized public failures implemented |
-| Root SVG parsing | Bounded root validation; inert title/description/metadata and attribute-free `g` containers tolerated; bare-number/px dimensions implemented; geometry/style root and group attributes and other units explicit unsupported |
+| Root SVG parsing | Bounded root validation; inert title/description/metadata and `g` containers with inheritable `fill`/`fill-opacity`; bare-number/px dimensions implemented; geometry/style root and other group attributes and other units explicit unsupported |
 | Viewport resolution | Not implemented |
 | Empty explicitly sized SVG | Integral transparent or caller-background PNG implemented |
 | Caller-owned PNG destination | Implemented for the current empty/rectangle subset |

@@ -22,7 +22,7 @@ internal static class SvgRootParser
             if (reader.IsEmptyElement) return new SvgRoot(width, height, [], false);
             int rootDepth = reader.Depth;
             List<SvgRectangle> rectangles = [];
-            List<int> groupDepths = [];
+            List<GroupScope> groupDepths = [];
             int nodeCount = 0;
             bool unsupported = false;
             while (reader.Read())
@@ -36,21 +36,21 @@ internal static class SvgRootParser
                     {
                         if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                         nodeCount++;
-                        rectangles.Add(ParseRectangle(reader));
+                        rectangles.Add(ParseRectangle(reader, groupDepths.Count == 0 ? SvgPaint.Default : groupDepths[^1].Paint));
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "g")
                     {
                         if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                         nodeCount++;
-                        ValidateGroupAttributes(reader);
-                        if (!reader.IsEmptyElement) groupDepths.Add(reader.Depth);
+                        SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? SvgPaint.Default : groupDepths[^1].Paint);
+                        if (!reader.IsEmptyElement) groupDepths.Add(new GroupScope(reader.Depth, paint));
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata")) reader.Skip();
                     else if (directChild || nestedInGroup) unsupported = true;
                 }
                 if (reader.NodeType == XmlNodeType.EndElement)
                 {
-                    if (groupDepths.Count > 0 && groupDepths[^1] == reader.Depth) groupDepths.RemoveAt(groupDepths.Count - 1);
+                    if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) groupDepths.RemoveAt(groupDepths.Count - 1);
                     if (reader.Depth == rootDepth) return new SvgRoot(width, height, rectangles.ToArray(), unsupported);
                 }
             }
@@ -59,15 +59,19 @@ internal static class SvgRootParser
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
     }
 
-    private static void ValidateGroupAttributes(XmlReader reader)
+    private static SvgPaint ParseGroupPaint(XmlReader reader, SvgPaint inheritedPaint)
     {
-        if (!reader.HasAttributes) return;
-        while (reader.MoveToNextAttribute())
+        if (reader.HasAttributes)
         {
-            if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
+            while (reader.MoveToNextAttribute())
+            {
+                if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "fill" or "fill-opacity") continue;
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
+            }
+            reader.MoveToElement();
         }
-        reader.MoveToElement();
+        return ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), inheritedPaint);
     }
 
     private static void ValidateRootAttributes(XmlReader reader)
@@ -82,7 +86,7 @@ internal static class SvgRootParser
         reader.MoveToElement();
     }
 
-    private static SvgRectangle ParseRectangle(XmlReader reader)
+    private static SvgRectangle ParseRectangle(XmlReader reader, SvgPaint inheritedPaint)
     {
         if (reader.HasAttributes)
         {
@@ -97,12 +101,17 @@ internal static class SvgRootParser
         int y = ParseInteger(reader.GetAttribute("y") ?? "0");
         int width = ParseInteger(reader.GetAttribute("width") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle width is required."));
         int height = ParseInteger(reader.GetAttribute("height") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle height is required."));
-        string fill = reader.GetAttribute("fill") ?? "black";
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
-        bool hasFill = fill is not "none" and not "transparent";
-        SvgColor color = hasFill ? ParseColor(fill) : SvgColor.Transparent;
-        byte alpha = ParseOpacity(reader.GetAttribute("fill-opacity"));
-        return new SvgRectangle(x, y, width, height, new SvgColor(color.Red, color.Green, color.Blue, alpha), hasFill);
+        SvgPaint paint = ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), inheritedPaint);
+        return new SvgRectangle(x, y, width, height, paint.Color, paint.HasFill);
+    }
+
+    private static SvgPaint ParsePaint(string? fill, string? opacity, SvgPaint inheritedPaint)
+    {
+        bool hasFill = fill is null ? inheritedPaint.HasFill : fill is not "none" and not "transparent";
+        SvgColor color = fill is null ? inheritedPaint.Color : hasFill ? ParseColor(fill) : SvgColor.Transparent;
+        byte alpha = opacity is null ? color.Alpha : ParseOpacity(opacity);
+        return new SvgPaint(new SvgColor(color.Red, color.Green, color.Blue, alpha), hasFill);
     }
 
     private static int ParseInteger(string value)
@@ -137,5 +146,12 @@ internal static class SvgRootParser
         else if (token.IndexOfAny("%emivc".AsSpan()) >= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px root dimensions are implemented.");
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Root dimensions must be finite positive CSS pixel lengths.");
         return result;
+    }
+
+    private readonly record struct GroupScope(int Depth, SvgPaint Paint);
+
+    private readonly record struct SvgPaint(SvgColor Color, bool HasFill)
+    {
+        internal static SvgPaint Default { get; } = new(new SvgColor(0, 0, 0, 255), true);
     }
 }
