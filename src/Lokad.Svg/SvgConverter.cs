@@ -33,7 +33,7 @@ public static class SvgConverter
         SvgRoot root = ParseRoot(svg, options, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
         using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
-        return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, options.Limits.MaximumEncodedPngBytes, cancellationToken);
+        return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, cancellationToken);
     }
 
     /// <summary>Schedules one destination conversion on the thread pool.</summary>
