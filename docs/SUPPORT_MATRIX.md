@@ -4,7 +4,7 @@
 
 Milestone 1 (repository and contracts) is complete. Milestones 2 and 3 are in
 progress. The renderer supports only the explicit subset listed below; other
-visible SVG behavior fails with `UnsupportedFeature`. Twenty-nine pinned-Chrome fixtures
+visible SVG behavior fails with `UnsupportedFeature`. Thirty pinned-Chrome fixtures
 have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 
 | Area | Status |
@@ -21,7 +21,7 @@ have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned and caller destination output |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, and twenty-nine stable references |
-| Fixture corpus | Twenty-nine original CC0 probes with verified hashes; all twenty-nine exact |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, and thirty stable references |
+| Fixture corpus | Thirty original CC0 probes with verified hashes; all thirty exact |
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).
