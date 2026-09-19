@@ -10,5 +10,8 @@ New-Item -ItemType Directory -Force -Path $CacheDirectory | Out-Null
 if (-not (Test-Path -LiteralPath $archive)) { Invoke-WebRequest $pin.archiveUrl -OutFile $archive }
 $actual = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $pin.archiveSha256) { throw "Chrome archive hash mismatch." }
-if (-not (Test-Path -LiteralPath (Join-Path $install $pin.executableRelativePath))) { Expand-Archive -LiteralPath $archive -DestinationPath $install -Force }
-Write-Output (Join-Path $install $pin.executableRelativePath)
+$executable = Join-Path $install $pin.executableRelativePath
+if (-not (Test-Path -LiteralPath $executable)) { Expand-Archive -LiteralPath $archive -DestinationPath $install -Force }
+$executableActual = (Get-FileHash -LiteralPath $executable -Algorithm SHA256).Hash.ToLowerInvariant()
+if ($executableActual -ne $pin.executableSha256) { throw "Chrome executable hash mismatch. Delete the cached installation and run setup again." }
+Write-Output $executable
