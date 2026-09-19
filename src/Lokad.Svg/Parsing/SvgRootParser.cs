@@ -94,9 +94,10 @@ internal static class SvgRootParser
 
     private static SvgColor ParseColor(string fill)
     {
+        if (fill == "red") return new SvgColor(255, 0, 0, 255);
         if (fill.Length == 7 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red) && byte.TryParse(fill.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green) && byte.TryParse(fill.AsSpan(5, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue)) return new SvgColor(red, green, blue, 255);
         if (fill.Length == 4 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out red) && byte.TryParse(fill.AsSpan(2, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out green) && byte.TryParse(fill.AsSpan(3, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out blue)) return new SvgColor((byte)(red * 17), (byte)(green * 17), (byte)(blue * 17), 255);
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only #RGB and #RRGGBB rectangle fills are implemented.");
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only red, #RGB, and #RRGGBB rectangle fills are implemented.");
     }
 
     private static double? ParseLength(string? value)
