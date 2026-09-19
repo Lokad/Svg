@@ -2,4 +2,5 @@
 
 ## Unreleased
 
-- Established repository and API-contract scaffolding. Rendering is not yet implemented.
+- Completed repository and API-contract scaffolding, including the pre-allocation
+  memory-budget ledger and contract tests. Rendering is not yet implemented.

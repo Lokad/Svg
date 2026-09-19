@@ -1,9 +1,9 @@
 # Lokad.Svg implementation plan
 
-Status: milestone 1 is in progress. Repository scaffolding, the public contract,
-package metadata, initial API tests, and placeholder project boundaries were added
-on 2026-09-19. Rendering, oracle tooling, fixtures, benchmarks, and the budget
-ledger remain unimplemented.
+Status: milestone 1 is complete as of 2026-09-19: repository scaffolding, public
+contract, package metadata, initial API and budget-ledger tests, and project
+boundaries are implemented. Rendering, oracle tooling, fixtures, and benchmarks
+remain unimplemented.
 
 ## 1. Product contract
 
@@ -704,8 +704,9 @@ zero steady-state allocation; end-to-end output necessarily owns storage.
 All implementation milestones below remain planned. Order work by dependency
 and risk, not by the ease of producing a recognisable image.
 
-1. **Repository and contracts.** *(In progress: repository/configuration/docs and
-   API contract scaffolded; budget ledger and consumer-package validation pending.)*
+1. **Repository and contracts.** *(Complete 2026-09-19: project/configuration/
+   documentation, API contract, package audit, clean consumer build, support
+   inventory, and a tested pre-allocation budget ledger are in place.)*
    Create the planned projects/configuration/docs;
    establish MIT/CC0 notices and `/external/` ignore; define API ownership, sizing,
    errors, limits and async policy; publish the adopted C# guidelines locally and

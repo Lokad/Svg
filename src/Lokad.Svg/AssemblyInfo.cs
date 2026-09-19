@@ -1,0 +1,5 @@
+using System.Runtime.CompilerServices;
+
+// The budget ledger has arithmetic invariants that cannot be established through
+// the unimplemented public renderer. Keep this narrow test seam source-level.
+[assembly: InternalsVisibleTo("Lokad.Svg.Tests")]

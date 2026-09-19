@@ -8,7 +8,10 @@ failure. Input and destination memory must not overlap.
 `SvgRenderOptions` is immutable. A logical viewport is optional and distinct from
 the positive output scale. Its `SvgRenderLimits` are validated at construction;
 renderer-owned live storage, input bytes, dimensions, output bytes and work are
-separate limits. The initial defaults are the provisional limits in PLAN.md.
+separate limits. The initial defaults are the provisional limits in PLAN.md. The
+internal ledger reserves live renderer-owned storage before the corresponding
+allocation, exposes current/peak/denial diagnostics to the conversion context, and
+releases reservations deterministically.
 
 Memory-to-memory asynchronous conversion will schedule one synchronous conversion
 on the thread pool and will observe cancellation throughout the implementation.

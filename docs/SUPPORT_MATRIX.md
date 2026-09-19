@@ -2,9 +2,9 @@
 
 ## Current state
 
-The project is in repository-and-contract scaffolding (milestone 1). `SvgConverter`
-deliberately reports `UnsupportedFeature` for all conversions. No SVG feature is
-currently supported and no pixel-fidelity claim is made.
+Milestone 1 (repository and contracts) is complete. `SvgConverter` deliberately
+reports `UnsupportedFeature` for all conversions. No SVG feature is currently
+supported and no pixel-fidelity claim is made.
 
 | Area | Status |
 | --- | --- |
