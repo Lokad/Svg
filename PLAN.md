@@ -112,7 +112,13 @@ geometry-token scans that exhaust the one shared work limit before rendering.
 The isolated memory probe additionally rejects metadata input one byte below its
 four-times-input XML workspace allowance, then starts its parser-cancellation
 timer after input is loaded and cancels a 4 MiB stylesheet scan without producing
-output.
+output. Its Windows child-process suite now also warms and directly traverses a
+256-attribute root through the same BCL `XmlReader` settings and non-copying
+stream, records managed allocation/touched characters, and rejects a measured
+allocation above the renderer's own workspace allowance. The current Windows
+report records 104,152 managed bytes against the 131,072-byte allowance. That is
+regression evidence for the pinned runtime, not an exact BCL-allocation or
+process-RSS guarantee.
 
 ### P0.2 conversion-boundary matrix
 

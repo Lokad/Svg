@@ -4,3 +4,4 @@ using System.Runtime.CompilerServices;
 // the unimplemented public renderer. Keep this narrow test seam source-level.
 [assembly: InternalsVisibleTo("Lokad.Svg.Tests")]
 [assembly: InternalsVisibleTo("Lokad.Svg.VisualTests")]
+[assembly: InternalsVisibleTo("Lokad.Svg.MemoryProbe")]

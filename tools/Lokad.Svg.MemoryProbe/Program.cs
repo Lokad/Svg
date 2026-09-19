@@ -8,7 +8,7 @@ internal static class Program
     {
         if (!TryParseArguments(arguments, out ProbeOptions? options) || options is null)
         {
-            Console.Error.WriteLine("Usage: Lokad.Svg.MemoryProbe <input.svg> <output.png> [--maximum-accounted-bytes <positive-int64>] [--cancel-after-ms <positive-int32>] [--cancel-after-conversion-start-ms <positive-int32>]");
+            Console.Error.WriteLine("Usage: Lokad.Svg.MemoryProbe <input.svg> <output.png> [--mode conversion|xml-reader] [--maximum-accounted-bytes <positive-int64>] [--cancel-after-ms <positive-int32>] [--cancel-after-conversion-start-ms <positive-int32>]");
             return 2;
         }
 
@@ -23,6 +23,12 @@ internal static class Program
         {
             byte[] svg = File.ReadAllBytes(options.InputPath);
             inputBytes = svg.Length;
+            if (options.Mode == ProbeMode.XmlReader)
+            {
+                XmlReaderWorkspaceMeasurement measurement = XmlReaderWorkspaceProbe.Measure(svg, SvgRenderLimits.Default);
+                WriteReport("xml-reader-measured", stopwatch, process, null, null, inputBytes, cancellationMode, null, measurement.ManagedAllocatedBytes, measurement.WorkspaceBytes, measurement.TouchedCharacters);
+                return 0;
+            }
             conversionCancellation = options.CancelAfterConversionStartMilliseconds is int conversionDelay ? new CancellationTokenSource(conversionDelay) : null;
             CancellationToken cancellationToken = conversionCancellation?.Token ?? cancellation?.Token ?? CancellationToken.None;
             long allocationStart = GC.GetTotalAllocatedBytes(precise: true);
@@ -59,6 +65,7 @@ internal static class Program
         long? maximumAccountedBytes = null;
         int? cancelAfterMilliseconds = null;
         int? cancelAfterConversionStartMilliseconds = null;
+        ProbeMode mode = ProbeMode.Conversion;
         for (int index = 2; index < arguments.Length; index += 2)
         {
             if (index + 1 >= arguments.Length) return false;
@@ -67,6 +74,10 @@ internal static class Program
             if (option == "--maximum-accounted-bytes" && long.TryParse(value, out long parsedMaximum) && parsedMaximum > 0)
             {
                 maximumAccountedBytes = parsedMaximum;
+            }
+            else if (option == "--mode" && value is "conversion" or "xml-reader")
+            {
+                mode = value == "conversion" ? ProbeMode.Conversion : ProbeMode.XmlReader;
             }
             else if (option == "--cancel-after-ms" && int.TryParse(value, out int parsedDelay) && parsedDelay > 0)
             {
@@ -83,7 +94,8 @@ internal static class Program
                 return false;
             }
         }
-        options = new ProbeOptions(arguments[0], arguments[1], maximumAccountedBytes, cancelAfterMilliseconds, cancelAfterConversionStartMilliseconds);
+        if (mode == ProbeMode.XmlReader && (maximumAccountedBytes is not null || cancelAfterMilliseconds is not null || cancelAfterConversionStartMilliseconds is not null)) return false;
+        options = new ProbeOptions(arguments[0], arguments[1], maximumAccountedBytes, cancelAfterMilliseconds, cancelAfterConversionStartMilliseconds, mode);
         return true;
     }
 
@@ -95,7 +107,7 @@ internal static class Program
         return new SvgRenderOptions(null, 1, SvgColor.Transparent, limits);
     }
 
-    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode, int? inputBytes, string cancellationMode, long? conversionManagedAllocatedBytes)
+    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode, int? inputBytes, string cancellationMode, long? conversionManagedAllocatedBytes, long? xmlReaderManagedAllocatedBytes = null, long? xmlReaderWorkspaceBytes = null, long? xmlReaderTouchedCharacters = null)
     {
         process.Refresh();
         Console.WriteLine("outcome=" + outcome);
@@ -106,7 +118,12 @@ internal static class Program
         if (inputBytes is not null) Console.WriteLine("inputBytes=" + inputBytes.Value);
         if (pngBytes is not null) Console.WriteLine("pngBytes=" + pngBytes.Value);
         if (svgErrorCode is not null) Console.WriteLine("svgErrorCode=" + svgErrorCode.Value);
+        if (xmlReaderManagedAllocatedBytes is not null) Console.WriteLine("xmlReaderManagedAllocatedBytes=" + xmlReaderManagedAllocatedBytes.Value);
+        if (xmlReaderWorkspaceBytes is not null) Console.WriteLine("xmlReaderWorkspaceBytes=" + xmlReaderWorkspaceBytes.Value);
+        if (xmlReaderTouchedCharacters is not null) Console.WriteLine("xmlReaderTouchedCharacters=" + xmlReaderTouchedCharacters.Value);
     }
 
-    private sealed record ProbeOptions(string InputPath, string OutputPath, long? MaximumAccountedBytes, int? CancelAfterMilliseconds, int? CancelAfterConversionStartMilliseconds);
+    private sealed record ProbeOptions(string InputPath, string OutputPath, long? MaximumAccountedBytes, int? CancelAfterMilliseconds, int? CancelAfterConversionStartMilliseconds, ProbeMode Mode);
+
+    private enum ProbeMode { Conversion, XmlReader }
 }

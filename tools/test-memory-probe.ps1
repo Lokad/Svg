@@ -88,12 +88,17 @@ $xmlWorkspace = Invoke-Probe -Name 'xml-workspace' -InputPath $xmlWorkspaceInput
 if ($xmlWorkspace['outcome'] -ne 'svg-error' -or $xmlWorkspace['svgErrorCode'] -ne 'LimitExceeded' -or $xmlWorkspace['inputBytes'] -ne $xmlWorkspaceBytes.ToString() -or (Test-Path -LiteralPath $xmlWorkspaceOutput)) { throw 'The XML workspace probe did not deny the input reservation before output.' }
 
 $xmlAttributeInput = Join-Path $ResultsDirectory "$runId-xml-attributes.svg"
-$xmlAttributes = (0..255 | ForEach-Object { " data-a$_=`"x`"" }) -join ''
+$xmlAttributes = (0..254 | ForEach-Object { " data-a$_=`"x`"" }) -join ''
 [IO.File]::WriteAllText($xmlAttributeInput, '<svg xmlns="http://www.w3.org/2000/svg"' + $xmlAttributes + '/>', [Text.UTF8Encoding]::new($false))
 $xmlAttributeBytes = [IO.FileInfo]::new($xmlAttributeInput).Length
 $xmlAttributeOutput = Join-Path $ResultsDirectory "$runId-xml-attributes.png"
 $xmlAttributesProbe = Invoke-Probe -Name 'xml-attributes' -InputPath $xmlAttributeInput -Output $xmlAttributeOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '131071')
 if ($xmlAttributesProbe['outcome'] -ne 'svg-error' -or $xmlAttributesProbe['svgErrorCode'] -ne 'LimitExceeded' -or $xmlAttributesProbe['inputBytes'] -ne $xmlAttributeBytes.ToString() -or (Test-Path -LiteralPath $xmlAttributeOutput)) { throw 'The XML attribute workspace probe did not deny the input reservation before output.' }
+
+$xmlReaderOutput = Join-Path $ResultsDirectory "$runId-xml-reader.png"
+$xmlReader = Invoke-Probe -Name 'xml-reader' -InputPath $xmlAttributeInput -Output $xmlReaderOutput -ExpectedExitCode 0 -ExtraArguments @('--mode', 'xml-reader')
+if ($xmlReader['outcome'] -ne 'xml-reader-measured' -or -not $xmlReader.ContainsKey('xmlReaderManagedAllocatedBytes') -or -not $xmlReader.ContainsKey('xmlReaderWorkspaceBytes') -or -not $xmlReader.ContainsKey('xmlReaderTouchedCharacters') -or (Test-Path -LiteralPath $xmlReaderOutput)) { throw 'The direct XML reader probe did not emit a complete no-output measurement.' }
+if ([long]$xmlReader['xmlReaderManagedAllocatedBytes'] -le 0 -or [long]$xmlReader['xmlReaderTouchedCharacters'] -le 0 -or [long]$xmlReader['xmlReaderManagedAllocatedBytes'] -gt [long]$xmlReader['xmlReaderWorkspaceBytes']) { throw 'The direct XML reader measurement exceeds its renderer workspace allowance.' }
 
 $cancellationInput = Join-Path $ResultsDirectory "$runId-cancellation.svg"
 [IO.File]::WriteAllText($cancellationInput, '<svg xmlns="http://www.w3.org/2000/svg" width="4096" height="4096"><rect width="4096" height="4096" fill="red"/></svg>', [Text.UTF8Encoding]::new($false))
