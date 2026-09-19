@@ -168,6 +168,9 @@
     },
     {
       "id":"original-intrinsic-ratio-size","path":"original/intrinsic-ratio-size.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-19","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"4e9018820e844bf5f8a3bcbca29ae954a5c7399ad04703cffdc9873f08c33495","materializedSha256":"4e9018820e844bf5f8a3bcbca29ae954a5c7399ad04703cffdc9873f08c33495","featureTags":["intrinsic-size","viewbox","shape"],"width":20,"height":10,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-intrinsic-ratio-size.json","referenceSha256":"d3a6ea9923184f180b174bf8c35eed4f7ddbd0c319f1cad8d7ef36a598736072"
+    },
+    {
+      "id":"original-integer-matrix-transform","path":"original/integer-matrix-transform.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-19","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"aac6cb84fdb8bb1ca95b29f8753f129e8fbc8b3dd602f6bba61ec0e27323323d","materializedSha256":"aac6cb84fdb8bb1ca95b29f8753f129e8fbc8b3dd602f6bba61ec0e27323323d","featureTags":["transform","matrix","shape"],"width":5,"height":4,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-integer-matrix-transform.json","referenceSha256":"e5cf8c2a5cf2ac2a20fd025f3c880b52540b079f9b17ad07b337c52c7f5dac61"
     }
   ]
 }
