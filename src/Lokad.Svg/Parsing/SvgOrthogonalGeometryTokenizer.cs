@@ -10,7 +10,7 @@ internal static class SvgOrthogonalGeometryTokenizer
     internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ValidatePathCommandCount(value, maximumGeometryElements, workCounter, cancellationToken);
-        PathTokenReader tokens = new(value);
+        PathTokenReader tokens = new(value, workCounter, cancellationToken);
         if (tokens.End || tokens.ReadCommand() != 'M') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
         BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, PointStorageBytes, workCounter, cancellationToken);
         try
@@ -51,7 +51,7 @@ internal static class SvgOrthogonalGeometryTokenizer
         BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, PointStorageBytes, workCounter, cancellationToken);
         try
         {
-            DelimitedTokenReader values = new(value);
+            DelimitedTokenReader values = new(value, workCounter, cancellationToken);
             int vertexCount = 0;
             while (values.TryReadValue(out ReadOnlySpan<char> x))
             {
@@ -123,15 +123,24 @@ internal static class SvgOrthogonalGeometryTokenizer
     private ref struct PathTokenReader
     {
         private readonly ReadOnlySpan<char> _value;
+        private readonly ParserWorkCounter _workCounter;
+        private readonly CancellationToken _cancellationToken;
         private int _position;
+        private int _nextCheckpoint;
 
-        internal PathTokenReader(ReadOnlySpan<char> value) => _value = value;
+        internal PathTokenReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            _value = value;
+            _workCounter = workCounter;
+            _cancellationToken = cancellationToken;
+        }
 
         internal bool End
         {
             get
             {
                 SkipSeparators();
+                ConsumeCheckpoints();
                 return _position == _value.Length;
             }
         }
@@ -139,6 +148,7 @@ internal static class SvgOrthogonalGeometryTokenizer
         internal char ReadCommand()
         {
             SkipSeparators();
+            ConsumeCheckpoints();
             if (_position == _value.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
             return _value[_position++];
         }
@@ -146,8 +156,9 @@ internal static class SvgOrthogonalGeometryTokenizer
         internal ReadOnlySpan<char> ReadValue()
         {
             SkipSeparators();
+            ConsumeCheckpoints();
             int start = _position;
-            while (_position < _value.Length && !IsPathSeparator(_value[_position]) && !IsPathCommand(_value[_position])) _position++;
+            while (_position < _value.Length && !IsPathSeparator(_value[_position]) && !IsPathCommand(_value[_position])) { _position++; ConsumeCheckpoints(); }
             if (start == _position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
             return _value[start.._position];
         }
@@ -161,25 +172,52 @@ internal static class SvgOrthogonalGeometryTokenizer
 
         private void SkipSeparators()
         {
-            while (_position < _value.Length && IsPathSeparator(_value[_position])) _position++;
+            while (_position < _value.Length && IsPathSeparator(_value[_position])) { ConsumeCheckpoints(); _position++; }
+        }
+
+        private void ConsumeCheckpoints()
+        {
+            while (_nextCheckpoint < _value.Length && _position >= _nextCheckpoint)
+            {
+                _workCounter.Consume(_cancellationToken);
+                _nextCheckpoint += 4096;
+            }
         }
     }
 
     private ref struct DelimitedTokenReader
     {
         private readonly ReadOnlySpan<char> _value;
+        private readonly ParserWorkCounter _workCounter;
+        private readonly CancellationToken _cancellationToken;
         private int _position;
+        private int _nextCheckpoint;
 
-        internal DelimitedTokenReader(ReadOnlySpan<char> value) => _value = value;
+        internal DelimitedTokenReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            _value = value;
+            _workCounter = workCounter;
+            _cancellationToken = cancellationToken;
+        }
 
         internal bool TryReadValue(out ReadOnlySpan<char> value)
         {
-            while (_position < _value.Length && IsPointSeparator(_value[_position])) _position++;
+            while (_position < _value.Length && IsPointSeparator(_value[_position])) { ConsumeCheckpoints(); _position++; }
+            ConsumeCheckpoints();
             if (_position == _value.Length) { value = default; return false; }
             int start = _position;
-            while (_position < _value.Length && !IsPointSeparator(_value[_position])) _position++;
+            while (_position < _value.Length && !IsPointSeparator(_value[_position])) { _position++; ConsumeCheckpoints(); }
             value = _value[start.._position];
             return true;
+        }
+
+        private void ConsumeCheckpoints()
+        {
+            while (_nextCheckpoint < _value.Length && _position >= _nextCheckpoint)
+            {
+                _workCounter.Consume(_cancellationToken);
+                _nextCheckpoint += 4096;
+            }
         }
     }
 }
