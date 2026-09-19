@@ -80,7 +80,7 @@ public sealed class PngEncoderTests
         byte[] pixels = CreateHighEntropyPixels();
         using BoundedAsyncWriteStream destination = new(65_536);
 
-        int written = await PngEncoder.EncodeToAsync(512, 512, pixels, destination, new RenderBudget(long.MaxValue), int.MaxValue, CancellationToken.None);
+        int written = await PngEncoder.EncodeToAsync(512, 512, pixels, destination, new RenderBudget(70_000), int.MaxValue, CancellationToken.None);
 
         Assert.Equal(written, destination.Length);
         Assert.True(written > 65_536);
