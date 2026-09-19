@@ -242,6 +242,11 @@ internal sealed class ParserWorkCounter
 
     internal long Used => _used;
 
+    internal void ConsumeText(int characterCount, CancellationToken cancellationToken)
+    {
+        for (int index = 0; index < characterCount; index += 4096) Consume(cancellationToken);
+    }
+
     internal void Consume(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

@@ -653,6 +653,19 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_the_work_limit_while_scanning_root_and_leaf_inline_style_text()
+    {
+        string style = new string(' ', 4096) + "fill: red";
+        SvgRenderLimits limits = new(10_000, 8_192, 16, 16, 1_024, 16, 16, 1);
+
+        SvgException root = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' style='" + style + "'/>") , limits, CancellationToken.None));
+        SvgException leaf = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect style='" + style + "'/></svg>") , limits, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, root.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, leaf.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_work_limit_while_matching_stylesheet_rules()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 1);

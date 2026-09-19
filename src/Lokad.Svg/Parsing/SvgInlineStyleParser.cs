@@ -8,7 +8,19 @@ internal static class SvgInlineStyleParser
 {
     internal static InlineStyle Parse(string? value) => value is null ? default : Parse(value.AsSpan());
 
+    internal static InlineStyle Parse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => value is null ? default : Parse(value.AsSpan(), workCounter, cancellationToken);
+
     internal static InlineStyle Parse(ReadOnlySpan<char> value)
+        => ParseCore(value);
+
+    internal static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.ConsumeText(value.Length, cancellationToken);
+        return ParseCore(value);
+    }
+
+    private static InlineStyle ParseCore(ReadOnlySpan<char> value)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
         StyleDeclarationReader declarations = new(value);
