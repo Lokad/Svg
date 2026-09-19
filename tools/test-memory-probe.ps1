@@ -71,10 +71,12 @@ function Invoke-Probe {
 $successOutput = Join-Path $ResultsDirectory "$runId-success.png"
 $success = Invoke-Probe -Name 'success' -InputPath $fixture -Output $successOutput -ExpectedExitCode 0 -ExtraArguments @('--maximum-accounted-bytes', '1048576')
 if ($success['outcome'] -ne 'success' -or -not (Test-Path -LiteralPath $successOutput)) { throw 'The successful probe did not produce its expected PNG.' }
+if (-not $success.ContainsKey('conversionManagedAllocatedBytes') -or [long]$success['conversionManagedAllocatedBytes'] -le 0) { throw 'The successful probe did not report managed conversion allocation.' }
 
 $limitOutput = Join-Path $ResultsDirectory "$runId-limit.png"
 $limit = Invoke-Probe -Name 'limit' -InputPath $fixture -Output $limitOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '1')
 if ($limit['outcome'] -ne 'svg-error' -or $limit['svgErrorCode'] -ne 'LimitExceeded' -or (Test-Path -LiteralPath $limitOutput)) { throw 'The limited probe did not reject before output.' }
+if (-not $limit.ContainsKey('conversionManagedAllocatedBytes') -or [long]$limit['conversionManagedAllocatedBytes'] -le 0) { throw 'The limited probe did not report managed conversion allocation.' }
 
 $xmlWorkspaceInput = Join-Path $ResultsDirectory "$runId-xml-workspace.svg"
 $xmlWorkspacePayload = New-Object string('x', 64KB)

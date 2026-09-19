@@ -17,6 +17,7 @@ internal static class Program
         CancellationTokenSource? conversionCancellation = null;
         string cancellationMode = options.CancelAfterConversionStartMilliseconds is not null ? "after-conversion-start" : options.CancelAfterMilliseconds is not null ? "before-input-load" : "none";
         int? inputBytes = null;
+        long? conversionManagedAllocatedBytes = null;
         Stopwatch stopwatch = Stopwatch.StartNew();
         try
         {
@@ -24,25 +25,28 @@ internal static class Program
             inputBytes = svg.Length;
             conversionCancellation = options.CancelAfterConversionStartMilliseconds is int conversionDelay ? new CancellationTokenSource(conversionDelay) : null;
             CancellationToken cancellationToken = conversionCancellation?.Token ?? cancellation?.Token ?? CancellationToken.None;
-            ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, CreateOptions(options.MaximumAccountedBytes), cancellationToken);
+            long allocationStart = GC.GetTotalAllocatedBytes(precise: true);
+            ReadOnlyMemory<byte> png;
+            try { png = SvgConverter.ConvertToPng(svg, CreateOptions(options.MaximumAccountedBytes), cancellationToken); }
+            finally { conversionManagedAllocatedBytes = GC.GetTotalAllocatedBytes(precise: true) - allocationStart; }
             File.WriteAllBytes(options.OutputPath, png.Span);
-            WriteReport("success", stopwatch, process, png.Length, null, inputBytes, cancellationMode);
+            WriteReport("success", stopwatch, process, png.Length, null, inputBytes, cancellationMode, conversionManagedAllocatedBytes);
             return 0;
         }
         catch (SvgException exception)
         {
-            WriteReport("svg-error", stopwatch, process, null, exception.ErrorCode, inputBytes, cancellationMode);
+            WriteReport("svg-error", stopwatch, process, null, exception.ErrorCode, inputBytes, cancellationMode, conversionManagedAllocatedBytes);
             return 1;
         }
         catch (OperationCanceledException) when ((cancellation is { IsCancellationRequested: true }) || (conversionCancellation is { IsCancellationRequested: true }))
         {
-            WriteReport("cancelled", stopwatch, process, null, null, inputBytes, cancellationMode);
+            WriteReport("cancelled", stopwatch, process, null, null, inputBytes, cancellationMode, conversionManagedAllocatedBytes);
             return 3;
         }
         catch (Exception exception)
         {
             Console.Error.WriteLine(exception);
-            WriteReport("unhandled-" + exception.GetType().Name, stopwatch, process, null, null, inputBytes, cancellationMode);
+            WriteReport("unhandled-" + exception.GetType().Name, stopwatch, process, null, null, inputBytes, cancellationMode, conversionManagedAllocatedBytes);
             return 4;
         }
         finally { conversionCancellation?.Dispose(); }
@@ -91,13 +95,14 @@ internal static class Program
         return new SvgRenderOptions(null, 1, SvgColor.Transparent, limits);
     }
 
-    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode, int? inputBytes, string cancellationMode)
+    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode, int? inputBytes, string cancellationMode, long? conversionManagedAllocatedBytes)
     {
         process.Refresh();
         Console.WriteLine("outcome=" + outcome);
         Console.WriteLine("elapsedMilliseconds=" + stopwatch.ElapsedMilliseconds);
         Console.WriteLine("peakWorkingSetBytes=" + process.PeakWorkingSet64);
         Console.WriteLine("cancellationMode=" + cancellationMode);
+        if (conversionManagedAllocatedBytes is not null) Console.WriteLine("conversionManagedAllocatedBytes=" + conversionManagedAllocatedBytes.Value);
         if (inputBytes is not null) Console.WriteLine("inputBytes=" + inputBytes.Value);
         if (pngBytes is not null) Console.WriteLine("pngBytes=" + pngBytes.Value);
         if (svgErrorCode is not null) Console.WriteLine("svgErrorCode=" + svgErrorCode.Value);

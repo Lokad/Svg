@@ -42,10 +42,10 @@ timed cancellation request, with:
 dotnet run -c Release --project tools/Lokad.Svg.MemoryProbe -- tests/Fixtures/original/solid-red.svg $env:TEMP/lokad-svg-probe.png --maximum-accounted-bytes 1048576
 ```
 
-The probe emits machine-readable elapsed-time, input-byte, cancellation-mode and
-OS peak-working-set fields.
-The latter is an observation for bounded child-process scenarios, not a renderer
-memory guarantee. `--cancel-after-ms` starts before input loading, while
+The probe emits machine-readable elapsed-time, input-byte, cancellation-mode,
+conversion-managed-allocation and OS peak-working-set fields. The allocation and
+working-set fields are observations for bounded child-process scenarios, not a
+renderer memory guarantee. `--cancel-after-ms` starts before input loading, while
 `--cancel-after-conversion-start-ms` starts after the input is loaded; both are
 timing dependent and are stress evidence rather than exact unit-test assertions.
 
