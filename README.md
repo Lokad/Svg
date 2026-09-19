@@ -7,7 +7,8 @@ inherited paint/visibility/display, source-over composition, caller-provided
 backgrounds, and managed PNG output. It deliberately rejects broad CSS stylesheets,
 gradients, images, filters and text; see the support matrix for the exact accepted
 syntax, including its deliberately narrow root-level rectangle stylesheet selectors.
-All other visible behavior fails explicitly rather than being silently dropped.
+The current prototype also has documented accepted-input contract gaps, so rejected
+syntax must not be inferred solely from the absence of support claims.
 
 See [PLAN.md](PLAN.md) for the product contract and implementation roadmap, and
 [the support matrix](docs/SUPPORT_MATRIX.md) for the current status.

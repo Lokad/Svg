@@ -2,10 +2,11 @@
 
 ## Current state
 
-Milestone 1 (repository and contracts) is complete. Milestones 2 and 3 are in
-progress. The renderer supports only the explicit subset listed below; other
-visible SVG behavior fails with `UnsupportedFeature`. Forty-one pinned-Chrome fixtures
-have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
+The renderer is a narrow prototype. It supports only the explicit subset listed
+below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
+open. Do not infer that every unlisted visible SVG construct is rejected correctly.
+All forty-one current manifest entries have exact decoded-pixel render gates; this
+is not a general pixel-fidelity claim.
 
 | Area | Status |
 | --- | --- |
@@ -22,6 +23,6 @@ have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
 | Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, and forty-one stable references |
-| Fixture corpus | Forty-one original CC0 probes with verified hashes; all forty-one exact |
+| Fixture corpus | Forty-one original CC0 probes with verified hashes; the manifest gate renders and compares all forty-one exactly |
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).

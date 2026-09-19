@@ -6,12 +6,13 @@ feature tags, expected semantic support and an independent fidelity status.
 
 The initial probes are original CC0 SVGs. A fidelity status is never changed merely
 because a candidate renderer produces an image: it requires a reviewed reference and
-an exact independent comparison.
+an exact independent comparison. The visual test suite reads the manifest and renders
+and compares every current `exact` entry; a reference artifact alone is not a
+renderer pass.
 
-`original-solid-red` has an admitted stable pinned-Chrome reference and one exact
-candidate comparison. Its manifest records the candidate hash and zero-difference
-result. A reference artifact alone is not a renderer pass; this explicit comparison
-is the evidence for its `exact` status.
+Each materialized asset begins with its CC0 SPDX declaration. `originalSha256`
+preserves the pre-materialization bytes where that declaration was added;
+`materializedSha256` identifies the bytes actually rendered and compared.
 
 `original-line-rectangle-path` exercises the supported absolute line-segment
 spelling of a closed axis-aligned integer rectangle. `original-orthogonal-polygon`

@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
 <svg xmlns="http://www.w3.org/2000/svg" width="3" height="1">
   <style>rect { fill: blue; } [id] { fill: red; } [class=accent] { fill: lime; }</style>
   <rect width="1" height="1"/>
