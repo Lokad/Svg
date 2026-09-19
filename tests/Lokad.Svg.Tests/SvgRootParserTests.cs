@@ -660,13 +660,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Parses_px_dimensions_but_keeps_percentages_explicitly_unsupported()
+    public void Parses_px_dimensions_but_keeps_relative_and_overlapping_unit_suffixes_explicitly_unsupported()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='12.5px' height='7px'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='7'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException percentage = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='7'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException relativeUnit = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='1vmin' height='7'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(12.5, root.Width);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, percentage.ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, relativeUnit.ErrorCode);
     }
 
     [Fact]

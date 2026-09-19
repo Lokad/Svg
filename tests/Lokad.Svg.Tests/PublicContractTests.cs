@@ -116,6 +116,14 @@ public sealed class PublicContractTests
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
+    [Fact]
+    public void Unsupported_overlapping_root_unit_suffix_fails_before_rasterization()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1vmin' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><rect></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'>&undefined;</svg>")]
