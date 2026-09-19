@@ -76,6 +76,15 @@ $limitOutput = Join-Path $ResultsDirectory "$runId-limit.png"
 $limit = Invoke-Probe -Name 'limit' -InputPath $fixture -Output $limitOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '1')
 if ($limit['outcome'] -ne 'svg-error' -or $limit['svgErrorCode'] -ne 'LimitExceeded' -or (Test-Path -LiteralPath $limitOutput)) { throw 'The limited probe did not reject before output.' }
 
+$xmlWorkspaceInput = Join-Path $ResultsDirectory "$runId-xml-workspace.svg"
+$xmlWorkspacePayload = New-Object string('x', 64KB)
+[IO.File]::WriteAllText($xmlWorkspaceInput, '<svg xmlns="http://www.w3.org/2000/svg"><metadata>' + $xmlWorkspacePayload + '</metadata></svg>', [Text.UTF8Encoding]::new($false))
+$xmlWorkspaceBytes = [IO.FileInfo]::new($xmlWorkspaceInput).Length
+$xmlWorkspaceBudget = [long]$xmlWorkspaceBytes * 4 - 1
+$xmlWorkspaceOutput = Join-Path $ResultsDirectory "$runId-xml-workspace.png"
+$xmlWorkspace = Invoke-Probe -Name 'xml-workspace' -InputPath $xmlWorkspaceInput -Output $xmlWorkspaceOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', $xmlWorkspaceBudget.ToString())
+if ($xmlWorkspace['outcome'] -ne 'svg-error' -or $xmlWorkspace['svgErrorCode'] -ne 'LimitExceeded' -or $xmlWorkspace['inputBytes'] -ne $xmlWorkspaceBytes.ToString() -or (Test-Path -LiteralPath $xmlWorkspaceOutput)) { throw 'The XML workspace probe did not deny the input reservation before output.' }
+
 $cancellationInput = Join-Path $ResultsDirectory "$runId-cancellation.svg"
 [IO.File]::WriteAllText($cancellationInput, '<svg xmlns="http://www.w3.org/2000/svg" width="4096" height="4096"><rect width="4096" height="4096" fill="red"/></svg>', [Text.UTF8Encoding]::new($false))
 $cancellationOutput = Join-Path $ResultsDirectory "$runId-cancellation.png"
