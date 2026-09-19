@@ -1,4 +1,5 @@
 /artifacts/
+/BenchmarkDotNet.Artifacts/
 /external/
 **/bin/
 **/obj/
