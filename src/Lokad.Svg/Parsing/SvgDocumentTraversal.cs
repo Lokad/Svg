@@ -52,7 +52,7 @@ internal static class SvgDocumentTraversal
                 }
                 else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                 {
-                    SvgRootStyleSheetParser.Parse(reader, root, state, limits.MaximumNodes, workCounter, cancellationToken);
+                    SvgRootStyleSheetParser.Parse(reader, root, state, limits.MaximumNodes, budget, workCounter, cancellationToken);
                 }
                 else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "style" or "script" or "animate" or "animateMotion" or "animateTransform" or "set") state.HasUnsupportedContent = true;
                 else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }

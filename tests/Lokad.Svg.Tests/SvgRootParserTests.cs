@@ -664,6 +664,21 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Reserves_comment_stripped_stylesheet_text_during_parsing()
+    {
+        string stylesheet = "/**/" + new string(' ', 512) + "rect { fill: red; }";
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>" + stylesheet + "</style><rect width='1'/></svg>");
+        SvgRenderLimits insufficientLimits = new(17_500, 1_024, 16, 16, 1_024, 16, 16, 10_000);
+        SvgRenderLimits sufficientLimits = new(18_000, 1_024, 16, 16, 1_024, 16, 16, 10_000);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, insufficientLimits, new RenderBudget(17_500), CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse(svg, sufficientLimits, new RenderBudget(18_000), CancellationToken.None);
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Single(root.Rectangles);
+    }
+
+    [Fact]
     public void Enforces_the_work_limit_while_scanning_stylesheet_rule_syntax()
     {
         string stylesheet = new('x', 4096);

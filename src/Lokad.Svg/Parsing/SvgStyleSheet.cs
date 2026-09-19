@@ -1,14 +1,16 @@
 using System.Xml;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Parses and resolves the deliberately narrow embedded stylesheet subset.</summary>
 internal static class SvgStyleSheet
 {
-    internal static void Parse(string value, int maximumRules, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void Parse(string value, int maximumRules, BudgetedParserList<CssRule> rules, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         for (int index = 0; index < value.Length; index += 4096) workCounter.Consume(cancellationToken);
-        value = StripComments(value, workCounter, cancellationToken);
+        using OwnedStyleSheetText commentless = StripComments(value, budget, workCounter, cancellationToken);
+        value = commentless.Value;
         int position = 0;
         while (position < value.Length)
         {
@@ -85,7 +87,7 @@ internal static class SvgStyleSheet
         return false;
     }
 
-    private static string StripComments(string value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static OwnedStyleSheetText StripComments(string value, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         int sourceIndex = 0;
         int removedCharacters = 0;
@@ -104,29 +106,42 @@ internal static class SvgStyleSheet
             sourceIndex += 2;
             removedCharacters += sourceIndex - commentStart;
         }
-        if (removedCharacters == 0) return value;
-        return string.Create(value.Length - removedCharacters, (Value: value, WorkCounter: workCounter, CancellationToken: cancellationToken), static (destination, state) =>
+        if (removedCharacters == 0) return new(value, null);
+        int commentlessLength = value.Length - removedCharacters;
+        if (commentlessLength == 0) return new(string.Empty, null);
+        RenderBudget.BudgetReservation reservation = budget.Reserve(GetStringByteCount(commentlessLength), SvgMemoryCategory.Parser);
+        try
         {
-            int sourceIndex = 0;
-            int destinationIndex = 0;
-            while (sourceIndex < state.Value.Length)
+            return new(string.Create(commentlessLength, (Value: value, WorkCounter: workCounter, CancellationToken: cancellationToken), static (destination, state) =>
             {
-                if ((sourceIndex & 4095) == 0) state.WorkCounter.Consume(state.CancellationToken);
-                if (state.Value[sourceIndex] != '/' || sourceIndex + 1 == state.Value.Length || state.Value[sourceIndex + 1] != '*')
-                {
-                    destination[destinationIndex++] = state.Value[sourceIndex++];
-                    continue;
-                }
-                sourceIndex += 2;
-                while (state.Value[sourceIndex] != '*' || state.Value[sourceIndex + 1] != '/')
+                int sourceIndex = 0;
+                int destinationIndex = 0;
+                while (sourceIndex < state.Value.Length)
                 {
                     if ((sourceIndex & 4095) == 0) state.WorkCounter.Consume(state.CancellationToken);
-                    sourceIndex++;
+                    if (state.Value[sourceIndex] != '/' || sourceIndex + 1 == state.Value.Length || state.Value[sourceIndex + 1] != '*')
+                    {
+                        destination[destinationIndex++] = state.Value[sourceIndex++];
+                        continue;
+                    }
+                    sourceIndex += 2;
+                    while (state.Value[sourceIndex] != '*' || state.Value[sourceIndex + 1] != '/')
+                    {
+                        if ((sourceIndex & 4095) == 0) state.WorkCounter.Consume(state.CancellationToken);
+                        sourceIndex++;
+                    }
+                    sourceIndex += 2;
                 }
-                sourceIndex += 2;
-            }
-        });
+            }), reservation);
+        }
+        catch
+        {
+            reservation.Dispose();
+            throw;
+        }
     }
+
+    private static long GetStringByteCount(int characterCount) => checked(32 + (long)characterCount * sizeof(char));
 
     private static CssRule ParseSelector(ReadOnlySpan<char> selector, InlineStyle style, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -342,4 +357,10 @@ internal readonly record struct CssRule(CssSelectorKind Kind, string Value, stri
         CssSelectorKind.ChildGroup => !directChild && parentIsGroup,
         _ => false
     };
+}
+
+/// <summary>Owns the temporary budget reservation for a comment-stripped stylesheet copy.</summary>
+internal readonly record struct OwnedStyleSheetText(string Value, RenderBudget.BudgetReservation? Reservation) : IDisposable
+{
+    public void Dispose() => Reservation?.Dispose();
 }
