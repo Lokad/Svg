@@ -555,6 +555,18 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_the_work_limit_while_scanning_stylesheet_text()
+    {
+        string stylesheet = new string(' ', 4096) + "rect { fill: red; }";
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>" + stylesheet + "</style></svg>");
+        SvgRenderLimits limits = new(10_000, 8_192, 16, 16, 1_024, 16, 16, 1);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_work_limit_while_matching_stylesheet_rules()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 1);

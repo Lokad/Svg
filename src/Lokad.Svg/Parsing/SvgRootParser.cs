@@ -298,7 +298,7 @@ internal static class SvgRootParser
                     {
                         if (sawGraphicNode || hasRectangleStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede rendered content.");
                         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
-                        ParseRectangleStyleSheet(ReadStyleElementText(reader), limits.MaximumNodes, rectangleStyleRules);
+                        ParseRectangleStyleSheet(ReadStyleElementText(reader), limits.MaximumNodes, rectangleStyleRules, workCounter, cancellationToken);
                         hasRectangleStyleSheet = true;
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
@@ -838,8 +838,9 @@ internal static class SvgRootParser
         return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
     }
 
-    private static void ParseRectangleStyleSheet(string value, int maximumRules, BudgetedParserList<CssRule> rules)
+    private static void ParseRectangleStyleSheet(string value, int maximumRules, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        for (int index = 0; index < value.Length; index += 4096) workCounter.Consume(cancellationToken);
         value = StripCssComments(value);
         int position = 0;
         while (position < value.Length)
