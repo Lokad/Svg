@@ -22,6 +22,16 @@ public sealed class FixtureManifestTests
             Assert.Equal(fixture.GetProperty("materializedSha256").GetString(), actualHash);
             Assert.Equal("CC0-1.0", fixture.GetProperty("license").GetString());
             Assert.Contains(fixture.GetProperty("expectedFidelity").GetString(), new[] { "exact", "known-difference", "unsupported", "oracle-failure" });
+            if (fixture.TryGetProperty("oracleIdentity", out JsonElement oracleIdentity) && oracleIdentity.GetString() is string referenceMetadataPath)
+            {
+                string metadataPath = Path.Combine(AppContext.BaseDirectory, referenceMetadataPath.Replace('/', Path.DirectorySeparatorChar));
+                Assert.True(File.Exists(metadataPath), "Missing reference metadata: " + metadataPath);
+                using JsonDocument reference = JsonDocument.Parse(File.ReadAllText(metadataPath));
+                string pngPath = Path.Combine(Path.GetDirectoryName(metadataPath) ?? throw new InvalidDataException("Reference metadata has no directory."), reference.RootElement.GetProperty("referencePng").GetString() ?? throw new InvalidDataException("Reference PNG is missing."));
+                string referenceHash = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(pngPath))).ToLowerInvariant();
+                Assert.Equal(reference.RootElement.GetProperty("referenceSha256").GetString(), referenceHash);
+                Assert.Equal(fixture.GetProperty("referenceSha256").GetString(), referenceHash);
+            }
         }
     }
 }
