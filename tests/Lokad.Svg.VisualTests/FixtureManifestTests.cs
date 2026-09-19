@@ -20,6 +20,16 @@ public sealed class FixtureManifestTests
     }
 
     [Fact]
+    public void Fractional_overlap_fixture_remains_an_explicit_unsupported_failure()
+    {
+        byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "fractional-overlap.svg"));
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Manifest_has_unique_ids_hash_matched_assets_and_explicit_fidelity_status()
     {
         string fixtures = Path.Combine(AppContext.BaseDirectory, "Fixtures");
