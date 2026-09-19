@@ -204,14 +204,15 @@ behavior or collecting measurements.
    semantics exist. Do not make incorrect pixels pass by editing the references.
 3. Continue the conversion context through the remaining XML/parser state and
    retain it through encoding. The shared PNG sink now writes to synchronous and
-   synchronous and asynchronous caller streams in bounded chunks without an owned
+   asynchronous caller streams in bounded chunks without an owned
    output copy. Both stream forms now use direct `IDAT` compressor sinks; add
    failure/stall/cancellation stress evidence and account their remaining transient
    workspace.
 4. Add structural/work limits and cancellation checkpoints before parser/geometry
-   expansion and within compression/output. Replace the measurement scaffolds
-   with useful current-subset benchmarks and child-process budget/cancellation
-   probes; establish a baseline before the general geometry refactor.
+   expansion and within compression/output. The benchmark project now measures
+   owned/caller-buffer/sync-stream/async-stream conversions across current subset
+   canvas sizes; add child-process budget/cancellation probes and establish a
+   reported baseline before the general geometry refactor.
 5. Repair the oracle and extract scene/style/path subsystems. Drive the next
    rendering work with diagonal edges, curves, winding, stroke joins and an actual
    illustration, not a further run of spelling-only rectangle fixtures.

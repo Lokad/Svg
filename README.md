@@ -26,6 +26,12 @@ dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release
 The package will have no runtime package dependencies. Tests, Chrome tooling and
 benchmarks are development-only projects.
 
+Run the current-subset allocation and throughput benchmarks with:
+
+```powershell
+dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks
+```
+
 To smoke-test the packed package from a clean consumer directory:
 
 ```powershell
