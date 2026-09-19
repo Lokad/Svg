@@ -163,6 +163,22 @@ public sealed class PublicContractTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
+    [Theory]
+    [InlineData("<rect width='2' height='2' fill='red'/>")]
+    [InlineData("<line x1='0' y1='1' x2='2' y2='1' stroke='red' stroke-width='2'/>")]
+    [InlineData("<path d='M 0 0 H 2 V 2 H 0 Z' fill='red'/>")]
+    [InlineData("<polygon points='0,0 2,0 2,2 0,2' fill='red'/>")]
+    [InlineData("<polyline points='0,0 2,0 2,2 0,2' fill='red'/>")]
+    [InlineData("<defs><rect id='tile' width='2' height='2' fill='red'/></defs><use href='#tile'/>")]
+    public void Every_currently_supported_paintable_leaf_reaches_public_PNG_conversion(string content)
+    {
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'>" + content + "</svg>";
+
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }, png[..8].ToArray());
+    }
+
     [Fact]
     public void Empty_explicitly_sized_svg_returns_png_bytes()
     {
