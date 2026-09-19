@@ -13,6 +13,10 @@ internal ledger reserves live renderer-owned storage before the corresponding
 allocation, exposes current/peak/denial diagnostics to the conversion context, and
 releases reservations deterministically.
 
+For the current supported rectangle subset, an explicit `SvgViewport` supplies the
+outer logical dimensions and overrides root `width`/`height`; a root `viewBox`, when
+present, still maps its user coordinates into that viewport.
+
 Memory-to-memory asynchronous conversion will schedule one synchronous conversion
 on the thread pool and will observe cancellation throughout the implementation.
 It will not create per-shape or per-pixel tasks.
