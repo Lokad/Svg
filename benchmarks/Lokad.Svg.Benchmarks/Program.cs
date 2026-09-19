@@ -27,15 +27,11 @@ public class SvgConversionBenchmarks
         _stream = new MemoryStream(_destination.Length);
     }
 
-    [IterationSetup(Target = nameof(ConvertToStream))]
-    public void ResetStream()
+    private void ResetStream()
     {
         _stream.Position = 0;
         _stream.SetLength(0);
     }
-
-    [IterationSetup(Target = nameof(ConvertToStreamAsync))]
-    public void ResetAsyncStream() => ResetStream();
 
     [Benchmark]
     public int ConvertToOwnedMemory() => SvgConverter.ConvertToPng(_svg, SvgRenderOptions.Default, CancellationToken.None).Length;
@@ -44,8 +40,16 @@ public class SvgConversionBenchmarks
     public int ConvertToCallerMemory() => SvgConverter.ConvertToPng(_svg, _destination, SvgRenderOptions.Default, CancellationToken.None);
 
     [Benchmark]
-    public int ConvertToStream() => SvgConverter.ConvertToPng(_svg, _stream, SvgRenderOptions.Default, CancellationToken.None);
+    public int ConvertToStream()
+    {
+        ResetStream();
+        return SvgConverter.ConvertToPng(_svg, _stream, SvgRenderOptions.Default, CancellationToken.None);
+    }
 
     [Benchmark]
-    public Task<int> ConvertToStreamAsync() => SvgConverter.ConvertToPngAsync(_svg, _stream, SvgRenderOptions.Default, CancellationToken.None);
+    public async Task<int> ConvertToStreamAsync()
+    {
+        ResetStream();
+        return await SvgConverter.ConvertToPngAsync(_svg, _stream, SvgRenderOptions.Default, CancellationToken.None);
+    }
 }

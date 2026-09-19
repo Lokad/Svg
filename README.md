@@ -32,6 +32,9 @@ Run the current-subset allocation and throughput benchmarks with:
 dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks
 ```
 
+The current machine-scoped baseline and its reproduction constraints are in
+[docs/BENCHMARKS.md](docs/BENCHMARKS.md).
+
 Run an isolated conversion probe, optionally with a conversion budget or a
 timed cancellation request, with:
 
