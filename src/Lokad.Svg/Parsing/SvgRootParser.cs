@@ -37,6 +37,7 @@ internal static class SvgRootParser
             List<CssRule> rectangleStyleRules = [];
             bool hasRectangleStyleSheet = false;
             Dictionary<string, SvgRectangle> definitions = [];
+            List<PendingUse> pendingUses = [];
             int definitionsDepth = -1;
             while (reader.Read())
             {
@@ -59,8 +60,18 @@ internal static class SvgRootParser
                     }
                     else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
                     {
-                        SvgRectangle rectangle = ParseUse(reader, definitions);
-                        rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                        UseReference reference = ParseUse(reader);
+                        if (definitions.TryGetValue(reference.Id, out SvgRectangle definition))
+                        {
+                            SvgRectangle rectangle = ApplyUseOffset(definition, reference);
+                            rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                        }
+                        else
+                        {
+                            int rectangleIndex = rectangles.Count; int commandIndex = commands.Count;
+                            rectangles.Add(default); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, default, 255));
+                            pendingUses.Add(new PendingUse(rectangleIndex, commandIndex, reference));
+                        }
                         sawGraphicNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
@@ -111,7 +122,16 @@ internal static class SvgRootParser
                 {
                     if (reader.Depth == definitionsDepth) definitionsDepth = -1;
                     if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveAt(groupDepths.Count - 1); if (group.IsolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); }
-                    if (reader.Depth == rootDepth) { if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); return new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported); }
+                    if (reader.Depth == rootDepth)
+                    {
+                        foreach (PendingUse pendingUse in pendingUses)
+                        {
+                            if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgRectangle definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local rectangle use references are implemented.");
+                            SvgRectangle rectangle = ApplyUseOffset(definition, pendingUse.Reference);
+                            rectangles[pendingUse.RectangleIndex] = rectangle; commands[pendingUse.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255);
+                        }
+                        if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); return new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported);
+                    }
                 }
             }
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
@@ -183,14 +203,16 @@ internal static class SvgRootParser
         return new SvgRectangle(x, y, width, height, color, paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, styleSheet.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, styleSheet.Visibility, "visibility"), inheritedVisibility));
     }
 
-    private static SvgRectangle ParseUse(XmlReader reader, Dictionary<string, SvgRectangle> definitions)
+    private static UseReference ParseUse(XmlReader reader)
     {
         if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "href" or "x" or "y") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
         string href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A use element requires an href.");
-        if (href.Length < 2 || href[0] != '#' || !definitions.TryGetValue(href[1..], out SvgRectangle rectangle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only prior local rectangle use references are implemented.");
+        if (href.Length < 2 || href[0] != '#') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local rectangle use references are implemented.");
         double x = ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0"); double y = ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0");
-        return rectangle with { X = rectangle.X + x, Y = rectangle.Y + y };
+        return new UseReference(href[1..], x, y);
     }
+
+    private static SvgRectangle ApplyUseOffset(SvgRectangle rectangle, UseReference reference) => rectangle with { X = rectangle.X + reference.X, Y = rectangle.Y + reference.Y };
 
     private static SvgRectangle[] ParseOrthogonalPath(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, int maximumGeometryElements)
     {
@@ -662,6 +684,10 @@ internal static class SvgRootParser
     }
 
     private readonly record struct InlineStyle(string? Color, string? Fill, string? FillOpacity, string? Stroke, string? Display, string? Visibility, string? Opacity, string? FillRule);
+
+    private readonly record struct UseReference(string Id, double X, double Y);
+
+    private readonly record struct PendingUse(int RectangleIndex, int CommandIndex, UseReference Reference);
 
     private enum CssSelectorKind { Rectangle, Group, Id, Class, AttributePresent, AttributeEquals, DescendantGroup, ChildGroup }
 
