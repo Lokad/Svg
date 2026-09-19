@@ -47,7 +47,7 @@ internal static class SvgRootParser
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "path")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        rectangles.Add(ParseRectanglePath(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform));
+                        rectangles.AddRange(ParseOrthogonalPath(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, limits.MaximumPathCommands));
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "polygon")
                     {
@@ -141,28 +141,48 @@ internal static class SvgRootParser
         return new SvgRectangle(x, y, width, height, color, paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility));
     }
 
-    private static SvgRectangle ParseRectanglePath(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform)
+    private static SvgRectangle[] ParseOrthogonalPath(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, int maximumGeometryElements)
     {
         if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Path attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
         string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-        Match match = Regex.Match(d, @"^\s*M\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*H\s*(-?\d+)\s*V\s*(-?\d+)\s*H\s*(-?\d+)\s*[Zz]\s*$");
-        int x; int y; int right; int bottom; int closingX; int closingY;
-        if (match.Success)
+        string[] tokens = Regex.Replace(d, @"([MLHVZz])", " $1 ").Replace(',', ' ').Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (tokens.Length < 7 || tokens[0] != "M") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+        int tokenIndex = 1;
+        List<SvgPoint> points = [new SvgPoint(ParsePathInteger(), ParsePathInteger())];
+        bool closed = false;
+        while (tokenIndex < tokens.Length)
         {
-            x = ParseInteger(match.Groups[1].Value); y = ParseInteger(match.Groups[2].Value); right = ParseInteger(match.Groups[3].Value); bottom = ParseInteger(match.Groups[4].Value); closingX = ParseInteger(match.Groups[5].Value); closingY = bottom;
+            string command = tokens[tokenIndex++];
+            SvgPoint current = points[^1];
+            if (command == "H") points.Add(new SvgPoint(ParsePathInteger(), current.Y));
+            else if (command == "V") points.Add(new SvgPoint(current.X, ParsePathInteger()));
+            else if (command == "L") points.Add(new SvgPoint(ParsePathInteger(), ParsePathInteger()));
+            else if (command is "Z" or "z") { closed = tokenIndex == tokens.Length; break; }
+            else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
         }
-        else
-        {
-            match = Regex.Match(d, @"^\s*M\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*L\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*L\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*L\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*[Zz]\s*$");
-            if (!match.Success) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer rectangle paths are implemented.");
-            x = ParseInteger(match.Groups[1].Value); y = ParseInteger(match.Groups[2].Value); right = ParseInteger(match.Groups[3].Value); int secondY = ParseInteger(match.Groups[4].Value); int thirdX = ParseInteger(match.Groups[5].Value); bottom = ParseInteger(match.Groups[6].Value); closingX = ParseInteger(match.Groups[7].Value); closingY = ParseInteger(match.Groups[8].Value);
-            if (secondY != y || thirdX != right) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer rectangle paths are implemented.");
-        }
-        if (closingX != x || closingY != bottom || right < x || bottom < y) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer rectangle paths are implemented.");
+        if (!closed || points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+        if (points.Count > maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
+        for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) { SvgPoint start = points[pointIndex]; SvgPoint end = points[(pointIndex + 1) % points.Count]; if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented."); }
         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style")); AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
         SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), inheritedPaint); ValidateFillRule(GetProperty(reader, style.FillRule, "fill-rule")); ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity")); SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
-        return new SvgRectangle(checked(transform.ScaleX * x + transform.OffsetX), checked(transform.ScaleY * y + transform.OffsetY), checked(transform.ScaleX * (right - x)), checked(transform.ScaleY * (bottom - y)), color, paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility));
+        bool hasFill = paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility);
+        List<int> boundaries = points.Select(static point => point.Y).Distinct().Order().ToList(); List<SvgRectangle> rectangles = [];
+        for (int boundaryIndex = 0; boundaryIndex < boundaries.Count - 1; boundaryIndex++)
+        {
+            int top = boundaries[boundaryIndex]; int bottom = boundaries[boundaryIndex + 1]; List<int> intersections = [];
+            for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) { SvgPoint start = points[pointIndex]; SvgPoint end = points[(pointIndex + 1) % points.Count]; if (start.X == end.X && Math.Min(start.Y, end.Y) <= top && Math.Max(start.Y, end.Y) >= bottom) intersections.Add(start.X); }
+            intersections.Sort();
+            if (intersections.Count % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed absolute axis-aligned integer paths are implemented.");
+            for (int intersectionIndex = 0; intersectionIndex < intersections.Count; intersectionIndex += 2) { int left = intersections[intersectionIndex]; int right = intersections[intersectionIndex + 1]; if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed absolute axis-aligned integer paths are implemented."); if (rectangles.Count >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path rectangle-band count exceeds the configured path-command limit."); rectangles.Add(new SvgRectangle(checked(transform.ScaleX * left + transform.OffsetX), checked(transform.ScaleY * top + transform.OffsetY), checked(transform.ScaleX * (right - left)), checked(transform.ScaleY * (bottom - top)), color, hasFill)); }
+        }
+        return rectangles.ToArray();
+
+        int ParsePathInteger()
+        {
+            if (tokenIndex >= tokens.Length || !Regex.IsMatch(tokens[tokenIndex], @"^-?\d+$")) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+            return ParseInteger(tokens[tokenIndex++]);
+        }
     }
 
     private static SvgRectangle[] ParseOrthogonalPolygon(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, int maximumGeometryElements)

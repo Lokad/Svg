@@ -15,7 +15,8 @@ is the evidence for its `exact` status.
 
 `original-line-rectangle-path` exercises the supported absolute line-segment
 spelling of a closed axis-aligned integer rectangle. `original-orthogonal-polygon`
-exercises the supported L-shaped polygon decomposition. `original-fractional-overlap` has a stable pinned-Chrome reference but is
+and `original-orthogonal-path` exercise the supported L-shaped band decomposition.
+`original-fractional-overlap` has a stable pinned-Chrome reference but is
 explicitly `unsupported`: it uses fractional geometry, which the initial rectangle
 subset does not implement. This is retained in the inventory rather than hidden
 from fidelity reporting.

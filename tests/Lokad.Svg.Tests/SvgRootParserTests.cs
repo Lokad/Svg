@@ -94,6 +94,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_closed_axis_aligned_line_paths_to_non_overlapping_rectangle_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 3 V 1 H 1 V 3 H 0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true), rectangle),
+            rectangle => Assert.Equal(new SvgRectangle(0, 1, 1, 2, new SvgColor(255, 0, 0, 255), true), rectangle));
+    }
+
+    [Fact]
     public void Lowers_closed_axis_aligned_polygons_to_non_overlapping_rectangle_bands()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 3,0 3,1 1,1 1,3 0,3' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
