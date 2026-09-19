@@ -49,7 +49,7 @@ internal static class SvgRootParser
                         bool visibility = ParseVisibility(reader.GetAttribute("visibility"), groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
                         if (!reader.IsEmptyElement) groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility));
                     }
-                    else if (directChild && (reader.LocalName is "title" or "desc" or "metadata")) reader.Skip();
+                    else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
                     else if (directChild || nestedInGroup) unsupported = true;
                 }
                 if (reader.NodeType == XmlNodeType.EndElement)
