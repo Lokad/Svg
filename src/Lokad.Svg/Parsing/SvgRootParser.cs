@@ -32,18 +32,16 @@ internal static class SvgRootParser
                 cancellationToken.ThrowIfCancellationRequested();
                 if (reader.NodeType == XmlNodeType.Element)
                 {
+                    if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                    nodeCount++;
                     bool directChild = reader.Depth == rootDepth + 1;
                     bool nestedInGroup = groupDepths.Count > 0;
                     if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
-                        if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
-                        nodeCount++;
                         rectangles.Add(ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible));
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "g")
                     {
-                        if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
-                        nodeCount++;
                         SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint);
                         bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(reader.GetAttribute("display"));
                         bool visibility = ParseVisibility(reader.GetAttribute("visibility"), groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
