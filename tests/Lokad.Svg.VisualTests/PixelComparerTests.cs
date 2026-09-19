@@ -1,4 +1,5 @@
 using Lokad.Svg.VisualDiff;
+using Lokad.Svg.Encoding;
 using System.Buffers.Binary;
 using System.IO.Compression;
 
@@ -81,6 +82,17 @@ public sealed class PixelComparerTests
     public void Independent_decoder_enforces_its_pixel_limit()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => PngRgbaDecoder.Decode(OnePixelRgbaPng, 0));
+    }
+
+    [Fact]
+    public void Independent_decoder_reads_production_encoder_output()
+    {
+        byte[] source = [10, 20, 30, 40, 50, 60, 70, 80];
+        byte[] png = PngEncoder.Encode(2, 1, source, CancellationToken.None);
+
+        RgbaImage decoded = PngRgbaDecoder.Decode(png, 2);
+
+        Assert.Equal(source, decoded.Pixels);
     }
 
     private static byte[] CreateOnePixelRgbaPng()
