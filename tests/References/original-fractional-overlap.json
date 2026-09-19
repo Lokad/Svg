@@ -1,11 +1,11 @@
 {
   "fixtureId": "original-fractional-overlap",
   "referencePng": "original-fractional-overlap.png",
-  "referenceSha256": "609018c06f337221d8e0d5e943844a668a9c9cbf41df66398b4eaa32869f1b3e",
+  "referenceSha256": "8e2faa670552a1578dc7bc775711f535a8262d1d9eb20432842a31576a7d810b",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
-  "captureRecipeRevision": "1",
+  "captureRecipeRevision": "2",
   "viewport": { "width": 8, "height": 8, "deviceScaleFactor": 1 },
   "background": "transparent",
   "freshProcessCaptures": 3,

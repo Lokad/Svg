@@ -11,7 +11,7 @@ internal static class ChromeSvgCapture
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
         string svgDataUrl = "data:image/svg+xml;base64," + Convert.ToBase64String(svg.Span);
-        string html = "<style>html,body{margin:0;overflow:hidden}</style><img id=svg src='" + svgDataUrl + "' style='display:block'>";
+        string html = "<style>html,body{margin:0;overflow:hidden;background:transparent}</style><img id=svg src='" + svgDataUrl + "' style='display:block'>";
         string pageUrl = "data:text/html;base64," + Convert.ToBase64String(Encoding.UTF8.GetBytes(html));
         await using ChromeProcess chrome = await ChromeProcess.LaunchAsync(executable, cancellationToken);
         await using DevToolsConnection browser = await DevToolsConnection.ConnectAsync(chrome.DebuggerAddress, cancellationToken);
