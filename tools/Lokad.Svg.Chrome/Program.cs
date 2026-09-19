@@ -4,16 +4,17 @@ internal static class Program
 {
     private static async Task<int> Main(string[] arguments)
     {
-        if (arguments.Length != 1)
+        if (arguments.Length != 3 || !int.TryParse(arguments[1], out int width) || !int.TryParse(arguments[2], out int height))
         {
-            Console.Error.WriteLine("Usage: Lokad.Svg.Chrome <path-to-pinned-chrome>");
+            Console.Error.WriteLine("Usage: Lokad.Svg.Chrome <path-to-pinned-chrome> <width> <height> < svg > capture.png");
             return 2;
         }
 
         using CancellationTokenSource cancellation = new(TimeSpan.FromSeconds(30));
-        await using ChromeProcess chrome = await ChromeProcess.LaunchAsync(arguments[0], cancellation.Token);
-        await using DevToolsConnection connection = await DevToolsConnection.ConnectAsync(chrome.DebuggerAddress, cancellation.Token);
-        Console.WriteLine(await connection.SendAsync("Browser.getVersion", "{}", cancellation.Token));
+        using MemoryStream svg = new();
+        await Console.OpenStandardInput().CopyToAsync(svg, cancellation.Token);
+        byte[] png = await ChromeSvgCapture.CaptureAsync(arguments[0], svg.ToArray(), width, height, cancellation.Token);
+        await Console.OpenStandardOutput().WriteAsync(png, cancellation.Token);
         return 0;
     }
 }

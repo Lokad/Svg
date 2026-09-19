@@ -22,6 +22,24 @@ internal sealed class DevToolsConnection : IAsyncDisposable
         return new DevToolsConnection(socket);
     }
 
+    internal static async Task<DevToolsConnection> ConnectToTargetAsync(string debuggerAddress, string targetId, CancellationToken cancellationToken)
+    {
+        using HttpClient client = new() { Timeout = TimeSpan.FromSeconds(10) };
+        while (true)
+        {
+            using JsonDocument targets = JsonDocument.Parse(await client.GetStringAsync("http://" + debuggerAddress + "/json/list", cancellationToken));
+            foreach (JsonElement target in targets.RootElement.EnumerateArray())
+            {
+                if (target.GetProperty("id").GetString() != targetId) continue;
+                string endpoint = target.GetProperty("webSocketDebuggerUrl").GetString() ?? throw new InvalidDataException("Target endpoint is missing.");
+                ClientWebSocket socket = new();
+                await socket.ConnectAsync(new Uri(endpoint), cancellationToken);
+                return new DevToolsConnection(socket);
+            }
+            await Task.Delay(25, cancellationToken);
+        }
+    }
+
     internal async Task<string> SendAsync(string method, string parametersJson, CancellationToken cancellationToken)
     {
         int id = checked(++_nextCommandId);
