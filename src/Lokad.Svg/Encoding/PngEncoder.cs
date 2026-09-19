@@ -56,10 +56,11 @@ internal static class PngEncoder
         ArgumentNullException.ThrowIfNull(destination);
         if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
         if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), cancellationToken);
-        int length = GetOutputLength(checked((int)compressed.Length));
-        if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        WritePng(width, height, compressed.Written, destination, cancellationToken);
+        WritePngPrefix(width, height, destination, cancellationToken);
+        using PngIdatOutputStream compressed = new(destination, budget, maximumEncodedPngBytes, cancellationToken);
+        CompressInto(width, height, rgba, budget, compressed, cancellationToken);
+        int length = compressed.Complete();
+        WriteChunk(destination, "IEND"u8, [], cancellationToken);
         return length;
     }
 
@@ -77,35 +78,38 @@ internal static class PngEncoder
 
     private static PngCompressionBuffer Compress(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumCompressedBytes, CancellationToken cancellationToken)
     {
-        if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
-        if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
-        int stride = checked(width * 4);
-        if (rgba.Length != checked(stride * height)) throw new ArgumentException("Pixel buffer length does not match dimensions.", nameof(rgba));
-        using RenderBudget.BudgetReservation rowReservation = budget.Reserve(checked((long)stride + 1), SvgMemoryCategory.Png);
-        byte[] row = new byte[stride + 1];
         PngCompressionBuffer compressed = new(budget, maximumCompressedBytes, cancellationToken);
         try
         {
-            using (ZLibStream zlib = new(compressed, CompressionLevel.Optimal, true))
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    row[0] = 0;
-                    rgba.Slice(y * stride, stride).CopyTo(row.AsSpan(1));
-                    for (int x = 1; x < row.Length; x += 4)
-                    {
-                        if (row[x + 3] == 0) { row[x] = 0; row[x + 1] = 0; row[x + 2] = 0; }
-                    }
-                    zlib.Write(row);
-                }
-            }
+            CompressInto(width, height, rgba, budget, compressed, cancellationToken);
             return compressed;
         }
         catch
         {
             compressed.Dispose();
             throw;
+        }
+    }
+
+    private static void CompressInto(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, Stream destination, CancellationToken cancellationToken)
+    {
+        if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
+        if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+        int stride = checked(width * 4);
+        if (rgba.Length != checked(stride * height)) throw new ArgumentException("Pixel buffer length does not match dimensions.", nameof(rgba));
+        using RenderBudget.BudgetReservation rowReservation = budget.Reserve(checked((long)stride + 1), SvgMemoryCategory.Png);
+        byte[] row = new byte[stride + 1];
+        using ZLibStream zlib = new(destination, CompressionLevel.Optimal, true);
+        for (int y = 0; y < height; y++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            row[0] = 0;
+            rgba.Slice(y * stride, stride).CopyTo(row.AsSpan(1));
+            for (int x = 1; x < row.Length; x += 4)
+            {
+                if (row[x + 3] == 0) { row[x] = 0; row[x + 1] = 0; row[x + 2] = 0; }
+            }
+            zlib.Write(row);
         }
     }
 
@@ -142,7 +146,7 @@ internal static class PngEncoder
         offset += WriteChunk(output[offset..], "IEND"u8, [], cancellationToken);
     }
 
-    private static void WritePng(int width, int height, ReadOnlySpan<byte> compressed, Stream output, CancellationToken cancellationToken)
+    private static void WritePngPrefix(int width, int height, Stream output, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         output.Write(PngSignature);
@@ -152,8 +156,6 @@ internal static class PngEncoder
         header[8] = 8;
         header[9] = 6;
         WriteChunk(output, "IHDR"u8, header, cancellationToken);
-        WriteIdatChunks(output, compressed, cancellationToken);
-        WriteChunk(output, "IEND"u8, [], cancellationToken);
     }
 
     private static async Task WritePngAsync(int width, int height, ReadOnlyMemory<byte> compressed, Stream output, CancellationToken cancellationToken)
@@ -181,21 +183,6 @@ internal static class PngEncoder
             compressedOffset += length;
         }
         return outputOffset;
-    }
-
-    private static void WriteIdatChunks(Stream output, ReadOnlySpan<byte> compressed, CancellationToken cancellationToken)
-    {
-        if (compressed.IsEmpty)
-        {
-            WriteChunk(output, "IDAT"u8, [], cancellationToken);
-            return;
-        }
-        for (int offset = 0; offset < compressed.Length;)
-        {
-            int length = Math.Min(MaximumIdatPayloadBytes, compressed.Length - offset);
-            WriteChunk(output, "IDAT"u8, compressed.Slice(offset, length), cancellationToken);
-            offset += length;
-        }
     }
 
     private static async Task WriteIdatChunksAsync(Stream output, ReadOnlyMemory<byte> compressed, CancellationToken cancellationToken)
@@ -275,6 +262,130 @@ internal static class PngEncoder
         }
         BinaryPrimitives.WriteUInt32BigEndian(length, ~crc);
         await output.WriteAsync(length, cancellationToken).ConfigureAwait(false);
+    }
+
+    private sealed class PngIdatOutputStream : Stream
+    {
+        private readonly Stream _output;
+        private readonly RenderBudget _budget;
+        private readonly int _maximumEncodedPngBytes;
+        private readonly CancellationToken _cancellationToken;
+        private RenderBudget.BudgetReservation? _reservation;
+        private byte[]? _buffer;
+        private int _bufferedLength;
+        private int _compressedLength;
+        private int _idatChunkCount;
+        private bool _isComplete;
+
+        internal PngIdatOutputStream(Stream output, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
+        {
+            _output = output;
+            _budget = budget;
+            _maximumEncodedPngBytes = maximumEncodedPngBytes;
+            _cancellationToken = cancellationToken;
+        }
+
+        internal int Complete()
+        {
+            if (_isComplete) throw new InvalidOperationException("PNG IDAT output was already completed.");
+            _cancellationToken.ThrowIfCancellationRequested();
+            if (_compressedLength == 0)
+            {
+                EnsureOutputLength(0, _idatChunkCount + 1);
+                WriteChunk(_output, IdatChunkType, [], _cancellationToken);
+                _idatChunkCount++;
+            }
+            else if (_bufferedLength > 0)
+            {
+                byte[] buffer = _buffer ?? throw new InvalidOperationException("PNG IDAT buffer allocation did not complete.");
+                EnsureOutputLength(_compressedLength, _idatChunkCount + 1);
+                WriteChunk(_output, IdatChunkType, buffer.AsSpan(0, _bufferedLength), _cancellationToken);
+                _bufferedLength = 0;
+                _idatChunkCount++;
+            }
+            _isComplete = true;
+            return checked(FixedPngBytesWithoutIdat + _compressedLength + _idatChunkCount * PngChunkOverheadBytes);
+        }
+
+        public override bool CanRead => false;
+        public override bool CanSeek => false;
+        public override bool CanWrite => true;
+        public override long Length => _compressedLength;
+        public override long Position { get => _compressedLength; set => throw new NotSupportedException(); }
+
+        public override void Flush() { }
+
+        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
+        public override void SetLength(long value) => throw new NotSupportedException();
+
+        public override void Write(byte[] buffer, int offset, int count) => Write(buffer.AsSpan(offset, count));
+
+        public override void Write(ReadOnlySpan<byte> buffer)
+        {
+            if (_isComplete) throw new InvalidOperationException("PNG IDAT output was already completed.");
+            _cancellationToken.ThrowIfCancellationRequested();
+            while (!buffer.IsEmpty)
+            {
+                if (_bufferedLength == 0 && buffer.Length >= MaximumIdatPayloadBytes)
+                {
+                    int directCompressedLength = checked(_compressedLength + MaximumIdatPayloadBytes);
+                    EnsureOutputLength(directCompressedLength, _idatChunkCount + 1);
+                    WriteChunk(_output, IdatChunkType, buffer[..MaximumIdatPayloadBytes], _cancellationToken);
+                    _compressedLength = directCompressedLength;
+                    _idatChunkCount++;
+                    buffer = buffer[MaximumIdatPayloadBytes..];
+                    continue;
+                }
+                EnsureBufferCapacity(Math.Min(buffer.Length, MaximumIdatPayloadBytes));
+                byte[] destination = _buffer ?? throw new InvalidOperationException("PNG IDAT buffer allocation did not complete.");
+                int count = Math.Min(destination.Length - _bufferedLength, buffer.Length);
+                int bufferedCompressedLength = checked(_compressedLength + count);
+                EnsureOutputLength(bufferedCompressedLength, _idatChunkCount + 1);
+                buffer[..count].CopyTo(destination.AsSpan(_bufferedLength));
+                _bufferedLength += count;
+                _compressedLength = bufferedCompressedLength;
+                buffer = buffer[count..];
+                if (_bufferedLength == destination.Length)
+                {
+                    WriteChunk(_output, IdatChunkType, destination, _cancellationToken);
+                    _bufferedLength = 0;
+                    _idatChunkCount++;
+                }
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _reservation?.Dispose();
+                _reservation = null;
+                _buffer = null;
+                _bufferedLength = 0;
+            }
+            base.Dispose(disposing);
+        }
+
+        private void EnsureBufferCapacity(int requiredLength)
+        {
+            if (_buffer is not null) return;
+            int capacity = Math.Min(Math.Max(64, requiredLength), MaximumIdatPayloadBytes);
+            RenderBudget.BudgetReservation replacementReservation = _budget.Reserve(capacity, SvgMemoryCategory.Png);
+            byte[] replacement;
+            try { replacement = new byte[capacity]; }
+            catch { replacementReservation.Dispose(); throw; }
+            _reservation = replacementReservation;
+            _buffer = replacement;
+        }
+
+        private void EnsureOutputLength(int compressedLength, int idatChunkCount)
+        {
+            long outputLength = FixedPngBytesWithoutIdat + (long)compressedLength + (long)idatChunkCount * PngChunkOverheadBytes;
+            if (outputLength > _maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        }
     }
 
     private sealed class PngCompressionBuffer : Stream

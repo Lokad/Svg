@@ -52,6 +52,29 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    public void Streams_without_retaining_the_full_compressed_payload()
+    {
+        byte[] pixels = CreateHighEntropyPixels();
+        using BoundedWriteStream destination = new(65_536);
+
+        int written = PngEncoder.EncodeTo(512, 512, pixels, destination, new RenderBudget(70_000), int.MaxValue, CancellationToken.None);
+
+        Assert.Equal(written, destination.Length);
+        Assert.True(written > 65_536);
+        Assert.True(CountBoundedIdatChunks(destination.ToArray()) > 1);
+
+        byte[] expected = destination.ToArray();
+        using BoundedWriteStream exactDestination = new(65_536);
+        int exactWritten = PngEncoder.EncodeTo(512, 512, pixels, exactDestination, new RenderBudget(long.MaxValue), expected.Length, CancellationToken.None);
+        using BoundedWriteStream insufficientDestination = new(65_536);
+        SvgException exception = Assert.Throws<SvgException>(() => PngEncoder.EncodeTo(512, 512, pixels, insufficientDestination, new RenderBudget(long.MaxValue), expected.Length - 1, CancellationToken.None));
+
+        Assert.Equal(expected.Length, exactWritten);
+        Assert.Equal(expected, exactDestination.ToArray());
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public async Task Streams_large_png_data_in_bounded_asynchronous_writes()
     {
         byte[] pixels = CreateHighEntropyPixels();
@@ -101,17 +124,7 @@ public sealed class PngEncoderTests
     {
         byte[] pixels = CreateHighEntropyPixels();
         byte[] png = PngEncoder.Encode(512, 512, pixels, CancellationToken.None);
-        int idatChunkCount = 0;
-        for (int offset = 8; offset < png.Length;)
-        {
-            int dataLength = checked((int)BinaryPrimitives.ReadUInt32BigEndian(png.AsSpan(offset)));
-            if (png.AsSpan(offset + 4, 4).SequenceEqual("IDAT"u8))
-            {
-                idatChunkCount++;
-                Assert.InRange(dataLength, 1, 65_536);
-            }
-            offset += checked(dataLength + 12);
-        }
+        int idatChunkCount = CountBoundedIdatChunks(png);
 
         byte[] exactCap = PngEncoder.Encode(512, 512, pixels, png.Length, CancellationToken.None);
         SvgException exception = Assert.Throws<SvgException>(() => PngEncoder.Encode(512, 512, pixels, png.Length - 1, CancellationToken.None));
@@ -129,6 +142,24 @@ public sealed class PngEncoderTests
         return pixels;
     }
 
+    private static int CountBoundedIdatChunks(byte[] png)
+    {
+        int idatChunkCount = 0;
+        int offset = 8;
+        while (offset < png.Length)
+        {
+            int dataLength = checked((int)BinaryPrimitives.ReadUInt32BigEndian(png.AsSpan(offset)));
+            if (png.AsSpan(offset + 4, 4).SequenceEqual("IDAT"u8))
+            {
+                idatChunkCount++;
+                Assert.InRange(dataLength, 1, 65_536);
+            }
+            offset += checked(dataLength + 12);
+        }
+        Assert.Equal(png.Length, offset);
+        return idatChunkCount;
+    }
+
     private sealed class BoundedWriteStream : Stream
     {
         private readonly MemoryStream _storage = new();
@@ -141,6 +172,8 @@ public sealed class PngEncoderTests
         public override bool CanWrite => true;
         public override long Length => _storage.Length;
         public override long Position { get => _storage.Position; set => throw new NotSupportedException(); }
+
+        internal byte[] ToArray() => _storage.ToArray();
 
         public override void Flush() { }
 
