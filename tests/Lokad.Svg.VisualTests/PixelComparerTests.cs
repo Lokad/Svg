@@ -180,6 +180,14 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
+    public void Hex_colors_with_alpha_are_supported()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'><rect width='1' height='1' fill='#1aF8'/><rect x='1' width='1' height='1' fill='#ff000080'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        Assert.Equal(new byte[] { 17, 170, 255, 136, 255, 0, 0, 128 }, PngRgbaDecoder.Decode(png, 2).Pixels);
+    }
+
+    [Fact]
     public void Integer_fill_opacity_composites_on_transparent_surface()
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='#ff0000' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
