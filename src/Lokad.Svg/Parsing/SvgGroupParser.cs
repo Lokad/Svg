@@ -17,7 +17,8 @@ internal static class SvgGroupParser
         bool visible = SvgShapePresentationResolver.ParseVisibility(style.Visibility, inheritedVisibility);
         AxisTransform transform = inheritedTransform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
-        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, reader.LocalName, paint, displayed, visible, transform, opacity != 255), opacity);
+        SvgGroupKind kind = reader.LocalName == "g" ? SvgGroupKind.Group : SvgGroupKind.Link;
+        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, paint, displayed, visible, transform, opacity != 255), opacity);
     }
 }
 
