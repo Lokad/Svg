@@ -86,6 +86,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_closed_axis_aligned_line_rectangle_paths()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 1,2 L 4,2 L 4,6 L 1,6 z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(1, 2, 3, 4, new SvgColor(255, 0, 0, 255), true), root.Rectangles[0]);
+    }
+
+    [Fact]
     public void Rejects_relative_rectangle_paths_until_relative_commands_are_implemented()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='m 1,2 h 3 v 4 h -3 z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

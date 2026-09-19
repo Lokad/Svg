@@ -716,7 +716,7 @@ and risk, not by the ease of producing a recognisable image.
    build pass, with the feature/support inventory created.
 
 2. **Oracle and feasibility probes.** *(In progress: independent comparer/CLI,
-   original CC0 probes, a hash-pinned Chrome-for-Testing capture path, and fifteen
+   original CC0 probes, a hash-pinned Chrome-for-Testing capture path, and sixteen
    reviewed stable references exist; broader feasibility probing remains.)* Build the thin Chrome wrapper, independent
    pixel comparison and provenance format. Create the first original probes plus
    a licensed small corpus. Investigate antialiasing, group alpha, gradients,

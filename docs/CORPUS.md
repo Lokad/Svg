@@ -13,7 +13,8 @@ candidate comparison. Its manifest records the candidate hash and zero-differenc
 result. A reference artifact alone is not a renderer pass; this explicit comparison
 is the evidence for its `exact` status.
 
-`original-fractional-overlap` has a stable pinned-Chrome reference but is
+`original-line-rectangle-path` exercises the supported absolute line-segment
+spelling of a closed axis-aligned integer rectangle. `original-fractional-overlap` has a stable pinned-Chrome reference but is
 explicitly `unsupported`: it uses fractional geometry, which the initial rectangle
 subset does not implement. This is retained in the inventory rather than hidden
 from fidelity reporting.

@@ -140,10 +140,20 @@ internal static class SvgRootParser
     {
         if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Path attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
         string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-        Match match = Regex.Match(d, @"^\s*M\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*H\s*(-?\d+)\s*V\s*(-?\d+)\s*H\s*(-?\d+)\s*Z\s*$");
-        if (!match.Success) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer rectangle paths are implemented.");
-        int x = ParseInteger(match.Groups[1].Value); int y = ParseInteger(match.Groups[2].Value); int right = ParseInteger(match.Groups[3].Value); int bottom = ParseInteger(match.Groups[4].Value); int closingX = ParseInteger(match.Groups[5].Value);
-        if (closingX != x || right < x || bottom < y) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer rectangle paths are implemented.");
+        Match match = Regex.Match(d, @"^\s*M\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*H\s*(-?\d+)\s*V\s*(-?\d+)\s*H\s*(-?\d+)\s*[Zz]\s*$");
+        int x; int y; int right; int bottom; int closingX; int closingY;
+        if (match.Success)
+        {
+            x = ParseInteger(match.Groups[1].Value); y = ParseInteger(match.Groups[2].Value); right = ParseInteger(match.Groups[3].Value); bottom = ParseInteger(match.Groups[4].Value); closingX = ParseInteger(match.Groups[5].Value); closingY = bottom;
+        }
+        else
+        {
+            match = Regex.Match(d, @"^\s*M\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*L\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*L\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*L\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*[Zz]\s*$");
+            if (!match.Success) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer rectangle paths are implemented.");
+            x = ParseInteger(match.Groups[1].Value); y = ParseInteger(match.Groups[2].Value); right = ParseInteger(match.Groups[3].Value); int secondY = ParseInteger(match.Groups[4].Value); int thirdX = ParseInteger(match.Groups[5].Value); bottom = ParseInteger(match.Groups[6].Value); closingX = ParseInteger(match.Groups[7].Value); closingY = ParseInteger(match.Groups[8].Value);
+            if (secondY != y || thirdX != right) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer rectangle paths are implemented.");
+        }
+        if (closingX != x || closingY != bottom || right < x || bottom < y) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer rectangle paths are implemented.");
         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style")); AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
         SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), inheritedPaint); ValidateFillRule(GetProperty(reader, style.FillRule, "fill-rule")); ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity")); SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
