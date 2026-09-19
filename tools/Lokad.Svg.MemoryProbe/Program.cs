@@ -15,31 +15,34 @@ internal static class Program
         using Process process = Process.GetCurrentProcess();
         using CancellationTokenSource? cancellation = options.CancelAfterMilliseconds is int delay ? new CancellationTokenSource(delay) : null;
         CancellationTokenSource? conversionCancellation = null;
+        string cancellationMode = options.CancelAfterConversionStartMilliseconds is not null ? "after-conversion-start" : options.CancelAfterMilliseconds is not null ? "before-input-load" : "none";
+        int? inputBytes = null;
         Stopwatch stopwatch = Stopwatch.StartNew();
         try
         {
             byte[] svg = File.ReadAllBytes(options.InputPath);
+            inputBytes = svg.Length;
             conversionCancellation = options.CancelAfterConversionStartMilliseconds is int conversionDelay ? new CancellationTokenSource(conversionDelay) : null;
             CancellationToken cancellationToken = conversionCancellation?.Token ?? cancellation?.Token ?? CancellationToken.None;
             ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, CreateOptions(options.MaximumAccountedBytes), cancellationToken);
             File.WriteAllBytes(options.OutputPath, png.Span);
-            WriteReport("success", stopwatch, process, png.Length, null);
+            WriteReport("success", stopwatch, process, png.Length, null, inputBytes, cancellationMode);
             return 0;
         }
         catch (SvgException exception)
         {
-            WriteReport("svg-error", stopwatch, process, null, exception.ErrorCode);
+            WriteReport("svg-error", stopwatch, process, null, exception.ErrorCode, inputBytes, cancellationMode);
             return 1;
         }
         catch (OperationCanceledException) when ((cancellation is { IsCancellationRequested: true }) || (conversionCancellation is { IsCancellationRequested: true }))
         {
-            WriteReport("cancelled", stopwatch, process, null, null);
+            WriteReport("cancelled", stopwatch, process, null, null, inputBytes, cancellationMode);
             return 3;
         }
         catch (Exception exception)
         {
             Console.Error.WriteLine(exception);
-            WriteReport("unhandled-" + exception.GetType().Name, stopwatch, process, null, null);
+            WriteReport("unhandled-" + exception.GetType().Name, stopwatch, process, null, null, inputBytes, cancellationMode);
             return 4;
         }
         finally { conversionCancellation?.Dispose(); }
@@ -88,12 +91,14 @@ internal static class Program
         return new SvgRenderOptions(null, 1, SvgColor.Transparent, limits);
     }
 
-    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode)
+    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode, int? inputBytes, string cancellationMode)
     {
         process.Refresh();
         Console.WriteLine("outcome=" + outcome);
         Console.WriteLine("elapsedMilliseconds=" + stopwatch.ElapsedMilliseconds);
         Console.WriteLine("peakWorkingSetBytes=" + process.PeakWorkingSet64);
+        Console.WriteLine("cancellationMode=" + cancellationMode);
+        if (inputBytes is not null) Console.WriteLine("inputBytes=" + inputBytes.Value);
         if (pngBytes is not null) Console.WriteLine("pngBytes=" + pngBytes.Value);
         if (svgErrorCode is not null) Console.WriteLine("svgErrorCode=" + svgErrorCode.Value);
     }
