@@ -37,6 +37,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_the_node_limit_before_expanding_rectangle_storage()
+    {
+        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 1, 1, 1);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='#ff0000'/><rect width='1' height='1' fill='#ff0000'/></svg>"u8.ToArray(), limits, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Parses_px_dimensions_but_keeps_percentages_explicitly_unsupported()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='12.5px' height='7px'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

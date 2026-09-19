@@ -75,10 +75,13 @@ public static class SvgConverter
         foreach (SvgRectangle rectangle in root.Rectangles)
         {
             for (int y = Math.Max(0, rectangle.Y); y < Math.Min(outputHeight, checked(rectangle.Y + rectangle.Height)); y++)
+            {
+            cancellationToken.ThrowIfCancellationRequested();
             for (int x = Math.Max(0, rectangle.X); x < Math.Min(outputWidth, checked(rectangle.X + rectangle.Width)); x++)
             {
                 int offset = (y * outputWidth + x) * 4;
                 pixels[offset] = rectangle.Color.Red; pixels[offset + 1] = rectangle.Color.Green; pixels[offset + 2] = rectangle.Color.Blue; pixels[offset + 3] = 255;
+            }
             }
         }
         return PngEncoder.Encode(outputWidth, outputHeight, pixels, cancellationToken);
