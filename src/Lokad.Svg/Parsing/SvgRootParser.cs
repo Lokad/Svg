@@ -415,13 +415,25 @@ internal static class SvgRootParser
         if (fill.Equals("red", StringComparison.OrdinalIgnoreCase)) return new SvgColor(255, 0, 0, 255);
         if (fill.Equals("blue", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 0, 255, 255);
         if (fill.Equals("lime", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 255, 0, 255);
+        if (fill.Equals("white", StringComparison.OrdinalIgnoreCase)) return new SvgColor(255, 255, 255, 255);
+        if (fill.Equals("yellow", StringComparison.OrdinalIgnoreCase)) return new SvgColor(255, 255, 0, 255);
+        if (fill.Equals("cyan", StringComparison.OrdinalIgnoreCase) || fill.Equals("aqua", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 255, 255, 255);
+        if (fill.Equals("magenta", StringComparison.OrdinalIgnoreCase) || fill.Equals("fuchsia", StringComparison.OrdinalIgnoreCase)) return new SvgColor(255, 0, 255, 255);
+        if (fill.Equals("gray", StringComparison.OrdinalIgnoreCase) || fill.Equals("grey", StringComparison.OrdinalIgnoreCase)) return new SvgColor(128, 128, 128, 255);
+        if (fill.Equals("silver", StringComparison.OrdinalIgnoreCase)) return new SvgColor(192, 192, 192, 255);
+        if (fill.Equals("maroon", StringComparison.OrdinalIgnoreCase)) return new SvgColor(128, 0, 0, 255);
+        if (fill.Equals("olive", StringComparison.OrdinalIgnoreCase)) return new SvgColor(128, 128, 0, 255);
+        if (fill.Equals("green", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 128, 0, 255);
+        if (fill.Equals("teal", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 128, 128, 255);
+        if (fill.Equals("navy", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 0, 128, 255);
+        if (fill.Equals("purple", StringComparison.OrdinalIgnoreCase)) return new SvgColor(128, 0, 128, 255);
         if (TryParseFunctionalRgb(fill, out SvgColor functionalColor)) return functionalColor;
         if (TryParseFunctionalHsl(fill, out functionalColor)) return functionalColor;
         if (fill.Length == 9 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red8) && byte.TryParse(fill.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green8) && byte.TryParse(fill.AsSpan(5, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue8) && byte.TryParse(fill.AsSpan(7, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte alpha8)) return new SvgColor(red8, green8, blue8, alpha8);
         if (fill.Length == 7 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red) && byte.TryParse(fill.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green) && byte.TryParse(fill.AsSpan(5, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue)) return new SvgColor(red, green, blue, 255);
         if (fill.Length == 5 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red4) && byte.TryParse(fill.AsSpan(2, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green4) && byte.TryParse(fill.AsSpan(3, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue4) && byte.TryParse(fill.AsSpan(4, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte alpha4)) return new SvgColor((byte)(red4 * 17), (byte)(green4 * 17), (byte)(blue4 * 17), (byte)(alpha4 * 17));
         if (fill.Length == 4 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out red) && byte.TryParse(fill.AsSpan(2, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out green) && byte.TryParse(fill.AsSpan(3, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out blue)) return new SvgColor((byte)(red * 17), (byte)(green * 17), (byte)(blue * 17), 255);
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only transparent, black, red, blue, comma-form rgb()/rgba(), #RGB, #RGBA, #RRGGBB, and #RRGGBBAA rectangle fills are implemented.");
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only basic CSS named colors, comma-form rgb()/rgba(), #RGB, #RGBA, #RRGGBB, and #RRGGBBAA rectangle fills are implemented.");
     }
 
     private static bool TryParseFunctionalRgb(string fill, out SvgColor color)

@@ -39,6 +39,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Parses_basic_css_named_colors()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='yellow'/><rect width='1' fill='Teal'/><rect width='1' fill='fuchsia'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(255, 255, 0, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 128, 128, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(255, 0, 255, 255), rectangle.Color));
+    }
+
+    [Fact]
     public void Rejects_uncalibrated_non_quarter_rectangle_coordinates()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0.1' width='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
