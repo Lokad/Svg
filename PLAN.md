@@ -99,12 +99,15 @@ review.
 
 ### Current local verification (2026-09-19)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 198 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 199 unit tests
 and 61 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
 successful remote CI run, a canonical Linux baseline, ARM64 equivalence or
 installed-package behavior.
+
+Public P0.3 boundary tests now include structural denials and long stylesheet or
+geometry-token scans that exhaust the one shared work limit before rendering.
 
 ### P0.2 conversion-boundary matrix
 

@@ -37,6 +37,27 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Parser_syntax_scanning_respects_the_public_shared_work_limit()
+    {
+        (string Content, int MaximumWorkUnits)[] cases =
+        [
+            ("<style>" + new string(' ', 4096) + "rect { fill: red; }</style>", 1),
+            ("<path d='" + new string(' ', 4096) + "X'/>", 2),
+        ];
+
+        foreach ((string content, int maximumWorkUnits) in cases)
+        {
+            SvgRenderLimits limits = new(20_000, 8_192, 16, 16, 1_024, 16, 16, maximumWorkUnits);
+            SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+            string svg = "<svg xmlns='http://www.w3.org/2000/svg'>" + content + "</svg>";
+
+            SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), options, CancellationToken.None));
+
+            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        }
+    }
+
+    [Fact]
     public void Encoding_stops_before_exceeding_the_configured_png_limit()
     {
         SvgRenderLimits limits = new(20_000, 1024, 16, 16, 1, 16, 16, 16);
