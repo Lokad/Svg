@@ -199,9 +199,8 @@ internal static class SvgRootParser
             SvgViewBox? viewBox = ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
             if (reader.IsEmptyElement) return CompleteRoot(new SvgRoot(width, height, viewBox, [], [], false, 0, null));
             int rootDepth = reader.Depth;
-            using BudgetedSceneList<SvgRectangle> rectangles = new(budget, SvgSceneArrayKind.Rectangle);
-            using BudgetedSceneList<SvgDrawCommand> commands = new(budget, SvgSceneArrayKind.DrawCommand);
-            if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, rootOpacity));
+            using SvgSceneBuilder scene = new(budget);
+            if (rootOpacity != 255) scene.BeginOpacityScope(rootOpacity);
             using BudgetedParserList<GroupScope> groupDepths = new(budget, SvgMemoryCategory.Parser, GroupScopeStorageBytes);
             int nodeCount = 0;
             bool unsupported = false;
@@ -247,13 +246,11 @@ internal static class SvgRootParser
                         if (definitions.TryGetValue(reference.Id, out SvgRectangle definition))
                         {
                             SvgRectangle rectangle = SvgReferenceResolver.Apply(definition, reference);
-                            rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                            scene.AddRectangle(rectangle);
                         }
                         else
                         {
-                            int rectangleIndex = rectangles.Count; int commandIndex = commands.Count;
-                            rectangles.Add(default); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, default, 255));
-                            pendingUses.Add(new PendingUse(rectangleIndex, commandIndex, reference));
+                            pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference));
                         }
                         unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
@@ -262,7 +259,7 @@ internal static class SvgRootParser
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
                         SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken));
-                        rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                        scene.AddRectangle(rectangle);
                         unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
                     }
@@ -270,7 +267,7 @@ internal static class SvgRootParser
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
                         SvgRectangle line = ParseLine(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken));
-                        rectangles.Add(line); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, line, 255));
+                        scene.AddRectangle(line);
                         unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
                     }
@@ -280,7 +277,7 @@ internal static class SvgRootParser
                         using (ParsedGeometry path = ParseOrthogonalPath(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), limits.MaximumPathCommands - geometryElementCount, budget, workCounter, cancellationToken))
                         {
                             geometryElementCount += path.ElementCount;
-                            rectangles.AddRange(path.Rectangles); foreach (SvgRectangle rectangle in path.Rectangles) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                            scene.AddRectangles(path.Rectangles);
                         }
                         unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
@@ -291,7 +288,7 @@ internal static class SvgRootParser
                         using (ParsedGeometry pointList = ParseOrthogonalPointList(reader, reader.LocalName, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), limits.MaximumPathCommands - geometryElementCount, budget, workCounter, cancellationToken))
                         {
                             geometryElementCount += pointList.ElementCount;
-                            rectangles.AddRange(pointList.Rectangles); foreach (SvgRectangle rectangle in pointList.Rectangles) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                            scene.AddRectangles(pointList.Rectangles);
                         }
                         unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
@@ -307,7 +304,7 @@ internal static class SvgRootParser
                         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, styleSheet.Opacity, "opacity"));
                         bool isolatesOpacity = opacity != 255;
                         if (isolatesOpacity && (rootOpacity != 255 || groupDepths.Any(static group => group.IsolatesOpacity))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
-                        if (!reader.IsEmptyElement) { if (isolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, opacity)); groupDepths.Add(new GroupScope(reader.Depth, reader.LocalName, paint, displayed, visibility, transform, isolatesOpacity)); }
+                        if (!reader.IsEmptyElement) { if (isolatesOpacity) scene.BeginOpacityScope(opacity); groupDepths.Add(new GroupScope(reader.Depth, reader.LocalName, paint, displayed, visibility, transform, isolatesOpacity)); }
                     }
                     else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                     {
@@ -323,14 +320,14 @@ internal static class SvgRootParser
                 {
                     if (reader.Depth == definitionsDepth) definitionsDepth = -1;
                     if (reader.Depth == symbolDepth) { symbolDepth = -1; symbolId = null; }
-                    if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveLast(); if (group.IsolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); }
+                    if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveLast(); if (group.IsolatesOpacity) scene.EndOpacityScope(); }
                     if (reader.Depth == rootDepth)
                     {
-                        SvgReferenceResolver.ResolvePendingUses(definitions, pendingUses, rectangles, commands);
-                        if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255));
-                        SvgSceneStorage scene = SvgSceneStorage.Create(rectangles, commands);
-                        try { return CompleteRoot(new SvgRoot(width, height, viewBox, scene.Rectangles, scene.Commands, unsupported, workCounter.Used, scene)); }
-                        catch { scene.Dispose(); throw; }
+                        SvgReferenceResolver.ResolvePendingUses(definitions, pendingUses, scene);
+                        if (rootOpacity != 255) scene.EndOpacityScope();
+                        SvgSceneStorage sceneStorage = scene.Build();
+                        try { return CompleteRoot(new SvgRoot(width, height, viewBox, sceneStorage.Rectangles, sceneStorage.Commands, unsupported, workCounter.Used, sceneStorage)); }
+                        catch { sceneStorage.Dispose(); throw; }
                     }
                 }
             }

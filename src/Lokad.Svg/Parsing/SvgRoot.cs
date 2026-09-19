@@ -76,6 +76,66 @@ internal sealed class SvgSceneStorage : IDisposable
     }
 }
 
+/// <summary>Owns the mutable, budgeted scene construction phase until arrays transfer to scene storage.</summary>
+internal sealed class SvgSceneBuilder : IDisposable
+{
+    private readonly BudgetedSceneList<SvgRectangle> _rectangles;
+    private readonly BudgetedSceneList<SvgDrawCommand> _commands;
+    private bool _built;
+
+    internal SvgSceneBuilder(RenderBudget budget)
+    {
+        _rectangles = new(budget, SvgSceneArrayKind.Rectangle);
+        _commands = new(budget, SvgSceneArrayKind.DrawCommand);
+    }
+
+    internal void AddRectangle(SvgRectangle rectangle)
+    {
+        _rectangles.Add(rectangle);
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+    }
+
+    internal void AddRectangles(ReadOnlySpan<SvgRectangle> rectangles)
+    {
+        _rectangles.AddRange(rectangles);
+        foreach (SvgRectangle rectangle in rectangles) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+    }
+
+    internal SvgSceneSlot AddReferencePlaceholder()
+    {
+        SvgSceneSlot slot = new(_rectangles.Count, _commands.Count);
+        _rectangles.Add(default);
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, default, 255));
+        return slot;
+    }
+
+    internal void Replace(SvgSceneSlot slot, SvgRectangle rectangle)
+    {
+        _rectangles[slot.RectangleIndex] = rectangle;
+        _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255);
+    }
+
+    internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, opacity));
+
+    internal void EndOpacityScope() => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255));
+
+    internal SvgSceneStorage Build()
+    {
+        if (_built) throw new InvalidOperationException("The SVG scene has already been built.");
+        _built = true;
+        return SvgSceneStorage.Create(_rectangles, _commands);
+    }
+
+    public void Dispose()
+    {
+        _rectangles.Dispose();
+        _commands.Dispose();
+    }
+}
+
+/// <summary>Identifies the parallel retained-scene entries reserved for a deferred reference.</summary>
+internal readonly record struct SvgSceneSlot(int RectangleIndex, int CommandIndex);
+
 internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
 {
     private readonly RenderBudget _budget;
