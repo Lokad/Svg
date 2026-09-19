@@ -412,13 +412,9 @@ internal static class SvgRootParser
         ValidateSquareCorners(reader.GetAttribute("rx"));
         ValidateSquareCorners(reader.GetAttribute("ry"));
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
-        SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, inheritedPaint, CssNamedColors);
-        ValidateFillRule(style.FillRule);
-        byte opacity = ParseOpacity(style.Opacity);
-        SvgColor color = SvgPaintResolver.ResolveFillColor(paint, opacity);
-        SvgStroke? stroke = ParseRectangleStroke(style.Stroke, reader.GetAttribute("stroke-width"), style.Color, inheritedPaint, transform, x, y, width, height, opacity, paint.HasFill);
-        bool isPainted = inheritedDisplayed && ParseDisplay(style.Display) && ParseVisibility(style.Visibility, inheritedVisibility);
-        return new SvgRectangle(x, y, width, height, color, paint.HasFill && isPainted, isPainted ? stroke : null);
+        SvgResolvedShapePresentation presentation = SvgShapePresentationResolver.Resolve(style, inheritedPaint, inheritedDisplayed, inheritedVisibility, true, CssNamedColors);
+        SvgStroke? stroke = ParseRectangleStroke(presentation.Style.Stroke, reader.GetAttribute("stroke-width"), presentation.Style.Color, inheritedPaint, transform, x, y, width, height, presentation.Opacity, presentation.Paint.HasFill);
+        return new SvgRectangle(x, y, width, height, presentation.Color, presentation.HasFill, presentation.IsPainted ? stroke : null);
     }
 
     private static SvgStroke? ParseRectangleStroke(string? value, string? widthValue, string? currentColor, SvgPaint inheritedPaint, AxisTransform transform, double x, double y, double width, double height, byte opacity, bool hasFill)
@@ -467,11 +463,9 @@ internal static class SvgRootParser
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, cancellationToken);
         SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, "path", workCounter, cancellationToken);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, ParseInlineStyle(reader.GetAttribute("style")), styleSheet); AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
-        SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, inheritedPaint, CssNamedColors); ValidateFillRule(style.FillRule); ValidateStroke(style.Stroke);
-        byte opacity = ParseOpacity(style.Opacity); SvgColor color = SvgPaintResolver.ResolveFillColor(paint, opacity);
-        bool hasFill = paint.HasFill && inheritedDisplayed && ParseDisplay(style.Display) && ParseVisibility(style.Visibility, inheritedVisibility);
+        SvgResolvedShapePresentation presentation = SvgShapePresentationResolver.Resolve(style, inheritedPaint, inheritedDisplayed, inheritedVisibility, false, CssNamedColors);
         using SvgOrthogonalGeometryLowering lowering = new(points, "path", true, false, maximumGeometryElements, budget, workCounter, cancellationToken);
-        return lowering.Lower(color, hasFill, transform);
+        return lowering.Lower(presentation.Color, presentation.HasFill, transform);
     }
 
     private static SvgParsedGeometry ParseOrthogonalPointList(XmlReader reader, string elementName, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -481,9 +475,8 @@ internal static class SvgRootParser
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, cancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(points, elementName, false, true, maximumGeometryElements, budget, workCounter, cancellationToken);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, ParseInlineStyle(reader.GetAttribute("style")), styleSheet); AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
-        SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, inheritedPaint, CssNamedColors); ValidateFillRule(style.FillRule); ValidateStroke(style.Stroke);
-        byte opacity = ParseOpacity(style.Opacity); SvgColor color = SvgPaintResolver.ResolveFillColor(paint, opacity); bool hasFill = paint.HasFill && inheritedDisplayed && ParseDisplay(style.Display) && ParseVisibility(style.Visibility, inheritedVisibility);
-        return lowering.Lower(color, hasFill, transform);
+        SvgResolvedShapePresentation presentation = SvgShapePresentationResolver.Resolve(style, inheritedPaint, inheritedDisplayed, inheritedVisibility, false, CssNamedColors);
+        return lowering.Lower(presentation.Color, presentation.HasFill, transform);
     }
 
     private static AxisTransform ParseTransform(string? value) => SvgGeometrySyntax.ParseTransform(value);
@@ -499,24 +492,11 @@ internal static class SvgRootParser
     private static string ReadStyleElementText(XmlReader reader)
         => SvgStyleSheet.ReadElementText(reader);
 
-    private static bool ParseDisplay(string? value)
-    {
-        if (value is null || value.Equals("inline", StringComparison.OrdinalIgnoreCase)) return true;
-        if (value.Equals("none", StringComparison.OrdinalIgnoreCase)) return false;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only inline and none display values are implemented.");
-    }
+    private static bool ParseDisplay(string? value) => SvgShapePresentationResolver.ParseDisplay(value);
 
-    private static void ValidateFillRule(string? value)
-    {
-        if (value is null || value.Equals("nonzero", StringComparison.OrdinalIgnoreCase) || value.Equals("evenodd", StringComparison.OrdinalIgnoreCase)) return;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero and evenodd fill rules are implemented.");
-    }
+    private static void ValidateFillRule(string? value) => SvgShapePresentationResolver.ValidateFillRule(value);
 
-    private static void ValidateStroke(string? value)
-    {
-        if (value is null || value.Equals("none", StringComparison.OrdinalIgnoreCase)) return;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-painting stroke='none' is implemented.");
-    }
+    private static void ValidateStroke(string? value) => SvgShapePresentationResolver.ValidateStroke(value);
 
     private static void ValidateSquareCorners(string? value)
     {
@@ -526,13 +506,7 @@ internal static class SvgRootParser
 
     private static double ParseRectangleCoordinate(string value) => SvgGeometrySyntax.ParseRectangleCoordinate(value);
 
-    private static bool ParseVisibility(string? value, bool inheritedVisibility)
-    {
-        if (value is null) return inheritedVisibility;
-        if (value.Equals("visible", StringComparison.OrdinalIgnoreCase)) return true;
-        if (value.Equals("hidden", StringComparison.OrdinalIgnoreCase)) return false;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only visible and hidden visibility values are implemented.");
-    }
+    private static bool ParseVisibility(string? value, bool inheritedVisibility) => SvgShapePresentationResolver.ParseVisibility(value, inheritedVisibility);
 
     private static int ParseInteger(string value) => SvgGeometrySyntax.ParseInteger(value);
 
