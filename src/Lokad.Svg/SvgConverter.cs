@@ -44,6 +44,10 @@ public static class SvgConverter
     {
         ArgumentNullException.ThrowIfNull(options);
         cancellationToken.ThrowIfCancellationRequested();
+        if (options.Viewport is not null)
+        {
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Explicit logical viewports are not implemented currently.");
+        }
         if (svg.Length > options.Limits.MaximumInputBytes)
         {
             throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
