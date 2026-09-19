@@ -106,6 +106,20 @@ changed pixels. This is local, sequential evidence only; it does not establish a
 successful remote CI run, a canonical Linux baseline, ARM64 equivalence or
 installed-package behavior.
 
+### P0.2 conversion-boundary matrix
+
+Rows marked covered have public `SvgConverter` assertions; parser-only coverage
+does not close a row. This makes the remaining P0.2 review finite and prevents a
+new subset from being treated as supported merely because it parses.
+
+| Boundary | Current public evidence | Status / remaining work |
+| --- | --- | --- |
+| Paintable leaves | One positive PNG conversion for each of `rect`, `line`, `path`, `polygon`, `polyline` and local `use`; one nested active-content rejection for each. | Covered for the documented subset. |
+| Styles and local references | Positive stylesheet conversions cover leaves, groups, links, definitions and instances; declaration/order/root/symbol/definition limitations produce `UnsupportedFeature`. | Covered for the documented subset. |
+| Active and directly visible unsupported content | Styles outside the supported root position, scripts and every recognized animation tag reject; circles, ellipses, text, images, `foreignObject` and direct paint-server nodes reject. | Covered; unused inert definitions remain intentionally distinct. |
+| Document structure and conversion bounds | Bad XML, wrong root, trailing non-whitespace, input/surface/output limits and output-sizing failures have public category checks. | Covered for the current probes. |
+| Remaining P0.2 audit | Rejected presentation attributes, namespace variants and malformed CSS/path/number forms need a public category review wherever only parser tests exist. | Keep P0.2 open until that inventory is checked; add only missing conversion-boundary cases. |
+
 | Area | Evidence at the reviewed revision |
 | --- | --- |
 | Build/test | `dotnet test Lokad.Svg.slnx -c Release --no-restore`: 76 unit tests and 80 visual-project tests pass. Many visual-project tests are small pixel/comparer tests, not independent Chrome cases. |
@@ -206,12 +220,11 @@ behavior or collecting measurements.
 
 ### Next implementation changes
 
-1. Finish P0.2 as a finite conversion-boundary matrix. For every directly
-   paintable element, supported style/reference path and malformed input family,
-   retain either a positive rendering case or a conversion-level stable error
-   category. The completed leaf-content and malformed-XML cases are examples;
-   do not infer support from parser records alone or make incorrect pixels pass by
-   changing references.
+1. Close the remaining P0.2 matrix row: inventory rejected presentation
+   attributes, namespace variants and malformed CSS/path/number forms that still
+   have parser-only coverage, then add a public stable-error assertion only where
+   it is missing. Do not infer support from parser records alone or make incorrect
+   pixels pass by changing references.
 2. Close the remaining P0.3 accounting evidence before adding scope: retain and
    test the conservative `XmlReader` allowance unless a portable, stricter
    accounting mechanism replaces it; make exact BCL XML/attribute-string
