@@ -64,7 +64,7 @@ public static class SvgConverter
         };
         double scaledWidth = width * options.OutputScale;
         double scaledHeight = height * options.OutputScale;
-        if (scaledWidth != Math.Truncate(scaledWidth) || scaledHeight != Math.Truncate(scaledHeight) || scaledWidth > options.Limits.MaximumDimension || scaledHeight > options.Limits.MaximumDimension) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integral output dimensions within configured limits are implemented currently.");
+        if (!double.IsFinite(scaledWidth) || !double.IsFinite(scaledHeight) || scaledWidth <= 0 || scaledHeight <= 0 || scaledWidth != Math.Truncate(scaledWidth) || scaledHeight != Math.Truncate(scaledHeight) || scaledWidth > options.Limits.MaximumDimension || scaledHeight > options.Limits.MaximumDimension) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive finite integral output dimensions within configured limits are implemented currently.");
         int outputWidth = (int)scaledWidth;
         int outputHeight = (int)scaledHeight;
         long pixelCountLong = (long)outputWidth * outputHeight;

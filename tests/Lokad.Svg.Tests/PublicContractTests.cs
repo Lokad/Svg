@@ -166,6 +166,16 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Underflowed_output_dimension_is_an_unsupported_conversion()
+    {
+        SvgRenderOptions options = new(new SvgViewport(double.Epsilon, 1), 0.5, SvgColor.Transparent, SvgRenderLimits.Default);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Owned_png_output_stays_within_the_conversion_budget()
     {
         SvgRenderLimits insufficient = new(137, 1024, 2, 4, 1024, 1, 1, 1);
