@@ -162,6 +162,8 @@ public sealed class PublicContractTests
     [InlineData("<polygon points='0,0 1,0 1,1 0,1' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></polygon>")]
     [InlineData("<polyline points='0,0 1,0 1,1 0,1 0,0' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></polyline>")]
     [InlineData("<defs><rect id='tile' width='1' height='1' fill='red'/></defs><use href='#tile'><animate attributeName='x' values='0;1' dur='1s'/></use>")]
+    [InlineData("<defs><rect id='tile' width='1' height='1' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></rect></defs><use href='#tile'/>")]
+    [InlineData("<defs><symbol id='tile'><rect width='1' height='1' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></rect></symbol></defs><use href='#tile'/>")]
     public void Animated_content_on_other_supported_leaf_elements_is_rejected_as_unsupported(string content)
     {
         string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'>" + content + "</svg>";
