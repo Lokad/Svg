@@ -1,0 +1,179 @@
+using System.Globalization;
+
+namespace Lokad.Svg.Parsing;
+
+/// <summary>Parses the bounded numeric, transform, viewport, and viewBox syntax shared by supported geometry.</summary>
+internal static class SvgGeometrySyntax
+{
+    internal static int ApplyTransform(int scale, int value, int offset)
+    {
+        try { return checked(scale * value + offset); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+    }
+
+    internal static int ApplyTransformScale(int scale, int value)
+    {
+        try { return checked(scale * value); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+    }
+
+    internal static double ApplyTransformScale(int scale, long value)
+    {
+        try { return checked((long)scale * value); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+    }
+
+    internal static AxisTransform ParseTransform(string? value)
+    {
+        if (value is null) return AxisTransform.Identity;
+        ReadOnlySpan<char> input = value.AsSpan();
+        AxisTransform transform = AxisTransform.Identity;
+        int position = 0;
+        bool hasFunction = false;
+        while (true)
+        {
+            while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
+            if (position == input.Length)
+            {
+                if (!hasFunction) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+                return transform;
+            }
+
+            int nameStart = position;
+            while (position < input.Length && char.IsAsciiLetter(input[position])) position++;
+            if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+            ReadOnlySpan<char> name = input[nameStart..position];
+            while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
+            if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+            position++;
+            int argumentsStart = position;
+            while (position < input.Length && input[position] != ')') position++;
+            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+            transform = transform.Compose(ParseTransformFunction(name, input[argumentsStart..position]));
+            position++;
+            hasFunction = true;
+        }
+    }
+
+    internal static double ParseRectangleCoordinate(string value)
+    {
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px rectangle coordinates are implemented.");
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle coordinates must be finite bounded numbers.");
+        if (Math.Abs(result * 4 - Math.Round(result * 4, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer and quarter-pixel rectangle coordinates are implemented.");
+        return result;
+    }
+
+    internal static int ParseInteger(string value) => ParseInteger(value.AsSpan());
+
+    internal static int ParseInteger(ReadOnlySpan<char> value)
+    {
+        ReadOnlySpan<char> token = value.Trim();
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px integer rectangle coordinates are implemented.");
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result != Math.Truncate(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer rectangle coordinates are implemented.");
+        return checked((int)result);
+    }
+
+    internal static double? ParseLength(string? value)
+    {
+        if (value is null) return null;
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        double multiplier = 1;
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.EndsWith("in", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); multiplier = 96; }
+        else if (token.EndsWith("cm", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); multiplier = 96d / 2.54d; }
+        else if (token.EndsWith("mm", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); multiplier = 96d / 25.4d; }
+        else if (token.EndsWith("pt", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); multiplier = 96d / 72d; }
+        else if (token.EndsWith("pc", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); multiplier = 16; }
+        else if (token.IndexOfAny("%emivc".AsSpan()) >= 0 || (token.Length > 0 && char.IsLetter(token[^1]))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number, px, in, cm, mm, pt, and pc root dimensions are implemented.");
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result <= 0 || !double.IsFinite(result *= multiplier)) throw new SvgException(SvgErrorCode.MalformedInput, "Root dimensions must be finite positive CSS pixel lengths.");
+        return result;
+    }
+
+    internal static SvgViewBox? ParseViewBox(string? value, string? preserveAspectRatio)
+    {
+        if (value is null)
+        {
+            if (preserveAspectRatio is not null) ParsePreserveAspectRatio(preserveAspectRatio);
+            return null;
+        }
+        Span<double> values = stackalloc double[4];
+        int valueCount = 0;
+        DelimitedTokenReader tokens = new(value);
+        while (tokens.TryReadValue(out ReadOnlySpan<char> token))
+        {
+            if (valueCount == values.Length || !double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out values[valueCount])) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
+            valueCount++;
+        }
+        if (valueCount != 4 || !double.IsFinite(values[0]) || !double.IsFinite(values[1]) || !double.IsFinite(values[2]) || !double.IsFinite(values[3]) || values[2] <= 0 || values[3] <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
+        (SvgViewBoxAlignment horizontalAlignment, SvgViewBoxAlignment verticalAlignment, SvgViewBoxFit fit) = ParsePreserveAspectRatio(preserveAspectRatio);
+        return new SvgViewBox(values[0], values[1], values[2], values[3], horizontalAlignment, verticalAlignment, fit);
+    }
+
+    private static AxisTransform ParseTransformFunction(ReadOnlySpan<char> name, ReadOnlySpan<char> arguments)
+    {
+        bool isMatrix = name.Equals("matrix", StringComparison.OrdinalIgnoreCase);
+        bool isTranslate = name.Equals("translate", StringComparison.OrdinalIgnoreCase);
+        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+        Span<int> values = stackalloc int[6];
+        int valueCount = 0;
+        DelimitedTokenReader tokens = new(arguments);
+        while (tokens.TryReadValue(out ReadOnlySpan<char> value))
+        {
+            if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, isMatrix ? "matrix() requires six coordinates." : "Transforms require one or two coordinates.");
+            values[valueCount++] = ParseInteger(value);
+        }
+        if (isMatrix)
+        {
+            if (valueCount != 6) throw new SvgException(SvgErrorCode.MalformedInput, "matrix() requires six coordinates.");
+            int scaleX = values[0]; int skewY = values[1]; int skewX = values[2]; int scaleY = values[3]; int offsetX = values[4]; int offsetY = values[5];
+            if (skewX != 0 || skewY != 0 || scaleX <= 0 || scaleY <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive axis-aligned integer matrix() transforms are implemented.");
+            return new AxisTransform(scaleX, scaleY, offsetX, offsetY);
+        }
+        if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
+        int first = values[0]; int second = valueCount == 2 ? values[1] : first;
+        if (isTranslate) return new AxisTransform(1, 1, first, valueCount == 2 ? second : 0);
+        if (first <= 0 || second <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive integer scale() values are implemented.");
+        return new AxisTransform(first, second, 0, 0);
+    }
+
+    private static (SvgViewBoxAlignment HorizontalAlignment, SvgViewBoxAlignment VerticalAlignment, SvgViewBoxFit Fit) ParsePreserveAspectRatio(string? value)
+    {
+        if (value is null || value.Equals("xMidYMid meet", StringComparison.OrdinalIgnoreCase)) return (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Mid, SvgViewBoxFit.Meet);
+        if (value.Equals("none", StringComparison.OrdinalIgnoreCase)) return (SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None);
+        if (value is not null)
+        {
+            int separator = value.LastIndexOf(' ');
+            if (separator <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.");
+            SvgViewBoxFit fit = value[(separator + 1)..] switch { "meet" => SvgViewBoxFit.Meet, "slice" => SvgViewBoxFit.Slice, _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.") };
+            return value[..separator] switch
+            {
+                "xMinYMin" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Min, fit), "xMidYMin" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Min, fit), "xMaxYMin" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Min, fit), "xMinYMid" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Mid, fit), "xMidYMid" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Mid, fit), "xMaxYMid" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Mid, fit), "xMinYMax" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Max, fit), "xMidYMax" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Max, fit), "xMaxYMax" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Max, fit),
+                _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.")
+            };
+        }
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.");
+    }
+
+    private ref struct DelimitedTokenReader
+    {
+        private readonly ReadOnlySpan<char> _value;
+        private int _position;
+
+        internal DelimitedTokenReader(ReadOnlySpan<char> value) => _value = value;
+
+        internal bool TryReadValue(out ReadOnlySpan<char> value)
+        {
+            while (_position < _value.Length && IsSeparator(_value[_position])) _position++;
+            if (_position == _value.Length) { value = default; return false; }
+            int start = _position;
+            while (_position < _value.Length && !IsSeparator(_value[_position])) _position++;
+            value = _value[start.._position];
+            return true;
+        }
+
+        private static bool IsSeparator(char value) => value is ',' or ' ' or '\t' or '\r' or '\n';
+    }
+}
