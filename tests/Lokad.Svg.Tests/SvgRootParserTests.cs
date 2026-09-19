@@ -106,6 +106,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Maps_css_gray_and_grey_aliases_to_the_same_color()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='darkgray'/><rect width='1' fill='darkgrey'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(169, 169, 169, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(169, 169, 169, 255), rectangle.Color));
+    }
+
+    [Fact]
     public void Parses_space_separated_functional_css_colors()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='rgb(100% 0% 0% / 50%)'/><rect width='1' fill='hsl(120 100% 50% / 0.5)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
