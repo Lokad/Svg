@@ -221,6 +221,16 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
+    public void Absolute_root_length_units_use_the_96_css_pixel_conversion()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='0.5in' height='12pt'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        RgbaImage image = PngRgbaDecoder.Decode(png, 48 * 16);
+        Assert.Equal(48, image.Width);
+        Assert.Equal(16, image.Height);
+    }
+
+    [Fact]
     public void Integer_fill_opacity_composites_on_transparent_surface()
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='#ff0000' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
