@@ -185,6 +185,16 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
+    public void Rectangle_without_fill_uses_the_svg_black_default()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        RgbaImage image = PngRgbaDecoder.Decode(png, 1);
+
+        Assert.Equal(new byte[] { 0, 0, 0, 255 }, image.Pixels);
+    }
+
+    [Fact]
     public void Named_blue_rectangle_fill_is_supported()
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='blue'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
