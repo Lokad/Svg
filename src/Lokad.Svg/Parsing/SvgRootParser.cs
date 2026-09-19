@@ -16,6 +16,7 @@ internal static class SvgRootParser
             cancellationToken.ThrowIfCancellationRequested();
             if (reader.NodeType != XmlNodeType.Element) continue;
             if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
+            ValidateRootAttributes(reader);
             double? width = ParseLength(reader.GetAttribute("width"));
             double? height = ParseLength(reader.GetAttribute("height"));
             if (reader.IsEmptyElement) return new SvgRoot(width, height, null, false);
@@ -35,6 +36,18 @@ internal static class SvgRootParser
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
+    }
+
+    private static void ValidateRootAttributes(XmlReader reader)
+    {
+        if (!reader.HasAttributes) return;
+        while (reader.MoveToNextAttribute())
+        {
+            if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "width" or "height") continue;
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG root attribute '" + reader.Name + "' is not implemented.");
+        }
+        reader.MoveToElement();
     }
 
     private static SvgRectangle ParseRectangle(XmlReader reader)
