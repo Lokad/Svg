@@ -286,7 +286,7 @@ internal static class SvgRootParser
                     {
                         if (sawGraphicNode || hasRectangleStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede rendered content.");
                         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
-                        rectangleStyleRules.AddRange(ParseRectangleStyleSheet(ReadStyleElementText(reader)));
+                        rectangleStyleRules.AddRange(ParseRectangleStyleSheet(ReadStyleElementText(reader), limits.MaximumNodes));
                         hasRectangleStyleSheet = true;
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
@@ -670,7 +670,7 @@ internal static class SvgRootParser
         return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
     }
 
-    private static List<CssRule> ParseRectangleStyleSheet(string value)
+    private static List<CssRule> ParseRectangleStyleSheet(string value, int maximumRules)
     {
         value = StripCssComments(value);
         List<CssRule> rules = [];
@@ -684,7 +684,11 @@ internal static class SvgRootParser
             int closingBrace = value.IndexOf('}', openingBrace + 1);
             if (closingBrace < 0 || value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1).Contains('{')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested stylesheet rules are not implemented.");
             InlineStyle style = ParseInlineStyle(value[(openingBrace + 1)..closingBrace]);
-            foreach (string selector in value[position..openingBrace].Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)) rules.Add(ParseRectangleSelector(selector, style));
+            foreach (string selector in value[position..openingBrace].Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (rules.Count >= maximumRules) throw new SvgException(SvgErrorCode.LimitExceeded, "Stylesheet rule count exceeds the configured structural limit.");
+                rules.Add(ParseRectangleSelector(selector, style));
+            }
             position = closingBrace + 1;
         }
         if (rules.Count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A stylesheet must contain a rect, ID, or class selector rule.");

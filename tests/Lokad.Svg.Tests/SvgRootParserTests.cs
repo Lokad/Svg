@@ -506,6 +506,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_the_structural_limit_while_expanding_stylesheet_selectors()
+    {
+        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 2, 16, 100);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect, #one, .two { fill: red; }</style></svg>"u8.ToArray(), limits, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Tolerates_inert_root_metadata_without_claiming_visible_support()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><title>sample</title><metadata><editor:note xmlns:editor='urn:editor'>ignored</editor:note></metadata><rect width='1' height='1' fill='#ff0000'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
