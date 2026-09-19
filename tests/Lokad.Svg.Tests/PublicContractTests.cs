@@ -248,6 +248,22 @@ public sealed class PublicContractTests
     }
 
     [Theory]
+    [InlineData("<circle cx='1' cy='1' r='1' fill='red'/>")]
+    [InlineData("<ellipse cx='1' cy='1' rx='1' ry='1' fill='red'/>")]
+    [InlineData("<text x='0' y='1'>x</text>")]
+    [InlineData("<image width='1' height='1' href='data:image/png;base64,AA=='/>")]
+    [InlineData("<foreignObject width='1' height='1'><body/></foreignObject>")]
+    [InlineData("<linearGradient id='paint'><stop offset='0' stop-color='red'/></linearGradient>")]
+    public void Unimplemented_visible_children_are_rejected_at_public_conversion(string content)
+    {
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'>" + content + "</svg>";
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Theory]
     [InlineData("<style>.path { fill: red; opacity: 0.5; }</style><path class='path' d='M 0 0 H 2 V 2 H 0 Z'/>")]
     [InlineData("<style>.accent { stroke: red; }</style><line class='accent' x1='0' y1='1' x2='2' y2='1' stroke-width='2'/>")]
     [InlineData("<style>.layer { fill: red; }</style><g class='layer'><rect width='2' height='2'/></g>")]
