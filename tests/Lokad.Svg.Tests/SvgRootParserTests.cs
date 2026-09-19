@@ -106,6 +106,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Ignores_standard_block_comments_in_stylesheets()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>/* palette */ rect { /* fill */ fill: red; }</style><rect width='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+    }
+
+    [Fact]
     public void Cascades_rect_id_and_class_stylesheet_rules_by_specificity_and_source_order()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; fill-opacity: 0.5; } .accent { fill: red; } .accent { fill: teal; } #selected { fill: lime; } #selected { opacity: 0.5; }</style><rect width='1'/><rect width='1' class='accent'/><rect width='1' id='selected' class='accent'/><rect width='1' class='accent' style='fill: yellow'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

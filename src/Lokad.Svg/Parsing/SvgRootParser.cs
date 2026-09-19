@@ -408,6 +408,7 @@ internal static class SvgRootParser
 
     private static List<CssRule> ParseRectangleStyleSheet(string value)
     {
+        value = StripCssComments(value);
         List<CssRule> rules = [];
         int position = 0;
         while (position < value.Length)
@@ -424,6 +425,18 @@ internal static class SvgRootParser
         }
         if (rules.Count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A stylesheet must contain a rect, ID, or class selector rule.");
         return rules;
+    }
+
+    private static string StripCssComments(string value)
+    {
+        int start;
+        while ((start = value.IndexOf("/*", StringComparison.Ordinal)) >= 0)
+        {
+            int end = value.IndexOf("*/", start + 2, StringComparison.Ordinal);
+            if (end < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet comments must be terminated.");
+            value = value.Remove(start, end + 2 - start);
+        }
+        return value;
     }
 
     private static CssRule ParseRectangleSelector(string selector, InlineStyle style)
