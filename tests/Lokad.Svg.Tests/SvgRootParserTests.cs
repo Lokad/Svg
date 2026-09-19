@@ -773,4 +773,15 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Parser]);
     }
+
+    [Fact]
+    public void Releases_transient_orthogonal_geometry_reservations_after_scene_construction()
+    {
+        RenderBudget budget = new(100_000);
+
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0 0 H 2 V 2 H 0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None);
+
+        Assert.Single(root.Rectangles);
+        Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Geometry]);
+    }
 }
