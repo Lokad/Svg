@@ -6,10 +6,6 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Reads the bounded SVG root without materializing a DOM or input string.</summary>
 internal static class SvgRootParser
 {
-    private const int GroupScopeStorageBytes = 64;
-    private const int CssRuleStorageBytes = 96;
-    private const int DefinitionStorageBytes = 160;
-    private const int PendingUseStorageBytes = 64;
     private const int MinimumXmlReaderWorkspaceBytes = 16 * 1024;
 
     private static readonly Dictionary<string, SvgColor> CssNamedColors = new(StringComparer.OrdinalIgnoreCase)
@@ -197,146 +193,134 @@ internal static class SvgRootParser
             SvgViewBox? viewBox = ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
             if (reader.IsEmptyElement) return CompleteRoot(new SvgRoot(width, height, viewBox, [], [], false, 0, null));
             int rootDepth = reader.Depth;
-            using SvgSceneBuilder scene = new(budget, workCounter, cancellationToken);
-            if (rootOpacity != 255) scene.BeginOpacityScope(rootOpacity);
-            using BudgetedParserList<GroupScope> groupDepths = new(budget, SvgMemoryCategory.Parser, GroupScopeStorageBytes, workCounter, cancellationToken);
-            int nodeCount = 0;
-            bool unsupported = false;
-            bool sawStyleableNode = false;
-            using BudgetedParserList<CssRule> rectangleStyleRules = new(budget, SvgMemoryCategory.Parser, CssRuleStorageBytes, workCounter, cancellationToken);
-            bool hasRectangleStyleSheet = false;
-            using BudgetedParserDictionary<string, SvgRectangle> definitions = new(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
-            using BudgetedParserList<PendingUse> pendingUses = new(budget, SvgMemoryCategory.Parser, PendingUseStorageBytes, workCounter, cancellationToken);
-            int geometryElementCount = 0;
-            int definitionsDepth = -1;
-            int symbolDepth = -1;
-            string? symbolId = null;
+            using SvgDocumentState state = new(budget, workCounter, cancellationToken);
+            if (rootOpacity != 255) state.Scene.BeginOpacityScope(rootOpacity);
             while (reader.Read())
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (reader.NodeType == XmlNodeType.Element)
                 {
                     ValidateElementStructure(reader, limits);
-                    if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
-                    nodeCount++;
+                    if (state.NodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                    state.NodeCount++;
                     bool directChild = reader.Depth == rootDepth + 1;
-                    bool nestedInGroup = groupDepths.Count > 0;
-                    if (definitionsDepth >= 0 && (reader.Depth == definitionsDepth + 1 || reader.Depth == symbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
+                    bool nestedInGroup = state.Groups.Count > 0;
+                    if (state.DefinitionsDepth >= 0 && (reader.Depth == state.DefinitionsDepth + 1 || reader.Depth == state.SymbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
-                        string? id = symbolDepth >= 0 ? symbolId : reader.GetAttribute("id");
-                        SvgRectangle rectangle = SvgLeafParser.ParseRectangle(reader, rootPaint, rootVisible, rootVisibility, AxisTransform.Identity, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), CssNamedColors, workCounter, cancellationToken);
+                        string? id = state.SymbolDepth >= 0 ? state.SymbolId : reader.GetAttribute("id");
+                        SvgRectangle rectangle = SvgLeafParser.ParseRectangle(reader, rootPaint, rootVisible, rootVisibility, AxisTransform.Identity, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), CssNamedColors, workCounter, cancellationToken);
                         if (id is not null)
                         {
                             workCounter.Consume(cancellationToken);
-                            if (!definitions.TryAdd(id, rectangle)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                            if (!state.Definitions.TryAdd(id, rectangle)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                         }
-                        unsupported |= !reader.IsEmptyElement;
-                        sawStyleableNode = true;
+                        state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                        state.SawStyleableNode = true;
                     }
-                    else if (definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol")
+                    else if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol")
                     {
                         SvgElementAttributePolicy.ValidateSymbol(reader);
-                        if (GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken) != default) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules on symbol definitions are not implemented.");
-                        symbolId = reader.GetAttribute("id") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A symbol requires an id.");
-                        if (!reader.IsEmptyElement) symbolDepth = reader.Depth;
+                        if (GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken) != default) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules on symbol definitions are not implemented.");
+                        state.SymbolId = reader.GetAttribute("id") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A symbol requires an id.");
+                        if (!reader.IsEmptyElement) state.SymbolDepth = reader.Depth;
                     }
-                    else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "defs")
+                    else if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "defs")
                     {
                         SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
-                        if (!reader.IsEmptyElement) definitionsDepth = reader.Depth;
+                        if (!reader.IsEmptyElement) state.DefinitionsDepth = reader.Depth;
                     }
-                    else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
+                    else if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
                     {
-                        SvgUseReference reference = SvgLeafParser.ParseUse(reader, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), workCounter, cancellationToken);
+                        SvgUseReference reference = SvgLeafParser.ParseUse(reader, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), workCounter, cancellationToken);
                         workCounter.Consume(cancellationToken);
-                        if (definitions.TryGetValue(reference.Id, out SvgRectangle definition))
+                        if (state.Definitions.TryGetValue(reference.Id, out SvgRectangle definition))
                         {
                             SvgRectangle rectangle = SvgReferenceResolver.Apply(definition, reference);
-                            scene.AddRectangle(rectangle);
+                            state.Scene.AddRectangle(rectangle);
                         }
                         else
                         {
-                            pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference));
+                            state.PendingUses.Add(new PendingUse(state.Scene.AddReferencePlaceholder(), reference));
                         }
-                        unsupported |= !reader.IsEmptyElement;
-                        sawStyleableNode = true;
+                        state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                        state.SawStyleableNode = true;
                     }
-                    else if (symbolDepth >= 0 && reader.Depth > symbolDepth) unsupported = true;
+                    else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
-                        AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        SvgRectangle rectangle = SvgLeafParser.ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), CssNamedColors, workCounter, cancellationToken);
-                        scene.AddRectangle(rectangle);
-                        unsupported |= !reader.IsEmptyElement;
-                        sawStyleableNode = true;
+                        AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
+                        SvgRectangle rectangle = SvgLeafParser.ParseRectangle(reader, state.Groups.Count == 0 ? rootPaint : state.Groups[^1].Paint, state.Groups.Count == 0 ? rootVisible : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? rootVisibility : state.Groups[^1].IsVisible, transform, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), CssNamedColors, workCounter, cancellationToken);
+                        state.Scene.AddRectangle(rectangle);
+                        state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                        state.SawStyleableNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "line")
                     {
-                        AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        SvgRectangle line = SvgLeafParser.ParseLine(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), CssNamedColors, workCounter, cancellationToken);
-                        scene.AddRectangle(line);
-                        unsupported |= !reader.IsEmptyElement;
-                        sawStyleableNode = true;
+                        AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
+                        SvgRectangle line = SvgLeafParser.ParseLine(reader, state.Groups.Count == 0 ? rootPaint : state.Groups[^1].Paint, state.Groups.Count == 0 ? rootVisible : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? rootVisibility : state.Groups[^1].IsVisible, transform, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), CssNamedColors, workCounter, cancellationToken);
+                        state.Scene.AddRectangle(line);
+                        state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                        state.SawStyleableNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "path")
                     {
-                        AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        using (SvgParsedGeometry path = SvgLeafParser.ParseOrthogonalPath(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), limits.MaximumPathCommands - geometryElementCount, budget, workCounter, cancellationToken, CssNamedColors))
+                        AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
+                        using (SvgParsedGeometry path = SvgLeafParser.ParseOrthogonalPath(reader, state.Groups.Count == 0 ? rootPaint : state.Groups[^1].Paint, state.Groups.Count == 0 ? rootVisible : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? rootVisibility : state.Groups[^1].IsVisible, transform, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), limits.MaximumPathCommands - state.GeometryElementCount, budget, workCounter, cancellationToken, CssNamedColors))
                         {
-                            geometryElementCount += path.ElementCount;
-                            scene.AddRectangles(path.Rectangles);
+                            state.GeometryElementCount += path.ElementCount;
+                            state.Scene.AddRectangles(path.Rectangles);
                         }
-                        unsupported |= !reader.IsEmptyElement;
-                        sawStyleableNode = true;
+                        state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                        state.SawStyleableNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "polygon" or "polyline")
                     {
-                        AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        using (SvgParsedGeometry pointList = SvgLeafParser.ParseOrthogonalPointList(reader, reader.LocalName, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), limits.MaximumPathCommands - geometryElementCount, budget, workCounter, cancellationToken, CssNamedColors))
+                        AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
+                        using (SvgParsedGeometry pointList = SvgLeafParser.ParseOrthogonalPointList(reader, reader.LocalName, state.Groups.Count == 0 ? rootPaint : state.Groups[^1].Paint, state.Groups.Count == 0 ? rootVisible : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? rootVisibility : state.Groups[^1].IsVisible, transform, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), limits.MaximumPathCommands - state.GeometryElementCount, budget, workCounter, cancellationToken, CssNamedColors))
                         {
-                            geometryElementCount += pointList.ElementCount;
-                            scene.AddRectangles(pointList.Rectangles);
+                            state.GeometryElementCount += pointList.ElementCount;
+                            state.Scene.AddRectangles(pointList.Rectangles);
                         }
-                        unsupported |= !reader.IsEmptyElement;
-                        sawStyleableNode = true;
+                        state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                        state.SawStyleableNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
                         InlineStyle inlineStyle = ParseInlineStyle(reader.GetAttribute("style"), workCounter, cancellationToken);
-                        InlineStyle styleSheet = GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken);
+                        InlineStyle styleSheet = GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken);
                         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inlineStyle, styleSheet);
-                        SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, style);
-                        bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(style.Display);
-                        bool visibility = ParseVisibility(style.Visibility, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
-                        AxisTransform transform = groupDepths.Count == 0 ? ParseTransform(reader.GetAttribute("transform")) : groupDepths[^1].Transform.Compose(ParseTransform(reader.GetAttribute("transform")));
+                        SvgPaint paint = ParseGroupPaint(reader, state.Groups.Count == 0 ? rootPaint : state.Groups[^1].Paint, style);
+                        bool displayed = (state.Groups.Count == 0 ? rootVisible : state.Groups[^1].IsDisplayed) && ParseDisplay(style.Display);
+                        bool visibility = ParseVisibility(style.Visibility, state.Groups.Count == 0 ? rootVisibility : state.Groups[^1].IsVisible);
+                        AxisTransform transform = state.Groups.Count == 0 ? ParseTransform(reader.GetAttribute("transform")) : state.Groups[^1].Transform.Compose(ParseTransform(reader.GetAttribute("transform")));
                         byte opacity = ParseOpacity(style.Opacity);
                         bool isolatesOpacity = opacity != 255;
-                        if (isolatesOpacity && (rootOpacity != 255 || groupDepths.Any(static group => group.IsolatesOpacity))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
-                        if (!reader.IsEmptyElement) { if (isolatesOpacity) scene.BeginOpacityScope(opacity); groupDepths.Add(new GroupScope(reader.Depth, reader.LocalName, paint, displayed, visibility, transform, isolatesOpacity)); }
+                        if (isolatesOpacity && (rootOpacity != 255 || state.Groups.Any(static group => group.IsolatesOpacity))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
+                        if (!reader.IsEmptyElement) { if (isolatesOpacity) state.Scene.BeginOpacityScope(opacity); state.Groups.Add(new SvgGroupScope(reader.Depth, reader.LocalName, paint, displayed, visibility, transform, isolatesOpacity)); }
                     }
                     else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                     {
-                        if (sawStyleableNode || hasRectangleStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede supported definitions and rendered content.");
+                        if (state.SawStyleableNode || state.HasStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede supported definitions and rendered content.");
                         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
-                        ParseRectangleStyleSheet(ReadStyleElementText(reader), limits.MaximumNodes, rectangleStyleRules, workCounter, cancellationToken);
-                        if (SvgStyleSheet.TargetsRootId(rootId, rectangleStyleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
-                        hasRectangleStyleSheet = true;
+                        ParseRectangleStyleSheet(ReadStyleElementText(reader), limits.MaximumNodes, state.StyleRules, workCounter, cancellationToken);
+                        if (SvgStyleSheet.TargetsRootId(rootId, state.StyleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
+                        state.HasStyleSheet = true;
                     }
-                    else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "style" or "script" or "animate" or "animateMotion" or "animateTransform" or "set") unsupported = true;
+                    else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "style" or "script" or "animate" or "animateMotion" or "animateTransform" or "set") state.HasUnsupportedContent = true;
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
-                    else if (directChild || nestedInGroup) unsupported = true;
+                    else if (directChild || nestedInGroup) state.HasUnsupportedContent = true;
                 }
                 if (reader.NodeType == XmlNodeType.EndElement)
                 {
-                    if (reader.Depth == definitionsDepth) definitionsDepth = -1;
-                    if (reader.Depth == symbolDepth) { symbolDepth = -1; symbolId = null; }
-                    if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveLast(); if (group.IsolatesOpacity) scene.EndOpacityScope(); }
+                    if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
+                    if (reader.Depth == state.SymbolDepth) { state.SymbolDepth = -1; state.SymbolId = null; }
+                    if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth) { SvgGroupScope group = state.Groups[^1]; state.Groups.RemoveLast(); if (group.IsolatesOpacity) state.Scene.EndOpacityScope(); }
                     if (reader.Depth == rootDepth)
                     {
-                        SvgReferenceResolver.ResolvePendingUses(definitions, pendingUses, scene, workCounter, cancellationToken);
-                        if (rootOpacity != 255) scene.EndOpacityScope();
-                        SvgSceneStorage sceneStorage = scene.Build();
-                        try { return CompleteRoot(new SvgRoot(width, height, viewBox, sceneStorage.Rectangles, sceneStorage.Commands, unsupported, workCounter.Used, sceneStorage)); }
+                        SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, workCounter, cancellationToken);
+                        if (rootOpacity != 255) state.Scene.EndOpacityScope();
+                        SvgSceneStorage sceneStorage = state.Scene.Build();
+                        try { return CompleteRoot(new SvgRoot(width, height, viewBox, sceneStorage.Rectangles, sceneStorage.Commands, state.HasUnsupportedContent, workCounter.Used, sceneStorage)); }
                         catch { sceneStorage.Dispose(); throw; }
                     }
                 }
@@ -392,7 +376,7 @@ internal static class SvgRootParser
     private static void ParseRectangleStyleSheet(string value, int maximumRules, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => SvgStyleSheet.Parse(value, maximumRules, rules, workCounter, cancellationToken);
 
-    private static InlineStyle GetStyleSheet(XmlReader reader, BudgetedParserList<CssRule> rules, bool directChild, BudgetedParserList<GroupScope> groupDepths, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static InlineStyle GetStyleSheet(XmlReader reader, BudgetedParserList<CssRule> rules, bool directChild, BudgetedParserList<SvgGroupScope> groupDepths, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => SvgStyleSheet.Resolve(reader, rules, directChild, groupDepths.Any(static group => group.Name == "g"), groupDepths.Count > 0 && groupDepths[^1].Name == "g", workCounter, cancellationToken);
 
     private static string ReadStyleElementText(XmlReader reader)
@@ -411,7 +395,5 @@ internal static class SvgRootParser
     private static double? ParseLength(string? value) => SvgGeometrySyntax.ParseLength(value);
 
     private static SvgViewBox? ParseViewBox(string? value, string? preserveAspectRatio) => SvgGeometrySyntax.ParseViewBox(value, preserveAspectRatio);
-
-    private readonly record struct GroupScope(int Depth, string Name, SvgPaint Paint, bool IsDisplayed, bool IsVisible, AxisTransform Transform, bool IsolatesOpacity);
 
 }
