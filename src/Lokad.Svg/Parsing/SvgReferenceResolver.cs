@@ -26,24 +26,30 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, A
 /// <summary>Records the placeholders that must be replaced when a forward local use reference resolves.</summary>
 internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference);
 
-/// <summary>Applies and resolves the current bounded local rectangle-reference subset.</summary>
+/// <summary>Applies typed local references while keeping current rectangle transforms geometry-specific.</summary>
 internal static class SvgReferenceResolver
 {
-    internal static SvgRectangle Apply(SvgRectangle rectangle, SvgUseReference reference)
+    internal static SvgGeometry Apply(SvgGeometry geometry, SvgUseReference reference)
+        => geometry.Kind switch
+        {
+            SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(ApplyRectangle(geometry.Rectangle, reference)),
+            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.")
+        };
+
+    private static SvgRectangle ApplyRectangle(SvgRectangle rectangle, SvgUseReference reference)
     {
         if (rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
         return rectangle with { X = reference.Transform.ScaleX * (rectangle.X + reference.X) + reference.Transform.OffsetX, Y = reference.Transform.ScaleY * (rectangle.Y + reference.Y) + reference.Transform.OffsetY, Width = reference.Transform.ScaleX * rectangle.Width, Height = reference.Transform.ScaleY * rectangle.Height, Color = new SvgColor(rectangle.Color.Red, rectangle.Color.Green, rectangle.Color.Blue, MultiplyAlpha(rectangle.Color.Alpha, reference.Opacity)), HasFill = rectangle.HasFill && reference.IsPainted };
     }
 
-    internal static void ResolvePendingUses(BudgetedParserDictionary<string, SvgRectangle> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void ResolvePendingUses(BudgetedParserDictionary<string, SvgGeometry> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         for (int pendingUseIndex = 0; pendingUseIndex < pendingUses.Count; pendingUseIndex++)
         {
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
-            if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgRectangle definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local rectangle use references are implemented.");
-            SvgRectangle rectangle = Apply(definition, pendingUse.Reference);
-            scene.Replace(pendingUse.Slot, rectangle);
+            if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgGeometry definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local rectangle use references are implemented.");
+            scene.Replace(pendingUse.Slot, Apply(definition, pendingUse.Reference));
         }
     }
 

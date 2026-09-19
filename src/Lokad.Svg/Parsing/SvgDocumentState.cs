@@ -15,7 +15,7 @@ internal sealed class SvgDocumentState : IDisposable
         Scene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
         Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, GroupScopeStorageBytes, workCounter, cancellationToken);
         StyleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, CssRuleStorageBytes, workCounter, cancellationToken);
-        Definitions = new BudgetedParserDictionary<string, SvgRectangle>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
+        Definitions = new BudgetedParserDictionary<string, SvgGeometry>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, PendingUseStorageBytes, workCounter, cancellationToken);
     }
 
@@ -25,7 +25,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<CssRule> StyleRules { get; }
 
-    internal BudgetedParserDictionary<string, SvgRectangle> Definitions { get; }
+    internal BudgetedParserDictionary<string, SvgGeometry> Definitions { get; }
 
     internal BudgetedParserList<PendingUse> PendingUses { get; }
 

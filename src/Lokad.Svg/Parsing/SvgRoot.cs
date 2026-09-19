@@ -116,9 +116,12 @@ internal sealed class SvgSceneBuilder : IDisposable
     }
 
     internal void AddRectangle(SvgRectangle rectangle)
+        => AddGeometry(SvgGeometry.FromRectangle(rectangle));
+
+    internal void AddGeometry(SvgGeometry geometry)
     {
         int geometryIndex = _geometries.Count;
-        _geometries.Add(SvgGeometry.FromRectangle(rectangle));
+        _geometries.Add(geometry);
         _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255));
     }
 
@@ -138,9 +141,9 @@ internal sealed class SvgSceneBuilder : IDisposable
         return slot;
     }
 
-    internal void Replace(SvgSceneSlot slot, SvgRectangle rectangle)
+    internal void Replace(SvgSceneSlot slot, SvgGeometry geometry)
     {
-        _geometries[slot.GeometryIndex] = SvgGeometry.FromRectangle(rectangle);
+        _geometries[slot.GeometryIndex] = geometry;
         _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255);
     }
 
