@@ -465,7 +465,7 @@ internal static class SvgRootParser
         if (!closed || points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
         if (points.Count > maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
         for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) { SvgPoint start = points[pointIndex]; SvgPoint end = points[(pointIndex + 1) % points.Count]; if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented."); }
-        ValidateSimpleOrthogonalContour(points, "path");
+        ValidateSimpleOrthogonalContour(points, "path", cancellationToken);
         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style")); AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
         SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, styleSheet.Fill, "fill"), GetProperty(reader, style.FillOpacity, styleSheet.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, styleSheet.Color, "color"), inheritedPaint); ValidateFillRule(GetProperty(reader, style.FillRule, styleSheet.FillRule, "fill-rule")); ValidateStroke(GetProperty(reader, style.Stroke, styleSheet.Stroke, "stroke"));
         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity")); SvgColor color = ResolvePaintColor(paint, opacity);
@@ -504,7 +504,7 @@ internal static class SvgRootParser
             SvgPoint start = points[index]; SvgPoint end = points[(index + 1) % points.Count];
             if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
         }
-        ValidateSimpleOrthogonalContour(points, elementName);
+        ValidateSimpleOrthogonalContour(points, elementName, cancellationToken);
         int geometryElementCount = points.Count;
         List<int> boundaries = points.Select(static point => point.Y).Distinct().Order().ToList();
         List<SvgRectangle> rectangles = [];
@@ -535,7 +535,7 @@ internal static class SvgRootParser
         return new ParsedGeometry(rectangles.ToArray(), geometryElementCount);
     }
 
-    private static void ValidateSimpleOrthogonalContour(List<SvgPoint> points, string elementName)
+    private static void ValidateSimpleOrthogonalContour(List<SvgPoint> points, string elementName, CancellationToken cancellationToken)
     {
         for (int firstIndex = 0; firstIndex < points.Count; firstIndex++)
         {
@@ -543,6 +543,7 @@ internal static class SvgRootParser
             bool firstHorizontal = firstStart.Y == firstEnd.Y;
             for (int secondIndex = firstIndex + 1; secondIndex < points.Count; secondIndex++)
             {
+                if ((secondIndex & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                 SvgPoint secondStart = points[secondIndex]; SvgPoint secondEnd = points[(secondIndex + 1) % points.Count];
                 bool secondHorizontal = secondStart.Y == secondEnd.Y;
                 bool intersects = firstHorizontal == secondHorizontal
