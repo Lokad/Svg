@@ -68,12 +68,12 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "fill" or "fill-opacity" or "display" or "visibility") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
+                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "color" or "fill" or "fill-opacity" or "display" or "visibility") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
         }
-        return ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), inheritedPaint);
+        return ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), reader.GetAttribute("color"), inheritedPaint);
     }
 
     private static SvgPaint ParseRootPaint(XmlReader reader)
@@ -83,12 +83,12 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "fill" or "fill-opacity" or "display" or "visibility") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "color" or "fill" or "fill-opacity" or "display" or "visibility") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG root attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
         }
-        return ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), SvgPaint.Default);
+        return ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), reader.GetAttribute("color"), SvgPaint.Default);
     }
 
     private static SvgRectangle ParseRectangle(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility)
@@ -97,7 +97,7 @@ internal static class SvgRootParser
         {
             while (reader.MoveToNextAttribute())
             {
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "fill" or "fill-opacity" or "opacity" or "display" or "visibility") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "color" or "fill" or "fill-opacity" or "opacity" or "display" or "visibility") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -107,18 +107,19 @@ internal static class SvgRootParser
         int width = ParseInteger(reader.GetAttribute("width") ?? "0");
         int height = ParseInteger(reader.GetAttribute("height") ?? "0");
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
-        SvgPaint paint = ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), inheritedPaint);
+        SvgPaint paint = ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), reader.GetAttribute("color"), inheritedPaint);
         byte opacity = ParseOpacity(reader.GetAttribute("opacity"));
         SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
         return new SvgRectangle(x, y, width, height, color, paint.HasFill && inheritedDisplayed && ParseDisplay(reader.GetAttribute("display")) && ParseVisibility(reader.GetAttribute("visibility"), inheritedVisibility));
     }
 
-    private static SvgPaint ParsePaint(string? fill, string? opacity, SvgPaint inheritedPaint)
+    private static SvgPaint ParsePaint(string? fill, string? opacity, string? currentColor, SvgPaint inheritedPaint)
     {
+        SvgColor inheritedCurrentColor = currentColor is null ? inheritedPaint.CurrentColor : ParseColor(currentColor);
         bool hasFill = fill is null ? inheritedPaint.HasFill : !fill.Equals("none", StringComparison.OrdinalIgnoreCase) && !fill.Equals("transparent", StringComparison.OrdinalIgnoreCase);
-        SvgColor color = fill is null ? inheritedPaint.Color : hasFill ? ParseColor(fill) : SvgColor.Transparent;
+        SvgColor color = fill is null ? inheritedPaint.Color : fill.Equals("currentColor", StringComparison.OrdinalIgnoreCase) ? inheritedCurrentColor : hasFill ? ParseColor(fill) : SvgColor.Transparent;
         byte alpha = opacity is null ? color.Alpha : ParseOpacity(opacity);
-        return new SvgPaint(new SvgColor(color.Red, color.Green, color.Blue, alpha), hasFill);
+        return new SvgPaint(new SvgColor(color.Red, color.Green, color.Blue, alpha), hasFill, inheritedCurrentColor);
     }
 
     private static bool ParseDisplay(string? value)
@@ -243,8 +244,8 @@ internal static class SvgRootParser
 
     private readonly record struct GroupScope(int Depth, SvgPaint Paint, bool IsDisplayed, bool IsVisible);
 
-    private readonly record struct SvgPaint(SvgColor Color, bool HasFill)
+    private readonly record struct SvgPaint(SvgColor Color, bool HasFill, SvgColor CurrentColor)
     {
-        internal static SvgPaint Default { get; } = new(new SvgColor(0, 0, 0, 255), true);
+        internal static SvgPaint Default { get; } = new(new SvgColor(0, 0, 0, 255), true, new SvgColor(0, 0, 0, 255));
     }
 }

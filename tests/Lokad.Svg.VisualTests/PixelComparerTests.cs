@@ -291,6 +291,13 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
+    public void Current_color_inherits_through_groups()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' color='blue'><g><rect width='1' height='1' fill='currentColor'/></g></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.Equal(new byte[] { 0, 0, 255, 255 }, PngRgbaDecoder.Decode(png, 1).Pixels);
+    }
+
+    [Fact]
     public void Integer_fill_opacity_composites_on_transparent_surface()
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='#ff0000' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
