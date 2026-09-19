@@ -9,9 +9,7 @@ internal readonly record struct SvgRootAttributes(SvgPaint Paint, string? Id, by
     {
         SvgElementAttributePolicy.ValidateRoot(reader);
         SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, workCounter, cancellationToken);
-        if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
-        SvgShapePresentationResolver.ValidateStroke(style.Stroke);
-        SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, SvgPaint.Default, namedColors);
-        return new SvgRootAttributes(paint, reader.GetAttribute("id"), SvgColorParser.ParseOpacity(style.Opacity), SvgShapePresentationResolver.ParseDisplay(style.Display), SvgShapePresentationResolver.ParseVisibility(style.Visibility, true), SvgGeometrySyntax.ParseLength(reader.GetAttribute("width")), SvgGeometrySyntax.ParseLength(reader.GetAttribute("height")), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio")));
+        SvgResolvedContainerPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
+        return new SvgRootAttributes(presentation.Paint, reader.GetAttribute("id"), presentation.Opacity, presentation.IsDisplayed, presentation.IsVisible, SvgGeometrySyntax.ParseLength(reader.GetAttribute("width")), SvgGeometrySyntax.ParseLength(reader.GetAttribute("height")), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio")));
     }
 }

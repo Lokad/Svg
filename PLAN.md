@@ -34,6 +34,10 @@ initialization and the per-pixel PNG preprocessing scan. A low ceiling therefore
 bounds structural traversal, raster setup and PNG preparation as well as
 syntax-specific scans.
 
+Root and group presentation now share `SvgContainerPresentationResolver`, which
+turns their computed style and inherited context into typed paint, display,
+visibility and opacity state before their separate traversal roles continue.
+
 The browser review harness currently reports all 43 manifest fixtures exact. Its
 accepted semantic probes match Chrome; `styled-use` now retains a definition's
 typed geometry plus whether it has inherited fill, allowing a fill declared on a
@@ -108,7 +112,7 @@ review.
 
 ### Current local verification (2026-09-20)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 220 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 221 unit tests
 and 70 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a

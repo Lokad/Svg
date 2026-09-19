@@ -7,6 +7,22 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgRootParserTests
 {
     [Fact]
+    public void Container_presentation_resolves_inherited_paint_display_visibility_and_opacity()
+    {
+        IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase) { ["red"] = new SvgColor(255, 0, 0, 255) };
+        SvgComputedStyle style = new("red", "currentColor", "0.5", "none", "none", "hidden", "0.5", null);
+
+        SvgResolvedContainerPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), presentation.Paint.CurrentColor);
+        Assert.True(presentation.Paint.FillUsesCurrentColor);
+        Assert.Equal((byte)128, presentation.Paint.FillOpacity);
+        Assert.False(presentation.IsDisplayed);
+        Assert.False(presentation.IsVisible);
+        Assert.Equal((byte)128, presentation.Opacity);
+    }
+
+    [Fact]
     public void Rejects_root_attributes_above_the_configured_limit()
     {
         SvgRenderLimits limits = new(1024, 1024, 16, 16, 1024, 16, 16, 16, 16, 2);

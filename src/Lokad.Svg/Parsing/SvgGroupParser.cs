@@ -10,15 +10,10 @@ internal static class SvgGroupParser
         SvgElementAttributePolicy.ValidateGroup(reader);
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
-        SvgShapePresentationResolver.ValidateStroke(style.Stroke);
-        SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, context.InheritedPaint, namedColors);
-        bool displayed = context.InheritedDisplayed && SvgShapePresentationResolver.ParseDisplay(style.Display);
-        bool visible = SvgShapePresentationResolver.ParseVisibility(style.Visibility, context.InheritedVisibility);
+        SvgResolvedContainerPresentation presentation = SvgContainerPresentationResolver.Resolve(style, context.InheritedPaint, context.InheritedDisplayed, context.InheritedVisibility, namedColors);
         AxisTransform transform = context.ResolveTransform(reader);
-        byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         SvgGroupKind kind = reader.LocalName == "g" ? SvgGroupKind.Group : SvgGroupKind.Link;
-        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, paint, displayed, visible, transform, opacity != 255), opacity);
+        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform, presentation.Opacity != 255), presentation.Opacity);
     }
 }
 
