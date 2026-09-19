@@ -450,6 +450,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_the_path_command_limit_across_supported_path_elements()
+    {
+        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 9, 100);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 1 V 1 H 0 Z'/><path d='M 2,0 H 3 V 1 H 2 Z'/></svg>"u8.ToArray(), limits, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Rejects_relative_rectangle_paths_until_relative_commands_are_implemented()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='m 1,2 h 3 v 4 h -3 z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
