@@ -40,7 +40,7 @@ internal static class SvgStyleSheet
         {
             CssRule rule = rules[ruleIndex];
             workCounter.Consume(cancellationToken);
-            if (!rule.Matches(reader, directChild, hasGroupAncestor, parentIsGroup)) continue;
+            if (!rule.Matches(reader, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken)) continue;
             if (rule.Style.Color is not null && rule.Specificity >= colorSpecificity) { color = rule.Style.Color; colorSpecificity = rule.Specificity; }
             if (rule.Style.Fill is not null && rule.Specificity >= fillSpecificity) { fill = rule.Style.Fill; fillSpecificity = rule.Specificity; }
             if (rule.Style.FillOpacity is not null && rule.Specificity >= fillOpacitySpecificity) { fillOpacity = rule.Style.FillOpacity; fillOpacitySpecificity = rule.Specificity; }
@@ -72,16 +72,17 @@ internal static class SvgStyleSheet
         return subtree.ReadElementContentAsString();
     }
 
-    internal static bool HasCssClass(string? value, string expected)
+    internal static bool HasCssClass(string? value, string expected, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (value is null) return false;
         ReadOnlySpan<char> classes = value.AsSpan();
         int position = 0;
         while (position < classes.Length)
         {
-            while (position < classes.Length && char.IsWhiteSpace(classes[position])) position++;
+            ConsumeCheckpoint(position, workCounter, cancellationToken);
+            while (position < classes.Length && char.IsWhiteSpace(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
             int start = position;
-            while (position < classes.Length && !char.IsWhiteSpace(classes[position])) position++;
+            while (position < classes.Length && !char.IsWhiteSpace(classes[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
             if (classes[start..position].Equals(expected, StringComparison.Ordinal)) return true;
         }
         return false;
@@ -341,15 +342,15 @@ internal enum CssSelectorKind { Rectangle, Group, Id, Class, RectangleClass, Rec
 
 internal readonly record struct CssRule(CssSelectorKind Kind, string Value, string? ExpectedValue, int Specificity, InlineStyle Style)
 {
-    internal bool Matches(XmlReader reader, bool directChild, bool hasGroupAncestor, bool parentIsGroup) => Kind switch
+    internal bool Matches(XmlReader reader, bool directChild, bool hasGroupAncestor, bool parentIsGroup, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Kind switch
     {
         CssSelectorKind.Rectangle => reader.LocalName == "rect",
         CssSelectorKind.Group => reader.LocalName == "g",
         CssSelectorKind.Id => string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
-        CssSelectorKind.Class => SvgStyleSheet.HasCssClass(reader.GetAttribute("class"), Value),
-        CssSelectorKind.RectangleClass => reader.LocalName == "rect" && SvgStyleSheet.HasCssClass(reader.GetAttribute("class"), Value),
+        CssSelectorKind.Class => SvgStyleSheet.HasCssClass(reader.GetAttribute("class"), Value, workCounter, cancellationToken),
+        CssSelectorKind.RectangleClass => reader.LocalName == "rect" && SvgStyleSheet.HasCssClass(reader.GetAttribute("class"), Value, workCounter, cancellationToken),
         CssSelectorKind.RectangleId => reader.LocalName == "rect" && string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
-        CssSelectorKind.GroupClass => reader.LocalName == "g" && SvgStyleSheet.HasCssClass(reader.GetAttribute("class"), Value),
+        CssSelectorKind.GroupClass => reader.LocalName == "g" && SvgStyleSheet.HasCssClass(reader.GetAttribute("class"), Value, workCounter, cancellationToken),
         CssSelectorKind.GroupId => reader.LocalName == "g" && string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
         CssSelectorKind.AttributePresent => reader.GetAttribute(Value) is not null,
         CssSelectorKind.AttributeEquals => string.Equals(reader.GetAttribute(Value), ExpectedValue, StringComparison.Ordinal),

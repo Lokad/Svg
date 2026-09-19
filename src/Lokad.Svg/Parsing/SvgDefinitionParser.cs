@@ -10,6 +10,8 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth >= 0 && (reader.Depth == state.DefinitionsDepth + 1 || reader.Depth == state.SymbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is ("rect" or "line"))
         {
             string? id = state.SymbolDepth >= 0 ? state.SymbolId : reader.GetAttribute("id");
+            if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader);
+            else SvgElementAttributePolicy.ValidateLine(reader);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
             SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context) : new SvgDefinition(SvgLeafParser.ParseLine(reader, context), false);
             if (id is not null)
@@ -39,6 +41,7 @@ internal static class SvgDefinitionParser
         }
         if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
         {
+            SvgElementAttributePolicy.ValidateUse(reader);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings);
             workCounter.Consume(cancellationToken);

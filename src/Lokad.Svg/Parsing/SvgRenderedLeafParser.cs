@@ -9,6 +9,23 @@ internal static class SvgRenderedLeafParser
     internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!isEligible || reader.NamespaceURI != "http://www.w3.org/2000/svg") return false;
+        switch (reader.LocalName)
+        {
+            case "rect":
+                SvgElementAttributePolicy.ValidateRectangle(reader);
+                break;
+            case "line":
+                SvgElementAttributePolicy.ValidateLine(reader);
+                break;
+            case "path":
+                SvgElementAttributePolicy.ValidatePath(reader);
+                break;
+            case "polygon" or "polyline":
+                SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName);
+                break;
+            default:
+                return false;
+        }
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
 
         switch (reader.LocalName)
@@ -33,8 +50,7 @@ internal static class SvgRenderedLeafParser
                     state.Scene.AddGeometries(pointList.Geometries);
                 }
                 return true;
-            default:
-                return false;
         }
+        return false;
     }
 }

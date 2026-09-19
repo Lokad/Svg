@@ -7,8 +7,8 @@ internal readonly record struct SvgRootAttributes(SvgPaint Paint, string? Id, by
 {
     internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, workCounter, cancellationToken);
         SvgElementAttributePolicy.ValidateRoot(reader);
+        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, workCounter, cancellationToken);
         if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
         SvgShapePresentationResolver.ValidateStroke(style.Stroke);
         SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, SvgPaint.Default, namedColors);

@@ -102,7 +102,7 @@ review.
 
 ### Current local verification (2026-09-19)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 215 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 216 unit tests
 and 70 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
@@ -129,6 +129,12 @@ conservative reservation tracker storage before copying, releasing that accounti
 with document state. Reader-provided transient attribute/style strings remain
 covered only by the conservative reader workspace; exact BCL string accounting is
 still open.
+
+Every supported root, group, definition, instance and rendered leaf now validates
+its bounded attributes before constructing the context that evaluates stylesheet
+selectors. Class-selector scans also consume shared-work checkpoints. This prevents
+an oversized identifier/class value from being matched before its syntax limit is
+enforced.
 
 The definition table reserves twice its requested capacity before `Dictionary`
 selects its prime backing capacity, then verifies the returned capacity stayed

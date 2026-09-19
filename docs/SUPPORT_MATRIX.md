@@ -30,6 +30,8 @@ and copied local-reference identifiers reserve their owned string and reservatio
 tracker storage before the copy, then release it with parser document state.
 Reader-provided transient attribute/style strings remain within the documented
 conservative reader allowance; this is not exact BCL-allocation accounting.
+Supported element attributes are validated before stylesheet matching, and class
+selector scans observe the shared parser-work limit.
 The isolated Windows probe directly traverses both a full short-attribute root
 and 255 × 4 KiB attribute values below that allowance; those observations are
 pinned-runtime regression evidence, not a BCL or process-RSS guarantee.
