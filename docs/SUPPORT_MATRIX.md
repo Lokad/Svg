@@ -14,7 +14,7 @@ have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 | Viewport resolution | Not implemented |
 | Empty explicitly sized SVG | Integral transparent or caller-background PNG implemented |
 | Caller-owned PNG destination | Implemented for the current empty/rectangle subset |
-| Integer rectangles | Document-order layers, bare-number/px integer coordinates and output-scaled geometry (only when scale preserves integral edges), SVG zero defaults for omitted coordinates/dimensions and zero `rx`/`ry`, SVG black default plus `none`/`transparent`/`currentColor`/`black`/`red`/`blue`/classic comma-form `rgb()`/`rgba()`/`hsl()`/`hsla()`/`#RGB`/`#RGBA`/`#RRGGBB`/`#RRGGBBAA` fill, `nonzero`/`evenodd` fill rule, non-painting `stroke="none"`, `fill-opacity`, element `opacity`, source-over; other attributes explicit unsupported |
+| Integer rectangles | Document-order layers, bare-number/px integer coordinates and output-scaled geometry (only when scale preserves integral edges), SVG zero defaults for omitted coordinates/dimensions and zero `rx`/`ry`, SVG black default plus `none`/`transparent`/`currentColor`/`black`/`red`/`blue`/`lime`/classic comma-form `rgb()`/`rgba()`/`hsl()`/`hsla()`/`#RGB`/`#RGBA`/`#RRGGBB`/`#RRGGBBAA` fill, `nonzero`/`evenodd` fill rule, non-painting `stroke="none"`, `fill-opacity`, element `opacity`, source-over; other attributes explicit unsupported |
 | Fractional rectangle coverage | Not implemented; stable pinned-Chrome probe and investigation note recorded |
 | Shapes, paths and composition | Other cases explicit unsupported-feature failure |
 | CSS, gradients, images, filters and text | Not implemented |
