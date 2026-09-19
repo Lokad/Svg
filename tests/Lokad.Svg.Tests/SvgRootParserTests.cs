@@ -122,6 +122,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Rejects_self_intersecting_orthogonal_contours()
+    {
+        SvgException polygon = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 3,0 3,3 1,3 1,1 4,1 4,4 0,4'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException path = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 3 V 3 H 1 V 1 H 4 V 4 H 0 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, polygon.ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, path.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_path_command_limit_before_expanding_polygon_storage()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 1, 1, 1);
