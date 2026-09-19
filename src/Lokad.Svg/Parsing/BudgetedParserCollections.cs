@@ -14,19 +14,24 @@ internal static class ParserCollectionMemory
 /// <summary>Owns a growable parser array whose backing storage is reserved before allocation.</summary>
 internal sealed class BudgetedParserList<T> : IDisposable where T : struct
 {
+    private const int CopyCheckpointItems = 4_096;
     private readonly RenderBudget _budget;
     private readonly SvgMemoryCategory _category;
     private readonly int _entryBytes;
+    private readonly ParserWorkCounter? _workCounter;
+    private readonly CancellationToken _cancellationToken;
     private T[] _items = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal BudgetedParserList(RenderBudget budget, SvgMemoryCategory category, int entryBytes)
+    internal BudgetedParserList(RenderBudget budget, SvgMemoryCategory category, int entryBytes, ParserWorkCounter? workCounter = null, CancellationToken cancellationToken = default)
     {
         if (entryBytes <= 0) throw new ArgumentOutOfRangeException(nameof(entryBytes));
         _budget = budget;
         _category = category;
         _entryBytes = entryBytes;
+        _workCounter = workCounter;
+        _cancellationToken = cancellationToken;
     }
 
     internal int Count => _count;
@@ -52,7 +57,7 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
     internal void AddRange(ReadOnlySpan<T> items)
     {
         EnsureAdditionalCapacity(items.Length);
-        items.CopyTo(_items.AsSpan(_count));
+        CopyWithCheckpoints(items, _items.AsSpan(_count));
         _count += items.Length;
     }
 
@@ -111,7 +116,8 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
             throw;
         }
 
-        _items.AsSpan(0, _count).CopyTo(exact);
+        try { CopyWithCheckpoints(_items.AsSpan(0, _count), exact); }
+        catch { reservation.Dispose(); throw; }
         Dispose();
         return new OwnedParserArray<T>(exact, reservation);
     }
@@ -151,10 +157,26 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
             throw;
         }
 
-        _items.AsSpan(0, _count).CopyTo(replacement);
+        try { CopyWithCheckpoints(_items.AsSpan(0, _count), replacement); }
+        catch { replacementReservation.Dispose(); throw; }
         _reservation?.Dispose();
         _reservation = replacementReservation;
         _items = replacement;
+    }
+
+    private void CopyWithCheckpoints(ReadOnlySpan<T> source, Span<T> destination)
+    {
+        if (_workCounter is null)
+        {
+            source.CopyTo(destination);
+            return;
+        }
+        for (int offset = 0; offset < source.Length; offset += CopyCheckpointItems)
+        {
+            _workCounter.Consume(_cancellationToken);
+            int count = Math.Min(CopyCheckpointItems, source.Length - offset);
+            source.Slice(offset, count).CopyTo(destination.Slice(offset, count));
+        }
     }
 
     private void SiftDown(int root, int length, Comparer<T> comparer, ParserWorkCounter workCounter, CancellationToken cancellationToken)

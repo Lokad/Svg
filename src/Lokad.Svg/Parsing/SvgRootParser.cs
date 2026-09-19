@@ -199,14 +199,14 @@ internal static class SvgRootParser
             int rootDepth = reader.Depth;
             using SvgSceneBuilder scene = new(budget, workCounter, cancellationToken);
             if (rootOpacity != 255) scene.BeginOpacityScope(rootOpacity);
-            using BudgetedParserList<GroupScope> groupDepths = new(budget, SvgMemoryCategory.Parser, GroupScopeStorageBytes);
+            using BudgetedParserList<GroupScope> groupDepths = new(budget, SvgMemoryCategory.Parser, GroupScopeStorageBytes, workCounter, cancellationToken);
             int nodeCount = 0;
             bool unsupported = false;
             bool sawStyleableNode = false;
-            using BudgetedParserList<CssRule> rectangleStyleRules = new(budget, SvgMemoryCategory.Parser, CssRuleStorageBytes);
+            using BudgetedParserList<CssRule> rectangleStyleRules = new(budget, SvgMemoryCategory.Parser, CssRuleStorageBytes, workCounter, cancellationToken);
             bool hasRectangleStyleSheet = false;
             using BudgetedParserDictionary<string, SvgRectangle> definitions = new(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
-            using BudgetedParserList<PendingUse> pendingUses = new(budget, SvgMemoryCategory.Parser, PendingUseStorageBytes);
+            using BudgetedParserList<PendingUse> pendingUses = new(budget, SvgMemoryCategory.Parser, PendingUseStorageBytes, workCounter, cancellationToken);
             int geometryElementCount = 0;
             int definitionsDepth = -1;
             int symbolDepth = -1;

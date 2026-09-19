@@ -29,15 +29,15 @@ internal ref struct SvgOrthogonalGeometryLowering
         _cancellationToken = cancellationToken;
         if (validateContour) ValidateSimpleContour(points, elementName, workCounter, cancellationToken);
         _geometryElementCount = points.Count;
-        _boundaries = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, IntegerStorageBytes);
+        _boundaries = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, IntegerStorageBytes, workCounter, cancellationToken);
         try
         {
             for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) _boundaries.Add(points[pointIndex].Y);
             _boundaries.Sort(_workCounter, _cancellationToken);
-            _intersections = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, IntegerStorageBytes);
+            _intersections = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, IntegerStorageBytes, workCounter, cancellationToken);
             try
             {
-                _rectangles = new BudgetedParserList<SvgRectangle>(budget, SvgMemoryCategory.Geometry, RectangleStorageBytes);
+                _rectangles = new BudgetedParserList<SvgRectangle>(budget, SvgMemoryCategory.Geometry, RectangleStorageBytes, workCounter, cancellationToken);
             }
             catch
             {

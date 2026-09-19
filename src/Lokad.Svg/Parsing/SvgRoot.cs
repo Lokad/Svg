@@ -188,7 +188,8 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         T[] exact;
         try { exact = new T[_count]; }
         catch { reservation.Dispose(); throw; }
-        CopyWithCheckpoints(_items.AsSpan(0, _count), exact);
+        try { CopyWithCheckpoints(_items.AsSpan(0, _count), exact); }
+        catch { reservation.Dispose(); throw; }
         Dispose();
         return new OwnedSceneArray<T>(exact, reservation);
     }
@@ -214,7 +215,8 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         T[] replacement;
         try { replacement = new T[capacity]; }
         catch { replacementReservation.Dispose(); throw; }
-        CopyWithCheckpoints(_items.AsSpan(0, _count), replacement);
+        try { CopyWithCheckpoints(_items.AsSpan(0, _count), replacement); }
+        catch { replacementReservation.Dispose(); throw; }
         _reservation?.Dispose();
         _reservation = replacementReservation;
         _items = replacement;
