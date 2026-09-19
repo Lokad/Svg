@@ -199,6 +199,12 @@ public sealed class PublicContractTests
     [Theory]
     [InlineData("<defs><style>rect { fill: red; }</style></defs>")]
     [InlineData("<metadata><style>rect { fill: red; }</style></metadata>")]
+    [InlineData("<script><![CDATA[void 0]]></script>")]
+    [InlineData("<metadata><script/></metadata>")]
+    [InlineData("<animate attributeName='opacity' values='0;1' dur='1s'/>")]
+    [InlineData("<animateMotion path='M 0 0 H 1' dur='1s'/>")]
+    [InlineData("<animateTransform attributeName='transform' type='translate' from='0' to='1' dur='1s'/>")]
+    [InlineData("<set attributeName='display' to='none'/>")]
     public void Active_content_outside_the_supported_root_stylesheet_is_rejected_before_it_can_be_ignored(string content)
     {
         string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'>" + content + "<rect width='1' height='1'/></svg>";
