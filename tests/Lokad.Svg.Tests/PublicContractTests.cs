@@ -107,9 +107,13 @@ public sealed class PublicContractTests
     {
         SvgException extraElement = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/><extra/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
         SvgException trailingText = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>trailing"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+        SvgException nonemptyExtraElement = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect/></svg><extra/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+        SvgException nonemptyTrailingText = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect/></svg>trailing"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.MalformedInput, extraElement.ErrorCode);
         Assert.Equal(SvgErrorCode.MalformedInput, trailingText.ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, nonemptyExtraElement.ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, nonemptyTrailingText.ErrorCode);
     }
 
     [Fact]
