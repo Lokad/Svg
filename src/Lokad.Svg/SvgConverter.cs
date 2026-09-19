@@ -65,12 +65,14 @@ public static class SvgConverter
         double scaledWidth = width * options.OutputScale;
         double scaledHeight = height * options.OutputScale;
         if (scaledWidth != Math.Truncate(scaledWidth) || scaledHeight != Math.Truncate(scaledHeight) || scaledWidth > options.Limits.MaximumDimension || scaledHeight > options.Limits.MaximumDimension) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integral output dimensions within configured limits are implemented currently.");
-        int outputWidth = checked((int)scaledWidth);
-        int outputHeight = checked((int)scaledHeight);
-        int pixelCount = checked(outputWidth * outputHeight);
-        if (pixelCount > options.Limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Output pixel count exceeds the configured limit.");
-        RenderBudget.BudgetReservation surface = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
-        byte[] pixels = new byte[checked(pixelCount * 4)];
+        int outputWidth = (int)scaledWidth;
+        int outputHeight = (int)scaledHeight;
+        long pixelCountLong = (long)outputWidth * outputHeight;
+        if (pixelCountLong > options.Limits.MaximumPixels || pixelCountLong > int.MaxValue / 4) throw new SvgException(SvgErrorCode.LimitExceeded, "Output pixel count exceeds the configured contiguous RGBA surface limit.");
+        int pixelCount = (int)pixelCountLong;
+        int surfaceByteCount = pixelCount * 4;
+        RenderBudget.BudgetReservation surface = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
+        byte[] pixels = new byte[surfaceByteCount];
         if (options.BackgroundColor != SvgColor.Transparent)
         {
             for (int pixel = 0; pixel < pixelCount; pixel++)

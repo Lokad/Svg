@@ -144,6 +144,17 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Contiguous_rgba_surface_overflow_is_a_configured_limit_failure()
+    {
+        SvgRenderLimits limits = new(10_000_000_000, 1024, int.MaxValue, int.MaxValue, 1024, 1, 1, 1);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1073741824' height='2'/>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Owned_png_output_stays_within_the_conversion_budget()
     {
         SvgRenderLimits insufficient = new(137, 1024, 2, 4, 1024, 1, 1, 1);

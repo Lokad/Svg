@@ -467,7 +467,7 @@ internal static class SvgRootParser
             for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) { SvgPoint start = points[pointIndex]; SvgPoint end = points[(pointIndex + 1) % points.Count]; if (start.X == end.X && Math.Min(start.Y, end.Y) <= top && Math.Max(start.Y, end.Y) >= bottom) intersections.Add(start.X); }
             intersections.Sort();
             if (intersections.Count % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed absolute axis-aligned integer paths are implemented.");
-            for (int intersectionIndex = 0; intersectionIndex < intersections.Count; intersectionIndex += 2) { int left = intersections[intersectionIndex]; int right = intersections[intersectionIndex + 1]; if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed absolute axis-aligned integer paths are implemented."); if (geometryElementCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path rectangle-band count exceeds the configured path-command limit."); rectangles.Add(new SvgRectangle(checked(transform.ScaleX * left + transform.OffsetX), checked(transform.ScaleY * top + transform.OffsetY), checked(transform.ScaleX * (right - left)), checked(transform.ScaleY * (bottom - top)), color, hasFill)); geometryElementCount++; }
+            for (int intersectionIndex = 0; intersectionIndex < intersections.Count; intersectionIndex += 2) { int left = intersections[intersectionIndex]; int right = intersections[intersectionIndex + 1]; if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed absolute axis-aligned integer paths are implemented."); if (geometryElementCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path rectangle-band count exceeds the configured path-command limit."); rectangles.Add(new SvgRectangle(ApplyTransform(transform.ScaleX, left, transform.OffsetX), ApplyTransform(transform.ScaleY, top, transform.OffsetY), ApplyTransformScale(transform.ScaleX, right - left), ApplyTransformScale(transform.ScaleY, bottom - top), color, hasFill)); geometryElementCount++; }
         }
         return new ParsedGeometry(rectangles.ToArray(), geometryElementCount);
 
@@ -517,7 +517,7 @@ internal static class SvgRootParser
                 int left = intersections[intersectionIndex]; int right = intersections[intersectionIndex + 1];
                 if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed axis-aligned integer " + elementName + " elements are implemented.");
                 if (geometryElementCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, elementName + " rectangle-band count exceeds the configured path-command limit.");
-                rectangles.Add(new SvgRectangle(checked(transform.ScaleX * left + transform.OffsetX), checked(transform.ScaleY * top + transform.OffsetY), checked(transform.ScaleX * (right - left)), checked(transform.ScaleY * (bottom - top)), color, hasFill));
+                rectangles.Add(new SvgRectangle(ApplyTransform(transform.ScaleX, left, transform.OffsetX), ApplyTransform(transform.ScaleY, top, transform.OffsetY), ApplyTransformScale(transform.ScaleX, right - left), ApplyTransformScale(transform.ScaleY, bottom - top), color, hasFill));
                 geometryElementCount++;
             }
         }
@@ -563,7 +563,7 @@ internal static class SvgRootParser
 
     private static void ValidatePointListVertexCount(string value, int maximumGeometryElements, CancellationToken cancellationToken)
     {
-        int maximumValues = checked(maximumGeometryElements * 2);
+        long maximumValues = (long)maximumGeometryElements * 2;
         int valueCount = 0;
         bool withinValue = false;
         for (int index = 0; index < value.Length; index++)
@@ -575,6 +575,18 @@ internal static class SvgRootParser
             valueCount++;
             withinValue = true;
         }
+    }
+
+    private static int ApplyTransform(int scale, int value, int offset)
+    {
+        try { return checked(scale * value + offset); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+    }
+
+    private static int ApplyTransformScale(int scale, int value)
+    {
+        try { return checked(scale * value); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
     }
 
     private static string? GetProperty(XmlReader reader, string? inlineValue, string name) => inlineValue ?? reader.GetAttribute(name);
@@ -957,7 +969,7 @@ internal static class SvgRootParser
     private readonly record struct AxisTransform(int ScaleX, int ScaleY, int OffsetX, int OffsetY)
     {
         internal static AxisTransform Identity { get; } = new(1, 1, 0, 0);
-        internal AxisTransform Compose(AxisTransform child) => new(checked(ScaleX * child.ScaleX), checked(ScaleY * child.ScaleY), checked(ScaleX * child.OffsetX + OffsetX), checked(ScaleY * child.OffsetY + OffsetY));
+        internal AxisTransform Compose(AxisTransform child) => new(ApplyTransformScale(ScaleX, child.ScaleX), ApplyTransformScale(ScaleY, child.ScaleY), ApplyTransform(ScaleX, child.OffsetX, OffsetX), ApplyTransform(ScaleY, child.OffsetY, OffsetY));
     }
 
     private readonly record struct SvgPaint(SvgColor FillColor, bool HasFill, byte FillOpacity, SvgColor CurrentColor, bool FillUsesCurrentColor)
