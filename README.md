@@ -1,7 +1,9 @@
 # Lokad.Svg
 
-Lokad.Svg is a forthcoming pure-managed .NET SVG-to-PNG renderer. It is being
-built in staged, explicitly supported subsets; it does not yet render SVG.
+Lokad.Svg is a pure-managed .NET SVG-to-PNG renderer being built in staged,
+explicitly supported subsets. The current subset renders explicitly sized empty
+SVGs and integer-aligned `rect` layers with `#RRGGBB` fill and `fill-opacity`.
+All other visible behavior fails explicitly rather than being silently dropped.
 
 See [PLAN.md](PLAN.md) for the product contract and implementation roadmap, and
 [the support matrix](docs/SUPPORT_MATRIX.md) for the current status.
