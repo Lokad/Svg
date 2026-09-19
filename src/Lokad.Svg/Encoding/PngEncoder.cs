@@ -7,6 +7,11 @@ namespace Lokad.Svg.Encoding;
 /// <summary>Encodes tightly packed straight-alpha RGBA8 pixels as a non-interlaced PNG.</summary>
 internal static class PngEncoder
 {
+    private static readonly byte[] PngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
+    private static readonly byte[] IhdrChunkType = [73, 72, 68, 82];
+    private static readonly byte[] IdatChunkType = [73, 68, 65, 84];
+    private static readonly byte[] IendChunkType = [73, 69, 78, 68];
+
     internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, CancellationToken cancellationToken)
         => Encode(width, height, rgba, int.MaxValue, cancellationToken);
 
@@ -55,6 +60,18 @@ internal static class PngEncoder
         return length;
     }
 
+    internal static async Task<int> EncodeToAsync(int width, int height, ReadOnlyMemory<byte> rgba, Stream destination, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
+        if (maximumEncodedPngBytes < 57) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        using PngCompressionBuffer compressed = Compress(width, height, rgba.Span, budget, maximumEncodedPngBytes - 57, cancellationToken);
+        int length = GetOutputLength(checked((int)compressed.Length));
+        if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        await WritePngAsync(width, height, compressed.WrittenMemory, destination, cancellationToken).ConfigureAwait(false);
+        return length;
+    }
+
     private static PngCompressionBuffer Compress(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumCompressedBytes, CancellationToken cancellationToken)
     {
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
@@ -94,8 +111,7 @@ internal static class PngEncoder
     private static void WritePng(int width, int height, ReadOnlySpan<byte> compressed, Span<byte> output, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        ReadOnlySpan<byte> signature = [137, 80, 78, 71, 13, 10, 26, 10];
-        signature.CopyTo(output);
+        PngSignature.CopyTo(output);
         int offset = 8;
         Span<byte> header = stackalloc byte[13];
         BinaryPrimitives.WriteUInt32BigEndian(header, checked((uint)width));
@@ -110,8 +126,7 @@ internal static class PngEncoder
     private static void WritePng(int width, int height, ReadOnlySpan<byte> compressed, Stream output, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        ReadOnlySpan<byte> signature = [137, 80, 78, 71, 13, 10, 26, 10];
-        output.Write(signature);
+        output.Write(PngSignature);
         Span<byte> header = stackalloc byte[13];
         BinaryPrimitives.WriteUInt32BigEndian(header, checked((uint)width));
         BinaryPrimitives.WriteUInt32BigEndian(header[4..], checked((uint)height));
@@ -120,6 +135,20 @@ internal static class PngEncoder
         WriteChunk(output, "IHDR"u8, header, cancellationToken);
         WriteChunk(output, "IDAT"u8, compressed, cancellationToken);
         WriteChunk(output, "IEND"u8, [], cancellationToken);
+    }
+
+    private static async Task WritePngAsync(int width, int height, ReadOnlyMemory<byte> compressed, Stream output, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        await output.WriteAsync(PngSignature, cancellationToken).ConfigureAwait(false);
+        byte[] header = new byte[13];
+        BinaryPrimitives.WriteUInt32BigEndian(header, checked((uint)width));
+        BinaryPrimitives.WriteUInt32BigEndian(header.AsSpan(4), checked((uint)height));
+        header[8] = 8;
+        header[9] = 6;
+        await WriteChunkAsync(output, IhdrChunkType, header, cancellationToken).ConfigureAwait(false);
+        await WriteChunkAsync(output, IdatChunkType, compressed, cancellationToken).ConfigureAwait(false);
+        await WriteChunkAsync(output, IendChunkType, ReadOnlyMemory<byte>.Empty, cancellationToken).ConfigureAwait(false);
     }
 
     private static int WriteChunk(Span<byte> output, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data, CancellationToken cancellationToken)
@@ -162,6 +191,30 @@ internal static class PngEncoder
         output.Write(length);
     }
 
+    private static async Task WriteChunkAsync(Stream output, ReadOnlyMemory<byte> type, ReadOnlyMemory<byte> data, CancellationToken cancellationToken)
+    {
+        uint crc = 0xffffffff;
+        foreach (byte value in type.Span) crc = CrcStep(crc, value);
+        for (int index = 0; index < data.Length; index++)
+        {
+            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            crc = CrcStep(crc, data.Span[index]);
+        }
+        byte[] length = new byte[4];
+        BinaryPrimitives.WriteUInt32BigEndian(length, checked((uint)data.Length));
+        await output.WriteAsync(length, cancellationToken).ConfigureAwait(false);
+        await output.WriteAsync(type, cancellationToken).ConfigureAwait(false);
+        for (int offset = 0; offset < data.Length;)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            int count = Math.Min(65_536, data.Length - offset);
+            await output.WriteAsync(data.Slice(offset, count), cancellationToken).ConfigureAwait(false);
+            offset += count;
+        }
+        BinaryPrimitives.WriteUInt32BigEndian(length, ~crc);
+        await output.WriteAsync(length, cancellationToken).ConfigureAwait(false);
+    }
+
     private sealed class PngCompressionBuffer : Stream
     {
         private readonly RenderBudget _budget;
@@ -179,6 +232,8 @@ internal static class PngEncoder
         }
 
         internal ReadOnlySpan<byte> Written => _buffer is null ? [] : _buffer.AsSpan(0, _length);
+
+        internal ReadOnlyMemory<byte> WrittenMemory => _buffer is null ? ReadOnlyMemory<byte>.Empty : _buffer.AsMemory(0, _length);
 
         public override bool CanRead => false;
         public override bool CanSeek => false;

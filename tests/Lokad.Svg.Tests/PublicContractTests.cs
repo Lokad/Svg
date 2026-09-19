@@ -52,10 +52,10 @@ public sealed class PublicContractTests
     {
         MethodInfo[] methods = typeof(SvgConverter).GetMethods(BindingFlags.Public | BindingFlags.Static);
 
-        Assert.Equal(5, methods.Length);
+        Assert.Equal(6, methods.Length);
         Assert.All(methods.SelectMany(method => method.GetParameters()), parameter => Assert.False(parameter.HasDefaultValue));
         Assert.Equal(3, methods.Count(method => method.Name == "ConvertToPng"));
-        Assert.Equal(2, methods.Count(method => method.Name == "ConvertToPngAsync"));
+        Assert.Equal(3, methods.Count(method => method.Name == "ConvertToPngAsync"));
     }
 
     [Fact]
@@ -319,5 +319,56 @@ public sealed class PublicContractTests
 
         Assert.Equal(syncLength, asyncLength);
         Assert.Equal(synchronous.AsSpan(0, syncLength).ToArray(), asynchronous.AsSpan(0, asyncLength).ToArray());
+    }
+
+    [Fact]
+    public async Task Async_stream_conversion_uses_asynchronous_destination_writes()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray();
+        byte[] expected = SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        using AsyncWriteOnlyStream destination = new();
+
+        int written = await SvgConverter.ConvertToPngAsync(svg, destination, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(expected.Length, written);
+        Assert.Equal(expected, destination.ToArray());
+    }
+
+    private sealed class AsyncWriteOnlyStream : Stream
+    {
+        private readonly MemoryStream _storage = new();
+
+        public override bool CanRead => false;
+        public override bool CanSeek => false;
+        public override bool CanWrite => true;
+        public override long Length => _storage.Length;
+        public override long Position { get => _storage.Position; set => throw new NotSupportedException(); }
+
+        internal byte[] ToArray() => _storage.ToArray();
+
+        public override void Flush() { }
+
+        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
+        public override void SetLength(long value) => throw new NotSupportedException();
+
+        public override void Write(byte[] buffer, int offset, int count) => throw new InvalidOperationException("The async conversion must not use synchronous stream writes.");
+
+        public override void Write(ReadOnlySpan<byte> buffer) => throw new InvalidOperationException("The async conversion must not use synchronous stream writes.");
+
+        public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            _storage.Write(buffer.Span);
+            return ValueTask.CompletedTask;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) _storage.Dispose();
+            base.Dispose(disposing);
+        }
     }
 }
