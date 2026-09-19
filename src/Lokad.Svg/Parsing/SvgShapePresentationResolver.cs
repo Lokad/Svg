@@ -16,9 +16,12 @@ internal static class SvgShapePresentationResolver
         if (!allowsPaintedStroke) ValidateStroke(style.Stroke);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         SvgColor color = SvgPaintResolver.ResolveFillColor(paint, opacity);
-        bool isPainted = inheritedDisplayed && ParseDisplay(style.Display) && ParseVisibility(style.Visibility, inheritedVisibility);
+        bool isPainted = IsPainted(style.Display, style.Visibility, inheritedDisplayed, inheritedVisibility);
         return new SvgResolvedShapePresentation(style, paint, color, opacity, isPainted);
     }
+
+    internal static bool IsPainted(string? display, string? visibility, bool inheritedDisplayed, bool inheritedVisibility)
+        => inheritedDisplayed && ParseDisplay(display) && ParseVisibility(visibility, inheritedVisibility);
 
     internal static bool ParseDisplay(string? value)
     {
