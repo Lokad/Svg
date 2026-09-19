@@ -8,6 +8,11 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Reads the bounded SVG root without materializing a DOM or input string.</summary>
 internal static class SvgRootParser
 {
+    private const int GroupScopeStorageBytes = 64;
+    private const int CssRuleStorageBytes = 96;
+    private const int DefinitionStorageBytes = 160;
+    private const int PendingUseStorageBytes = 64;
+
     private static readonly Dictionary<string, SvgColor> CssNamedColors = new(StringComparer.OrdinalIgnoreCase)
     {
         ["aliceblue"] = new(240, 248, 255, 255),
@@ -185,14 +190,14 @@ internal static class SvgRootParser
             using BudgetedSceneList<SvgRectangle> rectangles = new(budget, SvgSceneArrayKind.Rectangle);
             using BudgetedSceneList<SvgDrawCommand> commands = new(budget, SvgSceneArrayKind.DrawCommand);
             if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, rootOpacity));
-            List<GroupScope> groupDepths = [];
+            using BudgetedParserList<GroupScope> groupDepths = new(budget, SvgMemoryCategory.Parser, GroupScopeStorageBytes);
             int nodeCount = 0;
             bool unsupported = false;
             bool sawGraphicNode = false;
-            List<CssRule> rectangleStyleRules = [];
+            using BudgetedParserList<CssRule> rectangleStyleRules = new(budget, SvgMemoryCategory.Parser, CssRuleStorageBytes);
             bool hasRectangleStyleSheet = false;
-            Dictionary<string, SvgRectangle> definitions = [];
-            List<PendingUse> pendingUses = [];
+            using BudgetedParserDictionary<string, SvgRectangle> definitions = new(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
+            using BudgetedParserList<PendingUse> pendingUses = new(budget, SvgMemoryCategory.Parser, PendingUseStorageBytes);
             int geometryElementCount = 0;
             ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
             int definitionsDepth = -1;
@@ -287,7 +292,7 @@ internal static class SvgRootParser
                     {
                         if (sawGraphicNode || hasRectangleStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede rendered content.");
                         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
-                        rectangleStyleRules.AddRange(ParseRectangleStyleSheet(ReadStyleElementText(reader), limits.MaximumNodes));
+                        ParseRectangleStyleSheet(ReadStyleElementText(reader), limits.MaximumNodes, rectangleStyleRules);
                         hasRectangleStyleSheet = true;
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
@@ -297,11 +302,12 @@ internal static class SvgRootParser
                 {
                     if (reader.Depth == definitionsDepth) definitionsDepth = -1;
                     if (reader.Depth == symbolDepth) { symbolDepth = -1; symbolId = null; }
-                    if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveAt(groupDepths.Count - 1); if (group.IsolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); }
+                    if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveLast(); if (group.IsolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); }
                     if (reader.Depth == rootDepth)
                     {
-                        foreach (PendingUse pendingUse in pendingUses)
+                        for (int pendingUseIndex = 0; pendingUseIndex < pendingUses.Count; pendingUseIndex++)
                         {
+                            PendingUse pendingUse = pendingUses[pendingUseIndex];
                             if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgRectangle definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local rectangle use references are implemented.");
                             SvgRectangle rectangle = ApplyUseOffset(definition, pendingUse.Reference);
                             rectangles[pendingUse.RectangleIndex] = rectangle; commands[pendingUse.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255);
@@ -673,10 +679,9 @@ internal static class SvgRootParser
         return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
     }
 
-    private static List<CssRule> ParseRectangleStyleSheet(string value, int maximumRules)
+    private static void ParseRectangleStyleSheet(string value, int maximumRules, BudgetedParserList<CssRule> rules)
     {
         value = StripCssComments(value);
-        List<CssRule> rules = [];
         int position = 0;
         while (position < value.Length)
         {
@@ -695,7 +700,6 @@ internal static class SvgRootParser
             position = closingBrace + 1;
         }
         if (rules.Count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A stylesheet must contain a rect, ID, or class selector rule.");
-        return rules;
     }
 
     private static string StripCssComments(string value)
@@ -746,12 +750,13 @@ internal static class SvgRootParser
         return true;
     }
 
-    private static InlineStyle GetStyleSheet(XmlReader reader, List<CssRule> rules, bool directChild, List<GroupScope> groupDepths, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static InlineStyle GetStyleSheet(XmlReader reader, BudgetedParserList<CssRule> rules, bool directChild, BudgetedParserList<GroupScope> groupDepths, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
         int colorSpecificity = -1, fillSpecificity = -1, fillOpacitySpecificity = -1, strokeSpecificity = -1, displaySpecificity = -1, visibilitySpecificity = -1, opacitySpecificity = -1, fillRuleSpecificity = -1;
-        foreach (CssRule rule in rules)
+        for (int ruleIndex = 0; ruleIndex < rules.Count; ruleIndex++)
         {
+            CssRule rule = rules[ruleIndex];
             workCounter.Consume(cancellationToken);
             if (!rule.Matches(reader, directChild, groupDepths)) continue;
             if (rule.Style.Color is not null && rule.Specificity >= colorSpecificity) { color = rule.Style.Color; colorSpecificity = rule.Specificity; }
@@ -1025,7 +1030,7 @@ internal static class SvgRootParser
 
     private readonly record struct CssRule(CssSelectorKind Kind, string Value, string? ExpectedValue, int Specificity, InlineStyle Style)
     {
-        internal bool Matches(XmlReader reader, bool directChild, List<GroupScope> groupDepths) => Kind switch
+        internal bool Matches(XmlReader reader, bool directChild, BudgetedParserList<GroupScope> groupDepths) => Kind switch
         {
             CssSelectorKind.Rectangle => reader.LocalName == "rect",
             CssSelectorKind.Group => reader.LocalName == "g",
