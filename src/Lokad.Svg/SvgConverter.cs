@@ -19,7 +19,6 @@ public static class SvgConverter
     /// <summary>Schedules one conversion on the thread pool.</summary>
     public static Task<ReadOnlyMemory<byte>> ConvertToPngAsync(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
-        ValidateInvocation(svg, options, cancellationToken);
         return Task.Run(() => ConvertToPng(svg, options, cancellationToken), cancellationToken);
     }
 
@@ -34,7 +33,6 @@ public static class SvgConverter
     /// <summary>Schedules one destination conversion on the thread pool.</summary>
     public static Task<int> ConvertToPngAsync(ReadOnlyMemory<byte> svg, Memory<byte> destination, SvgRenderOptions options, CancellationToken cancellationToken)
     {
-        ValidateInvocation(svg, options, cancellationToken);
         return Task.Run(() => ConvertToPng(svg, destination, options, cancellationToken), cancellationToken);
     }
 

@@ -16,3 +16,6 @@ releases reservations deterministically.
 Memory-to-memory asynchronous conversion will schedule one synchronous conversion
 on the thread pool and will observe cancellation throughout the implementation.
 It will not create per-shape or per-pixel tasks.
+
+If the supplied token is already canceled, the asynchronous entry points return a
+canceled task; they do not throw cancellation synchronously before scheduling.

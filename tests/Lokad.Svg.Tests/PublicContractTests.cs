@@ -76,4 +76,16 @@ public sealed class PublicContractTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
+
+    [Fact]
+    public async Task Async_cancellation_returns_a_canceled_task()
+    {
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+
+        Task<ReadOnlyMemory<byte>> task = SvgConverter.ConvertToPngAsync("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, cancellation.Token);
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await task);
+        Assert.True(task.IsCanceled);
+    }
 }
