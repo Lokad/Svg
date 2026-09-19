@@ -740,6 +740,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_the_work_limit_while_adding_definition_entries()
+    {
+        SvgRenderLimits limits = new(1_000_000, 1_000_000, 16, 16, 1_000_000, 16, 16, 1);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='first'/><rect id='second'/></defs></svg>"u8.ToArray(), limits, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Charges_parser_collection_sorting_to_the_shared_work_limit()
     {
         using BudgetedParserList<int> values = new(new RenderBudget(1_000), SvgMemoryCategory.Geometry, sizeof(int));

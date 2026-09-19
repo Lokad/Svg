@@ -225,7 +225,11 @@ internal static class SvgRootParser
                     {
                         string? id = symbolDepth >= 0 ? symbolId : reader.GetAttribute("id");
                         SvgRectangle rectangle = SvgLeafParser.ParseRectangle(reader, rootPaint, rootVisible, rootVisibility, AxisTransform.Identity, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), CssNamedColors, workCounter, cancellationToken);
-                        if (id is not null && !definitions.TryAdd(id, rectangle)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                        if (id is not null)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            if (!definitions.TryAdd(id, rectangle)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                        }
                         unsupported |= !reader.IsEmptyElement;
                         sawStyleableNode = true;
                     }
@@ -244,6 +248,7 @@ internal static class SvgRootParser
                     else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
                     {
                         SvgUseReference reference = SvgLeafParser.ParseUse(reader, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), workCounter, cancellationToken);
+                        workCounter.Consume(cancellationToken);
                         if (definitions.TryGetValue(reference.Id, out SvgRectangle definition))
                         {
                             SvgRectangle rectangle = SvgReferenceResolver.Apply(definition, reference);
