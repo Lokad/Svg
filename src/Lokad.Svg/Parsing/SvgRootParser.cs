@@ -73,7 +73,7 @@ internal static class SvgRootParser
         int height = ParseInteger(reader.GetAttribute("height") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle height is required."));
         string fill = reader.GetAttribute("fill") ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle fill is required currently.");
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
-        bool hasFill = fill != "none";
+        bool hasFill = fill is not "none" and not "transparent";
         SvgColor color = hasFill ? ParseColor(fill) : SvgColor.Transparent;
         byte alpha = ParseOpacity(reader.GetAttribute("fill-opacity"));
         return new SvgRectangle(x, y, width, height, new SvgColor(color.Red, color.Green, color.Blue, alpha), hasFill);
@@ -94,11 +94,12 @@ internal static class SvgRootParser
 
     private static SvgColor ParseColor(string fill)
     {
+        if (fill == "transparent") return SvgColor.Transparent;
         if (fill == "red") return new SvgColor(255, 0, 0, 255);
         if (fill == "blue") return new SvgColor(0, 0, 255, 255);
         if (fill.Length == 7 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red) && byte.TryParse(fill.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green) && byte.TryParse(fill.AsSpan(5, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue)) return new SvgColor(red, green, blue, 255);
         if (fill.Length == 4 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out red) && byte.TryParse(fill.AsSpan(2, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out green) && byte.TryParse(fill.AsSpan(3, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out blue)) return new SvgColor((byte)(red * 17), (byte)(green * 17), (byte)(blue * 17), 255);
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only red, blue, #RGB, and #RRGGBB rectangle fills are implemented.");
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only transparent, red, blue, #RGB, and #RRGGBB rectangle fills are implemented.");
     }
 
     private static double? ParseLength(string? value)
