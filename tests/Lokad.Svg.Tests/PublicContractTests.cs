@@ -88,4 +88,15 @@ public sealed class PublicContractTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await task);
         Assert.True(task.IsCanceled);
     }
+
+    [Fact]
+    public async Task Async_conversion_matches_the_synchronous_owned_result()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='#ff0000'/></svg>"u8.ToArray();
+
+        ReadOnlyMemory<byte> synchronous = SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> asynchronous = await SvgConverter.ConvertToPngAsync(svg, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(synchronous.ToArray(), asynchronous.ToArray());
+    }
 }
