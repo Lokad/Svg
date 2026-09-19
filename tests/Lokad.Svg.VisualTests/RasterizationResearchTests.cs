@@ -241,6 +241,51 @@ public sealed class RasterizationResearchTests
         Assert.Equal(7, ceiling.MaximumMismatchY);
     }
 
+    [Fact]
+    public void Skia_style_quarter_y_input_quantization_does_not_make_edge_strip_coverage_exact()
+    {
+        RgbaImage integerReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png")), 64);
+        RgbaImage fractionalReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-fractional-8x8.png")), 64);
+        RgbaImage halfGridReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-half-grid-8x8.png")), 64);
+
+        PixelComparison integer = PixelComparer.Compare(integerReference, RasterizeSixteenthSnappedEdgeStripTriangle(SnapYToQuarter(IntegerTriangle)));
+        PixelComparison fractional = PixelComparer.Compare(fractionalReference, RasterizeSixteenthSnappedEdgeStripTriangle(SnapYToQuarter(FractionalTriangle)));
+        PixelComparison halfGrid = PixelComparer.Compare(halfGridReference, RasterizeSixteenthSnappedEdgeStripTriangle(SnapYToQuarter(HalfGridTriangle)));
+
+        Assert.True(integer.DimensionsMatch);
+        Assert.False(integer.IsExact);
+        Assert.Equal(2, integer.ChangedPixelCount);
+        Assert.Equal((byte)1, integer.MaximumChannelError);
+        Assert.Equal((byte)1, integer.MaximumAlphaError);
+        Assert.Equal(2, integer.AlphaChangedPixelCount);
+        Assert.Equal(1, integer.MinimumMismatchX);
+        Assert.Equal(1, integer.MinimumMismatchY);
+        Assert.Equal(6, integer.MaximumMismatchX);
+        Assert.Equal(1, integer.MaximumMismatchY);
+
+        Assert.True(fractional.DimensionsMatch);
+        Assert.False(fractional.IsExact);
+        Assert.Equal(12, fractional.ChangedPixelCount);
+        Assert.Equal((byte)2, fractional.MaximumChannelError);
+        Assert.Equal((byte)2, fractional.MaximumAlphaError);
+        Assert.Equal(12, fractional.AlphaChangedPixelCount);
+        Assert.Equal(1, fractional.MinimumMismatchX);
+        Assert.Equal(1, fractional.MinimumMismatchY);
+        Assert.Equal(7, fractional.MaximumMismatchX);
+        Assert.Equal(6, fractional.MaximumMismatchY);
+
+        Assert.True(halfGrid.DimensionsMatch);
+        Assert.False(halfGrid.IsExact);
+        Assert.Equal(16, halfGrid.ChangedPixelCount);
+        Assert.Equal((byte)8, halfGrid.MaximumChannelError);
+        Assert.Equal((byte)8, halfGrid.MaximumAlphaError);
+        Assert.Equal(16, halfGrid.AlphaChangedPixelCount);
+        Assert.Equal(1, halfGrid.MinimumMismatchX);
+        Assert.Equal(1, halfGrid.MinimumMismatchY);
+        Assert.Equal(7, halfGrid.MaximumMismatchX);
+        Assert.Equal(7, halfGrid.MaximumMismatchY);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -347,6 +392,17 @@ public sealed class RasterizationResearchTests
         return snapped;
 
         static double Snap(double value, bool roundUp) => (roundUp ? Math.Ceiling(value * 16) : Math.Floor(value * 16)) / 16;
+    }
+
+    private static Point[] SnapYToQuarter(ReadOnlySpan<Point> triangle)
+    {
+        Point[] snapped = new Point[triangle.Length];
+        for (int index = 0; index < triangle.Length; index++)
+        {
+            Point point = triangle[index];
+            snapped[index] = new Point(point.X, Math.Floor(point.Y * 4 + 0.5) / 4);
+        }
+        return snapped;
     }
 
     private static RgbaImage RasterizeSixteenthSnappedEdgeStripTriangle(ReadOnlySpan<Point> triangle)

@@ -130,6 +130,18 @@ ceiling changes 22 (255/34), both with envelope `(1,1)`–`(7,7)`. Neither direc
 rounding rule explains the 20-pixel nearest-crossing result, so a fixed crossing
 tie direction is not a calibration candidate.
 
+A source-guided partial experiment takes only the pinned `SkAnalyticEdge::SnapY`
+input rule: round each endpoint Y to the nearest quarter pixel, with ties upward,
+then pass the resulting triangle to the existing nearest-sixteenth edge-strip
+model. It deliberately does not claim that Chrome selected that walker or model
+the walker's fixed edge stepping, per-row alpha accumulation, or final compositing.
+The integral probe remains at two changed pixels with maximum channel/alpha error
+1/1. The grid-aligned fractional probe improves from 23 changed pixels (255/32)
+to 12 (2/2), and the half-grid probe improves from 20 (255/24) to 16 (8/8).
+Those improvements identify endpoint-Y quantization as a worthwhile component to
+isolate, but the result is non-exact for every phase and remains a rejected
+partial model.
+
 ## Calibration source pin
 
 The Chromium `153.0.8010.52` tag used by the retained Windows recipe pins
