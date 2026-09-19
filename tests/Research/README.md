@@ -1,0 +1,17 @@
+# Rasterization research probes
+
+These are original CC0 calibration inputs, not supported-product fixtures. Each
+probe has a pinned-Chrome reference in `references/` and is deliberately asserted
+to fail public conversion with `UnsupportedFeature`. They preserve reproducible
+evidence for P1.3 geometry and paint-server work without turning an observed
+browser image into a product baseline.
+
+References require three independent fresh-process captures with identical decoded
+pixels. Regenerate one capture with:
+
+```powershell
+tools/capture-chrome.ps1 -InputPath tests/Research/circle-6x6.svg -OutputPath artifacts/research/circle.png -Width 6 -Height 6 -CacheDirectory artifacts/chrome
+```
+
+Do not replace a committed reference until the three-capture stability result,
+hashes and metadata have been reviewed.

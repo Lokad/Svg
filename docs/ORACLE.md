@@ -27,6 +27,15 @@ On Linux, pass its explicit pin instead:
 tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json
 ```
 
+Capture a specific research input without admitting it to the supported corpus:
+
+```powershell
+tools/capture-chrome.ps1 -InputPath tests/Research/circle-6x6.svg -OutputPath artifacts/research/circle.png -Width 6 -Height 6 -CacheDirectory artifacts/chrome
+```
+
+Repeat this command in separate processes and compare decoded PNGs before adding
+or changing research-oracle metadata.
+
 Each smoke output directory receives the exact PNG compared plus a JSON runtime
 fingerprint. The fingerprint records the pin, executable hash and file version
 when exposed by the platform, OS/architecture, locale, recipe and
