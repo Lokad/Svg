@@ -200,7 +200,7 @@ internal static class SvgRootParser
             using BudgetedParserList<GroupScope> groupDepths = new(budget, SvgMemoryCategory.Parser, GroupScopeStorageBytes);
             int nodeCount = 0;
             bool unsupported = false;
-            bool sawGraphicNode = false;
+            bool sawStyleableNode = false;
             using BudgetedParserList<CssRule> rectangleStyleRules = new(budget, SvgMemoryCategory.Parser, CssRuleStorageBytes);
             bool hasRectangleStyleSheet = false;
             using BudgetedParserDictionary<string, SvgRectangle> definitions = new(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
@@ -226,6 +226,7 @@ internal static class SvgRootParser
                         SvgRectangle rectangle = ParseRectangle(reader, rootPaint, rootVisible, rootVisibility, AxisTransform.Identity, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken));
                         if (id is not null && !definitions.TryAdd(id, rectangle)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                         unsupported |= !reader.IsEmptyElement;
+                        sawStyleableNode = true;
                     }
                     else if (definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol")
                     {
@@ -251,7 +252,7 @@ internal static class SvgRootParser
                             pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference));
                         }
                         unsupported |= !reader.IsEmptyElement;
-                        sawGraphicNode = true;
+                        sawStyleableNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
@@ -259,7 +260,7 @@ internal static class SvgRootParser
                         SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken));
                         scene.AddRectangle(rectangle);
                         unsupported |= !reader.IsEmptyElement;
-                        sawGraphicNode = true;
+                        sawStyleableNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "line")
                     {
@@ -267,7 +268,7 @@ internal static class SvgRootParser
                         SvgRectangle line = ParseLine(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken));
                         scene.AddRectangle(line);
                         unsupported |= !reader.IsEmptyElement;
-                        sawGraphicNode = true;
+                        sawStyleableNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "path")
                     {
@@ -278,7 +279,7 @@ internal static class SvgRootParser
                             scene.AddRectangles(path.Rectangles);
                         }
                         unsupported |= !reader.IsEmptyElement;
-                        sawGraphicNode = true;
+                        sawStyleableNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "polygon" or "polyline")
                     {
@@ -289,7 +290,7 @@ internal static class SvgRootParser
                             scene.AddRectangles(pointList.Rectangles);
                         }
                         unsupported |= !reader.IsEmptyElement;
-                        sawGraphicNode = true;
+                        sawStyleableNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
@@ -307,7 +308,7 @@ internal static class SvgRootParser
                     }
                     else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                     {
-                        if (sawGraphicNode || hasRectangleStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede rendered content.");
+                        if (sawStyleableNode || hasRectangleStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede supported definitions and rendered content.");
                         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
                         ParseRectangleStyleSheet(ReadStyleElementText(reader), limits.MaximumNodes, rectangleStyleRules, workCounter, cancellationToken);
                         hasRectangleStyleSheet = true;

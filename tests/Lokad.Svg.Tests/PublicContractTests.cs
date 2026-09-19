@@ -164,6 +164,14 @@ public sealed class PublicContractTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
+    [Fact]
+    public void Stylesheets_after_rectangle_definitions_are_rejected_before_instancing()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><rect id='tile' width='1' height='1'/></defs><style>rect { fill: red; }</style><use href='#tile'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
     [Theory]
     [InlineData("<line x1='0' y1='0' x2='1' y2='0' stroke='red' stroke-width='2'><animate attributeName='stroke' values='red;blue' dur='1s'/></line>")]
     [InlineData("<path d='M 0 0 H 1 V 1 H 0 Z' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></path>")]
