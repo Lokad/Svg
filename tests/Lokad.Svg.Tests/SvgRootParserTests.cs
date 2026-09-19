@@ -96,6 +96,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Applies_stylesheet_opacity_and_display_to_rectangle_use_instances()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#half { opacity: 0.5; } .hidden { display: none; }</style><defs><rect id='tile' width='1' height='1' fill='red'/></defs><use id='half' href='#tile'/><use class='hidden' href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal((byte)128, root.Rectangles[0].Color.Alpha);
+        Assert.True(root.Rectangles[0].HasFill);
+        Assert.False(root.Rectangles[1].HasFill);
+    }
+
+    [Fact]
     public void Rejects_paint_styles_on_rectangle_use_instances()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='1' height='1'/></defs><use href='#tile' style='fill: red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

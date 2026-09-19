@@ -242,7 +242,7 @@ internal static class SvgRootParser
                     }
                     else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
                     {
-                        SvgUseReference reference = ParseUse(reader);
+                        SvgUseReference reference = ParseUse(reader, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken));
                         if (definitions.TryGetValue(reference.Id, out SvgRectangle definition))
                         {
                             SvgRectangle rectangle = SvgReferenceResolver.Apply(definition, reference);
@@ -453,11 +453,11 @@ internal static class SvgRootParser
         return x1 != x2 ? new SvgRectangle(Math.Min(x1, x2), y1 - halfWidth, Math.Abs((long)x2 - x1), strokeWidth, color, painted, null) : new SvgRectangle(x1 - halfWidth, Math.Min(y1, y2), strokeWidth, Math.Abs((long)y2 - y1), color, painted, null);
     }
 
-    private static SvgUseReference ParseUse(XmlReader reader)
+    private static SvgUseReference ParseUse(XmlReader reader, InlineStyle styleSheet)
     {
-        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, ParseInlineStyle(reader.GetAttribute("style")));
+        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, ParseInlineStyle(reader.GetAttribute("style")), styleSheet);
         if (style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Paint styles on use elements are not implemented.");
-        if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "href" or "x" or "y" or "transform" or "opacity" or "display" or "visibility" or "style") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
+        if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class" or "href" or "x" or "y" or "transform" or "opacity" or "display" or "visibility" or "style") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
         string href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A use element requires an href.");
         if (href.Length < 2 || href[0] != '#') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local rectangle use references are implemented.");
         double x = ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0"); double y = ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0");
