@@ -44,10 +44,6 @@ public static class SvgConverter
     {
         ArgumentNullException.ThrowIfNull(options);
         cancellationToken.ThrowIfCancellationRequested();
-        if (options.Viewport is not null)
-        {
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Explicit logical viewports are not implemented currently.");
-        }
         if (svg.Length > options.Limits.MaximumInputBytes)
         {
             throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
@@ -56,7 +52,7 @@ public static class SvgConverter
 
     private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, CancellationToken cancellationToken)
     {
-        (double width, double height) = (root.Width, root.Height) switch
+        (double width, double height) = options.Viewport is SvgViewport viewport ? (viewport.Width, viewport.Height) : (root.Width, root.Height) switch
         {
             (double explicitWidth, double explicitHeight) => (explicitWidth, explicitHeight),
             (null, null) => (300, 150),

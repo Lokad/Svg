@@ -5,13 +5,13 @@ namespace Lokad.Svg.Tests;
 public sealed class PublicContractTests
 {
     [Fact]
-    public void Explicit_viewports_are_rejected_until_viewport_resolution_is_implemented()
+    public void Explicit_viewports_override_root_outer_dimensions()
     {
-        SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        SvgRenderOptions options = new(new SvgViewport(2, 3), 1, SvgColor.Transparent, SvgRenderLimits.Default);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), options, CancellationToken.None));
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), options, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(new byte[] { 0, 0, 0, 2, 0, 0, 0, 3 }, png.Span.Slice(16, 8).ToArray());
     }
 
     [Fact]
