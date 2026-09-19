@@ -13,7 +13,7 @@ public sealed class SvgRenderLimits
         int maximumNodes,
         int maximumPathCommands,
         int maximumWorkUnits)
-        : this(maximumAccountedBytes, maximumInputBytes, maximumDimension, maximumPixels, maximumEncodedPngBytes, maximumNodes, maximumPathCommands, maximumWorkUnits, 128)
+        : this(maximumAccountedBytes, maximumInputBytes, maximumDimension, maximumPixels, maximumEncodedPngBytes, maximumNodes, maximumPathCommands, maximumWorkUnits, 128, 256)
     {
     }
 
@@ -28,6 +28,22 @@ public sealed class SvgRenderLimits
         int maximumPathCommands,
         int maximumWorkUnits,
         int maximumXmlDepth)
+        : this(maximumAccountedBytes, maximumInputBytes, maximumDimension, maximumPixels, maximumEncodedPngBytes, maximumNodes, maximumPathCommands, maximumWorkUnits, maximumXmlDepth, 256)
+    {
+    }
+
+    /// <summary>Initializes the provisional limits documented by the project plan, including XML nesting and per-element attributes.</summary>
+    public SvgRenderLimits(
+        long maximumAccountedBytes,
+        int maximumInputBytes,
+        int maximumDimension,
+        int maximumPixels,
+        int maximumEncodedPngBytes,
+        int maximumNodes,
+        int maximumPathCommands,
+        int maximumWorkUnits,
+        int maximumXmlDepth,
+        int maximumAttributesPerElement)
     {
         if (maximumAccountedBytes <= 0) throw new ArgumentOutOfRangeException(nameof(maximumAccountedBytes));
         if (maximumInputBytes <= 0) throw new ArgumentOutOfRangeException(nameof(maximumInputBytes));
@@ -38,6 +54,7 @@ public sealed class SvgRenderLimits
         if (maximumPathCommands <= 0) throw new ArgumentOutOfRangeException(nameof(maximumPathCommands));
         if (maximumWorkUnits <= 0) throw new ArgumentOutOfRangeException(nameof(maximumWorkUnits));
         if (maximumXmlDepth <= 0) throw new ArgumentOutOfRangeException(nameof(maximumXmlDepth));
+        if (maximumAttributesPerElement <= 0) throw new ArgumentOutOfRangeException(nameof(maximumAttributesPerElement));
 
         MaximumAccountedBytes = maximumAccountedBytes;
         MaximumInputBytes = maximumInputBytes;
@@ -48,10 +65,11 @@ public sealed class SvgRenderLimits
         MaximumPathCommands = maximumPathCommands;
         MaximumWorkUnits = maximumWorkUnits;
         MaximumXmlDepth = maximumXmlDepth;
+        MaximumAttributesPerElement = maximumAttributesPerElement;
     }
 
     /// <summary>Gets the provisional default limits.</summary>
-    public static SvgRenderLimits Default { get; } = new(268_435_456, 16_777_216, 16_384, 16_777_216, 134_217_728, 100_000, 1_000_000, 100_000_000, 128);
+    public static SvgRenderLimits Default { get; } = new(268_435_456, 16_777_216, 16_384, 16_777_216, 134_217_728, 100_000, 1_000_000, 100_000_000, 128, 256);
 
     public long MaximumAccountedBytes { get; }
     public int MaximumInputBytes { get; }
@@ -62,4 +80,5 @@ public sealed class SvgRenderLimits
     public int MaximumPathCommands { get; }
     public int MaximumWorkUnits { get; }
     public int MaximumXmlDepth { get; }
+    public int MaximumAttributesPerElement { get; }
 }

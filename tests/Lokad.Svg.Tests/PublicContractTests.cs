@@ -71,12 +71,19 @@ public sealed class PublicContractTests
         Assert.Equal(16_777_216, limits.MaximumPixels);
         Assert.Equal(134_217_728, limits.MaximumEncodedPngBytes);
         Assert.Equal(128, limits.MaximumXmlDepth);
+        Assert.Equal(256, limits.MaximumAttributesPerElement);
     }
 
     [Fact]
     public void Render_limits_reject_a_nonpositive_XML_depth()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderLimits(1024, 1024, 16, 16, 1024, 16, 16, 16, 0));
+    }
+
+    [Fact]
+    public void Render_limits_reject_a_nonpositive_attribute_limit()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderLimits(1024, 1024, 16, 16, 1024, 16, 16, 16, 16, 0));
     }
 
     [Fact]

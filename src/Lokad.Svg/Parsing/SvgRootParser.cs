@@ -178,7 +178,7 @@ internal static class SvgRootParser
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (reader.NodeType != XmlNodeType.Element) continue;
-            if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
+            ValidateElementStructure(reader, limits);
             if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
             InlineStyle rootStyle = ParseInlineStyle(reader.GetAttribute("style"));
             SvgPaint rootPaint = ParseRootPaint(reader, rootStyle);
@@ -211,7 +211,7 @@ internal static class SvgRootParser
                 cancellationToken.ThrowIfCancellationRequested();
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
+                    ValidateElementStructure(reader, limits);
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
                     bool directChild = reader.Depth == rootDepth + 1;
@@ -345,6 +345,12 @@ internal static class SvgRootParser
             }
             catch { root.Dispose(); throw; }
         }
+    }
+
+    private static void ValidateElementStructure(XmlReader reader, SvgRenderLimits limits)
+    {
+        if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
+        if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
     }
 
     private static SvgPaint ParseGroupPaint(XmlReader reader, SvgPaint inheritedPaint, InlineStyle style, InlineStyle styleSheet)
