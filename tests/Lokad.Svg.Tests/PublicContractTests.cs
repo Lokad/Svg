@@ -264,6 +264,33 @@ public sealed class PublicContractTests
     }
 
     [Theory]
+    [InlineData("<rect vector-effect='non-scaling-stroke'/>")]
+    [InlineData("<style>circle { fill: red; }</style><rect/>")]
+    [InlineData("<style>rect { stroke-width: 1; }</style><rect/>")]
+    [InlineData("<style>rect { fill: red</style><rect/>")]
+    [InlineData("<path d='m 0 0 h 1 v 1 h -1 z'/>")]
+    [InlineData("<polygon points='0,0 1,1 1,2 0,2'/>")]
+    [InlineData("<rect x='0.1'/>")]
+    [InlineData("<foreign:rect xmlns:foreign='urn:foreign' width='1' height='1'/>")]
+    [InlineData("<g opacity='0.5'><g opacity='0.5'><rect/></g></g>")]
+    public void Unsupported_presentation_namespace_and_syntax_forms_are_categorized_at_public_conversion(string content)
+    {
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'>" + content + "</svg>";
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Nonfinite_color_syntax_is_categorized_as_malformed_public_input()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect fill='hsl(NaN 50% 50%)'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Theory]
     [InlineData("<style>.path { fill: red; opacity: 0.5; }</style><path class='path' d='M 0 0 H 2 V 2 H 0 Z'/>")]
     [InlineData("<style>.accent { stroke: red; }</style><line class='accent' x1='0' y1='1' x2='2' y2='1' stroke-width='2'/>")]
     [InlineData("<style>.layer { fill: red; }</style><g class='layer'><rect width='2' height='2'/></g>")]
@@ -300,6 +327,32 @@ public sealed class PublicContractTests
         ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='20' viewBox='0 0 2 1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
 
         Assert.Equal(new byte[] { 0, 0, 0, 20, 0, 0, 0, 10 }, png.Span.Slice(16, 8).ToArray());
+    }
+
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><rect/><rect/></svg>", 1, 16, 16)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><g><rect/></g></svg>", 16, 2, 16)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>", 16, 16, 2)]
+    public void Configured_structural_limits_fail_at_public_conversion(string svg, int maximumNodes, int maximumXmlDepth, int maximumAttributes)
+    {
+        SvgRenderLimits limits = new(32_768, 1_024, 16, 256, 4_096, maximumNodes, 16, 1_000, maximumXmlDepth, maximumAttributes);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Cumulative_path_command_limit_fails_at_public_conversion()
+    {
+        SvgRenderLimits limits = new(32_768, 1_024, 16, 256, 4_096, 16, 9, 1_000);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 1 V 1 H 0 Z'/><path d='M 2,0 H 3 V 1 H 2 Z'/></svg>"u8.ToArray();
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
 
     [Fact]
