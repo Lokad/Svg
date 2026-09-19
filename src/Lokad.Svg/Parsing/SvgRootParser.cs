@@ -238,41 +238,8 @@ internal static class SvgRootParser
                         state.SawStyleableNode = true;
                     }
                     else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
-                    else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
+                    else if (SvgRenderedLeafParser.TryParse(reader, directChild, directChild || nestedInGroup, root, state, limits, budget, CssNamedColors, workCounter, cancellationToken))
                     {
-                        AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
-                        SvgRectangle rectangle = SvgLeafParser.ParseRectangle(reader, state.Groups.Count == 0 ? root.Paint : state.Groups[^1].Paint, state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible, transform, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), CssNamedColors, workCounter, cancellationToken);
-                        state.Scene.AddRectangle(rectangle);
-                        state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                        state.SawStyleableNode = true;
-                    }
-                    else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "line")
-                    {
-                        AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
-                        SvgRectangle line = SvgLeafParser.ParseLine(reader, state.Groups.Count == 0 ? root.Paint : state.Groups[^1].Paint, state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible, transform, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), CssNamedColors, workCounter, cancellationToken);
-                        state.Scene.AddRectangle(line);
-                        state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                        state.SawStyleableNode = true;
-                    }
-                    else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "path")
-                    {
-                        AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
-                        using (SvgParsedGeometry path = SvgLeafParser.ParseOrthogonalPath(reader, state.Groups.Count == 0 ? root.Paint : state.Groups[^1].Paint, state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible, transform, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), limits.MaximumPathCommands - state.GeometryElementCount, budget, workCounter, cancellationToken, CssNamedColors))
-                        {
-                            state.GeometryElementCount += path.ElementCount;
-                            state.Scene.AddRectangles(path.Rectangles);
-                        }
-                        state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                        state.SawStyleableNode = true;
-                    }
-                    else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "polygon" or "polyline")
-                    {
-                        AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
-                        using (SvgParsedGeometry pointList = SvgLeafParser.ParseOrthogonalPointList(reader, reader.LocalName, state.Groups.Count == 0 ? root.Paint : state.Groups[^1].Paint, state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible, transform, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), limits.MaximumPathCommands - state.GeometryElementCount, budget, workCounter, cancellationToken, CssNamedColors))
-                        {
-                            state.GeometryElementCount += pointList.ElementCount;
-                            state.Scene.AddRectangles(pointList.Rectangles);
-                        }
                         state.HasUnsupportedContent |= !reader.IsEmptyElement;
                         state.SawStyleableNode = true;
                     }
