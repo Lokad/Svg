@@ -26,6 +26,17 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Parser_work_reduces_the_raster_work_allowance()
+    {
+        SvgRenderLimits limits = new(1024, 1024, 16, 16, 1024, 16, 16, 1);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><style>rect { fill: red; }</style><rect width='1' height='1'/></svg>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Encoding_stops_before_exceeding_the_configured_png_limit()
     {
         SvgRenderLimits limits = new(1024, 1024, 16, 16, 1, 16, 16, 16);

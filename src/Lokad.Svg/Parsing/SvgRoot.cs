@@ -3,7 +3,7 @@ namespace Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
 /// <summary>Represents the parsed root viewport dimensions before scene construction.</summary>
-internal readonly record struct SvgRoot(double? Width, double? Height, SvgViewBox? ViewBox, SvgRectangle[] Rectangles, SvgDrawCommand[] Commands, bool HasUnsupportedChild, SvgSceneStorage? SceneStorage) : IDisposable
+internal readonly record struct SvgRoot(double? Width, double? Height, SvgViewBox? ViewBox, SvgRectangle[] Rectangles, SvgDrawCommand[] Commands, bool HasUnsupportedChild, long ParserWorkUnits, SvgSceneStorage? SceneStorage) : IDisposable
 {
     public void Dispose() => SceneStorage?.Dispose();
 }

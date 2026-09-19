@@ -85,7 +85,7 @@ public static class SvgConverter
             }
         }
         (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
-        long workUnits = 0;
+        long workUnits = root.ParserWorkUnits;
         int commandIndex = RenderCommands(0, pixels, false);
         if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
         return new RasterizedSurface(outputWidth, outputHeight, pixels, surface);

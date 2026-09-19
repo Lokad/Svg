@@ -180,7 +180,7 @@ internal static class SvgRootParser
             double? width = ParseLength(reader.GetAttribute("width"));
             double? height = ParseLength(reader.GetAttribute("height"));
             SvgViewBox? viewBox = ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
-            if (reader.IsEmptyElement) return CompleteRoot(new SvgRoot(width, height, viewBox, [], [], false, null));
+            if (reader.IsEmptyElement) return CompleteRoot(new SvgRoot(width, height, viewBox, [], [], false, 0, null));
             int rootDepth = reader.Depth;
             using BudgetedSceneList<SvgRectangle> rectangles = new(budget, SvgSceneArrayKind.Rectangle);
             using BudgetedSceneList<SvgDrawCommand> commands = new(budget, SvgSceneArrayKind.DrawCommand);
@@ -194,6 +194,7 @@ internal static class SvgRootParser
             Dictionary<string, SvgRectangle> definitions = [];
             List<PendingUse> pendingUses = [];
             int geometryElementCount = 0;
+            ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
             int definitionsDepth = -1;
             int symbolDepth = -1;
             string? symbolId = null;
@@ -209,7 +210,7 @@ internal static class SvgRootParser
                     if (definitionsDepth >= 0 && (reader.Depth == definitionsDepth + 1 || reader.Depth == symbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
                         string? id = symbolDepth >= 0 ? symbolId : reader.GetAttribute("id");
-                        SvgRectangle rectangle = ParseRectangle(reader, rootPaint, rootVisible, rootVisibility, AxisTransform.Identity, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths));
+                        SvgRectangle rectangle = ParseRectangle(reader, rootPaint, rootVisible, rootVisibility, AxisTransform.Identity, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken));
                         if (id is not null && !definitions.TryAdd(id, rectangle)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                     }
                     else if (definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol")
@@ -241,7 +242,7 @@ internal static class SvgRootParser
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths));
+                        SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken));
                         rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                         unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
@@ -256,7 +257,7 @@ internal static class SvgRootParser
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "path")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        ParsedGeometry path = ParseOrthogonalPath(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths), limits.MaximumPathCommands - geometryElementCount, cancellationToken);
+                        ParsedGeometry path = ParseOrthogonalPath(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), limits.MaximumPathCommands - geometryElementCount, workCounter, cancellationToken);
                         geometryElementCount += path.ElementCount;
                         rectangles.AddRange(path.Rectangles); foreach (SvgRectangle rectangle in path.Rectangles) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                         sawGraphicNode = true;
@@ -264,7 +265,7 @@ internal static class SvgRootParser
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "polygon" or "polyline")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        ParsedGeometry pointList = ParseOrthogonalPointList(reader, reader.LocalName, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths), limits.MaximumPathCommands - geometryElementCount, cancellationToken);
+                        ParsedGeometry pointList = ParseOrthogonalPointList(reader, reader.LocalName, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken), limits.MaximumPathCommands - geometryElementCount, workCounter, cancellationToken);
                         geometryElementCount += pointList.ElementCount;
                         rectangles.AddRange(pointList.Rectangles); foreach (SvgRectangle rectangle in pointList.Rectangles) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                         sawGraphicNode = true;
@@ -272,7 +273,7 @@ internal static class SvgRootParser
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
                         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style"));
-                        InlineStyle styleSheet = GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths);
+                        InlineStyle styleSheet = GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken);
                         SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, style, styleSheet);
                         bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(GetProperty(reader, style.Display, styleSheet.Display, "display"));
                         bool visibility = ParseVisibility(GetProperty(reader, style.Visibility, styleSheet.Visibility, "visibility"), groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
@@ -307,7 +308,7 @@ internal static class SvgRootParser
                         }
                         if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255));
                         SvgSceneStorage scene = SvgSceneStorage.Create(rectangles, commands);
-                        try { return CompleteRoot(new SvgRoot(width, height, viewBox, scene.Rectangles, scene.Commands, unsupported, scene)); }
+                        try { return CompleteRoot(new SvgRoot(width, height, viewBox, scene.Rectangles, scene.Commands, unsupported, workCounter.Used, scene)); }
                         catch { scene.Dispose(); throw; }
                     }
                 }
@@ -442,7 +443,7 @@ internal static class SvgRootParser
         return rectangle with { X = reference.Transform.ScaleX * (rectangle.X + reference.X) + reference.Transform.OffsetX, Y = reference.Transform.ScaleY * (rectangle.Y + reference.Y) + reference.Transform.OffsetY, Width = reference.Transform.ScaleX * rectangle.Width, Height = reference.Transform.ScaleY * rectangle.Height, Color = new SvgColor(rectangle.Color.Red, rectangle.Color.Green, rectangle.Color.Blue, MultiplyAlpha(rectangle.Color.Alpha, reference.Opacity)), HasFill = rectangle.HasFill && reference.IsPainted };
     }
 
-    private static ParsedGeometry ParseOrthogonalPath(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, int maximumGeometryElements, CancellationToken cancellationToken)
+    private static ParsedGeometry ParseOrthogonalPath(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, int maximumGeometryElements, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Path attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
         string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
@@ -465,7 +466,7 @@ internal static class SvgRootParser
         if (!closed || points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
         if (points.Count > maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
         for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) { SvgPoint start = points[pointIndex]; SvgPoint end = points[(pointIndex + 1) % points.Count]; if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented."); }
-        ValidateSimpleOrthogonalContour(points, "path", cancellationToken);
+        ValidateSimpleOrthogonalContour(points, "path", workCounter, cancellationToken);
         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style")); AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
         SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, styleSheet.Fill, "fill"), GetProperty(reader, style.FillOpacity, styleSheet.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, styleSheet.Color, "color"), inheritedPaint); ValidateFillRule(GetProperty(reader, style.FillRule, styleSheet.FillRule, "fill-rule")); ValidateStroke(GetProperty(reader, style.Stroke, styleSheet.Stroke, "stroke"));
         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity")); SvgColor color = ResolvePaintColor(paint, opacity);
@@ -475,7 +476,7 @@ internal static class SvgRootParser
         for (int boundaryIndex = 0; boundaryIndex < boundaries.Count - 1; boundaryIndex++)
         {
             int top = boundaries[boundaryIndex]; int bottom = boundaries[boundaryIndex + 1]; List<int> intersections = [];
-            for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) { SvgPoint start = points[pointIndex]; SvgPoint end = points[(pointIndex + 1) % points.Count]; if (start.X == end.X && Math.Min(start.Y, end.Y) <= top && Math.Max(start.Y, end.Y) >= bottom) intersections.Add(start.X); }
+            for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) { workCounter.Consume(cancellationToken); SvgPoint start = points[pointIndex]; SvgPoint end = points[(pointIndex + 1) % points.Count]; if (start.X == end.X && Math.Min(start.Y, end.Y) <= top && Math.Max(start.Y, end.Y) >= bottom) intersections.Add(start.X); }
             intersections.Sort();
             if (intersections.Count % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed absolute axis-aligned integer paths are implemented.");
             for (int intersectionIndex = 0; intersectionIndex < intersections.Count; intersectionIndex += 2) { int left = intersections[intersectionIndex]; int right = intersections[intersectionIndex + 1]; if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed absolute axis-aligned integer paths are implemented."); if (geometryElementCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path rectangle-band count exceeds the configured path-command limit."); rectangles.Add(new SvgRectangle(ApplyTransform(transform.ScaleX, left, transform.OffsetX), ApplyTransform(transform.ScaleY, top, transform.OffsetY), ApplyTransformScale(transform.ScaleX, right - left), ApplyTransformScale(transform.ScaleY, bottom - top), color, hasFill, null)); geometryElementCount++; }
@@ -489,7 +490,7 @@ internal static class SvgRootParser
         }
     }
 
-    private static ParsedGeometry ParseOrthogonalPointList(XmlReader reader, string elementName, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, int maximumGeometryElements, CancellationToken cancellationToken)
+    private static ParsedGeometry ParseOrthogonalPointList(XmlReader reader, string elementName, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, int maximumGeometryElements, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "points" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
         string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
@@ -504,7 +505,7 @@ internal static class SvgRootParser
             SvgPoint start = points[index]; SvgPoint end = points[(index + 1) % points.Count];
             if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
         }
-        ValidateSimpleOrthogonalContour(points, elementName, cancellationToken);
+        ValidateSimpleOrthogonalContour(points, elementName, workCounter, cancellationToken);
         int geometryElementCount = points.Count;
         List<int> boundaries = points.Select(static point => point.Y).Distinct().Order().ToList();
         List<SvgRectangle> rectangles = [];
@@ -517,6 +518,7 @@ internal static class SvgRootParser
             List<int> intersections = [];
             for (int pointIndex = 0; pointIndex < points.Count; pointIndex++)
             {
+                workCounter.Consume(cancellationToken);
                 SvgPoint start = points[pointIndex]; SvgPoint end = points[(pointIndex + 1) % points.Count];
                 if (start.X == end.X && Math.Min(start.Y, end.Y) <= top && Math.Max(start.Y, end.Y) >= bottom) intersections.Add(start.X);
             }
@@ -535,7 +537,7 @@ internal static class SvgRootParser
         return new ParsedGeometry(rectangles.ToArray(), geometryElementCount);
     }
 
-    private static void ValidateSimpleOrthogonalContour(List<SvgPoint> points, string elementName, CancellationToken cancellationToken)
+    private static void ValidateSimpleOrthogonalContour(List<SvgPoint> points, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         for (int firstIndex = 0; firstIndex < points.Count; firstIndex++)
         {
@@ -543,7 +545,7 @@ internal static class SvgRootParser
             bool firstHorizontal = firstStart.Y == firstEnd.Y;
             for (int secondIndex = firstIndex + 1; secondIndex < points.Count; secondIndex++)
             {
-                if ((secondIndex & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                workCounter.Consume(cancellationToken);
                 SvgPoint secondStart = points[secondIndex]; SvgPoint secondEnd = points[(secondIndex + 1) % points.Count];
                 bool secondHorizontal = secondStart.Y == secondEnd.Y;
                 bool intersects = firstHorizontal == secondHorizontal
@@ -744,12 +746,13 @@ internal static class SvgRootParser
         return true;
     }
 
-    private static InlineStyle GetStyleSheet(XmlReader reader, List<CssRule> rules, bool directChild, List<GroupScope> groupDepths)
+    private static InlineStyle GetStyleSheet(XmlReader reader, List<CssRule> rules, bool directChild, List<GroupScope> groupDepths, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
         int colorSpecificity = -1, fillSpecificity = -1, fillOpacitySpecificity = -1, strokeSpecificity = -1, displaySpecificity = -1, visibilitySpecificity = -1, opacitySpecificity = -1, fillRuleSpecificity = -1;
         foreach (CssRule rule in rules)
         {
+            workCounter.Consume(cancellationToken);
             if (!rule.Matches(reader, directChild, groupDepths)) continue;
             if (rule.Style.Color is not null && rule.Specificity >= colorSpecificity) { color = rule.Style.Color; colorSpecificity = rule.Specificity; }
             if (rule.Style.Fill is not null && rule.Specificity >= fillSpecificity) { fill = rule.Style.Fill; fillSpecificity = rule.Specificity; }
@@ -1000,6 +1003,23 @@ internal static class SvgRootParser
     private readonly record struct PendingUse(int RectangleIndex, int CommandIndex, UseReference Reference);
 
     private readonly record struct ParsedGeometry(SvgRectangle[] Rectangles, int ElementCount);
+
+    private sealed class ParserWorkCounter
+    {
+        private readonly long _maximumWorkUnits;
+        private long _used;
+
+        internal ParserWorkCounter(long maximumWorkUnits) => _maximumWorkUnits = maximumWorkUnits;
+
+        internal long Used => _used;
+
+        internal void Consume(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (_used >= _maximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG parsing work exceeds the configured limit.");
+            _used++;
+        }
+    }
 
     private enum CssSelectorKind { Rectangle, Group, Id, Class, RectangleClass, RectangleId, GroupClass, GroupId, AttributePresent, AttributeEquals, DescendantGroup, ChildGroup }
 
