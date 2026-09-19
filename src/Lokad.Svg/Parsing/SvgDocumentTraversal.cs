@@ -68,7 +68,7 @@ internal static class SvgDocumentTraversal
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, workCounter, cancellationToken);
                     if (root.Opacity != 255) state.Scene.EndOpacityScope();
                     SvgSceneStorage sceneStorage = state.Scene.Build();
-                    try { return CompleteRoot(reader, cancellationToken, new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Rectangles, sceneStorage.Commands, state.HasUnsupportedContent, workCounter.Used, sceneStorage)); }
+                    try { return CompleteRoot(reader, cancellationToken, new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Geometries, sceneStorage.Commands, state.HasUnsupportedContent, workCounter.Used, sceneStorage)); }
                     catch { sceneStorage.Dispose(); throw; }
                 }
             }

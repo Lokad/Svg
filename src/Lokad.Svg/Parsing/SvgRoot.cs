@@ -3,8 +3,11 @@ namespace Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
 /// <summary>Represents the parsed root viewport dimensions before scene construction.</summary>
-internal readonly record struct SvgRoot(double? Width, double? Height, SvgViewBox? ViewBox, SvgRectangle[] Rectangles, SvgDrawCommand[] Commands, bool HasUnsupportedChild, long ParserWorkUnits, SvgSceneStorage? SceneStorage) : IDisposable
+internal readonly record struct SvgRoot(double? Width, double? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, long ParserWorkUnits, SvgSceneStorage? SceneStorage) : IDisposable
 {
+    /// <summary>Materializes rectangles only for parser characterization tests.</summary>
+    internal SvgRectangle[] Rectangles => SvgGeometry.ToRectangles(Geometries);
+
     public void Dispose() => SceneStorage?.Dispose();
 }
 
@@ -19,60 +22,82 @@ internal readonly record struct SvgRectangle(double X, double Y, double Width, d
 
 internal readonly record struct SvgStroke(SvgColor Color, int Width);
 
-internal enum SvgDrawCommandKind { Rectangle, BeginGroup, EndGroup }
+internal enum SvgGeometryKind { Rectangle }
+
+/// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
+internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle Rectangle)
+{
+    internal static SvgGeometry FromRectangle(SvgRectangle rectangle) => new(SvgGeometryKind.Rectangle, rectangle);
+
+    internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
+    {
+        SvgRectangle[] rectangles = new SvgRectangle[geometries.Length];
+        for (int index = 0; index < geometries.Length; index++)
+        {
+            if (geometries[index].Kind != SvgGeometryKind.Rectangle) throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains unsupported geometry.");
+            rectangles[index] = geometries[index].Rectangle;
+        }
+        return rectangles;
+    }
+}
+
+internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
 /// <summary>References retained scene geometry or marks an opacity-scope boundary.</summary>
-internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int RectangleIndex, byte Opacity);
+internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, byte Opacity);
 
 internal readonly record struct SvgPoint(int X, int Y);
 
 internal static class SvgSceneMemory
 {
     private const int ArrayHeaderBytes = 32;
-    private const int RectangleBytes = 56;
+    private const int GeometryBytes = 64;
     private const int DrawCommandBytes = 16;
 
     internal static long GetArrayByteCount(SvgSceneArrayKind kind, int count)
-        => count == 0 ? 0 : checked(ArrayHeaderBytes + (long)count * (kind == SvgSceneArrayKind.Rectangle ? RectangleBytes : DrawCommandBytes));
+        => count == 0 ? 0 : checked(ArrayHeaderBytes + (long)count * (kind == SvgSceneArrayKind.Geometry ? GeometryBytes : DrawCommandBytes));
 }
 
-internal enum SvgSceneArrayKind { Rectangle, DrawCommand }
+internal enum SvgSceneArrayKind { Geometry, DrawCommand }
 
 internal sealed class SvgSceneStorage : IDisposable
 {
-    private readonly RenderBudget.BudgetReservation? _rectangleReservation;
+    private readonly RenderBudget.BudgetReservation? _geometryReservation;
     private readonly RenderBudget.BudgetReservation? _commandReservation;
 
-    private SvgSceneStorage(SvgRectangle[] rectangles, RenderBudget.BudgetReservation? rectangleReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation)
+    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation)
     {
-        Rectangles = rectangles;
+        Geometries = geometries;
         Commands = commands;
-        _rectangleReservation = rectangleReservation;
+        _geometryReservation = geometryReservation;
         _commandReservation = commandReservation;
     }
 
-    internal SvgRectangle[] Rectangles { get; }
+    internal SvgGeometry[] Geometries { get; }
+
+    /// <summary>Materializes rectangles only for parser characterization tests.</summary>
+    internal SvgRectangle[] Rectangles => SvgGeometry.ToRectangles(Geometries);
 
     internal SvgDrawCommand[] Commands { get; }
 
-    internal static SvgSceneStorage Create(BudgetedSceneList<SvgRectangle> rectangles, BudgetedSceneList<SvgDrawCommand> commands)
+    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands)
     {
-        OwnedSceneArray<SvgRectangle> ownedRectangles = rectangles.Detach();
+        OwnedSceneArray<SvgGeometry> ownedGeometries = geometries.Detach();
         try
         {
             OwnedSceneArray<SvgDrawCommand> ownedCommands = commands.Detach();
-            return new SvgSceneStorage(ownedRectangles.Items, ownedRectangles.Reservation, ownedCommands.Items, ownedCommands.Reservation);
+            return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation);
         }
         catch
         {
-            ownedRectangles.Dispose();
+            ownedGeometries.Dispose();
             throw;
         }
     }
 
     public void Dispose()
     {
-        _rectangleReservation?.Dispose();
+        _geometryReservation?.Dispose();
         _commandReservation?.Dispose();
     }
 }
@@ -80,42 +105,43 @@ internal sealed class SvgSceneStorage : IDisposable
 /// <summary>Owns the mutable, budgeted scene construction phase until arrays transfer to scene storage.</summary>
 internal sealed class SvgSceneBuilder : IDisposable
 {
-    private readonly BudgetedSceneList<SvgRectangle> _rectangles;
+    private readonly BudgetedSceneList<SvgGeometry> _geometries;
     private readonly BudgetedSceneList<SvgDrawCommand> _commands;
     private bool _built;
 
     internal SvgSceneBuilder(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        _rectangles = new(budget, SvgSceneArrayKind.Rectangle, workCounter, cancellationToken);
+        _geometries = new(budget, SvgSceneArrayKind.Geometry, workCounter, cancellationToken);
         _commands = new(budget, SvgSceneArrayKind.DrawCommand, workCounter, cancellationToken);
     }
 
     internal void AddRectangle(SvgRectangle rectangle)
     {
-        int rectangleIndex = _rectangles.Count;
-        _rectangles.Add(rectangle);
-        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangleIndex, 255));
+        int geometryIndex = _geometries.Count;
+        _geometries.Add(SvgGeometry.FromRectangle(rectangle));
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255));
     }
 
     internal void AddRectangles(ReadOnlySpan<SvgRectangle> rectangles)
     {
-        int firstRectangleIndex = _rectangles.Count;
-        _rectangles.AddRange(rectangles);
-        for (int index = 0; index < rectangles.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, firstRectangleIndex + index, 255));
+        int firstGeometryIndex = _geometries.Count;
+        Span<SvgGeometry> geometries = _geometries.AddUninitializedRange(rectangles.Length);
+        for (int index = 0; index < rectangles.Length; index++) geometries[index] = SvgGeometry.FromRectangle(rectangles[index]);
+        for (int index = 0; index < rectangles.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255));
     }
 
     internal SvgSceneSlot AddReferencePlaceholder()
     {
-        SvgSceneSlot slot = new(_rectangles.Count, _commands.Count);
-        _rectangles.Add(default);
-        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, slot.RectangleIndex, 255));
+        SvgSceneSlot slot = new(_geometries.Count, _commands.Count);
+        _geometries.Add(default);
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255));
         return slot;
     }
 
     internal void Replace(SvgSceneSlot slot, SvgRectangle rectangle)
     {
-        _rectangles[slot.RectangleIndex] = rectangle;
-        _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Rectangle, slot.RectangleIndex, 255);
+        _geometries[slot.GeometryIndex] = SvgGeometry.FromRectangle(rectangle);
+        _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255);
     }
 
     internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity));
@@ -126,18 +152,18 @@ internal sealed class SvgSceneBuilder : IDisposable
     {
         if (_built) throw new InvalidOperationException("The SVG scene has already been built.");
         _built = true;
-        return SvgSceneStorage.Create(_rectangles, _commands);
+        return SvgSceneStorage.Create(_geometries, _commands);
     }
 
     public void Dispose()
     {
-        _rectangles.Dispose();
+        _geometries.Dispose();
         _commands.Dispose();
     }
 }
 
 /// <summary>Identifies the parallel retained-scene entries reserved for a deferred reference.</summary>
-internal readonly record struct SvgSceneSlot(int RectangleIndex, int CommandIndex);
+internal readonly record struct SvgSceneSlot(int GeometryIndex, int CommandIndex);
 
 internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
 {
@@ -177,6 +203,15 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         EnsureAdditionalCapacity(items.Length);
         CopyWithCheckpoints(items, _items.AsSpan(_count));
         _count += items.Length;
+    }
+
+    internal Span<T> AddUninitializedRange(int count)
+    {
+        if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+        EnsureAdditionalCapacity(count);
+        Span<T> items = _items.AsSpan(_count, count);
+        _count += count;
+        return items;
     }
 
     internal OwnedSceneArray<T> Detach()

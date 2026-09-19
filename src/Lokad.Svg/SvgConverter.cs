@@ -147,11 +147,17 @@ public static class SvgConverter
                     }
                     continue;
                 }
-                if ((uint)command.RectangleIndex >= (uint)root.Rectangles.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG draw command references missing geometry.");
-                RasterizeRectangle(root.Rectangles[command.RectangleIndex], destination);
+                if ((uint)command.GeometryIndex >= (uint)root.Geometries.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG draw command references missing geometry.");
+                RasterizeGeometry(root.Geometries[command.GeometryIndex], destination);
             }
             if (stopsAtGroupEnd) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
             return index;
+        }
+
+        void RasterizeGeometry(SvgGeometry geometry, byte[] destination)
+        {
+            if (geometry.Kind != SvgGeometryKind.Rectangle) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG scene geometry is not implemented.");
+            RasterizeRectangle(geometry.Rectangle, destination);
         }
 
         void RasterizeRectangle(SvgRectangle rectangle, byte[] destination)

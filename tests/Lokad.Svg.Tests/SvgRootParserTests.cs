@@ -910,8 +910,9 @@ public sealed class SvgRootParserTests
 
         Assert.Collection(root.Commands,
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, 0, 255), command),
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255), command));
+        Assert.Equal(SvgGeometryKind.Rectangle, Assert.Single(root.Geometries).Kind);
     }
 
     [Fact]
@@ -921,7 +922,7 @@ public sealed class SvgRootParserTests
 
         Assert.Collection(root.Commands,
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, 0, 255), command),
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255), command));
     }
 
