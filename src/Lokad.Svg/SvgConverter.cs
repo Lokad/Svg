@@ -12,10 +12,11 @@ public static class SvgConverter
     public static ReadOnlyMemory<byte> ConvertToPng(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         ValidateInvocation(svg, options, cancellationToken);
+        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
         SvgRoot root = ParseRoot(svg, options, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
-        RasterizedSurface surface = Rasterize(root, options, cancellationToken);
-        return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, options.Limits.MaximumEncodedPngBytes, cancellationToken);
+        using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
+        return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, budget, options.Limits.MaximumEncodedPngBytes, cancellationToken);
     }
 
     /// <summary>Schedules one conversion on the thread pool.</summary>
@@ -28,9 +29,10 @@ public static class SvgConverter
     public static int ConvertToPng(ReadOnlyMemory<byte> svg, Memory<byte> destination, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         ValidateInvocation(svg, options, cancellationToken);
+        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
         SvgRoot root = ParseRoot(svg, options, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
-        RasterizedSurface surface = Rasterize(root, options, cancellationToken);
+        using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
         return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, options.Limits.MaximumEncodedPngBytes, cancellationToken);
     }
 
@@ -50,7 +52,7 @@ public static class SvgConverter
         }
     }
 
-    private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, CancellationToken cancellationToken)
+    private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
     {
         (double width, double height) = options.Viewport is SvgViewport viewport ? (viewport.Width, viewport.Height) : (root.Width, root.Height) switch
         {
@@ -67,8 +69,7 @@ public static class SvgConverter
         int outputHeight = checked((int)scaledHeight);
         int pixelCount = checked(outputWidth * outputHeight);
         if (pixelCount > options.Limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Output pixel count exceeds the configured limit.");
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        using RenderBudget.BudgetReservation surface = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
+        RenderBudget.BudgetReservation surface = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
         byte[] pixels = new byte[checked(pixelCount * 4)];
         if (options.BackgroundColor != SvgColor.Transparent)
         {
@@ -85,7 +86,7 @@ public static class SvgConverter
         long workUnits = 0;
         int commandIndex = RenderCommands(0, pixels, false);
         if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
-        return new RasterizedSurface(outputWidth, outputHeight, pixels);
+        return new RasterizedSurface(outputWidth, outputHeight, pixels, surface);
 
         int RenderCommands(int startIndex, byte[] destination, bool stopsAtGroupEnd)
         {
@@ -237,5 +238,8 @@ public static class SvgConverter
         return checked((byte)(sourceContribution + retainedContribution));
     }
 
-    private readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels);
+    private readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation) : IDisposable
+    {
+        public void Dispose() => Reservation.Dispose();
+    }
 }

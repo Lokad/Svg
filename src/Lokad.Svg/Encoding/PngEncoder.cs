@@ -1,5 +1,6 @@
 using System.Buffers.Binary;
 using System.IO.Compression;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Encoding;
 
@@ -10,10 +11,16 @@ internal static class PngEncoder
         => Encode(width, height, rgba, int.MaxValue, cancellationToken);
 
     internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, int maximumEncodedPngBytes, CancellationToken cancellationToken)
+        => Encode(width, height, rgba, new RenderBudget(long.MaxValue), maximumEncodedPngBytes, cancellationToken);
+
+    internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
     {
+        if (maximumEncodedPngBytes < 57) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        using RenderBudget.BudgetReservation minimumOutput = budget.Reserve(57, SvgMemoryCategory.Output);
         byte[] compressed = Compress(width, height, rgba, cancellationToken);
         int length = GetOutputLength(compressed.Length);
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        using RenderBudget.BudgetReservation remainingOutput = budget.Reserve(length - 57, SvgMemoryCategory.Output);
         byte[] output = new byte[length];
         WritePng(width, height, compressed, output);
         return output;

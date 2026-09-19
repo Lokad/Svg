@@ -144,6 +144,22 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Owned_png_output_stays_within_the_conversion_budget()
+    {
+        SvgRenderLimits insufficient = new(73, 1024, 2, 4, 1024, 1, 1, 1);
+        SvgRenderOptions insufficientOptions = new(null, 1, SvgColor.Transparent, insufficient);
+        SvgRenderLimits sufficient = new(74, 1024, 2, 4, 1024, 1, 1, 1);
+        SvgRenderOptions sufficientOptions = new(null, 1, SvgColor.Transparent, sufficient);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray();
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, insufficientOptions, CancellationToken.None));
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, sufficientOptions, CancellationToken.None);
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(70, png.Length);
+    }
+
+    [Fact]
     public void Group_opacity_reserves_an_isolated_surface_before_allocation()
     {
         SvgRenderLimits limits = new(4, 1024, 2, 4, 1024, 16, 16, 16);
