@@ -138,8 +138,16 @@ internal static class SvgRootParser
         ReadOnlySpan<char> token = value.AsSpan().Trim();
         bool translate = token.StartsWith("translate(", StringComparison.OrdinalIgnoreCase);
         bool scale = token.StartsWith("scale(", StringComparison.OrdinalIgnoreCase);
-        if ((!translate && !scale) || !token.EndsWith(')')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate() and positive scale() transforms are implemented.");
-        string[] values = token[(translate ? 10 : 6)..^1].ToString().Split([',', ' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        bool matrix = token.StartsWith("matrix(", StringComparison.OrdinalIgnoreCase);
+        if ((!translate && !scale && !matrix) || !token.EndsWith(')')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+        string[] values = token[(translate ? 10 : scale ? 6 : 7)..^1].ToString().Split([',', ' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (matrix)
+        {
+            if (values.Length != 6) throw new SvgException(SvgErrorCode.MalformedInput, "matrix() requires six coordinates.");
+            int scaleX = ParseInteger(values[0]); int skewY = ParseInteger(values[1]); int skewX = ParseInteger(values[2]); int scaleY = ParseInteger(values[3]); int offsetX = ParseInteger(values[4]); int offsetY = ParseInteger(values[5]);
+            if (skewX != 0 || skewY != 0 || scaleX <= 0 || scaleY <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive axis-aligned integer matrix() transforms are implemented.");
+            return new AxisTransform(scaleX, scaleY, offsetX, offsetY);
+        }
         if (values.Length is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
         int first = ParseInteger(values[0]); int second = values.Length == 2 ? ParseInteger(values[1]) : first;
         if (translate) return new AxisTransform(1, 1, first, values.Length == 2 ? second : 0);
