@@ -123,6 +123,13 @@ down or up before the fixed-alpha area calculation. Flooring changes 20 pixels
 mismatch envelopes are `(1,1)`–`(7,7)`. Vertex snapping alone therefore does not
 explain the reference, independently of the earlier edge-crossing experiment.
 
+The corresponding sixteenth-grid edge-crossing experiment rounds each strip
+intersection consistently down or up instead of to nearest. On the half-grid
+reference, floor changes 19 pixels (maximum channel/alpha error 255/22) and
+ceiling changes 22 (255/34), both with envelope `(1,1)`–`(7,7)`. Neither directed
+rounding rule explains the 20-pixel nearest-crossing result, so a fixed crossing
+tie direction is not a calibration candidate.
+
 ## Calibration source pin
 
 The Chromium `153.0.8010.52` tag used by the retained Windows recipe pins

@@ -211,6 +211,36 @@ public sealed class RasterizationResearchTests
         Assert.Equal(7, ceiling.MaximumMismatchY);
     }
 
+    [Fact]
+    public void Sixteenth_edge_crossing_rounding_directions_do_not_explain_the_half_grid_triangle()
+    {
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-half-grid-8x8.png")), 64);
+        PixelComparison floor = PixelComparer.Compare(reference, RasterizeSixteenthSnappedEdgeStripTriangle(HalfGridTriangle, EdgeRounding.Floor));
+        PixelComparison ceiling = PixelComparer.Compare(reference, RasterizeSixteenthSnappedEdgeStripTriangle(HalfGridTriangle, EdgeRounding.Ceiling));
+
+        Assert.True(floor.DimensionsMatch);
+        Assert.False(floor.IsExact);
+        Assert.Equal(19, floor.ChangedPixelCount);
+        Assert.Equal((byte)255, floor.MaximumChannelError);
+        Assert.Equal((byte)22, floor.MaximumAlphaError);
+        Assert.Equal(19, floor.AlphaChangedPixelCount);
+        Assert.Equal(1, floor.MinimumMismatchX);
+        Assert.Equal(1, floor.MinimumMismatchY);
+        Assert.Equal(7, floor.MaximumMismatchX);
+        Assert.Equal(7, floor.MaximumMismatchY);
+
+        Assert.True(ceiling.DimensionsMatch);
+        Assert.False(ceiling.IsExact);
+        Assert.Equal(22, ceiling.ChangedPixelCount);
+        Assert.Equal((byte)255, ceiling.MaximumChannelError);
+        Assert.Equal((byte)34, ceiling.MaximumAlphaError);
+        Assert.Equal(22, ceiling.AlphaChangedPixelCount);
+        Assert.Equal(1, ceiling.MinimumMismatchX);
+        Assert.Equal(1, ceiling.MinimumMismatchY);
+        Assert.Equal(7, ceiling.MaximumMismatchX);
+        Assert.Equal(7, ceiling.MaximumMismatchY);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -320,6 +350,9 @@ public sealed class RasterizationResearchTests
     }
 
     private static RgbaImage RasterizeSixteenthSnappedEdgeStripTriangle(ReadOnlySpan<Point> triangle)
+        => RasterizeSixteenthSnappedEdgeStripTriangle(triangle, EdgeRounding.Nearest);
+
+    private static RgbaImage RasterizeSixteenthSnappedEdgeStripTriangle(ReadOnlySpan<Point> triangle, EdgeRounding rounding)
     {
         byte[] pixels = new byte[8 * 8 * 4];
         for (int y = 0; y < 8; y++)
@@ -339,7 +372,7 @@ public sealed class RasterizationResearchTests
                     double top = boundaries[interval];
                     double bottom = boundaries[interval + 1];
                     if (top == bottom) continue;
-                    (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? strip = SnappedStrip(triangle, top, bottom);
+                    (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? strip = SnappedStrip(triangle, top, bottom, rounding);
                     if (strip is null) continue;
                     (Point leftTop, Point rightTop, Point leftBottom, Point rightBottom) = strip.Value;
                     List<Point> polygon = [leftTop, rightTop, rightBottom, leftBottom];
@@ -359,7 +392,7 @@ public sealed class RasterizationResearchTests
         return new RgbaImage(8, 8, pixels);
     }
 
-    private static (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? SnappedStrip(ReadOnlySpan<Point> triangle, double top, double bottom)
+    private static (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? SnappedStrip(ReadOnlySpan<Point> triangle, double top, double bottom, EdgeRounding rounding)
     {
         double middle = (top + bottom) / 2;
         List<(Point Top, Point Bottom)> edges = [];
@@ -371,19 +404,26 @@ public sealed class RasterizationResearchTests
         }
         if (edges.Count == 0) return null;
         Assert.Equal(2, edges.Count);
-        Point firstTop = SnapEdgeX(edges[0].Top, edges[0].Bottom, top);
-        Point firstBottom = SnapEdgeX(edges[0].Top, edges[0].Bottom, bottom);
-        Point secondTop = SnapEdgeX(edges[1].Top, edges[1].Bottom, top);
-        Point secondBottom = SnapEdgeX(edges[1].Top, edges[1].Bottom, bottom);
+        Point firstTop = SnapEdgeX(edges[0].Top, edges[0].Bottom, top, rounding);
+        Point firstBottom = SnapEdgeX(edges[0].Top, edges[0].Bottom, bottom, rounding);
+        Point secondTop = SnapEdgeX(edges[1].Top, edges[1].Bottom, top, rounding);
+        Point secondBottom = SnapEdgeX(edges[1].Top, edges[1].Bottom, bottom, rounding);
         return firstTop.X <= secondTop.X
             ? (firstTop, secondTop, firstBottom, secondBottom)
             : (secondTop, firstTop, secondBottom, firstBottom);
     }
 
-    private static Point SnapEdgeX(Point first, Point second, double y)
+    private static Point SnapEdgeX(Point first, Point second, double y, EdgeRounding rounding)
     {
         double x = first.X + (y - first.Y) * (second.X - first.X) / (second.Y - first.Y);
-        return new Point(Math.Floor(x * 16 + 0.5) / 16, y);
+        double snappedX = rounding switch
+        {
+            EdgeRounding.Floor => Math.Floor(x * 16),
+            EdgeRounding.Nearest => Math.Floor(x * 16 + 0.5),
+            EdgeRounding.Ceiling => Math.Ceiling(x * 16),
+            _ => throw new InvalidOperationException("Unknown edge rounding direction.")
+        };
+        return new Point(snappedX / 16, y);
     }
 
     private static List<Point> Clip(List<Point> polygon, double boundary, bool keepGreater, bool isVertical)
@@ -443,6 +483,8 @@ public sealed class RasterizationResearchTests
     private static readonly Point[] IntegerTriangle = [new(1, 1), new(7, 2), new(2, 7)];
     private static readonly Point[] FractionalTriangle = [new(1.25, 1.125), new(7.25, 2.125), new(2.25, 7.125)];
     private static readonly Point[] HalfGridTriangle = [new(1.28125, 1.15625), new(7.28125, 2.15625), new(2.28125, 7.15625)];
+
+    private enum EdgeRounding { Floor, Nearest, Ceiling }
 
     private readonly record struct Point(double X, double Y);
 }

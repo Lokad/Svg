@@ -46,6 +46,9 @@ lowerers accept only policy-validated XML and no longer repeat the attribute wal
 The half-grid P1.3 triangle now also rejects simple input-vertex sixteenth-grid
 snapping: floor and ceiling variants differ by 20 and 21 pixels respectively, so
 the prior edge-crossing result cannot be explained by vertex rounding alone.
+Its floor and ceiling sixteenth-grid edge-crossing variants also differ by 19 and
+22 pixels respectively (maximum channel/alpha errors 255/22 and 255/34), rejecting
+a fixed crossing-rounding direction as the explanation.
 
 The browser review harness currently reports all 43 manifest fixtures exact. Its
 accepted semantic probes match Chrome; `styled-use` now retains a definition's
@@ -122,7 +125,7 @@ review.
 ### Current local verification (2026-09-20)
 
 `dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 224 unit tests
-and 71 visual-project tests on the current working revision. The Windows pinned
+and 72 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
 successful remote CI run, a canonical Linux baseline, ARM64 equivalence or
