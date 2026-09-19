@@ -13,6 +13,7 @@ supported and no pixel-fidelity claim is made.
 | Shapes, paths and composition | Not implemented |
 | CSS, gradients, images, filters and text | Not implemented |
 | PNG encoding | Not implemented |
-| Chrome oracle and fixture corpus | Not implemented |
+| Independent RGBA comparison | Initial exact comparer implemented |
+| Chrome oracle and fixture corpus | In progress |
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).

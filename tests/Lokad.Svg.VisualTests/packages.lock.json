@@ -95,6 +95,9 @@
       },
       "lokad.svg": {
         "type": "Project"
+      },
+      "lokad.svg.visualdiff": {
+        "type": "Project"
       }
     }
   }
