@@ -44,7 +44,7 @@ style rather than a rectangle substitution, is deliberately an
   input/output overlap and document the rule for arbitrary providers. Owned results
   remain valid indefinitely and are never returned pool rentals; retained capacity
   counts toward the budget.
-- Add synchronous and asynchronous stream output. Leave caller streams open,
+- Support synchronous and asynchronous stream output. Leave caller streams open,
   support nonseekable streams, bound buffering and propagate write failures.
   Destination/stream contents may be partial on failure; success requires a
   complete PNG. Do not promise compressed size before encoding.
@@ -76,8 +76,8 @@ style rather than a rectangle substitution, is deliberately an
 - Keep a committed original/public-domain/CC0 corpus. xUnit, the BCL-only Chrome
   wrapper and BenchmarkDotNet remain development dependencies only.
 
-The four existing `SvgConverter` entry points remain the public starting point;
-stream output, resource/font catalogs and diagnostics are additions to design.
+The six existing `SvgConverter` memory and stream entry points remain the public
+starting point; resource/font catalogs and diagnostics are additions to design.
 Do not freeze incomplete preview behavior as a permanent contract.
 
 The preview target remains geometry, styles, paints, composition and PNG images.
@@ -202,10 +202,11 @@ behavior or collecting measurements.
    and paint inheritance; stylesheet/reference handling; named colors; XML/numeric
    validation. Record unsupported combinations explicitly until their shared
    semantics exist. Do not make incorrect pixels pass by editing the references.
-3. Introduce a conversion context before parsing and retain it through encoding.
-   Replace full-image PNG staging with row/chunk output; charge output growth,
-   transient overlap and compression allowance. Add sync stream output here and
-   async bounded writes after shared sink behavior is established.
+3. Continue the conversion context through the remaining XML/parser state and
+   retain it through encoding. The shared PNG sink now writes to synchronous and
+   asynchronous caller streams in bounded chunks without an owned output copy;
+   add failure/stall/cancellation stress evidence and account its remaining
+   transient workspace.
 4. Add structural/work limits and cancellation checkpoints before parser/geometry
    expansion and within compression/output. Replace the measurement scaffolds
    with useful current-subset benchmarks and child-process budget/cancellation
@@ -278,7 +279,7 @@ known-difference entries are useful evidence, not a reason to hide the family.
 
 | Limit | Current default / intended extension |
 | --- | --- |
-| Accounted renderer storage | 256 MiB; currently surface-only enforcement must become whole-conversion accounting |
+| Accounted renderer storage | 256 MiB; scene, parser collections, surfaces and PNG workspace/output are partially covered, while XML strings/BCL workspace remain incomplete |
 | SVG input / encoded PNG | 16 MiB / 128 MiB; PNG cap must apply during generation |
 | Output | At most 16,384 per axis and 16,777,216 pixels; validate products with wide checked arithmetic before allocation |
 | Nodes / path commands | 100,000 / 1,000,000; require cumulative accounting and checks before growth |
@@ -307,7 +308,8 @@ Use BCL `ZLibStream`, row filtering, bounded IDAT chunks and incremental CRC wor
 Do not create another full uncompressed image or unconditional compressed copy.
 Owned output counts toward the shared budget; caller-buffer output must avoid a
 second complete encoded payload. Compression output sinks must stop at their cap.
-Async streaming uses a bounded number of charged chunks if a bridge is needed.
+Async streaming writes directly to the caller sink in cancellation-checked 64 KiB
+chunks; no producer/consumer bridge is used.
 
 Keep the comparison decoder independent from production codecs. Harden its PNG
 validation, chunk ordering, limits and truncation handling; cross-check filter
