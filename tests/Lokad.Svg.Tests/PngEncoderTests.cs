@@ -97,6 +97,16 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    public async Task Reserves_async_stream_chunk_scratch_before_writing()
+    {
+        using BoundedAsyncWriteStream destination = new(65_536);
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await PngEncoder.EncodeToAsync(1, 1, new byte[4], destination, new RenderBudget(132), int.MaxValue, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public async Task Asynchronous_stream_encoding_propagates_destination_write_failures()
     {
         using FailingWriteStream destination = new();

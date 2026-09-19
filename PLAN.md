@@ -102,7 +102,7 @@ review.
 
 ### Current local verification (2026-09-19)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 214 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 215 unit tests
 and 70 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
@@ -134,6 +134,11 @@ selects its prime backing capacity, then verifies the returned capacity stayed
 within that pre-allocation allowance. This keeps the conservative table charge
 ahead of the BCL allocation rather than treating the requested and actual
 capacities as interchangeable.
+
+Async PNG streaming now reserves one 64-byte PNG-workspace allowance before its
+17-byte header/length scratch buffer is allocated, and reuses that buffer for all
+chunk framing. It no longer creates uncharged managed header or length arrays per
+`IDAT` chunk.
 
 ### P0.2 conversion-boundary matrix
 

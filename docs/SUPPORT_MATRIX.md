@@ -33,5 +33,8 @@ conservative reader allowance; this is not exact BCL-allocation accounting.
 The definition table reserves a two-times requested-capacity allowance before the
 BCL selects its prime backing capacity, and verifies that returned capacity is
 within the allowance.
+Async PNG streaming reserves one small per-conversion scratch buffer before
+allocation and reuses it for header and chunk-length framing, including all `IDAT`
+chunks.
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).
