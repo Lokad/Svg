@@ -14,6 +14,7 @@ supported and no pixel-fidelity claim is made.
 | CSS, gradients, images, filters and text | Not implemented |
 | PNG encoding | Not implemented |
 | Independent RGBA comparison | Initial exact comparer implemented |
-| Chrome oracle and fixture corpus | In progress |
+| Chrome oracle lifecycle/CDP connection | Initial launcher implemented; pinned browser and capture pending |
+| Fixture corpus | Not implemented |
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).
