@@ -33,7 +33,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         try
         {
             for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) _boundaries.Add(points[pointIndex].Y);
-            _boundaries.Sort();
+            _boundaries.Sort(_workCounter, _cancellationToken);
             _intersections = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, IntegerStorageBytes);
             try
             {
@@ -67,7 +67,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 SvgPoint start = _points[pointIndex]; SvgPoint end = _points[(pointIndex + 1) % _points.Count];
                 if (start.X == end.X && Math.Min(start.Y, end.Y) <= top && Math.Max(start.Y, end.Y) >= bottom) _intersections.Add(start.X);
             }
-            _intersections.Sort();
+            _intersections.Sort(_workCounter, _cancellationToken);
             if (!_isPath && _intersections.Count == 0) continue;
             if (_intersections.Count % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
             for (int intersectionIndex = 0; intersectionIndex < _intersections.Count; intersectionIndex += 2)

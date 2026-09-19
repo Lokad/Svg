@@ -740,6 +740,20 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Charges_parser_collection_sorting_to_the_shared_work_limit()
+    {
+        using BudgetedParserList<int> values = new(new RenderBudget(1_000), SvgMemoryCategory.Geometry, sizeof(int));
+        values.Add(3);
+        values.Add(1);
+        values.Add(2);
+
+        Assert.Throws<SvgException>(() => values.Sort(new ParserWorkCounter(2), CancellationToken.None));
+
+        values.Sort(new ParserWorkCounter(20), CancellationToken.None);
+        Assert.Equal([1, 2, 3], values.AsSpan().ToArray());
+    }
+
+    [Fact]
     public void Enforces_the_work_limit_while_matching_stylesheet_rules()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 1);

@@ -63,7 +63,17 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
         _count = 0;
     }
 
-    internal void Sort() => Array.Sort(_items, 0, _count);
+    internal void Sort(ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (_count < 2) return;
+        Comparer<T> comparer = Comparer<T>.Default;
+        for (int root = _count / 2 - 1; root >= 0; root--) SiftDown(root, _count, comparer, workCounter, cancellationToken);
+        for (int end = _count - 1; end > 0; end--)
+        {
+            (_items[0], _items[end]) = (_items[end], _items[0]);
+            SiftDown(0, end, comparer, workCounter, cancellationToken);
+        }
+    }
 
     internal void RemoveLast()
     {
@@ -145,6 +155,25 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
         _reservation?.Dispose();
         _reservation = replacementReservation;
         _items = replacement;
+    }
+
+    private void SiftDown(int root, int length, Comparer<T> comparer, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        while (root < length / 2)
+        {
+            int child = root * 2 + 1;
+            int largest = Compare(root, child, comparer, workCounter, cancellationToken) < 0 ? child : root;
+            if (child + 1 < length && Compare(largest, child + 1, comparer, workCounter, cancellationToken) < 0) largest = child + 1;
+            if (largest == root) return;
+            (_items[root], _items[largest]) = (_items[largest], _items[root]);
+            root = largest;
+        }
+    }
+
+    private int Compare(int left, int right, Comparer<T> comparer, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.Consume(cancellationToken);
+        return comparer.Compare(_items[left], _items[right]);
     }
 }
 
