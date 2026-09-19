@@ -14,6 +14,7 @@ internal static class SvgRootParser
     private const int PointStorageBytes = 8;
     private const int IntegerStorageBytes = 4;
     private const int RectangleStorageBytes = 56;
+    private const int MinimumXmlReaderWorkspaceBytes = 16 * 1024;
 
     private static readonly Dictionary<string, SvgColor> CssNamedColors = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -171,6 +172,8 @@ internal static class SvgRootParser
 
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
     {
+        if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
+        using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(GetXmlReaderWorkspaceBytes(svg.Length), SvgMemoryCategory.Parser);
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, settings);
@@ -352,6 +355,8 @@ internal static class SvgRootParser
         if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
         if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
     }
+
+    private static long GetXmlReaderWorkspaceBytes(int inputBytes) => Math.Max(MinimumXmlReaderWorkspaceBytes, checked((long)inputBytes * 2));
 
     private static SvgPaint ParseGroupPaint(XmlReader reader, SvgPaint inheritedPaint, InlineStyle style, InlineStyle styleSheet)
     {

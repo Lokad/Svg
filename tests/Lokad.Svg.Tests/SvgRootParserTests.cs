@@ -691,17 +691,28 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Reserves_secondary_parser_collections_before_they_allocate()
     {
-        SvgRenderLimits limits = new(1, 1024, 16, 16, 1024, 16, 16, 16);
+        SvgRenderLimits limits = new(16_385, 1024, 16, 16, 1024, 16, 16, 16);
 
         SvgException group = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g></g></svg>"u8.ToArray(), limits, new RenderBudget(1), CancellationToken.None));
         SvgException stylesheet = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: red; }</style></svg>"u8.ToArray(), limits, new RenderBudget(1), CancellationToken.None));
         SvgException definitions = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='sample'/></defs></svg>"u8.ToArray(), limits, new RenderBudget(1), CancellationToken.None));
-        SvgException pendingUse = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#sample'/></svg>"u8.ToArray(), new SvgRenderLimits(700, 1024, 16, 16, 1024, 16, 16, 16), new RenderBudget(700), CancellationToken.None));
+        SvgException pendingUse = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#sample'/></svg>"u8.ToArray(), new SvgRenderLimits(17_084, 1024, 16, 16, 1024, 16, 16, 16), new RenderBudget(17_084), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, group.ErrorCode);
         Assert.Equal(SvgErrorCode.LimitExceeded, stylesheet.ErrorCode);
         Assert.Equal(SvgErrorCode.LimitExceeded, definitions.ErrorCode);
         Assert.Equal(SvgErrorCode.LimitExceeded, pendingUse.ErrorCode);
+    }
+
+    [Fact]
+    public void Reserves_xml_reader_workspace_from_the_input_length_before_parsing()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><metadata>" + new string('x', 9_000) + "</metadata></svg>");
+        SvgRenderLimits limits = new(100_000, 100_000, 16, 16, 1024, 16, 16, 16);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(svg.Length * 2 - 1), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
 
     [Fact]
@@ -718,7 +729,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Releases_transient_parser_collection_reservations_after_scene_construction()
     {
-        RenderBudget budget = new(10_000);
+        RenderBudget budget = new(100_000);
 
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: red; }</style><defs><rect id='sample'/></defs><use href='#sample'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None);
 
