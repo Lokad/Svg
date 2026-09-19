@@ -36,6 +36,8 @@ internal static class SvgRootParser
             bool sawGraphicNode = false;
             List<CssRule> rectangleStyleRules = [];
             bool hasRectangleStyleSheet = false;
+            Dictionary<string, SvgRectangle> definitions = [];
+            int definitionsDepth = -1;
             while (reader.Read())
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -45,7 +47,23 @@ internal static class SvgRootParser
                     nodeCount++;
                     bool directChild = reader.Depth == rootDepth + 1;
                     bool nestedInGroup = groupDepths.Count > 0;
-                    if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
+                    if (definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
+                    {
+                        string? id = reader.GetAttribute("id");
+                        SvgRectangle rectangle = ParseRectangle(reader, rootPaint, rootVisible, rootVisibility, AxisTransform.Identity, default);
+                        if (id is not null && !definitions.TryAdd(id, rectangle)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                    }
+                    else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "defs")
+                    {
+                        if (!reader.IsEmptyElement) definitionsDepth = reader.Depth;
+                    }
+                    else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
+                    {
+                        SvgRectangle rectangle = ParseUse(reader, definitions);
+                        rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                        sawGraphicNode = true;
+                    }
+                    else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
                         SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths));
@@ -91,6 +109,7 @@ internal static class SvgRootParser
                 }
                 if (reader.NodeType == XmlNodeType.EndElement)
                 {
+                    if (reader.Depth == definitionsDepth) definitionsDepth = -1;
                     if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveAt(groupDepths.Count - 1); if (group.IsolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); }
                     if (reader.Depth == rootDepth) { if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); return new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported); }
                 }
@@ -162,6 +181,15 @@ internal static class SvgRootParser
         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, styleSheet.Opacity, "opacity"));
         SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
         return new SvgRectangle(x, y, width, height, color, paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, styleSheet.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, styleSheet.Visibility, "visibility"), inheritedVisibility));
+    }
+
+    private static SvgRectangle ParseUse(XmlReader reader, Dictionary<string, SvgRectangle> definitions)
+    {
+        if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "href" or "x" or "y") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
+        string href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A use element requires an href.");
+        if (href.Length < 2 || href[0] != '#' || !definitions.TryGetValue(href[1..], out SvgRectangle rectangle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only prior local rectangle use references are implemented.");
+        double x = ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0"); double y = ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0");
+        return rectangle with { X = rectangle.X + x, Y = rectangle.Y + y };
     }
 
     private static SvgRectangle[] ParseOrthogonalPath(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, int maximumGeometryElements)
