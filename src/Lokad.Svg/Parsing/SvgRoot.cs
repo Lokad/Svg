@@ -34,7 +34,7 @@ internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double 
     }
 }
 
-internal enum SvgGeometryKind { Rectangle, AxisAlignedLine }
+internal enum SvgGeometryKind { Rectangle, AxisAlignedLine, OrthogonalBand }
 
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
 internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle Rectangle, SvgAxisAlignedLine AxisAlignedLine)
@@ -42,6 +42,8 @@ internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle R
     internal static SvgGeometry FromRectangle(SvgRectangle rectangle) => new(SvgGeometryKind.Rectangle, rectangle, default);
 
     internal static SvgGeometry FromAxisAlignedLine(SvgAxisAlignedLine line) => new(SvgGeometryKind.AxisAlignedLine, default, line);
+
+    internal static SvgGeometry FromOrthogonalBand(SvgRectangle band) => new(SvgGeometryKind.OrthogonalBand, band, default);
 
     internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
     {
@@ -52,6 +54,7 @@ internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle R
             {
                 SvgGeometryKind.Rectangle => geometries[index].Rectangle,
                 SvgGeometryKind.AxisAlignedLine => geometries[index].AxisAlignedLine.ToStrokeBand(),
+                SvgGeometryKind.OrthogonalBand => geometries[index].Rectangle,
                 _ => throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains unsupported geometry.")
             };
         }

@@ -100,7 +100,7 @@ review.
 
 ### Current local verification (2026-09-19)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 202 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 203 unit tests
 and 70 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a

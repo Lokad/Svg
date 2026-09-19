@@ -525,6 +525,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Retains_lowered_orthogonal_path_bands_as_typed_scene_geometry()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 2 V 1 H 0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.OrthogonalBand, geometry.Kind);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 1, new SvgColor(255, 0, 0, 255), true, null), geometry.Rectangle);
+    }
+
+    [Fact]
     public void Lowers_closed_axis_aligned_polygons_to_non_overlapping_rectangle_bands()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 3,0 3,1 1,1 1,3 0,3' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

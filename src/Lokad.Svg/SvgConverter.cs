@@ -164,6 +164,9 @@ public static class SvgConverter
                 case SvgGeometryKind.AxisAlignedLine:
                     RasterizeAxisAlignedLine(geometry.AxisAlignedLine, destination);
                     return;
+                case SvgGeometryKind.OrthogonalBand:
+                    RasterizeOrthogonalBand(geometry.Rectangle, destination);
+                    return;
                 default:
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG scene geometry is not implemented.");
             }
@@ -172,6 +175,11 @@ public static class SvgConverter
         void RasterizeAxisAlignedLine(SvgAxisAlignedLine line, byte[] destination)
         {
             if (line.IsPainted) RasterizeSolidRectangle(line.ToStrokeBand(), destination);
+        }
+
+        void RasterizeOrthogonalBand(SvgRectangle band, byte[] destination)
+        {
+            if (band.HasFill) RasterizeSolidRectangle(band, destination);
         }
 
         void RasterizeRectangle(SvgRectangle rectangle, byte[] destination)
