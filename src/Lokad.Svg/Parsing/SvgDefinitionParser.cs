@@ -10,7 +10,7 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth >= 0 && (reader.Depth == state.DefinitionsDepth + 1 || reader.Depth == state.SymbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
         {
             string? id = state.SymbolDepth >= 0 ? state.SymbolId : reader.GetAttribute("id");
-            SvgGeometry geometry = SvgGeometry.FromRectangle(SvgLeafParser.ParseRectangle(reader, root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken));
+            SvgGeometry geometry = SvgLeafParser.ParseRectangle(reader, root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
             if (id is not null)
             {
                 workCounter.Consume(cancellationToken);

@@ -18,10 +18,10 @@ internal static class SvgRenderedLeafParser
         switch (reader.LocalName)
         {
             case "rect":
-                state.Scene.AddRectangle(SvgLeafParser.ParseRectangle(reader, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, namedColors, workCounter, cancellationToken));
+                state.Scene.AddGeometry(SvgLeafParser.ParseRectangle(reader, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, namedColors, workCounter, cancellationToken));
                 return true;
             case "line":
-                state.Scene.AddRectangle(SvgLeafParser.ParseLine(reader, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, namedColors, workCounter, cancellationToken));
+                state.Scene.AddGeometry(SvgLeafParser.ParseLine(reader, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, namedColors, workCounter, cancellationToken));
                 return true;
             case "path":
                 using (SvgParsedGeometry path = SvgLeafParser.ParseOrthogonalPath(reader, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, limits.MaximumPathCommands - state.GeometryElementCount, budget, workCounter, cancellationToken, namedColors))

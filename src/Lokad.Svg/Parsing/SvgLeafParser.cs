@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses and lowers the currently supported paintable SVG leaves independently of XML traversal.</summary>
 internal static class SvgLeafParser
 {
-    internal static SvgRectangle ParseRectangle(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgGeometry ParseRectangle(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, styleSheet, workCounter, cancellationToken);
         SvgElementAttributePolicy.ValidateRectangle(reader);
@@ -22,10 +22,10 @@ internal static class SvgLeafParser
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
         SvgResolvedShapePresentation presentation = SvgShapePresentationResolver.Resolve(style, inheritedPaint, inheritedDisplayed, inheritedVisibility, true, namedColors);
         SvgStroke? stroke = ParseRectangleStroke(presentation.Style.Stroke, reader.GetAttribute("stroke-width"), presentation.Style.Color, inheritedPaint, transform, x, y, width, height, presentation.Opacity, presentation.Paint.HasFill, namedColors);
-        return new SvgRectangle(x, y, width, height, presentation.Color, presentation.HasFill, presentation.IsPainted ? stroke : null);
+        return SvgGeometry.FromRectangle(new SvgRectangle(x, y, width, height, presentation.Color, presentation.HasFill, presentation.IsPainted ? stroke : null));
     }
 
-    internal static SvgRectangle ParseLine(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgGeometry ParseLine(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, styleSheet, workCounter, cancellationToken);
         SvgElementAttributePolicy.ValidateLine(reader);
@@ -40,7 +40,7 @@ internal static class SvgLeafParser
         double halfWidth = strokeWidth / 2d;
         bool painted = inheritedDisplayed && SvgShapePresentationResolver.ParseDisplay(style.Display) && SvgShapePresentationResolver.ParseVisibility(style.Visibility, inheritedVisibility);
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor, opacity);
-        return x1 != x2 ? new SvgRectangle(Math.Min(x1, x2), y1 - halfWidth, Math.Abs((long)x2 - x1), strokeWidth, color, painted, null) : new SvgRectangle(x1 - halfWidth, Math.Min(y1, y2), strokeWidth, Math.Abs((long)y2 - y1), color, painted, null);
+        return SvgGeometry.FromRectangle(x1 != x2 ? new SvgRectangle(Math.Min(x1, x2), y1 - halfWidth, Math.Abs((long)x2 - x1), strokeWidth, color, painted, null) : new SvgRectangle(x1 - halfWidth, Math.Min(y1, y2), strokeWidth, Math.Abs((long)y2 - y1), color, painted, null));
     }
 
     internal static SvgUseReference ParseUse(XmlReader reader, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken)
