@@ -100,6 +100,15 @@ $xmlReader = Invoke-Probe -Name 'xml-reader' -InputPath $xmlAttributeInput -Outp
 if ($xmlReader['outcome'] -ne 'xml-reader-measured' -or -not $xmlReader.ContainsKey('xmlReaderManagedAllocatedBytes') -or -not $xmlReader.ContainsKey('xmlReaderWorkspaceBytes') -or -not $xmlReader.ContainsKey('xmlReaderTouchedCharacters') -or (Test-Path -LiteralPath $xmlReaderOutput)) { throw 'The direct XML reader probe did not emit a complete no-output measurement.' }
 if ([long]$xmlReader['xmlReaderManagedAllocatedBytes'] -le 0 -or [long]$xmlReader['xmlReaderTouchedCharacters'] -le 0 -or [long]$xmlReader['xmlReaderManagedAllocatedBytes'] -gt [long]$xmlReader['xmlReaderWorkspaceBytes']) { throw 'The direct XML reader measurement exceeds its renderer workspace allowance.' }
 
+$xmlReaderAttributeValueInput = Join-Path $ResultsDirectory "$runId-xml-reader-attribute-values.svg"
+$xmlReaderAttributeValue = New-Object string('x', 4KB)
+$xmlReaderAttributeValues = (0..254 | ForEach-Object { " data-a$_=`"$xmlReaderAttributeValue`"" }) -join ''
+[IO.File]::WriteAllText($xmlReaderAttributeValueInput, '<svg xmlns="http://www.w3.org/2000/svg"' + $xmlReaderAttributeValues + '/>', [Text.UTF8Encoding]::new($false))
+$xmlReaderAttributeValueOutput = Join-Path $ResultsDirectory "$runId-xml-reader-attribute-values.png"
+$xmlReaderAttributeValuesProbe = Invoke-Probe -Name 'xml-reader-attribute-values' -InputPath $xmlReaderAttributeValueInput -Output $xmlReaderAttributeValueOutput -ExpectedExitCode 0 -ExtraArguments @('--mode', 'xml-reader')
+if ($xmlReaderAttributeValuesProbe['outcome'] -ne 'xml-reader-measured' -or -not $xmlReaderAttributeValuesProbe.ContainsKey('xmlReaderManagedAllocatedBytes') -or -not $xmlReaderAttributeValuesProbe.ContainsKey('xmlReaderWorkspaceBytes') -or -not $xmlReaderAttributeValuesProbe.ContainsKey('xmlReaderTouchedCharacters') -or (Test-Path -LiteralPath $xmlReaderAttributeValueOutput)) { throw 'The large-attribute XML reader probe did not emit a complete no-output measurement.' }
+if ([long]$xmlReaderAttributeValuesProbe['xmlReaderManagedAllocatedBytes'] -le 0 -or [long]$xmlReaderAttributeValuesProbe['xmlReaderTouchedCharacters'] -lt $xmlReaderAttributeValue.Length * 255 -or [long]$xmlReaderAttributeValuesProbe['xmlReaderManagedAllocatedBytes'] -gt [long]$xmlReaderAttributeValuesProbe['xmlReaderWorkspaceBytes']) { throw 'The large-attribute XML reader measurement exceeds its renderer workspace allowance.' }
+
 $cancellationInput = Join-Path $ResultsDirectory "$runId-cancellation.svg"
 [IO.File]::WriteAllText($cancellationInput, '<svg xmlns="http://www.w3.org/2000/svg" width="4096" height="4096"><rect width="4096" height="4096" fill="red"/></svg>', [Text.UTF8Encoding]::new($false))
 $cancellationOutput = Join-Path $ResultsDirectory "$runId-cancellation.png"

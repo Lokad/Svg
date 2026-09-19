@@ -52,8 +52,9 @@ renderer memory guarantee. `--cancel-after-ms` starts before input loading, whil
 timing dependent and are stress evidence rather than exact unit-test assertions.
 
 Run the child-process success, budget-denial, XML-workspace-denial, direct
-XML-reader workspace measurement, raster-cancellation and post-input
-parser-cancellation scenarios (which retain their probe reports) with:
+XML-reader workspace measurements (256 short attributes and 255 × 4 KiB values),
+raster-cancellation and post-input parser-cancellation scenarios (which retain
+their probe reports) with:
 
 ```powershell
 tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe
