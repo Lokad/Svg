@@ -121,4 +121,18 @@ public sealed class PublicContractTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, new byte[1], SvgRenderOptions.Default, CancellationToken.None));
         Assert.Equal(SvgErrorCode.InsufficientDestination, exception.ErrorCode);
     }
+
+    [Fact]
+    public async Task Async_destination_conversion_matches_sync_destination_conversion()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray();
+        byte[] synchronous = new byte[128];
+        byte[] asynchronous = new byte[128];
+
+        int syncLength = SvgConverter.ConvertToPng(svg, synchronous, SvgRenderOptions.Default, CancellationToken.None);
+        int asyncLength = await SvgConverter.ConvertToPngAsync(svg, asynchronous, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(syncLength, asyncLength);
+        Assert.Equal(synchronous.AsSpan(0, syncLength).ToArray(), asynchronous.AsSpan(0, asyncLength).ToArray());
+    }
 }
