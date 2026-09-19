@@ -97,7 +97,7 @@ internal static class SvgRootParser
         {
             while (reader.MoveToNextAttribute())
             {
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "color" or "fill" or "fill-opacity" or "opacity" or "display" or "visibility") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "color" or "fill" or "fill-opacity" or "fill-rule" or "opacity" or "display" or "visibility") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -108,6 +108,7 @@ internal static class SvgRootParser
         int height = ParseInteger(reader.GetAttribute("height") ?? "0");
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
         SvgPaint paint = ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), reader.GetAttribute("color"), inheritedPaint);
+        ValidateFillRule(reader.GetAttribute("fill-rule"));
         byte opacity = ParseOpacity(reader.GetAttribute("opacity"));
         SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
         return new SvgRectangle(x, y, width, height, color, paint.HasFill && inheritedDisplayed && ParseDisplay(reader.GetAttribute("display")) && ParseVisibility(reader.GetAttribute("visibility"), inheritedVisibility));
@@ -127,6 +128,12 @@ internal static class SvgRootParser
         if (value is null or "inline") return true;
         if (value == "none") return false;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only inline and none display values are implemented.");
+    }
+
+    private static void ValidateFillRule(string? value)
+    {
+        if (value is null or "nonzero" or "evenodd") return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero and evenodd fill rules are implemented.");
     }
 
     private static bool ParseVisibility(string? value, bool inheritedVisibility)
