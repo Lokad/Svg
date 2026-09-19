@@ -68,7 +68,8 @@ internal sealed class DevToolsConnection : IAsyncDisposable
             using JsonDocument response = JsonDocument.Parse(message);
             if (!response.RootElement.TryGetProperty("id", out JsonElement responseId) || responseId.GetInt32() != id) continue;
             if (response.RootElement.TryGetProperty("error", out JsonElement error)) throw new InvalidDataException("DevTools command '" + method + "' failed: " + GetErrorMessage(error));
-            if (!response.RootElement.TryGetProperty("result", out _)) throw new InvalidDataException("DevTools command '" + method + "' returned neither a result nor an error.");
+            if (!response.RootElement.TryGetProperty("result", out JsonElement result)) throw new InvalidDataException("DevTools command '" + method + "' returned neither a result nor an error.");
+            if (result.TryGetProperty("exceptionDetails", out JsonElement exceptionDetails)) throw new InvalidDataException("DevTools command '" + method + "' evaluation failed: " + GetErrorMessage(exceptionDetails));
             return message;
         }
     }
@@ -92,8 +93,12 @@ internal sealed class DevToolsConnection : IAsyncDisposable
 
     private static string GetErrorMessage(JsonElement error)
     {
-        if (error.ValueKind == JsonValueKind.Object && error.TryGetProperty("message", out JsonElement message) && message.ValueKind == JsonValueKind.String) return message.GetString() ?? "an unspecified protocol error";
-        return error.GetRawText();
+        string message = error.ValueKind == JsonValueKind.Object && error.TryGetProperty("message", out JsonElement property) && property.ValueKind == JsonValueKind.String
+            ? property.GetString() ?? "an unspecified protocol error"
+            : error.ValueKind == JsonValueKind.Object && error.TryGetProperty("text", out property) && property.ValueKind == JsonValueKind.String
+                ? property.GetString() ?? "an unspecified evaluation error"
+                : error.GetRawText();
+        return message.Length <= 512 ? message : message[..512];
     }
 
     public async ValueTask DisposeAsync()
