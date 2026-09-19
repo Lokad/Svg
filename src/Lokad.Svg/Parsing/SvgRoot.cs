@@ -10,6 +10,6 @@ internal enum SvgViewBoxAlignment { Min, Mid, Max, None }
 
 internal enum SvgViewBoxFit { Meet, Slice, None }
 
-internal readonly record struct SvgRectangle(int X, int Y, int Width, int Height, SvgColor Color, bool HasFill);
+internal readonly record struct SvgRectangle(double X, double Y, double Width, double Height, SvgColor Color, bool HasFill);
 
 internal readonly record struct SvgPoint(int X, int Y);

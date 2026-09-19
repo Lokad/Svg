@@ -86,14 +86,15 @@ public static class SvgConverter
         foreach (SvgRectangle rectangle in root.Rectangles)
         {
             if (!rectangle.HasFill) continue;
-            long rectangleY = MapEdge(rectangle.Y, verticalScale, verticalOffset);
-            long rectangleBottom = MapEdge((double)rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
-            long rectangleX = MapEdge(rectangle.X, horizontalScale, horizontalOffset);
-            long rectangleRight = MapEdge((double)rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
-            int startY = (int)Math.Clamp(rectangleY, 0L, outputHeight);
-            int endY = (int)Math.Clamp(rectangleBottom, 0L, outputHeight);
-            int startX = (int)Math.Clamp(rectangleX, 0L, outputWidth);
-            int endX = (int)Math.Clamp(rectangleRight, 0L, outputWidth);
+            double rectangleY = MapEdge(rectangle.Y, verticalScale, verticalOffset);
+            double rectangleBottom = MapEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
+            double rectangleX = MapEdge(rectangle.X, horizontalScale, horizontalOffset);
+            double rectangleRight = MapEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
+            bool hasFractionalEdge = rectangleY != Math.Truncate(rectangleY) || rectangleBottom != Math.Truncate(rectangleBottom) || rectangleX != Math.Truncate(rectangleX) || rectangleRight != Math.Truncate(rectangleRight);
+            int startY = ClampFloor(rectangleY, outputHeight);
+            int endY = ClampCeiling(rectangleBottom, outputHeight);
+            int startX = ClampFloor(rectangleX, outputWidth);
+            int endX = ClampCeiling(rectangleRight, outputWidth);
             long coverage = (long)(endY - startY) * (endX - startX);
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle raster work exceeds the configured limit.");
             workUnits += coverage;
@@ -102,19 +103,26 @@ public static class SvgConverter
             cancellationToken.ThrowIfCancellationRequested();
             for (int x = startX; x < endX; x++)
             {
+                double verticalCoverage = Math.Clamp(Math.Min(rectangleBottom, y + 1) - Math.Max(rectangleY, y), 0, 1);
+                double horizontalCoverage = Math.Clamp(Math.Min(rectangleRight, x + 1) - Math.Max(rectangleX, x), 0, 1);
+                SvgColor color = WithCoverage(rectangle.Color, horizontalCoverage * verticalCoverage);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(pixels.AsSpan(offset, 4), rectangle.Color);
+                BlendSourceOver(pixels.AsSpan(offset, 4), color, hasFractionalEdge);
             }
             }
         }
         return new RasterizedSurface(outputWidth, outputHeight, pixels);
 
-        static long MapEdge(double value, double scale, double offset)
+        static double MapEdge(double value, double scale, double offset)
         {
             double scaled = value * scale + offset;
-            if (!double.IsFinite(scaled) || scaled != Math.Truncate(scaled) || scaled < long.MinValue || scaled > long.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Output scaling and viewBox mapping must preserve integral rectangle edges currently.");
-            return checked((long)scaled);
+            if (!double.IsFinite(scaled)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Output scaling and viewBox mapping must preserve finite rectangle edges.");
+            return scaled;
         }
+
+        static int ClampFloor(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Floor(value));
+
+        static int ClampCeiling(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Ceiling(value));
 
         static (double HorizontalScale, double HorizontalOffset, double VerticalScale, double VerticalOffset) GetViewBoxTransform(SvgViewBox? viewBox, double width, double height, double outputScale)
         {
@@ -145,19 +153,36 @@ public static class SvgConverter
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
-    private static void BlendSourceOver(Span<byte> destination, SvgColor source)
+    private static void BlendSourceOver(Span<byte> destination, SvgColor source, bool roundRetainedDestination)
     {
         if (source.Alpha == 255) { destination[0] = source.Red; destination[1] = source.Green; destination[2] = source.Blue; destination[3] = 255; return; }
         if (source.Alpha == 0) return;
         int sourceAlpha = source.Alpha;
         int destinationAlpha = destination[3];
         int inverseSourceAlpha = 255 - sourceAlpha;
-        // Chrome's 8-bit source-over path truncates the retained destination alpha.
-        int outputAlpha = sourceAlpha + ((destinationAlpha * inverseSourceAlpha) / 255);
-        destination[0] = (byte)((source.Red * sourceAlpha + ((destination[0] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha);
-        destination[1] = (byte)((source.Green * sourceAlpha + ((destination[1] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha);
-        destination[2] = (byte)((source.Blue * sourceAlpha + ((destination[2] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha);
+        int outputAlpha = sourceAlpha + ((destinationAlpha * inverseSourceAlpha + (roundRetainedDestination ? 127 : 0)) / 255);
+        if (roundRetainedDestination)
+        {
+            destination[0] = ComposeFractionalChannel(destination[0], source.Red, destinationAlpha, sourceAlpha, inverseSourceAlpha, outputAlpha);
+            destination[1] = ComposeFractionalChannel(destination[1], source.Green, destinationAlpha, sourceAlpha, inverseSourceAlpha, outputAlpha);
+            destination[2] = ComposeFractionalChannel(destination[2], source.Blue, destinationAlpha, sourceAlpha, inverseSourceAlpha, outputAlpha);
+        }
+        else
+        {
+            destination[0] = (byte)((source.Red * sourceAlpha + ((destination[0] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha);
+            destination[1] = (byte)((source.Green * sourceAlpha + ((destination[1] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha);
+            destination[2] = (byte)((source.Blue * sourceAlpha + ((destination[2] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha);
+        }
         destination[3] = (byte)outputAlpha;
+    }
+
+    private static SvgColor WithCoverage(SvgColor color, double coverage) => coverage == 1 ? color : new SvgColor(color.Red, color.Green, color.Blue, checked((byte)Math.Round(color.Alpha * coverage, MidpointRounding.AwayFromZero)));
+
+    private static byte ComposeFractionalChannel(byte destination, byte source, int destinationAlpha, int sourceAlpha, int inverseSourceAlpha, int outputAlpha)
+    {
+        int sourceContribution = (source * sourceAlpha + outputAlpha / 2) / outputAlpha;
+        int retainedContribution = (destination * destinationAlpha * inverseSourceAlpha + 255 * outputAlpha - 1) / (255 * outputAlpha);
+        return checked((byte)(sourceContribution + retainedContribution));
     }
 
     private readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels);

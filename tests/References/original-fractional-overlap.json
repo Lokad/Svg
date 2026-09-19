@@ -10,6 +10,13 @@
   "background": "transparent",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "candidateResult": "UnsupportedFeature: Only integer rectangle coordinates are implemented.",
+  "candidateSha256": "99bf47f4676f21a870a02eac1afbc42eeafbd181ca5e94fbe96dc2b9099adac7",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
   "admittedAt": "2026-09-19"
 }

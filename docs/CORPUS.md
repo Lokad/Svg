@@ -17,10 +17,9 @@ is the evidence for its `exact` status.
 spelling of a closed axis-aligned integer rectangle. `original-orthogonal-polygon`
 `original-orthogonal-path`, and `original-orthogonal-polyline` exercise the supported
 L-shaped band decomposition.
-`original-fractional-overlap` has a stable pinned-Chrome reference but is
-explicitly `unsupported`: it uses fractional geometry, which the initial rectangle
-subset does not implement. This is retained in the inventory rather than hidden
-from fidelity reporting.
+`original-fractional-overlap` validates the supported analytic fractional
+rectangle coverage and calibrated source-over rounding against a transparent
+pinned-Chrome reference.
 
 `original-integer-alpha-overlap` has an admitted stable pinned-Chrome reference and
 an exact candidate comparison. It pins the integer source-over rounding behavior for

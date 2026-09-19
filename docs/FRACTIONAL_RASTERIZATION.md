@@ -12,12 +12,10 @@ Testing 153.0.8010.52 build produced the same reference hash:
 Capture recipe revision 2 explicitly sets the HTML document background to
 transparent. The prior recipe left uncovered pixels opaque white, despite the
 fixture's transparent-background declaration; its reference was therefore
-superseded after three identical fresh captures. The current candidate deliberately fails with `UnsupportedFeature` because its
-rectangle rasterizer accepts only integer-valued geometry. It must remain an
-explicit failure until a coverage algorithm is selected and validated against
-this reference; rounding fractional coordinates to integers is not acceptable.
-
-The next experiment should isolate one fractional edge at a time, then compare
-coverage values, alpha quantization, and source-over rounding with Chrome at
-multiple scales. Any proposed analytic or sampled implementation must first make
-these reduced probes exact before this fixture changes from `unsupported`.
+superseded after three identical fresh captures. The renderer now uses analytic
+intersection area for finite bounded decimal/px rectangle edges. For a rectangle
+containing a fractional device edge, its source-over branch uses Chrome-calibrated
+retained-alpha and straight-channel rounding. The candidate PNG hash is
+`99bf47f4676f21a870a02eac1afbc42eeafbd181ca5e94fbe96dc2b9099adac7`, with
+zero differing decoded RGBA pixels against this reference. Fractional paths,
+point-list shapes, and non-axis-aligned geometry remain outside this subset.

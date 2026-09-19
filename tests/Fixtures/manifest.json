@@ -36,8 +36,8 @@
       "height": 8,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-fractional-overlap.json",
       "referenceSha256": "8e2faa670552a1578dc7bc775711f535a8262d1d9eb20432842a31576a7d810b"
     },

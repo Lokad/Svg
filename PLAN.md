@@ -716,7 +716,7 @@ and risk, not by the ease of producing a recognisable image.
    build pass, with the feature/support inventory created.
 
 2. **Oracle and feasibility probes.** *(In progress: independent comparer/CLI,
-   original CC0 probes, a hash-pinned Chrome-for-Testing capture path, and nineteen
+   original CC0 probes, a hash-pinned Chrome-for-Testing capture path, and twenty
    reviewed stable references exist; broader feasibility probing remains.)* Build the thin Chrome wrapper, independent
    pixel comparison and provenance format. Create the first original probes plus
    a licensed small corpus. Investigate antialiasing, group alpha, gradients,
@@ -727,8 +727,9 @@ and risk, not by the ease of producing a recognisable image.
    investigation without changing the meaning of the fidelity target.
 
 3. **Minimal complete conversion.** *(In progress: bounded root parsing, RGBA PNG
-   encoding through owned and caller buffers, caller backgrounds, and document-order
-   integer rectangle layers with source-over composition are implemented; this is
+   encoding through owned and caller buffers, caller backgrounds, document-order
+   integer rectangle layers, and calibrated analytic fractional rectangle coverage
+   with source-over composition are implemented; this is
    not yet the milestone's complete conversion scope.)* Implement bounded parsing, basic scene/viewport
    resolution, solid shapes/paths, alpha composition and PNG output through both
    memory API forms. Exercise cancellation end to end. Exit: simple integer and

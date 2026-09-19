@@ -123,13 +123,13 @@ internal static class SvgRootParser
             }
             reader.MoveToElement();
         }
-        int x = ParseInteger(reader.GetAttribute("x") ?? "0");
-        int y = ParseInteger(reader.GetAttribute("y") ?? "0");
-        int width = ParseInteger(reader.GetAttribute("width") ?? "0");
-        int height = ParseInteger(reader.GetAttribute("height") ?? "0");
+        double x = ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0");
+        double y = ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0");
+        double width = ParseRectangleCoordinate(reader.GetAttribute("width") ?? "0");
+        double height = ParseRectangleCoordinate(reader.GetAttribute("height") ?? "0");
         AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
-        x = checked(transform.ScaleX * x + transform.OffsetX); y = checked(transform.ScaleY * y + transform.OffsetY);
-        width = checked(transform.ScaleX * width); height = checked(transform.ScaleY * height);
+        x = transform.ScaleX * x + transform.OffsetX; y = transform.ScaleY * y + transform.OffsetY;
+        width = transform.ScaleX * width; height = transform.ScaleY * height;
         ValidateSquareCorners(reader.GetAttribute("rx"));
         ValidateSquareCorners(reader.GetAttribute("ry"));
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
@@ -342,8 +342,17 @@ internal static class SvgRootParser
 
     private static void ValidateSquareCorners(string? value)
     {
-        if (value is null || ParseInteger(value) == 0) return;
+        if (value is null || ParseRectangleCoordinate(value) == 0) return;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only zero rectangle corner radii are implemented.");
+    }
+
+    private static double ParseRectangleCoordinate(string value)
+    {
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px rectangle coordinates are implemented.");
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle coordinates must be finite bounded numbers.");
+        return result;
     }
 
     private static bool ParseVisibility(string? value, bool inheritedVisibility)
