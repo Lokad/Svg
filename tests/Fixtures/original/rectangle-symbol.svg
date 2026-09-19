@@ -1,0 +1,1 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="4" height="2"><defs><symbol id="tile"><rect width="1" height="1" fill="red"/></symbol></defs><use href="#tile"/><use href="#tile" x="1" transform="scale(2)"/></svg>

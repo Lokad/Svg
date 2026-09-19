@@ -4,13 +4,13 @@
 
 Milestone 1 (repository and contracts) is complete. Milestones 2 and 3 are in
 progress. The renderer supports only the explicit subset listed below; other
-visible SVG behavior fails with `UnsupportedFeature`. Thirty-two pinned-Chrome fixtures
+visible SVG behavior fails with `UnsupportedFeature`. Thirty-three pinned-Chrome fixtures
 have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 
 | Area | Status |
 | --- | --- |
 | Public options, limits and failure categories | Initial contract and categorized public failures implemented; current rectangle raster work is preflight-bounded |
-| Root SVG parsing | Bounded validation counts every descendant element; inert `id`, title/description/metadata and unused definitions; rectangle definitions in direct `defs` can be instantiated by direct local `use`/`xlink:href`, including forward references, `x`/`y` offsets, and the documented integer transform subset; inheritable `color`, `fill`/`fill-opacity`, `display` (`inline`/`none`) and `visibility` (`visible`/`hidden`) on root and `g`/`a`; isolated root or one group `opacity`; the same supported properties through narrowly parsed inline `style` declarations, with inline precedence; bare-number/px/in/cm/mm/pt/pc dimensions implemented at 96 CSS pixels/inch; non-rectangle references, use styling, geometry/style root and other group attributes and relative units explicit unsupported |
+| Root SVG parsing | Bounded validation counts every descendant element; inert `id`, title/description/metadata and unused definitions; rectangle definitions in direct `defs`, or one-rectangle local `symbol` definitions, can be instantiated by direct local `use`/`xlink:href`, including forward references, `x`/`y` offsets, and the documented integer transform subset; inheritable `color`, `fill`/`fill-opacity`, `display` (`inline`/`none`) and `visibility` (`visible`/`hidden`) on root and `g`/`a`; isolated root or one group `opacity`; the same supported properties through narrowly parsed inline `style` declarations, with inline precedence; bare-number/px/in/cm/mm/pt/pc dimensions implemented at 96 CSS pixels/inch; non-rectangle references, symbol viewports/styles, use styling, geometry/style root and other group attributes and relative units explicit unsupported |
 | Viewport resolution | An explicit host `SvgViewport` overrides the root outer dimensions. Root `viewBox` mapping is implemented with all `meet`/`slice` alignments or `preserveAspectRatio="none"`, only when every supported rectangle edge maps to an integral output edge; other sizing and fractional-coverage cases explicit unsupported |
 | Empty explicitly sized SVG | Integral transparent or caller-background PNG implemented |
 | Caller-owned PNG destination | Implemented for the current empty/rectangle subset |
@@ -21,7 +21,7 @@ have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned and caller destination output |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, and thirty-two stable references |
-| Fixture corpus | Thirty-two original CC0 probes with verified hashes; all thirty-two exact |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, and thirty-three stable references |
+| Fixture corpus | Thirty-three original CC0 probes with verified hashes; all thirty-three exact |
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).
