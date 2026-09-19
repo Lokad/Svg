@@ -566,7 +566,7 @@ internal static class PngEncoder
             if (requiredLength > _maximumLength) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
             EnsureCapacity(requiredLength);
             byte[] destination = _buffer ?? throw new InvalidOperationException("PNG compression buffer allocation did not complete.");
-            buffer.CopyTo(destination.AsSpan(_length));
+            CopyWithCheckpoints(buffer, destination.AsSpan(_length));
             _length = requiredLength;
         }
 
@@ -590,10 +590,28 @@ internal static class PngEncoder
             byte[] replacement;
             try { replacement = new byte[capacity]; }
             catch { replacementReservation.Dispose(); throw; }
-            if (_buffer is not null) _buffer.AsSpan(0, _length).CopyTo(replacement);
+            try
+            {
+                if (_buffer is not null) CopyWithCheckpoints(_buffer.AsSpan(0, _length), replacement);
+            }
+            catch
+            {
+                replacementReservation.Dispose();
+                throw;
+            }
             _reservation?.Dispose();
             _reservation = replacementReservation;
             _buffer = replacement;
+        }
+
+        private void CopyWithCheckpoints(ReadOnlySpan<byte> source, Span<byte> destination)
+        {
+            for (int offset = 0; offset < source.Length; offset += 4096)
+            {
+                _cancellationToken.ThrowIfCancellationRequested();
+                int count = Math.Min(4096, source.Length - offset);
+                source.Slice(offset, count).CopyTo(destination.Slice(offset, count));
+            }
         }
     }
 
