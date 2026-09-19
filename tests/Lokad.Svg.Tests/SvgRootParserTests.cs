@@ -85,6 +85,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Parses_extended_css_named_colors()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='orange'/><rect width='1' fill='RebeccaPurple'/><rect width='1' fill='darkslategray'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(255, 165, 0, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(102, 51, 153, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(47, 79, 79, 255), rectangle.Color));
+    }
+
+    [Fact]
     public void Parses_space_separated_functional_css_colors()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='rgb(100% 0% 0% / 50%)'/><rect width='1' fill='hsl(120 100% 50% / 0.5)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
