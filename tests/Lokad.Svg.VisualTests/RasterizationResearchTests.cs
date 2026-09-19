@@ -120,6 +120,37 @@ public sealed class RasterizationResearchTests
         Assert.Equal(7, comparison.MaximumMismatchY);
     }
 
+    [Fact]
+    public void Sixteenth_snapped_edge_strip_triangle_baseline_is_not_Chrome_exact()
+    {
+        RgbaImage integerReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png")), 64);
+        RgbaImage fractionalReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-fractional-8x8.png")), 64);
+        PixelComparison integerComparison = PixelComparer.Compare(integerReference, RasterizeSixteenthSnappedEdgeStripTriangle(IntegerTriangle));
+        PixelComparison fractionalComparison = PixelComparer.Compare(fractionalReference, RasterizeSixteenthSnappedEdgeStripTriangle(FractionalTriangle));
+
+        Assert.True(integerComparison.DimensionsMatch);
+        Assert.False(integerComparison.IsExact);
+        Assert.Equal(2, integerComparison.ChangedPixelCount);
+        Assert.Equal((byte)1, integerComparison.MaximumChannelError);
+        Assert.Equal((byte)1, integerComparison.MaximumAlphaError);
+        Assert.Equal(2, integerComparison.AlphaChangedPixelCount);
+        Assert.Equal(1, integerComparison.MinimumMismatchX);
+        Assert.Equal(1, integerComparison.MinimumMismatchY);
+        Assert.Equal(6, integerComparison.MaximumMismatchX);
+        Assert.Equal(1, integerComparison.MaximumMismatchY);
+
+        Assert.True(fractionalComparison.DimensionsMatch);
+        Assert.False(fractionalComparison.IsExact);
+        Assert.Equal(23, fractionalComparison.ChangedPixelCount);
+        Assert.Equal((byte)255, fractionalComparison.MaximumChannelError);
+        Assert.Equal((byte)32, fractionalComparison.MaximumAlphaError);
+        Assert.Equal(23, fractionalComparison.AlphaChangedPixelCount);
+        Assert.Equal(1, fractionalComparison.MinimumMismatchX);
+        Assert.Equal(1, fractionalComparison.MinimumMismatchY);
+        Assert.Equal(7, fractionalComparison.MaximumMismatchX);
+        Assert.Equal(7, fractionalComparison.MaximumMismatchY);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -213,6 +244,73 @@ public sealed class RasterizationResearchTests
             }
         }
         return new RgbaImage(8, 8, pixels);
+    }
+
+    private static RgbaImage RasterizeSixteenthSnappedEdgeStripTriangle(ReadOnlySpan<Point> triangle)
+    {
+        byte[] pixels = new byte[8 * 8 * 4];
+        for (int y = 0; y < 8; y++)
+        {
+            List<double> boundaries = [y, y + 1];
+            foreach (Point point in triangle)
+            {
+                if (point.Y > y && point.Y < y + 1) boundaries.Add(point.Y);
+            }
+            boundaries.Sort();
+
+            for (int x = 0; x < 8; x++)
+            {
+                double area = 0;
+                for (int interval = 0; interval < boundaries.Count - 1; interval++)
+                {
+                    double top = boundaries[interval];
+                    double bottom = boundaries[interval + 1];
+                    if (top == bottom) continue;
+                    (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? strip = SnappedStrip(triangle, top, bottom);
+                    if (strip is null) continue;
+                    (Point leftTop, Point rightTop, Point leftBottom, Point rightBottom) = strip.Value;
+                    List<Point> polygon = [leftTop, rightTop, rightBottom, leftBottom];
+                    polygon = Clip(polygon, x, true, true);
+                    polygon = Clip(polygon, x + 1, false, true);
+                    polygon = Clip(polygon, y, true, false);
+                    polygon = Clip(polygon, y + 1, false, false);
+                    area += Area(polygon);
+                }
+                int fixedPointAlpha = (int)Math.Floor(area * 256);
+                if (fixedPointAlpha == 0) continue;
+                int offset = (y * 8 + x) * 4;
+                pixels[offset] = byte.MaxValue;
+                pixels[offset + 3] = (byte)Math.Min(fixedPointAlpha, byte.MaxValue);
+            }
+        }
+        return new RgbaImage(8, 8, pixels);
+    }
+
+    private static (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? SnappedStrip(ReadOnlySpan<Point> triangle, double top, double bottom)
+    {
+        double middle = (top + bottom) / 2;
+        List<(Point Top, Point Bottom)> edges = [];
+        for (int index = 0; index < triangle.Length; index++)
+        {
+            Point first = triangle[index];
+            Point second = triangle[(index + 1) % triangle.Length];
+            if ((first.Y < middle && middle < second.Y) || (second.Y < middle && middle < first.Y)) edges.Add((first, second));
+        }
+        if (edges.Count == 0) return null;
+        Assert.Equal(2, edges.Count);
+        Point firstTop = SnapEdgeX(edges[0].Top, edges[0].Bottom, top);
+        Point firstBottom = SnapEdgeX(edges[0].Top, edges[0].Bottom, bottom);
+        Point secondTop = SnapEdgeX(edges[1].Top, edges[1].Bottom, top);
+        Point secondBottom = SnapEdgeX(edges[1].Top, edges[1].Bottom, bottom);
+        return firstTop.X <= secondTop.X
+            ? (firstTop, secondTop, firstBottom, secondBottom)
+            : (secondTop, firstTop, secondBottom, firstBottom);
+    }
+
+    private static Point SnapEdgeX(Point first, Point second, double y)
+    {
+        double x = first.X + (y - first.Y) * (second.X - first.X) / (second.Y - first.Y);
+        return new Point(Math.Floor(x * 16 + 0.5) / 16, y);
     }
 
     private static List<Point> Clip(List<Point> polygon, double boundary, bool keepGreater, bool isVertical)

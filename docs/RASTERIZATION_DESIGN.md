@@ -101,6 +101,14 @@ channel error 255 and alpha error 32. Thus the near-fit for integral input does
 not transfer across device phase; the next candidate must make its input-edge
 quantization explicit rather than applying an output-only adjustment.
 
+A separate edge-strip model rounds each edge crossing at a row boundary to the
+nearest sixteenth of a pixel, then computes its clipped strip area. It reduces
+the integral probe to two one-unit alpha differences, but changes 23 pixels on
+the fractional-origin probe (maximum channel/alpha error 255/32). It is therefore
+useful evidence that device-space edge snapping matters, but is still a rejected
+phase-specific approximation: partial-row handling and alpha accumulation remain
+unmodelled.
+
 ## Calibration source pin
 
 The Chromium `153.0.8010.52` tag used by the retained Windows recipe pins
