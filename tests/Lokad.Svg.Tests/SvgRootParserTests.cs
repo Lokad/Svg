@@ -130,6 +130,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Applies_color_fill_and_element_alpha_in_documented_order()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='#ff000001' fill-opacity='0.5' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 1), root.Rectangles[0].Color);
+    }
+
+    [Fact]
     public void Resolves_inherited_fill_opacity_and_current_color_at_each_element()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g fill-opacity='0.5'><rect width='1' fill='red'/></g><g fill='red' fill-opacity='0.5'><rect width='1' fill-opacity='1'/></g><g color='red' fill='currentColor'><rect width='1' color='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
