@@ -153,6 +153,13 @@ public sealed class PixelComparerTests
         Assert.Equal(new byte[] { 17, 170, 255, 255 }, PngRgbaDecoder.Decode(png, 1).Pixels);
     }
 
+    [Fact]
+    public void Integral_decimal_rectangle_coordinates_are_accepted()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect x='0.0' y='0e0' width='1.0' height='1.00' fill='#f00'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.Equal(new byte[] { 255, 0, 0, 255 }, PngRgbaDecoder.Decode(png, 1).Pixels);
+    }
+
     private static byte[] CreateOnePixelRgbaPng()
     {
         using MemoryStream result = new();

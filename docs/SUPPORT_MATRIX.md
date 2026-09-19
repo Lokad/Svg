@@ -13,7 +13,7 @@ supported and no pixel-fidelity claim is made.
 | Viewport resolution | Not implemented |
 | Empty explicitly sized SVG | Integral transparent or caller-background PNG implemented |
 | Caller-owned PNG destination | Implemented for the current empty/rectangle subset |
-| Integer rectangles | Document-order layers, integer coordinates, `#RGB`/`#RRGGBB` fill, `fill-opacity`, source-over; other attributes explicit unsupported |
+| Integer rectangles | Document-order layers, integer-valued numeric coordinates, `#RGB`/`#RRGGBB` fill, `fill-opacity`, source-over; other attributes explicit unsupported |
 | Shapes, paths and composition | Other cases explicit unsupported-feature failure |
 | CSS, gradients, images, filters and text | Not implemented |
 | PNG encoding | Not implemented |

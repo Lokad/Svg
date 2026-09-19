@@ -80,8 +80,8 @@ internal static class SvgRootParser
 
     private static int ParseInteger(string value)
     {
-        if (!int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer rectangle coordinates are implemented.");
-        return result;
+        if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result != Math.Truncate(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer rectangle coordinates are implemented.");
+        return checked((int)result);
     }
 
     private static byte ParseOpacity(string? value)
