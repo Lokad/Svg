@@ -142,6 +142,14 @@ Those improvements identify endpoint-Y quantization as a worthwhile component to
 isolate, but the result is non-exact for every phase and remains a rejected
 partial model.
 
+Replacing that model's direct crossing calculation with 16.16 fixed-point edge
+slopes and stepping before the same sixteenth-X snap preserves its integral and
+grid-aligned-fractional results. It further improves the half-grid reference from
+16 changed pixels (8/8) to 15 (2/2). This is still not a port of the matched
+walker: it retains analytic strip-area quantization rather than the source's
+per-row alpha operations, and it makes no claim about the browser raster path.
+It is therefore another non-exact component result, not a geometry admission.
+
 ## Calibration source pin
 
 The Chromium `153.0.8010.52` tag used by the retained Windows recipe pins

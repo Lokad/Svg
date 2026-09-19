@@ -286,6 +286,51 @@ public sealed class RasterizationResearchTests
         Assert.Equal(7, halfGrid.MaximumMismatchY);
     }
 
+    [Fact]
+    public void Source_guided_fixed_edge_stepping_does_not_make_edge_strip_coverage_exact()
+    {
+        RgbaImage integerReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png")), 64);
+        RgbaImage fractionalReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-fractional-8x8.png")), 64);
+        RgbaImage halfGridReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-half-grid-8x8.png")), 64);
+
+        PixelComparison integer = PixelComparer.Compare(integerReference, RasterizeSourceGuidedFixedEdgeStripTriangle(IntegerTriangle));
+        PixelComparison fractional = PixelComparer.Compare(fractionalReference, RasterizeSourceGuidedFixedEdgeStripTriangle(FractionalTriangle));
+        PixelComparison halfGrid = PixelComparer.Compare(halfGridReference, RasterizeSourceGuidedFixedEdgeStripTriangle(HalfGridTriangle));
+
+        Assert.True(integer.DimensionsMatch);
+        Assert.False(integer.IsExact);
+        Assert.Equal(2, integer.ChangedPixelCount);
+        Assert.Equal((byte)1, integer.MaximumChannelError);
+        Assert.Equal((byte)1, integer.MaximumAlphaError);
+        Assert.Equal(2, integer.AlphaChangedPixelCount);
+        Assert.Equal(1, integer.MinimumMismatchX);
+        Assert.Equal(1, integer.MinimumMismatchY);
+        Assert.Equal(6, integer.MaximumMismatchX);
+        Assert.Equal(1, integer.MaximumMismatchY);
+
+        Assert.True(fractional.DimensionsMatch);
+        Assert.False(fractional.IsExact);
+        Assert.Equal(12, fractional.ChangedPixelCount);
+        Assert.Equal((byte)2, fractional.MaximumChannelError);
+        Assert.Equal((byte)2, fractional.MaximumAlphaError);
+        Assert.Equal(12, fractional.AlphaChangedPixelCount);
+        Assert.Equal(1, fractional.MinimumMismatchX);
+        Assert.Equal(1, fractional.MinimumMismatchY);
+        Assert.Equal(7, fractional.MaximumMismatchX);
+        Assert.Equal(6, fractional.MaximumMismatchY);
+
+        Assert.True(halfGrid.DimensionsMatch);
+        Assert.False(halfGrid.IsExact);
+        Assert.Equal(15, halfGrid.ChangedPixelCount);
+        Assert.Equal((byte)2, halfGrid.MaximumChannelError);
+        Assert.Equal((byte)2, halfGrid.MaximumAlphaError);
+        Assert.Equal(15, halfGrid.AlphaChangedPixelCount);
+        Assert.Equal(1, halfGrid.MinimumMismatchX);
+        Assert.Equal(1, halfGrid.MinimumMismatchY);
+        Assert.Equal(7, halfGrid.MaximumMismatchX);
+        Assert.Equal(6, halfGrid.MaximumMismatchY);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -448,6 +493,49 @@ public sealed class RasterizationResearchTests
         return new RgbaImage(8, 8, pixels);
     }
 
+    private static RgbaImage RasterizeSourceGuidedFixedEdgeStripTriangle(ReadOnlySpan<Point> triangle)
+    {
+        FixedPoint[] fixedTriangle = new FixedPoint[triangle.Length];
+        for (int index = 0; index < triangle.Length; index++) fixedTriangle[index] = FixedPoint.From(triangle[index]);
+
+        byte[] pixels = new byte[8 * 8 * 4];
+        for (int y = 0; y < 8; y++)
+        {
+            List<long> boundaries = [ToFixed(y), ToFixed(y + 1)];
+            foreach (FixedPoint point in fixedTriangle)
+            {
+                if (point.Y > boundaries[0] && point.Y < boundaries[1]) boundaries.Add(point.Y);
+            }
+            boundaries.Sort();
+
+            for (int x = 0; x < 8; x++)
+            {
+                double area = 0;
+                for (int interval = 0; interval < boundaries.Count - 1; interval++)
+                {
+                    long top = boundaries[interval];
+                    long bottom = boundaries[interval + 1];
+                    if (top == bottom) continue;
+                    (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? strip = SourceGuidedSnappedStrip(fixedTriangle, top, bottom);
+                    if (strip is null) continue;
+                    (Point leftTop, Point rightTop, Point leftBottom, Point rightBottom) = strip.Value;
+                    List<Point> polygon = [leftTop, rightTop, rightBottom, leftBottom];
+                    polygon = Clip(polygon, x, true, true);
+                    polygon = Clip(polygon, x + 1, false, true);
+                    polygon = Clip(polygon, y, true, false);
+                    polygon = Clip(polygon, y + 1, false, false);
+                    area += Area(polygon);
+                }
+                int fixedPointAlpha = (int)Math.Floor(area * 256);
+                if (fixedPointAlpha == 0) continue;
+                int offset = (y * 8 + x) * 4;
+                pixels[offset] = byte.MaxValue;
+                pixels[offset + 3] = (byte)Math.Min(fixedPointAlpha, byte.MaxValue);
+            }
+        }
+        return new RgbaImage(8, 8, pixels);
+    }
+
     private static (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? SnappedStrip(ReadOnlySpan<Point> triangle, double top, double bottom, EdgeRounding rounding)
     {
         double middle = (top + bottom) / 2;
@@ -467,6 +555,36 @@ public sealed class RasterizationResearchTests
         return firstTop.X <= secondTop.X
             ? (firstTop, secondTop, firstBottom, secondBottom)
             : (secondTop, firstTop, secondBottom, firstBottom);
+    }
+
+    private static (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? SourceGuidedSnappedStrip(ReadOnlySpan<FixedPoint> triangle, long top, long bottom)
+    {
+        long middle = top + (bottom - top) / 2;
+        List<(FixedPoint Top, FixedPoint Bottom)> edges = [];
+        for (int index = 0; index < triangle.Length; index++)
+        {
+            FixedPoint first = triangle[index];
+            FixedPoint second = triangle[(index + 1) % triangle.Length];
+            if ((first.Y < middle && middle < second.Y) || (second.Y < middle && middle < first.Y)) edges.Add((first, second));
+        }
+        if (edges.Count == 0) return null;
+        Assert.Equal(2, edges.Count);
+        Point firstTop = SourceGuidedSnapEdgeX(edges[0].Top, edges[0].Bottom, top);
+        Point firstBottom = SourceGuidedSnapEdgeX(edges[0].Top, edges[0].Bottom, bottom);
+        Point secondTop = SourceGuidedSnapEdgeX(edges[1].Top, edges[1].Bottom, top);
+        Point secondBottom = SourceGuidedSnapEdgeX(edges[1].Top, edges[1].Bottom, bottom);
+        return firstTop.X <= secondTop.X
+            ? (firstTop, secondTop, firstBottom, secondBottom)
+            : (secondTop, firstTop, secondBottom, firstBottom);
+    }
+
+    private static Point SourceGuidedSnapEdgeX(FixedPoint first, FixedPoint second, long y)
+    {
+        if (first.Y > second.Y) (first, second) = (second, first);
+        long slope = checked((second.X - first.X) << 16) / (second.Y - first.Y);
+        long x = checked(first.X + ((slope * (y - first.Y)) >> 16));
+        long snappedX = (x + 2_048) & ~4_095L;
+        return new Point(snappedX / 65_536d, y / 65_536d);
     }
 
     private static Point SnapEdgeX(Point first, Point second, double y, EdgeRounding rounding)
@@ -543,4 +661,14 @@ public sealed class RasterizationResearchTests
     private enum EdgeRounding { Floor, Nearest, Ceiling }
 
     private readonly record struct Point(double X, double Y);
+
+    private readonly record struct FixedPoint(long X, long Y)
+    {
+        internal static FixedPoint From(Point point)
+            => new(ToFixed(point.X), SnapY(ToFixed(point.Y)));
+
+        private static long SnapY(long value) => ((value + 8_192) >> 14) << 14;
+    }
+
+    private static long ToFixed(double value) => checked((long)Math.Round(value * 65_536, MidpointRounding.AwayFromZero));
 }
