@@ -10,11 +10,11 @@ have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 | Area | Status |
 | --- | --- |
 | Public options, limits and failure categories | Initial contract and categorized public failures implemented; current rectangle raster work is preflight-bounded |
-| Root SVG parsing | Bounded validation counts every descendant element; inert `id`, title/description/metadata/unused `defs`, and link containers; inheritable `fill`/`fill-opacity`, `display` (`inline`/`none`) and `visibility` (`visible`/`hidden`) on root and `g`/`a`; bare-number/px/in/cm/mm/pt/pc dimensions implemented at 96 CSS pixels/inch; geometry/style root and other group attributes and relative units explicit unsupported |
+| Root SVG parsing | Bounded validation counts every descendant element; inert `id`, title/description/metadata/unused `defs`, and link containers; inheritable `color`, `fill`/`fill-opacity`, `display` (`inline`/`none`) and `visibility` (`visible`/`hidden`) on root and `g`/`a`; bare-number/px/in/cm/mm/pt/pc dimensions implemented at 96 CSS pixels/inch; geometry/style root and other group attributes and relative units explicit unsupported |
 | Viewport resolution | Not implemented |
 | Empty explicitly sized SVG | Integral transparent or caller-background PNG implemented |
 | Caller-owned PNG destination | Implemented for the current empty/rectangle subset |
-| Integer rectangles | Document-order layers, bare-number/px integer coordinates and output-scaled geometry (only when scale preserves integral edges), SVG zero defaults for omitted coordinates/dimensions, SVG black default plus `none`/`transparent`/`black`/`red`/`blue`/classic comma-form `rgb()`/`rgba()`/`hsl()`/`hsla()`/`#RGB`/`#RGBA`/`#RRGGBB`/`#RRGGBBAA` fill, `fill-opacity`, element `opacity`, source-over; other attributes explicit unsupported |
+| Integer rectangles | Document-order layers, bare-number/px integer coordinates and output-scaled geometry (only when scale preserves integral edges), SVG zero defaults for omitted coordinates/dimensions, SVG black default plus `none`/`transparent`/`currentColor`/`black`/`red`/`blue`/classic comma-form `rgb()`/`rgba()`/`hsl()`/`hsla()`/`#RGB`/`#RGBA`/`#RRGGBB`/`#RRGGBBAA` fill, `fill-opacity`, element `opacity`, source-over; other attributes explicit unsupported |
 | Fractional rectangle coverage | Not implemented; stable pinned-Chrome probe and investigation note recorded |
 | Shapes, paths and composition | Other cases explicit unsupported-feature failure |
 | CSS, gradients, images, filters and text | Not implemented |
