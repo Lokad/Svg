@@ -38,7 +38,7 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
         {
             SvgPaintableElementContext context = new(root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
-            SvgUseReference reference = SvgLeafParser.ParseUse(reader, context);
+            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context);
             workCounter.Consume(cancellationToken);
             if (state.Definitions.TryGetValue(reference.Id, out SvgGeometry definition)) state.Scene.AddGeometry(SvgReferenceResolver.Apply(definition, reference));
             else state.PendingUses.Add(new PendingUse(state.Scene.AddReferencePlaceholder(), reference));
