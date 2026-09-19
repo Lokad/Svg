@@ -13,3 +13,6 @@ tools/setup-chrome.ps1 -CacheDirectory artifacts/chrome
 The setup script refuses an archive whose SHA-256 differs from the pin. This is
 only browser provisioning; a reviewed canonical reference still requires the
 full recipe metadata, repeated-capture stability checks, and fixture admission.
+The capture wrapper explicitly sets an RGBA-transparent default background before
+screenshot capture; references generated before that recipe step must be reviewed
+before being treated as alpha-sensitive evidence.
