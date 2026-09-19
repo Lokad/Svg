@@ -34,6 +34,7 @@ internal static class Program
         }
         catch (Exception exception)
         {
+            Console.Error.WriteLine(exception);
             WriteReport("unhandled-" + exception.GetType().Name, stopwatch, process, null, null);
             return 4;
         }

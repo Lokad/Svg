@@ -44,6 +44,13 @@ The latter is an observation for bounded child-process scenarios, not a renderer
 memory guarantee; `--cancel-after-ms` is timing dependent and should be used for
 stress evidence rather than an exact unit-test assertion.
 
+Run the child-process success, budget-denial and cancellation scenarios (which
+retain their probe reports) with:
+
+```powershell
+tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe
+```
+
 To smoke-test the packed package from a clean consumer directory:
 
 ```powershell
