@@ -13,7 +13,7 @@ internal static class SvgRenderedLeafParser
         bool inheritedDisplayed = state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed;
         bool inheritedVisibility = state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible;
         AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
-        InlineStyle styleSheet = SvgStyleSheet.Resolve(reader, state.StyleRules, directChild, state.Groups.Any(static group => group.Name == "g"), state.Groups.Count > 0 && state.Groups[^1].Name == "g", workCounter, cancellationToken);
+        InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken);
 
         switch (reader.LocalName)
         {

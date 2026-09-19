@@ -10,7 +10,7 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth >= 0 && (reader.Depth == state.DefinitionsDepth + 1 || reader.Depth == state.SymbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
         {
             string? id = state.SymbolDepth >= 0 ? state.SymbolId : reader.GetAttribute("id");
-            SvgRectangle rectangle = SvgLeafParser.ParseRectangle(reader, root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
+            SvgRectangle rectangle = SvgLeafParser.ParseRectangle(reader, root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
             if (id is not null)
             {
                 workCounter.Consume(cancellationToken);
@@ -23,7 +23,7 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol")
         {
             SvgElementAttributePolicy.ValidateSymbol(reader);
-            if (GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken) != default) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules on symbol definitions are not implemented.");
+            if (SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken) != default) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules on symbol definitions are not implemented.");
             state.SymbolId = reader.GetAttribute("id") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A symbol requires an id.");
             if (!reader.IsEmptyElement) state.SymbolDepth = reader.Depth;
             return true;
@@ -36,7 +36,7 @@ internal static class SvgDefinitionParser
         }
         if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
         {
-            SvgUseReference reference = SvgLeafParser.ParseUse(reader, GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken), workCounter, cancellationToken);
+            SvgUseReference reference = SvgLeafParser.ParseUse(reader, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), workCounter, cancellationToken);
             workCounter.Consume(cancellationToken);
             if (state.Definitions.TryGetValue(reference.Id, out SvgRectangle definition)) state.Scene.AddRectangle(SvgReferenceResolver.Apply(definition, reference));
             else state.PendingUses.Add(new PendingUse(state.Scene.AddReferencePlaceholder(), reference));
@@ -46,7 +46,4 @@ internal static class SvgDefinitionParser
         }
         return false;
     }
-
-    private static InlineStyle GetStyleSheet(XmlReader reader, BudgetedParserList<CssRule> rules, bool directChild, BudgetedParserList<SvgGroupScope> groupDepths, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => SvgStyleSheet.Resolve(reader, rules, directChild, groupDepths.Any(static group => group.Name == "g"), groupDepths.Count > 0 && groupDepths[^1].Name == "g", workCounter, cancellationToken);
 }
