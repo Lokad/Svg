@@ -229,6 +229,19 @@ public sealed class SvgRootParserTests
         Assert.False(root.Rectangles[0].HasFill);
     }
 
+    [Theory]
+    [InlineData("display='none'")]
+    [InlineData("visibility='hidden'")]
+    public void Hides_rectangle_strokes_when_the_rectangle_is_not_painted(string visibilityAttribute)
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect x='1' y='1' width='4' height='4' fill='none' stroke='red' stroke-width='2' " + visibilityAttribute + "/></svg>");
+
+        SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.False(root.Rectangles[0].HasFill);
+        Assert.Null(root.Rectangles[0].Stroke);
+    }
+
     [Fact]
     public void Rejects_rectangle_strokes_outside_the_calibrated_subset()
     {
