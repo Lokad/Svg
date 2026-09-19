@@ -20,19 +20,18 @@ internal static class SvgLeafParser
     internal static SvgGeometry ParseLine(XmlReader reader, SvgPaintableElementContext context)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        SvgElementAttributePolicy.ValidateLine(reader);
+        SvgLineSyntax syntax = SvgLineSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
-        int x1 = SvgGeometrySyntax.ParseInteger(reader.GetAttribute("x1") ?? "0"); int y1 = SvgGeometrySyntax.ParseInteger(reader.GetAttribute("y1") ?? "0"); int x2 = SvgGeometrySyntax.ParseInteger(reader.GetAttribute("x2") ?? "0"); int y2 = SvgGeometrySyntax.ParseInteger(reader.GetAttribute("y2") ?? "0");
         string? stroke = style.Stroke;
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
-        if (transform != AxisTransform.Identity || stroke is null || stroke.Equals("none", StringComparison.OrdinalIgnoreCase) || opacity != 255 || (x1 != x2 && y1 != y2) || (x1 == x2 && y1 == y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque untransformed horizontal or vertical lines are implemented.");
+        if (transform != AxisTransform.Identity || stroke is null || stroke.Equals("none", StringComparison.OrdinalIgnoreCase) || opacity != 255 || (syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque untransformed horizontal or vertical lines are implemented.");
         SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(stroke, style.Color, context.InheritedPaint, context.NamedColors);
-        int strokeWidth = SvgGeometrySyntax.ParseInteger(reader.GetAttribute("stroke-width") ?? "1");
+        int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
         if (strokeColor.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width line strokes are implemented.");
         double halfWidth = strokeWidth / 2d;
         bool painted = context.InheritedDisplayed && SvgShapePresentationResolver.ParseDisplay(style.Display) && SvgShapePresentationResolver.ParseVisibility(style.Visibility, context.InheritedVisibility);
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor, opacity);
-        return SvgGeometry.FromRectangle(x1 != x2 ? new SvgRectangle(Math.Min(x1, x2), y1 - halfWidth, Math.Abs((long)x2 - x1), strokeWidth, color, painted, null) : new SvgRectangle(x1 - halfWidth, Math.Min(y1, y2), strokeWidth, Math.Abs((long)y2 - y1), color, painted, null));
+        return SvgGeometry.FromRectangle(syntax.X1 != syntax.X2 ? new SvgRectangle(Math.Min(syntax.X1, syntax.X2), syntax.Y1 - halfWidth, Math.Abs((long)syntax.X2 - syntax.X1), strokeWidth, color, painted, null) : new SvgRectangle(syntax.X1 - halfWidth, Math.Min(syntax.Y1, syntax.Y2), strokeWidth, Math.Abs((long)syntax.Y2 - syntax.Y1), color, painted, null));
     }
 
     internal static SvgParsedGeometry ParseOrthogonalPath(XmlReader reader, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget)
