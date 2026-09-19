@@ -16,7 +16,7 @@ ignored `BenchmarkDotNet.Artifacts/` directory. Preserve a result separately
 when comparing revisions; do not infer a regression from one run on a different
 machine or runtime.
 
-## Baseline captured 2026-09-19
+## Baseline captured 2026-09-20
 
 - BenchmarkDotNet 0.14.0; .NET SDK 10.0.401; .NET 10.0.12 x64 RyuJIT.
 - Windows 10 22H2 (10.0.19045.6456), Intel Xeon W-2223 3.60 GHz, four physical
@@ -29,10 +29,10 @@ machine or runtime.
 
 | API form | 1×1 | 64×64 | 512×512 |
 | --- | ---: | ---: | ---: |
-| Owned memory | 14.86 μs / 5.89 KB | 122.72 μs / 22.59 KB | 3,455.11 μs / 1,046.26 KB |
-| Caller memory | 14.25 μs / 5.72 KB | 122.10 μs / 22.25 KB | 3,537.82 μs / 1,040.03 KB |
-| Stream | 12.18 μs / 5.74 KB | 113.20 μs / 22.04 KB | 3,758.53 μs / 1,033.98 KB |
-| Async stream | 35.52 μs / 6.51 KB | 161.70 μs / 22.86 KB | 3,888.44 μs / 1,037.85 KB |
+| Owned memory | 15.82 μs / 6.13 KB | 124.30 μs / 22.83 KB | 3,381.13 μs / 1,046.57 KB |
+| Caller memory | 15.75 μs / 5.95 KB | 113.48 μs / 22.48 KB | 3,523.61 μs / 1,040.31 KB |
+| Stream | 12.85 μs / 5.98 KB | 113.76 μs / 22.33 KB | 3,447.98 μs / 1,034.29 KB |
+| Async stream | 37.32 μs / 6.71 KB | 167.90 μs / 22.99 KB | 3,729.32 μs / 1,034.97 KB |
 
 Each cell is mean time followed by BenchmarkDotNet managed allocation per
 conversion. It is allocation traffic, not retained memory or `RenderBudget`
