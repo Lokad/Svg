@@ -205,30 +205,29 @@ behavior or collecting measurements.
 
 ### Next implementation changes
 
-1. Replace the 30 hand-selected golden tests with a manifest-driven suite. Require
-   oracle metadata for every exact entry, validate dimensions/options/recipe/input
-   hashes, and report unsupported/known-difference/oracle-failure cases separately.
-   Correct the fixture dedication and the support inventory at the same boundary.
-2. Add and fix the reproduced semantic failures in cohesive commits: visibility
-   and paint inheritance; stylesheet/reference handling; named colors; XML/numeric
-   validation. Record unsupported combinations explicitly until their shared
-   semantics exist. Do not make incorrect pixels pass by editing the references.
-3. Continue the conversion context through the remaining XML/parser state and
-   retain it through encoding. The shared PNG sink now writes to synchronous and
-   asynchronous caller streams in bounded chunks without an owned
-   output copy. Both stream forms now use direct `IDAT` compressor sinks; add
-   failure/stall/cancellation stress evidence and account their remaining transient
-   workspace.
-4. Add structural/work limits and cancellation checkpoints before parser/geometry
-   expansion and within compression/output. The benchmark project now measures
-   owned/caller-buffer/sync-stream/async-stream conversions across current subset
-   canvas sizes, `MemoryProbe` has an orchestrating child-process scenario suite,
-   and the local ShortRun baseline is recorded. Repeat it on stable hosts before
-   using it as a regression threshold or beginning the general geometry refactor.
-5. Complete canonical Linux baseline admission, then extract scene/style/path
-   subsystems. Drive the next rendering work with diagonal edges, curves, winding,
-   stroke joins and an actual illustration, not a further run of spelling-only
-   rectangle fixtures.
+1. Finish P0.2 as a finite conversion-boundary matrix. For every directly
+   paintable element, supported style/reference path and malformed input family,
+   retain either a positive rendering case or a conversion-level stable error
+   category. The completed leaf-content and malformed-XML cases are examples;
+   do not infer support from parser records alone or make incorrect pixels pass by
+   changing references.
+2. Finish the P0.3 accounting decision before adding scope: retain and test the
+   conservative `XmlReader` allowance unless a portable, stricter accounting
+   mechanism replaces it; bound remaining names/tokens/reference expansion before
+   they allocate; and repeat child-process budget/cancellation probes on stable
+   hosts before turning the current local benchmark into a threshold.
+3. Obtain remote evidence for the configured Windows and Linux jobs, then admit a
+   canonical Linux baseline only through an explicit capture/provenance review.
+   A configured workflow, a Windows-exact capture, or a freshly generated image is
+   not admission evidence.
+4. Begin P1.2 by splitting bounded XML syntax, computed style, references and
+   compact scene construction behind characterization tests. Preserve the P0
+   subset exactly while moving responsibilities; do not add another shape-specific
+   path to `SvgRootParser`.
+5. Use the new pipeline for P1.3 feasibility work: diagonal edges, curves,
+   winding, stroke joins and one real illustration, each with retained oracle
+   evidence. Keep unsuccessful probes classified rather than silently relaxing
+   the fidelity bar.
 
 These steps need no further prioritization permission within authorized
 implementation work. Split large items into reviewable commits and advance to
