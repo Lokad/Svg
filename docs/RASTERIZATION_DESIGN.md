@@ -78,6 +78,11 @@ is still non-exact at the same bounds. Thus continuous geometric coverage alone
 does not identify Chrome's raster rule; edge quantization and/or compositing must
 be investigated before a general path feature can be admitted.
 
+The seven alpha deltas versus analytic coverage are mixed (`-2,+1,-1,+1,+3,-2,+3`),
+so replacing nearest alpha rounding with one global floor or ceiling rule cannot
+explain the reference. This is evidence for a device-space edge-quantization
+hypothesis, not proof of any particular Chromium/Skia implementation.
+
 ## Path-heavy illustration classification
 
 [Tiger, Telemachos, Openclipart 16551](../tests/Research/tiger-16551.svg) is the

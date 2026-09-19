@@ -47,7 +47,8 @@ public sealed class RasterizationResearchTests
     {
         string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png");
         RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
-        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeAnalyticTriangle());
+        RgbaImage candidate = RasterizeAnalyticTriangle();
+        PixelComparison comparison = PixelComparer.Compare(reference, candidate);
 
         Assert.True(comparison.DimensionsMatch);
         Assert.False(comparison.IsExact);
