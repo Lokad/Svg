@@ -12,18 +12,18 @@ internal static class SvgStyleSheet
         int position = 0;
         while (position < value.Length)
         {
-            while (position < value.Length && char.IsWhiteSpace(value[position])) position++;
+            position = SkipWhitespace(value, position, workCounter, cancellationToken);
             if (position == value.Length) break;
-            int openingBrace = value.IndexOf('{', position);
+            int openingBrace = FindCharacter(value, '{', position, workCounter, cancellationToken);
             if (openingBrace < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet rules must contain a declaration block.");
-            int closingBrace = value.IndexOf('}', openingBrace + 1);
-            if (closingBrace < 0 || value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1).Contains('{')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested stylesheet rules are not implemented.");
+            int closingBrace = FindCharacter(value, '}', openingBrace + 1, workCounter, cancellationToken);
+            if (closingBrace < 0 || ContainsCharacter(value, '{', openingBrace + 1, closingBrace, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested stylesheet rules are not implemented.");
             InlineStyle style = SvgInlineStyleParser.Parse(value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1), workCounter, cancellationToken);
-            CssSelectorListReader selectors = new(value.AsSpan(position, openingBrace - position));
+            CssSelectorListReader selectors = new(value.AsSpan(position, openingBrace - position), workCounter, cancellationToken);
             while (selectors.TryRead(out ReadOnlySpan<char> selector))
             {
                 if (rules.Count >= maximumRules) throw new SvgException(SvgErrorCode.LimitExceeded, "Stylesheet rule count exceeds the configured structural limit.");
-                rules.Add(ParseSelector(selector, style));
+                rules.Add(ParseSelector(selector, style, workCounter, cancellationToken));
             }
             position = closingBrace + 1;
         }
@@ -128,9 +128,9 @@ internal static class SvgStyleSheet
         });
     }
 
-    private static CssRule ParseSelector(ReadOnlySpan<char> selector, InlineStyle style)
+    private static CssRule ParseSelector(ReadOnlySpan<char> selector, InlineStyle style, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        CssSelectorTokenReader tokens = new(selector);
+        CssSelectorTokenReader tokens = new(selector, workCounter, cancellationToken);
         if (!tokens.TryRead(out ReadOnlySpan<char> first)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, class, id/class attribute, g descendant, and g child stylesheet selectors are implemented.");
         if (tokens.TryRead(out ReadOnlySpan<char> second))
         {
@@ -144,13 +144,13 @@ internal static class SvgStyleSheet
         if (first.Equals("g", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Group, string.Empty, null, 1, style);
         if (first.Length > 1 && first[0] == '#' && IsCssIdentifier(first[1..])) return new CssRule(CssSelectorKind.Id, first[1..].ToString(), null, 100, style);
         if (first.Length > 1 && first[0] == '.' && IsCssIdentifier(first[1..])) return new CssRule(CssSelectorKind.Class, first[1..].ToString(), null, 10, style);
-        if (first.Length > 2 && first[0] == '[' && first[^1] == ']') return ParseAttributeSelector(first[1..^1], style);
+        if (first.Length > 2 && first[0] == '[' && first[^1] == ']') return ParseAttributeSelector(first[1..^1], style, workCounter, cancellationToken);
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, class, id/class attribute, g descendant, and g child stylesheet selectors are implemented.");
     }
 
-    private static CssRule ParseAttributeSelector(ReadOnlySpan<char> selector, InlineStyle style)
+    private static CssRule ParseAttributeSelector(ReadOnlySpan<char> selector, InlineStyle style, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        int separator = selector.IndexOf('=');
+        int separator = FindCharacter(selector, '=', 0, workCounter, cancellationToken);
         ReadOnlySpan<char> property = (separator < 0 ? selector : selector[..separator]).Trim();
         bool isId = property.SequenceEqual("id".AsSpan());
         bool isClass = property.SequenceEqual("class".AsSpan());
@@ -184,16 +184,66 @@ internal static class SvgStyleSheet
         return true;
     }
 
+    private static int SkipWhitespace(string value, int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        while (position < value.Length && char.IsWhiteSpace(value[position])) { ConsumeCheckpoint(position, workCounter, cancellationToken); position++; }
+        return position;
+    }
+
+    private static int FindCharacter(string value, char character, int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        while (position < value.Length)
+        {
+            ConsumeCheckpoint(position, workCounter, cancellationToken);
+            if (value[position] == character) return position;
+            position++;
+        }
+        return -1;
+    }
+
+    private static int FindCharacter(ReadOnlySpan<char> value, char character, int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        while (position < value.Length)
+        {
+            ConsumeCheckpoint(position, workCounter, cancellationToken);
+            if (value[position] == character) return position;
+            position++;
+        }
+        return -1;
+    }
+
+    private static bool ContainsCharacter(string value, char character, int start, int end, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        for (int position = start; position < end; position++)
+        {
+            ConsumeCheckpoint(position, workCounter, cancellationToken);
+            if (value[position] == character) return true;
+        }
+        return false;
+    }
+
+    private static void ConsumeCheckpoint(int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if ((position & 4095) == 0) workCounter.Consume(cancellationToken);
+    }
+
     private ref struct CssSelectorTokenReader
     {
         private readonly ReadOnlySpan<char> _value;
+        private readonly ParserWorkCounter _workCounter;
+        private readonly CancellationToken _cancellationToken;
         private int _position;
 
-        internal CssSelectorTokenReader(ReadOnlySpan<char> value) => _value = value;
+        internal CssSelectorTokenReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            _value = value;
+            _workCounter = workCounter;
+            _cancellationToken = cancellationToken;
+        }
 
         internal bool TryRead(out ReadOnlySpan<char> token)
         {
-            while (_position < _value.Length && char.IsWhiteSpace(_value[_position])) _position++;
+            while (_position < _value.Length && char.IsWhiteSpace(_value[_position])) { ConsumeCheckpoint(_position, _workCounter, _cancellationToken); _position++; }
             if (_position == _value.Length)
             {
                 token = default;
@@ -208,13 +258,13 @@ internal static class SvgStyleSheet
             if (_value[_position] == '[')
             {
                 int attributeStart = _position++;
-                while (_position < _value.Length && _value[_position] != ']') _position++;
+                while (_position < _value.Length && _value[_position] != ']') { ConsumeCheckpoint(_position, _workCounter, _cancellationToken); _position++; }
                 if (_position < _value.Length) _position++;
                 token = _value[attributeStart.._position];
                 return true;
             }
             int start = _position;
-            while (_position < _value.Length && !char.IsWhiteSpace(_value[_position]) && _value[_position] != '>') _position++;
+            while (_position < _value.Length && !char.IsWhiteSpace(_value[_position]) && _value[_position] != '>') { ConsumeCheckpoint(_position, _workCounter, _cancellationToken); _position++; }
             token = _value[start.._position];
             return true;
         }
@@ -223,16 +273,23 @@ internal static class SvgStyleSheet
     private ref struct CssSelectorListReader
     {
         private readonly ReadOnlySpan<char> _value;
+        private readonly ParserWorkCounter _workCounter;
+        private readonly CancellationToken _cancellationToken;
         private int _position;
 
-        internal CssSelectorListReader(ReadOnlySpan<char> value) => _value = value;
+        internal CssSelectorListReader(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            _value = value;
+            _workCounter = workCounter;
+            _cancellationToken = cancellationToken;
+        }
 
         internal bool TryRead(out ReadOnlySpan<char> selector)
         {
             while (_position < _value.Length)
             {
                 int start = _position;
-                while (_position < _value.Length && _value[_position] != ',') _position++;
+                while (_position < _value.Length && _value[_position] != ',') { ConsumeCheckpoint(_position, _workCounter, _cancellationToken); _position++; }
                 selector = _value[start.._position].Trim();
                 if (_position < _value.Length) _position++;
                 if (!selector.IsEmpty) return true;
