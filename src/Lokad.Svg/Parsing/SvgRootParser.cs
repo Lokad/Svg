@@ -16,9 +16,10 @@ internal static class SvgRootParser
             cancellationToken.ThrowIfCancellationRequested();
             if (reader.NodeType != XmlNodeType.Element) continue;
             if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
-            SvgPaint rootPaint = ParseRootPaint(reader);
-            bool rootVisible = ParseDisplay(reader.GetAttribute("display"));
-            bool rootVisibility = ParseVisibility(reader.GetAttribute("visibility"), true);
+            InlineStyle rootStyle = ParseInlineStyle(reader.GetAttribute("style"));
+            SvgPaint rootPaint = ParseRootPaint(reader, rootStyle);
+            bool rootVisible = ParseDisplay(GetProperty(reader, rootStyle.Display, "display"));
+            bool rootVisibility = ParseVisibility(GetProperty(reader, rootStyle.Visibility, "visibility"), true);
             double? width = ParseLength(reader.GetAttribute("width"));
             double? height = ParseLength(reader.GetAttribute("height"));
             if (reader.IsEmptyElement) return new SvgRoot(width, height, [], false);
@@ -42,9 +43,10 @@ internal static class SvgRootParser
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
-                        SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint);
-                        bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(reader.GetAttribute("display"));
-                        bool visibility = ParseVisibility(reader.GetAttribute("visibility"), groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
+                        InlineStyle style = ParseInlineStyle(reader.GetAttribute("style"));
+                        SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, style);
+                        bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(GetProperty(reader, style.Display, "display"));
+                        bool visibility = ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
                         if (!reader.IsEmptyElement) groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility));
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
@@ -61,45 +63,48 @@ internal static class SvgRootParser
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
     }
 
-    private static SvgPaint ParseGroupPaint(XmlReader reader, SvgPaint inheritedPaint)
+    private static SvgPaint ParseGroupPaint(XmlReader reader, SvgPaint inheritedPaint, InlineStyle style)
     {
         if (reader.HasAttributes)
         {
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
+                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility" or "style") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
         }
-        ValidateStroke(reader.GetAttribute("stroke"));
-        return ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), reader.GetAttribute("color"), inheritedPaint);
+        ValidateNonGroupStyle(style);
+        ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
+        return ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), inheritedPaint);
     }
 
-    private static SvgPaint ParseRootPaint(XmlReader reader)
+    private static SvgPaint ParseRootPaint(XmlReader reader, InlineStyle style)
     {
         if (reader.HasAttributes)
         {
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility" or "style") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG root attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
         }
-        ValidateStroke(reader.GetAttribute("stroke"));
-        return ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), reader.GetAttribute("color"), SvgPaint.Default);
+        ValidateNonGroupStyle(style);
+        ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
+        return ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), SvgPaint.Default);
     }
 
     private static SvgRectangle ParseRectangle(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility)
     {
+        InlineStyle style = ParseInlineStyle(reader.GetAttribute("style"));
         if (reader.HasAttributes)
         {
             while (reader.MoveToNextAttribute())
             {
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -111,12 +116,47 @@ internal static class SvgRootParser
         ValidateSquareCorners(reader.GetAttribute("rx"));
         ValidateSquareCorners(reader.GetAttribute("ry"));
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
-        SvgPaint paint = ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), reader.GetAttribute("color"), inheritedPaint);
-        ValidateFillRule(reader.GetAttribute("fill-rule"));
-        ValidateStroke(reader.GetAttribute("stroke"));
-        byte opacity = ParseOpacity(reader.GetAttribute("opacity"));
+        SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), inheritedPaint);
+        ValidateFillRule(GetProperty(reader, style.FillRule, "fill-rule"));
+        ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
+        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity"));
         SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
-        return new SvgRectangle(x, y, width, height, color, paint.HasFill && inheritedDisplayed && ParseDisplay(reader.GetAttribute("display")) && ParseVisibility(reader.GetAttribute("visibility"), inheritedVisibility));
+        return new SvgRectangle(x, y, width, height, color, paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility));
+    }
+
+    private static string? GetProperty(XmlReader reader, string? inlineValue, string name) => inlineValue ?? reader.GetAttribute(name);
+
+    private static void ValidateNonGroupStyle(InlineStyle style)
+    {
+        if (style.Opacity is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Root and group opacity require isolated compositing and are not implemented.");
+        if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on rectangles.");
+    }
+
+    private static InlineStyle ParseInlineStyle(string? value)
+    {
+        if (value is null) return default;
+        string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
+        foreach (string declaration in value.Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+        {
+            int separator = declaration.IndexOf(':');
+            if (separator <= 0 || declaration.IndexOf(':', separator + 1) >= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
+            string property = declaration[..separator].Trim().ToLowerInvariant();
+            string propertyValue = declaration[(separator + 1)..].Trim();
+            if (propertyValue.Length == 0 || propertyValue.Contains("!important", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty and !important inline style declarations are not implemented.");
+            switch (property)
+            {
+                case "color": color = propertyValue; break;
+                case "fill": fill = propertyValue; break;
+                case "fill-opacity": fillOpacity = propertyValue; break;
+                case "stroke": stroke = propertyValue; break;
+                case "display": display = propertyValue; break;
+                case "visibility": visibility = propertyValue; break;
+                case "opacity": opacity = propertyValue; break;
+                case "fill-rule": fillRule = propertyValue; break;
+                default: throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property + "' is not implemented.");
+            }
+        }
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
     }
 
     private static SvgPaint ParsePaint(string? fill, string? opacity, string? currentColor, SvgPaint inheritedPaint)
@@ -273,4 +313,6 @@ internal static class SvgRootParser
     {
         internal static SvgPaint Default { get; } = new(new SvgColor(0, 0, 0, 255), true, new SvgColor(0, 0, 0, 255));
     }
+
+    private readonly record struct InlineStyle(string? Color, string? Fill, string? FillOpacity, string? Stroke, string? Display, string? Visibility, string? Opacity, string? FillRule);
 }

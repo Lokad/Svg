@@ -96,6 +96,22 @@
       "expectedSupport": "exact", "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-inherited-paint.json",
       "referenceSha256": "af462e344d455c60c77c77654ac4fb13c8f6baf3d33ae76a440d652c5342c4b6"
+    },
+    {
+      "id": "original-inline-styles",
+      "path": "original/inline-styles.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-19",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "b3ba1523e78d51f87425560a7d23a7ce44f3be582df464057ef0025db816cdcb",
+      "materializedSha256": "b3ba1523e78d51f87425560a7d23a7ce44f3be582df464057ef0025db816cdcb",
+      "featureTags": ["style", "style-inheritance", "style-precedence", "transparency"],
+      "width": 2, "height": 1, "scale": 1, "background": "transparent",
+      "expectedSupport": "exact", "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-inline-styles.json",
+      "referenceSha256": "4e2c381839e20791235a5840438c76e35cb054a507b83e9432c98e3a7c693681"
     }
   ]
 }

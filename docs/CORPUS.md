@@ -22,6 +22,10 @@ from fidelity reporting.
 an exact candidate comparison. It pins the integer source-over rounding behavior for
 two half-opaque layers on a transparent surface.
 
+`original-inline-styles` has an admitted stable pinned-Chrome reference and exact
+candidate comparison. It pins inline-style precedence, inherited `currentColor`,
+and alpha paint within the currently supported rectangle subset.
+
 When a Chrome reference is admitted, record the pinned browser/archive hash, platform,
 recipe revision, input/materialized hashes, resource hashes and capture options in the
 manifest and `tests/References/`. References must be generated from the original bytes;

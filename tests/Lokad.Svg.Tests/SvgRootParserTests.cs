@@ -90,6 +90,26 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Inline_styles_override_presentation_attributes_and_inherit_through_groups()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' fill='red' style='color: lime'><g fill='blue' style='fill: currentColor; fill-opacity: 0.5'><rect width='1' height='1'/></g><rect width='1' height='1' fill='red' style='fill: blue; opacity: 0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 128), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 128), rectangle.Color));
+    }
+
+    [Fact]
+    public void Rejects_inline_styles_that_are_not_in_the_supported_rectangle_subset()
+    {
+        SvgException unknownProperty = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' style='stroke-width: 1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException groupOpacity = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g style='opacity: 0.5'><rect width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, unknownProperty.ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, groupOpacity.ErrorCode);
+    }
+
+    [Fact]
     public void Rejects_external_entity_processing()
     {
         Assert.Throws<XmlException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<!DOCTYPE svg [<!ENTITY x SYSTEM 'file:///nope'>]><svg xmlns='http://www.w3.org/2000/svg'/>") , SvgRenderLimits.Default, CancellationToken.None));

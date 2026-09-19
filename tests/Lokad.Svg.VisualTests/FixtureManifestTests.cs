@@ -51,6 +51,15 @@ public sealed class FixtureManifestTests
     }
 
     [Fact]
+    public void Exact_inline_styles_fixture_matches_its_admitted_chrome_reference()
+    {
+        byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "inline-styles.svg"));
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-inline-styles.png")), 2);
+        PixelComparison result = PixelComparer.Compare(reference, PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None), 2));
+        Assert.True(result.IsExact, "Changed pixels: " + result.ChangedPixelCount);
+    }
+
+    [Fact]
     public void Fractional_overlap_fixture_remains_an_explicit_unsupported_failure()
     {
         byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "fractional-overlap.svg"));
