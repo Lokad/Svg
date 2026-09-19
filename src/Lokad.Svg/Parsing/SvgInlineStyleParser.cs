@@ -12,18 +12,18 @@ internal static class SvgInlineStyleParser
         => value is null ? default : Parse(value.AsSpan(), workCounter, cancellationToken);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value)
-        => ParseCore(value);
+        => ParseCore(value, null, default);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.ConsumeText(value.Length, cancellationToken);
-        return ParseCore(value);
+        return ParseCore(value, workCounter, cancellationToken);
     }
 
-    private static InlineStyle ParseCore(ReadOnlySpan<char> value)
+    private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
-        StyleDeclarationReader declarations = new(value);
+        StyleDeclarationReader declarations = new(value, workCounter, cancellationToken);
         while (declarations.TryRead(out ReadOnlySpan<char> declaration))
         {
             int separator = declaration.IndexOf(':');
@@ -48,22 +48,40 @@ internal static class SvgInlineStyleParser
     private ref struct StyleDeclarationReader
     {
         private readonly ReadOnlySpan<char> _value;
+        private readonly ParserWorkCounter? _workCounter;
+        private readonly CancellationToken _cancellationToken;
         private int _position;
+        private int _nextCheckpoint;
 
-        internal StyleDeclarationReader(ReadOnlySpan<char> value) => _value = value;
+        internal StyleDeclarationReader(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        {
+            _value = value;
+            _workCounter = workCounter;
+            _cancellationToken = cancellationToken;
+        }
 
         internal bool TryRead(out ReadOnlySpan<char> declaration)
         {
             while (_position < _value.Length)
             {
+                ConsumeCheckpoints();
                 int start = _position;
-                while (_position < _value.Length && _value[_position] != ';') _position++;
+                while (_position < _value.Length && _value[_position] != ';') { _position++; ConsumeCheckpoints(); }
                 declaration = _value[start.._position].Trim();
                 if (_position < _value.Length) _position++;
                 if (!declaration.IsEmpty) return true;
             }
             declaration = default;
             return false;
+        }
+
+        private void ConsumeCheckpoints()
+        {
+            while (_nextCheckpoint < _value.Length && _position >= _nextCheckpoint)
+            {
+                _workCounter?.Consume(_cancellationToken);
+                _nextCheckpoint += 4096;
+            }
         }
     }
 }

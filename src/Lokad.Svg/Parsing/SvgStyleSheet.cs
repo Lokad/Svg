@@ -18,7 +18,7 @@ internal static class SvgStyleSheet
             if (openingBrace < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet rules must contain a declaration block.");
             int closingBrace = value.IndexOf('}', openingBrace + 1);
             if (closingBrace < 0 || value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1).Contains('{')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested stylesheet rules are not implemented.");
-            InlineStyle style = SvgInlineStyleParser.Parse(value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1));
+            InlineStyle style = SvgInlineStyleParser.Parse(value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1), workCounter, cancellationToken);
             CssSelectorListReader selectors = new(value.AsSpan(position, openingBrace - position));
             while (selectors.TryRead(out ReadOnlySpan<char> selector))
             {
