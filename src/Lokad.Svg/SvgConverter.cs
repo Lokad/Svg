@@ -77,10 +77,14 @@ public static class SvgConverter
         foreach (SvgRectangle rectangle in root.Rectangles)
         {
             if (!rectangle.HasFill) continue;
-            int startY = (int)Math.Max(0L, rectangle.Y);
-            int endY = (int)Math.Clamp((long)rectangle.Y + rectangle.Height, 0L, outputHeight);
-            int startX = (int)Math.Max(0L, rectangle.X);
-            int endX = (int)Math.Clamp((long)rectangle.X + rectangle.Width, 0L, outputWidth);
+            long rectangleY = ScaleInteger(rectangle.Y, options.OutputScale);
+            long rectangleHeight = ScaleInteger(rectangle.Height, options.OutputScale);
+            long rectangleX = ScaleInteger(rectangle.X, options.OutputScale);
+            long rectangleWidth = ScaleInteger(rectangle.Width, options.OutputScale);
+            int startY = (int)Math.Clamp(rectangleY, 0L, outputHeight);
+            int endY = (int)Math.Clamp(rectangleY + rectangleHeight, 0L, outputHeight);
+            int startX = (int)Math.Clamp(rectangleX, 0L, outputWidth);
+            int endX = (int)Math.Clamp(rectangleX + rectangleWidth, 0L, outputWidth);
             for (int y = startY; y < endY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
@@ -92,6 +96,13 @@ public static class SvgConverter
             }
         }
         return new RasterizedSurface(outputWidth, outputHeight, pixels);
+
+        static long ScaleInteger(int value, double scale)
+        {
+            double scaled = value * scale;
+            if (!double.IsFinite(scaled) || scaled != Math.Truncate(scaled) || scaled < long.MinValue || scaled > long.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Output scale must preserve integral rectangle geometry currently.");
+            return checked((long)scaled);
+        }
     }
 
     private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
