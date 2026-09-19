@@ -185,6 +185,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Matches_class_selectors_without_materializing_class_tokens()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>.accent { fill: red; }</style><rect width='1' class='before&#x9;accent&#xA;after'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+    }
+
+    [Fact]
     public void Applies_descendant_and_child_group_stylesheet_rules_to_nested_rectangles()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; } g rect { fill: red; } g > rect { fill: lime; }</style><rect width='1'/><g><rect width='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

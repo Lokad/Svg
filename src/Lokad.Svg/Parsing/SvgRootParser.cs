@@ -1173,6 +1173,21 @@ internal static class SvgRootParser
 
     private enum CssSelectorKind { Rectangle, Group, Id, Class, RectangleClass, RectangleId, GroupClass, GroupId, AttributePresent, AttributeEquals, DescendantGroup, ChildGroup }
 
+    private static bool HasCssClass(string? value, string expected)
+    {
+        if (value is null) return false;
+        ReadOnlySpan<char> classes = value.AsSpan();
+        int position = 0;
+        while (position < classes.Length)
+        {
+            while (position < classes.Length && char.IsWhiteSpace(classes[position])) position++;
+            int start = position;
+            while (position < classes.Length && !char.IsWhiteSpace(classes[position])) position++;
+            if (classes[start..position].Equals(expected, StringComparison.Ordinal)) return true;
+        }
+        return false;
+    }
+
     private readonly record struct CssRule(CssSelectorKind Kind, string Value, string? ExpectedValue, int Specificity, InlineStyle Style)
     {
         internal bool Matches(XmlReader reader, bool directChild, BudgetedParserList<GroupScope> groupDepths) => Kind switch
@@ -1180,10 +1195,10 @@ internal static class SvgRootParser
             CssSelectorKind.Rectangle => reader.LocalName == "rect",
             CssSelectorKind.Group => reader.LocalName == "g",
             CssSelectorKind.Id => string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
-            CssSelectorKind.Class => (reader.GetAttribute("class") ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Contains(Value, StringComparer.Ordinal),
-            CssSelectorKind.RectangleClass => reader.LocalName == "rect" && (reader.GetAttribute("class") ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Contains(Value, StringComparer.Ordinal),
+            CssSelectorKind.Class => HasCssClass(reader.GetAttribute("class"), Value),
+            CssSelectorKind.RectangleClass => reader.LocalName == "rect" && HasCssClass(reader.GetAttribute("class"), Value),
             CssSelectorKind.RectangleId => reader.LocalName == "rect" && string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
-            CssSelectorKind.GroupClass => reader.LocalName == "g" && (reader.GetAttribute("class") ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Contains(Value, StringComparer.Ordinal),
+            CssSelectorKind.GroupClass => reader.LocalName == "g" && HasCssClass(reader.GetAttribute("class"), Value),
             CssSelectorKind.GroupId => reader.LocalName == "g" && string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
             CssSelectorKind.AttributePresent => reader.GetAttribute(Value) is not null,
             CssSelectorKind.AttributeEquals => string.Equals(reader.GetAttribute(Value), ExpectedValue, StringComparison.Ordinal),
