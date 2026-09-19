@@ -30,9 +30,10 @@ are secondary unless they fix a reported defect or unlock that pipeline.
 
 The shared conversion-work ceiling is also charged for every `XmlReader` event,
 including inert metadata and the closing root event, as well as opaque-background
-initialization and the per-pixel PNG preprocessing scan. A low ceiling therefore
-bounds structural traversal, raster setup and PNG preparation as well as
-syntax-specific scans.
+initialization, the per-pixel PNG preprocessing scan and every compressed PNG
+byte produced by the owned/caller-memory and sync/async stream paths. A low
+ceiling therefore bounds structural traversal, raster setup and PNG preparation
+as well as syntax-specific scans.
 
 Root and group presentation now share `SvgContainerPresentationResolver`, which
 turns their computed style and inherited context into typed paint, display,
@@ -119,7 +120,7 @@ review.
 
 ### Current local verification (2026-09-20)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 221 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 223 unit tests
 and 71 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a

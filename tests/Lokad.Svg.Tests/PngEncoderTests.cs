@@ -27,6 +27,28 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    public void Compression_respects_the_remaining_conversion_work_limit()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => PngEncoder.Encode(1, 1, [1, 2, 3, 4], new RenderBudget(long.MaxValue), 1_024, 0, 1, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Contains("PNG compression", exception.Message);
+    }
+
+    [Fact]
+    public async Task Streaming_compression_respects_the_remaining_conversion_work_limit()
+    {
+        using MemoryStream synchronousDestination = new();
+        SvgException synchronous = Assert.Throws<SvgException>(() => PngEncoder.EncodeTo(1, 1, [1, 2, 3, 4], synchronousDestination, new RenderBudget(long.MaxValue), 1_024, 0, 1, CancellationToken.None));
+
+        using MemoryStream asynchronousDestination = new();
+        SvgException asynchronous = await Assert.ThrowsAsync<SvgException>(async () => await PngEncoder.EncodeToAsync(1, 1, new byte[] { 1, 2, 3, 4 }, asynchronousDestination, new RenderBudget(long.MaxValue), 1_024, 0, 1, CancellationToken.None));
+
+        Assert.Contains("PNG compression", synchronous.Message);
+        Assert.Contains("PNG compression", asynchronous.Message);
+    }
+
+    [Fact]
     public void Encodes_directly_into_caller_destination()
     {
         byte[] owned = PngEncoder.Encode(1, 1, [1, 2, 3, 4], CancellationToken.None);

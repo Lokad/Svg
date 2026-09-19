@@ -37,6 +37,8 @@ Every XML-reader event is charged to that same limit, including inert metadata a
 the root closing event.
 Opaque-background initialization and PNG's per-pixel transparent-RGB normalization
 are also charged before those scans run.
+Every compressed PNG byte produced by the owned/caller-memory buffer and both
+streaming IDAT sinks is charged before its copy, checksum, or output write.
 The isolated Windows probe directly traverses both a full short-attribute root
 and 255 × 4 KiB attribute values below that allowance; those observations are
 pinned-runtime regression evidence, not a BCL or process-RSS guarantee.
