@@ -19,16 +19,23 @@ internal static class ChromeSvgCapture
         string html = "<style>html,body{margin:0;overflow:hidden;background:transparent}</style><img id=svg src='" + svgDataUrl + "' style='display:block'>";
         string pageUrl = "data:text/html;base64," + Convert.ToBase64String(Encoding.UTF8.GetBytes(html));
         await using ChromeProcess chrome = await ChromeProcess.LaunchAsync(executable, cancellationToken);
-        await using DevToolsConnection browser = await DevToolsConnection.ConnectAsync(chrome.DebuggerAddress, cancellationToken);
-        using JsonDocument created = JsonDocument.Parse(await browser.SendAsync("Target.createTarget", JsonSerializer.Serialize(new { url = pageUrl }), cancellationToken));
-        string targetId = created.RootElement.GetProperty("result").GetProperty("targetId").GetString() ?? throw new InvalidDataException("Chrome did not return a target ID.");
-        await using DevToolsConnection page = await DevToolsConnection.ConnectToTargetAsync(chrome.DebuggerAddress, targetId, cancellationToken);
-        await page.SendAsync("Page.enable", "{}", cancellationToken);
-        await page.SendAsync("Emulation.setDeviceMetricsOverride", JsonSerializer.Serialize(new { width, height, deviceScaleFactor = 1, mobile = false }), cancellationToken);
-        await page.SendAsync("Emulation.setDefaultBackgroundColorOverride", "{\"color\":{\"r\":0,\"g\":0,\"b\":0,\"a\":0}}", cancellationToken);
-        await page.SendAsync("Runtime.evaluate", JsonSerializer.Serialize(new { expression = "document.getElementById('svg').decode().then(()=>new Promise(requestAnimationFrame))", awaitPromise = true, returnByValue = true }), cancellationToken);
-        using JsonDocument capture = JsonDocument.Parse(await page.SendAsync("Page.captureScreenshot", JsonSerializer.Serialize(new { format = "png", fromSurface = true, captureBeyondViewport = false, clip = new { x = 0, y = 0, width, height, scale = 1 } }), cancellationToken));
-        return Convert.FromBase64String(capture.RootElement.GetProperty("result").GetProperty("data").GetString() ?? throw new InvalidDataException("Chrome returned no screenshot bytes."));
+        byte[] screenshot;
+        await using (DevToolsConnection browser = await DevToolsConnection.ConnectAsync(chrome.DebuggerAddress, cancellationToken))
+        {
+            using JsonDocument created = JsonDocument.Parse(await browser.SendAsync("Target.createTarget", JsonSerializer.Serialize(new { url = pageUrl }), cancellationToken));
+            string targetId = created.RootElement.GetProperty("result").GetProperty("targetId").GetString() ?? throw new InvalidDataException("Chrome did not return a target ID.");
+            await using (DevToolsConnection page = await DevToolsConnection.ConnectToTargetAsync(chrome.DebuggerAddress, targetId, cancellationToken))
+            {
+                await page.SendAsync("Page.enable", "{}", cancellationToken);
+                await page.SendAsync("Emulation.setDeviceMetricsOverride", JsonSerializer.Serialize(new { width, height, deviceScaleFactor = 1, mobile = false }), cancellationToken);
+                await page.SendAsync("Emulation.setDefaultBackgroundColorOverride", "{\"color\":{\"r\":0,\"g\":0,\"b\":0,\"a\":0}}", cancellationToken);
+                await page.SendAsync("Runtime.evaluate", JsonSerializer.Serialize(new { expression = "document.getElementById('svg').decode().then(()=>new Promise(requestAnimationFrame))", awaitPromise = true, returnByValue = true }), cancellationToken);
+                using JsonDocument capture = JsonDocument.Parse(await page.SendAsync("Page.captureScreenshot", JsonSerializer.Serialize(new { format = "png", fromSurface = true, captureBeyondViewport = false, clip = new { x = 0, y = 0, width, height, scale = 1 } }), cancellationToken));
+                screenshot = Convert.FromBase64String(capture.RootElement.GetProperty("result").GetProperty("data").GetString() ?? throw new InvalidDataException("Chrome returned no screenshot bytes."));
+            }
+            await browser.SendAsync("Browser.close", "{}", cancellationToken);
+        }
+        return screenshot;
     }
 
     internal static async Task<byte[]> ReadSvgAsync(Stream input, CancellationToken cancellationToken)

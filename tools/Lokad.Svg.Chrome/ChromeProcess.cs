@@ -5,6 +5,8 @@ namespace Lokad.Svg.Chrome;
 /// <summary>Owns one headless Chrome process and its isolated debugging profile.</summary>
 internal sealed class ChromeProcess : IAsyncDisposable
 {
+    private const int ProfileCleanupRetryCount = 50;
+    private static readonly TimeSpan ProfileCleanupRetryDelay = TimeSpan.FromMilliseconds(100);
     private readonly Process _process;
     private readonly string _profileDirectory;
 
@@ -38,18 +40,30 @@ internal sealed class ChromeProcess : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (!_process.HasExited) _process.Kill(true);
-        await _process.WaitForExitAsync();
+        if (!_process.HasExited)
+        {
+            Task exit = _process.WaitForExitAsync();
+            if (await Task.WhenAny(exit, Task.Delay(TimeSpan.FromMilliseconds(500))) != exit)
+            {
+                _process.Kill(true);
+                await exit;
+            }
+        }
         _process.Dispose();
+        await DeleteProfileAsync(_profileDirectory);
+    }
+
+    private static async Task DeleteProfileAsync(string profileDirectory)
+    {
         for (int attempt = 0; ; attempt++)
         {
             try
             {
-                Directory.Delete(_profileDirectory, true);
+                Directory.Delete(profileDirectory, true);
                 return;
             }
-            catch (UnauthorizedAccessException) when (attempt < 5) { await Task.Delay(50); }
-            catch (IOException) when (attempt < 5) { await Task.Delay(50); }
+            catch (UnauthorizedAccessException) when (attempt < ProfileCleanupRetryCount) { await Task.Delay(ProfileCleanupRetryDelay); }
+            catch (IOException) when (attempt < ProfileCleanupRetryCount) { await Task.Delay(ProfileCleanupRetryDelay); }
         }
     }
 
