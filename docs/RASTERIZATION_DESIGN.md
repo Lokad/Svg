@@ -54,12 +54,14 @@ unsupported until that rule is calibrated across dimensions and color pairs.
 The research inventory also retains three-capture, byte- and decoded-pixel-stable
 Windows-pinned-Chrome references for an
 [8×8 diagonal triangle](../tests/Research/diagonal-triangle-8x8.svg),
+[fractional-coordinate diagonal triangle](../tests/Research/diagonal-triangle-fractional-8x8.svg),
 [cubic arch](../tests/Research/cubic-arch-8x8.svg),
 [even-odd hole](../tests/Research/evenodd-hole-8x8.svg), and
 [round stroke join](../tests/Research/round-join-8x8.svg). They supply the first
-coverage, subdivision, multi-subpath/winding, and outline targets for P1.3. The
-current converter asserts `UnsupportedFeature` for each; neither their stable
-browser captures nor this inventory admits a general path or stroke feature.
+integer- and fractional-coordinate coverage, subdivision, multi-subpath/winding,
+and outline targets for P1.3. The current converter asserts `UnsupportedFeature`
+for each; neither their stable browser captures nor this inventory admits a
+general path or stroke feature.
 
 The first deliberately simple experiment uses an opaque red, pixel-centre
 inside/outside rule for the diagonal triangle. It differs from the retained Chrome
@@ -91,6 +93,13 @@ this small convex path through its mask writer, rather than its snapping RLE
 writer; that source detail supports treating the two observed results as one
 output-quantization finding. Any next candidate must also model the edge/scanline
 calculation and still match this probe exactly.
+
+The fractional-origin companion has the same topology but vertices at
+`(1.25,1.125)`, `(7.25,2.125)` and `(2.25,7.125)`. On its stable reference, the
+same fixed-alpha-area baseline instead changes 22 of 64 pixels, with maximum
+channel error 255 and alpha error 32. Thus the near-fit for integral input does
+not transfer across device phase; the next candidate must make its input-edge
+quantization explicit rather than applying an output-only adjustment.
 
 ## Calibration source pin
 

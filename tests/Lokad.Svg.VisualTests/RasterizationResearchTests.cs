@@ -67,7 +67,7 @@ public sealed class RasterizationResearchTests
     {
         string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png");
         RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
-        RgbaImage candidate = RasterizeFixedPointCoverageTriangle(true);
+        RgbaImage candidate = RasterizeFixedPointCoverageTriangle(IntegerTriangle, true);
         PixelComparison comparison = PixelComparer.Compare(reference, candidate);
 
         Assert.True(comparison.DimensionsMatch);
@@ -87,7 +87,7 @@ public sealed class RasterizationResearchTests
     {
         string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png");
         RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
-        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeFixedPointCoverageTriangle(false));
+        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeFixedPointCoverageTriangle(IntegerTriangle, false));
 
         Assert.True(comparison.DimensionsMatch);
         Assert.False(comparison.IsExact);
@@ -99,6 +99,25 @@ public sealed class RasterizationResearchTests
         Assert.Equal(1, comparison.MinimumMismatchY);
         Assert.Equal(6, comparison.MaximumMismatchX);
         Assert.Equal(6, comparison.MaximumMismatchY);
+    }
+
+    [Fact]
+    public void Fixed_point_coverage_fractional_triangle_baseline_is_not_Chrome_exact()
+    {
+        string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-fractional-8x8.png");
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
+        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeFixedPointCoverageTriangle(FractionalTriangle, false));
+
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(22, comparison.ChangedPixelCount);
+        Assert.Equal((byte)255, comparison.MaximumChannelError);
+        Assert.Equal((byte)32, comparison.MaximumAlphaError);
+        Assert.Equal(22, comparison.AlphaChangedPixelCount);
+        Assert.Equal(1, comparison.MinimumMismatchX);
+        Assert.Equal(1, comparison.MinimumMismatchY);
+        Assert.Equal(7, comparison.MaximumMismatchX);
+        Assert.Equal(7, comparison.MaximumMismatchY);
     }
 
     private static RgbaImage RasterizePixelCenterTriangle()
@@ -170,10 +189,9 @@ public sealed class RasterizationResearchTests
         return new RgbaImage(8, 8, pixels);
     }
 
-    private static RgbaImage RasterizeFixedPointCoverageTriangle(bool snapEndpoints)
+    private static RgbaImage RasterizeFixedPointCoverageTriangle(ReadOnlySpan<Point> triangle, bool snapEndpoints)
     {
         byte[] pixels = new byte[8 * 8 * 4];
-        ReadOnlySpan<Point> triangle = [new(1, 1), new(7, 2), new(2, 7)];
         for (int y = 0; y < 8; y++)
         {
             for (int x = 0; x < 8; x++)
@@ -250,6 +268,9 @@ public sealed class RasterizationResearchTests
 
     private static double Cross(double firstX, double firstY, double secondX, double secondY, double x, double y)
         => (secondX - firstX) * (y - firstY) - (secondY - firstY) * (x - firstX);
+
+    private static readonly Point[] IntegerTriangle = [new(1, 1), new(7, 2), new(2, 7)];
+    private static readonly Point[] FractionalTriangle = [new(1.25, 1.125), new(7.25, 2.125), new(2.25, 7.125)];
 
     private readonly record struct Point(double X, double Y);
 }
