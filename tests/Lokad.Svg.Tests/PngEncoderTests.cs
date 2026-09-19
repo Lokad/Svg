@@ -24,4 +24,17 @@ public sealed class PngEncoderTests
         cancellation.Cancel();
         Assert.Throws<OperationCanceledException>(() => PngEncoder.Encode(1, 1, [0, 0, 0, 0], cancellation.Token));
     }
+
+    [Fact]
+    public void Encodes_directly_into_caller_destination()
+    {
+        byte[] owned = PngEncoder.Encode(1, 1, [1, 2, 3, 4], CancellationToken.None);
+        byte[] destination = new byte[owned.Length];
+
+        int written = PngEncoder.EncodeInto(1, 1, [1, 2, 3, 4], destination, CancellationToken.None);
+
+        Assert.Equal(owned.Length, written);
+        Assert.Equal(owned, destination);
+        Assert.Throws<SvgException>(() => PngEncoder.EncodeInto(1, 1, [1, 2, 3, 4], new byte[1], CancellationToken.None));
+    }
 }
