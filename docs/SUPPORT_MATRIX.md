@@ -4,7 +4,7 @@
 
 Milestone 1 (repository and contracts) is complete. Milestones 2 and 3 are in
 progress. The renderer supports only the explicit subset listed below; other
-visible SVG behavior fails with `UnsupportedFeature`. Eighteen pinned-Chrome fixtures
+visible SVG behavior fails with `UnsupportedFeature`. Nineteen pinned-Chrome fixtures
 have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 
 | Area | Status |
@@ -16,12 +16,12 @@ have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 | Caller-owned PNG destination | Implemented for the current empty/rectangle subset |
 | Integer rectangles | Document-order layers, bare-number/px integer coordinates, integer `translate()`, positive `scale()`, and axis-aligned `matrix(a 0 0 d e f)` transforms on rectangles and containers, and output-scaled geometry (only when scale preserves integral edges), SVG zero defaults for omitted coordinates/dimensions and zero `rx`/`ry`, SVG black default plus `none`/`transparent`/`currentColor`/`black`/`red`/`blue`/`lime`/classic comma-form `rgb()`/`rgba()`/`hsl()`/`hsla()`/`#RGB`/`#RGBA`/`#RRGGBB`/`#RRGGBBAA` fill, `nonzero`/`evenodd` fill rule, non-painting `stroke="none"`, `fill-opacity`, element `opacity`, and the corresponding supported inline properties, source-over; other attributes explicit unsupported |
 | Fractional rectangle coverage | Not implemented; stable pinned-Chrome probe and investigation note recorded |
-| Shapes, paths and composition | Simple closed, absolute, axis-aligned integer `polygon` elements and `path` elements using uppercase `M`/`H`/`V`/`L` commands lower to bounded non-overlapping rectangle bands (`Z` may be lowercase). Self-intersections, relative commands, repeated coordinate sets, curves, fractional coordinates, all other path grammar, and shapes explicit unsupported-feature failure |
+| Shapes, paths and composition | Simple closed, absolute, axis-aligned integer `polygon` elements, filled `polyline` elements (the fill closes the contour), and `path` elements using uppercase `M`/`H`/`V`/`L` commands lower to bounded non-overlapping rectangle bands (`Z` may be lowercase). Self-intersections, relative commands, repeated coordinate sets, curves, fractional coordinates, all other path grammar, and shapes explicit unsupported-feature failure |
 | CSS, gradients, images, filters and text | CSS stylesheets are not implemented; the narrowly documented inline-style subset is supported. Gradients, images, filters and text are not implemented |
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned and caller destination output |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, and eighteen stable references |
-| Fixture corpus | Nineteen original CC0 probes with verified hashes; eighteen exact and one explicit unsupported result |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, and nineteen stable references |
+| Fixture corpus | Twenty original CC0 probes with verified hashes; nineteen exact and one explicit unsupported result |
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).
