@@ -175,6 +175,14 @@ public sealed class FixtureManifestTests
     }
 
     [Fact]
+    public void Exact_color_alpha_fill_opacity_fixture_matches_its_admitted_chrome_reference()
+    {
+        byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "color-alpha-fill-opacity.svg"));
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-color-alpha-fill-opacity.png")), 1);
+        Assert.True(PixelComparer.Compare(reference, PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None), 1)).IsExact);
+    }
+
+    [Fact]
     public void Exact_fractional_overlap_fixture_matches_its_admitted_chrome_reference()
     {
         byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "fractional-overlap.svg"));

@@ -186,6 +186,9 @@
     },
     {
       "id":"original-orthogonal-polyline","path":"original/orthogonal-polyline.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-19","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"1c64ca2fe8a07d91919be9c3921e2535e2b32a8a979b7ce58306789af61dbecd","materializedSha256":"1c64ca2fe8a07d91919be9c3921e2535e2b32a8a979b7ce58306789af61dbecd","featureTags":["shape","polyline","axis-aligned","solid-fill"],"width":3,"height":3,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-orthogonal-polyline.json","referenceSha256":"f1e0c64402670fd61383f85c9f500ff622d559f067527bd1fd7b014d459cbf2f"
+    },
+    {
+      "id":"original-color-alpha-fill-opacity","path":"original/color-alpha-fill-opacity.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-19","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"20805638aad22a490a510ab23baa00add3d76c61fc392453279cc0b650c11685","materializedSha256":"20805638aad22a490a510ab23baa00add3d76c61fc392453279cc0b650c11685","featureTags":["style","color-alpha","fill-opacity","shape"],"width":1,"height":1,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-color-alpha-fill-opacity.json","referenceSha256":"321bea3a704426f797f8c4c0f2f5f946418b302713c8f9cc1a82649bf120d45c"
     }
   ]
 }

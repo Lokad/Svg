@@ -317,7 +317,7 @@ internal static class SvgRootParser
         SvgColor inheritedCurrentColor = currentColor is null ? inheritedPaint.CurrentColor : ParseColor(currentColor);
         bool hasFill = fill is null ? inheritedPaint.HasFill : !fill.Equals("none", StringComparison.OrdinalIgnoreCase) && !fill.Equals("transparent", StringComparison.OrdinalIgnoreCase);
         SvgColor color = fill is null ? inheritedPaint.Color : fill.Equals("currentColor", StringComparison.OrdinalIgnoreCase) ? inheritedCurrentColor : hasFill ? ParseColor(fill) : SvgColor.Transparent;
-        byte alpha = opacity is null ? color.Alpha : ParseOpacity(opacity);
+        byte alpha = opacity is null ? color.Alpha : MultiplyAlpha(color.Alpha, ParseOpacity(opacity));
         return new SvgPaint(new SvgColor(color.Red, color.Green, color.Blue, alpha), hasFill, inheritedCurrentColor);
     }
 
