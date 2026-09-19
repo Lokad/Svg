@@ -1101,6 +1101,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Reserves_the_definition_dictionary_prime_capacity_before_allocating()
+    {
+        using BudgetedParserDictionary<string, int> definitions = new(new RenderBudget(2_000), SvgMemoryCategory.Parser, 256);
+
+        SvgException exception = Assert.Throws<SvgException>(() => definitions.TryAdd("id", 1));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Reserves_geometry_collection_capacity_before_allocation()
     {
         RenderBudget budget = new(63);

@@ -30,5 +30,8 @@ and copied local-reference identifiers reserve their owned string and reservatio
 tracker storage before the copy, then release it with parser document state.
 Reader-provided transient attribute/style strings remain within the documented
 conservative reader allowance; this is not exact BCL-allocation accounting.
+The definition table reserves a two-times requested-capacity allowance before the
+BCL selects its prime backing capacity, and verifies that returned capacity is
+within the allowance.
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).

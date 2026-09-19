@@ -102,7 +102,7 @@ review.
 
 ### Current local verification (2026-09-19)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 213 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 214 unit tests
 and 70 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
@@ -128,6 +128,12 @@ conservative reservation tracker storage before copying, releasing that accounti
 with document state. Reader-provided transient attribute/style strings remain
 covered only by the conservative reader workspace; exact BCL string accounting is
 still open.
+
+The definition table reserves twice its requested capacity before `Dictionary`
+selects its prime backing capacity, then verifies the returned capacity stayed
+within that pre-allocation allowance. This keeps the conservative table charge
+ahead of the BCL allocation rather than treating the requested and actual
+capacities as interchangeable.
 
 ### P0.2 conversion-boundary matrix
 

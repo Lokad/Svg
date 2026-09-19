@@ -294,7 +294,18 @@ internal sealed class BudgetedParserDictionary<TKey, TValue> : IDisposable where
 
         if (requiredCount <= _capacity) return;
         int requestedCapacity = _capacity == 0 ? Math.Max(4, requiredCount) : _capacity > int.MaxValue / 2 ? requiredCount : Math.Max(_capacity * 2, requiredCount);
-        RenderBudget.BudgetReservation replacementReservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount(requestedCapacity, _entryBytes), _category);
+        int reservedCapacity;
+        try
+        {
+            // Dictionary.EnsureCapacity selects the first prime at or above the request.
+            // For requests of at least four, the next prime is below twice the request.
+            reservedCapacity = checked(requestedCapacity * 2);
+        }
+        catch (OverflowException)
+        {
+            throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG definition table exceeds the supported capacity.");
+        }
+        RenderBudget.BudgetReservation replacementReservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount(reservedCapacity, _entryBytes), _category);
         int actualCapacity;
         try
         {
@@ -304,6 +315,12 @@ internal sealed class BudgetedParserDictionary<TKey, TValue> : IDisposable where
         {
             replacementReservation.Dispose();
             throw;
+        }
+
+        if (actualCapacity > reservedCapacity)
+        {
+            replacementReservation.Dispose();
+            throw new SvgException(SvgErrorCode.LimitExceeded, "The XML definition table selected a capacity outside its pre-allocation budget.");
         }
 
         _reservation?.Dispose();
