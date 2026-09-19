@@ -875,32 +875,87 @@ internal static class SvgRootParser
 
     private static CssRule ParseRectangleSelector(string selector, InlineStyle style)
     {
-        string normalized = string.Join(' ', selector.Replace(">", " > ").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
-        if (TryParseCompoundSelector(normalized, "rect", CssSelectorKind.RectangleClass, CssSelectorKind.RectangleId, style, out CssRule compoundRule)) return compoundRule;
-        if (TryParseCompoundSelector(normalized, "g", CssSelectorKind.GroupClass, CssSelectorKind.GroupId, style, out compoundRule)) return compoundRule;
-        if (normalized.Equals("rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Rectangle, string.Empty, null, 1, style);
-        if (normalized.Equals("g", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Group, string.Empty, null, 1, style);
-        if (normalized.Equals("g rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.DescendantGroup, string.Empty, null, 2, style);
-        if (normalized.Equals("g > rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.ChildGroup, string.Empty, null, 2, style);
-        if (normalized.Length > 1 && normalized[0] == '#' && IsCssIdentifier(normalized.AsSpan(1))) return new CssRule(CssSelectorKind.Id, normalized[1..], null, 100, style);
-        if (normalized.Length > 1 && normalized[0] == '.' && IsCssIdentifier(normalized.AsSpan(1))) return new CssRule(CssSelectorKind.Class, normalized[1..], null, 10, style);
-        if (normalized.Length > 2 && normalized[0] == '[' && normalized[^1] == ']')
+        CssSelectorTokenReader tokens = new(selector);
+        if (!tokens.TryRead(out ReadOnlySpan<char> first)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, class, id/class attribute, g descendant, and g child stylesheet selectors are implemented.");
+        if (tokens.TryRead(out ReadOnlySpan<char> second))
         {
-            string[] parts = normalized[1..^1].Split('=', 2, StringSplitOptions.TrimEntries);
-            if (parts.Length is < 1 or > 2 || parts[0] is not "id" and not "class" || (parts.Length == 2 && parts[1].Length == 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only id and class presence/equality stylesheet attribute selectors are implemented.");
-            string? expected = parts.Length == 2 ? parts[1].Trim('\'', '"') : null;
-            if (expected is not null && (!IsCssIdentifier(expected) || expected.Length == 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple CSS identifier attribute selector values are implemented.");
-            return new CssRule(expected is null ? CssSelectorKind.AttributePresent : CssSelectorKind.AttributeEquals, parts[0], expected, 10, style);
+            if (first.Equals("g", StringComparison.OrdinalIgnoreCase) && second.Equals("rect", StringComparison.OrdinalIgnoreCase) && !tokens.TryRead(out _)) return new CssRule(CssSelectorKind.DescendantGroup, string.Empty, null, 2, style);
+            if (first.Equals("g", StringComparison.OrdinalIgnoreCase) && second.SequenceEqual(">".AsSpan()) && tokens.TryRead(out ReadOnlySpan<char> third) && third.Equals("rect", StringComparison.OrdinalIgnoreCase) && !tokens.TryRead(out _)) return new CssRule(CssSelectorKind.ChildGroup, string.Empty, null, 2, style);
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, class, id/class attribute, g descendant, and g child stylesheet selectors are implemented.");
         }
+        if (TryParseCompoundSelector(first, "rect", CssSelectorKind.RectangleClass, CssSelectorKind.RectangleId, style, out CssRule compoundRule)) return compoundRule;
+        if (TryParseCompoundSelector(first, "g", CssSelectorKind.GroupClass, CssSelectorKind.GroupId, style, out compoundRule)) return compoundRule;
+        if (first.Equals("rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Rectangle, string.Empty, null, 1, style);
+        if (first.Equals("g", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Group, string.Empty, null, 1, style);
+        if (first.Length > 1 && first[0] == '#' && IsCssIdentifier(first[1..])) return new CssRule(CssSelectorKind.Id, first[1..].ToString(), null, 100, style);
+        if (first.Length > 1 && first[0] == '.' && IsCssIdentifier(first[1..])) return new CssRule(CssSelectorKind.Class, first[1..].ToString(), null, 10, style);
+        if (first.Length > 2 && first[0] == '[' && first[^1] == ']') return ParseAttributeSelector(first[1..^1], style);
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, class, id/class attribute, g descendant, and g child stylesheet selectors are implemented.");
     }
 
-    private static bool TryParseCompoundSelector(string selector, string elementName, CssSelectorKind classKind, CssSelectorKind idKind, InlineStyle style, out CssRule rule)
+    private static CssRule ParseAttributeSelector(ReadOnlySpan<char> selector, InlineStyle style)
     {
-        if (selector.StartsWith(elementName + ".", StringComparison.OrdinalIgnoreCase) && IsCssIdentifier(selector.AsSpan(elementName.Length + 1))) { rule = new CssRule(classKind, selector[(elementName.Length + 1)..], null, 11, style); return true; }
-        if (selector.StartsWith(elementName + "#", StringComparison.OrdinalIgnoreCase) && IsCssIdentifier(selector.AsSpan(elementName.Length + 1))) { rule = new CssRule(idKind, selector[(elementName.Length + 1)..], null, 101, style); return true; }
+        int separator = selector.IndexOf('=');
+        ReadOnlySpan<char> property = (separator < 0 ? selector : selector[..separator]).Trim();
+        bool isId = property.SequenceEqual("id".AsSpan());
+        bool isClass = property.SequenceEqual("class".AsSpan());
+        if (!isId && !isClass) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only id and class presence/equality stylesheet attribute selectors are implemented.");
+        if (separator < 0) return new CssRule(CssSelectorKind.AttributePresent, isId ? "id" : "class", null, 10, style);
+        ReadOnlySpan<char> expected = TrimCssQuotes(selector[(separator + 1)..].Trim());
+        if (expected.IsEmpty) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only id and class presence/equality stylesheet attribute selectors are implemented.");
+        if (!IsCssIdentifier(expected)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple CSS identifier attribute selector values are implemented.");
+        return new CssRule(CssSelectorKind.AttributeEquals, isId ? "id" : "class", expected.ToString(), 10, style);
+    }
+
+    private static bool TryParseCompoundSelector(ReadOnlySpan<char> selector, string elementName, CssSelectorKind classKind, CssSelectorKind idKind, InlineStyle style, out CssRule rule)
+    {
+        if (selector.StartsWith(elementName + ".", StringComparison.OrdinalIgnoreCase) && IsCssIdentifier(selector[(elementName.Length + 1)..])) { rule = new CssRule(classKind, selector[(elementName.Length + 1)..].ToString(), null, 11, style); return true; }
+        if (selector.StartsWith(elementName + "#", StringComparison.OrdinalIgnoreCase) && IsCssIdentifier(selector[(elementName.Length + 1)..])) { rule = new CssRule(idKind, selector[(elementName.Length + 1)..].ToString(), null, 101, style); return true; }
         rule = default;
         return false;
+    }
+
+    private static ReadOnlySpan<char> TrimCssQuotes(ReadOnlySpan<char> value)
+    {
+        while (!value.IsEmpty && value[0] is '\'' or '"') value = value[1..];
+        while (!value.IsEmpty && value[^1] is '\'' or '"') value = value[..^1];
+        return value;
+    }
+
+    private ref struct CssSelectorTokenReader
+    {
+        private readonly ReadOnlySpan<char> _value;
+        private int _position;
+
+        internal CssSelectorTokenReader(ReadOnlySpan<char> value) => _value = value;
+
+        internal bool TryRead(out ReadOnlySpan<char> token)
+        {
+            while (_position < _value.Length && char.IsWhiteSpace(_value[_position])) _position++;
+            if (_position == _value.Length)
+            {
+                token = default;
+                return false;
+            }
+            if (_value[_position] == '>')
+            {
+                token = _value.Slice(_position, 1);
+                _position++;
+                return true;
+            }
+            if (_value[_position] == '[')
+            {
+                int attributeStart = _position++;
+                while (_position < _value.Length && _value[_position] != ']') _position++;
+                if (_position < _value.Length) _position++;
+                token = _value[attributeStart.._position];
+                return true;
+            }
+            int start = _position;
+            while (_position < _value.Length && !char.IsWhiteSpace(_value[_position]) && _value[_position] != '>') _position++;
+            token = _value[start.._position];
+            return true;
+        }
     }
 
     private static bool IsCssIdentifier(ReadOnlySpan<char> value)

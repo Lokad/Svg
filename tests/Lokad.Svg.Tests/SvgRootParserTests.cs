@@ -214,7 +214,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Applies_id_and_class_presence_and_equality_attribute_selectors()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; } [id] { fill: red; } [class=accent] { fill: lime; }</style><rect width='1'/><rect width='1' id='other'/><rect width='1' class='accent'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; } [ id ] { fill: red; } [ class = accent ] { fill: lime; }</style><rect width='1'/><rect width='1' id='other'/><rect width='1' class='accent'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Collection(root.Rectangles,
             rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color),
