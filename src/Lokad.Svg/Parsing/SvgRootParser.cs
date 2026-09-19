@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace Lokad.Svg.Parsing;
 
@@ -42,6 +43,11 @@ internal static class SvgRootParser
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
                         rectangles.Add(ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform));
+                    }
+                    else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "path")
+                    {
+                        AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
+                        rectangles.Add(ParseRectanglePath(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform));
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
@@ -128,6 +134,20 @@ internal static class SvgRootParser
         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity"));
         SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
         return new SvgRectangle(x, y, width, height, color, paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility));
+    }
+
+    private static SvgRectangle ParseRectanglePath(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform)
+    {
+        if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Path attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
+        string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
+        Match match = Regex.Match(d, @"^\s*[Mm]\s*(-?\d+)\s*[ ,]\s*(-?\d+)\s*[Hh]\s*(-?\d+)\s*[Vv]\s*(-?\d+)\s*[Hh]\s*(-?\d+)\s*[Zz]\s*$");
+        if (!match.Success) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer rectangle paths are implemented.");
+        int x = ParseInteger(match.Groups[1].Value); int y = ParseInteger(match.Groups[2].Value); int right = ParseInteger(match.Groups[3].Value); int bottom = ParseInteger(match.Groups[4].Value); int closingX = ParseInteger(match.Groups[5].Value);
+        if (closingX != x || right < x || bottom < y) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer rectangle paths are implemented.");
+        InlineStyle style = ParseInlineStyle(reader.GetAttribute("style")); AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
+        SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), inheritedPaint); ValidateFillRule(GetProperty(reader, style.FillRule, "fill-rule")); ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
+        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity")); SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
+        return new SvgRectangle(checked(transform.ScaleX * x + transform.OffsetX), checked(transform.ScaleY * y + transform.OffsetY), checked(transform.ScaleX * (right - x)), checked(transform.ScaleY * (bottom - y)), color, paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility));
     }
 
     private static string? GetProperty(XmlReader reader, string? inlineValue, string name) => inlineValue ?? reader.GetAttribute(name);
