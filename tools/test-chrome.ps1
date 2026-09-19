@@ -8,7 +8,10 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+$pin = Get-Content -LiteralPath $PinPath -Raw | ConvertFrom-Json
 $executable = & (Join-Path $PSScriptRoot 'setup-chrome.ps1') -CacheDirectory $CacheDirectory -PinPath $PinPath
+$executableVersion = (Get-Item -LiteralPath $executable).VersionInfo.ProductVersion
+if (-not [string]::IsNullOrWhiteSpace($executableVersion) -and -not $executableVersion.Contains($pin.version, [StringComparison]::Ordinal)) { throw "Pinned Chrome executable version does not match its pin: $executableVersion" }
 $chromeTool = Join-Path $PSScriptRoot 'Lokad.Svg.Chrome/bin/Release/net10.0/Lokad.Svg.Chrome.dll'
 $diffTool = Join-Path $PSScriptRoot 'Lokad.Svg.VisualDiff/bin/Release/net10.0/Lokad.Svg.VisualDiff.dll'
 $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
@@ -44,3 +47,23 @@ finally { $process.Dispose() }
 
 & dotnet $diffTool $reference $candidate
 if ($LASTEXITCODE -ne 0) { throw 'Pinned Chrome smoke capture differs from its reference.' }
+
+$fingerprint = [ordered]@{
+    pinVersion = $pin.version
+    chromiumRevision = $pin.chromiumRevision
+    platform = $pin.platform
+    executableSha256 = $pin.executableSha256
+    executableFileVersion = $executableVersion
+    captureRecipeRevision = $pin.captureRecipeRevision
+    operatingSystem = [System.Runtime.InteropServices.RuntimeInformation]::OSDescription
+    processArchitecture = [System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()
+    locale = [Globalization.CultureInfo]::CurrentCulture.Name
+    headlessMode = 'new'
+    gpuPolicy = 'disabled'
+    sandbox = 'enabled'
+    viewport = @{ width = 2; height = 2; deviceScaleFactor = 1 }
+    background = 'transparent'
+    candidatePng = [IO.Path]::GetFileName($candidate)
+}
+$fingerprintPath = [IO.Path]::ChangeExtension($candidate, '.json')
+$fingerprint | ConvertTo-Json | Set-Content -LiteralPath $fingerprintPath -NoNewline -Encoding utf8

@@ -27,6 +27,12 @@ On Linux, pass its explicit pin instead:
 tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json
 ```
 
+Each smoke output directory receives the exact PNG compared plus a JSON runtime
+fingerprint. The fingerprint records the pin, executable hash and file version
+when exposed by the platform, OS/architecture, locale, recipe and
+headless/GPU/sandbox/viewport policy.
+CI uploads that directory only when its job fails.
+
 The setup script refuses an archive or extracted executable whose SHA-256 differs
 from the pin. This is only browser provisioning; a reviewed canonical reference
 still requires the full recipe metadata, repeated-capture stability checks, and
