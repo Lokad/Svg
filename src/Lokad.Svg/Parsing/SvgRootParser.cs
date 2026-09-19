@@ -171,12 +171,23 @@ internal static class SvgRootParser
         bool isRgb = fill.StartsWith("rgb(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
         if (!hasAlpha && !isRgb) { color = default; return false; }
         string[] channels = fill[(hasAlpha ? 5 : 4)..^1].Split(',', StringSplitOptions.TrimEntries);
-        if (channels.Length != (hasAlpha ? 4 : 3) || !byte.TryParse(channels[0], NumberStyles.None, CultureInfo.InvariantCulture, out byte red) || !byte.TryParse(channels[1], NumberStyles.None, CultureInfo.InvariantCulture, out byte green) || !byte.TryParse(channels[2], NumberStyles.None, CultureInfo.InvariantCulture, out byte blue))
+        if (channels.Length != (hasAlpha ? 4 : 3) || !TryParseRgbChannel(channels[0], out byte red) || !TryParseRgbChannel(channels[1], out byte green) || !TryParseRgbChannel(channels[2], out byte blue))
         {
             throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
         }
         color = new SvgColor(red, green, blue, hasAlpha ? ParseOpacity(channels[3]) : (byte)255);
         return true;
+    }
+
+    private static bool TryParseRgbChannel(string token, out byte value)
+    {
+        if (token.EndsWith('%'))
+        {
+            bool valid = double.TryParse(token.AsSpan()[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out double percentage) && double.IsFinite(percentage) && percentage >= 0 && percentage <= 100;
+            value = valid ? checked((byte)Math.Round(percentage * 255 / 100, MidpointRounding.AwayFromZero)) : default;
+            return valid;
+        }
+        return byte.TryParse(token, NumberStyles.None, CultureInfo.InvariantCulture, out value);
     }
 
     private static double? ParseLength(string? value)
