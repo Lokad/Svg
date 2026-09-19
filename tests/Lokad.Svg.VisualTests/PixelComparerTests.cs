@@ -277,6 +277,13 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
+    public void Classic_hsl_colors_are_supported()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='hsl(120,100%,50%)'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.Equal(new byte[] { 0, 255, 0, 255 }, PngRgbaDecoder.Decode(png, 1).Pixels);
+    }
+
+    [Fact]
     public void Integer_fill_opacity_composites_on_transparent_surface()
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='#ff0000' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
