@@ -19,6 +19,9 @@ public sealed class PixelComparerTests
         Assert.True(result.DimensionsMatch);
         Assert.Equal(1, result.ChangedPixelCount);
         Assert.Equal(1, result.MaximumChannelError);
+        Assert.Equal(0, result.MaximumAlphaError);
+        Assert.Equal(0, result.MinimumMismatchX);
+        Assert.Equal(0, result.MaximumMismatchY);
     }
 
     [Fact]
@@ -30,6 +33,21 @@ public sealed class PixelComparerTests
         PixelComparison result = PixelComparer.Compare(reference, candidate);
 
         Assert.Equal(0, result.ChangedPixelCount);
+    }
+
+    [Fact]
+    public void Alpha_differences_are_reported_separately_with_mismatch_bounds()
+    {
+        RgbaImage reference = new(2, 1, [0, 0, 0, 0, 0, 0, 0, 12]);
+        RgbaImage candidate = new(2, 1, [0, 0, 0, 0, 0, 0, 0, 20]);
+
+        PixelComparison result = PixelComparer.Compare(reference, candidate);
+
+        Assert.Equal(1, result.AlphaChangedPixelCount);
+        Assert.Equal(8, result.MaximumAlphaError);
+        Assert.Equal(1, result.MinimumMismatchX);
+        Assert.Equal(1, result.MaximumMismatchX);
+        Assert.Equal(0, result.MinimumMismatchY);
     }
 
     [Fact]
