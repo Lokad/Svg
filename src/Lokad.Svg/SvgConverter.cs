@@ -78,6 +78,7 @@ public static class SvgConverter
                 pixels[offset + 3] = options.BackgroundColor.Alpha;
             }
         }
+        long workUnits = 0;
         foreach (SvgRectangle rectangle in root.Rectangles)
         {
             if (!rectangle.HasFill) continue;
@@ -89,6 +90,9 @@ public static class SvgConverter
             int endY = (int)Math.Clamp(rectangleY + rectangleHeight, 0L, outputHeight);
             int startX = (int)Math.Clamp(rectangleX, 0L, outputWidth);
             int endX = (int)Math.Clamp(rectangleX + rectangleWidth, 0L, outputWidth);
+            long coverage = (long)(endY - startY) * (endX - startX);
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle raster work exceeds the configured limit.");
+            workUnits += coverage;
             for (int y = startY; y < endY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
