@@ -27,6 +27,32 @@ public sealed class DevToolsConnectionTests
         await Assert.ThrowsAsync<WebSocketException>(async () => await DevToolsConnection.ReceiveTextMessageAsync(socket, CancellationToken.None));
     }
 
+    [Fact]
+    public void Rejects_outgoing_protocol_messages_before_allocating_an_oversized_frame()
+    {
+        string parameters = new('x', DevToolsConnection.MaximumMessageBytes);
+
+        InvalidDataException exception = Assert.Throws<InvalidDataException>(() => DevToolsConnection.CreateCommand(1, "Runtime.evaluate", parameters));
+
+        Assert.Contains("16 MiB", exception.Message);
+    }
+
+    [Fact]
+    public async Task Rejects_oversized_capture_input_before_launching_Chrome()
+    {
+        byte[] oversized = new byte[ChromeSvgCapture.MaximumSvgBytes + 1];
+
+        await Assert.ThrowsAsync<InvalidDataException>(async () => await ChromeSvgCapture.CaptureAsync("missing", oversized, 1, 1, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Stops_reading_standard_input_at_the_capture_limit()
+    {
+        using MemoryStream input = new(new byte[ChromeSvgCapture.MaximumSvgBytes + 1]);
+
+        await Assert.ThrowsAsync<InvalidDataException>(async () => await ChromeSvgCapture.ReadSvgAsync(input, CancellationToken.None));
+    }
+
     private readonly record struct Frame(WebSocketMessageType MessageType, bool EndOfMessage, byte[] Data);
 
     private sealed class FakeWebSocket : WebSocket

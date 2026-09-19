@@ -11,9 +11,8 @@ internal static class Program
         }
 
         using CancellationTokenSource cancellation = new(TimeSpan.FromSeconds(30));
-        using MemoryStream svg = new();
-        await Console.OpenStandardInput().CopyToAsync(svg, cancellation.Token);
-        byte[] png = await ChromeSvgCapture.CaptureAsync(arguments[0], svg.ToArray(), width, height, cancellation.Token);
+        byte[] svg = await ChromeSvgCapture.ReadSvgAsync(Console.OpenStandardInput(), cancellation.Token);
+        byte[] png = await ChromeSvgCapture.CaptureAsync(arguments[0], svg, width, height, cancellation.Token);
         await Console.OpenStandardOutput().WriteAsync(png, cancellation.Token);
         return 0;
     }

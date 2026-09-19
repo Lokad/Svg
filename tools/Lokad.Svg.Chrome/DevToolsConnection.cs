@@ -7,7 +7,7 @@ namespace Lokad.Svg.Chrome;
 /// <summary>Provides serialized request/response access to one DevTools WebSocket.</summary>
 internal sealed class DevToolsConnection : IAsyncDisposable
 {
-    private const int MaximumMessageBytes = 16 * 1024 * 1024;
+    internal const int MaximumMessageBytes = 16 * 1024 * 1024;
     private readonly ClientWebSocket _socket;
     private int _nextCommandId;
 
@@ -60,7 +60,7 @@ internal sealed class DevToolsConnection : IAsyncDisposable
     internal async Task<string> SendAsync(string method, string parametersJson, CancellationToken cancellationToken)
     {
         int id = checked(++_nextCommandId);
-        byte[] command = Encoding.UTF8.GetBytes("{\"id\":" + id + ",\"method\":\"" + method + "\",\"params\":" + parametersJson + "}");
+        byte[] command = CreateCommand(id, method, parametersJson);
         await _socket.SendAsync(command, WebSocketMessageType.Text, true, cancellationToken);
         while (true)
         {
@@ -72,6 +72,26 @@ internal sealed class DevToolsConnection : IAsyncDisposable
             if (result.TryGetProperty("exceptionDetails", out JsonElement exceptionDetails)) throw new InvalidDataException("DevTools command '" + method + "' evaluation failed: " + GetErrorMessage(exceptionDetails));
             return message;
         }
+    }
+
+    internal static byte[] CreateCommand(int id, string method, string parametersJson)
+    {
+        string prefix = "{\"id\":" + id + ",\"method\":\"" + method + "\",\"params\":";
+        int byteCount;
+        try
+        {
+            byteCount = checked(Encoding.UTF8.GetByteCount(prefix) + Encoding.UTF8.GetByteCount(parametersJson) + 1);
+        }
+        catch (OverflowException)
+        {
+            throw new InvalidDataException("DevTools command exceeds the configured 16 MiB transport limit.");
+        }
+        if (byteCount > MaximumMessageBytes) throw new InvalidDataException("DevTools command exceeds the configured 16 MiB transport limit.");
+        byte[] command = new byte[byteCount];
+        int written = Encoding.UTF8.GetBytes(prefix, command);
+        written += Encoding.UTF8.GetBytes(parametersJson, command.AsSpan(written));
+        command[written] = (byte)'}';
+        return command;
     }
 
     private async Task<string> ReceiveTextMessageAsync(CancellationToken cancellationToken)
