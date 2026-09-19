@@ -99,12 +99,16 @@ review.
 
 ### Current local verification (2026-09-19)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 200 unit tests
-and 61 visual-project tests on the current working revision. The Windows pinned
-Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
-changed pixels. This is local, sequential evidence only; it does not establish a
-successful remote CI run, a canonical Linux baseline, ARM64 equivalence or
-installed-package behavior.
+Fresh sequential project invocations on the current working revision pass 200
+unit tests and 61 visual-project tests. One full-solution attempt first failed in
+the test-platform logger while reflecting types, before it dispatched a unit test;
+a fresh unit-project retry then passed all 200. The last successful Windows pinned
+Chrome smoke (`tools/test-chrome.ps1`) reports an exact result with zero changed
+pixels. A later retry could not initialize its DevTools socket because this host
+had exhausted virtual memory among pre-existing Chrome processes; it produced no
+candidate image and is not fresh oracle evidence for the later refactors. This is
+local, sequential evidence only; it does not establish a successful remote CI
+run, a canonical Linux baseline, ARM64 equivalence or installed-package behavior.
 
 Public P0.3 boundary tests now include structural denials and long stylesheet or
 geometry-token scans that exhaust the one shared work limit before rendering.
