@@ -162,6 +162,12 @@ public sealed class FixtureManifestTests
                 string referenceHash = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(pngPath))).ToLowerInvariant();
                 Assert.Equal(reference.RootElement.GetProperty("referenceSha256").GetString(), referenceHash);
                 Assert.Equal(fixture.GetProperty("referenceSha256").GetString(), referenceHash);
+                if (fixture.GetProperty("expectedFidelity").GetString() == "exact")
+                {
+                    Assert.Equal(3, reference.RootElement.GetProperty("freshProcessCaptures").GetInt32());
+                    Assert.Equal("identical", reference.RootElement.GetProperty("decodedPixelStability").GetString());
+                    Assert.True(reference.RootElement.GetProperty("comparison").GetProperty("exact").GetBoolean());
+                }
             }
         }
     }
