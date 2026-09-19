@@ -61,6 +61,17 @@ public static class SvgConverter
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
         using RenderBudget.BudgetReservation surface = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
         byte[] pixels = new byte[checked(pixelCount * 4)];
+        if (options.BackgroundColor != SvgColor.Transparent)
+        {
+            for (int pixel = 0; pixel < pixelCount; pixel++)
+            {
+                int offset = pixel * 4;
+                pixels[offset] = options.BackgroundColor.Red;
+                pixels[offset + 1] = options.BackgroundColor.Green;
+                pixels[offset + 2] = options.BackgroundColor.Blue;
+                pixels[offset + 3] = options.BackgroundColor.Alpha;
+            }
+        }
         if (root.Rectangle is SvgRectangle rectangle)
         {
             for (int y = Math.Max(0, rectangle.Y); y < Math.Min(outputHeight, checked(rectangle.Y + rectangle.Height)); y++)

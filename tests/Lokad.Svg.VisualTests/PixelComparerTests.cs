@@ -105,6 +105,15 @@ public sealed class PixelComparerTests
         Assert.Equal(new byte[] { 255, 0, 0, 255, 0, 0, 0, 0 }, decoded.Pixels);
     }
 
+    [Fact]
+    public void Explicit_background_colors_the_transparent_empty_surface()
+    {
+        SvgRenderOptions options = new(null, 1, new SvgColor(1, 2, 3, 255), SvgRenderLimits.Default);
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), options, CancellationToken.None).ToArray();
+
+        Assert.Equal(new byte[] { 1, 2, 3, 255 }, PngRgbaDecoder.Decode(png, 1).Pixels);
+    }
+
     private static byte[] CreateOnePixelRgbaPng()
     {
         using MemoryStream result = new();
