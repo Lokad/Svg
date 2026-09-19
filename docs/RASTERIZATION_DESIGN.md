@@ -34,3 +34,13 @@ mathematical circle/square intersection was close but not compatible: 12 decoded
 pixels differed, with a maximum alpha-channel error of 17. This rejects both a
 plain analytic-area implementation and supersampling as an admission strategy;
 circle support remains explicitly unsupported pending scan-converter calibration.
+
+## Linear-gradient feasibility finding
+
+For the opaque red-to-blue `objectBoundingBox` gradient, Chrome 153.0.8010.52
+gave `DF001F`, `A00060`, `5F009F`, `2000E0` for a four-pixel strip. Ordinary
+pixel-centre, sRGB interpolation differs by one channel in every pixel. A
+16-pixel repeat had 12 mismatched pixels, each by one channel, showing a
+backend-specific fixed-point interpolation rule rather than a rounding choice
+that is safely inferable from the short probe. Linear gradients remain
+unsupported until that rule is calibrated across dimensions and color pairs.
