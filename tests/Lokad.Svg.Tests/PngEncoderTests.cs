@@ -75,6 +75,16 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    public void Synchronous_stream_encoding_propagates_destination_write_failures()
+    {
+        using FailingWriteStream destination = new();
+
+        IOException exception = Assert.Throws<IOException>(() => PngEncoder.EncodeTo(1, 1, new byte[4], destination, new RenderBudget(long.MaxValue), int.MaxValue, CancellationToken.None));
+
+        Assert.Equal("destination write failed", exception.Message);
+    }
+
+    [Fact]
     public async Task Streams_large_png_data_in_bounded_asynchronous_writes()
     {
         byte[] pixels = CreateHighEntropyPixels();
@@ -84,6 +94,16 @@ public sealed class PngEncoderTests
 
         Assert.Equal(written, destination.Length);
         Assert.True(written > 65_536);
+    }
+
+    [Fact]
+    public async Task Asynchronous_stream_encoding_propagates_destination_write_failures()
+    {
+        using FailingWriteStream destination = new();
+
+        IOException exception = await Assert.ThrowsAsync<IOException>(async () => await PngEncoder.EncodeToAsync(1, 1, new byte[4], destination, new RenderBudget(long.MaxValue), int.MaxValue, CancellationToken.None));
+
+        Assert.Equal("destination write failed", exception.Message);
     }
 
     [Fact]
@@ -196,6 +216,13 @@ public sealed class PngEncoderTests
             if (disposing) _storage.Dispose();
             base.Dispose(disposing);
         }
+    }
+
+    private sealed class FailingWriteStream : MemoryStream
+    {
+        public override void Write(ReadOnlySpan<byte> buffer) => throw new IOException("destination write failed");
+
+        public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken) => ValueTask.FromException(new IOException("destination write failed"));
     }
 
     private sealed class BoundedAsyncWriteStream : Stream
