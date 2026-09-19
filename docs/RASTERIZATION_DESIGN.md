@@ -72,6 +72,12 @@ A uniform 16×16 supersampling variant improves the maximum channel/alpha error 
 also retained as a negative finding: higher uniform sample counts are not an
 admission strategy without a calibrated device-space edge rule.
 
+Exact triangle–pixel intersection area with deterministic nearest alpha rounding
+improves again to seven changed pixels and maximum channel/alpha error three, but
+is still non-exact at the same bounds. Thus continuous geometric coverage alone
+does not identify Chrome's raster rule; edge quantization and/or compositing must
+be investigated before a general path feature can be admitted.
+
 ## Path-heavy illustration classification
 
 [Tiger, Telemachos, Openclipart 16551](../tests/Research/tiger-16551.svg) is the
