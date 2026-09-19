@@ -1,0 +1,6 @@
+/artifacts/
+/external/
+**/bin/
+**/obj/
+.vs/
+TestResults/

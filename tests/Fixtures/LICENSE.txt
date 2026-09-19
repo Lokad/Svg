@@ -1,0 +1,1 @@
+Fixture assets will be added under CC0 with provenance recorded in each manifest.

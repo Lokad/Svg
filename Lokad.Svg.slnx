@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Lokad.Svg.Benchmarks/Lokad.Svg.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Lokad.Svg/Lokad.Svg.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Lokad.Svg.Tests/Lokad.Svg.Tests.csproj" />
+    <Project Path="tests/Lokad.Svg.VisualTests/Lokad.Svg.VisualTests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/Lokad.Svg.Chrome/Lokad.Svg.Chrome.csproj" />
+    <Project Path="tools/Lokad.Svg.MemoryProbe/Lokad.Svg.MemoryProbe.csproj" />
+    <Project Path="tools/Lokad.Svg.VisualDiff/Lokad.Svg.VisualDiff.csproj" />
+  </Folder>
+</Solution>

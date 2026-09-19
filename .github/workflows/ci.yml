@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: dotnet restore --locked-mode
+      - run: dotnet build Lokad.Svg.slnx -c Release --no-restore
+      - run: dotnet test Lokad.Svg.slnx -c Release --no-build
+      - run: dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build -o artifacts/packages
