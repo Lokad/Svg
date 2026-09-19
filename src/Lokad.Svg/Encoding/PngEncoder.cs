@@ -24,10 +24,14 @@ internal static class PngEncoder
         => Encode(width, height, rgba, new RenderBudget(long.MaxValue), maximumEncodedPngBytes, cancellationToken);
 
     internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
+        => Encode(width, height, rgba, budget, maximumEncodedPngBytes, 0, long.MaxValue, cancellationToken);
+
+    internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
     {
         if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        PngWorkCounter workCounter = new(initialWorkUnits, maximumWorkUnits);
         using RenderBudget.BudgetReservation minimumOutput = budget.Reserve(FixedPngBytesWithoutIdat + PngChunkOverheadBytes, SvgMemoryCategory.Output);
-        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), cancellationToken);
+        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), workCounter, cancellationToken);
         int length = GetOutputLength(checked((int)compressed.Length));
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         using RenderBudget.BudgetReservation remainingOutput = budget.Reserve(length - (FixedPngBytesWithoutIdat + PngChunkOverheadBytes), SvgMemoryCategory.Output);
@@ -43,9 +47,13 @@ internal static class PngEncoder
         => EncodeInto(width, height, rgba, destination, new RenderBudget(long.MaxValue), maximumEncodedPngBytes, cancellationToken);
 
     internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
+        => EncodeInto(width, height, rgba, destination, budget, maximumEncodedPngBytes, 0, long.MaxValue, cancellationToken);
+
+    internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, RenderBudget budget, int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
     {
         if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), cancellationToken);
+        PngWorkCounter workCounter = new(initialWorkUnits, maximumWorkUnits);
+        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), workCounter, cancellationToken);
         int length = GetOutputLength(checked((int)compressed.Length));
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         if (destination.Length < length) throw new SvgException(SvgErrorCode.InsufficientDestination, "PNG destination is too small.");
@@ -54,39 +62,47 @@ internal static class PngEncoder
     }
 
     internal static int EncodeTo(int width, int height, ReadOnlySpan<byte> rgba, Stream destination, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
+        => EncodeTo(width, height, rgba, destination, budget, maximumEncodedPngBytes, 0, long.MaxValue, cancellationToken);
+
+    internal static int EncodeTo(int width, int height, ReadOnlySpan<byte> rgba, Stream destination, RenderBudget budget, int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(destination);
         if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
         if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        PngWorkCounter workCounter = new(initialWorkUnits, maximumWorkUnits);
         WritePngPrefix(width, height, destination, cancellationToken);
         using PngIdatOutputStream compressed = new(destination, budget, maximumEncodedPngBytes, cancellationToken);
-        CompressInto(width, height, rgba, budget, compressed, cancellationToken);
+        CompressInto(width, height, rgba, budget, compressed, workCounter, cancellationToken);
         int length = compressed.Complete();
         WriteChunk(destination, "IEND"u8, [], cancellationToken);
         return length;
     }
 
     internal static async Task<int> EncodeToAsync(int width, int height, ReadOnlyMemory<byte> rgba, Stream destination, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
+        => await EncodeToAsync(width, height, rgba, destination, budget, maximumEncodedPngBytes, 0, long.MaxValue, cancellationToken).ConfigureAwait(false);
+
+    internal static async Task<int> EncodeToAsync(int width, int height, ReadOnlyMemory<byte> rgba, Stream destination, RenderBudget budget, int maximumEncodedPngBytes, long initialWorkUnits, long maximumWorkUnits, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(destination);
         if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
         if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        PngWorkCounter workCounter = new(initialWorkUnits, maximumWorkUnits);
         using RenderBudget.BudgetReservation scratchReservation = budget.Reserve(AsyncScratchStorageBytes, SvgMemoryCategory.Png);
         byte[] scratch = new byte[AsyncScratchLength];
         await WritePngPrefixAsync(width, height, destination, scratch, cancellationToken).ConfigureAwait(false);
         using PngAsyncIdatOutputStream compressed = new(destination, budget, maximumEncodedPngBytes, scratch, cancellationToken);
-        await CompressIntoAsync(width, height, rgba, budget, compressed, cancellationToken).ConfigureAwait(false);
+        await CompressIntoAsync(width, height, rgba, budget, compressed, workCounter, cancellationToken).ConfigureAwait(false);
         int length = await compressed.CompleteAsync().ConfigureAwait(false);
         await WriteChunkAsync(destination, IendChunkType, ReadOnlyMemory<byte>.Empty, scratch, cancellationToken).ConfigureAwait(false);
         return length;
     }
 
-    private static PngCompressionBuffer Compress(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumCompressedBytes, CancellationToken cancellationToken)
+    private static PngCompressionBuffer Compress(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumCompressedBytes, PngWorkCounter workCounter, CancellationToken cancellationToken)
     {
         PngCompressionBuffer compressed = new(budget, maximumCompressedBytes, cancellationToken);
         try
         {
-            CompressInto(width, height, rgba, budget, compressed, cancellationToken);
+            CompressInto(width, height, rgba, budget, compressed, workCounter, cancellationToken);
             return compressed;
         }
         catch
@@ -96,12 +112,13 @@ internal static class PngEncoder
         }
     }
 
-    private static void CompressInto(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, Stream destination, CancellationToken cancellationToken)
+    private static void CompressInto(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, Stream destination, PngWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
         int stride = checked(width * 4);
         if (rgba.Length != checked(stride * height)) throw new ArgumentException("Pixel buffer length does not match dimensions.", nameof(rgba));
+        workCounter.ConsumePixels(width, height, cancellationToken);
         using RenderBudget.BudgetReservation rowReservation = budget.Reserve(checked((long)stride + 1), SvgMemoryCategory.Png);
         byte[] row = new byte[stride + 1];
         using ZLibStream zlib = new(destination, CompressionLevel.Optimal, true);
@@ -118,12 +135,13 @@ internal static class PngEncoder
         }
     }
 
-    private static async Task CompressIntoAsync(int width, int height, ReadOnlyMemory<byte> rgba, RenderBudget budget, Stream destination, CancellationToken cancellationToken)
+    private static async Task CompressIntoAsync(int width, int height, ReadOnlyMemory<byte> rgba, RenderBudget budget, Stream destination, PngWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
         int stride = checked(width * 4);
         if (rgba.Length != checked(stride * height)) throw new ArgumentException("Pixel buffer length does not match dimensions.", nameof(rgba));
+        workCounter.ConsumePixels(width, height, cancellationToken);
         using RenderBudget.BudgetReservation rowReservation = budget.Reserve(checked((long)stride + 1), SvgMemoryCategory.Png);
         byte[] row = new byte[stride + 1];
         await using ZLibStream zlib = new(destination, CompressionLevel.Optimal, true);
@@ -612,6 +630,27 @@ internal static class PngEncoder
                 int count = Math.Min(4096, source.Length - offset);
                 source.Slice(offset, count).CopyTo(destination.Slice(offset, count));
             }
+        }
+    }
+
+    private sealed class PngWorkCounter
+    {
+        private readonly long _maximumWorkUnits;
+        private long _usedWorkUnits;
+
+        internal PngWorkCounter(long initialWorkUnits, long maximumWorkUnits)
+        {
+            if (initialWorkUnits < 0 || maximumWorkUnits < initialWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG encoding exceeds the configured work limit.");
+            _usedWorkUnits = initialWorkUnits;
+            _maximumWorkUnits = maximumWorkUnits;
+        }
+
+        internal void ConsumePixels(int width, int height, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            long pixels = checked((long)width * height);
+            if (pixels > _maximumWorkUnits - _usedWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG preprocessing exceeds the configured work limit.");
+            _usedWorkUnits += pixels;
         }
     }
 

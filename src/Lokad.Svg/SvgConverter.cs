@@ -16,7 +16,7 @@ public static class SvgConverter
         using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
         using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
-        return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, budget, options.Limits.MaximumEncodedPngBytes, cancellationToken);
+        return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
     /// <summary>Schedules one conversion on the thread pool.</summary>
@@ -33,7 +33,7 @@ public static class SvgConverter
         using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
         using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
-        return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, cancellationToken);
+        return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
     /// <summary>Converts SVG bytes to caller-owned writable stream output.</summary>
@@ -46,7 +46,7 @@ public static class SvgConverter
         using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
         using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
-        return PngEncoder.EncodeTo(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, cancellationToken);
+        return PngEncoder.EncodeTo(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
     /// <summary>Schedules one destination conversion on the thread pool.</summary>
@@ -67,7 +67,7 @@ public static class SvgConverter
             using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
             if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
             using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
-            return await PngEncoder.EncodeToAsync(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, cancellationToken).ConfigureAwait(false);
+            return await PngEncoder.EncodeToAsync(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken).ConfigureAwait(false);
         }, cancellationToken);
     }
 
@@ -100,6 +100,12 @@ public static class SvgConverter
         if (pixelCountLong > options.Limits.MaximumPixels || pixelCountLong > int.MaxValue / 4) throw new SvgException(SvgErrorCode.LimitExceeded, "Output pixel count exceeds the configured contiguous RGBA surface limit.");
         int pixelCount = (int)pixelCountLong;
         int surfaceByteCount = pixelCount * 4;
+        long workUnits = root.ParserWorkUnits;
+        if (options.BackgroundColor != SvgColor.Transparent)
+        {
+            if (pixelCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Background initialization exceeds the configured work limit.");
+            workUnits += pixelCount;
+        }
         RenderBudget.BudgetReservation surface = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
         byte[] pixels = new byte[surfaceByteCount];
         if (options.BackgroundColor != SvgColor.Transparent)
@@ -114,10 +120,9 @@ public static class SvgConverter
             }
         }
         (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
-        long workUnits = root.ParserWorkUnits;
         int commandIndex = RenderCommands(0, pixels, false);
         if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
-        return new RasterizedSurface(outputWidth, outputHeight, pixels, surface);
+        return new RasterizedSurface(outputWidth, outputHeight, pixels, surface, workUnits);
 
         int RenderCommands(int startIndex, byte[] destination, bool stopsAtGroupEnd)
         {
@@ -298,7 +303,7 @@ public static class SvgConverter
         return checked((byte)(sourceContribution + retainedContribution));
     }
 
-    private readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation) : IDisposable
+    private readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation, long WorkUnits) : IDisposable
     {
         public void Dispose() => Reservation.Dispose();
     }
