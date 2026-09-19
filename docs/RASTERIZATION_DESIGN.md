@@ -83,6 +83,13 @@ so replacing nearest alpha rounding with one global floor or ceiling rule cannot
 explain the reference. This is evidence for a device-space edge-quantization
 hypothesis, not proof of any particular Chromium/Skia implementation.
 
+A source-guided fixed-point characterization then converts each analytic pixel
+area to a 1/256 alpha scale by truncation and snaps values below 8 or above 247
+to transparent or opaque. It improves to six changed pixels, but still has a
+maximum channel/alpha error of three. Therefore output alpha quantization plus
+endpoint snapping alone is insufficient; any next candidate must also model the
+edge/scanline calculation and still match this probe exactly.
+
 ## Calibration source pin
 
 The Chromium `153.0.8010.52` tag used by the retained Windows recipe pins
