@@ -19,6 +19,7 @@ internal static class SvgRootParser
             if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
             InlineStyle rootStyle = ParseInlineStyle(reader.GetAttribute("style"));
             SvgPaint rootPaint = ParseRootPaint(reader, rootStyle);
+            byte rootOpacity = ParseOpacity(GetProperty(reader, rootStyle.Opacity, "opacity"));
             bool rootVisible = ParseDisplay(GetProperty(reader, rootStyle.Display, "display"));
             bool rootVisibility = ParseVisibility(GetProperty(reader, rootStyle.Visibility, "visibility"), true);
             double? width = ParseLength(reader.GetAttribute("width"));
@@ -28,6 +29,7 @@ internal static class SvgRootParser
             int rootDepth = reader.Depth;
             List<SvgRectangle> rectangles = [];
             List<SvgDrawCommand> commands = [];
+            if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, rootOpacity));
             List<GroupScope> groupDepths = [];
             int nodeCount = 0;
             bool unsupported = false;
@@ -67,7 +69,7 @@ internal static class SvgRootParser
                         AxisTransform transform = groupDepths.Count == 0 ? ParseTransform(reader.GetAttribute("transform")) : groupDepths[^1].Transform.Compose(ParseTransform(reader.GetAttribute("transform")));
                         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity"));
                         bool isolatesOpacity = opacity != 255;
-                        if (isolatesOpacity && groupDepths.Any(static group => group.IsolatesOpacity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
+                        if (isolatesOpacity && (rootOpacity != 255 || groupDepths.Any(static group => group.IsolatesOpacity))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
                         if (!reader.IsEmptyElement) { if (isolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, opacity)); groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility, transform, isolatesOpacity)); }
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
@@ -76,7 +78,7 @@ internal static class SvgRootParser
                 if (reader.NodeType == XmlNodeType.EndElement)
                 {
                     if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveAt(groupDepths.Count - 1); if (group.IsolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); }
-                    if (reader.Depth == rootDepth) return new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported);
+                    if (reader.Depth == rootDepth) { if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); return new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported); }
                 }
             }
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
@@ -108,12 +110,12 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility" or "style") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG root attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
         }
-        ValidateNonGroupStyle(style);
+        if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
         ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
         return ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), SvgPaint.Default);
     }

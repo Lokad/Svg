@@ -257,6 +257,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Represents_root_opacity_as_an_isolated_scene_command()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' opacity='0.5'><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Commands,
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, 128), command),
+            command => Assert.Equal(SvgDrawCommandKind.Rectangle, command.Kind),
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255), command));
+    }
+
+    [Fact]
     public void Rejects_nested_group_opacity_pending_compositing_calibration()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5'><g opacity='0.5'><rect width='1' height='1'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
