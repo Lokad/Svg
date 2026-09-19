@@ -94,6 +94,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Inherits_group_stylesheet_paint_and_visibility()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>g { fill: red; } #hidden { display: none; }</style><g><rect width='1'/></g><g id='hidden'><rect width='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.True(root.Rectangles[0].HasFill);
+        Assert.False(root.Rectangles[1].HasFill);
+    }
+
+    [Fact]
     public void Rejects_uncalibrated_non_quarter_rectangle_coordinates()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0.1' width='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

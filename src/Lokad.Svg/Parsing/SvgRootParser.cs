@@ -48,7 +48,7 @@ internal static class SvgRootParser
                     if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetRectangleStyleSheet(reader, rectangleStyleRules, directChild, groupDepths));
+                        SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths));
                         rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                         sawGraphicNode = true;
                     }
@@ -69,11 +69,12 @@ internal static class SvgRootParser
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
                         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style"));
-                        SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, style);
-                        bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(GetProperty(reader, style.Display, "display"));
-                        bool visibility = ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
+                        InlineStyle styleSheet = GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths);
+                        SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, style, styleSheet);
+                        bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(GetProperty(reader, style.Display, styleSheet.Display, "display"));
+                        bool visibility = ParseVisibility(GetProperty(reader, style.Visibility, styleSheet.Visibility, "visibility"), groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
                         AxisTransform transform = groupDepths.Count == 0 ? ParseTransform(reader.GetAttribute("transform")) : groupDepths[^1].Transform.Compose(ParseTransform(reader.GetAttribute("transform")));
-                        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity"));
+                        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, styleSheet.Opacity, "opacity"));
                         bool isolatesOpacity = opacity != 255;
                         if (isolatesOpacity && (rootOpacity != 255 || groupDepths.Any(static group => group.IsolatesOpacity))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
                         if (!reader.IsEmptyElement) { if (isolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, opacity)); groupDepths.Add(new GroupScope(reader.Depth, reader.LocalName, paint, displayed, visibility, transform, isolatesOpacity)); }
@@ -99,21 +100,21 @@ internal static class SvgRootParser
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
     }
 
-    private static SvgPaint ParseGroupPaint(XmlReader reader, SvgPaint inheritedPaint, InlineStyle style)
+    private static SvgPaint ParseGroupPaint(XmlReader reader, SvgPaint inheritedPaint, InlineStyle style, InlineStyle styleSheet)
     {
         if (reader.HasAttributes)
         {
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
+                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
         }
-        if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
-        ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
-        return ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), inheritedPaint);
+        if (style.FillRule is not null || styleSheet.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
+        ValidateStroke(GetProperty(reader, style.Stroke, styleSheet.Stroke, "stroke"));
+        return ParsePaint(GetProperty(reader, style.Fill, styleSheet.Fill, "fill"), GetProperty(reader, style.FillOpacity, styleSheet.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, styleSheet.Color, "color"), inheritedPaint);
     }
 
     private static SvgPaint ParseRootPaint(XmlReader reader, InlineStyle style)
@@ -370,6 +371,7 @@ internal static class SvgRootParser
     {
         string normalized = string.Join(' ', selector.Replace(">", " > ").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
         if (normalized.Equals("rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Rectangle, string.Empty, null, 1, style);
+        if (normalized.Equals("g", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Group, string.Empty, null, 1, style);
         if (normalized.Equals("g rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.DescendantGroup, string.Empty, null, 2, style);
         if (normalized.Equals("g > rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.ChildGroup, string.Empty, null, 2, style);
         if (normalized.Length > 1 && normalized[0] == '#' && IsCssIdentifier(normalized.AsSpan(1))) return new CssRule(CssSelectorKind.Id, normalized[1..], null, 100, style);
@@ -391,7 +393,7 @@ internal static class SvgRootParser
         return true;
     }
 
-    private static InlineStyle GetRectangleStyleSheet(XmlReader reader, List<CssRule> rules, bool directChild, List<GroupScope> groupDepths)
+    private static InlineStyle GetStyleSheet(XmlReader reader, List<CssRule> rules, bool directChild, List<GroupScope> groupDepths)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
         int colorSpecificity = -1, fillSpecificity = -1, fillOpacitySpecificity = -1, strokeSpecificity = -1, displaySpecificity = -1, visibilitySpecificity = -1, opacitySpecificity = -1, fillRuleSpecificity = -1;
@@ -633,13 +635,14 @@ internal static class SvgRootParser
 
     private readonly record struct InlineStyle(string? Color, string? Fill, string? FillOpacity, string? Stroke, string? Display, string? Visibility, string? Opacity, string? FillRule);
 
-    private enum CssSelectorKind { Rectangle, Id, Class, AttributePresent, AttributeEquals, DescendantGroup, ChildGroup }
+    private enum CssSelectorKind { Rectangle, Group, Id, Class, AttributePresent, AttributeEquals, DescendantGroup, ChildGroup }
 
     private readonly record struct CssRule(CssSelectorKind Kind, string Value, string? ExpectedValue, int Specificity, InlineStyle Style)
     {
         internal bool Matches(XmlReader reader, bool directChild, List<GroupScope> groupDepths) => Kind switch
         {
-            CssSelectorKind.Rectangle => true,
+            CssSelectorKind.Rectangle => reader.LocalName == "rect",
+            CssSelectorKind.Group => reader.LocalName == "g",
             CssSelectorKind.Id => string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
             CssSelectorKind.Class => (reader.GetAttribute("class") ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Contains(Value, StringComparer.Ordinal),
             CssSelectorKind.AttributePresent => reader.GetAttribute(Value) is not null,
