@@ -19,19 +19,19 @@ internal static class SvgRootParser
             ValidateRootAttributes(reader);
             double? width = ParseLength(reader.GetAttribute("width"));
             double? height = ParseLength(reader.GetAttribute("height"));
-            if (reader.IsEmptyElement) return new SvgRoot(width, height, null, false);
+            if (reader.IsEmptyElement) return new SvgRoot(width, height, [], false);
             int rootDepth = reader.Depth;
-            SvgRectangle? rectangle = null;
+            List<SvgRectangle> rectangles = [];
             bool unsupported = false;
             while (reader.Read())
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (reader.NodeType == XmlNodeType.Element && reader.Depth == rootDepth + 1)
+                if (reader.NodeType == XmlNodeType.Element)
                 {
-                    if (reader.LocalName == "rect" && rectangle is null) rectangle = ParseRectangle(reader);
+                    if (reader.Depth == rootDepth + 1 && reader.LocalName == "rect") rectangles.Add(ParseRectangle(reader));
                     else unsupported = true;
                 }
-                if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == rootDepth) return new SvgRoot(width, height, rectangle, unsupported);
+                if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == rootDepth) return new SvgRoot(width, height, rectangles.ToArray(), unsupported);
             }
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
         }

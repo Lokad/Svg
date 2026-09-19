@@ -72,7 +72,7 @@ public static class SvgConverter
                 pixels[offset + 3] = options.BackgroundColor.Alpha;
             }
         }
-        if (root.Rectangle is SvgRectangle rectangle)
+        foreach (SvgRectangle rectangle in root.Rectangles)
         {
             for (int y = Math.Max(0, rectangle.Y); y < Math.Min(outputHeight, checked(rectangle.Y + rectangle.Height)); y++)
             for (int x = Math.Max(0, rectangle.X); x < Math.Min(outputWidth, checked(rectangle.X + rectangle.Width)); x++)

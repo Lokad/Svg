@@ -114,6 +114,14 @@ public sealed class PixelComparerTests
         Assert.Equal(new byte[] { 1, 2, 3, 255 }, PngRgbaDecoder.Decode(png, 1).Pixels);
     }
 
+    [Fact]
+    public void Opaque_rectangles_follow_document_order()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'><rect width='2' height='1' fill='#ff0000'/><rect x='1' width='1' height='1' fill='#0000ff'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        Assert.Equal(new byte[] { 255, 0, 0, 255, 0, 0, 255, 255 }, PngRgbaDecoder.Decode(png, 2).Pixels);
+    }
+
     private static byte[] CreateOnePixelRgbaPng()
     {
         using MemoryStream result = new();

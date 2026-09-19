@@ -19,7 +19,7 @@ public sealed class SvgRootParserTests
     public void Records_visible_child_elements_for_the_scene_stage()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='#ff0000'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        Assert.True(root.Rectangle is not null);
+        Assert.Single(root.Rectangles);
     }
 
     [Fact]
