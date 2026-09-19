@@ -2,8 +2,8 @@
 
 Lokad.Svg is a pure-managed .NET SVG-to-PNG renderer being built in staged,
 explicitly supported subsets. The current subset renders explicitly sized empty
-SVGs and integer-aligned `rect` layers with the SVG black default, `none`, `transparent`, `black`, `red`, `blue`,
-`#RGB` or `#RRGGBB` fill and `fill-opacity`, composited in document order.
+SVGs and integer-aligned `rect` layers with inherited paint/visibility/display,
+source-over composition, and the colors listed in the support matrix.
 All other visible behavior fails explicitly rather than being silently dropped.
 
 See [PLAN.md](PLAN.md) for the product contract and implementation roadmap, and
@@ -20,3 +20,11 @@ dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release
 
 The package will have no runtime package dependencies. Tests, Chrome tooling and
 benchmarks are development-only projects.
+
+To smoke-test the packed package from a clean consumer directory:
+
+```powershell
+dotnet new console --output $env:TEMP/lokad-svg-smoke
+dotnet add $env:TEMP/lokad-svg-smoke package Lokad.Svg --version 0.1.0-preview.1 --source artifacts/packages
+dotnet build $env:TEMP/lokad-svg-smoke -c Release
+```
