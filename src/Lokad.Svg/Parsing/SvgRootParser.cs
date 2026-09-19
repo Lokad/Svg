@@ -579,7 +579,15 @@ internal static class SvgRootParser
         bool hasAlpha = fill.StartsWith("rgba(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
         bool isRgb = fill.StartsWith("rgb(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
         if (!hasAlpha && !isRgb) { color = default; return false; }
-        string[] channels = fill[(hasAlpha ? 5 : 4)..^1].Split(',', StringSplitOptions.TrimEntries);
+        string content = fill[(hasAlpha ? 5 : 4)..^1];
+        if (!content.Contains(','))
+        {
+            string[] modernChannels = content.Replace("/", " / ").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if ((modernChannels.Length != 3 && (modernChannels.Length != 5 || modernChannels[3] != "/")) || !TryParseRgbChannel(modernChannels[0], out byte modernRed) || !TryParseRgbChannel(modernChannels[1], out byte modernGreen) || !TryParseRgbChannel(modernChannels[2], out byte modernBlue)) throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
+            color = new SvgColor(modernRed, modernGreen, modernBlue, modernChannels.Length == 5 ? ParseAlpha(modernChannels[4]) : (byte)255);
+            return true;
+        }
+        string[] channels = content.Split(',', StringSplitOptions.TrimEntries);
         if (channels.Length != (hasAlpha ? 4 : 3) || !TryParseRgbChannel(channels[0], out byte red) || !TryParseRgbChannel(channels[1], out byte green) || !TryParseRgbChannel(channels[2], out byte blue))
         {
             throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
@@ -604,14 +612,17 @@ internal static class SvgRootParser
         bool hasAlpha = fill.StartsWith("hsla(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
         bool isHsl = fill.StartsWith("hsl(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
         if (!hasAlpha && !isHsl) { color = default; return false; }
-        string[] channels = fill[(hasAlpha ? 5 : 4)..^1].Split(',', StringSplitOptions.TrimEntries);
-        if (channels.Length != (hasAlpha ? 4 : 3) || !double.TryParse(channels[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double hue) || !TryParsePercentage(channels[1], out double saturation) || !TryParsePercentage(channels[2], out double lightness)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
+        string content = fill[(hasAlpha ? 5 : 4)..^1];
+        string[] channels = content.Contains(',') ? content.Split(',', StringSplitOptions.TrimEntries) : content.Replace("/", " / ").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        bool modernAlpha = channels.Length == 5 && channels[3] == "/";
+        if (modernAlpha) channels = [channels[0], channels[1], channels[2], channels[4]];
+        if (channels.Length != ((hasAlpha || modernAlpha) ? 4 : 3) || !double.TryParse(channels[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double hue) || !TryParsePercentage(channels[1], out double saturation) || !TryParsePercentage(channels[2], out double lightness)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
         hue = ((hue % 360) + 360) % 360;
         double chroma = (1 - Math.Abs(2 * lightness - 1)) * saturation;
         double secondary = chroma * (1 - Math.Abs((hue / 60 % 2) - 1));
         (double red, double green, double blue) = hue < 60 ? (chroma, secondary, 0d) : hue < 120 ? (secondary, chroma, 0d) : hue < 180 ? (0d, chroma, secondary) : hue < 240 ? (0d, secondary, chroma) : hue < 300 ? (secondary, 0d, chroma) : (chroma, 0d, secondary);
         double match = lightness - chroma / 2;
-        color = new SvgColor((byte)Math.Round((red + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((green + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((blue + match) * 255, MidpointRounding.AwayFromZero), hasAlpha ? ParseAlpha(channels[3]) : (byte)255);
+        color = new SvgColor((byte)Math.Round((red + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((green + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((blue + match) * 255, MidpointRounding.AwayFromZero), hasAlpha || modernAlpha ? ParseAlpha(channels[3]) : (byte)255);
         return true;
     }
 
