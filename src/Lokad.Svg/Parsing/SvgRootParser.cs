@@ -178,6 +178,6 @@ internal static class SvgRootParser
         return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, cancellationToken);
     }
 
-    private static long GetXmlReaderWorkspaceBytes(int inputBytes) => Math.Max(MinimumXmlReaderWorkspaceBytes, checked((long)inputBytes * 2));
+    private static long GetXmlReaderWorkspaceBytes(int inputBytes) => Math.Max(MinimumXmlReaderWorkspaceBytes, checked((long)inputBytes * 4));
 
 }

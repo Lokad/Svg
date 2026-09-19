@@ -963,9 +963,11 @@ public sealed class SvgRootParserTests
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><metadata>" + new string('x', 9_000) + "</metadata></svg>");
         SvgRenderLimits limits = new(100_000, 100_000, 16, 16, 1024, 16, 16, 16);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(svg.Length * 2 - 1), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(svg.Length * 4 - 1), CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(svg.Length * 4), CancellationToken.None);
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Empty(root.Rectangles);
     }
 
     [Fact]
