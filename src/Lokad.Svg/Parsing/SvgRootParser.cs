@@ -22,7 +22,8 @@ internal static class SvgRootParser
             bool rootVisibility = ParseVisibility(GetProperty(reader, rootStyle.Visibility, "visibility"), true);
             double? width = ParseLength(reader.GetAttribute("width"));
             double? height = ParseLength(reader.GetAttribute("height"));
-            if (reader.IsEmptyElement) return new SvgRoot(width, height, [], false);
+            SvgViewBox? viewBox = ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
+            if (reader.IsEmptyElement) return new SvgRoot(width, height, viewBox, [], false);
             int rootDepth = reader.Depth;
             List<SvgRectangle> rectangles = [];
             List<GroupScope> groupDepths = [];
@@ -55,7 +56,7 @@ internal static class SvgRootParser
                 if (reader.NodeType == XmlNodeType.EndElement)
                 {
                     if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) groupDepths.RemoveAt(groupDepths.Count - 1);
-                    if (reader.Depth == rootDepth) return new SvgRoot(width, height, rectangles.ToArray(), unsupported);
+                    if (reader.Depth == rootDepth) return new SvgRoot(width, height, viewBox, rectangles.ToArray(), unsupported);
                 }
             }
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
@@ -87,7 +88,7 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility" or "style") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "color" or "fill" or "fill-opacity" or "stroke" or "display" or "visibility" or "style") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG root attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -305,6 +306,25 @@ internal static class SvgRootParser
         else if (token.IndexOfAny("%emivc".AsSpan()) >= 0 || (token.Length > 0 && char.IsLetter(token[^1]))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number, px, in, cm, mm, pt, and pc root dimensions are implemented.");
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result <= 0 || !double.IsFinite(result *= multiplier)) throw new SvgException(SvgErrorCode.MalformedInput, "Root dimensions must be finite positive CSS pixel lengths.");
         return result;
+    }
+
+    private static SvgViewBox? ParseViewBox(string? value, string? preserveAspectRatio)
+    {
+        if (value is null)
+        {
+            if (preserveAspectRatio is not null) ParsePreserveAspectRatio(preserveAspectRatio);
+            return null;
+        }
+        string[] values = value.Split([',', ' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (values.Length != 4 || !double.TryParse(values[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double x) || !double.TryParse(values[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double y) || !double.TryParse(values[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double width) || !double.TryParse(values[3], NumberStyles.Float, CultureInfo.InvariantCulture, out double height) || !double.IsFinite(x) || !double.IsFinite(y) || !double.IsFinite(width) || !double.IsFinite(height) || width <= 0 || height <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
+        return new SvgViewBox(x, y, width, height, ParsePreserveAspectRatio(preserveAspectRatio));
+    }
+
+    private static bool ParsePreserveAspectRatio(string? value)
+    {
+        if (value is null || value.Equals("xMidYMid meet", StringComparison.OrdinalIgnoreCase)) return true;
+        if (value.Equals("none", StringComparison.OrdinalIgnoreCase)) return false;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only default xMidYMid meet and none preserveAspectRatio values are implemented.");
     }
 
     private readonly record struct GroupScope(int Depth, SvgPaint Paint, bool IsDisplayed, bool IsVisible);

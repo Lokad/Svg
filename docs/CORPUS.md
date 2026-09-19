@@ -26,6 +26,14 @@ two half-opaque layers on a transparent surface.
 candidate comparison. It pins inline-style precedence, inherited `currentColor`,
 and alpha paint within the currently supported rectangle subset.
 
+`original-viewbox-meet` has an admitted stable pinned-Chrome reference and exact
+candidate comparison. It pins default `xMidYMid meet` centering, a nonzero viewBox
+origin, and integral viewBox mapping.
+
+`original-viewbox-none` has an admitted stable pinned-Chrome reference and exact
+candidate comparison. It pins the supported nonuniform `preserveAspectRatio="none"`
+mapping.
+
 When a Chrome reference is admitted, record the pinned browser/archive hash, platform,
 recipe revision, input/materialized hashes, resource hashes and capture options in the
 manifest and `tests/References/`. References must be generated from the original bytes;

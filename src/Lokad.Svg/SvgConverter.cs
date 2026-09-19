@@ -78,18 +78,19 @@ public static class SvgConverter
                 pixels[offset + 3] = options.BackgroundColor.Alpha;
             }
         }
+        (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
         long workUnits = 0;
         foreach (SvgRectangle rectangle in root.Rectangles)
         {
             if (!rectangle.HasFill) continue;
-            long rectangleY = ScaleInteger(rectangle.Y, options.OutputScale);
-            long rectangleHeight = ScaleInteger(rectangle.Height, options.OutputScale);
-            long rectangleX = ScaleInteger(rectangle.X, options.OutputScale);
-            long rectangleWidth = ScaleInteger(rectangle.Width, options.OutputScale);
+            long rectangleY = MapEdge(rectangle.Y, verticalScale, verticalOffset);
+            long rectangleBottom = MapEdge((double)rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
+            long rectangleX = MapEdge(rectangle.X, horizontalScale, horizontalOffset);
+            long rectangleRight = MapEdge((double)rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
             int startY = (int)Math.Clamp(rectangleY, 0L, outputHeight);
-            int endY = (int)Math.Clamp(rectangleY + rectangleHeight, 0L, outputHeight);
+            int endY = (int)Math.Clamp(rectangleBottom, 0L, outputHeight);
             int startX = (int)Math.Clamp(rectangleX, 0L, outputWidth);
-            int endX = (int)Math.Clamp(rectangleX + rectangleWidth, 0L, outputWidth);
+            int endX = (int)Math.Clamp(rectangleRight, 0L, outputWidth);
             long coverage = (long)(endY - startY) * (endX - startX);
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle raster work exceeds the configured limit.");
             workUnits += coverage;
@@ -105,11 +106,25 @@ public static class SvgConverter
         }
         return new RasterizedSurface(outputWidth, outputHeight, pixels);
 
-        static long ScaleInteger(int value, double scale)
+        static long MapEdge(double value, double scale, double offset)
         {
-            double scaled = value * scale;
-            if (!double.IsFinite(scaled) || scaled != Math.Truncate(scaled) || scaled < long.MinValue || scaled > long.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Output scale must preserve integral rectangle geometry currently.");
+            double scaled = value * scale + offset;
+            if (!double.IsFinite(scaled) || scaled != Math.Truncate(scaled) || scaled < long.MinValue || scaled > long.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Output scaling and viewBox mapping must preserve integral rectangle edges currently.");
             return checked((long)scaled);
+        }
+
+        static (double HorizontalScale, double HorizontalOffset, double VerticalScale, double VerticalOffset) GetViewBoxTransform(SvgViewBox? viewBox, double width, double height, double outputScale)
+        {
+            if (viewBox is not SvgViewBox box) return (outputScale, 0, outputScale, 0);
+            double horizontalScale = width / box.Width;
+            double verticalScale = height / box.Height;
+            if (box.UsesUniformScale)
+            {
+                double scale = Math.Min(horizontalScale, verticalScale);
+                horizontalScale = scale;
+                verticalScale = scale;
+            }
+            return (horizontalScale * outputScale, ((width - box.Width * horizontalScale) / 2 - box.X * horizontalScale) * outputScale, verticalScale * outputScale, ((height - box.Height * verticalScale) / 2 - box.Y * verticalScale) * outputScale);
         }
     }
 

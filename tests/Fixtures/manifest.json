@@ -112,6 +112,38 @@
       "expectedSupport": "exact", "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-inline-styles.json",
       "referenceSha256": "4e2c381839e20791235a5840438c76e35cb054a507b83e9432c98e3a7c693681"
+    },
+    {
+      "id": "original-viewbox-meet",
+      "path": "original/viewbox-meet.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-19",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "ad9b192724e9c75816559066142964174b0918ea2c49aad234bc811a412b50cd",
+      "materializedSha256": "ad9b192724e9c75816559066142964174b0918ea2c49aad234bc811a412b50cd",
+      "featureTags": ["viewport", "viewbox", "preserve-aspect-ratio", "shape"],
+      "width": 4, "height": 4, "scale": 1, "background": "transparent",
+      "expectedSupport": "exact", "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-viewbox-meet.json",
+      "referenceSha256": "e4f90779b33716a63fdbdf7594f43fca8b309a493eb4a921abfc0f9b23cb2a0e"
+    },
+    {
+      "id": "original-viewbox-none",
+      "path": "original/viewbox-none.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-19",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "40973dcac7961db3d077e812ed3c8692319daf653129810c3f7923dc52707b70",
+      "materializedSha256": "40973dcac7961db3d077e812ed3c8692319daf653129810c3f7923dc52707b70",
+      "featureTags": ["viewport", "viewbox", "preserve-aspect-ratio", "shape"],
+      "width": 4, "height": 4, "scale": 1, "background": "transparent",
+      "expectedSupport": "exact", "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-viewbox-none.json",
+      "referenceSha256": "a220b6c03e63249ee77b0efbdcdc7c44a724509da2e43cfd7d491fe43b4f9477"
     }
   ]
 }

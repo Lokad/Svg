@@ -47,10 +47,11 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_root_attributes_that_change_viewport_or_style()
+    public void Parses_supported_root_view_box_mapping()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' viewBox='1 2 3 4' preserveAspectRatio='none'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgViewBox(1, 2, 3, 4, false), root.ViewBox);
     }
 
     [Fact]
