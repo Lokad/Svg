@@ -117,6 +117,7 @@ public static class SvgConverter
         {
             double scaled = value * scale + offset;
             if (!double.IsFinite(scaled)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Output scaling and viewBox mapping must preserve finite rectangle edges.");
+            if (Math.Abs(scaled * 4 - Math.Round(scaled * 4, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Output scaling and viewBox mapping must preserve quarter-pixel rectangle edges.");
             return scaled;
         }
 

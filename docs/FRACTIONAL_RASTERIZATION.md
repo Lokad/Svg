@@ -13,9 +13,12 @@ Capture recipe revision 2 explicitly sets the HTML document background to
 transparent. The prior recipe left uncovered pixels opaque white, despite the
 fixture's transparent-background declaration; its reference was therefore
 superseded after three identical fresh captures. The renderer now uses analytic
-intersection area for finite bounded decimal/px rectangle edges. For a rectangle
-containing a fractional device edge, its source-over branch uses Chrome-calibrated
-retained-alpha and straight-channel rounding. The candidate PNG hash is
+intersection area for integer or quarter-pixel decimal/px rectangle edges. For a
+rectangle containing a fractional device edge, its source-over branch uses
+Chrome-calibrated retained-alpha and straight-channel rounding. The candidate PNG hash is
 `99bf47f4676f21a870a02eac1afbc42eeafbd181ca5e94fbe96dc2b9099adac7`, with
-zero differing decoded RGBA pixels against this reference. Fractional paths,
-point-list shapes, and non-axis-aligned geometry remain outside this subset.
+zero differing decoded RGBA pixels against this reference. Isolated `0.1`/`0.6`
+probes found a one-alpha discrepancy for horizontal non-quarter edges, while the
+vertical counterpart was exact; those device edges are therefore rejected pending
+additional Chrome/Skia calibration. Fractional paths, point-list shapes, and
+non-axis-aligned geometry remain outside this subset.
