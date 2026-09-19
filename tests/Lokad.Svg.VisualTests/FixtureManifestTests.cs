@@ -255,6 +255,14 @@ public sealed class FixtureManifestTests
     }
 
     [Fact]
+    public void Exact_stroke_opacity_fixture_matches_its_admitted_chrome_reference()
+    {
+        byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "stroke-opacity.svg"));
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-stroke-opacity.png")), 36);
+        Assert.True(PixelComparer.Compare(reference, PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None), 36)).IsExact);
+    }
+
+    [Fact]
     public void Manifest_has_unique_ids_hash_matched_assets_and_explicit_fidelity_status()
     {
         string fixtures = Path.Combine(AppContext.BaseDirectory, "Fixtures");
