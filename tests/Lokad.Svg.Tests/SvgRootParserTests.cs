@@ -157,6 +157,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Applies_compound_type_class_and_type_id_stylesheet_selectors()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; } rect.accent { fill: red; } rect#selected { fill: lime; } g.hidden { display: none; }</style><rect width='1' class='accent'/><rect width='1' id='selected'/><g class='hidden'><rect width='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 255), rectangle.Color),
+            rectangle => Assert.False(rectangle.HasFill));
+    }
+
+    [Fact]
     public void Rejects_uncalibrated_non_quarter_rectangle_coordinates()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0.1' width='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

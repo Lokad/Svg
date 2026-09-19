@@ -442,6 +442,8 @@ internal static class SvgRootParser
     private static CssRule ParseRectangleSelector(string selector, InlineStyle style)
     {
         string normalized = string.Join(' ', selector.Replace(">", " > ").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+        if (TryParseCompoundSelector(normalized, "rect", CssSelectorKind.RectangleClass, CssSelectorKind.RectangleId, style, out CssRule compoundRule)) return compoundRule;
+        if (TryParseCompoundSelector(normalized, "g", CssSelectorKind.GroupClass, CssSelectorKind.GroupId, style, out compoundRule)) return compoundRule;
         if (normalized.Equals("rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Rectangle, string.Empty, null, 1, style);
         if (normalized.Equals("g", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Group, string.Empty, null, 1, style);
         if (normalized.Equals("g rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.DescendantGroup, string.Empty, null, 2, style);
@@ -457,6 +459,14 @@ internal static class SvgRootParser
             return new CssRule(expected is null ? CssSelectorKind.AttributePresent : CssSelectorKind.AttributeEquals, parts[0], expected, 10, style);
         }
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, class, id/class attribute, g descendant, and g child stylesheet selectors are implemented.");
+    }
+
+    private static bool TryParseCompoundSelector(string selector, string elementName, CssSelectorKind classKind, CssSelectorKind idKind, InlineStyle style, out CssRule rule)
+    {
+        if (selector.StartsWith(elementName + ".", StringComparison.OrdinalIgnoreCase) && IsCssIdentifier(selector.AsSpan(elementName.Length + 1))) { rule = new CssRule(classKind, selector[(elementName.Length + 1)..], null, 11, style); return true; }
+        if (selector.StartsWith(elementName + "#", StringComparison.OrdinalIgnoreCase) && IsCssIdentifier(selector.AsSpan(elementName.Length + 1))) { rule = new CssRule(idKind, selector[(elementName.Length + 1)..], null, 101, style); return true; }
+        rule = default;
+        return false;
     }
 
     private static bool IsCssIdentifier(ReadOnlySpan<char> value)
@@ -722,7 +732,7 @@ internal static class SvgRootParser
 
     private readonly record struct PendingUse(int RectangleIndex, int CommandIndex, UseReference Reference);
 
-    private enum CssSelectorKind { Rectangle, Group, Id, Class, AttributePresent, AttributeEquals, DescendantGroup, ChildGroup }
+    private enum CssSelectorKind { Rectangle, Group, Id, Class, RectangleClass, RectangleId, GroupClass, GroupId, AttributePresent, AttributeEquals, DescendantGroup, ChildGroup }
 
     private readonly record struct CssRule(CssSelectorKind Kind, string Value, string? ExpectedValue, int Specificity, InlineStyle Style)
     {
@@ -732,6 +742,10 @@ internal static class SvgRootParser
             CssSelectorKind.Group => reader.LocalName == "g",
             CssSelectorKind.Id => string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
             CssSelectorKind.Class => (reader.GetAttribute("class") ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Contains(Value, StringComparer.Ordinal),
+            CssSelectorKind.RectangleClass => reader.LocalName == "rect" && (reader.GetAttribute("class") ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Contains(Value, StringComparer.Ordinal),
+            CssSelectorKind.RectangleId => reader.LocalName == "rect" && string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
+            CssSelectorKind.GroupClass => reader.LocalName == "g" && (reader.GetAttribute("class") ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Contains(Value, StringComparer.Ordinal),
+            CssSelectorKind.GroupId => reader.LocalName == "g" && string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
             CssSelectorKind.AttributePresent => reader.GetAttribute(Value) is not null,
             CssSelectorKind.AttributeEquals => string.Equals(reader.GetAttribute(Value), ExpectedValue, StringComparison.Ordinal),
             CssSelectorKind.DescendantGroup => groupDepths.Any(static group => group.Name == "g"),
