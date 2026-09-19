@@ -14,7 +14,7 @@ internal static class SvgLeafParser
         AxisTransform transform = context.ResolveTransform(reader);
         SvgResolvedShapePresentation presentation = context.ResolvePresentation(style, true);
         SvgRectangle rectangle = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, presentation.Color, presentation.HasFill, null));
-        SvgStroke? stroke = ParseRectangleStroke(presentation.Style.Stroke, syntax.StrokeWidth, presentation.Style.Color, context.InheritedPaint, transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, presentation.Opacity, rectangle.HasFill, context.NamedColors);
+        SvgStroke? stroke = ParseRectangleStroke(presentation.Style.Stroke, syntax.StrokeWidth, presentation.Style.Color, context.InheritedPresentation.Paint, transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, presentation.Opacity, rectangle.HasFill, context.NamedColors);
         return new SvgParsedRectangle(SvgGeometry.FromRectangle(rectangle with { Stroke = presentation.IsPainted ? stroke : null }), style);
     }
 
@@ -26,10 +26,10 @@ internal static class SvgLeafParser
         string? stroke = style.Stroke;
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         if (transform != AxisTransform.Identity || stroke is null || stroke.Equals("none", StringComparison.OrdinalIgnoreCase) || opacity != 255 || (syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque untransformed horizontal or vertical lines are implemented.");
-        SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(stroke, style.Color, context.InheritedPaint, context.NamedColors);
+        SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
         int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
         if (strokeColor.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width line strokes are implemented.");
-        bool painted = context.InheritedDisplayed && SvgShapePresentationResolver.ParseDisplay(style.Display) && SvgShapePresentationResolver.ParseVisibility(style.Visibility, context.InheritedVisibility);
+        bool painted = context.InheritedPresentation.IsDisplayed && SvgShapePresentationResolver.ParseDisplay(style.Display) && SvgShapePresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible);
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor, opacity);
         return SvgGeometry.FromAxisAlignedLine(new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth));
     }
