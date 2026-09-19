@@ -714,6 +714,22 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_scalar_attribute_syntax_limits_before_presentation_validation()
+    {
+        string value = new('x', SvgSyntaxLimits.MaximumValueTokenCharacters + 1);
+
+        SvgException display = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' display='" + value + "'/>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException visibility = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' visibility='" + value + "'/>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException stroke = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' stroke='" + value + "'/>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException fillRule = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect fill-rule='" + value + "'/></svg>") , SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, display.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, visibility.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, stroke.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, fillRule.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_work_limit_while_resolving_forward_use_references()
     {
         SvgRenderLimits limits = new(1_000_000, 1_000_000, 16, 16, 1_000_000, 16, 16, 1);
