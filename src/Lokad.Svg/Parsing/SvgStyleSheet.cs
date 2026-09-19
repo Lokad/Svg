@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses and resolves the deliberately narrow embedded stylesheet subset.</summary>
 internal static class SvgStyleSheet
 {
-    internal static void Parse(string value, int maximumRules, BudgetedParserList<CssRule> rules, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void Parse(string value, int maximumRules, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         for (int index = 0; index < value.Length; index += 4096) workCounter.Consume(cancellationToken);
         using OwnedStyleSheetText commentless = StripComments(value, budget, workCounter, cancellationToken);
@@ -20,12 +20,12 @@ internal static class SvgStyleSheet
             if (openingBrace < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet rules must contain a declaration block.");
             int closingBrace = FindCharacter(value, '}', openingBrace + 1, workCounter, cancellationToken);
             if (closingBrace < 0 || ContainsCharacter(value, '{', openingBrace + 1, closingBrace, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested stylesheet rules are not implemented.");
-            InlineStyle style = SvgInlineStyleParser.Parse(value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1), workCounter, cancellationToken);
+            InlineStyle style = SvgInlineStyleParser.Parse(value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1), strings, workCounter, cancellationToken);
             CssSelectorListReader selectors = new(value.AsSpan(position, openingBrace - position), workCounter, cancellationToken);
             while (selectors.TryRead(out ReadOnlySpan<char> selector))
             {
                 if (rules.Count >= maximumRules) throw new SvgException(SvgErrorCode.LimitExceeded, "Stylesheet rule count exceeds the configured structural limit.");
-                rules.Add(ParseSelector(selector, style, workCounter, cancellationToken));
+                rules.Add(ParseSelector(selector, style, strings, workCounter, cancellationToken));
             }
             position = closingBrace + 1;
         }
@@ -143,7 +143,7 @@ internal static class SvgStyleSheet
 
     private static long GetStringByteCount(int characterCount) => checked(32 + (long)characterCount * sizeof(char));
 
-    private static CssRule ParseSelector(ReadOnlySpan<char> selector, InlineStyle style, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static CssRule ParseSelector(ReadOnlySpan<char> selector, InlineStyle style, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         CssSelectorTokenReader tokens = new(selector, workCounter, cancellationToken);
         if (!tokens.TryRead(out ReadOnlySpan<char> first)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, class, id/class attribute, g descendant, and g child stylesheet selectors are implemented.");
@@ -153,17 +153,17 @@ internal static class SvgStyleSheet
             if (first.Equals("g", StringComparison.OrdinalIgnoreCase) && second.SequenceEqual(">".AsSpan()) && tokens.TryRead(out ReadOnlySpan<char> third) && third.Equals("rect", StringComparison.OrdinalIgnoreCase) && !tokens.TryRead(out _)) return new CssRule(CssSelectorKind.ChildGroup, string.Empty, null, 2, style);
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, class, id/class attribute, g descendant, and g child stylesheet selectors are implemented.");
         }
-        if (TryParseCompoundSelector(first, "rect", CssSelectorKind.RectangleClass, CssSelectorKind.RectangleId, style, out CssRule compoundRule)) return compoundRule;
-        if (TryParseCompoundSelector(first, "g", CssSelectorKind.GroupClass, CssSelectorKind.GroupId, style, out compoundRule)) return compoundRule;
+        if (TryParseCompoundSelector(first, "rect", CssSelectorKind.RectangleClass, CssSelectorKind.RectangleId, style, strings, out CssRule compoundRule)) return compoundRule;
+        if (TryParseCompoundSelector(first, "g", CssSelectorKind.GroupClass, CssSelectorKind.GroupId, style, strings, out compoundRule)) return compoundRule;
         if (first.Equals("rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Rectangle, string.Empty, null, 1, style);
         if (first.Equals("g", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Group, string.Empty, null, 1, style);
-        if (first.Length > 1 && first[0] == '#' && IsCssIdentifier(first[1..])) return new CssRule(CssSelectorKind.Id, first[1..].ToString(), null, 100, style);
-        if (first.Length > 1 && first[0] == '.' && IsCssIdentifier(first[1..])) return new CssRule(CssSelectorKind.Class, first[1..].ToString(), null, 10, style);
-        if (first.Length > 2 && first[0] == '[' && first[^1] == ']') return ParseAttributeSelector(first[1..^1], style, workCounter, cancellationToken);
+        if (first.Length > 1 && first[0] == '#' && IsCssIdentifier(first[1..])) return new CssRule(CssSelectorKind.Id, strings.Copy(first[1..]), null, 100, style);
+        if (first.Length > 1 && first[0] == '.' && IsCssIdentifier(first[1..])) return new CssRule(CssSelectorKind.Class, strings.Copy(first[1..]), null, 10, style);
+        if (first.Length > 2 && first[0] == '[' && first[^1] == ']') return ParseAttributeSelector(first[1..^1], style, strings, workCounter, cancellationToken);
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, class, id/class attribute, g descendant, and g child stylesheet selectors are implemented.");
     }
 
-    private static CssRule ParseAttributeSelector(ReadOnlySpan<char> selector, InlineStyle style, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static CssRule ParseAttributeSelector(ReadOnlySpan<char> selector, InlineStyle style, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         int separator = FindCharacter(selector, '=', 0, workCounter, cancellationToken);
         ReadOnlySpan<char> property = (separator < 0 ? selector : selector[..separator]).Trim();
@@ -174,13 +174,13 @@ internal static class SvgStyleSheet
         ReadOnlySpan<char> expected = TrimQuotes(selector[(separator + 1)..].Trim());
         if (expected.IsEmpty) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only id and class presence/equality stylesheet attribute selectors are implemented.");
         if (!IsCssIdentifier(expected)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple CSS identifier attribute selector values are implemented.");
-        return new CssRule(CssSelectorKind.AttributeEquals, isId ? "id" : "class", expected.ToString(), 10, style);
+        return new CssRule(CssSelectorKind.AttributeEquals, isId ? "id" : "class", strings.Copy(expected), 10, style);
     }
 
-    private static bool TryParseCompoundSelector(ReadOnlySpan<char> selector, string elementName, CssSelectorKind classKind, CssSelectorKind idKind, InlineStyle style, out CssRule rule)
+    private static bool TryParseCompoundSelector(ReadOnlySpan<char> selector, string elementName, CssSelectorKind classKind, CssSelectorKind idKind, InlineStyle style, BudgetedParserStringStore strings, out CssRule rule)
     {
-        if (selector.StartsWith(elementName + ".", StringComparison.OrdinalIgnoreCase) && IsCssIdentifier(selector[(elementName.Length + 1)..])) { rule = new CssRule(classKind, selector[(elementName.Length + 1)..].ToString(), null, 11, style); return true; }
-        if (selector.StartsWith(elementName + "#", StringComparison.OrdinalIgnoreCase) && IsCssIdentifier(selector[(elementName.Length + 1)..])) { rule = new CssRule(idKind, selector[(elementName.Length + 1)..].ToString(), null, 101, style); return true; }
+        if (selector.StartsWith(elementName + ".", StringComparison.OrdinalIgnoreCase) && IsCssIdentifier(selector[(elementName.Length + 1)..])) { rule = new CssRule(classKind, strings.Copy(selector[(elementName.Length + 1)..]), null, 11, style); return true; }
+        if (selector.StartsWith(elementName + "#", StringComparison.OrdinalIgnoreCase) && IsCssIdentifier(selector[(elementName.Length + 1)..])) { rule = new CssRule(idKind, strings.Copy(selector[(elementName.Length + 1)..]), null, 101, style); return true; }
         rule = default;
         return false;
     }

@@ -759,10 +759,10 @@ public sealed class SvgRootParserTests
         string stylesheet = "/**/" + new string(' ', 512) + "rect { fill: red; }";
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>" + stylesheet + "</style><rect width='1'/></svg>");
         SvgRenderLimits insufficientLimits = new(132_188, 1_024, 16, 16, 1_024, 16, 16, 10_000);
-        SvgRenderLimits sufficientLimits = new(132_688, 1_024, 16, 16, 1_024, 16, 16, 10_000);
+        SvgRenderLimits sufficientLimits = new(132_944, 1_024, 16, 16, 1_024, 16, 16, 10_000);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, insufficientLimits, new RenderBudget(132_188), CancellationToken.None));
-        using SvgRoot root = SvgRootParser.Parse(svg, sufficientLimits, new RenderBudget(132_688), CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse(svg, sufficientLimits, new RenderBudget(132_944), CancellationToken.None);
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Single(root.Rectangles);
@@ -1074,6 +1074,18 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Empty(root.Rectangles);
+    }
+
+    [Fact]
+    public void Reserves_retained_stylesheet_strings_before_copying_selectors()
+    {
+        string identifier = new('a', SvgSyntaxLimits.MaximumIdentifierCharacters);
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>#" + identifier + " { fill: red; }</style><rect id='" + identifier + "' width='1' height='1'/></svg>");
+        SvgRenderLimits limits = new(18_384, 4_096, 16, 256, 1_024, 16, 16, 16, 16, 1);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(limits.MaximumAccountedBytes), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
 
     [Fact]

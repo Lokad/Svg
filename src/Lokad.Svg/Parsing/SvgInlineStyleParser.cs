@@ -20,7 +20,13 @@ internal static class SvgInlineStyleParser
         return ParseCore(value, workCounter, cancellationToken);
     }
 
-    private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.ConsumeText(value.Length, cancellationToken);
+        return ParseCore(value, workCounter, cancellationToken, strings);
+    }
+
+    private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings = null)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
         StyleDeclarationReader declarations = new(value, workCounter, cancellationToken);
@@ -32,18 +38,20 @@ internal static class SvgInlineStyleParser
             ReadOnlySpan<char> propertyValue = declaration[(separator + 1)..].Trim();
             if (property.Length > SvgSyntaxLimits.MaximumValueTokenCharacters || propertyValue.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Inline style property names and values exceed the configured syntax limit.");
             if (propertyValue.Length == 0 || propertyValue.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty and !important inline style declarations are not implemented.");
-            if (property.Equals("color", StringComparison.OrdinalIgnoreCase)) color = propertyValue.ToString();
-            else if (property.Equals("fill", StringComparison.OrdinalIgnoreCase)) fill = propertyValue.ToString();
-            else if (property.Equals("fill-opacity", StringComparison.OrdinalIgnoreCase)) fillOpacity = propertyValue.ToString();
-            else if (property.Equals("stroke", StringComparison.OrdinalIgnoreCase)) stroke = propertyValue.ToString();
-            else if (property.Equals("display", StringComparison.OrdinalIgnoreCase)) display = propertyValue.ToString();
-            else if (property.Equals("visibility", StringComparison.OrdinalIgnoreCase)) visibility = propertyValue.ToString();
-            else if (property.Equals("opacity", StringComparison.OrdinalIgnoreCase)) opacity = propertyValue.ToString();
-            else if (property.Equals("fill-rule", StringComparison.OrdinalIgnoreCase)) fillRule = propertyValue.ToString();
+            if (property.Equals("color", StringComparison.OrdinalIgnoreCase)) color = Copy(propertyValue, strings);
+            else if (property.Equals("fill", StringComparison.OrdinalIgnoreCase)) fill = Copy(propertyValue, strings);
+            else if (property.Equals("fill-opacity", StringComparison.OrdinalIgnoreCase)) fillOpacity = Copy(propertyValue, strings);
+            else if (property.Equals("stroke", StringComparison.OrdinalIgnoreCase)) stroke = Copy(propertyValue, strings);
+            else if (property.Equals("display", StringComparison.OrdinalIgnoreCase)) display = Copy(propertyValue, strings);
+            else if (property.Equals("visibility", StringComparison.OrdinalIgnoreCase)) visibility = Copy(propertyValue, strings);
+            else if (property.Equals("opacity", StringComparison.OrdinalIgnoreCase)) opacity = Copy(propertyValue, strings);
+            else if (property.Equals("fill-rule", StringComparison.OrdinalIgnoreCase)) fillRule = Copy(propertyValue, strings);
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
         return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
     }
+
+    private static string Copy(ReadOnlySpan<char> value, BudgetedParserStringStore? strings) => strings is null ? value.ToString() : strings.Copy(value);
 
     private ref struct StyleDeclarationReader
     {

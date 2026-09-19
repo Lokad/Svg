@@ -11,6 +11,44 @@ internal static class ParserCollectionMemory
         => count == 0 ? 0 : checked(ArrayHeaderBytes + (long)count * entryBytes);
 }
 
+/// <summary>Owns exact parser-string reservations for copies retained by stylesheet rules or deferred references.</summary>
+internal sealed class BudgetedParserStringStore : IDisposable
+{
+    private const long StringHeaderBytes = 32;
+    // Covers the reservation object, the list reference, and the first/grown
+    // reservation-pointer array. The first list entry is the worst amortized case.
+    private const long PerStringTrackingBytes = 128;
+    private readonly RenderBudget _budget;
+    private List<RenderBudget.BudgetReservation>? _reservations;
+
+    internal BudgetedParserStringStore(RenderBudget budget) => _budget = budget;
+
+    internal string Copy(ReadOnlySpan<char> value)
+    {
+        if (value.IsEmpty) return string.Empty;
+        long bytes = checked(StringHeaderBytes + (long)value.Length * sizeof(char) + PerStringTrackingBytes);
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(bytes, SvgMemoryCategory.Parser);
+        try
+        {
+            string copy = value.ToString();
+            (_reservations ??= []).Add(reservation);
+            return copy;
+        }
+        catch
+        {
+            reservation.Dispose();
+            throw;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_reservations is null) return;
+        foreach (RenderBudget.BudgetReservation reservation in _reservations) reservation.Dispose();
+        _reservations = null;
+    }
+}
+
 /// <summary>Owns a growable parser array whose backing storage is reserved before allocation.</summary>
 internal sealed class BudgetedParserList<T> : IDisposable where T : struct
 {

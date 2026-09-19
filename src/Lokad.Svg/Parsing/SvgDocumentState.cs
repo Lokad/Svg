@@ -13,6 +13,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         Scene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
+        Strings = new BudgetedParserStringStore(budget);
         Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, GroupScopeStorageBytes, workCounter, cancellationToken);
         StyleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, CssRuleStorageBytes, workCounter, cancellationToken);
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
@@ -20,6 +21,8 @@ internal sealed class SvgDocumentState : IDisposable
     }
 
     internal SvgSceneBuilder Scene { get; }
+
+    internal BudgetedParserStringStore Strings { get; }
 
     internal BudgetedParserList<SvgGroupScope> Groups { get; }
 
@@ -50,6 +53,7 @@ internal sealed class SvgDocumentState : IDisposable
         PendingUses.Dispose();
         Definitions.Dispose();
         StyleRules.Dispose();
+        Strings.Dispose();
         Groups.Dispose();
         Scene.Dispose();
     }
