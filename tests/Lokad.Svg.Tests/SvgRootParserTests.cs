@@ -73,6 +73,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Applies_descendant_and_child_group_stylesheet_rules_to_nested_rectangles()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; } g rect { fill: red; } g > rect { fill: lime; }</style><rect width='1'/><g><rect width='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 255), rectangle.Color));
+    }
+
+    [Fact]
     public void Rejects_uncalibrated_non_quarter_rectangle_coordinates()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0.1' width='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

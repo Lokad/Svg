@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3" height="1">
+  <style>rect { fill: blue; } g rect { fill: red; } g > rect { fill: lime; }</style>
+  <rect width="1" height="1"/>
+  <g><rect x="1" width="1" height="1"/></g>
+  <a><rect x="2" width="1" height="1"/></a>
+</svg>
