@@ -19,7 +19,7 @@ supported and no pixel-fidelity claim is made.
 | PNG encoding | Not implemented |
 | Independent RGBA comparison | Initial exact comparer implemented |
 | Visual comparison CLI | Exact JSON gate implemented for bounded RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Initial launcher implemented; pinned browser and capture pending |
+| Chrome oracle lifecycle/CDP connection | Initial launcher/capture and a hash-pinned Windows CFT archive; reviewed references pending |
 | Fixture corpus | Not implemented |
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).
