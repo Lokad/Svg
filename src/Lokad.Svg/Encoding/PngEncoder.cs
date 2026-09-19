@@ -7,6 +7,9 @@ namespace Lokad.Svg.Encoding;
 /// <summary>Encodes tightly packed straight-alpha RGBA8 pixels as a non-interlaced PNG.</summary>
 internal static class PngEncoder
 {
+    private const int FixedPngBytesWithoutIdat = 45;
+    private const int PngChunkOverheadBytes = 12;
+    private const int MaximumIdatPayloadBytes = 65_536;
     private static readonly byte[] PngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
     private static readonly byte[] IhdrChunkType = [73, 72, 68, 82];
     private static readonly byte[] IdatChunkType = [73, 68, 65, 84];
@@ -20,12 +23,12 @@ internal static class PngEncoder
 
     internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
     {
-        if (maximumEncodedPngBytes < 57) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        using RenderBudget.BudgetReservation minimumOutput = budget.Reserve(57, SvgMemoryCategory.Output);
-        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, maximumEncodedPngBytes - 57, cancellationToken);
+        if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        using RenderBudget.BudgetReservation minimumOutput = budget.Reserve(FixedPngBytesWithoutIdat + PngChunkOverheadBytes, SvgMemoryCategory.Output);
+        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), cancellationToken);
         int length = GetOutputLength(checked((int)compressed.Length));
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        using RenderBudget.BudgetReservation remainingOutput = budget.Reserve(length - 57, SvgMemoryCategory.Output);
+        using RenderBudget.BudgetReservation remainingOutput = budget.Reserve(length - (FixedPngBytesWithoutIdat + PngChunkOverheadBytes), SvgMemoryCategory.Output);
         byte[] output = new byte[length];
         WritePng(width, height, compressed.Written, output, cancellationToken);
         return output;
@@ -39,8 +42,8 @@ internal static class PngEncoder
 
     internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, RenderBudget budget, int maximumEncodedPngBytes, CancellationToken cancellationToken)
     {
-        if (maximumEncodedPngBytes < 57) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, maximumEncodedPngBytes - 57, cancellationToken);
+        if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), cancellationToken);
         int length = GetOutputLength(checked((int)compressed.Length));
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         if (destination.Length < length) throw new SvgException(SvgErrorCode.InsufficientDestination, "PNG destination is too small.");
@@ -52,8 +55,8 @@ internal static class PngEncoder
     {
         ArgumentNullException.ThrowIfNull(destination);
         if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
-        if (maximumEncodedPngBytes < 57) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, maximumEncodedPngBytes - 57, cancellationToken);
+        if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        using PngCompressionBuffer compressed = Compress(width, height, rgba, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), cancellationToken);
         int length = GetOutputLength(checked((int)compressed.Length));
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         WritePng(width, height, compressed.Written, destination, cancellationToken);
@@ -64,8 +67,8 @@ internal static class PngEncoder
     {
         ArgumentNullException.ThrowIfNull(destination);
         if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
-        if (maximumEncodedPngBytes < 57) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
-        using PngCompressionBuffer compressed = Compress(width, height, rgba.Span, budget, maximumEncodedPngBytes - 57, cancellationToken);
+        if (maximumEncodedPngBytes < FixedPngBytesWithoutIdat + PngChunkOverheadBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        using PngCompressionBuffer compressed = Compress(width, height, rgba.Span, budget, GetMaximumCompressedLength(maximumEncodedPngBytes), cancellationToken);
         int length = GetOutputLength(checked((int)compressed.Length));
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         await WritePngAsync(width, height, compressed.WrittenMemory, destination, cancellationToken).ConfigureAwait(false);
@@ -106,7 +109,23 @@ internal static class PngEncoder
         }
     }
 
-    private static int GetOutputLength(int compressedLength) => checked(8 + 25 + 12 + compressedLength + 12);
+    private static int GetOutputLength(int compressedLength)
+    {
+        int idatChunkCount = Math.Max(1, checked((int)(((long)compressedLength + MaximumIdatPayloadBytes - 1) / MaximumIdatPayloadBytes)));
+        return checked(FixedPngBytesWithoutIdat + compressedLength + checked(idatChunkCount * PngChunkOverheadBytes));
+    }
+
+    private static int GetMaximumCompressedLength(int maximumEncodedPngBytes)
+    {
+        int maximumCompressedLength = 0;
+        for (int idatChunkCount = 1; ; idatChunkCount++)
+        {
+            long lowerBound = (long)(idatChunkCount - 1) * MaximumIdatPayloadBytes;
+            long upperBound = Math.Min((long)idatChunkCount * MaximumIdatPayloadBytes, (long)maximumEncodedPngBytes - FixedPngBytesWithoutIdat - (long)idatChunkCount * PngChunkOverheadBytes);
+            if (upperBound <= lowerBound) return maximumCompressedLength;
+            maximumCompressedLength = checked((int)upperBound);
+        }
+    }
 
     private static void WritePng(int width, int height, ReadOnlySpan<byte> compressed, Span<byte> output, CancellationToken cancellationToken)
     {
@@ -119,7 +138,7 @@ internal static class PngEncoder
         header[8] = 8;
         header[9] = 6;
         offset += WriteChunk(output[offset..], "IHDR"u8, header, cancellationToken);
-        offset += WriteChunk(output[offset..], "IDAT"u8, compressed, cancellationToken);
+        offset += WriteIdatChunks(output[offset..], compressed, cancellationToken);
         offset += WriteChunk(output[offset..], "IEND"u8, [], cancellationToken);
     }
 
@@ -133,7 +152,7 @@ internal static class PngEncoder
         header[8] = 8;
         header[9] = 6;
         WriteChunk(output, "IHDR"u8, header, cancellationToken);
-        WriteChunk(output, "IDAT"u8, compressed, cancellationToken);
+        WriteIdatChunks(output, compressed, cancellationToken);
         WriteChunk(output, "IEND"u8, [], cancellationToken);
     }
 
@@ -147,8 +166,51 @@ internal static class PngEncoder
         header[8] = 8;
         header[9] = 6;
         await WriteChunkAsync(output, IhdrChunkType, header, cancellationToken).ConfigureAwait(false);
-        await WriteChunkAsync(output, IdatChunkType, compressed, cancellationToken).ConfigureAwait(false);
+        await WriteIdatChunksAsync(output, compressed, cancellationToken).ConfigureAwait(false);
         await WriteChunkAsync(output, IendChunkType, ReadOnlyMemory<byte>.Empty, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static int WriteIdatChunks(Span<byte> output, ReadOnlySpan<byte> compressed, CancellationToken cancellationToken)
+    {
+        if (compressed.IsEmpty) return WriteChunk(output, "IDAT"u8, [], cancellationToken);
+        int outputOffset = 0;
+        for (int compressedOffset = 0; compressedOffset < compressed.Length;)
+        {
+            int length = Math.Min(MaximumIdatPayloadBytes, compressed.Length - compressedOffset);
+            outputOffset += WriteChunk(output[outputOffset..], "IDAT"u8, compressed.Slice(compressedOffset, length), cancellationToken);
+            compressedOffset += length;
+        }
+        return outputOffset;
+    }
+
+    private static void WriteIdatChunks(Stream output, ReadOnlySpan<byte> compressed, CancellationToken cancellationToken)
+    {
+        if (compressed.IsEmpty)
+        {
+            WriteChunk(output, "IDAT"u8, [], cancellationToken);
+            return;
+        }
+        for (int offset = 0; offset < compressed.Length;)
+        {
+            int length = Math.Min(MaximumIdatPayloadBytes, compressed.Length - offset);
+            WriteChunk(output, "IDAT"u8, compressed.Slice(offset, length), cancellationToken);
+            offset += length;
+        }
+    }
+
+    private static async Task WriteIdatChunksAsync(Stream output, ReadOnlyMemory<byte> compressed, CancellationToken cancellationToken)
+    {
+        if (compressed.IsEmpty)
+        {
+            await WriteChunkAsync(output, IdatChunkType, ReadOnlyMemory<byte>.Empty, cancellationToken).ConfigureAwait(false);
+            return;
+        }
+        for (int offset = 0; offset < compressed.Length;)
+        {
+            int length = Math.Min(MaximumIdatPayloadBytes, compressed.Length - offset);
+            await WriteChunkAsync(output, IdatChunkType, compressed.Slice(offset, length), cancellationToken).ConfigureAwait(false);
+            offset += length;
+        }
     }
 
     private static int WriteChunk(Span<byte> output, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data, CancellationToken cancellationToken)

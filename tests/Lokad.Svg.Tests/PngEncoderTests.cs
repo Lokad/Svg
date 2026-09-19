@@ -96,6 +96,31 @@ public sealed class PngEncoderTests
         Assert.Equal(written, destination.Length);
     }
 
+    [Fact]
+    public void Splits_large_compressed_data_into_bounded_IDAT_chunks()
+    {
+        byte[] pixels = CreateHighEntropyPixels();
+        byte[] png = PngEncoder.Encode(512, 512, pixels, CancellationToken.None);
+        int idatChunkCount = 0;
+        for (int offset = 8; offset < png.Length;)
+        {
+            int dataLength = checked((int)BinaryPrimitives.ReadUInt32BigEndian(png.AsSpan(offset)));
+            if (png.AsSpan(offset + 4, 4).SequenceEqual("IDAT"u8))
+            {
+                idatChunkCount++;
+                Assert.InRange(dataLength, 1, 65_536);
+            }
+            offset += checked(dataLength + 12);
+        }
+
+        byte[] exactCap = PngEncoder.Encode(512, 512, pixels, png.Length, CancellationToken.None);
+        SvgException exception = Assert.Throws<SvgException>(() => PngEncoder.Encode(512, 512, pixels, png.Length - 1, CancellationToken.None));
+
+        Assert.True(idatChunkCount > 1);
+        Assert.Equal(png, exactCap);
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
     private static byte[] CreateHighEntropyPixels()
     {
         byte[] pixels = new byte[512 * 512 * 4];
