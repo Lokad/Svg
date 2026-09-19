@@ -9,11 +9,7 @@ internal static class SvgRenderedLeafParser
     internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!isEligible || reader.NamespaceURI != "http://www.w3.org/2000/svg") return false;
-        SvgPaint inheritedPaint = state.Groups.Count == 0 ? root.Paint : state.Groups[^1].Paint;
-        bool inheritedDisplayed = state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed;
-        bool inheritedVisibility = state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible;
-        AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
-        SvgPaintableElementContext context = new(inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
 
         switch (reader.LocalName)
         {

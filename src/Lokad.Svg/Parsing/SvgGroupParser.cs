@@ -5,17 +5,17 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses one bounded group or link context before its children are traversed.</summary>
 internal static class SvgGroupParser
 {
-    internal static SvgParsedGroup Parse(XmlReader reader, bool directChild, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgParsedGroup Parse(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken);
-        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, styleSheet, workCounter, cancellationToken);
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+        SvgComputedStyle style = context.ResolveStyle(reader);
         SvgElementAttributePolicy.ValidateGroup(reader);
         if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
         SvgShapePresentationResolver.ValidateStroke(style.Stroke);
-        SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, inheritedPaint, namedColors);
-        bool displayed = inheritedDisplayed && SvgShapePresentationResolver.ParseDisplay(style.Display);
-        bool visible = SvgShapePresentationResolver.ParseVisibility(style.Visibility, inheritedVisibility);
-        AxisTransform transform = inheritedTransform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
+        SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, context.InheritedPaint, namedColors);
+        bool displayed = context.InheritedDisplayed && SvgShapePresentationResolver.ParseDisplay(style.Display);
+        bool visible = SvgShapePresentationResolver.ParseVisibility(style.Visibility, context.InheritedVisibility);
+        AxisTransform transform = context.ResolveTransform(reader);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         SvgGroupKind kind = reader.LocalName == "g" ? SvgGroupKind.Group : SvgGroupKind.Link;
         return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, paint, displayed, visible, transform, opacity != 255), opacity);
