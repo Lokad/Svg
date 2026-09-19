@@ -24,6 +24,9 @@ jobs:
       - if: runner.os == 'Windows'
         shell: pwsh
         run: tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke
+      - if: runner.os == 'Windows'
+        shell: pwsh
+        run: tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe
       - if: runner.os == 'Linux'
         shell: pwsh
         run: tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json
@@ -31,6 +34,8 @@ jobs:
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: chrome-smoke-${{ matrix.os }}
-          path: artifacts/chrome-smoke
+          name: diagnostics-${{ matrix.os }}
+          path: |
+            artifacts/chrome-smoke
+            artifacts/memory-probe
           if-no-files-found: ignore
