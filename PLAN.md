@@ -212,11 +212,12 @@ behavior or collecting measurements.
    category. The completed leaf-content and malformed-XML cases are examples;
    do not infer support from parser records alone or make incorrect pixels pass by
    changing references.
-2. Finish the P0.3 accounting decision before adding scope: retain and test the
-   conservative `XmlReader` allowance unless a portable, stricter accounting
-   mechanism replaces it; bound remaining names/tokens/reference expansion before
-   they allocate; and repeat child-process budget/cancellation probes on stable
-   hosts before turning the current local benchmark into a threshold.
+2. Close the remaining P0.3 accounting evidence before adding scope: retain and
+   test the conservative `XmlReader` allowance unless a portable, stricter
+   accounting mechanism replaces it; make exact BCL XML/attribute-string
+   accounting explicitly measurable or retain it as a documented conservative
+   gap; and repeat child-process budget/cancellation probes on stable hosts before
+   turning the current local benchmark into a threshold.
 3. Obtain remote evidence for the configured Windows and Linux jobs, then admit a
    canonical Linux baseline only through an explicit capture/provenance review.
    A configured workflow, a Windows-exact capture, or a freshly generated image is
@@ -295,11 +296,11 @@ known-difference entries are useful evidence, not a reason to hide the family.
 
 | Limit | Current default / intended extension |
 | --- | --- |
-| Accounted renderer storage | 256 MiB; scene, parser collections, surfaces and PNG workspace/output are partially covered, while XML strings/BCL workspace remain incomplete |
+| Accounted renderer storage | 256 MiB; scene, parser collections, surfaces and PNG workspace/output are covered with conservative XML-reader workspace, while exact BCL XML/attribute-string allocation remains incomplete |
 | SVG input / encoded PNG | 16 MiB / 128 MiB; PNG cap must apply during generation |
 | Output | At most 16,384 per axis and 16,777,216 pixels; validate products with wide checked arithmetic before allocation |
 | Nodes / path commands | 100,000 / 1,000,000; require cumulative accounting and checks before growth |
-| Rendering work | 100,000,000 current units; extend explicitly to parsing/matching/geometry/reference work and calibrate |
+| Rendering work | 100,000,000 current units across parsing/matching/reference resolution, collection transfers, geometry and raster work; calibrate on a declared stress host |
 | XML structure / reference depth | XML parsing reserves a conservative 16 KiB-or-two-times-input-byte workspace allowance. Nesting and attributes per element have configurable defaults of 128 and 256; the `XmlReader` still allocates its current element before this parser can enforce the attribute limit, and reference depth 64 remains planned |
 | Decoded resources / filter graph | Planned 64 MiB total / 256 primitives, both also constrained by overall memory/work |
 | Additional bounds | CSS rules/matching steps, token/name sizes, gradient stops, contours/edges/subdivision, glyph processing and resource recursion |
