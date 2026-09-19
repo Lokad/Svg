@@ -13,6 +13,11 @@ candidate comparison. Its manifest records the candidate hash and zero-differenc
 result. A reference artifact alone is not a renderer pass; this explicit comparison
 is the evidence for its `exact` status.
 
+`original-fractional-overlap` has a stable pinned-Chrome reference but is
+explicitly `unsupported`: it uses fractional geometry and fill opacity, neither of
+which the initial rectangle subset implements. This is retained in the inventory
+rather than hidden from fidelity reporting.
+
 When a Chrome reference is admitted, record the pinned browser/archive hash, platform,
 recipe revision, input/materialized hashes, resource hashes and capture options in the
 manifest and `tests/References/`. References must be generated from the original bytes;
