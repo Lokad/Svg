@@ -84,6 +84,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Resolves_inherited_fill_opacity_and_current_color_at_each_element()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g fill-opacity='0.5'><rect width='1' fill='red'/></g><g fill='red' fill-opacity='0.5'><rect width='1' fill-opacity='1'/></g><g color='red' fill='currentColor'><rect width='1' color='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(255, 0, 0, 128), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color));
+    }
+
+    [Fact]
     public void Parses_basic_css_named_colors()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='yellow'/><rect width='1' fill='Teal'/><rect width='1' fill='fuchsia'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -237,6 +248,14 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 2), root.Rectangles[0].Stroke);
         Assert.False(root.Rectangles[0].HasFill);
+    }
+
+    [Fact]
+    public void Does_not_apply_fill_opacity_to_strokes()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g fill-opacity='0.5'><rect x='1' y='1' width='4' height='4' fill='none' stroke='red' stroke-width='2'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 2), root.Rectangles[0].Stroke);
     }
 
     [Theory]

@@ -377,7 +377,7 @@ internal static class SvgRootParser
         SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, styleSheet.Fill, "fill"), GetProperty(reader, style.FillOpacity, styleSheet.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, styleSheet.Color, "color"), inheritedPaint);
         ValidateFillRule(GetProperty(reader, style.FillRule, styleSheet.FillRule, "fill-rule"));
         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, styleSheet.Opacity, "opacity"));
-        SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
+        SvgColor color = ResolvePaintColor(paint, opacity);
         SvgStroke? stroke = ParseRectangleStroke(GetProperty(reader, style.Stroke, styleSheet.Stroke, "stroke"), reader.GetAttribute("stroke-width"), GetProperty(reader, style.Color, styleSheet.Color, "color"), inheritedPaint, transform, x, y, width, height, opacity, paint.HasFill);
         bool isPainted = inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, styleSheet.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, styleSheet.Visibility, "visibility"), inheritedVisibility);
         return new SvgRectangle(x, y, width, height, color, paint.HasFill && isPainted, isPainted ? stroke : null);
@@ -387,10 +387,10 @@ internal static class SvgRootParser
     {
         if (value is null || value.Equals("none", StringComparison.OrdinalIgnoreCase)) { if (widthValue is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke width without a stroke is not implemented."); return null; }
         if (transform != AxisTransform.Identity || x != Math.Truncate(x) || y != Math.Truncate(y) || width != Math.Truncate(width) || height != Math.Truncate(height) || (hasFill && opacity != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed integer rectangle strokes, with opacity only when fill-less, are implemented.");
-        SvgPaint paint = ParsePaint(value, null, currentColor, inheritedPaint);
+        SvgColor color = ParseStrokeColor(value, currentColor, inheritedPaint);
         int strokeWidth = ParseInteger(widthValue ?? "1");
-        if (!paint.HasFill || paint.Color.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0 || strokeWidth > width || strokeWidth > height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width rectangle strokes no larger than the rectangle dimensions are implemented.");
-        return new SvgStroke(new SvgColor(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity)), strokeWidth);
+        if (color.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0 || strokeWidth > width || strokeWidth > height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width rectangle strokes no larger than the rectangle dimensions are implemented.");
+        return new SvgStroke(new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, opacity)), strokeWidth);
     }
 
     private static SvgRectangle ParseLine(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform)
@@ -402,12 +402,12 @@ internal static class SvgRootParser
         string? stroke = GetProperty(reader, style.Stroke, "stroke");
         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity"));
         if (transform != AxisTransform.Identity || stroke is null || stroke.Equals("none", StringComparison.OrdinalIgnoreCase) || opacity != 255 || (x1 != x2 && y1 != y2) || (x1 == x2 && y1 == y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque untransformed horizontal or vertical lines are implemented.");
-        SvgPaint paint = ParsePaint(stroke, null, GetProperty(reader, style.Color, "color"), inheritedPaint);
+        SvgColor strokeColor = ParseStrokeColor(stroke, GetProperty(reader, style.Color, "color"), inheritedPaint);
         int strokeWidth = ParseInteger(reader.GetAttribute("stroke-width") ?? "1");
-        if (!paint.HasFill || paint.Color.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width line strokes are implemented.");
+        if (strokeColor.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width line strokes are implemented.");
         double halfWidth = strokeWidth / 2d;
         bool painted = inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility);
-        SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
+        SvgColor color = new(strokeColor.Red, strokeColor.Green, strokeColor.Blue, MultiplyAlpha(strokeColor.Alpha, opacity));
         return x1 != x2 ? new SvgRectangle(Math.Min(x1, x2), y1 - halfWidth, Math.Abs((long)x2 - x1), strokeWidth, color, painted) : new SvgRectangle(x1 - halfWidth, Math.Min(y1, y2), strokeWidth, Math.Abs((long)y2 - y1), color, painted);
     }
 
@@ -452,7 +452,7 @@ internal static class SvgRootParser
         ValidateSimpleOrthogonalContour(points, "path");
         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style")); AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
         SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), inheritedPaint); ValidateFillRule(GetProperty(reader, style.FillRule, "fill-rule")); ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
-        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity")); SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
+        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity")); SvgColor color = ResolvePaintColor(paint, opacity);
         bool hasFill = paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility);
         List<int> boundaries = points.Select(static point => point.Y).Distinct().Order().ToList(); List<SvgRectangle> rectangles = [];
         for (int boundaryIndex = 0; boundaryIndex < boundaries.Count - 1; boundaryIndex++)
@@ -491,7 +491,7 @@ internal static class SvgRootParser
         List<SvgRectangle> rectangles = [];
         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style")); AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
         SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), inheritedPaint); ValidateFillRule(GetProperty(reader, style.FillRule, "fill-rule")); ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
-        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity")); SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity)); bool hasFill = paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility);
+        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity")); SvgColor color = ResolvePaintColor(paint, opacity); bool hasFill = paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility);
         for (int boundaryIndex = 0; boundaryIndex < boundaries.Count - 1; boundaryIndex++)
         {
             int top = boundaries[boundaryIndex]; int bottom = boundaries[boundaryIndex + 1];
@@ -707,11 +707,24 @@ internal static class SvgRootParser
 
     private static SvgPaint ParsePaint(string? fill, string? opacity, string? currentColor, SvgPaint inheritedPaint)
     {
-        SvgColor inheritedCurrentColor = currentColor is null ? inheritedPaint.CurrentColor : ParseColor(currentColor);
+        SvgColor resolvedCurrentColor = currentColor is null ? inheritedPaint.CurrentColor : ParseColor(currentColor);
         bool hasFill = fill is null ? inheritedPaint.HasFill : !fill.Equals("none", StringComparison.OrdinalIgnoreCase) && !fill.Equals("transparent", StringComparison.OrdinalIgnoreCase);
-        SvgColor color = fill is null ? inheritedPaint.Color : fill.Equals("currentColor", StringComparison.OrdinalIgnoreCase) ? inheritedCurrentColor : hasFill ? ParseColor(fill) : SvgColor.Transparent;
-        byte alpha = opacity is null ? color.Alpha : MultiplyAlpha(color.Alpha, ParseOpacity(opacity));
-        return new SvgPaint(new SvgColor(color.Red, color.Green, color.Blue, alpha), hasFill, inheritedCurrentColor);
+        bool fillUsesCurrentColor = fill is null ? inheritedPaint.FillUsesCurrentColor : fill.Equals("currentColor", StringComparison.OrdinalIgnoreCase);
+        SvgColor fillColor = fill is null ? inheritedPaint.FillColor : fillUsesCurrentColor ? SvgColor.Transparent : hasFill ? ParseColor(fill) : SvgColor.Transparent;
+        byte fillOpacity = opacity is null ? inheritedPaint.FillOpacity : ParseOpacity(opacity);
+        return new SvgPaint(fillColor, hasFill, fillOpacity, resolvedCurrentColor, fillUsesCurrentColor);
+    }
+
+    private static SvgColor ResolvePaintColor(SvgPaint paint, byte opacity)
+    {
+        SvgColor color = paint.FillUsesCurrentColor ? paint.CurrentColor : paint.FillColor;
+        return new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(MultiplyAlpha(color.Alpha, paint.FillOpacity), opacity));
+    }
+
+    private static SvgColor ParseStrokeColor(string value, string? currentColor, SvgPaint inheritedPaint)
+    {
+        SvgColor resolvedCurrentColor = currentColor is null ? inheritedPaint.CurrentColor : ParseColor(currentColor);
+        return value.Equals("currentColor", StringComparison.OrdinalIgnoreCase) ? resolvedCurrentColor : ParseColor(value);
     }
 
     private static bool ParseDisplay(string? value)
@@ -910,9 +923,9 @@ internal static class SvgRootParser
         internal AxisTransform Compose(AxisTransform child) => new(checked(ScaleX * child.ScaleX), checked(ScaleY * child.ScaleY), checked(ScaleX * child.OffsetX + OffsetX), checked(ScaleY * child.OffsetY + OffsetY));
     }
 
-    private readonly record struct SvgPaint(SvgColor Color, bool HasFill, SvgColor CurrentColor)
+    private readonly record struct SvgPaint(SvgColor FillColor, bool HasFill, byte FillOpacity, SvgColor CurrentColor, bool FillUsesCurrentColor)
     {
-        internal static SvgPaint Default { get; } = new(new SvgColor(0, 0, 0, 255), true, new SvgColor(0, 0, 0, 255));
+        internal static SvgPaint Default { get; } = new(new SvgColor(0, 0, 0, 255), true, 255, new SvgColor(0, 0, 0, 255), false);
     }
 
     private readonly record struct InlineStyle(string? Color, string? Fill, string? FillOpacity, string? Stroke, string? Display, string? Visibility, string? Opacity, string? FillRule);
