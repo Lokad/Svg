@@ -12,7 +12,7 @@ public static class SvgConverter
     {
         ValidateInvocation(svg, options, cancellationToken);
         SvgRoot root = SvgRootParser.Parse(svg, options.Limits, cancellationToken);
-        if (root.HasChildElement) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Visible SVG elements are not implemented yet.");
+        if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
         return RenderEmptySvg(root, options, cancellationToken);
     }
 
@@ -60,6 +60,16 @@ public static class SvgConverter
         if (pixelCount > options.Limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Output pixel count exceeds the configured limit.");
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
         using RenderBudget.BudgetReservation surface = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
-        return PngEncoder.Encode(outputWidth, outputHeight, new byte[checked(pixelCount * 4)], cancellationToken);
+        byte[] pixels = new byte[checked(pixelCount * 4)];
+        if (root.Rectangle is SvgRectangle rectangle)
+        {
+            for (int y = Math.Max(0, rectangle.Y); y < Math.Min(outputHeight, checked(rectangle.Y + rectangle.Height)); y++)
+            for (int x = Math.Max(0, rectangle.X); x < Math.Min(outputWidth, checked(rectangle.X + rectangle.Width)); x++)
+            {
+                int offset = (y * outputWidth + x) * 4;
+                pixels[offset] = rectangle.Color.Red; pixels[offset + 1] = rectangle.Color.Green; pixels[offset + 2] = rectangle.Color.Blue; pixels[offset + 3] = 255;
+            }
+        }
+        return PngEncoder.Encode(outputWidth, outputHeight, pixels, cancellationToken);
     }
 }

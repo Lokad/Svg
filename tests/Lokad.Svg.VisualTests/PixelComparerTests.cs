@@ -95,6 +95,16 @@ public sealed class PixelComparerTests
         Assert.Equal(source, decoded.Pixels);
     }
 
+    [Fact]
+    public void Single_integer_rectangle_renders_to_expected_rgba_pixels()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'><rect width='1' height='1' fill='#ff0000'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        RgbaImage decoded = PngRgbaDecoder.Decode(png, 2);
+
+        Assert.Equal(new byte[] { 255, 0, 0, 255, 0, 0, 0, 0 }, decoded.Pixels);
+    }
+
     private static byte[] CreateOnePixelRgbaPng()
     {
         using MemoryStream result = new();
