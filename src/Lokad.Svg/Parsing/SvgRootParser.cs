@@ -7,7 +7,6 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Reads the bounded SVG root without materializing a DOM or input string.</summary>
 internal static class SvgRootParser
 {
-    private const int MaximumXmlNestingLevels = 128;
     private const int GroupScopeStorageBytes = 64;
     private const int CssRuleStorageBytes = 96;
     private const int DefinitionStorageBytes = 160;
@@ -179,7 +178,7 @@ internal static class SvgRootParser
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (reader.NodeType != XmlNodeType.Element) continue;
-            if (reader.Depth >= MaximumXmlNestingLevels) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the supported limit.");
+            if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
             if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
             InlineStyle rootStyle = ParseInlineStyle(reader.GetAttribute("style"));
             SvgPaint rootPaint = ParseRootPaint(reader, rootStyle);
@@ -212,7 +211,7 @@ internal static class SvgRootParser
                 cancellationToken.ThrowIfCancellationRequested();
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    if (reader.Depth >= MaximumXmlNestingLevels) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the supported limit.");
+                    if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
                     bool directChild = reader.Depth == rootDepth + 1;

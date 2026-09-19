@@ -556,6 +556,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Uses_the_configured_XML_nesting_limit_before_expanding_group_storage()
+    {
+        SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 100, 2);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><rect/></g></svg>"u8.ToArray(), limits, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_structural_limit_while_expanding_stylesheet_selectors()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 2, 16, 100);
