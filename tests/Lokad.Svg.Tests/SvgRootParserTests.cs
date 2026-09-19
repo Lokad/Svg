@@ -614,6 +614,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Reserves_geometry_collection_capacity_before_allocation()
+    {
+        RenderBudget budget = new(63);
+        using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, 8);
+
+        SvgException exception = Assert.Throws<SvgException>(() => points.Add(new SvgPoint(0, 0)));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Releases_transient_parser_collection_reservations_after_scene_construction()
     {
         RenderBudget budget = new(10_000);

@@ -56,6 +56,15 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
         _count += items.Length;
     }
 
+    internal ReadOnlySpan<T> AsSpan() => _items.AsSpan(0, _count);
+
+    internal void Clear()
+    {
+        _count = 0;
+    }
+
+    internal void Sort() => Array.Sort(_items, 0, _count);
+
     internal void RemoveLast()
     {
         if (_count == 0) throw new InvalidOperationException("The parser collection is empty.");
@@ -70,6 +79,31 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
             if (predicate(_items[index])) return true;
         }
         return false;
+    }
+
+    internal OwnedParserArray<T> Detach()
+    {
+        if (_count == 0)
+        {
+            Dispose();
+            return new([], null);
+        }
+
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount(_count, _entryBytes), _category);
+        T[] exact;
+        try
+        {
+            exact = new T[_count];
+        }
+        catch
+        {
+            reservation.Dispose();
+            throw;
+        }
+
+        _items.AsSpan(0, _count).CopyTo(exact);
+        Dispose();
+        return new OwnedParserArray<T>(exact, reservation);
     }
 
     public void Dispose()
@@ -112,6 +146,12 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
         _reservation = replacementReservation;
         _items = replacement;
     }
+}
+
+/// <summary>Owns a parser array that remains charged until its consumer releases it.</summary>
+internal readonly record struct OwnedParserArray<T>(T[] Items, RenderBudget.BudgetReservation? Reservation) : IDisposable where T : struct
+{
+    public void Dispose() => Reservation?.Dispose();
 }
 
 /// <summary>Tracks dictionary growth before definition entries allocate parser-owned storage.</summary>
