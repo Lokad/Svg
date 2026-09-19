@@ -37,4 +37,5 @@ public sealed class PngEncoderTests
         Assert.Equal(owned, destination);
         Assert.Throws<SvgException>(() => PngEncoder.EncodeInto(1, 1, [1, 2, 3, 4], new byte[1], CancellationToken.None));
     }
+
 }

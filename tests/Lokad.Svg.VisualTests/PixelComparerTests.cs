@@ -96,6 +96,13 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
+    public void Production_encoder_canonicalizes_invisible_rgb()
+    {
+        byte[] png = PngEncoder.Encode(1, 1, [10, 20, 30, 0], CancellationToken.None);
+        Assert.Equal(new byte[] { 0, 0, 0, 0 }, PngRgbaDecoder.Decode(png, 1).Pixels);
+    }
+
+    [Fact]
     public void Single_integer_rectangle_renders_to_expected_rgba_pixels()
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'><rect width='1' height='1' fill='#ff0000'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();

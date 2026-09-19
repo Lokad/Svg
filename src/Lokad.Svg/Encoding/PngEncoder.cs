@@ -33,7 +33,12 @@ internal static class PngEncoder
         for (int y = 0; y < height; y++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            rgba.Slice(y * stride, stride).CopyTo(filtered.AsSpan(y * (stride + 1) + 1));
+            Span<byte> row = filtered.AsSpan(y * (stride + 1) + 1, stride);
+            rgba.Slice(y * stride, stride).CopyTo(row);
+            for (int x = 0; x < stride; x += 4)
+            {
+                if (row[x + 3] == 0) { row[x] = 0; row[x + 1] = 0; row[x + 2] = 0; }
+            }
         }
         using MemoryStream compressed = new();
         using (ZLibStream zlib = new(compressed, CompressionLevel.Optimal, true)) zlib.Write(filtered);
