@@ -4,8 +4,8 @@
 
 Milestone 1 (repository and contracts) is complete. Milestones 2 and 3 are in
 progress. The renderer supports only the explicit subset listed below; other
-visible SVG behavior fails with `UnsupportedFeature`. One pinned-Chrome fixture
-has an exact decoded-pixel gate; this is not a general pixel-fidelity claim.
+visible SVG behavior fails with `UnsupportedFeature`. Two pinned-Chrome fixtures
+have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 
 | Area | Status |
 | --- | --- |
