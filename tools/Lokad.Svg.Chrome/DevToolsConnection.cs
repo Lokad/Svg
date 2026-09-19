@@ -66,12 +66,19 @@ internal sealed class DevToolsConnection : IAsyncDisposable
         {
             string message = await ReceiveTextMessageAsync(cancellationToken);
             using JsonDocument response = JsonDocument.Parse(message);
-            if (!response.RootElement.TryGetProperty("id", out JsonElement responseId) || responseId.GetInt32() != id) continue;
-            if (response.RootElement.TryGetProperty("error", out JsonElement error)) throw new InvalidDataException("DevTools command '" + method + "' failed: " + GetErrorMessage(error));
-            if (!response.RootElement.TryGetProperty("result", out JsonElement result)) throw new InvalidDataException("DevTools command '" + method + "' returned neither a result nor an error.");
-            if (result.TryGetProperty("exceptionDetails", out JsonElement exceptionDetails)) throw new InvalidDataException("DevTools command '" + method + "' evaluation failed: " + GetErrorMessage(exceptionDetails));
+            if (!response.RootElement.TryGetProperty("id", out JsonElement responseId) || !responseId.TryGetInt32(out int responseCommandId) || responseCommandId != id) continue;
+            ValidateSuccessfulResponse(method, response.RootElement);
             return message;
         }
+    }
+
+    /// <summary>Rejects a matched DevTools response that cannot represent a successful command.</summary>
+    internal static void ValidateSuccessfulResponse(string method, JsonElement response)
+    {
+        if (response.TryGetProperty("error", out JsonElement error)) throw new InvalidDataException("DevTools command '" + method + "' failed: " + GetErrorMessage(error));
+        if (!response.TryGetProperty("result", out JsonElement result)) throw new InvalidDataException("DevTools command '" + method + "' returned neither a result nor an error.");
+        if (result.ValueKind != JsonValueKind.Object) throw new InvalidDataException("DevTools command '" + method + "' returned an invalid result.");
+        if (result.TryGetProperty("exceptionDetails", out JsonElement exceptionDetails)) throw new InvalidDataException("DevTools command '" + method + "' evaluation failed: " + GetErrorMessage(exceptionDetails));
     }
 
     internal static byte[] CreateCommand(int id, string method, string parametersJson)
@@ -108,10 +115,21 @@ internal sealed class DevToolsConnection : IAsyncDisposable
             if (received.MessageType != WebSocketMessageType.Text) throw new InvalidDataException("DevTools sent a non-text protocol message.");
             long requiredLength = message.Length + received.Count;
             if (requiredLength > MaximumMessageBytes) throw new InvalidDataException("DevTools message exceeds the configured 16 MiB transport limit.");
-            if (requiredLength > message.Capacity) message.Capacity = checked((int)requiredLength);
+            if (requiredLength > message.Capacity) message.Capacity = GetExpandedMessageCapacity(message.Capacity, checked((int)requiredLength));
             message.Write(buffer, 0, received.Count);
             if (received.EndOfMessage) return Encoding.UTF8.GetString(message.GetBuffer(), 0, checked((int)message.Length));
         }
+    }
+
+    private static int GetExpandedMessageCapacity(int currentCapacity, int requiredLength)
+    {
+        int capacity = Math.Max(currentCapacity, 64 * 1024);
+        while (capacity < requiredLength)
+        {
+            if (capacity > MaximumMessageBytes / 2) return MaximumMessageBytes;
+            capacity *= 2;
+        }
+        return capacity;
     }
 
     private static string GetErrorMessage(JsonElement error)

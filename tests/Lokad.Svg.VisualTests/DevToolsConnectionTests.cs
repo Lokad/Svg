@@ -1,5 +1,6 @@
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using Lokad.Svg.Chrome;
 
 namespace Lokad.Svg.VisualTests;
@@ -25,6 +26,56 @@ public sealed class DevToolsConnectionTests
         FakeWebSocket socket = new(new Frame(WebSocketMessageType.Close, true, []));
 
         await Assert.ThrowsAsync<WebSocketException>(async () => await DevToolsConnection.ReceiveTextMessageAsync(socket, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Rejects_non_text_websocket_messages()
+    {
+        FakeWebSocket socket = new(new Frame(WebSocketMessageType.Binary, true, [1]));
+
+        InvalidDataException exception = await Assert.ThrowsAsync<InvalidDataException>(async () => await DevToolsConnection.ReceiveTextMessageAsync(socket, CancellationToken.None));
+
+        Assert.Contains("non-text", exception.Message);
+    }
+
+    [Fact]
+    public async Task Rejects_fragmented_text_messages_that_exceed_the_transport_limit()
+    {
+        RepeatingTextWebSocket socket = new(DevToolsConnection.MaximumMessageBytes + 1);
+
+        InvalidDataException exception = await Assert.ThrowsAsync<InvalidDataException>(async () => await DevToolsConnection.ReceiveTextMessageAsync(socket, CancellationToken.None));
+
+        Assert.Contains("16 MiB", exception.Message);
+    }
+
+    [Fact]
+    public void Rejects_protocol_error_responses()
+    {
+        using JsonDocument response = JsonDocument.Parse("""{"error":{"message":"bad request"}}""");
+
+        InvalidDataException exception = Assert.Throws<InvalidDataException>(() => DevToolsConnection.ValidateSuccessfulResponse("Page.enable", response.RootElement));
+
+        Assert.Equal("DevTools command 'Page.enable' failed: bad request", exception.Message);
+    }
+
+    [Fact]
+    public void Rejects_evaluation_exception_details()
+    {
+        using JsonDocument response = JsonDocument.Parse("""{"result":{"exceptionDetails":{"text":"ReferenceError"}}}""");
+
+        InvalidDataException exception = Assert.Throws<InvalidDataException>(() => DevToolsConnection.ValidateSuccessfulResponse("Runtime.evaluate", response.RootElement));
+
+        Assert.Equal("DevTools command 'Runtime.evaluate' evaluation failed: ReferenceError", exception.Message);
+    }
+
+    [Fact]
+    public void Rejects_invalid_result_responses()
+    {
+        using JsonDocument response = JsonDocument.Parse("""{"result":null}""");
+
+        InvalidDataException exception = Assert.Throws<InvalidDataException>(() => DevToolsConnection.ValidateSuccessfulResponse("Page.enable", response.RootElement));
+
+        Assert.Equal("DevTools command 'Page.enable' returned an invalid result.", exception.Message);
     }
 
     [Fact]
@@ -80,6 +131,37 @@ public sealed class DevToolsConnectionTests
             Frame frame = _frames.Dequeue();
             frame.Data.AsSpan().CopyTo(buffer.AsSpan());
             return Task.FromResult(new WebSocketReceiveResult(frame.Data.Length, frame.MessageType, frame.EndOfMessage));
+        }
+
+        public override Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => Task.CompletedTask;
+    }
+
+    private sealed class RepeatingTextWebSocket : WebSocket
+    {
+        private int _remainingBytes;
+
+        internal RepeatingTextWebSocket(int remainingBytes) => _remainingBytes = remainingBytes;
+
+        public override WebSocketCloseStatus? CloseStatus => null;
+        public override string? CloseStatusDescription => null;
+        public override WebSocketState State => WebSocketState.Open;
+        public override string? SubProtocol => null;
+
+        public override void Abort() { }
+
+        public override Task CloseAsync(WebSocketCloseStatus closeStatus, string? statusDescription, CancellationToken cancellationToken) => Task.CompletedTask;
+
+        public override Task CloseOutputAsync(WebSocketCloseStatus closeStatus, string? statusDescription, CancellationToken cancellationToken) => Task.CompletedTask;
+
+        public override void Dispose() { }
+
+        public override Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            int count = Math.Min(buffer.Count, _remainingBytes);
+            buffer.AsSpan(0, count).Clear();
+            _remainingBytes -= count;
+            return Task.FromResult(new WebSocketReceiveResult(count, WebSocketMessageType.Text, _remainingBytes == 0));
         }
 
         public override Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => Task.CompletedTask;
