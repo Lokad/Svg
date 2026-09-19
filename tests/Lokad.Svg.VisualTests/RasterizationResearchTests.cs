@@ -181,6 +181,36 @@ public sealed class RasterizationResearchTests
         Assert.Equal(7, snappedEdge.MaximumMismatchY);
     }
 
+    [Fact]
+    public void Sixteenth_vertex_snapping_half_grid_baselines_are_not_Chrome_exact()
+    {
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-half-grid-8x8.png")), 64);
+        PixelComparison floor = PixelComparer.Compare(reference, RasterizeFixedPointCoverageTriangle(SnapVertices(HalfGridTriangle, false), false));
+        PixelComparison ceiling = PixelComparer.Compare(reference, RasterizeFixedPointCoverageTriangle(SnapVertices(HalfGridTriangle, true), false));
+
+        Assert.True(floor.DimensionsMatch);
+        Assert.False(floor.IsExact);
+        Assert.Equal(20, floor.ChangedPixelCount);
+        Assert.Equal((byte)255, floor.MaximumChannelError);
+        Assert.Equal((byte)29, floor.MaximumAlphaError);
+        Assert.Equal(20, floor.AlphaChangedPixelCount);
+        Assert.Equal(1, floor.MinimumMismatchX);
+        Assert.Equal(1, floor.MinimumMismatchY);
+        Assert.Equal(7, floor.MaximumMismatchX);
+        Assert.Equal(7, floor.MaximumMismatchY);
+
+        Assert.True(ceiling.DimensionsMatch);
+        Assert.False(ceiling.IsExact);
+        Assert.Equal(21, ceiling.ChangedPixelCount);
+        Assert.Equal((byte)20, ceiling.MaximumChannelError);
+        Assert.Equal((byte)20, ceiling.MaximumAlphaError);
+        Assert.Equal(21, ceiling.AlphaChangedPixelCount);
+        Assert.Equal(1, ceiling.MinimumMismatchX);
+        Assert.Equal(1, ceiling.MinimumMismatchY);
+        Assert.Equal(7, ceiling.MaximumMismatchX);
+        Assert.Equal(7, ceiling.MaximumMismatchY);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -274,6 +304,19 @@ public sealed class RasterizationResearchTests
             }
         }
         return new RgbaImage(8, 8, pixels);
+    }
+
+    private static Point[] SnapVertices(ReadOnlySpan<Point> triangle, bool roundUp)
+    {
+        Point[] snapped = new Point[triangle.Length];
+        for (int index = 0; index < triangle.Length; index++)
+        {
+            Point point = triangle[index];
+            snapped[index] = new Point(Snap(point.X, roundUp), Snap(point.Y, roundUp));
+        }
+        return snapped;
+
+        static double Snap(double value, bool roundUp) => (roundUp ? Math.Ceiling(value * 16) : Math.Floor(value * 16)) / 16;
     }
 
     private static RgbaImage RasterizeSixteenthSnappedEdgeStripTriangle(ReadOnlySpan<Point> triangle)

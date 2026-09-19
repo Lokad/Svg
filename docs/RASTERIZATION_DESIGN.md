@@ -117,6 +117,12 @@ small improvement over the grid-aligned fractional phase, neither is close to an
 admission result. The family therefore rules out choosing a grid phase or
 tie-breaking rule based on the integral near-fit.
 
+An explicit input-vertex sixteenth-grid experiment rounds every half-grid vertex
+down or up before the fixed-alpha area calculation. Flooring changes 20 pixels
+(maximum channel/alpha error 255/29), while ceiling changes 21 (20/20); both
+mismatch envelopes are `(1,1)`–`(7,7)`. Vertex snapping alone therefore does not
+explain the reference, independently of the earlier edge-crossing experiment.
+
 ## Calibration source pin
 
 The Chromium `153.0.8010.52` tag used by the retained Windows recipe pins

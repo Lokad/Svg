@@ -41,6 +41,10 @@ Rendered-leaf and definition routing is now the sole `SvgElementAttributePolicy`
 boundary for rectangle, line, path, point-list and local-`use` lowerers; those
 lowerers accept only policy-validated XML and no longer repeat the attribute walk.
 
+The half-grid P1.3 triangle now also rejects simple input-vertex sixteenth-grid
+snapping: floor and ceiling variants differ by 20 and 21 pixels respectively, so
+the prior edge-crossing result cannot be explained by vertex rounding alone.
+
 The browser review harness currently reports all 43 manifest fixtures exact. Its
 accepted semantic probes match Chrome; `styled-use` now retains a definition's
 typed geometry plus whether it has inherited fill, allowing a fill declared on a
@@ -116,7 +120,7 @@ review.
 ### Current local verification (2026-09-20)
 
 `dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 221 unit tests
-and 70 visual-project tests on the current working revision. The Windows pinned
+and 71 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
 successful remote CI run, a canonical Linux baseline, ARM64 equivalence or
