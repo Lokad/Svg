@@ -1,0 +1,42 @@
+using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
+
+namespace Lokad.Svg.Tests;
+
+public sealed class SvgReferenceResolverTests
+{
+    [Fact]
+    public void Resolves_available_geometry_without_a_placeholder()
+    {
+        using SvgDocumentState state = new(new RenderBudget(10_000), new ParserWorkCounter(100), CancellationToken.None);
+        SvgDefinition definition = CreateRectangleDefinition();
+        Assert.True(state.Definitions.TryAdd("tile", definition));
+
+        SvgReferenceResolver.ResolveOrDefer(CreateReference(), state.Definitions, state.PendingUses, state.Scene, new ParserWorkCounter(100), CancellationToken.None);
+
+        using SvgSceneStorage scene = state.Scene.Build();
+        Assert.Equal(0, state.PendingUses.Count);
+        Assert.Equal(definition.Geometry, Assert.Single(scene.Geometries));
+    }
+
+    [Fact]
+    public void Resolves_forward_geometry_from_its_typed_placeholder()
+    {
+        using SvgDocumentState state = new(new RenderBudget(10_000), new ParserWorkCounter(100), CancellationToken.None);
+        SvgDefinition definition = CreateRectangleDefinition();
+
+        SvgReferenceResolver.ResolveOrDefer(CreateReference(), state.Definitions, state.PendingUses, state.Scene, new ParserWorkCounter(100), CancellationToken.None);
+        Assert.True(state.Definitions.TryAdd("tile", definition));
+        SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, new ParserWorkCounter(100), CancellationToken.None);
+
+        using SvgSceneStorage scene = state.Scene.Build();
+        Assert.Equal(1, state.PendingUses.Count);
+        Assert.Equal(definition.Geometry, Assert.Single(scene.Geometries));
+    }
+
+    private static SvgDefinition CreateRectangleDefinition()
+        => new(SvgGeometry.FromRectangle(new SvgRectangle(1, 2, 3, 4, new SvgColor(5, 6, 7, 255), true, null)), false);
+
+    private static SvgUseReference CreateReference()
+        => new("tile", 0, 0, AxisTransform.Identity, 255, true, null);
+}

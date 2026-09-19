@@ -49,6 +49,9 @@ offset and transform syntax before the use parser resolves presentation.
 `SvgInheritedPresentation` carries the root-or-current-group paint, display,
 visibility and accumulated transform through one leaf-lowering context; its
 factory is directly characterized for root fallback and group selection.
+`SvgReferenceResolver.ResolveOrDefer` now owns typed immediate versus forward
+local-reference resolution, with direct scene tests for both outcomes; the XML
+definition router only selects and parses the reference.
 Rendered-leaf and definition routing is now the sole `SvgElementAttributePolicy`
 boundary for rectangle, line, path, point-list and local-`use` lowerers; those
 lowerers accept only policy-validated XML and no longer repeat the attribute walk.
@@ -134,7 +137,7 @@ review.
 
 ### Current local verification (2026-09-20)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 233 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 235 unit tests
 and 72 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a

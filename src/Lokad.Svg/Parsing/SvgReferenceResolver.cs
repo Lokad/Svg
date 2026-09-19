@@ -9,6 +9,14 @@ internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Re
 /// <summary>Applies typed local references through their geometry-specific supported transforms.</summary>
 internal static class SvgReferenceResolver
 {
+    /// <summary>Resolves an already parsed local reference immediately or retains its typed placeholder for document-end resolution.</summary>
+    internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.Consume(cancellationToken);
+        if (definitions.TryGetValue(reference.Id, out SvgDefinition definition)) scene.AddGeometry(Apply(definition, reference));
+        else pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference));
+    }
+
     internal static SvgGeometry Apply(SvgDefinition definition, SvgUseReference reference)
     {
         SvgGeometry geometry = ApplyInstanceFill(definition, reference);
