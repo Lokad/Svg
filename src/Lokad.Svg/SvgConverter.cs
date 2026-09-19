@@ -36,6 +36,19 @@ public static class SvgConverter
         return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, cancellationToken);
     }
 
+    /// <summary>Converts SVG bytes to caller-owned writable stream output.</summary>
+    public static int ConvertToPng(ReadOnlyMemory<byte> svg, Stream destination, SvgRenderOptions options, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
+        ValidateInvocation(svg, options, cancellationToken);
+        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
+        if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
+        using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
+        return PngEncoder.EncodeTo(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, cancellationToken);
+    }
+
     /// <summary>Schedules one destination conversion on the thread pool.</summary>
     public static Task<int> ConvertToPngAsync(ReadOnlyMemory<byte> svg, Memory<byte> destination, SvgRenderOptions options, CancellationToken cancellationToken)
     {

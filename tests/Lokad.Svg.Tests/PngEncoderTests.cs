@@ -1,4 +1,5 @@
 using Lokad.Svg.Encoding;
+using Lokad.Svg.Rendering;
 using System.Buffers.Binary;
 
 namespace Lokad.Svg.Tests;
@@ -36,6 +37,56 @@ public sealed class PngEncoderTests
         Assert.Equal(owned.Length, written);
         Assert.Equal(owned, destination);
         Assert.Throws<SvgException>(() => PngEncoder.EncodeInto(1, 1, [1, 2, 3, 4], new byte[1], CancellationToken.None));
+    }
+
+    [Fact]
+    public void Streams_large_png_data_in_bounded_writes()
+    {
+        byte[] pixels = new byte[512 * 512 * 4];
+        uint state = 0x12345678;
+        for (int index = 0; index < pixels.Length; index++) { state = state * 1664525 + 1013904223; pixels[index] = (byte)(state >> 24); }
+        using BoundedWriteStream destination = new(65_536);
+
+        int written = PngEncoder.EncodeTo(512, 512, pixels, destination, new RenderBudget(long.MaxValue), int.MaxValue, CancellationToken.None);
+
+        Assert.Equal(written, destination.Length);
+        Assert.True(written > 65_536);
+    }
+
+    private sealed class BoundedWriteStream : Stream
+    {
+        private readonly MemoryStream _storage = new();
+        private readonly int _maximumWriteLength;
+
+        internal BoundedWriteStream(int maximumWriteLength) => _maximumWriteLength = maximumWriteLength;
+
+        public override bool CanRead => false;
+        public override bool CanSeek => false;
+        public override bool CanWrite => true;
+        public override long Length => _storage.Length;
+        public override long Position { get => _storage.Position; set => throw new NotSupportedException(); }
+
+        public override void Flush() { }
+
+        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
+        public override void SetLength(long value) => throw new NotSupportedException();
+
+        public override void Write(byte[] buffer, int offset, int count) => Write(buffer.AsSpan(offset, count));
+
+        public override void Write(ReadOnlySpan<byte> buffer)
+        {
+            if (buffer.Length > _maximumWriteLength) throw new InvalidOperationException("PNG stream writes must remain bounded.");
+            _storage.Write(buffer);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) _storage.Dispose();
+            base.Dispose(disposing);
+        }
     }
 
 }

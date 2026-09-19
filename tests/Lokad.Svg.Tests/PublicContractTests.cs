@@ -52,9 +52,9 @@ public sealed class PublicContractTests
     {
         MethodInfo[] methods = typeof(SvgConverter).GetMethods(BindingFlags.Public | BindingFlags.Static);
 
-        Assert.Equal(4, methods.Length);
+        Assert.Equal(5, methods.Length);
         Assert.All(methods.SelectMany(method => method.GetParameters()), parameter => Assert.False(parameter.HasDefaultValue));
-        Assert.Equal(2, methods.Count(method => method.Name == "ConvertToPng"));
+        Assert.Equal(3, methods.Count(method => method.Name == "ConvertToPng"));
         Assert.Equal(2, methods.Count(method => method.Name == "ConvertToPngAsync"));
     }
 
@@ -224,6 +224,19 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Writable_stream_destination_does_not_reserve_owned_png_output()
+    {
+        SvgRenderLimits limits = new(73, 1024, 2, 4, 1024, 1, 1, 1);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+        using MemoryStream destination = new(70);
+
+        int written = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), destination, options, CancellationToken.None);
+
+        Assert.Equal(70, written);
+        Assert.Equal(70, destination.Length);
+    }
+
+    [Fact]
     public void Group_opacity_reserves_an_isolated_surface_before_allocation()
     {
         SvgRenderLimits limits = new(4, 1024, 2, 4, 1024, 16, 16, 16);
@@ -277,6 +290,21 @@ public sealed class PublicContractTests
         Assert.Equal(expected, destination);
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, new byte[1], SvgRenderOptions.Default, CancellationToken.None));
         Assert.Equal(SvgErrorCode.InsufficientDestination, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Stream_destination_writes_the_same_png_without_an_owned_result()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray();
+        byte[] expected = SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        using MemoryStream destination = new(expected.Length);
+
+        int written = SvgConverter.ConvertToPng(svg, destination, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(expected.Length, written);
+        Assert.Equal(expected, destination.ToArray());
+        using MemoryStream nonWritableDestination = new(new byte[expected.Length], false);
+        Assert.Throws<ArgumentException>(() => SvgConverter.ConvertToPng(svg, nonWritableDestination, SvgRenderOptions.Default, CancellationToken.None));
     }
 
     [Fact]
