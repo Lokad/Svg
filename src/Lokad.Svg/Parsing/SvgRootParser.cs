@@ -39,6 +39,15 @@ internal static class SvgRootParser
 
     private static SvgRectangle ParseRectangle(XmlReader reader)
     {
+        if (reader.HasAttributes)
+        {
+            while (reader.MoveToNextAttribute())
+            {
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "x" or "y" or "width" or "height" or "fill") continue;
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle attribute '" + reader.Name + "' is not implemented.");
+            }
+            reader.MoveToElement();
+        }
         int x = ParseInteger(reader.GetAttribute("x") ?? "0");
         int y = ParseInteger(reader.GetAttribute("y") ?? "0");
         int width = ParseInteger(reader.GetAttribute("width") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle width is required."));
