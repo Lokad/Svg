@@ -65,4 +65,15 @@ public sealed class PublicContractTests
         ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
         Assert.Equal(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }, png[..8].ToArray());
     }
+
+    [Fact]
+    public void Empty_svg_surface_budget_fails_before_pixel_buffer_allocation()
+    {
+        SvgRenderLimits limits = new(3, 1024, 2, 4, 1024, 1, 1, 1);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
 }

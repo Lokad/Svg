@@ -2,6 +2,7 @@ namespace Lokad.Svg;
 
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Encoding;
+using Lokad.Svg.Rendering;
 
 /// <summary>Converts static SVG bytes to PNG bytes.</summary>
 public static class SvgConverter
@@ -57,6 +58,8 @@ public static class SvgConverter
         int outputHeight = checked((int)scaledHeight);
         int pixelCount = checked(outputWidth * outputHeight);
         if (pixelCount > options.Limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Output pixel count exceeds the configured limit.");
+        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        using RenderBudget.BudgetReservation surface = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
         return PngEncoder.Encode(outputWidth, outputHeight, new byte[checked(pixelCount * 4)], cancellationToken);
     }
 }
