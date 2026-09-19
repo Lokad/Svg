@@ -25,3 +25,12 @@ and fractional boundaries, transparency overlap, fill rule behavior, transforms,
 and degeneracies. Capture each probe repeatedly with the pinned Chrome recipe;
 only zero-difference decoded RGBA comparisons become `exact` fixtures. A stable
 difference remains classified, not tolerated.
+
+## Circle feasibility finding
+
+The original 6×6 opaque-circle probe (`cx=3`, `cy=3`, `r=2`) was captured with
+the pinned Chrome 153.0.8010.52 recipe. A bounded adaptive integration of the
+mathematical circle/square intersection was close but not compatible: 12 decoded
+pixels differed, with a maximum alpha-channel error of 17. This rejects both a
+plain analytic-area implementation and supersampling as an admission strategy;
+circle support remains explicitly unsupported pending scan-converter calibration.
