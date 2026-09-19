@@ -101,7 +101,7 @@ review.
 ### Current local verification (2026-09-19)
 
 `dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 200 unit tests
-and 61 visual-project tests on the current working revision. The Windows pinned
+and 65 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
 successful remote CI run, a canonical Linux baseline, ARM64 equivalence or
@@ -243,10 +243,11 @@ behavior or collecting measurements.
    computed paint values and shape lowering behind characterization tests. Preserve
    the P0 subset exactly while moving responsibilities; do not add another
    shape-specific path to `SvgRootParser`.
-4. Use the new pipeline for P1.3 feasibility work: diagonal edges, curves,
-   winding, stroke joins and one real illustration, each with retained oracle
-   evidence. Keep unsuccessful probes classified rather than silently relaxing
-   the fidelity bar.
+4. Continue P1.3 from the retained diagonal, curve, winding, join and
+   path-heavy-illustration references. Test device-space edge quantization and
+   compositing hypotheses against the measured non-exact coverage baselines before
+   adding a general geometry feature; keep every unsuccessful probe classified
+   rather than silently relaxing the fidelity bar.
 
 These steps need no further prioritization permission within authorized
 implementation work. Split large items into reviewable commits and advance to
