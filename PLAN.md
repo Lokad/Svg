@@ -3,7 +3,9 @@
 Revised 2026-09-19 after reviewing implementation revision
 `4c0051197757ec2c414a6a9e69290fd08e30f47e`. This document supersedes the previous
 milestone labels and implementation order. The review changed the plan, not the
-renderer. Findings below remain open until implementation and tests close them.
+renderer. The historical baseline below records why the priorities changed;
+follow-through status is recorded separately so completed corrections do not get
+mistaken for still-open defects.
 
 Lokad.Svg is a working, narrow rendering prototype. Its committed examples render
 correctly, but its advertised semantics, memory contract and regression coverage
@@ -14,6 +16,19 @@ was complete is withdrawn.
 The next objective is to make the existing implementation trustworthy, then build
 a general geometry pipeline. More isolated rectangle, selector or stroke variants
 are secondary unless they fix a reported defect or unlock that pipeline.
+
+## Follow-through since the review
+
+| Package | Status as of 2026-09-19 | Verified outcome |
+| --- | --- | --- |
+| P0.1 corpus and provenance | Complete for the existing 41-fixture corpus | The manifest is the sole exact-fixture inventory: every row validates source/provenance metadata and renders against its reference. Fixture SPDX headers, original/materialized hashes and support documentation agree. |
+| P0.2 accepted semantics, validation and colors | In progress | The reviewed hidden-stroke, inherited/overridden `fill-opacity`, inherited `currentColor`, stylesheet-path, stylesheet-definition, `darkgrey`, trailing-XML and extreme-line cases now match their stated expectations. Animation and paint styles on `use` now fail explicitly rather than render an arbitrary or incorrect image. Broader boundary/category audits remain. |
+| P0.3 one conversion budget | Started | A budget is created before parsing; the raster reservation remains live through owned-PNG allocation, and a 1×1 owned result is rejected at 73 bytes and accepted at 74. Parser/scene allocations, PNG workspace/compression storage, caller-destination encoding, structural/work limits and in-work cancellation remain unaccounted or incomplete. |
+
+The browser review harness currently reports all 41 manifest fixtures exact. Its
+accepted semantic probes match Chrome; `styled-use`, which needs instance computed
+style rather than a rectangle substitution, is deliberately an
+`UnsupportedFeature` until the P1.2 scene/style/reference refactor.
 
 ## 1. Product contract retained
 
@@ -102,11 +117,12 @@ Sources: [converter](src/Lokad.Svg/SvgConverter.cs),
 [memory tool](tools/Lokad.Svg.MemoryProbe/Program.cs),
 [benchmark entry point](benchmarks/Lokad.Svg.Benchmarks/Program.cs).
 
-The missing render gates are the five rectangle/group stylesheet fixtures,
+The historical review found five rectangle/group stylesheet fixtures,
 `rectangle-use`, `modern-functional-colors`, `rectangle-symbol`,
 `compound-stylesheet-selectors`, `extended-named-colors`, and
-`rectangle-use-opacity`. Replace hand-maintained enumeration with manifest-driven
-execution so adding metadata cannot accidentally omit the actual comparison.
+`rectangle-use-opacity` missing from the render gates. This has been corrected:
+the manifest-driven suite now executes every exact entry so adding metadata cannot
+omit its actual comparison.
 
 ## 3. Findings that determine priority
 
@@ -161,19 +177,19 @@ fixture-count milestones. Start P1 oracle work alongside P0 where independent;
 do not wait for all rendering breadth before investigating difficult raster/text
 behavior or collecting measurements.
 
-| Order | Work package | Depends on | Exit evidence |
-| --- | --- | --- | --- |
-| P0.1 | Make the corpus an executable inventory; correct support/provenance claims. | Existing tests/tools | Every manifest row executes the prescribed support and fidelity check. Missing references, missing cases and inconsistent statuses fail. All 41 existing comparisons remain exact; review regressions are registered visibly. |
-| P0.2 | Repair accepted semantics, validation and color lookup (R1, R5, R6). | P0.1 | Review reproductions pass their independent expectations; unsupported visible constructs fail rather than disappear. Add combinations and rejection tests, not only happy-path parser records. Remove `System.Drawing` usage. |
-| P0.3 | Enforce one conversion budget and bounded output/work/cancellation (R2, R3). | Regression coverage; may proceed with P0.2 | Parser, scene, geometry, surfaces, PNG workspace and owned output share reservation lifetimes. Boundary tests deny allocations before they occur. Work/cancellation stress and owned/destination/stream equivalence pass. |
-| P1.1 | Repair oracle transport, readiness and metadata; establish the canonical Linux environment (R8). | Existing exploratory win64 harness | Large/fragmented CDP responses and failures are tested; identical fresh-process captures, complete runtime fingerprint, offline readiness and cleanup checks. Required live-Chrome CI works; baseline migration is reviewed explicitly. |
-| P1.2 | Separate bounded syntax, computed style, reference resolution and scene construction (R7). | P0 semantics/context | Existing corpus remains exact through the new pipeline. Shared style rules apply consistently. References are typed, cycle/work bounded and do not clone expanding trees. Rectangle fast paths are backend optimizations, not the scene's geometry model. |
-| P1.3 | Build the general path/coverage/stroke pipeline and run targeted raster/text feasibility research. | P1.1 for oracle evidence; P1.2 for integration | Relative/repeated commands, subpaths, curves/arcs, winding, affine transforms and stroke outlines have independent semantic tests. Device-space scan conversion matches a varied calibration family; unresolved differences have persisted reproducers and hypotheses. First path-heavy illustration is classified. |
-| P2.1 | Add paint servers and complete composition/instancing. | General geometry/style/scene | Gradients, patterns, nested group/element opacity, clipping/masks, markers, `use`/`symbol` and nested viewports pass combination cases with shared budgets and bounded references. |
-| P2.2 | Add host resources, PNG images and measured resampling. | P0.3, resource graph, composition | No implicit I/O; decoding/profile limits, mapped resources, nested SVG, alpha boundaries and scaling are exact or explicitly unsupported. First representative illustrations/diagrams work end to end. |
-| P3.1 | Implement the first filter set with surface lifetime planning. | Images, composition, budgets | Each primitive, color space, region and dependency case has exact evidence; graph/resource bombs fail within limits. |
-| P3.2 | Implement basic supplied-font text; then JPEG and broader static coverage. | Early text feasibility, geometry, resource budgets | TrueType parsing, layout and glyph rendering match the declared cases with identical font bytes. Unsupported scripts/formats fail explicitly. JPEG work has independent codec and memory gates. |
-| P4 | Optimize measured bottlenecks, finish hardening and prepare release. | Verified feature combinations and measurements | Full fixed inventory, required platform/cancellation/package gates, numerical performance/retention reports and accurate release docs. Initial stable scope and unresolved advanced backlog remain explicit. |
+| Order | Status | Work package | Depends on | Exit evidence |
+| --- | --- | --- | --- | --- |
+| P0.1 | Complete | Make the corpus an executable inventory; correct support/provenance claims. | Existing tests/tools | Every manifest row executes the prescribed support and fidelity check. Missing references, missing cases and inconsistent statuses fail. All 41 existing comparisons remain exact; review regressions are registered visibly. |
+| P0.2 | In progress | Repair accepted semantics, validation and color lookup (R1, R5, R6). | P0.1 | Review reproductions pass their independent expectations; unsupported visible constructs fail rather than disappear. Add combinations and rejection tests, not only happy-path parser records. Remove `System.Drawing` usage. |
+| P0.3 | Started | Enforce one conversion budget and bounded output/work/cancellation (R2, R3). | Regression coverage; may proceed with P0.2 | Parser, scene, geometry, surfaces, PNG workspace and owned output share reservation lifetimes. Boundary tests deny allocations before they occur. Work/cancellation stress and owned/destination/stream equivalence pass. |
+| P1.1 | Not started | Repair oracle transport, readiness and metadata; establish the canonical Linux environment (R8). | Existing exploratory win64 harness | Large/fragmented CDP responses and failures are tested; identical fresh-process captures, complete runtime fingerprint, offline readiness and cleanup checks. Required live-Chrome CI works; baseline migration is reviewed explicitly. |
+| P1.2 | Not started | Separate bounded syntax, computed style, reference resolution and scene construction (R7). | P0 semantics/context | Existing corpus remains exact through the new pipeline. Shared style rules apply consistently. References are typed, cycle/work bounded and do not clone expanding trees. Rectangle fast paths are backend optimizations, not the scene's geometry model. |
+| P1.3 | Not started | Build the general path/coverage/stroke pipeline and run targeted raster/text feasibility research. | P1.1 for oracle evidence; P1.2 for integration | Relative/repeated commands, subpaths, curves/arcs, winding, affine transforms and stroke outlines have independent semantic tests. Device-space scan conversion matches a varied calibration family; unresolved differences have persisted reproducers and hypotheses. First path-heavy illustration is classified. |
+| P2.1 | Not started | Add paint servers and complete composition/instancing. | General geometry/style/scene | Gradients, patterns, nested group/element opacity, clipping/masks, markers, `use`/`symbol` and nested viewports pass combination cases with shared budgets and bounded references. |
+| P2.2 | Not started | Add host resources, PNG images and measured resampling. | P0.3, resource graph, composition | No implicit I/O; decoding/profile limits, mapped resources, nested SVG, alpha boundaries and scaling are exact or explicitly unsupported. First representative illustrations/diagrams work end to end. |
+| P3.1 | Not started | Implement the first filter set with surface lifetime planning. | Images, composition, budgets | Each primitive, color space, region and dependency case has exact evidence; graph/resource bombs fail within limits. |
+| P3.2 | Not started | Implement basic supplied-font text; then JPEG and broader static coverage. | Early text feasibility, geometry, resource budgets | TrueType parsing, layout and glyph rendering match the declared cases with identical font bytes. Unsupported scripts/formats fail explicitly. JPEG work has independent codec and memory gates. |
+| P4 | Not started | Optimize measured bottlenecks, finish hardening and prepare release. | Verified feature combinations and measurements | Full fixed inventory, required platform/cancellation/package gates, numerical performance/retention reports and accurate release docs. Initial stable scope and unresolved advanced backlog remain explicit. |
 
 ### Next implementation changes
 
