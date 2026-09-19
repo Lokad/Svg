@@ -7,11 +7,11 @@ internal static class SvgDefinitionParser
 {
     internal static bool TryParse(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (state.DefinitionsDepth >= 0 && (reader.Depth == state.DefinitionsDepth + 1 || reader.Depth == state.SymbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
+        if (state.DefinitionsDepth >= 0 && (reader.Depth == state.DefinitionsDepth + 1 || reader.Depth == state.SymbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is ("rect" or "line"))
         {
             string? id = state.SymbolDepth >= 0 ? state.SymbolId : reader.GetAttribute("id");
             SvgPaintableElementContext context = new(root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
-            SvgGeometry geometry = SvgLeafParser.ParseRectangle(reader, context);
+            SvgGeometry geometry = reader.LocalName == "rect" ? SvgLeafParser.ParseRectangle(reader, context) : SvgLeafParser.ParseLine(reader, context);
             if (id is not null)
             {
                 workCounter.Consume(cancellationToken);

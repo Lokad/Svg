@@ -16,6 +16,23 @@ internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int Offset
         Height = ScaleY * rectangle.Height
     };
 
+    /// <summary>Applies this positive axis-aligned transform to a retained axis-aligned line.</summary>
+    internal SvgAxisAlignedLine Apply(SvgAxisAlignedLine line)
+    {
+        int strokeScale = line.X1 != line.X2 ? ScaleY : ScaleX;
+        int strokeWidth;
+        try { strokeWidth = checked(strokeScale * line.StrokeWidth); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the line stroke-width range."); }
+        return line with
+        {
+            X1 = ScaleX * line.X1 + OffsetX,
+            Y1 = ScaleY * line.Y1 + OffsetY,
+            X2 = ScaleX * line.X2 + OffsetX,
+            Y2 = ScaleY * line.Y2 + OffsetY,
+            StrokeWidth = strokeWidth
+        };
+    }
+
     /// <summary>Applies this transform to an integer orthogonal band while preserving its checked coordinate range.</summary>
     internal SvgRectangle ApplyOrthogonalRectangle(int x, int y, long width, long height, SvgColor color, bool hasFill)
         => new(ApplyCoordinate(ScaleX, x, OffsetX), ApplyCoordinate(ScaleY, y, OffsetY), ApplyExtent(ScaleX, width), ApplyExtent(ScaleY, height), color, hasFill, null);

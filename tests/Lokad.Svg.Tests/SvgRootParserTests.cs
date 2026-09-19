@@ -52,6 +52,44 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Expands_axis_aligned_line_definitions_through_typed_use_geometry()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#line' x='1' y='2' opacity='0.5'/><defs><line id='line' x1='0' y1='1' x2='2' y2='1' stroke='red' stroke-width='2'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
+        Assert.Equal(new SvgAxisAlignedLine(1, 3, 3, 3, new SvgColor(255, 0, 0, 128), true, 2), geometry.AxisAlignedLine);
+    }
+
+    [Fact]
+    public void Expands_axis_aligned_line_symbols_through_typed_use_geometry()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='line'><line x2='2' stroke='red' stroke-width='2'/></symbol></defs><use href='#line' x='1' y='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
+        Assert.Equal(new SvgAxisAlignedLine(1, 1, 3, 1, new SvgColor(255, 0, 0, 255), true, 2), geometry.AxisAlignedLine);
+    }
+
+    [Fact]
+    public void Applies_integer_transforms_to_axis_aligned_line_use_instances()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><line id='line' x1='1' y1='1' x2='2' y2='1' stroke='red' stroke-width='2'/></defs><use href='#line' x='3' y='2' transform='scale(2) translate(1, 0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
+        Assert.Equal(new SvgAxisAlignedLine(10, 6, 12, 6, new SvgColor(255, 0, 0, 255), true, 4), geometry.AxisAlignedLine);
+    }
+
+    [Fact]
+    public void Rejects_fractional_axis_aligned_line_use_offsets()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><line id='line' x2='2' stroke='red' stroke-width='2'/></defs><use href='#line' x='0.25'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Applies_stylesheet_rules_to_rectangle_definitions()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: red; }</style><defs><rect id='tile' width='1' height='1'/></defs><use href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
