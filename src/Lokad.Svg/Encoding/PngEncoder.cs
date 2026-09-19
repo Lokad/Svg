@@ -22,7 +22,7 @@ internal static class PngEncoder
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         using RenderBudget.BudgetReservation remainingOutput = budget.Reserve(length - 57, SvgMemoryCategory.Output);
         byte[] output = new byte[length];
-        WritePng(width, height, compressed.Written, output);
+        WritePng(width, height, compressed.Written, output, cancellationToken);
         return output;
     }
 
@@ -39,7 +39,7 @@ internal static class PngEncoder
         int length = GetOutputLength(checked((int)compressed.Length));
         if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         if (destination.Length < length) throw new SvgException(SvgErrorCode.InsufficientDestination, "PNG destination is too small.");
-        WritePng(width, height, compressed.Written, destination.Span[..length]);
+        WritePng(width, height, compressed.Written, destination.Span[..length], cancellationToken);
         return length;
     }
 
@@ -51,7 +51,7 @@ internal static class PngEncoder
         if (rgba.Length != checked(stride * height)) throw new ArgumentException("Pixel buffer length does not match dimensions.", nameof(rgba));
         using RenderBudget.BudgetReservation rowReservation = budget.Reserve(checked((long)stride + 1), SvgMemoryCategory.Png);
         byte[] row = new byte[stride + 1];
-        PngCompressionBuffer compressed = new(budget, maximumCompressedBytes);
+        PngCompressionBuffer compressed = new(budget, maximumCompressedBytes, cancellationToken);
         try
         {
             using (ZLibStream zlib = new(compressed, CompressionLevel.Optimal, true))
@@ -79,8 +79,9 @@ internal static class PngEncoder
 
     private static int GetOutputLength(int compressedLength) => checked(8 + 25 + 12 + compressedLength + 12);
 
-    private static void WritePng(int width, int height, ReadOnlySpan<byte> compressed, Span<byte> output)
+    private static void WritePng(int width, int height, ReadOnlySpan<byte> compressed, Span<byte> output, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         ReadOnlySpan<byte> signature = [137, 80, 78, 71, 13, 10, 26, 10];
         signature.CopyTo(output);
         int offset = 8;
@@ -89,19 +90,23 @@ internal static class PngEncoder
         BinaryPrimitives.WriteUInt32BigEndian(header[4..], checked((uint)height));
         header[8] = 8;
         header[9] = 6;
-        offset += WriteChunk(output[offset..], "IHDR"u8, header);
-        offset += WriteChunk(output[offset..], "IDAT"u8, compressed);
-        offset += WriteChunk(output[offset..], "IEND"u8, []);
+        offset += WriteChunk(output[offset..], "IHDR"u8, header, cancellationToken);
+        offset += WriteChunk(output[offset..], "IDAT"u8, compressed, cancellationToken);
+        offset += WriteChunk(output[offset..], "IEND"u8, [], cancellationToken);
     }
 
-    private static int WriteChunk(Span<byte> output, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data)
+    private static int WriteChunk(Span<byte> output, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data, CancellationToken cancellationToken)
     {
         int length = checked(12 + data.Length);
-        BinaryPrimitives.WriteUInt32BigEndian(output, checked((uint)data.Length));
-        type.CopyTo(output[4..]); data.CopyTo(output[8..]);
         uint crc = 0xffffffff;
         foreach (byte value in type) crc = CrcStep(crc, value);
-        foreach (byte value in data) crc = CrcStep(crc, value);
+        for (int index = 0; index < data.Length; index++)
+        {
+            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            crc = CrcStep(crc, data[index]);
+        }
+        BinaryPrimitives.WriteUInt32BigEndian(output, checked((uint)data.Length));
+        type.CopyTo(output[4..]); data.CopyTo(output[8..]);
         BinaryPrimitives.WriteUInt32BigEndian(output.Slice(8 + data.Length), ~crc);
         return length;
     }
@@ -110,14 +115,16 @@ internal static class PngEncoder
     {
         private readonly RenderBudget _budget;
         private readonly int _maximumLength;
+        private readonly CancellationToken _cancellationToken;
         private RenderBudget.BudgetReservation? _reservation;
         private byte[]? _buffer;
         private int _length;
 
-        internal PngCompressionBuffer(RenderBudget budget, int maximumLength)
+        internal PngCompressionBuffer(RenderBudget budget, int maximumLength, CancellationToken cancellationToken)
         {
             _budget = budget;
             _maximumLength = maximumLength;
+            _cancellationToken = cancellationToken;
         }
 
         internal ReadOnlySpan<byte> Written => _buffer is null ? [] : _buffer.AsSpan(0, _length);
@@ -140,6 +147,7 @@ internal static class PngEncoder
 
         public override void Write(ReadOnlySpan<byte> buffer)
         {
+            _cancellationToken.ThrowIfCancellationRequested();
             int requiredLength = checked(_length + buffer.Length);
             if (requiredLength > _maximumLength) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
             EnsureCapacity(requiredLength);
