@@ -235,6 +235,7 @@ internal static class SvgRootParser
                     }
                     else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "defs")
                     {
+                        ValidateDefinitionContainer(reader);
                         if (!reader.IsEmptyElement) definitionsDepth = reader.Depth;
                     }
                     else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
@@ -353,6 +354,11 @@ internal static class SvgRootParser
     {
         if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
         if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
+    }
+
+    private static void ValidateDefinitionContainer(XmlReader reader)
+    {
+        if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Definition container attributes are not implemented.");
     }
 
     private static long GetXmlReaderWorkspaceBytes(int inputBytes) => Math.Max(MinimumXmlReaderWorkspaceBytes, checked((long)inputBytes * 2));
