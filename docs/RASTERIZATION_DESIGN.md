@@ -84,11 +84,13 @@ explain the reference. This is evidence for a device-space edge-quantization
 hypothesis, not proof of any particular Chromium/Skia implementation.
 
 A source-guided fixed-point characterization then converts each analytic pixel
-area to a 1/256 alpha scale by truncation and snaps values below 8 or above 247
-to transparent or opaque. It improves to six changed pixels, but still has a
-maximum channel/alpha error of three. Therefore output alpha quantization plus
-endpoint snapping alone is insufficient; any next candidate must also model the
-edge/scanline calculation and still match this probe exactly.
+area to a 1/256 alpha scale by truncation. It improves to six changed pixels,
+but still has a maximum channel/alpha error of three. Adding endpoint snapping
+below 8 or above 247 gives the identical result. The matched Skia source routes
+this small convex path through its mask writer, rather than its snapping RLE
+writer; that source detail supports treating the two observed results as one
+output-quantization finding. Any next candidate must also model the edge/scanline
+calculation and still match this probe exactly.
 
 ## Calibration source pin
 

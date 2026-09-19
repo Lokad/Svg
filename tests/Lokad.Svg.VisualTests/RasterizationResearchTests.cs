@@ -67,8 +67,27 @@ public sealed class RasterizationResearchTests
     {
         string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png");
         RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
-        RgbaImage candidate = RasterizeFixedPointCoverageTriangle();
+        RgbaImage candidate = RasterizeFixedPointCoverageTriangle(true);
         PixelComparison comparison = PixelComparer.Compare(reference, candidate);
+
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(6, comparison.ChangedPixelCount);
+        Assert.Equal((byte)3, comparison.MaximumChannelError);
+        Assert.Equal((byte)3, comparison.MaximumAlphaError);
+        Assert.Equal(6, comparison.AlphaChangedPixelCount);
+        Assert.Equal(1, comparison.MinimumMismatchX);
+        Assert.Equal(1, comparison.MinimumMismatchY);
+        Assert.Equal(6, comparison.MaximumMismatchX);
+        Assert.Equal(6, comparison.MaximumMismatchY);
+    }
+
+    [Fact]
+    public void Fixed_point_coverage_without_endpoint_snapping_is_not_Chrome_exact()
+    {
+        string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png");
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
+        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeFixedPointCoverageTriangle(false));
 
         Assert.True(comparison.DimensionsMatch);
         Assert.False(comparison.IsExact);
@@ -151,7 +170,7 @@ public sealed class RasterizationResearchTests
         return new RgbaImage(8, 8, pixels);
     }
 
-    private static RgbaImage RasterizeFixedPointCoverageTriangle()
+    private static RgbaImage RasterizeFixedPointCoverageTriangle(bool snapEndpoints)
     {
         byte[] pixels = new byte[8 * 8 * 4];
         ReadOnlySpan<Point> triangle = [new(1, 1), new(7, 2), new(2, 7)];
@@ -165,7 +184,8 @@ public sealed class RasterizationResearchTests
                 polygon = Clip(polygon, y, true, false);
                 polygon = Clip(polygon, y + 1, false, false);
                 int fixedPointAlpha = (int)Math.Floor(Area(polygon) * 256);
-                byte alpha = fixedPointAlpha > 247 ? byte.MaxValue
+                byte alpha = !snapEndpoints ? (byte)Math.Min(fixedPointAlpha, byte.MaxValue)
+                    : fixedPointAlpha > 247 ? byte.MaxValue
                     : fixedPointAlpha < 8 ? byte.MinValue
                     : (byte)fixedPointAlpha;
                 if (alpha == 0) continue;
