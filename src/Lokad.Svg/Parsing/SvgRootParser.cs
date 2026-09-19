@@ -192,6 +192,7 @@ internal static class SvgRootParser
         if (fill.Equals("black", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 0, 0, 255);
         if (fill.Equals("red", StringComparison.OrdinalIgnoreCase)) return new SvgColor(255, 0, 0, 255);
         if (fill.Equals("blue", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 0, 255, 255);
+        if (fill.Equals("lime", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 255, 0, 255);
         if (TryParseFunctionalRgb(fill, out SvgColor functionalColor)) return functionalColor;
         if (TryParseFunctionalHsl(fill, out functionalColor)) return functionalColor;
         if (fill.Length == 9 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red8) && byte.TryParse(fill.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green8) && byte.TryParse(fill.AsSpan(5, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue8) && byte.TryParse(fill.AsSpan(7, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte alpha8)) return new SvgColor(red8, green8, blue8, alpha8);
