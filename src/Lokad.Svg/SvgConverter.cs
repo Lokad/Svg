@@ -156,8 +156,22 @@ public static class SvgConverter
 
         void RasterizeGeometry(SvgGeometry geometry, byte[] destination)
         {
-            if (geometry.Kind != SvgGeometryKind.Rectangle) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG scene geometry is not implemented.");
-            RasterizeRectangle(geometry.Rectangle, destination);
+            switch (geometry.Kind)
+            {
+                case SvgGeometryKind.Rectangle:
+                    RasterizeRectangle(geometry.Rectangle, destination);
+                    return;
+                case SvgGeometryKind.AxisAlignedLine:
+                    RasterizeAxisAlignedLine(geometry.AxisAlignedLine, destination);
+                    return;
+                default:
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG scene geometry is not implemented.");
+            }
+        }
+
+        void RasterizeAxisAlignedLine(SvgAxisAlignedLine line, byte[] destination)
+        {
+            if (line.IsPainted) RasterizeSolidRectangle(line.ToStrokeBand(), destination);
         }
 
         void RasterizeRectangle(SvgRectangle rectangle, byte[] destination)

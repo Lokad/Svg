@@ -26,10 +26,9 @@ internal static class SvgLeafParser
         SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(stroke, style.Color, context.InheritedPaint, context.NamedColors);
         int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
         if (strokeColor.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width line strokes are implemented.");
-        double halfWidth = strokeWidth / 2d;
         bool painted = context.InheritedDisplayed && SvgShapePresentationResolver.ParseDisplay(style.Display) && SvgShapePresentationResolver.ParseVisibility(style.Visibility, context.InheritedVisibility);
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor, opacity);
-        return SvgGeometry.FromRectangle(syntax.X1 != syntax.X2 ? new SvgRectangle(Math.Min(syntax.X1, syntax.X2), syntax.Y1 - halfWidth, Math.Abs((long)syntax.X2 - syntax.X1), strokeWidth, color, painted, null) : new SvgRectangle(syntax.X1 - halfWidth, Math.Min(syntax.Y1, syntax.Y2), strokeWidth, Math.Abs((long)syntax.Y2 - syntax.Y1), color, painted, null));
+        return SvgGeometry.FromAxisAlignedLine(new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth));
     }
 
     private static SvgStroke? ParseRectangleStroke(string? value, string? widthValue, string? currentColor, SvgPaint inheritedPaint, AxisTransform transform, double x, double y, double width, double height, byte opacity, bool hasFill, IReadOnlyDictionary<string, SvgColor> namedColors)

@@ -22,20 +22,38 @@ internal readonly record struct SvgRectangle(double X, double Y, double Width, d
 
 internal readonly record struct SvgStroke(SvgColor Color, int Width);
 
-internal enum SvgGeometryKind { Rectangle }
+/// <summary>Represents the supported axis-aligned line before backend rasterization.</summary>
+internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double X2, double Y2, SvgColor Color, bool IsPainted, int StrokeWidth)
+{
+    internal SvgRectangle ToStrokeBand()
+    {
+        double halfWidth = StrokeWidth / 2d;
+        return X1 != X2
+            ? new SvgRectangle(Math.Min(X1, X2), Y1 - halfWidth, Math.Abs(X2 - X1), StrokeWidth, Color, IsPainted, null)
+            : new SvgRectangle(X1 - halfWidth, Math.Min(Y1, Y2), StrokeWidth, Math.Abs(Y2 - Y1), Color, IsPainted, null);
+    }
+}
+
+internal enum SvgGeometryKind { Rectangle, AxisAlignedLine }
 
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
-internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle Rectangle)
+internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle Rectangle, SvgAxisAlignedLine AxisAlignedLine)
 {
-    internal static SvgGeometry FromRectangle(SvgRectangle rectangle) => new(SvgGeometryKind.Rectangle, rectangle);
+    internal static SvgGeometry FromRectangle(SvgRectangle rectangle) => new(SvgGeometryKind.Rectangle, rectangle, default);
+
+    internal static SvgGeometry FromAxisAlignedLine(SvgAxisAlignedLine line) => new(SvgGeometryKind.AxisAlignedLine, default, line);
 
     internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
     {
         SvgRectangle[] rectangles = new SvgRectangle[geometries.Length];
         for (int index = 0; index < geometries.Length; index++)
         {
-            if (geometries[index].Kind != SvgGeometryKind.Rectangle) throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains unsupported geometry.");
-            rectangles[index] = geometries[index].Rectangle;
+            rectangles[index] = geometries[index].Kind switch
+            {
+                SvgGeometryKind.Rectangle => geometries[index].Rectangle,
+                SvgGeometryKind.AxisAlignedLine => geometries[index].AxisAlignedLine.ToStrokeBand(),
+                _ => throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains unsupported geometry.")
+            };
         }
         return rectangles;
     }
@@ -51,7 +69,7 @@ internal readonly record struct SvgPoint(int X, int Y);
 internal static class SvgSceneMemory
 {
     private const int ArrayHeaderBytes = 32;
-    private const int GeometryBytes = 64;
+    private const int GeometryBytes = 128;
     private const int DrawCommandBytes = 16;
 
     internal static long GetArrayByteCount(SvgSceneArrayKind kind, int count)
