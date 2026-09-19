@@ -187,6 +187,19 @@ public sealed class PublicContractTests
         Assert.Equal(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }, png[..8].ToArray());
     }
 
+    [Theory]
+    [InlineData("<style>#path { fill: red; opacity: 0.5; }</style><path id='path' d='M 0 0 H 2 V 2 H 0 Z'/>")]
+    [InlineData("<style>.accent { stroke: red; }</style><line class='accent' x1='0' y1='1' x2='2' y2='1' stroke-width='2'/>")]
+    [InlineData("<style>#instance { opacity: 0.5; }</style><defs><rect id='tile' width='2' height='2' fill='red'/></defs><use id='instance' href='#tile'/>")]
+    public void Supported_stylesheet_and_reference_paths_reach_public_PNG_conversion(string content)
+    {
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'>" + content + "</svg>";
+
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }, png[..8].ToArray());
+    }
+
     [Fact]
     public void Empty_explicitly_sized_svg_returns_png_bytes()
     {
