@@ -115,22 +115,11 @@ internal sealed class SvgSceneBuilder : IDisposable
         _commands = new(budget, SvgSceneArrayKind.DrawCommand, workCounter, cancellationToken);
     }
 
-    internal void AddRectangle(SvgRectangle rectangle)
-        => AddGeometry(SvgGeometry.FromRectangle(rectangle));
-
     internal void AddGeometry(SvgGeometry geometry)
     {
         int geometryIndex = _geometries.Count;
         _geometries.Add(geometry);
         _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255));
-    }
-
-    internal void AddRectangles(ReadOnlySpan<SvgRectangle> rectangles)
-    {
-        int firstGeometryIndex = _geometries.Count;
-        Span<SvgGeometry> geometries = _geometries.AddUninitializedRange(rectangles.Length);
-        for (int index = 0; index < rectangles.Length; index++) geometries[index] = SvgGeometry.FromRectangle(rectangles[index]);
-        for (int index = 0; index < rectangles.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255));
     }
 
     internal void AddGeometries(ReadOnlySpan<SvgGeometry> geometries)
@@ -213,15 +202,6 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         EnsureAdditionalCapacity(items.Length);
         CopyWithCheckpoints(items, _items.AsSpan(_count));
         _count += items.Length;
-    }
-
-    internal Span<T> AddUninitializedRange(int count)
-    {
-        if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
-        EnsureAdditionalCapacity(count);
-        Span<T> items = _items.AsSpan(_count, count);
-        _count += count;
-        return items;
     }
 
     internal OwnedSceneArray<T> Detach()

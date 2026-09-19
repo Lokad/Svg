@@ -829,12 +829,12 @@ public sealed class SvgRootParserTests
     {
         SvgRectangle rectangle = new(0, 0, 1, 1, new SvgColor(0, 0, 0, 255), true, null);
         using SvgSceneBuilder limited = new(new RenderBudget(10_000), new ParserWorkCounter(1), CancellationToken.None);
-        limited.AddRectangles([rectangle]);
+        limited.AddGeometries([SvgGeometry.FromRectangle(rectangle)]);
 
         Assert.Throws<SvgException>(() => limited.Build());
 
         using SvgSceneBuilder accepted = new(new RenderBudget(10_000), new ParserWorkCounter(20), CancellationToken.None);
-        accepted.AddRectangles([rectangle]);
+        accepted.AddGeometries([SvgGeometry.FromRectangle(rectangle)]);
         using SvgSceneStorage storage = accepted.Build();
         Assert.Equal([rectangle], storage.Rectangles);
     }
