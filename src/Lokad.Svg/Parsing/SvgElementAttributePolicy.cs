@@ -5,32 +5,33 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Validates the deliberately narrow XML attribute subsets before element-specific lowering.</summary>
 internal static class SvgElementAttributePolicy
 {
-    internal static void ValidateRoot(XmlReader reader) => Validate(reader, SvgElementKind.Root, "SVG root");
+    internal static void ValidateRoot(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Root, "SVG root", workCounter, cancellationToken);
 
-    internal static void ValidateGroup(XmlReader reader) => Validate(reader, SvgElementKind.Group, "Group");
+    internal static void ValidateGroup(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Group, "Group", workCounter, cancellationToken);
 
-    internal static void ValidateRectangle(XmlReader reader) => Validate(reader, SvgElementKind.Rectangle, "Rectangle");
+    internal static void ValidateRectangle(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Rectangle, "Rectangle", workCounter, cancellationToken);
 
-    internal static void ValidateLine(XmlReader reader) => Validate(reader, SvgElementKind.Line, "Line");
+    internal static void ValidateLine(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Line, "Line", workCounter, cancellationToken);
 
-    internal static void ValidateUse(XmlReader reader) => Validate(reader, SvgElementKind.Use, "Use");
+    internal static void ValidateUse(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Use, "Use", workCounter, cancellationToken);
 
-    internal static void ValidatePath(XmlReader reader) => Validate(reader, SvgElementKind.Path, "Path");
+    internal static void ValidatePath(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Path, "Path", workCounter, cancellationToken);
 
-    internal static void ValidatePointList(XmlReader reader, string elementName) => Validate(reader, SvgElementKind.PointList, elementName);
+    internal static void ValidatePointList(XmlReader reader, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.PointList, elementName, workCounter, cancellationToken);
 
     internal static void ValidateDefinitionContainer(XmlReader reader)
     {
         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Definition container attributes are not implemented.");
     }
 
-    internal static void ValidateSymbol(XmlReader reader) => Validate(reader, SvgElementKind.Symbol, "Symbol");
+    internal static void ValidateSymbol(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Symbol, "Symbol", workCounter, cancellationToken);
 
-    private static void Validate(XmlReader reader, SvgElementKind kind, string elementName)
+    private static void Validate(XmlReader reader, SvgElementKind kind, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!reader.HasAttributes) return;
         while (reader.MoveToNextAttribute())
         {
+            workCounter.Consume(cancellationToken);
             if (IsAllowed(reader, kind)) continue;
             throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " attribute '" + reader.Name + "' is not implemented.");
         }

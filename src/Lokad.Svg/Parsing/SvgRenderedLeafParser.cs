@@ -12,16 +12,16 @@ internal static class SvgRenderedLeafParser
         switch (reader.LocalName)
         {
             case "rect":
-                SvgElementAttributePolicy.ValidateRectangle(reader);
+                SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 break;
             case "line":
-                SvgElementAttributePolicy.ValidateLine(reader);
+                SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
                 break;
             case "path":
-                SvgElementAttributePolicy.ValidatePath(reader);
+                SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
                 break;
             case "polygon" or "polyline":
-                SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName);
+                SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken);
                 break;
             default:
                 return false;

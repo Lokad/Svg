@@ -7,7 +7,7 @@ internal static class SvgGroupParser
 {
     internal static SvgParsedGroup Parse(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        SvgElementAttributePolicy.ValidateGroup(reader);
+        SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
         SvgComputedStyle style = context.ResolveStyle(reader);
         SvgResolvedContainerPresentation presentation = SvgContainerPresentationResolver.Resolve(style, context.InheritedPaint, context.InheritedDisplayed, context.InheritedVisibility, namedColors);

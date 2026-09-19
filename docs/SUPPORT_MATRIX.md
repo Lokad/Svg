@@ -32,7 +32,8 @@ Reader-provided transient attribute/style strings remain within the documented
 conservative reader allowance; this is not exact BCL-allocation accounting.
 Supported element attributes are validated before stylesheet matching, while the
 selector matcher independently enforces the identifier cap; class-selector scans
-also observe the shared parser-work limit.
+also observe the shared parser-work limit. Each attribute walked by that policy
+also consumes one work unit and checks cancellation.
 Every XML-reader event is charged to that same limit, including inert metadata and
 the root closing event.
 Opaque-background initialization and PNG's per-pixel transparent-RGB normalization
