@@ -58,6 +58,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Applies_opacity_and_display_to_rectangle_use_instances()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='1' height='1' fill='red'/></defs><use href='#tile' opacity='0.5'/><use href='#tile' display='none'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal((byte)128, root.Rectangles[0].Color.Alpha);
+        Assert.True(root.Rectangles[0].HasFill);
+        Assert.False(root.Rectangles[1].HasFill);
+    }
+
+    [Fact]
     public void Parses_fractional_rectangle_coordinates()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0.25' y='0.5' width='5.5' height='3.25'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
