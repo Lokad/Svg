@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Xml;
 using System.Text.RegularExpressions;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
@@ -159,6 +160,9 @@ internal static class SvgRootParser
         ["rebeccapurple"] = new(102, 51, 153, 255),
     };
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, CancellationToken cancellationToken)
+        => Parse(svg, limits, new RenderBudget(long.MaxValue), cancellationToken);
+
+    internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
     {
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         using ReadOnlyMemoryStream stream = new(svg);
@@ -176,7 +180,7 @@ internal static class SvgRootParser
             double? width = ParseLength(reader.GetAttribute("width"));
             double? height = ParseLength(reader.GetAttribute("height"));
             SvgViewBox? viewBox = ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
-            if (reader.IsEmptyElement) return CompleteRoot(new SvgRoot(width, height, viewBox, [], [], false));
+            if (reader.IsEmptyElement) return CompleteRoot(new SvgRoot(width, height, viewBox, [], [], false, null));
             int rootDepth = reader.Depth;
             List<SvgRectangle> rectangles = [];
             List<SvgDrawCommand> commands = [];
@@ -301,7 +305,11 @@ internal static class SvgRootParser
                             SvgRectangle rectangle = ApplyUseOffset(definition, pendingUse.Reference);
                             rectangles[pendingUse.RectangleIndex] = rectangle; commands[pendingUse.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255);
                         }
-                        if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); return CompleteRoot(new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported));
+                        if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255));
+                        long sceneBytes = SvgSceneMemory.GetArrayByteCount(rectangles.Count, commands.Count);
+                        RenderBudget.BudgetReservation? sceneReservation = sceneBytes == 0 ? null : budget.Reserve(sceneBytes, SvgMemoryCategory.Scene);
+                        try { return CompleteRoot(new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported, sceneReservation)); }
+                        catch { sceneReservation?.Dispose(); throw; }
                     }
                 }
             }
@@ -311,13 +319,17 @@ internal static class SvgRootParser
 
         SvgRoot CompleteRoot(SvgRoot root)
         {
-            while (reader.Read())
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                if (reader.NodeType is XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace) continue;
-                throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has content after its root element.");
+                while (reader.Read())
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (reader.NodeType is XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace) continue;
+                    throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has content after its root element.");
+                }
+                return root;
             }
-            return root;
+            catch { root.Dispose(); throw; }
         }
     }
 

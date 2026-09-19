@@ -13,7 +13,7 @@ public static class SvgConverter
     {
         ValidateInvocation(svg, options, cancellationToken);
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        SvgRoot root = ParseRoot(svg, options, cancellationToken);
+        using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
         using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
         return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, budget, options.Limits.MaximumEncodedPngBytes, cancellationToken);
@@ -30,7 +30,7 @@ public static class SvgConverter
     {
         ValidateInvocation(svg, options, cancellationToken);
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        SvgRoot root = ParseRoot(svg, options, cancellationToken);
+        using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
         using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
         return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, cancellationToken);
@@ -200,9 +200,9 @@ public static class SvgConverter
         }
     }
 
-    private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
+    private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
     {
-        try { return SvgRootParser.Parse(svg, options.Limits, cancellationToken); }
+        try { return SvgRootParser.Parse(svg, options.Limits, budget, cancellationToken); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
