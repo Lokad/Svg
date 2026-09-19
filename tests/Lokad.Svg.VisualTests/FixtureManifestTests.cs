@@ -199,6 +199,14 @@ public sealed class FixtureManifestTests
     }
 
     [Fact]
+    public void Exact_integer_transform_list_fixture_matches_its_admitted_chrome_reference()
+    {
+        byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "integer-transform-list.svg"));
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-integer-transform-list.png")), 8);
+        Assert.True(PixelComparer.Compare(reference, PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None), 8)).IsExact);
+    }
+
+    [Fact]
     public void Exact_fractional_overlap_fixture_matches_its_admitted_chrome_reference()
     {
         byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "fractional-overlap.svg"));
