@@ -18,7 +18,8 @@
       "background": "transparent",
       "expectedSupport": "exact",
       "expectedFidelity": "oracle-failure",
-      "oracleIdentity": null
+      "oracleIdentity": "tests/References/original-solid-red.json",
+      "referenceSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec"
     },
     {
       "id": "original-fractional-overlap",

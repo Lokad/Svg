@@ -8,6 +8,10 @@ The initial two SVGs are original CC0 probes. They have no reviewed Chrome image
 so their fidelity status is `oracle-failure`. That status is deliberately not a pass
 and must not be changed merely because a candidate renderer produces an image.
 
+`original-solid-red` has an admitted stable pinned-Chrome reference. Its candidate
+fidelity remains unclassified until the renderer output is compared through the
+exact gate; a reference artifact alone is not a renderer pass.
+
 When a Chrome reference is admitted, record the pinned browser/archive hash, platform,
 recipe revision, input/materialized hashes, resource hashes and capture options in the
 manifest and `tests/References/`. References must be generated from the original bytes;
