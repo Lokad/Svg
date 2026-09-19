@@ -189,6 +189,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Applies_id_stylesheet_rules_to_supported_paths_and_polygons()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#path { fill: red; } #polygon { fill: blue; }</style><path id='path' d='M 0 0 H 1 V 1 H 0 Z'/><polygon id='polygon' points='1,0 2,0 2,1 1,1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color));
+    }
+
+    [Fact]
     public void Inherits_group_stylesheet_paint_and_visibility()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>g { fill: red; } #hidden { display: none; }</style><g><rect width='1'/></g><g id='hidden'><rect width='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
