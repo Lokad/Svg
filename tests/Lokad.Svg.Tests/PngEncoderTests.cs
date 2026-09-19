@@ -42,15 +42,46 @@ public sealed class PngEncoderTests
     [Fact]
     public void Streams_large_png_data_in_bounded_writes()
     {
-        byte[] pixels = new byte[512 * 512 * 4];
-        uint state = 0x12345678;
-        for (int index = 0; index < pixels.Length; index++) { state = state * 1664525 + 1013904223; pixels[index] = (byte)(state >> 24); }
+        byte[] pixels = CreateHighEntropyPixels();
         using BoundedWriteStream destination = new(65_536);
 
         int written = PngEncoder.EncodeTo(512, 512, pixels, destination, new RenderBudget(long.MaxValue), int.MaxValue, CancellationToken.None);
 
         Assert.Equal(written, destination.Length);
         Assert.True(written > 65_536);
+    }
+
+    [Fact]
+    public async Task Streams_large_png_data_in_bounded_asynchronous_writes()
+    {
+        byte[] pixels = CreateHighEntropyPixels();
+        using BoundedAsyncWriteStream destination = new(65_536);
+
+        int written = await PngEncoder.EncodeToAsync(512, 512, pixels, destination, new RenderBudget(long.MaxValue), int.MaxValue, CancellationToken.None);
+
+        Assert.Equal(written, destination.Length);
+        Assert.True(written > 65_536);
+    }
+
+    [Fact]
+    public async Task Async_stream_encoding_observes_cancellation_after_output_begins()
+    {
+        using CancellationTokenSource cancellation = new();
+        using CancellingAsyncWriteStream destination = new(cancellation);
+
+        Task<int> task = PngEncoder.EncodeToAsync(1, 1, new byte[4], destination, new RenderBudget(long.MaxValue), int.MaxValue, cancellation.Token);
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await task);
+        Assert.True(task.IsCanceled);
+        Assert.Equal(8, destination.Length);
+    }
+
+    private static byte[] CreateHighEntropyPixels()
+    {
+        byte[] pixels = new byte[512 * 512 * 4];
+        uint state = 0x12345678;
+        for (int index = 0; index < pixels.Length; index++) { state = state * 1664525 + 1013904223; pixels[index] = (byte)(state >> 24); }
+        return pixels;
     }
 
     private sealed class BoundedWriteStream : Stream
@@ -80,6 +111,91 @@ public sealed class PngEncoderTests
         {
             if (buffer.Length > _maximumWriteLength) throw new InvalidOperationException("PNG stream writes must remain bounded.");
             _storage.Write(buffer);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) _storage.Dispose();
+            base.Dispose(disposing);
+        }
+    }
+
+    private sealed class BoundedAsyncWriteStream : Stream
+    {
+        private readonly MemoryStream _storage = new();
+        private readonly int _maximumWriteLength;
+
+        internal BoundedAsyncWriteStream(int maximumWriteLength) => _maximumWriteLength = maximumWriteLength;
+
+        public override bool CanRead => false;
+        public override bool CanSeek => false;
+        public override bool CanWrite => true;
+        public override long Length => _storage.Length;
+        public override long Position { get => _storage.Position; set => throw new NotSupportedException(); }
+
+        public override void Flush() { }
+
+        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
+        public override void SetLength(long value) => throw new NotSupportedException();
+
+        public override void Write(byte[] buffer, int offset, int count) => throw new InvalidOperationException("The async encoder must not use synchronous stream writes.");
+
+        public override void Write(ReadOnlySpan<byte> buffer) => throw new InvalidOperationException("The async encoder must not use synchronous stream writes.");
+
+        public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (buffer.Length > _maximumWriteLength) throw new InvalidOperationException("PNG stream writes must remain bounded.");
+            _storage.Write(buffer.Span);
+            return ValueTask.CompletedTask;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) _storage.Dispose();
+            base.Dispose(disposing);
+        }
+    }
+
+    private sealed class CancellingAsyncWriteStream : Stream
+    {
+        private readonly MemoryStream _storage = new();
+        private readonly CancellationTokenSource _cancellation;
+        private bool _hasCancelled;
+
+        internal CancellingAsyncWriteStream(CancellationTokenSource cancellation) => _cancellation = cancellation;
+
+        public override bool CanRead => false;
+        public override bool CanSeek => false;
+        public override bool CanWrite => true;
+        public override long Length => _storage.Length;
+        public override long Position { get => _storage.Position; set => throw new NotSupportedException(); }
+
+        public override void Flush() { }
+
+        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
+        public override void SetLength(long value) => throw new NotSupportedException();
+
+        public override void Write(byte[] buffer, int offset, int count) => throw new InvalidOperationException("The async encoder must not use synchronous stream writes.");
+
+        public override void Write(ReadOnlySpan<byte> buffer) => throw new InvalidOperationException("The async encoder must not use synchronous stream writes.");
+
+        public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            _storage.Write(buffer.Span);
+            if (!_hasCancelled)
+            {
+                _hasCancelled = true;
+                _cancellation.Cancel();
+            }
+            return ValueTask.CompletedTask;
         }
 
         protected override void Dispose(bool disposing)
