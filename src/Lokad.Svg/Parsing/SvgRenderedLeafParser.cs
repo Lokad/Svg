@@ -13,25 +13,25 @@ internal static class SvgRenderedLeafParser
         bool inheritedDisplayed = state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed;
         bool inheritedVisibility = state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible;
         AxisTransform transform = state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform;
-        InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken);
+        SvgPaintableElementContext context = new(inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
 
         switch (reader.LocalName)
         {
             case "rect":
-                state.Scene.AddGeometry(SvgLeafParser.ParseRectangle(reader, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, namedColors, workCounter, cancellationToken));
+                state.Scene.AddGeometry(SvgLeafParser.ParseRectangle(reader, context));
                 return true;
             case "line":
-                state.Scene.AddGeometry(SvgLeafParser.ParseLine(reader, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, namedColors, workCounter, cancellationToken));
+                state.Scene.AddGeometry(SvgLeafParser.ParseLine(reader, context));
                 return true;
             case "path":
-                using (SvgParsedGeometry path = SvgLeafParser.ParseOrthogonalPath(reader, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, limits.MaximumPathCommands - state.GeometryElementCount, budget, workCounter, cancellationToken, namedColors))
+                using (SvgParsedGeometry path = SvgLeafParser.ParseOrthogonalPath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget))
                 {
                     state.GeometryElementCount += path.ElementCount;
                     state.Scene.AddGeometries(path.Geometries);
                 }
                 return true;
             case "polygon" or "polyline":
-                using (SvgParsedGeometry pointList = SvgLeafParser.ParseOrthogonalPointList(reader, reader.LocalName, inheritedPaint, inheritedDisplayed, inheritedVisibility, transform, styleSheet, limits.MaximumPathCommands - state.GeometryElementCount, budget, workCounter, cancellationToken, namedColors))
+                using (SvgParsedGeometry pointList = SvgLeafParser.ParseOrthogonalPointList(reader, reader.LocalName, context, limits.MaximumPathCommands - state.GeometryElementCount, budget))
                 {
                     state.GeometryElementCount += pointList.ElementCount;
                     state.Scene.AddGeometries(pointList.Geometries);

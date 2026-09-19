@@ -10,7 +10,8 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth >= 0 && (reader.Depth == state.DefinitionsDepth + 1 || reader.Depth == state.SymbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
         {
             string? id = state.SymbolDepth >= 0 ? state.SymbolId : reader.GetAttribute("id");
-            SvgGeometry geometry = SvgLeafParser.ParseRectangle(reader, root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
+            SvgPaintableElementContext context = new(root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
+            SvgGeometry geometry = SvgLeafParser.ParseRectangle(reader, context);
             if (id is not null)
             {
                 workCounter.Consume(cancellationToken);
@@ -36,7 +37,8 @@ internal static class SvgDefinitionParser
         }
         if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
         {
-            SvgUseReference reference = SvgLeafParser.ParseUse(reader, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), workCounter, cancellationToken);
+            SvgPaintableElementContext context = new(root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
+            SvgUseReference reference = SvgLeafParser.ParseUse(reader, context);
             workCounter.Consume(cancellationToken);
             if (state.Definitions.TryGetValue(reference.Id, out SvgGeometry definition)) state.Scene.AddGeometry(SvgReferenceResolver.Apply(definition, reference));
             else state.PendingUses.Add(new PendingUse(state.Scene.AddReferencePlaceholder(), reference));
