@@ -87,6 +87,14 @@ $xmlWorkspaceOutput = Join-Path $ResultsDirectory "$runId-xml-workspace.png"
 $xmlWorkspace = Invoke-Probe -Name 'xml-workspace' -InputPath $xmlWorkspaceInput -Output $xmlWorkspaceOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', $xmlWorkspaceBudget.ToString())
 if ($xmlWorkspace['outcome'] -ne 'svg-error' -or $xmlWorkspace['svgErrorCode'] -ne 'LimitExceeded' -or $xmlWorkspace['inputBytes'] -ne $xmlWorkspaceBytes.ToString() -or (Test-Path -LiteralPath $xmlWorkspaceOutput)) { throw 'The XML workspace probe did not deny the input reservation before output.' }
 
+$xmlAttributeInput = Join-Path $ResultsDirectory "$runId-xml-attributes.svg"
+$xmlAttributes = (0..255 | ForEach-Object { " data-a$_=`"x`"" }) -join ''
+[IO.File]::WriteAllText($xmlAttributeInput, '<svg xmlns="http://www.w3.org/2000/svg"' + $xmlAttributes + '/>', [Text.UTF8Encoding]::new($false))
+$xmlAttributeBytes = [IO.FileInfo]::new($xmlAttributeInput).Length
+$xmlAttributeOutput = Join-Path $ResultsDirectory "$runId-xml-attributes.png"
+$xmlAttributesProbe = Invoke-Probe -Name 'xml-attributes' -InputPath $xmlAttributeInput -Output $xmlAttributeOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '131071')
+if ($xmlAttributesProbe['outcome'] -ne 'svg-error' -or $xmlAttributesProbe['svgErrorCode'] -ne 'LimitExceeded' -or $xmlAttributesProbe['inputBytes'] -ne $xmlAttributeBytes.ToString() -or (Test-Path -LiteralPath $xmlAttributeOutput)) { throw 'The XML attribute workspace probe did not deny the input reservation before output.' }
+
 $cancellationInput = Join-Path $ResultsDirectory "$runId-cancellation.svg"
 [IO.File]::WriteAllText($cancellationInput, '<svg xmlns="http://www.w3.org/2000/svg" width="4096" height="4096"><rect width="4096" height="4096" fill="red"/></svg>', [Text.UTF8Encoding]::new($false))
 $cancellationOutput = Join-Path $ResultsDirectory "$runId-cancellation.png"
