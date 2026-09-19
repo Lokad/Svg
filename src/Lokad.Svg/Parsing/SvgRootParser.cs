@@ -33,6 +33,9 @@ internal static class SvgRootParser
             List<GroupScope> groupDepths = [];
             int nodeCount = 0;
             bool unsupported = false;
+            bool sawGraphicNode = false;
+            InlineStyle rectangleStyleSheet = default;
+            bool hasRectangleStyleSheet = false;
             while (reader.Read())
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -45,20 +48,23 @@ internal static class SvgRootParser
                     if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform);
+                        SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, rectangleStyleSheet);
                         rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                        sawGraphicNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "path")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
                         SvgRectangle[] pathRectangles = ParseOrthogonalPath(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, limits.MaximumPathCommands);
                         rectangles.AddRange(pathRectangles); foreach (SvgRectangle rectangle in pathRectangles) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                        sawGraphicNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "polygon" or "polyline")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
                         SvgRectangle[] pointRectangles = ParseOrthogonalPointList(reader, reader.LocalName, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, limits.MaximumPathCommands);
                         rectangles.AddRange(pointRectangles); foreach (SvgRectangle rectangle in pointRectangles) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                        sawGraphicNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
@@ -71,6 +77,13 @@ internal static class SvgRootParser
                         bool isolatesOpacity = opacity != 255;
                         if (isolatesOpacity && (rootOpacity != 255 || groupDepths.Any(static group => group.IsolatesOpacity))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
                         if (!reader.IsEmptyElement) { if (isolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, opacity)); groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility, transform, isolatesOpacity)); }
+                    }
+                    else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
+                    {
+                        if (sawGraphicNode || hasRectangleStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede rendered content.");
+                        if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
+                        rectangleStyleSheet = ParseRectangleStyleSheet(ReadStyleElementText(reader));
+                        hasRectangleStyleSheet = true;
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
                     else if (directChild || nestedInGroup) unsupported = true;
@@ -120,7 +133,7 @@ internal static class SvgRootParser
         return ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), SvgPaint.Default);
     }
 
-    private static SvgRectangle ParseRectangle(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform)
+    private static SvgRectangle ParseRectangle(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet)
     {
         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style"));
         if (reader.HasAttributes)
@@ -142,12 +155,12 @@ internal static class SvgRootParser
         ValidateSquareCorners(reader.GetAttribute("rx"));
         ValidateSquareCorners(reader.GetAttribute("ry"));
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
-        SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), inheritedPaint);
-        ValidateFillRule(GetProperty(reader, style.FillRule, "fill-rule"));
-        ValidateStroke(GetProperty(reader, style.Stroke, "stroke"));
-        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity"));
+        SvgPaint paint = ParsePaint(GetProperty(reader, style.Fill, styleSheet.Fill, "fill"), GetProperty(reader, style.FillOpacity, styleSheet.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, styleSheet.Color, "color"), inheritedPaint);
+        ValidateFillRule(GetProperty(reader, style.FillRule, styleSheet.FillRule, "fill-rule"));
+        ValidateStroke(GetProperty(reader, style.Stroke, styleSheet.Stroke, "stroke"));
+        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, styleSheet.Opacity, "opacity"));
         SvgColor color = new(paint.Color.Red, paint.Color.Green, paint.Color.Blue, MultiplyAlpha(paint.Color.Alpha, opacity));
-        return new SvgRectangle(x, y, width, height, color, paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility));
+        return new SvgRectangle(x, y, width, height, color, paint.HasFill && inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, styleSheet.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, styleSheet.Visibility, "visibility"), inheritedVisibility));
     }
 
     private static SvgRectangle[] ParseOrthogonalPath(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, int maximumGeometryElements)
@@ -265,6 +278,8 @@ internal static class SvgRootParser
 
     private static string? GetProperty(XmlReader reader, string? inlineValue, string name) => inlineValue ?? reader.GetAttribute(name);
 
+    private static string? GetProperty(XmlReader reader, string? inlineValue, string? styleSheetValue, string name) => inlineValue ?? styleSheetValue ?? reader.GetAttribute(name);
+
     private static AxisTransform ParseTransform(string? value)
     {
         if (value is null) return AxisTransform.Identity;
@@ -329,6 +344,20 @@ internal static class SvgRootParser
             }
         }
         return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
+    }
+
+    private static InlineStyle ParseRectangleStyleSheet(string value)
+    {
+        Match match = Regex.Match(value, @"^\s*rect\s*\{(?<declarations>[^{}]*)\}\s*$", RegexOptions.IgnoreCase);
+        if (!match.Success) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one rect type-selector stylesheet rule is implemented.");
+        return ParseInlineStyle(match.Groups["declarations"].Value);
+    }
+
+    private static string ReadStyleElementText(XmlReader reader)
+    {
+        using XmlReader subtree = reader.ReadSubtree();
+        subtree.Read();
+        return subtree.ReadElementContentAsString();
     }
 
     private static SvgPaint ParsePaint(string? fill, string? opacity, string? currentColor, SvgPaint inheritedPaint)

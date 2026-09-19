@@ -4,9 +4,9 @@ Lokad.Svg is a pure-managed .NET SVG-to-PNG renderer being built in staged,
 explicitly supported subsets. The current subset renders explicitly sized empty
 SVGs and integer-aligned `rect` layers with bounded root/group/link structure,
 inherited paint/visibility/display, source-over composition, caller-provided
-backgrounds, and managed PNG output. It deliberately rejects fractional coverage,
-paths, real strokes, transforms, CSS stylesheets, gradients, images, filters and
-text; see the support matrix for exact accepted syntax.
+backgrounds, and managed PNG output. It deliberately rejects broad CSS stylesheets,
+gradients, images, filters and text; see the support matrix for the exact accepted
+syntax, including its deliberately narrow root-level `rect` stylesheet rule.
 All other visible behavior fails explicitly rather than being silently dropped.
 
 See [PLAN.md](PLAN.md) for the product contract and implementation roadmap, and

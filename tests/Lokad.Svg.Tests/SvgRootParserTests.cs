@@ -50,6 +50,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Applies_a_preceding_rect_stylesheet_rule_below_inline_style_and_above_presentation_attributes()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; fill-opacity: 0.5; }</style><rect width='1'/><rect width='1' fill='red'/><rect width='1' style='fill: lime'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 128), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 128), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 128), rectangle.Color));
+    }
+
+    [Fact]
     public void Rejects_uncalibrated_non_quarter_rectangle_coordinates()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0.1' width='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

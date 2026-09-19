@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3" height="1">
+  <style>rect { fill: blue; fill-opacity: 0.5; }</style>
+  <rect width="1" height="1"/>
+  <rect x="1" width="1" height="1" fill="red"/>
+  <rect x="2" width="1" height="1" style="fill: lime"/>
+</svg>
