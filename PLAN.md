@@ -39,6 +39,8 @@ as well as syntax-specific scans.
 Root and group presentation now share `SvgContainerPresentationResolver`, which
 turns their computed style and inherited context into typed paint, display,
 visibility and opacity state before their separate traversal roles continue.
+A direct resolver characterization locks `currentColor`, fill opacity, display,
+visibility and element-opacity results independently of XML traversal.
 Rendered-leaf and definition routing is now the sole `SvgElementAttributePolicy`
 boundary for rectangle, line, path, point-list and local-`use` lowerers; those
 lowerers accept only policy-validated XML and no longer repeat the attribute walk.
@@ -124,7 +126,7 @@ review.
 
 ### Current local verification (2026-09-20)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 224 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 225 unit tests
 and 72 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
