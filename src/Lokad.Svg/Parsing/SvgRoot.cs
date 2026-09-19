@@ -62,6 +62,9 @@ internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle R
     }
 }
 
+/// <summary>Retains one local definition's typed geometry and the narrow instance-style override capability.</summary>
+internal readonly record struct SvgDefinition(SvgGeometry Geometry, bool AllowsInstanceFillOverride);
+
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
 /// <summary>References retained scene geometry or marks an opacity-scope boundary.</summary>

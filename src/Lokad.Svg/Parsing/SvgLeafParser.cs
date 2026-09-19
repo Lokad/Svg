@@ -5,6 +5,9 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgLeafParser
 {
     internal static SvgGeometry ParseRectangle(XmlReader reader, SvgPaintableElementContext context)
+        => ParseRectangleWithStyle(reader, context).Geometry;
+
+    internal static SvgParsedRectangle ParseRectangleWithStyle(XmlReader reader, SvgPaintableElementContext context)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
@@ -12,7 +15,7 @@ internal static class SvgLeafParser
         SvgResolvedShapePresentation presentation = context.ResolvePresentation(style, true);
         SvgRectangle rectangle = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, presentation.Color, presentation.HasFill, null));
         SvgStroke? stroke = ParseRectangleStroke(presentation.Style.Stroke, syntax.StrokeWidth, presentation.Style.Color, context.InheritedPaint, transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, presentation.Opacity, rectangle.HasFill, context.NamedColors);
-        return SvgGeometry.FromRectangle(rectangle with { Stroke = presentation.IsPainted ? stroke : null });
+        return new SvgParsedRectangle(SvgGeometry.FromRectangle(rectangle with { Stroke = presentation.IsPainted ? stroke : null }), style);
     }
 
     internal static SvgGeometry ParseLine(XmlReader reader, SvgPaintableElementContext context)
@@ -41,3 +44,6 @@ internal static class SvgLeafParser
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(color, opacity), strokeWidth);
     }
 }
+
+/// <summary>Pairs a lowered rectangle with the specified style that determines whether a use instance may supply fill.</summary>
+internal readonly record struct SvgParsedRectangle(SvgGeometry Geometry, SvgComputedStyle Style);

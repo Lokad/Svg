@@ -48,7 +48,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.Group => reader.LocalName is "id" or "class" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform",
             SvgElementKind.Rectangle => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform",
             SvgElementKind.Line => reader.LocalName is "id" or "class" or "x1" or "y1" or "x2" or "y2" or "color" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform",
-            SvgElementKind.Use => reader.LocalName is "id" or "class" or "href" or "x" or "y" or "transform" or "opacity" or "display" or "visibility" or "style",
+            SvgElementKind.Use => reader.LocalName is "id" or "class" or "href" or "x" or "y" or "transform" or "fill" or "opacity" or "display" or "visibility" or "style",
             SvgElementKind.Path => reader.LocalName is "id" or "class" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform",
             SvgElementKind.PointList => reader.LocalName is "id" or "class" or "points" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform",
             SvgElementKind.Symbol => reader.LocalName == "id",

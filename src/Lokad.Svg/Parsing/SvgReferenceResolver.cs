@@ -1,7 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents a parsed direct local use reference before its target is resolved.</summary>
-internal readonly record struct SvgUseReference(string Id, double X, double Y, AxisTransform Transform, byte Opacity, bool IsPainted);
+internal readonly record struct SvgUseReference(string Id, double X, double Y, AxisTransform Transform, byte Opacity, bool IsPainted, SvgPaint? FillOverride);
 
 /// <summary>Records the placeholders that must be replaced when a forward local use reference resolves.</summary>
 internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference);
@@ -9,13 +9,24 @@ internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Re
 /// <summary>Applies typed local references through their geometry-specific supported transforms.</summary>
 internal static class SvgReferenceResolver
 {
-    internal static SvgGeometry Apply(SvgGeometry geometry, SvgUseReference reference)
-        => geometry.Kind switch
+    internal static SvgGeometry Apply(SvgDefinition definition, SvgUseReference reference)
+    {
+        SvgGeometry geometry = ApplyInstanceFill(definition, reference);
+        return geometry.Kind switch
         {
             SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(ApplyRectangle(geometry.Rectangle, reference)),
             SvgGeometryKind.AxisAlignedLine => SvgGeometry.FromAxisAlignedLine(ApplyAxisAlignedLine(geometry.AxisAlignedLine, reference)),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.")
         };
+    }
+
+    private static SvgGeometry ApplyInstanceFill(SvgDefinition definition, SvgUseReference reference)
+    {
+        if (reference.FillOverride is null) return definition.Geometry;
+        if (definition.Geometry.Kind != SvgGeometryKind.Rectangle || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible rectangle definition.");
+        SvgPaint fill = reference.FillOverride.Value;
+        return SvgGeometry.FromRectangle(definition.Geometry.Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill });
+    }
 
     private static SvgRectangle ApplyRectangle(SvgRectangle rectangle, SvgUseReference reference)
     {
@@ -31,13 +42,13 @@ internal static class SvgReferenceResolver
         return transformed with { Color = new SvgColor(transformed.Color.Red, transformed.Color.Green, transformed.Color.Blue, MultiplyAlpha(transformed.Color.Alpha, reference.Opacity)), IsPainted = transformed.IsPainted && reference.IsPainted };
     }
 
-    internal static void ResolvePendingUses(BudgetedParserDictionary<string, SvgGeometry> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void ResolvePendingUses(BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         for (int pendingUseIndex = 0; pendingUseIndex < pendingUses.Count; pendingUseIndex++)
         {
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
-            if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgGeometry definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
+            if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
             scene.Replace(pendingUse.Slot, Apply(definition, pendingUse.Reference));
         }
     }

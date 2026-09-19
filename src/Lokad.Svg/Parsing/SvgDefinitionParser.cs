@@ -11,11 +11,11 @@ internal static class SvgDefinitionParser
         {
             string? id = state.SymbolDepth >= 0 ? state.SymbolId : reader.GetAttribute("id");
             SvgPaintableElementContext context = new(root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
-            SvgGeometry geometry = reader.LocalName == "rect" ? SvgLeafParser.ParseRectangle(reader, context) : SvgLeafParser.ParseLine(reader, context);
+            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context) : new SvgDefinition(SvgLeafParser.ParseLine(reader, context), false);
             if (id is not null)
             {
                 workCounter.Consume(cancellationToken);
-                if (!state.Definitions.TryAdd(id, geometry)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                if (!state.Definitions.TryAdd(id, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             }
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
@@ -40,12 +40,18 @@ internal static class SvgDefinitionParser
             SvgPaintableElementContext context = new(root.Paint, root.IsDisplayed, root.IsVisible, AxisTransform.Identity, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken);
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context);
             workCounter.Consume(cancellationToken);
-            if (state.Definitions.TryGetValue(reference.Id, out SvgGeometry definition)) state.Scene.AddGeometry(SvgReferenceResolver.Apply(definition, reference));
+            if (state.Definitions.TryGetValue(reference.Id, out SvgDefinition definition)) state.Scene.AddGeometry(SvgReferenceResolver.Apply(definition, reference));
             else state.PendingUses.Add(new PendingUse(state.Scene.AddReferencePlaceholder(), reference));
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
             return true;
         }
         return false;
+    }
+
+    private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context)
+    {
+        SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
+        return new SvgDefinition(parsed.Geometry, parsed.Geometry.Rectangle.HasFill && parsed.Style == default);
     }
 }
