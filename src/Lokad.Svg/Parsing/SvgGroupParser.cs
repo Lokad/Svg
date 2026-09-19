@@ -8,7 +8,7 @@ internal static class SvgGroupParser
     internal static SvgParsedGroup Parse(XmlReader reader, bool directChild, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken);
-        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken), styleSheet);
+        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, styleSheet, workCounter, cancellationToken);
         SvgElementAttributePolicy.ValidateGroup(reader);
         if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
         SvgShapePresentationResolver.ValidateStroke(style.Stroke);
