@@ -206,18 +206,13 @@ internal static class SvgRootParser
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
-                        InlineStyle styleSheet = GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken);
-                        SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, state.Groups.Count == 0 ? root.Paint : state.Groups[^1].Paint, state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible, state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform, styleSheet, CssNamedColors, workCounter, cancellationToken);
+                        SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, directChild, state.Groups.Count == 0 ? root.Paint : state.Groups[^1].Paint, state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible, state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform, state.StyleRules, state.Groups, CssNamedColors, workCounter, cancellationToken);
                         if (parsedGroup.Scope.IsolatesOpacity && (root.Opacity != 255 || state.Groups.Any(static current => current.IsolatesOpacity))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
                         if (!reader.IsEmptyElement) { if (parsedGroup.Scope.IsolatesOpacity) state.Scene.BeginOpacityScope(parsedGroup.Opacity); state.Groups.Add(parsedGroup.Scope); }
                     }
                     else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                     {
-                        if (state.SawStyleableNode || state.HasStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede supported definitions and rendered content.");
-                        if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
-                        ParseRectangleStyleSheet(ReadStyleElementText(reader), limits.MaximumNodes, state.StyleRules, workCounter, cancellationToken);
-                        if (SvgStyleSheet.TargetsRootId(root.Id, state.StyleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
-                        state.HasStyleSheet = true;
+                        SvgRootStyleSheetParser.Parse(reader, root, state, limits.MaximumNodes, workCounter, cancellationToken);
                     }
                     else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "style" or "script" or "animate" or "animateMotion" or "animateTransform" or "set") state.HasUnsupportedContent = true;
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
@@ -265,14 +260,5 @@ internal static class SvgRootParser
     }
 
     private static long GetXmlReaderWorkspaceBytes(int inputBytes) => Math.Max(MinimumXmlReaderWorkspaceBytes, checked((long)inputBytes * 2));
-
-    private static void ParseRectangleStyleSheet(string value, int maximumRules, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => SvgStyleSheet.Parse(value, maximumRules, rules, workCounter, cancellationToken);
-
-    private static InlineStyle GetStyleSheet(XmlReader reader, BudgetedParserList<CssRule> rules, bool directChild, BudgetedParserList<SvgGroupScope> groupDepths, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => SvgStyleSheet.Resolve(reader, rules, directChild, groupDepths.Any(static group => group.Name == "g"), groupDepths.Count > 0 && groupDepths[^1].Name == "g", workCounter, cancellationToken);
-
-    private static string ReadStyleElementText(XmlReader reader)
-        => SvgStyleSheet.ReadElementText(reader);
 
 }
