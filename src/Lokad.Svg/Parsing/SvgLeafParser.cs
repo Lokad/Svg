@@ -15,14 +15,13 @@ internal static class SvgLeafParser
         double width = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("width") ?? "0");
         double height = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("height") ?? "0");
         AxisTransform transform = inheritedTransform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
-        x = transform.ScaleX * x + transform.OffsetX; y = transform.ScaleY * y + transform.OffsetY;
-        width = transform.ScaleX * width; height = transform.ScaleY * height;
         ValidateSquareCorners(reader.GetAttribute("rx"));
         ValidateSquareCorners(reader.GetAttribute("ry"));
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
         SvgResolvedShapePresentation presentation = SvgShapePresentationResolver.Resolve(style, inheritedPaint, inheritedDisplayed, inheritedVisibility, true, namedColors);
-        SvgStroke? stroke = ParseRectangleStroke(presentation.Style.Stroke, reader.GetAttribute("stroke-width"), presentation.Style.Color, inheritedPaint, transform, x, y, width, height, presentation.Opacity, presentation.Paint.HasFill, namedColors);
-        return SvgGeometry.FromRectangle(new SvgRectangle(x, y, width, height, presentation.Color, presentation.HasFill, presentation.IsPainted ? stroke : null));
+        SvgRectangle rectangle = transform.Apply(new SvgRectangle(x, y, width, height, presentation.Color, presentation.HasFill, null));
+        SvgStroke? stroke = ParseRectangleStroke(presentation.Style.Stroke, reader.GetAttribute("stroke-width"), presentation.Style.Color, inheritedPaint, transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, presentation.Opacity, rectangle.HasFill, namedColors);
+        return SvgGeometry.FromRectangle(rectangle with { Stroke = presentation.IsPainted ? stroke : null });
     }
 
     internal static SvgGeometry ParseLine(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)

@@ -1,25 +1,5 @@
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Represents the calibrated integer transform subset shared by parsed geometry and local references.</summary>
-internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int OffsetX, int OffsetY)
-{
-    internal static AxisTransform Identity { get; } = new(1, 1, 0, 0);
-
-    internal AxisTransform Compose(AxisTransform child) => new(Multiply(ScaleX, child.ScaleX), Multiply(ScaleY, child.ScaleY), Offset(ScaleX, child.OffsetX, OffsetX), Offset(ScaleY, child.OffsetY, OffsetY));
-
-    private static int Multiply(int left, int right)
-    {
-        try { return checked(left * right); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
-    }
-
-    private static int Offset(int scale, int value, int offset)
-    {
-        try { return checked(scale * value + offset); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
-    }
-}
-
 /// <summary>Represents a parsed direct local use reference before its target is resolved.</summary>
 internal readonly record struct SvgUseReference(string Id, double X, double Y, AxisTransform Transform, byte Opacity, bool IsPainted);
 
@@ -39,7 +19,8 @@ internal static class SvgReferenceResolver
     private static SvgRectangle ApplyRectangle(SvgRectangle rectangle, SvgUseReference reference)
     {
         if (rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
-        return rectangle with { X = reference.Transform.ScaleX * (rectangle.X + reference.X) + reference.Transform.OffsetX, Y = reference.Transform.ScaleY * (rectangle.Y + reference.Y) + reference.Transform.OffsetY, Width = reference.Transform.ScaleX * rectangle.Width, Height = reference.Transform.ScaleY * rectangle.Height, Color = new SvgColor(rectangle.Color.Red, rectangle.Color.Green, rectangle.Color.Blue, MultiplyAlpha(rectangle.Color.Alpha, reference.Opacity)), HasFill = rectangle.HasFill && reference.IsPainted };
+        SvgRectangle transformed = reference.Transform.Apply(rectangle with { X = rectangle.X + reference.X, Y = rectangle.Y + reference.Y });
+        return transformed with { Color = new SvgColor(transformed.Color.Red, transformed.Color.Green, transformed.Color.Blue, MultiplyAlpha(transformed.Color.Alpha, reference.Opacity)), HasFill = transformed.HasFill && reference.IsPainted };
     }
 
     internal static void ResolvePendingUses(BudgetedParserDictionary<string, SvgGeometry> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, ParserWorkCounter workCounter, CancellationToken cancellationToken)
