@@ -196,10 +196,14 @@ public sealed class PublicContractTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
-    [Fact]
-    public void Active_definition_content_is_rejected_before_it_can_be_ignored()
+    [Theory]
+    [InlineData("<defs><style>rect { fill: red; }</style></defs>")]
+    [InlineData("<metadata><style>rect { fill: red; }</style></metadata>")]
+    public void Active_content_outside_the_supported_root_stylesheet_is_rejected_before_it_can_be_ignored(string content)
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><style>rect { fill: red; }</style></defs><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'>" + content + "<rect width='1' height='1'/></svg>";
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }

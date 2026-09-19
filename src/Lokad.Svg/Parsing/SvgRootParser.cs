@@ -257,7 +257,6 @@ internal static class SvgRootParser
                         sawStyleableNode = true;
                     }
                     else if (symbolDepth >= 0 && reader.Depth > symbolDepth) unsupported = true;
-                    else if (definitionsDepth >= 0 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "style" or "script" or "animate" or "animateMotion" or "animateTransform" or "set") unsupported = true;
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
@@ -318,6 +317,7 @@ internal static class SvgRootParser
                         if (SvgStyleSheet.TargetsRootId(rootId, rectangleStyleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
                         hasRectangleStyleSheet = true;
                     }
+                    else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "style" or "script" or "animate" or "animateMotion" or "animateTransform" or "set") unsupported = true;
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
                     else if (directChild || nestedInGroup) unsupported = true;
                 }
