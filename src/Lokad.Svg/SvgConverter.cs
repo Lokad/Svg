@@ -77,10 +77,14 @@ public static class SvgConverter
         foreach (SvgRectangle rectangle in root.Rectangles)
         {
             if (!rectangle.HasFill) continue;
-            for (int y = Math.Max(0, rectangle.Y); y < Math.Min(outputHeight, checked(rectangle.Y + rectangle.Height)); y++)
+            int startY = (int)Math.Max(0L, rectangle.Y);
+            int endY = (int)Math.Clamp((long)rectangle.Y + rectangle.Height, 0L, outputHeight);
+            int startX = (int)Math.Max(0L, rectangle.X);
+            int endX = (int)Math.Clamp((long)rectangle.X + rectangle.Width, 0L, outputWidth);
+            for (int y = startY; y < endY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
-            for (int x = Math.Max(0, rectangle.X); x < Math.Min(outputWidth, checked(rectangle.X + rectangle.Width)); x++)
+            for (int x = startX; x < endX; x++)
             {
                 int offset = (y * outputWidth + x) * 4;
                 BlendSourceOver(pixels.AsSpan(offset, 4), rectangle.Color);
