@@ -68,7 +68,7 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "fill" or "fill-opacity" or "display" or "visibility") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "fill" or "fill-opacity" or "display" or "visibility") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -83,7 +83,7 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "width" or "height" or "fill" or "fill-opacity" or "display" or "visibility") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "width" or "height" or "fill" or "fill-opacity" or "display" or "visibility") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG root attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -97,7 +97,7 @@ internal static class SvgRootParser
         {
             while (reader.MoveToNextAttribute())
             {
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "x" or "y" or "width" or "height" or "fill" or "fill-opacity" or "opacity" or "display" or "visibility") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "fill" or "fill-opacity" or "opacity" or "display" or "visibility") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
