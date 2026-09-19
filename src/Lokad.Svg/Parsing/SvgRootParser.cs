@@ -1104,10 +1104,17 @@ internal static class SvgRootParser
             if (preserveAspectRatio is not null) ParsePreserveAspectRatio(preserveAspectRatio);
             return null;
         }
-        string[] values = value.Split([',', ' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (values.Length != 4 || !double.TryParse(values[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double x) || !double.TryParse(values[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double y) || !double.TryParse(values[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double width) || !double.TryParse(values[3], NumberStyles.Float, CultureInfo.InvariantCulture, out double height) || !double.IsFinite(x) || !double.IsFinite(y) || !double.IsFinite(width) || !double.IsFinite(height) || width <= 0 || height <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
+        Span<double> values = stackalloc double[4];
+        int valueCount = 0;
+        DelimitedTokenReader tokens = new(value);
+        while (tokens.TryReadValue(out ReadOnlySpan<char> token))
+        {
+            if (valueCount == values.Length || !double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out values[valueCount])) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
+            valueCount++;
+        }
+        if (valueCount != 4 || !double.IsFinite(values[0]) || !double.IsFinite(values[1]) || !double.IsFinite(values[2]) || !double.IsFinite(values[3]) || values[2] <= 0 || values[3] <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
         (SvgViewBoxAlignment horizontalAlignment, SvgViewBoxAlignment verticalAlignment, SvgViewBoxFit fit) = ParsePreserveAspectRatio(preserveAspectRatio);
-        return new SvgViewBox(x, y, width, height, horizontalAlignment, verticalAlignment, fit);
+        return new SvgViewBox(values[0], values[1], values[2], values[3], horizontalAlignment, verticalAlignment, fit);
     }
 
     private static (SvgViewBoxAlignment HorizontalAlignment, SvgViewBoxAlignment VerticalAlignment, SvgViewBoxFit Fit) ParsePreserveAspectRatio(string? value)
