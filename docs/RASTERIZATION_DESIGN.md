@@ -83,6 +83,17 @@ so replacing nearest alpha rounding with one global floor or ceiling rule cannot
 explain the reference. This is evidence for a device-space edge-quantization
 hypothesis, not proof of any particular Chromium/Skia implementation.
 
+## Calibration source pin
+
+The Chromium `153.0.8010.52` tag used by the retained Windows recipe pins
+[`third_party/skia`](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c)
+to `f8b66b7597c4cc859d3ed190e9c6872241e6721c` in its
+[`DEPS`](https://chromium.googlesource.com/chromium/src.git/+/refs/tags/153.0.8010.52/DEPS).
+This selects the source revision for any backend investigation. It does not
+establish which Chromium path rendered SVG, its runtime configuration, or the
+cause of a pixel difference; a candidate rule still has to match the retained
+probes exactly.
+
 ## Path-heavy illustration classification
 
 [Tiger, Telemachos, Openclipart 16551](../tests/Research/tiger-16551.svg) is the
