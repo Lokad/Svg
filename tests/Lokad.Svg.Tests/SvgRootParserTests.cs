@@ -714,6 +714,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_the_work_limit_while_resolving_forward_use_references()
+    {
+        SvgRenderLimits limits = new(1_000_000, 1_000_000, 16, 16, 1_000_000, 16, 16, 1);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#tile'/><use href='#tile'/><defs><rect id='tile' width='1' height='1'/></defs></svg>"u8.ToArray(), limits, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_work_limit_while_matching_stylesheet_rules()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 1);

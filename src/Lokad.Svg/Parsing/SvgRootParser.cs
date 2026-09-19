@@ -326,7 +326,7 @@ internal static class SvgRootParser
                     if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveLast(); if (group.IsolatesOpacity) scene.EndOpacityScope(); }
                     if (reader.Depth == rootDepth)
                     {
-                        SvgReferenceResolver.ResolvePendingUses(definitions, pendingUses, scene);
+                        SvgReferenceResolver.ResolvePendingUses(definitions, pendingUses, scene, workCounter, cancellationToken);
                         if (rootOpacity != 255) scene.EndOpacityScope();
                         SvgSceneStorage sceneStorage = scene.Build();
                         try { return CompleteRoot(new SvgRoot(width, height, viewBox, sceneStorage.Rectangles, sceneStorage.Commands, unsupported, workCounter.Used, sceneStorage)); }

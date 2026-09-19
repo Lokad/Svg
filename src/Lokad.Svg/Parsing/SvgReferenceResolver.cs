@@ -35,10 +35,11 @@ internal static class SvgReferenceResolver
         return rectangle with { X = reference.Transform.ScaleX * (rectangle.X + reference.X) + reference.Transform.OffsetX, Y = reference.Transform.ScaleY * (rectangle.Y + reference.Y) + reference.Transform.OffsetY, Width = reference.Transform.ScaleX * rectangle.Width, Height = reference.Transform.ScaleY * rectangle.Height, Color = new SvgColor(rectangle.Color.Red, rectangle.Color.Green, rectangle.Color.Blue, MultiplyAlpha(rectangle.Color.Alpha, reference.Opacity)), HasFill = rectangle.HasFill && reference.IsPainted };
     }
 
-    internal static void ResolvePendingUses(BudgetedParserDictionary<string, SvgRectangle> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene)
+    internal static void ResolvePendingUses(BudgetedParserDictionary<string, SvgRectangle> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         for (int pendingUseIndex = 0; pendingUseIndex < pendingUses.Count; pendingUseIndex++)
         {
+            workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgRectangle definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local rectangle use references are implemented.");
             SvgRectangle rectangle = Apply(definition, pendingUse.Reference);
