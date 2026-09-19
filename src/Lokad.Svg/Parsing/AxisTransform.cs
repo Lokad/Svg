@@ -16,6 +16,10 @@ internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int Offset
         Height = ScaleY * rectangle.Height
     };
 
+    /// <summary>Applies this transform to an integer orthogonal band while preserving its checked coordinate range.</summary>
+    internal SvgRectangle ApplyOrthogonalRectangle(int x, int y, long width, long height, SvgColor color, bool hasFill)
+        => new(ApplyCoordinate(ScaleX, x, OffsetX), ApplyCoordinate(ScaleY, y, OffsetY), ApplyExtent(ScaleX, width), ApplyExtent(ScaleY, height), color, hasFill, null);
+
     private static int Multiply(int left, int right)
     {
         try { return checked(left * right); }
@@ -25,6 +29,14 @@ internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int Offset
     private static int Offset(int scale, int value, int offset)
     {
         try { return checked(scale * value + offset); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+    }
+
+    private static int ApplyCoordinate(int scale, int value, int offset) => Offset(scale, value, offset);
+
+    private static double ApplyExtent(int scale, long value)
+    {
+        try { return checked((long)scale * value); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
     }
 }

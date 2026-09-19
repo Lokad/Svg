@@ -5,24 +5,6 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses the bounded numeric, transform, viewport, and viewBox syntax shared by supported geometry.</summary>
 internal static class SvgGeometrySyntax
 {
-    internal static int ApplyTransform(int scale, int value, int offset)
-    {
-        try { return checked(scale * value + offset); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
-    }
-
-    internal static int ApplyTransformScale(int scale, int value)
-    {
-        try { return checked(scale * value); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
-    }
-
-    internal static double ApplyTransformScale(int scale, long value)
-    {
-        try { return checked((long)scale * value); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
-    }
-
     internal static AxisTransform ParseTransform(string? value)
     {
         if (value is null) return AxisTransform.Identity;

@@ -75,7 +75,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 int left = _intersections[intersectionIndex]; int right = _intersections[intersectionIndex + 1];
                 if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
                 if (_geometryElementCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path rectangle-band count exceeds the configured path-command limit." : _elementName + " rectangle-band count exceeds the configured path-command limit.");
-                _geometries.Add(SvgGeometry.FromRectangle(new SvgRectangle(SvgGeometrySyntax.ApplyTransform(transform.ScaleX, left, transform.OffsetX), SvgGeometrySyntax.ApplyTransform(transform.ScaleY, top, transform.OffsetY), SvgGeometrySyntax.ApplyTransformScale(transform.ScaleX, (long)right - left), SvgGeometrySyntax.ApplyTransformScale(transform.ScaleY, (long)bottom - top), color, hasFill, null)));
+                _geometries.Add(SvgGeometry.FromRectangle(transform.ApplyOrthogonalRectangle(left, top, (long)right - left, (long)bottom - top, color, hasFill)));
                 _geometryElementCount++;
             }
         }
