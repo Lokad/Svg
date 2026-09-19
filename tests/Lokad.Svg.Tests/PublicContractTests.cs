@@ -190,7 +190,7 @@ public sealed class PublicContractTests
     }
 
     [Theory]
-    [InlineData("<style>#path { fill: red; opacity: 0.5; }</style><path id='path' d='M 0 0 H 2 V 2 H 0 Z'/>")]
+    [InlineData("<style>.path { fill: red; opacity: 0.5; }</style><path class='path' d='M 0 0 H 2 V 2 H 0 Z'/>")]
     [InlineData("<style>.accent { stroke: red; }</style><line class='accent' x1='0' y1='1' x2='2' y2='1' stroke-width='2'/>")]
     [InlineData("<style>#instance { opacity: 0.5; }</style><defs><rect id='tile' width='2' height='2' fill='red'/></defs><use id='instance' href='#tile'/>")]
     public void Supported_stylesheet_and_reference_paths_reach_public_PNG_conversion(string content)

@@ -270,6 +270,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Applies_class_stylesheet_rules_to_supported_paths_and_point_lists()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>.path { fill: red; } .polygon { fill: blue; } .polyline { fill: lime; }</style><path class='path' d='M 0 0 H 1 V 1 H 0 Z'/><polygon class='polygon' points='1,0 2,0 2,1 1,1'/><polyline class='polyline' points='2,0 3,0 3,1 2,1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 255), rectangle.Color));
+    }
+
+    [Fact]
     public void Applies_stylesheet_opacity_to_supported_paths()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#path { fill: red; opacity: 0.5; }</style><path id='path' d='M 0 0 H 1 V 1 H 0 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
