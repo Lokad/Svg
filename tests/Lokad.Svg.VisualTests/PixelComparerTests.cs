@@ -204,6 +204,14 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
+    public void Extreme_orthogonal_path_coordinates_preserve_visible_coverage()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><path d='M -2147483648,0 H 2147483647 V 1 H -2147483648 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        Assert.Equal(new byte[] { 255, 0, 0, 255 }, PngRgbaDecoder.Decode(png, 1).Pixels);
+    }
+
+    [Fact]
     public void Comma_form_rgb_and_rgba_colors_are_supported()
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'><rect width='1' height='1' fill='rgb(1, 2, 3)'/><rect x='1' width='1' height='1' fill='rgba(4,5,6,0.5)'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();

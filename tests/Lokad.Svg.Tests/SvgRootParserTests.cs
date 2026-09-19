@@ -347,6 +347,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Preserves_the_full_extent_of_extreme_orthogonal_path_coordinates()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M -2147483648,0 H 2147483647 V 1 H -2147483648 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(-2_147_483_648, root.Rectangles[0].X);
+        Assert.Equal(4_294_967_295d, root.Rectangles[0].Width);
+    }
+
+    [Fact]
     public void Applies_integer_translate_transforms_through_nested_groups()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(1, 2)'><g transform='translate(3)'><rect x='4' y='5' width='1' height='1' transform='translate(-1, 2)'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
