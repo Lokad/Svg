@@ -256,6 +256,7 @@ internal static class SvgRootParser
                         unsupported |= !reader.IsEmptyElement;
                         sawStyleableNode = true;
                     }
+                    else if (symbolDepth >= 0 && reader.Depth > symbolDepth) unsupported = true;
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
