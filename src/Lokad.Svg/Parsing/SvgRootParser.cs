@@ -106,8 +106,8 @@ internal static class SvgRootParser
         }
         int x = ParseInteger(reader.GetAttribute("x") ?? "0");
         int y = ParseInteger(reader.GetAttribute("y") ?? "0");
-        int width = ParseInteger(reader.GetAttribute("width") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle width is required."));
-        int height = ParseInteger(reader.GetAttribute("height") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle height is required."));
+        int width = ParseInteger(reader.GetAttribute("width") ?? "0");
+        int height = ParseInteger(reader.GetAttribute("height") ?? "0");
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
         SvgPaint paint = ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), inheritedPaint);
         byte opacity = ParseOpacity(reader.GetAttribute("opacity"));
