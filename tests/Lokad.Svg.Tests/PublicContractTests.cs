@@ -26,6 +26,17 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Encoding_stops_before_exceeding_the_configured_png_limit()
+    {
+        SvgRenderLimits limits = new(1024, 1024, 16, 16, 1, 16, 16, 16);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Converter_methods_require_all_parameters()
     {
         MethodInfo[] methods = typeof(SvgConverter).GetMethods(BindingFlags.Public | BindingFlags.Static);

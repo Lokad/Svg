@@ -15,7 +15,7 @@ public static class SvgConverter
         SvgRoot root = ParseRoot(svg, options, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
         RasterizedSurface surface = Rasterize(root, options, cancellationToken);
-        return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, cancellationToken);
+        return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, options.Limits.MaximumEncodedPngBytes, cancellationToken);
     }
 
     /// <summary>Schedules one conversion on the thread pool.</summary>
@@ -31,7 +31,7 @@ public static class SvgConverter
         SvgRoot root = ParseRoot(svg, options, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
         RasterizedSurface surface = Rasterize(root, options, cancellationToken);
-        return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, cancellationToken);
+        return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, options.Limits.MaximumEncodedPngBytes, cancellationToken);
     }
 
     /// <summary>Schedules one destination conversion on the thread pool.</summary>

@@ -7,17 +7,26 @@ namespace Lokad.Svg.Encoding;
 internal static class PngEncoder
 {
     internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, CancellationToken cancellationToken)
+        => Encode(width, height, rgba, int.MaxValue, cancellationToken);
+
+    internal static byte[] Encode(int width, int height, ReadOnlySpan<byte> rgba, int maximumEncodedPngBytes, CancellationToken cancellationToken)
     {
         byte[] compressed = Compress(width, height, rgba, cancellationToken);
-        byte[] output = new byte[GetOutputLength(compressed.Length)];
+        int length = GetOutputLength(compressed.Length);
+        if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
+        byte[] output = new byte[length];
         WritePng(width, height, compressed, output);
         return output;
     }
 
     internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, CancellationToken cancellationToken)
+        => EncodeInto(width, height, rgba, destination, int.MaxValue, cancellationToken);
+
+    internal static int EncodeInto(int width, int height, ReadOnlySpan<byte> rgba, Memory<byte> destination, int maximumEncodedPngBytes, CancellationToken cancellationToken)
     {
         byte[] compressed = Compress(width, height, rgba, cancellationToken);
         int length = GetOutputLength(compressed.Length);
+        if (length > maximumEncodedPngBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG output exceeds the configured encoded-size limit.");
         if (destination.Length < length) throw new SvgException(SvgErrorCode.InsufficientDestination, "PNG destination is too small.");
         WritePng(width, height, compressed, destination.Span[..length]);
         return length;
