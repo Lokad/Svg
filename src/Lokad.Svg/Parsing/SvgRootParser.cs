@@ -864,14 +864,36 @@ internal static class SvgRootParser
 
     private static string StripCssComments(string value)
     {
-        int start;
-        while ((start = value.IndexOf("/*", StringComparison.Ordinal)) >= 0)
+        int sourceIndex = 0;
+        int removedCharacters = 0;
+        while (true)
         {
+            int start = value.IndexOf("/*", sourceIndex, StringComparison.Ordinal);
+            if (start < 0) break;
             int end = value.IndexOf("*/", start + 2, StringComparison.Ordinal);
             if (end < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet comments must be terminated.");
-            value = value.Remove(start, end + 2 - start);
+            removedCharacters += end + 2 - start;
+            sourceIndex = end + 2;
         }
-        return value;
+        if (removedCharacters == 0) return value;
+        return string.Create(value.Length - removedCharacters, value, static (destination, source) =>
+        {
+            int sourceIndex = 0;
+            int destinationIndex = 0;
+            while (sourceIndex < source.Length)
+            {
+                int commentStart = source.IndexOf("/*", sourceIndex, StringComparison.Ordinal);
+                if (commentStart < 0)
+                {
+                    source.AsSpan(sourceIndex).CopyTo(destination[destinationIndex..]);
+                    return;
+                }
+                source.AsSpan(sourceIndex, commentStart - sourceIndex).CopyTo(destination[destinationIndex..]);
+                destinationIndex += commentStart - sourceIndex;
+                int commentEnd = source.IndexOf("*/", commentStart + 2, StringComparison.Ordinal);
+                sourceIndex = commentEnd + 2;
+            }
+        });
     }
 
     private static CssRule ParseRectangleSelector(ReadOnlySpan<char> selector, InlineStyle style)
