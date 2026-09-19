@@ -61,6 +61,12 @@ coverage, subdivision, multi-subpath/winding, and outline targets for P1.3. The
 current converter asserts `UnsupportedFeature` for each; neither their stable
 browser captures nor this inventory admits a general path or stroke feature.
 
+The first deliberately simple experiment uses an opaque red, pixel-centre
+inside/outside rule for the diagonal triangle. It differs from the retained Chrome
+reference in 16 of 64 pixels, with maximum RGBA-channel error 255 and maximum
+alpha error 127 (mismatch bounds `(1,1)`–`(6,6)`). This is a quantitative rejection
+of binary pixel-centre coverage; it is not an implementation candidate.
+
 ## Path-heavy illustration classification
 
 [Tiger, Telemachos, Openclipart 16551](../tests/Research/tiger-16551.svg) is the
