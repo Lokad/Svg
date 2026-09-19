@@ -5,6 +5,10 @@ The canonical Windows exploratory pin is recorded in
 revision 1681091, with archive and extracted-executable SHA-256 values committed
 alongside its URL.
 
+`tools/chrome-for-testing.linux64.json` independently pins the matching Linux
+x64 archive and executable. It supports a platform-specific smoke check, not a
+silent migration of the Windows reference inventory.
+
 Download and verify it into an ignored cache with:
 
 ```powershell
@@ -15,6 +19,12 @@ After a Release build, smoke-test provisioning, capture and exact comparison wit
 
 ```powershell
 tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke
+```
+
+On Linux, pass its explicit pin instead:
+
+```powershell
+tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json
 ```
 
 The setup script refuses an archive or extracted executable whose SHA-256 differs

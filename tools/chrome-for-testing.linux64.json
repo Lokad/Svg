@@ -1,0 +1,10 @@
+{
+  "version": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "linux64",
+  "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/linux64/chrome-linux64.zip",
+  "archiveSha256": "e66f66d4802a46d4a022667e668aa950e277cadbfbed4b3777915b47413a0ef9",
+  "executableRelativePath": "chrome-linux64/chrome",
+  "executableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+  "captureRecipeRevision": "2"
+}

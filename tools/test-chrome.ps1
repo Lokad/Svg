@@ -2,12 +2,13 @@ param(
     [Parameter(Mandatory = $true)]
     [string] $CacheDirectory,
     [Parameter(Mandatory = $true)]
-    [string] $ResultsDirectory
+    [string] $ResultsDirectory,
+    [string] $PinPath = (Join-Path $PSScriptRoot 'chrome-for-testing.json')
 )
 
 $ErrorActionPreference = 'Stop'
 
-$executable = & (Join-Path $PSScriptRoot 'setup-chrome.ps1') -CacheDirectory $CacheDirectory
+$executable = & (Join-Path $PSScriptRoot 'setup-chrome.ps1') -CacheDirectory $CacheDirectory -PinPath $PinPath
 $chromeTool = Join-Path $PSScriptRoot 'Lokad.Svg.Chrome/bin/Release/net10.0/Lokad.Svg.Chrome.dll'
 $diffTool = Join-Path $PSScriptRoot 'Lokad.Svg.VisualDiff/bin/Release/net10.0/Lokad.Svg.VisualDiff.dll'
 $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
