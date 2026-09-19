@@ -7,6 +7,7 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgRootParser
 {
     private const int MinimumXmlReaderWorkspaceBytes = 16 * 1024;
+    private const int XmlReaderAttributeWorkspaceBytes = 512;
 
     private static readonly Dictionary<string, SvgColor> CssNamedColors = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -171,13 +172,14 @@ internal static class SvgRootParser
     private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
     {
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
-        using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(GetXmlReaderWorkspaceBytes(svg.Length), SvgMemoryCategory.Parser);
+        using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, settings);
         return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, cancellationToken);
     }
 
-    private static long GetXmlReaderWorkspaceBytes(int inputBytes) => Math.Max(MinimumXmlReaderWorkspaceBytes, checked((long)inputBytes * 4));
+    private static long GetXmlReaderWorkspaceBytes(int inputBytes, int maximumAttributes)
+        => Math.Max(Math.Max(MinimumXmlReaderWorkspaceBytes, checked((long)inputBytes * 4)), checked((long)maximumAttributes * XmlReaderAttributeWorkspaceBytes));
 
 }

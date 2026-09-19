@@ -668,11 +668,11 @@ public sealed class SvgRootParserTests
     {
         string stylesheet = "/**/" + new string(' ', 512) + "rect { fill: red; }";
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>" + stylesheet + "</style><rect width='1'/></svg>");
-        SvgRenderLimits insufficientLimits = new(17_500, 1_024, 16, 16, 1_024, 16, 16, 10_000);
-        SvgRenderLimits sufficientLimits = new(18_000, 1_024, 16, 16, 1_024, 16, 16, 10_000);
+        SvgRenderLimits insufficientLimits = new(132_188, 1_024, 16, 16, 1_024, 16, 16, 10_000);
+        SvgRenderLimits sufficientLimits = new(132_688, 1_024, 16, 16, 1_024, 16, 16, 10_000);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, insufficientLimits, new RenderBudget(17_500), CancellationToken.None));
-        using SvgRoot root = SvgRootParser.Parse(svg, sufficientLimits, new RenderBudget(18_000), CancellationToken.None);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, insufficientLimits, new RenderBudget(132_188), CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse(svg, sufficientLimits, new RenderBudget(132_688), CancellationToken.None);
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Single(root.Rectangles);
@@ -959,13 +959,28 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Reserves_xml_reader_workspace_from_the_input_length_before_parsing()
+    public void Reserves_xml_reader_workspace_from_the_input_and_attribute_limits_before_parsing()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><metadata>" + new string('x', 9_000) + "</metadata></svg>");
         SvgRenderLimits limits = new(100_000, 100_000, 16, 16, 1024, 16, 16, 16);
+        const long workspace = 256L * 512;
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(svg.Length * 4 - 1), CancellationToken.None));
-        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(svg.Length * 4), CancellationToken.None);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(workspace - 1), CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(workspace), CancellationToken.None);
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Empty(root.Rectangles);
+    }
+
+    [Fact]
+    public void Reserves_xml_reader_attribute_workspace_from_the_configured_limit_before_parsing()
+    {
+        SvgRenderLimits limits = new(200_000, 1024, 16, 16, 1024, 16, 16, 16, 128, 257);
+        const long workspace = 257L * 512;
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(workspace - 1), CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(workspace), CancellationToken.None);
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Empty(root.Rectangles);
@@ -985,7 +1000,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Releases_transient_parser_collection_reservations_after_scene_construction()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new(300_000);
 
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: red; }</style><defs><rect id='sample'/></defs><use href='#sample'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None);
 
@@ -995,7 +1010,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Releases_transient_orthogonal_geometry_reservations_after_scene_construction()
     {
-        RenderBudget budget = new(100_000);
+        RenderBudget budget = new(300_000);
 
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0 0 H 2 V 2 H 0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None);
 
