@@ -16,6 +16,7 @@ public static class PngRgbaDecoder
         int position = Signature.Length;
         int width = 0;
         int height = 0;
+        int bytesPerPixel = 0;
         bool headerSeen = false;
         using MemoryStream compressed = new();
         while (position < input.Length)
@@ -32,7 +33,8 @@ public static class PngRgbaDecoder
                 if (headerSeen || length != 13) throw new InvalidDataException("PNG header is invalid.");
                 width = checked((int)BinaryPrimitives.ReadUInt32BigEndian(data));
                 height = checked((int)BinaryPrimitives.ReadUInt32BigEndian(data[4..]));
-                if (width <= 0 || height <= 0 || (long)width * height > maximumPixels || data[8] != 8 || data[9] != 6 || data[12] != 0) throw new NotSupportedException("Only bounded non-interlaced RGBA8 PNG images are supported.");
+                if (width <= 0 || height <= 0 || (long)width * height > maximumPixels || data[8] != 8 || data[12] != 0) throw new NotSupportedException("Only bounded non-interlaced RGB8/RGBA8 PNG images are supported.");
+                bytesPerPixel = data[9] switch { 2 => 3, 6 => 4, _ => throw new NotSupportedException("Only bounded non-interlaced RGB8/RGBA8 PNG images are supported.") };
                 headerSeen = true;
             }
             else if (type.SequenceEqual("IDAT"u8))
@@ -43,7 +45,7 @@ public static class PngRgbaDecoder
             else if (type.SequenceEqual("IEND"u8))
             {
                 if (length != 0 || position + length + 12 != input.Length) throw new InvalidDataException("PNG end chunk is invalid.");
-                return Inflate(compressed, width, height);
+                return Inflate(compressed, width, height, bytesPerPixel);
             }
             position += length + 12;
         }
@@ -51,9 +53,9 @@ public static class PngRgbaDecoder
         throw new InvalidDataException("PNG end chunk is missing.");
     }
 
-    private static RgbaImage Inflate(MemoryStream compressed, int width, int height)
+    private static RgbaImage Inflate(MemoryStream compressed, int width, int height, int bytesPerPixel)
     {
-        int stride = checked(width * 4);
+        int stride = checked(width * bytesPerPixel);
         byte[] filtered = new byte[checked((stride + 1) * height)];
         compressed.Position = 0;
         using (ZLibStream zlib = new(compressed, CompressionMode.Decompress, true))
@@ -70,13 +72,19 @@ public static class PngRgbaDecoder
             byte filter = filtered[source++];
             for (int x = 0; x < stride; x++)
             {
-                byte left = x >= 4 ? pixels[destination + x - 4] : (byte)0;
+                byte left = x >= bytesPerPixel ? pixels[destination + x - bytesPerPixel] : (byte)0;
                 byte up = y > 0 ? pixels[destination + x - stride] : (byte)0;
-                byte upperLeft = y > 0 && x >= 4 ? pixels[destination + x - stride - 4] : (byte)0;
+                byte upperLeft = y > 0 && x >= bytesPerPixel ? pixels[destination + x - stride - bytesPerPixel] : (byte)0;
                 pixels[destination + x] = filter switch { 0 => filtered[source + x], 1 => (byte)(filtered[source + x] + left), 2 => (byte)(filtered[source + x] + up), 3 => (byte)(filtered[source + x] + ((left + up) >> 1)), 4 => (byte)(filtered[source + x] + Paeth(left, up, upperLeft)), _ => throw new InvalidDataException("PNG filter is invalid.") };
             }
         }
-        return new RgbaImage(width, height, pixels);
+        if (bytesPerPixel == 4) return new RgbaImage(width, height, pixels);
+        byte[] rgba = new byte[checked(width * height * 4)];
+        for (int source = 0, destination = 0; source < pixels.Length; source += 3, destination += 4)
+        {
+            rgba[destination] = pixels[source]; rgba[destination + 1] = pixels[source + 1]; rgba[destination + 2] = pixels[source + 2]; rgba[destination + 3] = 255;
+        }
+        return new RgbaImage(width, height, rgba);
     }
 
     private static byte Paeth(byte left, byte up, byte upperLeft) { int p = left + up - upperLeft; int a = Math.Abs(p - left); int b = Math.Abs(p - up); int c = Math.Abs(p - upperLeft); return a <= b && a <= c ? left : b <= c ? up : upperLeft; }

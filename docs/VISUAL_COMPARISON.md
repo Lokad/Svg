@@ -13,6 +13,6 @@ separate alpha error, and mismatch bounds. Byte-identical PNG compression is not
 required. RGB values at alpha zero are canonicalized to zero; all partial-alpha
 differences are failures.
 
-The current decoder intentionally accepts the bounded, non-interlaced RGBA8 subset
-needed by the initial Chrome recipe. Decoder-format expansion must retain CRC and
+The current decoder intentionally accepts bounded, non-interlaced RGB8 and RGBA8
+PNG output observed from the initial Chrome recipe. Decoder-format expansion must retain CRC and
 decoded-size validation and must not use the production image decoder as proof.
