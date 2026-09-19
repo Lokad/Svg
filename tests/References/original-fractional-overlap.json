@@ -10,6 +10,6 @@
   "background": "transparent",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "candidateResult": "UnsupportedFeature: Rectangle attribute 'fill-opacity' is not implemented.",
+  "candidateResult": "UnsupportedFeature: Only integer rectangle coordinates are implemented.",
   "admittedAt": "2026-09-19"
 }
