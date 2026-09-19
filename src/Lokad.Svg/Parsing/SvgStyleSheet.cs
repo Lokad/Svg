@@ -51,6 +51,18 @@ internal static class SvgStyleSheet
         return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
     }
 
+    internal static bool TargetsRootId(string? rootId, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (rootId is null) return false;
+        for (int ruleIndex = 0; ruleIndex < rules.Count; ruleIndex++)
+        {
+            workCounter.Consume(cancellationToken);
+            CssRule rule = rules[ruleIndex];
+            if ((rule.Kind == CssSelectorKind.Id && string.Equals(rule.Value, rootId, StringComparison.Ordinal)) || (rule.Kind == CssSelectorKind.AttributePresent && rule.Value == "id") || (rule.Kind == CssSelectorKind.AttributeEquals && rule.Value == "id" && string.Equals(rule.ExpectedValue, rootId, StringComparison.Ordinal))) return true;
+        }
+        return false;
+    }
+
     internal static string ReadElementText(XmlReader reader)
     {
         using XmlReader subtree = reader.ReadSubtree();

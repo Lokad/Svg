@@ -187,6 +187,7 @@ internal static class SvgRootParser
             if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
             SvgComputedStyle rootStyle = SvgComputedStyle.Resolve(reader, ParseInlineStyle(reader.GetAttribute("style")));
             SvgPaint rootPaint = ParseRootPaint(reader, rootStyle);
+            string? rootId = reader.GetAttribute("id");
             byte rootOpacity = ParseOpacity(rootStyle.Opacity);
             bool rootVisible = ParseDisplay(rootStyle.Display);
             bool rootVisibility = ParseVisibility(rootStyle.Visibility, true);
@@ -231,6 +232,7 @@ internal static class SvgRootParser
                     else if (definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol")
                     {
                         SvgElementAttributePolicy.ValidateSymbol(reader);
+                        if (GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths, workCounter, cancellationToken) != default) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules on symbol definitions are not implemented.");
                         symbolId = reader.GetAttribute("id") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A symbol requires an id.");
                         if (!reader.IsEmptyElement) symbolDepth = reader.Depth;
                     }
@@ -311,6 +313,7 @@ internal static class SvgRootParser
                         if (sawStyleableNode || hasRectangleStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede supported definitions and rendered content.");
                         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
                         ParseRectangleStyleSheet(ReadStyleElementText(reader), limits.MaximumNodes, rectangleStyleRules, workCounter, cancellationToken);
+                        if (SvgStyleSheet.TargetsRootId(rootId, rectangleStyleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
                         hasRectangleStyleSheet = true;
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
