@@ -243,10 +243,10 @@ internal static class SvgRootParser
                     }
                     else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
                     {
-                        UseReference reference = ParseUse(reader);
+                        SvgUseReference reference = ParseUse(reader);
                         if (definitions.TryGetValue(reference.Id, out SvgRectangle definition))
                         {
-                            SvgRectangle rectangle = ApplyUseOffset(definition, reference);
+                            SvgRectangle rectangle = SvgReferenceResolver.Apply(definition, reference);
                             rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                         }
                         else
@@ -326,13 +326,7 @@ internal static class SvgRootParser
                     if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveLast(); if (group.IsolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); }
                     if (reader.Depth == rootDepth)
                     {
-                        for (int pendingUseIndex = 0; pendingUseIndex < pendingUses.Count; pendingUseIndex++)
-                        {
-                            PendingUse pendingUse = pendingUses[pendingUseIndex];
-                            if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgRectangle definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local rectangle use references are implemented.");
-                            SvgRectangle rectangle = ApplyUseOffset(definition, pendingUse.Reference);
-                            rectangles[pendingUse.RectangleIndex] = rectangle; commands[pendingUse.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255);
-                        }
+                        SvgReferenceResolver.ResolvePendingUses(definitions, pendingUses, rectangles, commands);
                         if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255));
                         SvgSceneStorage scene = SvgSceneStorage.Create(rectangles, commands);
                         try { return CompleteRoot(new SvgRoot(width, height, viewBox, scene.Rectangles, scene.Commands, unsupported, workCounter.Used, scene)); }
@@ -461,7 +455,7 @@ internal static class SvgRootParser
         return x1 != x2 ? new SvgRectangle(Math.Min(x1, x2), y1 - halfWidth, Math.Abs((long)x2 - x1), strokeWidth, color, painted, null) : new SvgRectangle(x1 - halfWidth, Math.Min(y1, y2), strokeWidth, Math.Abs((long)y2 - y1), color, painted, null);
     }
 
-    private static UseReference ParseUse(XmlReader reader)
+    private static SvgUseReference ParseUse(XmlReader reader)
     {
         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style"));
         if (style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Paint styles on use elements are not implemented.");
@@ -469,13 +463,7 @@ internal static class SvgRootParser
         string href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A use element requires an href.");
         if (href.Length < 2 || href[0] != '#') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local rectangle use references are implemented.");
         double x = ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0"); double y = ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0");
-        return new UseReference(href[1..], x, y, ParseTransform(reader.GetAttribute("transform")), ParseOpacity(GetProperty(reader, style.Opacity, "opacity")), ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), true));
-    }
-
-    private static SvgRectangle ApplyUseOffset(SvgRectangle rectangle, UseReference reference)
-    {
-        if (rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
-        return rectangle with { X = reference.Transform.ScaleX * (rectangle.X + reference.X) + reference.Transform.OffsetX, Y = reference.Transform.ScaleY * (rectangle.Y + reference.Y) + reference.Transform.OffsetY, Width = reference.Transform.ScaleX * rectangle.Width, Height = reference.Transform.ScaleY * rectangle.Height, Color = new SvgColor(rectangle.Color.Red, rectangle.Color.Green, rectangle.Color.Blue, MultiplyAlpha(rectangle.Color.Alpha, reference.Opacity)), HasFill = rectangle.HasFill && reference.IsPainted };
+        return new SvgUseReference(href[1..], x, y, ParseTransform(reader.GetAttribute("transform")), ParseOpacity(GetProperty(reader, style.Opacity, "opacity")), ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), true));
     }
 
     private static ParsedGeometry ParseOrthogonalPath(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -1122,20 +1110,10 @@ internal static class SvgRootParser
 
     private readonly record struct GroupScope(int Depth, string Name, SvgPaint Paint, bool IsDisplayed, bool IsVisible, AxisTransform Transform, bool IsolatesOpacity);
 
-    private readonly record struct AxisTransform(int ScaleX, int ScaleY, int OffsetX, int OffsetY)
-    {
-        internal static AxisTransform Identity { get; } = new(1, 1, 0, 0);
-        internal AxisTransform Compose(AxisTransform child) => new(ApplyTransformScale(ScaleX, child.ScaleX), ApplyTransformScale(ScaleY, child.ScaleY), ApplyTransform(ScaleX, child.OffsetX, OffsetX), ApplyTransform(ScaleY, child.OffsetY, OffsetY));
-    }
-
     private readonly record struct SvgPaint(SvgColor FillColor, bool HasFill, byte FillOpacity, SvgColor CurrentColor, bool FillUsesCurrentColor)
     {
         internal static SvgPaint Default { get; } = new(new SvgColor(0, 0, 0, 255), true, 255, new SvgColor(0, 0, 0, 255), false);
     }
-
-    private readonly record struct UseReference(string Id, double X, double Y, AxisTransform Transform, byte Opacity, bool IsPainted);
-
-    private readonly record struct PendingUse(int RectangleIndex, int CommandIndex, UseReference Reference);
 
     private readonly record struct ParsedGeometry(OwnedParserArray<SvgRectangle> Storage, int ElementCount) : IDisposable
     {
