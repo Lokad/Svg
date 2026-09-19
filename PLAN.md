@@ -1,9 +1,11 @@
 # Lokad.Svg implementation plan
 
-Status: milestone 1 is complete as of 2026-09-19: repository scaffolding, public
-contract, package metadata, initial API and budget-ledger tests, and project
-boundaries are implemented. Rendering, oracle tooling, fixtures, and benchmarks
-remain unimplemented.
+Status: milestone 1 is complete as of 2026-09-19. Milestones 2 and 3 are in
+progress: the independent PNG comparer, visual-diff CLI, original CC0 probes,
+initial Chrome CDP capture machinery, bounded root parsing, managed PNG encoding,
+and a very narrow rectangle renderer exist. Pinned Chrome-for-Testing references,
+full oracle stability evidence, destination/stream output, and all broader SVG
+features remain incomplete.
 
 ## 1. Product contract
 
@@ -714,7 +716,9 @@ and risk, not by the ease of producing a recognisable image.
    renderer allocations. Exit: dependency audit and an API-only package consumer
    build pass, with the feature/support inventory created.
 
-2. **Oracle and feasibility probes.** Build the thin Chrome wrapper, independent
+2. **Oracle and feasibility probes.** *(In progress: independent comparer/CLI,
+   original CC0 probes, and initial Chrome CDP capture exist; no pinned/reviewed
+   Chrome reference has been admitted.)* Build the thin Chrome wrapper, independent
    pixel comparison and provenance format. Create the first original probes plus
    a licensed small corpus. Investigate antialiasing, group alpha, gradients,
    filter rounding and real glyph behavior before choosing core algorithms.
@@ -723,7 +727,9 @@ and risk, not by the ease of producing a recognisable image.
    text limits. If exactness is not yet attainable, record the blockers and continue
    investigation without changing the meaning of the fidelity target.
 
-3. **Minimal complete conversion.** Implement bounded parsing, basic scene/viewport
+3. **Minimal complete conversion.** *(In progress: bounded root parsing, RGBA PNG
+   encoding, caller backgrounds, and one integer opaque rectangle are implemented;
+   this is not yet the milestone's complete conversion scope.)* Implement bounded parsing, basic scene/viewport
    resolution, solid shapes/paths, alpha composition and PNG output through both
    memory API forms. Exercise cancellation end to end. Exit: simple integer and
    fractional geometry probes match exactly, PNGs decode independently in Chrome,
