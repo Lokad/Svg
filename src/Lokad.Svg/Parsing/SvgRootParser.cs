@@ -67,6 +67,7 @@ internal static class SvgRootParser
                         AxisTransform transform = groupDepths.Count == 0 ? ParseTransform(reader.GetAttribute("transform")) : groupDepths[^1].Transform.Compose(ParseTransform(reader.GetAttribute("transform")));
                         byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity"));
                         bool isolatesOpacity = opacity != 255;
+                        if (isolatesOpacity && groupDepths.Any(static group => group.IsolatesOpacity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
                         if (!reader.IsEmptyElement) { if (isolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, opacity)); groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility, transform, isolatesOpacity)); }
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
