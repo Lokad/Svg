@@ -56,7 +56,12 @@ public static class SvgConverter
 
     private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, CancellationToken cancellationToken)
     {
-        if (root.Width is not double width || root.Height is not double height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Explicit root width and height are required currently.");
+        (double width, double height) = (root.Width, root.Height) switch
+        {
+            (double explicitWidth, double explicitHeight) => (explicitWidth, explicitHeight),
+            (null, null) => (300, 150),
+            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Both root dimensions or neither root dimension are required currently.")
+        };
         double scaledWidth = width * options.OutputScale;
         double scaledHeight = height * options.OutputScale;
         if (scaledWidth != Math.Truncate(scaledWidth) || scaledHeight != Math.Truncate(scaledHeight) || scaledWidth > options.Limits.MaximumDimension || scaledHeight > options.Limits.MaximumDimension) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integral output dimensions within configured limits are implemented currently.");

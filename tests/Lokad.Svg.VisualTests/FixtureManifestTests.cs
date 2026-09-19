@@ -111,6 +111,14 @@ public sealed class FixtureManifestTests
     }
 
     [Fact]
+    public void Exact_default_object_size_fixture_matches_its_admitted_chrome_reference()
+    {
+        byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "default-object-size.svg"));
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-default-object-size.png")), 45_000);
+        Assert.True(PixelComparer.Compare(reference, PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None), 45_000)).IsExact);
+    }
+
+    [Fact]
     public void Fractional_overlap_fixture_remains_an_explicit_unsupported_failure()
     {
         byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "fractional-overlap.svg"));
