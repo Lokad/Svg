@@ -461,20 +461,21 @@ internal static class SvgRootParser
         if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Path attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
         string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
         ValidatePathCommandCount(d, maximumGeometryElements, cancellationToken);
-        string[] tokens = Regex.Replace(d, @"([MLHVZz])", " $1 ").Replace(',', ' ').Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (tokens.Length < 7 || tokens[0] != "M") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
-        int tokenIndex = 1;
+        PathTokenReader tokens = new(d);
+        if (tokens.End || tokens.ReadCommand() != 'M') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
         using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, PointStorageBytes);
-        points.Add(new SvgPoint(ParsePathInteger(), ParsePathInteger()));
+        points.Add(new SvgPoint(tokens.ReadInteger(), tokens.ReadInteger()));
         bool closed = false;
-        while (tokenIndex < tokens.Length)
+        int commandIndex = 0;
+        while (!tokens.End)
         {
-            string command = tokens[tokenIndex++];
+            if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            char command = tokens.ReadCommand();
             SvgPoint current = points[^1];
-            if (command == "H") points.Add(new SvgPoint(ParsePathInteger(), current.Y));
-            else if (command == "V") points.Add(new SvgPoint(current.X, ParsePathInteger()));
-            else if (command == "L") points.Add(new SvgPoint(ParsePathInteger(), ParsePathInteger()));
-            else if (command is "Z" or "z") { closed = tokenIndex == tokens.Length; break; }
+            if (command == 'H') points.Add(new SvgPoint(tokens.ReadInteger(), current.Y));
+            else if (command == 'V') points.Add(new SvgPoint(current.X, tokens.ReadInteger()));
+            else if (command == 'L') points.Add(new SvgPoint(tokens.ReadInteger(), tokens.ReadInteger()));
+            else if (command is 'Z' or 'z') { closed = tokens.End; break; }
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
         }
         if (!closed || points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
@@ -504,12 +505,6 @@ internal static class SvgRootParser
             for (int intersectionIndex = 0; intersectionIndex < intersections.Count; intersectionIndex += 2) { int left = intersections[intersectionIndex]; int right = intersections[intersectionIndex + 1]; if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed absolute axis-aligned integer paths are implemented."); if (geometryElementCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path rectangle-band count exceeds the configured path-command limit."); rectangles.Add(new SvgRectangle(ApplyTransform(transform.ScaleX, left, transform.OffsetX), ApplyTransform(transform.ScaleY, top, transform.OffsetY), ApplyTransformScale(transform.ScaleX, right - left), ApplyTransformScale(transform.ScaleY, bottom - top), color, hasFill, null)); geometryElementCount++; }
         }
         return new ParsedGeometry(rectangles.Detach(), geometryElementCount);
-
-        int ParsePathInteger()
-        {
-            if (tokenIndex >= tokens.Length || !Regex.IsMatch(tokens[tokenIndex], @"^-?\d+$")) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
-            return ParseInteger(tokens[tokenIndex++]);
-        }
     }
 
     private static ParsedGeometry ParseOrthogonalPointList(XmlReader reader, string elementName, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform, InlineStyle styleSheet, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -517,11 +512,18 @@ internal static class SvgRootParser
         if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "points" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
         string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
         ValidatePointListVertexCount(pointsValue, maximumGeometryElements, cancellationToken);
-        string[] values = pointsValue.Split([',', ' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (values.Length < 6 || values.Length % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
-        if (values.Length / 2 > maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, elementName + " vertex count exceeds the configured path-command limit.");
         using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, PointStorageBytes);
-        for (int index = 0; index < values.Length; index += 2) points.Add(new SvgPoint(ParseInteger(values[index]), ParseInteger(values[index + 1])));
+        DelimitedTokenReader values = new(pointsValue);
+        int vertexCount = 0;
+        while (values.TryReadValue(out ReadOnlySpan<char> x))
+        {
+            if ((vertexCount & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            if (!values.TryReadValue(out ReadOnlySpan<char> y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
+            if (vertexCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, elementName + " vertex count exceeds the configured path-command limit.");
+            points.Add(new SvgPoint(ParseInteger(x), ParseInteger(y)));
+            vertexCount++;
+        }
+        if (points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
         for (int index = 0; index < points.Count; index++)
         {
             SvgPoint start = points[index]; SvgPoint end = points[(index + 1) % points.Count];
@@ -618,6 +620,89 @@ internal static class SvgRootParser
             withinValue = true;
         }
     }
+
+    private static bool IsPathInteger(ReadOnlySpan<char> value)
+    {
+        if (value.IsEmpty) return false;
+        int start = value[0] == '-' ? 1 : 0;
+        if (start == value.Length) return false;
+        for (int index = start; index < value.Length; index++) if (!char.IsAsciiDigit(value[index])) return false;
+        return true;
+    }
+
+    private ref struct PathTokenReader
+    {
+        private ReadOnlySpan<char> _value;
+        private int _position;
+
+        internal PathTokenReader(ReadOnlySpan<char> value) => _value = value;
+
+        internal bool End
+        {
+            get
+            {
+                SkipSeparators();
+                return _position == _value.Length;
+            }
+        }
+
+        internal char ReadCommand()
+        {
+            SkipSeparators();
+            if (_position == _value.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+            return _value[_position++];
+        }
+
+        internal ReadOnlySpan<char> ReadValue()
+        {
+            SkipSeparators();
+            int start = _position;
+            while (_position < _value.Length && !IsPathSeparator(_value[_position]) && !IsPathCommand(_value[_position])) _position++;
+            if (start == _position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+            return _value[start.._position];
+        }
+
+        internal int ReadInteger()
+        {
+            ReadOnlySpan<char> value = ReadValue();
+            if (!IsPathInteger(value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+            return ParseInteger(value);
+        }
+
+        private void SkipSeparators()
+        {
+            while (_position < _value.Length && IsPathSeparator(_value[_position])) _position++;
+        }
+    }
+
+    private ref struct DelimitedTokenReader
+    {
+        private ReadOnlySpan<char> _value;
+        private int _position;
+
+        internal DelimitedTokenReader(ReadOnlySpan<char> value) => _value = value;
+
+        internal bool TryReadValue(out ReadOnlySpan<char> value)
+        {
+            while (_position < _value.Length && IsPointSeparator(_value[_position])) _position++;
+            if (_position == _value.Length)
+            {
+                value = default;
+                return false;
+            }
+
+            int start = _position;
+            while (_position < _value.Length && !IsPointSeparator(_value[_position])) _position++;
+            value = _value[start.._position];
+            return true;
+        }
+    }
+
+    private static bool IsPathCommand(char value) => value is 'M' or 'L' or 'H' or 'V' or 'Z' or 'z';
+
+    private static bool IsPathSeparator(char value) => value == ',' || char.IsWhiteSpace(value);
+
+    private static bool IsPointSeparator(char value) => value is ',' or ' ' or '\t' or '\r' or '\n';
 
     private static int ApplyTransform(int scale, int value, int offset)
     {
@@ -865,9 +950,11 @@ internal static class SvgRootParser
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only visible and hidden visibility values are implemented.");
     }
 
-    private static int ParseInteger(string value)
+    private static int ParseInteger(string value) => ParseInteger(value.AsSpan());
+
+    private static int ParseInteger(ReadOnlySpan<char> value)
     {
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        ReadOnlySpan<char> token = value.Trim();
         if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px integer rectangle coordinates are implemented.");
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result != Math.Truncate(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer rectangle coordinates are implemented.");
