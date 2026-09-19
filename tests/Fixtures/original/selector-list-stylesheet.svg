@@ -1,0 +1,1 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3" height="1"><style>.warm, rect.cool { fill: red; } rect.cool { fill: blue; }</style><rect class="warm" width="1" height="1"/><rect class="cool" x="1" width="1" height="1"/><rect x="2" width="1" height="1" fill="lime"/></svg>

@@ -223,6 +223,14 @@ public sealed class FixtureManifestTests
     }
 
     [Fact]
+    public void Exact_selector_list_stylesheet_fixture_matches_its_admitted_chrome_reference()
+    {
+        byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "selector-list-stylesheet.svg"));
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-selector-list-stylesheet.png")), 3);
+        Assert.True(PixelComparer.Compare(reference, PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None), 3)).IsExact);
+    }
+
+    [Fact]
     public void Manifest_has_unique_ids_hash_matched_assets_and_explicit_fidelity_status()
     {
         string fixtures = Path.Combine(AppContext.BaseDirectory, "Fixtures");
