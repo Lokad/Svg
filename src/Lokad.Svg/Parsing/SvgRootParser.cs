@@ -317,30 +317,26 @@ internal static class SvgRootParser
         }
         string[] values = value.Split([',', ' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         if (values.Length != 4 || !double.TryParse(values[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double x) || !double.TryParse(values[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double y) || !double.TryParse(values[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double width) || !double.TryParse(values[3], NumberStyles.Float, CultureInfo.InvariantCulture, out double height) || !double.IsFinite(x) || !double.IsFinite(y) || !double.IsFinite(width) || !double.IsFinite(height) || width <= 0 || height <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
-        (SvgViewBoxAlignment horizontalAlignment, SvgViewBoxAlignment verticalAlignment) = ParsePreserveAspectRatio(preserveAspectRatio);
-        return new SvgViewBox(x, y, width, height, horizontalAlignment, verticalAlignment);
+        (SvgViewBoxAlignment horizontalAlignment, SvgViewBoxAlignment verticalAlignment, SvgViewBoxFit fit) = ParsePreserveAspectRatio(preserveAspectRatio);
+        return new SvgViewBox(x, y, width, height, horizontalAlignment, verticalAlignment, fit);
     }
 
-    private static (SvgViewBoxAlignment HorizontalAlignment, SvgViewBoxAlignment VerticalAlignment) ParsePreserveAspectRatio(string? value)
+    private static (SvgViewBoxAlignment HorizontalAlignment, SvgViewBoxAlignment VerticalAlignment, SvgViewBoxFit Fit) ParsePreserveAspectRatio(string? value)
     {
-        if (value is null || value.Equals("xMidYMid meet", StringComparison.OrdinalIgnoreCase)) return (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Mid);
-        if (value.Equals("none", StringComparison.OrdinalIgnoreCase)) return (SvgViewBoxAlignment.None, SvgViewBoxAlignment.None);
-        if (value is not null && value.EndsWith(" meet", StringComparison.OrdinalIgnoreCase))
+        if (value is null || value.Equals("xMidYMid meet", StringComparison.OrdinalIgnoreCase)) return (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Mid, SvgViewBoxFit.Meet);
+        if (value.Equals("none", StringComparison.OrdinalIgnoreCase)) return (SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None);
+        if (value is not null)
         {
-            return value[..^5] switch
+            int separator = value.LastIndexOf(' ');
+            if (separator <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.");
+            SvgViewBoxFit fit = value[(separator + 1)..] switch { "meet" => SvgViewBoxFit.Meet, "slice" => SvgViewBoxFit.Slice, _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.") };
+            return value[..separator] switch
             {
-                "xMinYMin" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Min),
-                "xMidYMin" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Min),
-                "xMaxYMin" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Min),
-                "xMinYMid" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Mid),
-                "xMaxYMid" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Mid),
-                "xMinYMax" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Max),
-                "xMidYMax" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Max),
-                "xMaxYMax" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Max),
-                _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet and none preserveAspectRatio values are implemented.")
+                "xMinYMin" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Min, fit), "xMidYMin" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Min, fit), "xMaxYMin" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Min, fit), "xMinYMid" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Mid, fit), "xMidYMid" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Mid, fit), "xMaxYMid" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Mid, fit), "xMinYMax" => (SvgViewBoxAlignment.Min, SvgViewBoxAlignment.Max, fit), "xMidYMax" => (SvgViewBoxAlignment.Mid, SvgViewBoxAlignment.Max, fit), "xMaxYMax" => (SvgViewBoxAlignment.Max, SvgViewBoxAlignment.Max, fit),
+                _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.")
             };
         }
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet and none preserveAspectRatio values are implemented.");
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.");
     }
 
     private readonly record struct GroupScope(int Depth, SvgPaint Paint, bool IsDisplayed, bool IsVisible);

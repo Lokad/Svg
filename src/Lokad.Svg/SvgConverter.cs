@@ -120,7 +120,7 @@ public static class SvgConverter
             double verticalScale = height / box.Height;
             if (box.HorizontalAlignment != SvgViewBoxAlignment.None)
             {
-                double scale = Math.Min(horizontalScale, verticalScale);
+                double scale = box.Fit == SvgViewBoxFit.Slice ? Math.Max(horizontalScale, verticalScale) : Math.Min(horizontalScale, verticalScale);
                 horizontalScale = scale;
                 verticalScale = scale;
             }
