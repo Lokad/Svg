@@ -92,6 +92,24 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Trailing_document_content_fails_as_malformed_input()
+    {
+        SvgException extraElement = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/><extra/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+        SvgException trailingText = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>trailing"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, extraElement.ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, trailingText.ErrorCode);
+    }
+
+    [Fact]
+    public void Animated_rectangle_content_is_rejected_as_unsupported()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></rect></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Empty_explicitly_sized_svg_returns_png_bytes()
     {
         ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);

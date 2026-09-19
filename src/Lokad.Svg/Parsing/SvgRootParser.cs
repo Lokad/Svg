@@ -30,7 +30,7 @@ internal static class SvgRootParser
             double? width = ParseLength(reader.GetAttribute("width"));
             double? height = ParseLength(reader.GetAttribute("height"));
             SvgViewBox? viewBox = ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
-            if (reader.IsEmptyElement) return new SvgRoot(width, height, viewBox, [], [], false);
+            if (reader.IsEmptyElement) return CompleteRoot(new SvgRoot(width, height, viewBox, [], [], false));
             int rootDepth = reader.Depth;
             List<SvgRectangle> rectangles = [];
             List<SvgDrawCommand> commands = [];
@@ -92,6 +92,7 @@ internal static class SvgRootParser
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
                         SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetStyleSheet(reader, rectangleStyleRules, directChild, groupDepths));
                         rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+                        unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "line")
@@ -151,13 +152,24 @@ internal static class SvgRootParser
                             SvgRectangle rectangle = ApplyUseOffset(definition, pendingUse.Reference);
                             rectangles[pendingUse.RectangleIndex] = rectangle; commands[pendingUse.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255);
                         }
-                        if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); return new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported);
+                        if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); return CompleteRoot(new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported));
                     }
                 }
             }
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
+
+        SvgRoot CompleteRoot(SvgRoot root)
+        {
+            while (reader.Read())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (reader.NodeType is XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace) continue;
+                throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has content after its root element.");
+            }
+            return root;
+        }
     }
 
     private static SvgPaint ParseGroupPaint(XmlReader reader, SvgPaint inheritedPaint, InlineStyle style, InlineStyle styleSheet)
