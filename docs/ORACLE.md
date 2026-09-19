@@ -13,6 +13,9 @@ tools/setup-chrome.ps1 -CacheDirectory artifacts/chrome
 The setup script refuses an archive whose SHA-256 differs from the pin. This is
 only browser provisioning; a reviewed canonical reference still requires the
 full recipe metadata, repeated-capture stability checks, and fixture admission.
-The capture wrapper explicitly sets an RGBA-transparent default background before
-screenshot capture; references generated before that recipe step must be reviewed
-before being treated as alpha-sensitive evidence.
+The current capture recipe is revision 2. It explicitly sets an RGBA-transparent
+default background before screenshot capture. Each reference records the recipe
+that produced it: retained historical references may therefore record revision 1,
+while newly admitted references must record revision 2. A recipe change requires
+an explicit review of affected baselines; do not rewrite that provenance field to
+make the inventory uniform.
