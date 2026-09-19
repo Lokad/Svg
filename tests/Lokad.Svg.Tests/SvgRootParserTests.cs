@@ -545,6 +545,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_the_XML_nesting_limit_before_expanding_group_storage()
+    {
+        const int nestedGroupCount = 128;
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg'>" + string.Concat(Enumerable.Repeat("<g>", nestedGroupCount)) + string.Concat(Enumerable.Repeat("</g>", nestedGroupCount)) + "</svg>";
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_structural_limit_while_expanding_stylesheet_selectors()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 2, 16, 100);
