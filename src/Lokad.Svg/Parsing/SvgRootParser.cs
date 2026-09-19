@@ -99,7 +99,7 @@ internal static class SvgRootParser
         {
             while (reader.MoveToNextAttribute())
             {
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -108,6 +108,8 @@ internal static class SvgRootParser
         int y = ParseInteger(reader.GetAttribute("y") ?? "0");
         int width = ParseInteger(reader.GetAttribute("width") ?? "0");
         int height = ParseInteger(reader.GetAttribute("height") ?? "0");
+        ValidateSquareCorners(reader.GetAttribute("rx"));
+        ValidateSquareCorners(reader.GetAttribute("ry"));
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
         SvgPaint paint = ParsePaint(reader.GetAttribute("fill"), reader.GetAttribute("fill-opacity"), reader.GetAttribute("color"), inheritedPaint);
         ValidateFillRule(reader.GetAttribute("fill-rule"));
@@ -143,6 +145,12 @@ internal static class SvgRootParser
     {
         if (value is null || value.Equals("none", StringComparison.OrdinalIgnoreCase)) return;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-painting stroke='none' is implemented.");
+    }
+
+    private static void ValidateSquareCorners(string? value)
+    {
+        if (value is null || ParseInteger(value) == 0) return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only zero rectangle corner radii are implemented.");
     }
 
     private static bool ParseVisibility(string? value, bool inheritedVisibility)
