@@ -16,7 +16,17 @@ internal static class SvgRootParser
             cancellationToken.ThrowIfCancellationRequested();
             if (reader.NodeType != XmlNodeType.Element) continue;
             if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
-            return new SvgRoot(ParseLength(reader.GetAttribute("width")), ParseLength(reader.GetAttribute("height")));
+            double? width = ParseLength(reader.GetAttribute("width"));
+            double? height = ParseLength(reader.GetAttribute("height"));
+            if (reader.IsEmptyElement) return new SvgRoot(width, height, false);
+            int rootDepth = reader.Depth;
+            while (reader.Read())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (reader.NodeType == XmlNodeType.Element) return new SvgRoot(width, height, true);
+                if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == rootDepth) return new SvgRoot(width, height, false);
+            }
+            throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
     }

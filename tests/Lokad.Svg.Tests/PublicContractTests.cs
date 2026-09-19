@@ -58,4 +58,11 @@ public sealed class PublicContractTests
 
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Empty_explicitly_sized_svg_returns_png_bytes()
+    {
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+        Assert.Equal(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }, png[..8].ToArray());
+    }
 }

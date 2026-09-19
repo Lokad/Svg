@@ -11,7 +11,8 @@ supported and no pixel-fidelity claim is made.
 | Public options, limits and failure categories | Contract scaffolded |
 | Root SVG parsing | Bounded root validation; bare-number/px dimensions implemented; other units explicit unsupported |
 | Viewport resolution | Not implemented |
-| Shapes, paths and composition | Not implemented |
+| Empty explicitly sized SVG | Transparent PNG implemented for integral dimensions |
+| Shapes, paths and composition | Explicit unsupported-feature failure |
 | CSS, gradients, images, filters and text | Not implemented |
 | PNG encoding | Not implemented |
 | Independent RGBA comparison | Initial exact comparer implemented |

@@ -12,6 +12,14 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='12.5' height='7'/>"), SvgRenderLimits.Default, CancellationToken.None);
         Assert.Equal(12.5, root.Width);
         Assert.Equal(7, root.Height);
+        Assert.False(root.HasChildElement);
+    }
+
+    [Fact]
+    public void Records_visible_child_elements_for_the_scene_stage()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.True(root.HasChildElement);
     }
 
     [Fact]
