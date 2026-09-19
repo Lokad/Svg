@@ -75,12 +75,15 @@ internal sealed class DevToolsConnection : IAsyncDisposable
     }
 
     private async Task<string> ReceiveTextMessageAsync(CancellationToken cancellationToken)
+        => await ReceiveTextMessageAsync(_socket, cancellationToken);
+
+    internal static async Task<string> ReceiveTextMessageAsync(WebSocket socket, CancellationToken cancellationToken)
     {
         byte[] buffer = new byte[64 * 1024];
         using MemoryStream message = new();
         while (true)
         {
-            WebSocketReceiveResult received = await _socket.ReceiveAsync(buffer, cancellationToken);
+            WebSocketReceiveResult received = await socket.ReceiveAsync(buffer, cancellationToken);
             if (received.MessageType == WebSocketMessageType.Close) throw new WebSocketException("DevTools closed its WebSocket before replying.");
             if (received.MessageType != WebSocketMessageType.Text) throw new InvalidDataException("DevTools sent a non-text protocol message.");
             long requiredLength = message.Length + received.Count;

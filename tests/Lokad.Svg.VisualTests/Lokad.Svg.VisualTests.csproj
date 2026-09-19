@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
+    <ProjectReference Include="../../tools/Lokad.Svg.Chrome/Lokad.Svg.Chrome.csproj" />
     <ProjectReference Include="../../tools/Lokad.Svg.VisualDiff/Lokad.Svg.VisualDiff.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
