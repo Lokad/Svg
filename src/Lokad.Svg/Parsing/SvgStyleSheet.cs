@@ -8,7 +8,7 @@ internal static class SvgStyleSheet
     internal static void Parse(string value, int maximumRules, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         for (int index = 0; index < value.Length; index += 4096) workCounter.Consume(cancellationToken);
-        value = StripComments(value);
+        value = StripComments(value, workCounter, cancellationToken);
         int position = 0;
         while (position < value.Length)
         {
@@ -85,36 +85,45 @@ internal static class SvgStyleSheet
         return false;
     }
 
-    private static string StripComments(string value)
+    private static string StripComments(string value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         int sourceIndex = 0;
         int removedCharacters = 0;
-        while (true)
+        while (sourceIndex < value.Length)
         {
-            int start = value.IndexOf("/*", sourceIndex, StringComparison.Ordinal);
-            if (start < 0) break;
-            int end = value.IndexOf("*/", start + 2, StringComparison.Ordinal);
-            if (end < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet comments must be terminated.");
-            removedCharacters += end + 2 - start;
-            sourceIndex = end + 2;
+            if ((sourceIndex & 4095) == 0) workCounter.Consume(cancellationToken);
+            if (value[sourceIndex] != '/' || sourceIndex + 1 == value.Length || value[sourceIndex + 1] != '*') { sourceIndex++; continue; }
+            int commentStart = sourceIndex;
+            sourceIndex += 2;
+            while (sourceIndex + 1 < value.Length && (value[sourceIndex] != '*' || value[sourceIndex + 1] != '/'))
+            {
+                if ((sourceIndex & 4095) == 0) workCounter.Consume(cancellationToken);
+                sourceIndex++;
+            }
+            if (sourceIndex + 1 >= value.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet comments must be terminated.");
+            sourceIndex += 2;
+            removedCharacters += sourceIndex - commentStart;
         }
         if (removedCharacters == 0) return value;
-        return string.Create(value.Length - removedCharacters, value, static (destination, source) =>
+        return string.Create(value.Length - removedCharacters, (Value: value, WorkCounter: workCounter, CancellationToken: cancellationToken), static (destination, state) =>
         {
             int sourceIndex = 0;
             int destinationIndex = 0;
-            while (sourceIndex < source.Length)
+            while (sourceIndex < state.Value.Length)
             {
-                int commentStart = source.IndexOf("/*", sourceIndex, StringComparison.Ordinal);
-                if (commentStart < 0)
+                if ((sourceIndex & 4095) == 0) state.WorkCounter.Consume(state.CancellationToken);
+                if (state.Value[sourceIndex] != '/' || sourceIndex + 1 == state.Value.Length || state.Value[sourceIndex + 1] != '*')
                 {
-                    source.AsSpan(sourceIndex).CopyTo(destination[destinationIndex..]);
-                    return;
+                    destination[destinationIndex++] = state.Value[sourceIndex++];
+                    continue;
                 }
-                source.AsSpan(sourceIndex, commentStart - sourceIndex).CopyTo(destination[destinationIndex..]);
-                destinationIndex += commentStart - sourceIndex;
-                int commentEnd = source.IndexOf("*/", commentStart + 2, StringComparison.Ordinal);
-                sourceIndex = commentEnd + 2;
+                sourceIndex += 2;
+                while (state.Value[sourceIndex] != '*' || state.Value[sourceIndex + 1] != '/')
+                {
+                    if ((sourceIndex & 4095) == 0) state.WorkCounter.Consume(state.CancellationToken);
+                    sourceIndex++;
+                }
+                sourceIndex += 2;
             }
         });
     }
