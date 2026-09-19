@@ -147,7 +147,8 @@ public static class SvgConverter
                     }
                     continue;
                 }
-                RasterizeRectangle(command.Rectangle, destination);
+                if ((uint)command.RectangleIndex >= (uint)root.Rectangles.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG draw command references missing geometry.");
+                RasterizeRectangle(root.Rectangles[command.RectangleIndex], destination);
             }
             if (stopsAtGroupEnd) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
             return index;

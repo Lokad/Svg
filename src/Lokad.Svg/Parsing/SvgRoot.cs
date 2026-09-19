@@ -21,7 +21,8 @@ internal readonly record struct SvgStroke(SvgColor Color, int Width);
 
 internal enum SvgDrawCommandKind { Rectangle, BeginGroup, EndGroup }
 
-internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, SvgRectangle Rectangle, byte Opacity);
+/// <summary>References retained scene geometry or marks an opacity-scope boundary.</summary>
+internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int RectangleIndex, byte Opacity);
 
 internal readonly record struct SvgPoint(int X, int Y);
 
@@ -29,7 +30,7 @@ internal static class SvgSceneMemory
 {
     private const int ArrayHeaderBytes = 32;
     private const int RectangleBytes = 56;
-    private const int DrawCommandBytes = 72;
+    private const int DrawCommandBytes = 16;
 
     internal static long GetArrayByteCount(SvgSceneArrayKind kind, int count)
         => count == 0 ? 0 : checked(ArrayHeaderBytes + (long)count * (kind == SvgSceneArrayKind.Rectangle ? RectangleBytes : DrawCommandBytes));
@@ -91,33 +92,35 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal void AddRectangle(SvgRectangle rectangle)
     {
+        int rectangleIndex = _rectangles.Count;
         _rectangles.Add(rectangle);
-        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangleIndex, 255));
     }
 
     internal void AddRectangles(ReadOnlySpan<SvgRectangle> rectangles)
     {
+        int firstRectangleIndex = _rectangles.Count;
         _rectangles.AddRange(rectangles);
-        foreach (SvgRectangle rectangle in rectangles) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
+        for (int index = 0; index < rectangles.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, firstRectangleIndex + index, 255));
     }
 
     internal SvgSceneSlot AddReferencePlaceholder()
     {
         SvgSceneSlot slot = new(_rectangles.Count, _commands.Count);
         _rectangles.Add(default);
-        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, default, 255));
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, slot.RectangleIndex, 255));
         return slot;
     }
 
     internal void Replace(SvgSceneSlot slot, SvgRectangle rectangle)
     {
         _rectangles[slot.RectangleIndex] = rectangle;
-        _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255);
+        _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Rectangle, slot.RectangleIndex, 255);
     }
 
-    internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, opacity));
+    internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity));
 
-    internal void EndOpacityScope() => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255));
+    internal void EndOpacityScope() => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255));
 
     internal SvgSceneStorage Build()
     {
