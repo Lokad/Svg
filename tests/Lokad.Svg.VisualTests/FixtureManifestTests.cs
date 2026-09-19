@@ -1,10 +1,24 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
 public sealed class FixtureManifestTests
 {
+    [Fact]
+    public void Exact_solid_red_fixture_matches_its_admitted_chrome_reference()
+    {
+        string fixtures = Path.Combine(AppContext.BaseDirectory, "Fixtures");
+        byte[] svg = File.ReadAllBytes(Path.Combine(fixtures, "original", "solid-red.svg"));
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-solid-red.png")), 4);
+        RgbaImage candidate = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None), 4);
+
+        PixelComparison result = PixelComparer.Compare(reference, candidate);
+
+        Assert.True(result.IsExact, "Changed pixels: " + result.ChangedPixelCount);
+    }
+
     [Fact]
     public void Manifest_has_unique_ids_hash_matched_assets_and_explicit_fidelity_status()
     {
