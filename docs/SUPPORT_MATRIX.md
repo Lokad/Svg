@@ -14,6 +14,7 @@ supported and no pixel-fidelity claim is made.
 | CSS, gradients, images, filters and text | Not implemented |
 | PNG encoding | Not implemented |
 | Independent RGBA comparison | Initial exact comparer implemented |
+| Visual comparison CLI | Exact JSON gate implemented for bounded RGBA8 PNGs |
 | Chrome oracle lifecycle/CDP connection | Initial launcher implemented; pinned browser and capture pending |
 | Fixture corpus | Not implemented |
 
