@@ -154,6 +154,13 @@ internal static class SvgRootParser
 
     private static byte MultiplyAlpha(byte left, byte right) => (byte)((left * right + 127) / 255);
 
+    private static byte ParseAlpha(string value)
+    {
+        if (!value.EndsWith('%')) return ParseOpacity(value);
+        if (!double.TryParse(value.AsSpan()[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out double percentage) || !double.IsFinite(percentage) || percentage < 0 || percentage > 100) throw new SvgException(SvgErrorCode.MalformedInput, "Alpha percentages must be finite values from zero through one hundred.");
+        return checked((byte)Math.Round(percentage * 255 / 100, MidpointRounding.AwayFromZero));
+    }
+
     private static SvgColor ParseColor(string fill)
     {
         if (fill.Equals("transparent", StringComparison.OrdinalIgnoreCase)) return SvgColor.Transparent;
@@ -179,7 +186,7 @@ internal static class SvgRootParser
         {
             throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
         }
-        color = new SvgColor(red, green, blue, hasAlpha ? ParseOpacity(channels[3]) : (byte)255);
+        color = new SvgColor(red, green, blue, hasAlpha ? ParseAlpha(channels[3]) : (byte)255);
         return true;
     }
 
@@ -206,7 +213,7 @@ internal static class SvgRootParser
         double secondary = chroma * (1 - Math.Abs((hue / 60 % 2) - 1));
         (double red, double green, double blue) = hue < 60 ? (chroma, secondary, 0d) : hue < 120 ? (secondary, chroma, 0d) : hue < 180 ? (0d, chroma, secondary) : hue < 240 ? (0d, secondary, chroma) : hue < 300 ? (secondary, 0d, chroma) : (chroma, 0d, secondary);
         double match = lightness - chroma / 2;
-        color = new SvgColor((byte)Math.Round((red + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((green + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((blue + match) * 255, MidpointRounding.AwayFromZero), hasAlpha ? ParseOpacity(channels[3]) : (byte)255);
+        color = new SvgColor((byte)Math.Round((red + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((green + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((blue + match) * 255, MidpointRounding.AwayFromZero), hasAlpha ? ParseAlpha(channels[3]) : (byte)255);
         return true;
     }
 
