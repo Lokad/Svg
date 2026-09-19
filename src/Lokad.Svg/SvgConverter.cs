@@ -3,6 +3,7 @@ namespace Lokad.Svg;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Encoding;
 using Lokad.Svg.Rendering;
+using System.Xml;
 
 /// <summary>Converts static SVG bytes to PNG bytes.</summary>
 public static class SvgConverter
@@ -11,7 +12,7 @@ public static class SvgConverter
     public static ReadOnlyMemory<byte> ConvertToPng(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         ValidateInvocation(svg, options, cancellationToken);
-        SvgRoot root = SvgRootParser.Parse(svg, options.Limits, cancellationToken);
+        SvgRoot root = ParseRoot(svg, options, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
         return RenderEmptySvg(root, options, cancellationToken);
     }
@@ -26,7 +27,7 @@ public static class SvgConverter
     public static int ConvertToPng(ReadOnlyMemory<byte> svg, Memory<byte> destination, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         ValidateInvocation(svg, options, cancellationToken);
-        _ = SvgRootParser.Parse(svg, options.Limits, cancellationToken);
+        _ = ParseRoot(svg, options, cancellationToken);
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG rendering has not been implemented yet.");
     }
 
@@ -83,5 +84,11 @@ public static class SvgConverter
             }
         }
         return PngEncoder.Encode(outputWidth, outputHeight, pixels, cancellationToken);
+    }
+
+    private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
+    {
+        try { return SvgRootParser.Parse(svg, options.Limits, cancellationToken); }
+        catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 }
