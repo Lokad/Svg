@@ -130,6 +130,16 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
+    public void Attribute_free_groups_preserve_rectangle_document_order()
+    {
+        byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><g><rect width='1' height='1' fill='red'/><g><rect width='1' height='1' fill='blue'/></g></g></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        RgbaImage image = PngRgbaDecoder.Decode(png, 1);
+
+        Assert.Equal(new byte[] { 0, 0, 255, 255 }, image.Pixels);
+    }
+
+    [Fact]
     public void Integer_fill_opacity_composites_on_transparent_surface()
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='#ff0000' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();

@@ -60,6 +60,26 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-integer-alpha-overlap.json",
       "referenceSha256": "11a315de7a2661f30c267fa5680ed1c00531633486057738f15b73333b6a0db9"
+    },
+    {
+      "id": "original-nested-groups",
+      "path": "original/nested-groups.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-19",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "f32cc21296cf7794811e4e0e02db5194c1c8cb807aa56bc03a133aaa2bd4332d",
+      "materializedSha256": "f32cc21296cf7794811e4e0e02db5194c1c8cb807aa56bc03a133aaa2bd4332d",
+      "featureTags": ["structure", "group", "shape", "document-order"],
+      "width": 2,
+      "height": 1,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-nested-groups.json",
+      "referenceSha256": "9b4f3fd652b1d801106d945e8e8ca9bae6de6f64072607194773a4bd210680ef"
     }
   ]
 }

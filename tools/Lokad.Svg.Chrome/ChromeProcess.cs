@@ -36,12 +36,21 @@ internal sealed class ChromeProcess : IAsyncDisposable
         catch { if (!process.HasExited) process.Kill(true); process.Dispose(); Directory.Delete(profile, true); throw; }
     }
 
-    public ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         if (!_process.HasExited) _process.Kill(true);
+        await _process.WaitForExitAsync();
         _process.Dispose();
-        Directory.Delete(_profileDirectory, true);
-        return ValueTask.CompletedTask;
+        for (int attempt = 0; ; attempt++)
+        {
+            try
+            {
+                Directory.Delete(_profileDirectory, true);
+                return;
+            }
+            catch (UnauthorizedAccessException) when (attempt < 5) { await Task.Delay(50); }
+            catch (IOException) when (attempt < 5) { await Task.Delay(50); }
+        }
     }
 
     private static async Task<string> WaitForDebuggerAddressAsync(string profile, Process process, CancellationToken cancellationToken)

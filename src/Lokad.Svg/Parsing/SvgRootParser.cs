@@ -22,26 +22,52 @@ internal static class SvgRootParser
             if (reader.IsEmptyElement) return new SvgRoot(width, height, [], false);
             int rootDepth = reader.Depth;
             List<SvgRectangle> rectangles = [];
+            List<int> groupDepths = [];
+            int nodeCount = 0;
             bool unsupported = false;
             while (reader.Read())
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    if (reader.Depth > rootDepth + 1) continue;
-                    if (reader.LocalName == "rect")
+                    bool directChild = reader.Depth == rootDepth + 1;
+                    bool nestedInGroup = groupDepths.Count > 0;
+                    if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
-                        if (rectangles.Count >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                        if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                        nodeCount++;
                         rectangles.Add(ParseRectangle(reader));
                     }
-                    else if (reader.LocalName is "title" or "desc" or "metadata") reader.Skip();
-                    else unsupported = true;
+                    else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "g")
+                    {
+                        if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                        nodeCount++;
+                        ValidateGroupAttributes(reader);
+                        if (!reader.IsEmptyElement) groupDepths.Add(reader.Depth);
+                    }
+                    else if (directChild && (reader.LocalName is "title" or "desc" or "metadata")) reader.Skip();
+                    else if (directChild || nestedInGroup) unsupported = true;
                 }
-                if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == rootDepth) return new SvgRoot(width, height, rectangles.ToArray(), unsupported);
+                if (reader.NodeType == XmlNodeType.EndElement)
+                {
+                    if (groupDepths.Count > 0 && groupDepths[^1] == reader.Depth) groupDepths.RemoveAt(groupDepths.Count - 1);
+                    if (reader.Depth == rootDepth) return new SvgRoot(width, height, rectangles.ToArray(), unsupported);
+                }
             }
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
+    }
+
+    private static void ValidateGroupAttributes(XmlReader reader)
+    {
+        if (!reader.HasAttributes) return;
+        while (reader.MoveToNextAttribute())
+        {
+            if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
+        }
+        reader.MoveToElement();
     }
 
     private static void ValidateRootAttributes(XmlReader reader)
