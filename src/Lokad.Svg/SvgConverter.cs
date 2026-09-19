@@ -1,5 +1,7 @@
 namespace Lokad.Svg;
 
+using Lokad.Svg.Parsing;
+
 /// <summary>Converts static SVG bytes to PNG bytes.</summary>
 public static class SvgConverter
 {
@@ -7,6 +9,7 @@ public static class SvgConverter
     public static ReadOnlyMemory<byte> ConvertToPng(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         ValidateInvocation(svg, options, cancellationToken);
+        _ = SvgRootParser.Parse(svg, options.Limits, cancellationToken);
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG rendering has not been implemented yet.");
     }
 
@@ -21,6 +24,7 @@ public static class SvgConverter
     public static int ConvertToPng(ReadOnlyMemory<byte> svg, Memory<byte> destination, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         ValidateInvocation(svg, options, cancellationToken);
+        _ = SvgRootParser.Parse(svg, options.Limits, cancellationToken);
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG rendering has not been implemented yet.");
     }
 

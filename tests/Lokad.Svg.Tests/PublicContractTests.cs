@@ -50,4 +50,12 @@ public sealed class PublicContractTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Malformed_root_fails_before_the_unimplemented_renderer()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<not-svg/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
 }

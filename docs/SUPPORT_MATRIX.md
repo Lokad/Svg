@@ -9,7 +9,8 @@ supported and no pixel-fidelity claim is made.
 | Area | Status |
 | --- | --- |
 | Public options, limits and failure categories | Contract scaffolded |
-| Parsing and viewport resolution | Not implemented |
+| Root SVG parsing | Bounded root validation and dimension parsing implemented |
+| Viewport resolution | Not implemented |
 | Shapes, paths and composition | Not implemented |
 | CSS, gradients, images, filters and text | Not implemented |
 | PNG encoding | Not implemented |
