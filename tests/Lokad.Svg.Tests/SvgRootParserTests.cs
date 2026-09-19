@@ -146,11 +146,20 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Parses_space_separated_functional_css_colors()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='rgb(100% 0% 0% / 50%)'/><rect width='1' fill='hsl(120 100% 50% / 0.5)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' fill='rgb(100% 0% 0% / 50%)'/><rect width='1' fill='hsl(120 100% 50% / 0.5)'/><rect width='1' fill='rgba(1 2 3)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Collection(root.Rectangles,
             rectangle => Assert.Equal(new SvgColor(255, 0, 0, 128), rectangle.Color),
-            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 128), rectangle.Color));
+            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 128), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(1, 2, 3, 255), rectangle.Color));
+    }
+
+    [Fact]
+    public void Rejects_nonfinite_hsl_hues_as_malformed_input()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='hsl(NaN 50% 50%)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
     [Fact]

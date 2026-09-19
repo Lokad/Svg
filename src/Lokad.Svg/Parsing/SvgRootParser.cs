@@ -995,16 +995,21 @@ internal static class SvgRootParser
     private static byte ParseOpacity(string? value)
     {
         if (value is null) return 255;
+        return ParseOpacity(value.AsSpan());
+    }
+
+    private static byte ParseOpacity(ReadOnlySpan<char> value)
+    {
         if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double opacity) || !double.IsFinite(opacity) || opacity < 0 || opacity > 1) throw new SvgException(SvgErrorCode.MalformedInput, "Fill opacity must be a finite value from zero through one.");
         return checked((byte)Math.Round(opacity * 255, MidpointRounding.AwayFromZero));
     }
 
     private static byte MultiplyAlpha(byte left, byte right) => (byte)((left * right + 127) / 255);
 
-    private static byte ParseAlpha(string value)
+    private static byte ParseAlpha(ReadOnlySpan<char> value)
     {
         if (!value.EndsWith('%')) return ParseOpacity(value);
-        if (!double.TryParse(value.AsSpan()[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out double percentage) || !double.IsFinite(percentage) || percentage < 0 || percentage > 100) throw new SvgException(SvgErrorCode.MalformedInput, "Alpha percentages must be finite values from zero through one hundred.");
+        if (!double.TryParse(value[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out double percentage) || !double.IsFinite(percentage) || percentage < 0 || percentage > 100) throw new SvgException(SvgErrorCode.MalformedInput, "Alpha percentages must be finite values from zero through one hundred.");
         return checked((byte)Math.Round(percentage * 255 / 100, MidpointRounding.AwayFromZero));
     }
 
@@ -1026,28 +1031,32 @@ internal static class SvgRootParser
         bool hasAlpha = fill.StartsWith("rgba(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
         bool isRgb = fill.StartsWith("rgb(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
         if (!hasAlpha && !isRgb) { color = default; return false; }
-        string content = fill[(hasAlpha ? 5 : 4)..^1];
-        if (!content.Contains(','))
+        FunctionalColorTokenReader tokens = new(fill.AsSpan((hasAlpha ? 5 : 4)..^1), fill.Contains(','));
+        if (!tokens.TryRead(out ReadOnlySpan<char> redToken) || !tokens.TryRead(out ReadOnlySpan<char> greenToken) || !tokens.TryRead(out ReadOnlySpan<char> blueToken) || !TryParseRgbChannel(redToken, out byte red) || !TryParseRgbChannel(greenToken, out byte green) || !TryParseRgbChannel(blueToken, out byte blue)) throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
+        byte alpha = 255;
+        if (tokens.IsCommaSeparated)
         {
-            string[] modernChannels = content.Replace("/", " / ").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            if ((modernChannels.Length != 3 && (modernChannels.Length != 5 || modernChannels[3] != "/")) || !TryParseRgbChannel(modernChannels[0], out byte modernRed) || !TryParseRgbChannel(modernChannels[1], out byte modernGreen) || !TryParseRgbChannel(modernChannels[2], out byte modernBlue)) throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
-            color = new SvgColor(modernRed, modernGreen, modernBlue, modernChannels.Length == 5 ? ParseAlpha(modernChannels[4]) : (byte)255);
-            return true;
+            if (hasAlpha)
+            {
+                if (!tokens.TryRead(out ReadOnlySpan<char> alphaToken) || tokens.TryRead(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
+                alpha = ParseAlpha(alphaToken);
+            }
+            else if (tokens.TryRead(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
         }
-        string[] channels = content.Split(',', StringSplitOptions.TrimEntries);
-        if (channels.Length != (hasAlpha ? 4 : 3) || !TryParseRgbChannel(channels[0], out byte red) || !TryParseRgbChannel(channels[1], out byte green) || !TryParseRgbChannel(channels[2], out byte blue))
+        else if (tokens.TryRead(out ReadOnlySpan<char> separator))
         {
-            throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
+            if (!separator.SequenceEqual("/".AsSpan()) || !tokens.TryRead(out ReadOnlySpan<char> alphaToken) || tokens.TryRead(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "RGB color channels must be decimal bytes.");
+            alpha = ParseAlpha(alphaToken);
         }
-        color = new SvgColor(red, green, blue, hasAlpha ? ParseAlpha(channels[3]) : (byte)255);
+        color = new SvgColor(red, green, blue, alpha);
         return true;
     }
 
-    private static bool TryParseRgbChannel(string token, out byte value)
+    private static bool TryParseRgbChannel(ReadOnlySpan<char> token, out byte value)
     {
         if (token.EndsWith('%'))
         {
-            bool valid = double.TryParse(token.AsSpan()[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out double percentage) && double.IsFinite(percentage) && percentage >= 0 && percentage <= 100;
+            bool valid = double.TryParse(token[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out double percentage) && double.IsFinite(percentage) && percentage >= 0 && percentage <= 100;
             value = valid ? checked((byte)Math.Round(percentage * 255 / 100, MidpointRounding.AwayFromZero)) : default;
             return valid;
         }
@@ -1059,26 +1068,92 @@ internal static class SvgRootParser
         bool hasAlpha = fill.StartsWith("hsla(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
         bool isHsl = fill.StartsWith("hsl(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
         if (!hasAlpha && !isHsl) { color = default; return false; }
-        string content = fill[(hasAlpha ? 5 : 4)..^1];
-        string[] channels = content.Contains(',') ? content.Split(',', StringSplitOptions.TrimEntries) : content.Replace("/", " / ").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        bool modernAlpha = channels.Length == 5 && channels[3] == "/";
-        if (modernAlpha) channels = [channels[0], channels[1], channels[2], channels[4]];
-        if (channels.Length != ((hasAlpha || modernAlpha) ? 4 : 3) || !double.TryParse(channels[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double hue) || !TryParsePercentage(channels[1], out double saturation) || !TryParsePercentage(channels[2], out double lightness)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
+        FunctionalColorTokenReader tokens = new(fill.AsSpan((hasAlpha ? 5 : 4)..^1), fill.Contains(','));
+        if (!tokens.TryRead(out ReadOnlySpan<char> hueToken) || !tokens.TryRead(out ReadOnlySpan<char> saturationToken) || !tokens.TryRead(out ReadOnlySpan<char> lightnessToken) || !double.TryParse(hueToken, NumberStyles.Float, CultureInfo.InvariantCulture, out double hue) || !double.IsFinite(hue) || !TryParsePercentage(saturationToken, out double saturation) || !TryParsePercentage(lightnessToken, out double lightness)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
+        byte alpha = 255;
+        bool hasSpecifiedAlpha = false;
+        if (tokens.IsCommaSeparated)
+        {
+            if (hasAlpha)
+            {
+                if (!tokens.TryRead(out ReadOnlySpan<char> alphaToken) || tokens.TryRead(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
+                alpha = ParseAlpha(alphaToken);
+                hasSpecifiedAlpha = true;
+            }
+            else if (tokens.TryRead(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
+        }
+        else if (tokens.TryRead(out ReadOnlySpan<char> separator))
+        {
+            if (!separator.SequenceEqual("/".AsSpan()) || !tokens.TryRead(out ReadOnlySpan<char> alphaToken) || tokens.TryRead(out _)) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
+            alpha = ParseAlpha(alphaToken);
+            hasSpecifiedAlpha = true;
+        }
+        if (hasAlpha && !hasSpecifiedAlpha) throw new SvgException(SvgErrorCode.MalformedInput, "HSL colors require a hue and percentage saturation/lightness channels.");
         hue = ((hue % 360) + 360) % 360;
         double chroma = (1 - Math.Abs(2 * lightness - 1)) * saturation;
         double secondary = chroma * (1 - Math.Abs((hue / 60 % 2) - 1));
         (double red, double green, double blue) = hue < 60 ? (chroma, secondary, 0d) : hue < 120 ? (secondary, chroma, 0d) : hue < 180 ? (0d, chroma, secondary) : hue < 240 ? (0d, secondary, chroma) : hue < 300 ? (secondary, 0d, chroma) : (chroma, 0d, secondary);
         double match = lightness - chroma / 2;
-        color = new SvgColor((byte)Math.Round((red + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((green + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((blue + match) * 255, MidpointRounding.AwayFromZero), hasAlpha || modernAlpha ? ParseAlpha(channels[3]) : (byte)255);
+        color = new SvgColor((byte)Math.Round((red + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((green + match) * 255, MidpointRounding.AwayFromZero), (byte)Math.Round((blue + match) * 255, MidpointRounding.AwayFromZero), alpha);
         return true;
     }
 
-    private static bool TryParsePercentage(string token, out double value)
+    private static bool TryParsePercentage(ReadOnlySpan<char> token, out double value)
     {
         value = 0;
-        bool valid = token.EndsWith('%') && double.TryParse(token.AsSpan()[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out value) && double.IsFinite(value) && value >= 0 && value <= 100;
+        bool valid = token.EndsWith('%') && double.TryParse(token[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out value) && double.IsFinite(value) && value >= 0 && value <= 100;
         value /= valid ? 100 : 1;
         return valid;
+    }
+
+    private ref struct FunctionalColorTokenReader
+    {
+        private readonly ReadOnlySpan<char> _value;
+        private int _position;
+        private bool _finished;
+
+        internal FunctionalColorTokenReader(ReadOnlySpan<char> value, bool isCommaSeparated)
+        {
+            _value = value;
+            IsCommaSeparated = isCommaSeparated;
+        }
+
+        internal bool IsCommaSeparated { get; }
+
+        internal bool TryRead(out ReadOnlySpan<char> token)
+        {
+            if (IsCommaSeparated)
+            {
+                if (_finished)
+                {
+                    token = default;
+                    return false;
+                }
+                int start = _position;
+                while (_position < _value.Length && _value[_position] != ',') _position++;
+                token = _value[start.._position].Trim();
+                if (_position == _value.Length) _finished = true;
+                else _position++;
+                return true;
+            }
+
+            while (_position < _value.Length && char.IsWhiteSpace(_value[_position])) _position++;
+            if (_position == _value.Length)
+            {
+                token = default;
+                return false;
+            }
+            if (_value[_position] == '/')
+            {
+                token = _value.Slice(_position, 1);
+                _position++;
+                return true;
+            }
+            int tokenStart = _position;
+            while (_position < _value.Length && !char.IsWhiteSpace(_value[_position]) && _value[_position] != '/') _position++;
+            token = _value[tokenStart.._position];
+            return true;
+        }
     }
 
     private static double? ParseLength(string? value)
