@@ -3,11 +3,11 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents the bounded rectangle attributes after XML syntax validation and before style-driven lowering.</summary>
+/// <summary>Represents geometry parsed from a policy-validated rectangle element.</summary>
 internal readonly record struct SvgRectangleSyntax(double X, double Y, double Width, double Height, string? StrokeWidth)
 {
     internal static SvgRectangleSyntax Parse(XmlReader reader)
     {
-        SvgElementAttributePolicy.ValidateRectangle(reader);
         double x = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0");
         double y = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0");
         double width = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("width") ?? "0");

@@ -3,11 +3,11 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents the bounded line attributes after XML syntax validation and before style-driven lowering.</summary>
+/// <summary>Represents geometry parsed from a policy-validated line element.</summary>
 internal readonly record struct SvgLineSyntax(int X1, int Y1, int X2, int Y2, string? StrokeWidth)
 {
     internal static SvgLineSyntax Parse(XmlReader reader)
     {
-        SvgElementAttributePolicy.ValidateLine(reader);
         int x1 = SvgGeometrySyntax.ParseInteger(reader.GetAttribute("x1") ?? "0");
         int y1 = SvgGeometrySyntax.ParseInteger(reader.GetAttribute("y1") ?? "0");
         int x2 = SvgGeometrySyntax.ParseInteger(reader.GetAttribute("x2") ?? "0");

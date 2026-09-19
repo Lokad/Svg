@@ -37,6 +37,9 @@ syntax-specific scans.
 Root and group presentation now share `SvgContainerPresentationResolver`, which
 turns their computed style and inherited context into typed paint, display,
 visibility and opacity state before their separate traversal roles continue.
+Rendered-leaf and definition routing is now the sole `SvgElementAttributePolicy`
+boundary for rectangle, line, path, point-list and local-`use` lowerers; those
+lowerers accept only policy-validated XML and no longer repeat the attribute walk.
 
 The browser review harness currently reports all 43 manifest fixtures exact. Its
 accepted semantic probes match Chrome; `styled-use` now retains a definition's
