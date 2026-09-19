@@ -12,6 +12,7 @@ supported and no pixel-fidelity claim is made.
 | Root SVG parsing | Bounded root validation; inert title/description/metadata tolerated; bare-number/px dimensions implemented; geometry/style root attributes and other units explicit unsupported |
 | Viewport resolution | Not implemented |
 | Empty explicitly sized SVG | Integral transparent or caller-background PNG implemented |
+| Caller-owned PNG destination | Implemented for the current empty/rectangle subset |
 | Integer opaque rectangles | Document-order `rect` layers, integer coordinates, `#RRGGBB` fill, source-over on transparent surface; other attributes explicit unsupported |
 | Shapes, paths and composition | Other cases explicit unsupported-feature failure |
 | CSS, gradients, images, filters and text | Not implemented |

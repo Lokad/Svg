@@ -14,7 +14,8 @@ public static class SvgConverter
         ValidateInvocation(svg, options, cancellationToken);
         SvgRoot root = ParseRoot(svg, options, cancellationToken);
         if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
-        return RenderEmptySvg(root, options, cancellationToken);
+        RasterizedSurface surface = Rasterize(root, options, cancellationToken);
+        return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, cancellationToken);
     }
 
     /// <summary>Schedules one conversion on the thread pool.</summary>
@@ -27,8 +28,10 @@ public static class SvgConverter
     public static int ConvertToPng(ReadOnlyMemory<byte> svg, Memory<byte> destination, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         ValidateInvocation(svg, options, cancellationToken);
-        _ = ParseRoot(svg, options, cancellationToken);
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG rendering has not been implemented yet.");
+        SvgRoot root = ParseRoot(svg, options, cancellationToken);
+        if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
+        RasterizedSurface surface = Rasterize(root, options, cancellationToken);
+        return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, cancellationToken);
     }
 
     /// <summary>Schedules one destination conversion on the thread pool.</summary>
@@ -47,7 +50,7 @@ public static class SvgConverter
         }
     }
 
-    private static ReadOnlyMemory<byte> RenderEmptySvg(SvgRoot root, SvgRenderOptions options, CancellationToken cancellationToken)
+    private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         if (root.Width is not double width || root.Height is not double height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Explicit root width and height are required currently.");
         double scaledWidth = width * options.OutputScale;
@@ -83,7 +86,7 @@ public static class SvgConverter
             }
             }
         }
-        return PngEncoder.Encode(outputWidth, outputHeight, pixels, cancellationToken);
+        return new RasterizedSurface(outputWidth, outputHeight, pixels);
     }
 
     private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
@@ -91,4 +94,6 @@ public static class SvgConverter
         try { return SvgRootParser.Parse(svg, options.Limits, cancellationToken); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
+
+    private readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels);
 }

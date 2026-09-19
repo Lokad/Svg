@@ -106,4 +106,19 @@ public sealed class PublicContractTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<!DOCTYPE svg><svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Destination_conversion_writes_the_same_png_without_an_owned_result()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray();
+        byte[] expected = SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] destination = new byte[expected.Length];
+
+        int written = SvgConverter.ConvertToPng(svg, destination, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(expected.Length, written);
+        Assert.Equal(expected, destination);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, new byte[1], SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.InsufficientDestination, exception.ErrorCode);
+    }
 }
