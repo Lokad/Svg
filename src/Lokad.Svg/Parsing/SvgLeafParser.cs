@@ -58,7 +58,7 @@ internal static class SvgLeafParser
     {
         SvgElementAttributePolicy.ValidatePath(reader);
         string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-        using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, cancellationToken);
+        using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, workCounter, cancellationToken);
         SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, "path", workCounter, cancellationToken);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken), styleSheet); AxisTransform transform = inheritedTransform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
         SvgResolvedShapePresentation presentation = SvgShapePresentationResolver.Resolve(style, inheritedPaint, inheritedDisplayed, inheritedVisibility, false, namedColors);
@@ -70,7 +70,7 @@ internal static class SvgLeafParser
     {
         SvgElementAttributePolicy.ValidatePointList(reader, elementName);
         string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
-        using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, cancellationToken);
+        using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, workCounter, cancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(points, elementName, false, true, maximumGeometryElements, budget, workCounter, cancellationToken);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken), styleSheet); AxisTransform transform = inheritedTransform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
         SvgResolvedShapePresentation presentation = SvgShapePresentationResolver.Resolve(style, inheritedPaint, inheritedDisplayed, inheritedVisibility, false, namedColors);

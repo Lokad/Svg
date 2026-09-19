@@ -666,6 +666,19 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_the_work_limit_while_preflighting_path_and_point_list_text()
+    {
+        string values = new string(' ', 4097);
+        SvgRenderLimits limits = new(10_000, 8_192, 16, 16, 1_024, 16, 16, 1);
+
+        SvgException path = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path d='" + values + "'/></svg>") , limits, CancellationToken.None));
+        SvgException polygon = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='" + values + "'/></svg>") , limits, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, path.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, polygon.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_work_limit_while_matching_stylesheet_rules()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 1);

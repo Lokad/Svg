@@ -7,9 +7,9 @@ internal static class SvgOrthogonalGeometryTokenizer
 {
     private const int PointStorageBytes = 8;
 
-    internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, CancellationToken cancellationToken)
+    internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        ValidatePathCommandCount(value, maximumGeometryElements, cancellationToken);
+        ValidatePathCommandCount(value, maximumGeometryElements, workCounter, cancellationToken);
         PathTokenReader tokens = new(value);
         if (tokens.End || tokens.ReadCommand() != 'M') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
         BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, PointStorageBytes);
@@ -45,9 +45,9 @@ internal static class SvgOrthogonalGeometryTokenizer
         }
     }
 
-    internal static BudgetedParserList<SvgPoint> ParsePointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, CancellationToken cancellationToken)
+    internal static BudgetedParserList<SvgPoint> ParsePointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        ValidatePointListVertexCount(value, maximumGeometryElements, cancellationToken);
+        ValidatePointListVertexCount(value, maximumGeometryElements, workCounter, cancellationToken);
         BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, PointStorageBytes);
         try
         {
@@ -76,26 +76,26 @@ internal static class SvgOrthogonalGeometryTokenizer
         }
     }
 
-    private static void ValidatePathCommandCount(string value, int maximumGeometryElements, CancellationToken cancellationToken)
+    private static void ValidatePathCommandCount(string value, int maximumGeometryElements, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         int commandCount = 0;
         for (int index = 0; index < value.Length; index++)
         {
-            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
             if (value[index] is not ('M' or 'L' or 'H' or 'V' or 'Z' or 'z')) continue;
             if (commandCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
             commandCount++;
         }
     }
 
-    private static void ValidatePointListVertexCount(string value, int maximumGeometryElements, CancellationToken cancellationToken)
+    private static void ValidatePointListVertexCount(string value, int maximumGeometryElements, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         long maximumValues = (long)maximumGeometryElements * 2;
         int valueCount = 0;
         bool withinValue = false;
         for (int index = 0; index < value.Length; index++)
         {
-            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
             if (value[index] is ',' or ' ' or '\t' or '\r' or '\n') { withinValue = false; continue; }
             if (withinValue) continue;
             if (valueCount >= maximumValues) throw new SvgException(SvgErrorCode.LimitExceeded, "Point-list vertex count exceeds the configured limit.");
