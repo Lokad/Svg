@@ -45,6 +45,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Tolerates_inert_root_metadata_without_claiming_visible_support()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><title>sample</title><metadata><editor:note xmlns:editor='urn:editor'>ignored</editor:note></metadata><rect width='1' height='1' fill='#ff0000'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.Single(root.Rectangles);
+    }
+
+    [Fact]
     public void Parses_px_dimensions_but_keeps_percentages_explicitly_unsupported()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='12.5px' height='7px'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

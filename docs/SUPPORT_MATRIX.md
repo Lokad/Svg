@@ -9,7 +9,7 @@ supported and no pixel-fidelity claim is made.
 | Area | Status |
 | --- | --- |
 | Public options, limits and failure categories | Contract scaffolded |
-| Root SVG parsing | Bounded root validation; bare-number/px dimensions implemented; geometry/style root attributes and other units explicit unsupported |
+| Root SVG parsing | Bounded root validation; inert title/description/metadata tolerated; bare-number/px dimensions implemented; geometry/style root attributes and other units explicit unsupported |
 | Viewport resolution | Not implemented |
 | Empty explicitly sized SVG | Integral transparent or caller-background PNG implemented |
 | Integer opaque rectangles | Document-order `rect` layers, integer coordinates, `#RRGGBB` fill, source-over on transparent surface; other attributes explicit unsupported |

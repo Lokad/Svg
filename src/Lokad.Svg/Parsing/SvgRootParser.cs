@@ -28,11 +28,13 @@ internal static class SvgRootParser
                 cancellationToken.ThrowIfCancellationRequested();
                 if (reader.NodeType == XmlNodeType.Element)
                 {
-                    if (reader.Depth == rootDepth + 1 && reader.LocalName == "rect")
+                    if (reader.Depth > rootDepth + 1) continue;
+                    if (reader.LocalName == "rect")
                     {
                         if (rectangles.Count >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                         rectangles.Add(ParseRectangle(reader));
                     }
+                    else if (reader.LocalName is "title" or "desc" or "metadata") reader.Skip();
                     else unsupported = true;
                 }
                 if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == rootDepth) return new SvgRoot(width, height, rectangles.ToArray(), unsupported);
