@@ -94,6 +94,13 @@ internal static class SvgRootParser
                         rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                         sawGraphicNode = true;
                     }
+                    else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "line")
+                    {
+                        AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
+                        SvgRectangle line = ParseLine(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform);
+                        rectangles.Add(line); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, line, 255));
+                        sawGraphicNode = true;
+                    }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "path")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
@@ -225,6 +232,23 @@ internal static class SvgRootParser
         int strokeWidth = ParseInteger(widthValue ?? "1");
         if (!paint.HasFill || paint.Color.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0 || strokeWidth > width || strokeWidth > height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width rectangle strokes no larger than the rectangle dimensions are implemented.");
         return new SvgStroke(paint.Color, strokeWidth);
+    }
+
+    private static SvgRectangle ParseLine(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform)
+    {
+        InlineStyle style = ParseInlineStyle(reader.GetAttribute("style"));
+        if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class" or "x1" or "y1" or "x2" or "y2" or "color" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform") continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Line attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
+        AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
+        int x1 = ParseInteger(reader.GetAttribute("x1") ?? "0"); int y1 = ParseInteger(reader.GetAttribute("y1") ?? "0"); int x2 = ParseInteger(reader.GetAttribute("x2") ?? "0"); int y2 = ParseInteger(reader.GetAttribute("y2") ?? "0");
+        string? stroke = GetProperty(reader, style.Stroke, "stroke");
+        byte opacity = ParseOpacity(GetProperty(reader, style.Opacity, "opacity"));
+        if (transform != AxisTransform.Identity || stroke is null || stroke.Equals("none", StringComparison.OrdinalIgnoreCase) || opacity != 255 || (x1 != x2 && y1 != y2) || (x1 == x2 && y1 == y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque untransformed horizontal or vertical lines are implemented.");
+        SvgPaint paint = ParsePaint(stroke, null, GetProperty(reader, style.Color, "color"), inheritedPaint);
+        int strokeWidth = ParseInteger(reader.GetAttribute("stroke-width") ?? "1");
+        if (!paint.HasFill || paint.Color.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width line strokes are implemented.");
+        double halfWidth = strokeWidth / 2d;
+        bool painted = inheritedDisplayed && ParseDisplay(GetProperty(reader, style.Display, "display")) && ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), inheritedVisibility);
+        return x1 != x2 ? new SvgRectangle(Math.Min(x1, x2), y1 - halfWidth, Math.Abs(x2 - x1), strokeWidth, paint.Color, painted) : new SvgRectangle(x1 - halfWidth, Math.Min(y1, y2), strokeWidth, Math.Abs(y2 - y1), paint.Color, painted);
     }
 
     private static UseReference ParseUse(XmlReader reader)
