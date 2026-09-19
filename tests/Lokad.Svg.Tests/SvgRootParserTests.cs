@@ -1,7 +1,6 @@
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 using System.Text;
-using System.Xml;
 
 namespace Lokad.Svg.Tests;
 
@@ -683,9 +682,11 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_external_entity_processing()
+    public void Categorizes_prohibited_external_entity_processing_as_malformed_input()
     {
-        Assert.Throws<XmlException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<!DOCTYPE svg [<!ENTITY x SYSTEM 'file:///nope'>]><svg xmlns='http://www.w3.org/2000/svg'/>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<!DOCTYPE svg [<!ENTITY x SYSTEM 'file:///nope'>]><svg xmlns='http://www.w3.org/2000/svg'/>") , SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
     [Fact]

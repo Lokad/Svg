@@ -172,6 +172,12 @@ internal static class SvgRootParser
 
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
     {
+        try { return ParseCore(svg, limits, budget, cancellationToken); }
+        catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
+    }
+
+    private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
+    {
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(GetXmlReaderWorkspaceBytes(svg.Length), SvgMemoryCategory.Parser);
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
@@ -249,6 +255,7 @@ internal static class SvgRootParser
                             rectangles.Add(default); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, default, 255));
                             pendingUses.Add(new PendingUse(rectangleIndex, commandIndex, reference));
                         }
+                        unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
@@ -264,6 +271,7 @@ internal static class SvgRootParser
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
                         SvgRectangle line = ParseLine(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform);
                         rectangles.Add(line); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, line, 255));
+                        unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "path")
@@ -274,6 +282,7 @@ internal static class SvgRootParser
                             geometryElementCount += path.ElementCount;
                             rectangles.AddRange(path.Rectangles); foreach (SvgRectangle rectangle in path.Rectangles) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                         }
+                        unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "polygon" or "polyline")
@@ -284,6 +293,7 @@ internal static class SvgRootParser
                             geometryElementCount += pointList.ElementCount;
                             rectangles.AddRange(pointList.Rectangles); foreach (SvgRectangle rectangle in pointList.Rectangles) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                         }
+                        unsupported |= !reader.IsEmptyElement;
                         sawGraphicNode = true;
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))

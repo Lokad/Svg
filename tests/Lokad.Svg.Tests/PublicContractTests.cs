@@ -116,6 +116,16 @@ public sealed class PublicContractTests
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><rect></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'>&undefined;</svg>")]
+    public void Malformed_XML_is_categorized_as_malformed_input(string svg)
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
     [Fact]
     public void Trailing_document_content_fails_as_malformed_input()
     {
@@ -134,6 +144,21 @@ public sealed class PublicContractTests
     public void Animated_rectangle_content_is_rejected_as_unsupported()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></rect></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("<line x1='0' y1='0' x2='1' y2='0' stroke='red' stroke-width='2'><animate attributeName='stroke' values='red;blue' dur='1s'/></line>")]
+    [InlineData("<path d='M 0 0 H 1 V 1 H 0 Z' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></path>")]
+    [InlineData("<polygon points='0,0 1,0 1,1 0,1' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></polygon>")]
+    [InlineData("<polyline points='0,0 1,0 1,1 0,1 0,0' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></polyline>")]
+    [InlineData("<defs><rect id='tile' width='1' height='1' fill='red'/></defs><use href='#tile'><animate attributeName='x' values='0;1' dur='1s'/></use>")]
+    public void Animated_content_on_other_supported_leaf_elements_is_rejected_as_unsupported(string content)
+    {
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'>" + content + "</svg>";
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
