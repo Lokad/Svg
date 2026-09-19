@@ -39,6 +39,8 @@ internal static class SvgRootParser
             Dictionary<string, SvgRectangle> definitions = [];
             List<PendingUse> pendingUses = [];
             int definitionsDepth = -1;
+            int symbolDepth = -1;
+            string? symbolId = null;
             while (reader.Read())
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -48,11 +50,17 @@ internal static class SvgRootParser
                     nodeCount++;
                     bool directChild = reader.Depth == rootDepth + 1;
                     bool nestedInGroup = groupDepths.Count > 0;
-                    if (definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
+                    if (definitionsDepth >= 0 && (reader.Depth == definitionsDepth + 1 || reader.Depth == symbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
-                        string? id = reader.GetAttribute("id");
+                        string? id = symbolDepth >= 0 ? symbolId : reader.GetAttribute("id");
                         SvgRectangle rectangle = ParseRectangle(reader, rootPaint, rootVisible, rootVisibility, AxisTransform.Identity, default);
                         if (id is not null && !definitions.TryAdd(id, rectangle)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                    }
+                    else if (definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol")
+                    {
+                        if (reader.HasAttributes) { while (reader.MoveToNextAttribute()) { if (reader.NamespaceURI.Length == 0 && reader.LocalName == "id") continue; throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol attribute '" + reader.Name + "' is not implemented."); } reader.MoveToElement(); }
+                        symbolId = reader.GetAttribute("id") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A symbol requires an id.");
+                        if (!reader.IsEmptyElement) symbolDepth = reader.Depth;
                     }
                     else if (definitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "defs")
                     {
@@ -121,6 +129,7 @@ internal static class SvgRootParser
                 if (reader.NodeType == XmlNodeType.EndElement)
                 {
                     if (reader.Depth == definitionsDepth) definitionsDepth = -1;
+                    if (reader.Depth == symbolDepth) { symbolDepth = -1; symbolId = null; }
                     if (groupDepths.Count > 0 && groupDepths[^1].Depth == reader.Depth) { GroupScope group = groupDepths[^1]; groupDepths.RemoveAt(groupDepths.Count - 1); if (group.IsolatesOpacity) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255)); }
                     if (reader.Depth == rootDepth)
                     {
