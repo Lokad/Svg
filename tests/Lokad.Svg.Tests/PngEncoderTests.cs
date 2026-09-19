@@ -76,6 +76,26 @@ public sealed class PngEncoderTests
         Assert.Equal(8, destination.Length);
     }
 
+    [Fact]
+    public async Task Async_stream_encoding_waits_for_destination_backpressure()
+    {
+        using StallingAsyncWriteStream destination = new();
+
+        Task<int> task = PngEncoder.EncodeToAsync(1, 1, new byte[4], destination, new RenderBudget(long.MaxValue), int.MaxValue, CancellationToken.None);
+        await destination.FirstWriteStarted;
+        try
+        {
+            Assert.False(task.IsCompleted);
+        }
+        finally
+        {
+            destination.CompleteFirstWrite();
+        }
+
+        int written = await task;
+        Assert.Equal(written, destination.Length);
+    }
+
     private static byte[] CreateHighEntropyPixels()
     {
         byte[] pixels = new byte[512 * 512 * 4];
@@ -201,6 +221,59 @@ public sealed class PngEncoderTests
         protected override void Dispose(bool disposing)
         {
             if (disposing) _storage.Dispose();
+            base.Dispose(disposing);
+        }
+    }
+
+    private sealed class StallingAsyncWriteStream : Stream
+    {
+        private readonly MemoryStream _storage = new();
+        private readonly TaskCompletionSource _firstWriteStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly TaskCompletionSource _completeFirstWrite = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private bool _isFirstWrite = true;
+
+        internal Task FirstWriteStarted => _firstWriteStarted.Task;
+
+        public override bool CanRead => false;
+        public override bool CanSeek => false;
+        public override bool CanWrite => true;
+        public override long Length => _storage.Length;
+        public override long Position { get => _storage.Position; set => throw new NotSupportedException(); }
+
+        internal void CompleteFirstWrite() => _completeFirstWrite.TrySetResult();
+
+        public override void Flush() { }
+
+        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
+        public override void SetLength(long value) => throw new NotSupportedException();
+
+        public override void Write(byte[] buffer, int offset, int count) => throw new InvalidOperationException("The async encoder must not use synchronous stream writes.");
+
+        public override void Write(ReadOnlySpan<byte> buffer) => throw new InvalidOperationException("The async encoder must not use synchronous stream writes.");
+
+        public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            _storage.Write(buffer.Span);
+            if (_isFirstWrite)
+            {
+                _isFirstWrite = false;
+                _firstWriteStarted.TrySetResult();
+                return new ValueTask(_completeFirstWrite.Task);
+            }
+            return ValueTask.CompletedTask;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _completeFirstWrite.TrySetResult();
+                _storage.Dispose();
+            }
             base.Dispose(disposing);
         }
     }
