@@ -679,6 +679,20 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_the_identifier_syntax_limit_before_matching_or_reference_storage()
+    {
+        string identifier = new('a', SvgSyntaxLimits.MaximumIdentifierCharacters + 1);
+
+        SvgException element = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect id='" + identifier + "'/></svg>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException stylesheet = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>." + identifier + " { fill: red; }</style></svg>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException reference = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><use href='#" + identifier + "'/></svg>") , SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, element.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, stylesheet.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, reference.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_work_limit_while_matching_stylesheet_rules()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 1);

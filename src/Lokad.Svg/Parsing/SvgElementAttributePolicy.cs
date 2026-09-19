@@ -42,7 +42,7 @@ internal static class SvgElementAttributePolicy
         if ((kind is SvgElementKind.Root or SvgElementKind.Group) && (reader.Prefix == "xmlns" || reader.Name == "xmlns")) return true;
         if ((kind is SvgElementKind.Group or SvgElementKind.Use) && reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") return true;
         if (reader.NamespaceURI.Length != 0) return false;
-        return kind switch
+        bool allowed = kind switch
         {
             SvgElementKind.Root => reader.LocalName is "id" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style",
             SvgElementKind.Group => reader.LocalName is "id" or "class" or "href" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform",
@@ -54,6 +54,8 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.Symbol => reader.LocalName == "id",
             _ => false
         };
+        if (allowed && reader.LocalName is ("id" or "class") && reader.Value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
+        return allowed;
     }
 
     private enum SvgElementKind { Root, Group, Rectangle, Line, Use, Path, PointList, Symbol }

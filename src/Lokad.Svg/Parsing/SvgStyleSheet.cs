@@ -170,6 +170,7 @@ internal static class SvgStyleSheet
 
     private static bool IsCssIdentifier(ReadOnlySpan<char> value)
     {
+        if (value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "CSS identifiers exceed the configured syntax limit.");
         foreach (char character in value) if (!(char.IsAsciiLetterOrDigit(character) || character is '-' or '_')) return false;
         return true;
     }
