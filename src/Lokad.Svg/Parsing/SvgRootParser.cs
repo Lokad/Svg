@@ -278,17 +278,10 @@ internal static class SvgRootParser
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
-                        InlineStyle inlineStyle = ParseInlineStyle(reader.GetAttribute("style"), workCounter, cancellationToken);
                         InlineStyle styleSheet = GetStyleSheet(reader, state.StyleRules, directChild, state.Groups, workCounter, cancellationToken);
-                        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inlineStyle, styleSheet);
-                        SvgPaint paint = ParseGroupPaint(reader, state.Groups.Count == 0 ? root.Paint : state.Groups[^1].Paint, style);
-                        bool displayed = (state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed) && ParseDisplay(style.Display);
-                        bool visibility = ParseVisibility(style.Visibility, state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible);
-                        AxisTransform transform = state.Groups.Count == 0 ? ParseTransform(reader.GetAttribute("transform")) : state.Groups[^1].Transform.Compose(ParseTransform(reader.GetAttribute("transform")));
-                        byte opacity = ParseOpacity(style.Opacity);
-                        bool isolatesOpacity = opacity != 255;
-                        if (isolatesOpacity && (root.Opacity != 255 || state.Groups.Any(static group => group.IsolatesOpacity))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
-                        if (!reader.IsEmptyElement) { if (isolatesOpacity) state.Scene.BeginOpacityScope(opacity); state.Groups.Add(new SvgGroupScope(reader.Depth, reader.LocalName, paint, displayed, visibility, transform, isolatesOpacity)); }
+                        SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, state.Groups.Count == 0 ? root.Paint : state.Groups[^1].Paint, state.Groups.Count == 0 ? root.IsDisplayed : state.Groups[^1].IsDisplayed, state.Groups.Count == 0 ? root.IsVisible : state.Groups[^1].IsVisible, state.Groups.Count == 0 ? AxisTransform.Identity : state.Groups[^1].Transform, styleSheet, CssNamedColors, workCounter, cancellationToken);
+                        if (parsedGroup.Scope.IsolatesOpacity && (root.Opacity != 255 || state.Groups.Any(static current => current.IsolatesOpacity))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
+                        if (!reader.IsEmptyElement) { if (parsedGroup.Scope.IsolatesOpacity) state.Scene.BeginOpacityScope(parsedGroup.Opacity); state.Groups.Add(parsedGroup.Scope); }
                     }
                     else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                     {
@@ -345,18 +338,6 @@ internal static class SvgRootParser
 
     private static long GetXmlReaderWorkspaceBytes(int inputBytes) => Math.Max(MinimumXmlReaderWorkspaceBytes, checked((long)inputBytes * 2));
 
-    private static SvgPaint ParseGroupPaint(XmlReader reader, SvgPaint inheritedPaint, SvgComputedStyle style)
-    {
-        SvgElementAttributePolicy.ValidateGroup(reader);
-        if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
-        ValidateStroke(style.Stroke);
-        return SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, inheritedPaint, CssNamedColors);
-    }
-
-    private static AxisTransform ParseTransform(string? value) => SvgGeometrySyntax.ParseTransform(value);
-
-    private static InlineStyle ParseInlineStyle(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken) => SvgInlineStyleParser.Parse(value, workCounter, cancellationToken);
-
     private static void ParseRectangleStyleSheet(string value, int maximumRules, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => SvgStyleSheet.Parse(value, maximumRules, rules, workCounter, cancellationToken);
 
@@ -365,15 +346,5 @@ internal static class SvgRootParser
 
     private static string ReadStyleElementText(XmlReader reader)
         => SvgStyleSheet.ReadElementText(reader);
-
-    private static bool ParseDisplay(string? value) => SvgShapePresentationResolver.ParseDisplay(value);
-
-    private static void ValidateFillRule(string? value) => SvgShapePresentationResolver.ValidateFillRule(value);
-
-    private static void ValidateStroke(string? value) => SvgShapePresentationResolver.ValidateStroke(value);
-
-    private static bool ParseVisibility(string? value, bool inheritedVisibility) => SvgShapePresentationResolver.ParseVisibility(value, inheritedVisibility);
-
-    private static byte ParseOpacity(string? value) => SvgColorParser.ParseOpacity(value);
 
 }
