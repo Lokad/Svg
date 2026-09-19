@@ -61,6 +61,18 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Cascades_rect_id_and_class_stylesheet_rules_by_specificity_and_source_order()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue; fill-opacity: 0.5; } .accent { fill: red; } .accent { fill: teal; } #selected { fill: lime; } #selected { opacity: 0.5; }</style><rect width='1'/><rect width='1' class='accent'/><rect width='1' id='selected' class='accent'/><rect width='1' class='accent' style='fill: yellow'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 128), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 128, 128, 128), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 64), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(255, 255, 0, 128), rectangle.Color));
+    }
+
+    [Fact]
     public void Rejects_uncalibrated_non_quarter_rectangle_coordinates()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0.1' width='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

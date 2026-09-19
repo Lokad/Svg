@@ -34,7 +34,7 @@ internal static class SvgRootParser
             int nodeCount = 0;
             bool unsupported = false;
             bool sawGraphicNode = false;
-            InlineStyle rectangleStyleSheet = default;
+            List<CssRule> rectangleStyleRules = [];
             bool hasRectangleStyleSheet = false;
             while (reader.Read())
             {
@@ -48,7 +48,7 @@ internal static class SvgRootParser
                     if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
                         AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
-                        SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, rectangleStyleSheet);
+                        SvgRectangle rectangle = ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform, GetRectangleStyleSheet(reader, rectangleStyleRules));
                         rectangles.Add(rectangle); commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255));
                         sawGraphicNode = true;
                     }
@@ -82,7 +82,7 @@ internal static class SvgRootParser
                     {
                         if (sawGraphicNode || hasRectangleStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede rendered content.");
                         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
-                        rectangleStyleSheet = ParseRectangleStyleSheet(ReadStyleElementText(reader));
+                        rectangleStyleRules.AddRange(ParseRectangleStyleSheet(ReadStyleElementText(reader)));
                         hasRectangleStyleSheet = true;
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
@@ -140,7 +140,7 @@ internal static class SvgRootParser
         {
             while (reader.MoveToNextAttribute())
             {
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -346,11 +346,57 @@ internal static class SvgRootParser
         return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
     }
 
-    private static InlineStyle ParseRectangleStyleSheet(string value)
+    private static List<CssRule> ParseRectangleStyleSheet(string value)
     {
-        Match match = Regex.Match(value, @"^\s*rect\s*\{(?<declarations>[^{}]*)\}\s*$", RegexOptions.IgnoreCase);
-        if (!match.Success) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one rect type-selector stylesheet rule is implemented.");
-        return ParseInlineStyle(match.Groups["declarations"].Value);
+        List<CssRule> rules = [];
+        int position = 0;
+        while (position < value.Length)
+        {
+            while (position < value.Length && char.IsWhiteSpace(value[position])) position++;
+            if (position == value.Length) break;
+            int openingBrace = value.IndexOf('{', position);
+            if (openingBrace < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Stylesheet rules must contain a declaration block.");
+            int closingBrace = value.IndexOf('}', openingBrace + 1);
+            if (closingBrace < 0 || value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1).Contains('{')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested stylesheet rules are not implemented.");
+            InlineStyle style = ParseInlineStyle(value[(openingBrace + 1)..closingBrace]);
+            foreach (string selector in value[position..openingBrace].Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)) rules.Add(ParseRectangleSelector(selector, style));
+            position = closingBrace + 1;
+        }
+        if (rules.Count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A stylesheet must contain a rect, ID, or class selector rule.");
+        return rules;
+    }
+
+    private static CssRule ParseRectangleSelector(string selector, InlineStyle style)
+    {
+        if (selector.Equals("rect", StringComparison.OrdinalIgnoreCase)) return new CssRule(CssSelectorKind.Rectangle, string.Empty, 1, style);
+        if (selector.Length > 1 && selector[0] == '#' && IsCssIdentifier(selector.AsSpan(1))) return new CssRule(CssSelectorKind.Id, selector[1..], 100, style);
+        if (selector.Length > 1 && selector[0] == '.' && IsCssIdentifier(selector.AsSpan(1))) return new CssRule(CssSelectorKind.Class, selector[1..], 10, style);
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, and class stylesheet selectors are implemented.");
+    }
+
+    private static bool IsCssIdentifier(ReadOnlySpan<char> value)
+    {
+        foreach (char character in value) if (!(char.IsAsciiLetterOrDigit(character) || character is '-' or '_')) return false;
+        return true;
+    }
+
+    private static InlineStyle GetRectangleStyleSheet(XmlReader reader, List<CssRule> rules)
+    {
+        string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
+        int colorSpecificity = -1, fillSpecificity = -1, fillOpacitySpecificity = -1, strokeSpecificity = -1, displaySpecificity = -1, visibilitySpecificity = -1, opacitySpecificity = -1, fillRuleSpecificity = -1;
+        foreach (CssRule rule in rules)
+        {
+            if (!rule.Matches(reader)) continue;
+            if (rule.Style.Color is not null && rule.Specificity >= colorSpecificity) { color = rule.Style.Color; colorSpecificity = rule.Specificity; }
+            if (rule.Style.Fill is not null && rule.Specificity >= fillSpecificity) { fill = rule.Style.Fill; fillSpecificity = rule.Specificity; }
+            if (rule.Style.FillOpacity is not null && rule.Specificity >= fillOpacitySpecificity) { fillOpacity = rule.Style.FillOpacity; fillOpacitySpecificity = rule.Specificity; }
+            if (rule.Style.Stroke is not null && rule.Specificity >= strokeSpecificity) { stroke = rule.Style.Stroke; strokeSpecificity = rule.Specificity; }
+            if (rule.Style.Display is not null && rule.Specificity >= displaySpecificity) { display = rule.Style.Display; displaySpecificity = rule.Specificity; }
+            if (rule.Style.Visibility is not null && rule.Specificity >= visibilitySpecificity) { visibility = rule.Style.Visibility; visibilitySpecificity = rule.Specificity; }
+            if (rule.Style.Opacity is not null && rule.Specificity >= opacitySpecificity) { opacity = rule.Style.Opacity; opacitySpecificity = rule.Specificity; }
+            if (rule.Style.FillRule is not null && rule.Specificity >= fillRuleSpecificity) { fillRule = rule.Style.FillRule; fillRuleSpecificity = rule.Specificity; }
+        }
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
     }
 
     private static string ReadStyleElementText(XmlReader reader)
@@ -575,4 +621,17 @@ internal static class SvgRootParser
     }
 
     private readonly record struct InlineStyle(string? Color, string? Fill, string? FillOpacity, string? Stroke, string? Display, string? Visibility, string? Opacity, string? FillRule);
+
+    private enum CssSelectorKind { Rectangle, Id, Class }
+
+    private readonly record struct CssRule(CssSelectorKind Kind, string Value, int Specificity, InlineStyle Style)
+    {
+        internal bool Matches(XmlReader reader) => Kind switch
+        {
+            CssSelectorKind.Rectangle => true,
+            CssSelectorKind.Id => string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
+            CssSelectorKind.Class => (reader.GetAttribute("class") ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Contains(Value, StringComparer.Ordinal),
+            _ => false
+        };
+    }
 }

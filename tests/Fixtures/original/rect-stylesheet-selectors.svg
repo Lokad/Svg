@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="4" height="1">
+  <style>rect { fill: blue; fill-opacity: 0.5; } .accent { fill: red; } .accent { fill: teal; } #selected { fill: lime; } #selected { opacity: 0.5; }</style>
+  <rect width="1" height="1"/>
+  <rect x="1" width="1" height="1" class="accent"/>
+  <rect x="2" width="1" height="1" id="selected" class="accent"/>
+  <rect x="3" width="1" height="1" class="accent" style="fill: yellow"/>
+</svg>
