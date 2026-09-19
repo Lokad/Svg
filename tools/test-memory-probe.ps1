@@ -82,4 +82,11 @@ $cancellationOutput = Join-Path $ResultsDirectory "$runId-cancellation.png"
 $cancelled = Invoke-Probe -Name 'cancellation' -InputPath $cancellationInput -Output $cancellationOutput -ExpectedExitCode 3 -ExtraArguments @('--cancel-after-ms', '1')
 if ($cancelled['outcome'] -ne 'cancelled' -or (Test-Path -LiteralPath $cancellationOutput)) { throw 'The cancellation probe completed or wrote output.' }
 
+$parserCancellationInput = Join-Path $ResultsDirectory "$runId-parser-cancellation.svg"
+$stylesheetPayload = New-Object string('x', 4MB)
+[IO.File]::WriteAllText($parserCancellationInput, '<svg xmlns="http://www.w3.org/2000/svg"><style>/*' + $stylesheetPayload + '*/ rect { fill: red; }</style><rect width="1" height="1"/></svg>', [Text.UTF8Encoding]::new($false))
+$parserCancellationOutput = Join-Path $ResultsDirectory "$runId-parser-cancellation.png"
+$parserCancelled = Invoke-Probe -Name 'parser-cancellation' -InputPath $parserCancellationInput -Output $parserCancellationOutput -ExpectedExitCode 3 -ExtraArguments @('--cancel-after-conversion-start-ms', '1')
+if ($parserCancelled['outcome'] -ne 'cancelled' -or (Test-Path -LiteralPath $parserCancellationOutput)) { throw 'The parser-stage cancellation probe completed or wrote output.' }
+
 Write-Output "Memory probe scenarios passed. Reports retained in $ResultsDirectory."

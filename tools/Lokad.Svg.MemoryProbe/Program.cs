@@ -8,16 +8,20 @@ internal static class Program
     {
         if (!TryParseArguments(arguments, out ProbeOptions? options) || options is null)
         {
-            Console.Error.WriteLine("Usage: Lokad.Svg.MemoryProbe <input.svg> <output.png> [--maximum-accounted-bytes <positive-int64>] [--cancel-after-ms <positive-int32>]");
+            Console.Error.WriteLine("Usage: Lokad.Svg.MemoryProbe <input.svg> <output.png> [--maximum-accounted-bytes <positive-int64>] [--cancel-after-ms <positive-int32>] [--cancel-after-conversion-start-ms <positive-int32>]");
             return 2;
         }
 
         using Process process = Process.GetCurrentProcess();
         using CancellationTokenSource? cancellation = options.CancelAfterMilliseconds is int delay ? new CancellationTokenSource(delay) : null;
+        CancellationTokenSource? conversionCancellation = null;
         Stopwatch stopwatch = Stopwatch.StartNew();
         try
         {
-            ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(File.ReadAllBytes(options.InputPath), CreateOptions(options.MaximumAccountedBytes), cancellation?.Token ?? CancellationToken.None);
+            byte[] svg = File.ReadAllBytes(options.InputPath);
+            conversionCancellation = options.CancelAfterConversionStartMilliseconds is int conversionDelay ? new CancellationTokenSource(conversionDelay) : null;
+            CancellationToken cancellationToken = conversionCancellation?.Token ?? cancellation?.Token ?? CancellationToken.None;
+            ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, CreateOptions(options.MaximumAccountedBytes), cancellationToken);
             File.WriteAllBytes(options.OutputPath, png.Span);
             WriteReport("success", stopwatch, process, png.Length, null);
             return 0;
@@ -27,7 +31,7 @@ internal static class Program
             WriteReport("svg-error", stopwatch, process, null, exception.ErrorCode);
             return 1;
         }
-        catch (OperationCanceledException) when (cancellation is { IsCancellationRequested: true })
+        catch (OperationCanceledException) when ((cancellation is { IsCancellationRequested: true }) || (conversionCancellation is { IsCancellationRequested: true }))
         {
             WriteReport("cancelled", stopwatch, process, null, null);
             return 3;
@@ -38,6 +42,7 @@ internal static class Program
             WriteReport("unhandled-" + exception.GetType().Name, stopwatch, process, null, null);
             return 4;
         }
+        finally { conversionCancellation?.Dispose(); }
     }
 
     private static bool TryParseArguments(string[] arguments, out ProbeOptions? options)
@@ -46,6 +51,7 @@ internal static class Program
         if (arguments.Length < 2) return false;
         long? maximumAccountedBytes = null;
         int? cancelAfterMilliseconds = null;
+        int? cancelAfterConversionStartMilliseconds = null;
         for (int index = 2; index < arguments.Length; index += 2)
         {
             if (index + 1 >= arguments.Length) return false;
@@ -57,14 +63,20 @@ internal static class Program
             }
             else if (option == "--cancel-after-ms" && int.TryParse(value, out int parsedDelay) && parsedDelay > 0)
             {
+                if (cancelAfterConversionStartMilliseconds is not null) return false;
                 cancelAfterMilliseconds = parsedDelay;
+            }
+            else if (option == "--cancel-after-conversion-start-ms" && int.TryParse(value, out int parsedConversionDelay) && parsedConversionDelay > 0)
+            {
+                if (cancelAfterMilliseconds is not null) return false;
+                cancelAfterConversionStartMilliseconds = parsedConversionDelay;
             }
             else
             {
                 return false;
             }
         }
-        options = new ProbeOptions(arguments[0], arguments[1], maximumAccountedBytes, cancelAfterMilliseconds);
+        options = new ProbeOptions(arguments[0], arguments[1], maximumAccountedBytes, cancelAfterMilliseconds, cancelAfterConversionStartMilliseconds);
         return true;
     }
 
@@ -86,5 +98,5 @@ internal static class Program
         if (svgErrorCode is not null) Console.WriteLine("svgErrorCode=" + svgErrorCode.Value);
     }
 
-    private sealed record ProbeOptions(string InputPath, string OutputPath, long? MaximumAccountedBytes, int? CancelAfterMilliseconds);
+    private sealed record ProbeOptions(string InputPath, string OutputPath, long? MaximumAccountedBytes, int? CancelAfterMilliseconds, int? CancelAfterConversionStartMilliseconds);
 }

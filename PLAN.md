@@ -108,6 +108,8 @@ installed-package behavior.
 
 Public P0.3 boundary tests now include structural denials and long stylesheet or
 geometry-token scans that exhaust the one shared work limit before rendering.
+The isolated memory probe additionally starts its parser-cancellation timer after
+input is loaded, then cancels a 4 MiB stylesheet scan without producing output.
 
 ### P0.2 conversion-boundary matrix
 

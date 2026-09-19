@@ -44,11 +44,12 @@ dotnet run -c Release --project tools/Lokad.Svg.MemoryProbe -- tests/Fixtures/or
 
 The probe emits machine-readable elapsed-time and OS peak-working-set fields.
 The latter is an observation for bounded child-process scenarios, not a renderer
-memory guarantee; `--cancel-after-ms` is timing dependent and should be used for
-stress evidence rather than an exact unit-test assertion.
+memory guarantee. `--cancel-after-ms` starts before input loading, while
+`--cancel-after-conversion-start-ms` starts after the input is loaded; both are
+timing dependent and are stress evidence rather than exact unit-test assertions.
 
-Run the child-process success, budget-denial and cancellation scenarios (which
-retain their probe reports) with:
+Run the child-process success, budget-denial, raster-cancellation and
+post-input parser-cancellation scenarios (which retain their probe reports) with:
 
 ```powershell
 tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe
