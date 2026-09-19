@@ -173,9 +173,9 @@ public sealed class PublicContractTests
     [Fact]
     public void Retained_scene_arrays_stay_within_the_conversion_budget()
     {
-        SvgRenderLimits insufficient = new(329, 1024, 2, 4, 1024, 16, 16, 16);
+        SvgRenderLimits insufficient = new(663, 1024, 2, 4, 1024, 16, 16, 16);
         SvgRenderOptions insufficientOptions = new(null, 1, SvgColor.Transparent, insufficient);
-        SvgRenderLimits sufficient = new(330, 1024, 2, 4, 1024, 16, 16, 16);
+        SvgRenderLimits sufficient = new(664, 1024, 2, 4, 1024, 16, 16, 16);
         SvgRenderOptions sufficientOptions = new(null, 1, SvgColor.Transparent, sufficient);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1'/></svg>"u8.ToArray();
 

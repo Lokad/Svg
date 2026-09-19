@@ -182,8 +182,8 @@ internal static class SvgRootParser
             SvgViewBox? viewBox = ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
             if (reader.IsEmptyElement) return CompleteRoot(new SvgRoot(width, height, viewBox, [], [], false, null));
             int rootDepth = reader.Depth;
-            List<SvgRectangle> rectangles = [];
-            List<SvgDrawCommand> commands = [];
+            using BudgetedSceneList<SvgRectangle> rectangles = new(budget, SvgSceneArrayKind.Rectangle);
+            using BudgetedSceneList<SvgDrawCommand> commands = new(budget, SvgSceneArrayKind.DrawCommand);
             if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, default, rootOpacity));
             List<GroupScope> groupDepths = [];
             int nodeCount = 0;
@@ -306,10 +306,9 @@ internal static class SvgRootParser
                             rectangles[pendingUse.RectangleIndex] = rectangle; commands[pendingUse.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Rectangle, rectangle, 255);
                         }
                         if (rootOpacity != 255) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, default, 255));
-                        long sceneBytes = SvgSceneMemory.GetArrayByteCount(rectangles.Count, commands.Count);
-                        RenderBudget.BudgetReservation? sceneReservation = sceneBytes == 0 ? null : budget.Reserve(sceneBytes, SvgMemoryCategory.Scene);
-                        try { return CompleteRoot(new SvgRoot(width, height, viewBox, rectangles.ToArray(), commands.ToArray(), unsupported, sceneReservation)); }
-                        catch { sceneReservation?.Dispose(); throw; }
+                        SvgSceneStorage scene = SvgSceneStorage.Create(rectangles, commands);
+                        try { return CompleteRoot(new SvgRoot(width, height, viewBox, scene.Rectangles, scene.Commands, unsupported, scene)); }
+                        catch { scene.Dispose(); throw; }
                     }
                 }
             }
