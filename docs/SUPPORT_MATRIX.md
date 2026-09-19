@@ -21,7 +21,7 @@ have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned and caller destination output |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, and five stable references |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, and thirteen stable references |
 | Fixture corpus | Fourteen original CC0 probes with verified hashes; thirteen exact and one explicit unsupported result |
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).
