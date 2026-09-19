@@ -107,6 +107,14 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void One_root_dimension_uses_the_view_box_intrinsic_ratio()
+    {
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='20' viewBox='0 0 2 1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(new byte[] { 0, 0, 0, 20, 0, 0, 0, 10 }, png.Span.Slice(16, 8).ToArray());
+    }
+
+    [Fact]
     public void Empty_svg_surface_budget_fails_before_pixel_buffer_allocation()
     {
         SvgRenderLimits limits = new(3, 1024, 2, 4, 1024, 1, 1, 1);

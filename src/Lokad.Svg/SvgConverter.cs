@@ -60,6 +60,8 @@ public static class SvgConverter
         {
             (double explicitWidth, double explicitHeight) => (explicitWidth, explicitHeight),
             (null, null) => (300, 150),
+            (double explicitWidth, null) when root.ViewBox is SvgViewBox box => (explicitWidth, explicitWidth * box.Height / box.Width),
+            (null, double explicitHeight) when root.ViewBox is SvgViewBox box => (explicitHeight * box.Width / box.Height, explicitHeight),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Both root dimensions or neither root dimension are required currently.")
         };
         double scaledWidth = width * options.OutputScale;
