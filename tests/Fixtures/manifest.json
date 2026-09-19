@@ -144,6 +144,14 @@
       "expectedSupport": "exact", "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-viewbox-none.json",
       "referenceSha256": "a220b6c03e63249ee77b0efbdcdc7c44a724509da2e43cfd7d491fe43b4f9477"
+    },
+    {
+      "id": "original-viewbox-alignment", "path": "original/viewbox-alignment.svg", "sourceUrl": null,
+      "creator": "Lokad.Svg contributors", "retrievalDate": "2026-09-19", "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "a6948341c14711ed95368d79b417b12db398eaed058e8706d4ee8d77a61ed8bb", "materializedSha256": "a6948341c14711ed95368d79b417b12db398eaed058e8706d4ee8d77a61ed8bb",
+      "featureTags": ["viewport", "viewbox", "preserve-aspect-ratio", "shape"], "width": 4, "height": 4, "scale": 1, "background": "transparent",
+      "expectedSupport": "exact", "expectedFidelity": "exact", "oracleIdentity": "tests/References/original-viewbox-alignment.json", "referenceSha256": "432f7fa8d69918747cf6ce2d85d174bc02c9dfa0062eb880d82e6dc8a4f358cd"
     }
   ]
 }

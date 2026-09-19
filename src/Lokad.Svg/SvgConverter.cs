@@ -118,13 +118,21 @@ public static class SvgConverter
             if (viewBox is not SvgViewBox box) return (outputScale, 0, outputScale, 0);
             double horizontalScale = width / box.Width;
             double verticalScale = height / box.Height;
-            if (box.UsesUniformScale)
+            if (box.HorizontalAlignment != SvgViewBoxAlignment.None)
             {
                 double scale = Math.Min(horizontalScale, verticalScale);
                 horizontalScale = scale;
                 verticalScale = scale;
             }
-            return (horizontalScale * outputScale, ((width - box.Width * horizontalScale) / 2 - box.X * horizontalScale) * outputScale, verticalScale * outputScale, ((height - box.Height * verticalScale) / 2 - box.Y * verticalScale) * outputScale);
+            return (horizontalScale * outputScale, (GetAlignmentOffset(width - box.Width * horizontalScale, box.HorizontalAlignment) - box.X * horizontalScale) * outputScale, verticalScale * outputScale, (GetAlignmentOffset(height - box.Height * verticalScale, box.VerticalAlignment) - box.Y * verticalScale) * outputScale);
+
+            static double GetAlignmentOffset(double remaining, SvgViewBoxAlignment alignment) => alignment switch
+            {
+                SvgViewBoxAlignment.Min or SvgViewBoxAlignment.None => 0,
+                SvgViewBoxAlignment.Mid => remaining / 2,
+                SvgViewBoxAlignment.Max => remaining,
+                _ => throw new InvalidOperationException("Unknown viewBox alignment.")
+            };
         }
     }
 
