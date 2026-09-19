@@ -40,8 +40,8 @@ internal static class SvgRootParser
                     bool nestedInGroup = groupDepths.Count > 0;
                     if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "rect")
                     {
-                        (int offsetX, int offsetY) = groupDepths.Count == 0 ? (0, 0) : (groupDepths[^1].OffsetX, groupDepths[^1].OffsetY);
-                        rectangles.Add(ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, offsetX, offsetY));
+                        AxisTransform transform = groupDepths.Count == 0 ? AxisTransform.Identity : groupDepths[^1].Transform;
+                        rectangles.Add(ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible, transform));
                     }
                     else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
@@ -49,9 +49,8 @@ internal static class SvgRootParser
                         SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, style);
                         bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(GetProperty(reader, style.Display, "display"));
                         bool visibility = ParseVisibility(GetProperty(reader, style.Visibility, "visibility"), groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible);
-                        (int offsetX, int offsetY) = ParseTranslation(reader.GetAttribute("transform"));
-                        if (groupDepths.Count > 0) { offsetX = checked(offsetX + groupDepths[^1].OffsetX); offsetY = checked(offsetY + groupDepths[^1].OffsetY); }
-                        if (!reader.IsEmptyElement) groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility, offsetX, offsetY));
+                        AxisTransform transform = groupDepths.Count == 0 ? ParseTransform(reader.GetAttribute("transform")) : groupDepths[^1].Transform.Compose(ParseTransform(reader.GetAttribute("transform")));
+                        if (!reader.IsEmptyElement) groupDepths.Add(new GroupScope(reader.Depth, paint, displayed, visibility, transform));
                     }
                     else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
                     else if (directChild || nestedInGroup) unsupported = true;
@@ -101,7 +100,7 @@ internal static class SvgRootParser
         return ParsePaint(GetProperty(reader, style.Fill, "fill"), GetProperty(reader, style.FillOpacity, "fill-opacity"), GetProperty(reader, style.Color, "color"), SvgPaint.Default);
     }
 
-    private static SvgRectangle ParseRectangle(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, int inheritedOffsetX, int inheritedOffsetY)
+    private static SvgRectangle ParseRectangle(XmlReader reader, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, AxisTransform inheritedTransform)
     {
         InlineStyle style = ParseInlineStyle(reader.GetAttribute("style"));
         if (reader.HasAttributes)
@@ -117,8 +116,9 @@ internal static class SvgRootParser
         int y = ParseInteger(reader.GetAttribute("y") ?? "0");
         int width = ParseInteger(reader.GetAttribute("width") ?? "0");
         int height = ParseInteger(reader.GetAttribute("height") ?? "0");
-        (int offsetX, int offsetY) = ParseTranslation(reader.GetAttribute("transform"));
-        x = checked(x + inheritedOffsetX + offsetX); y = checked(y + inheritedOffsetY + offsetY);
+        AxisTransform transform = inheritedTransform.Compose(ParseTransform(reader.GetAttribute("transform")));
+        x = checked(transform.ScaleX * x + transform.OffsetX); y = checked(transform.ScaleY * y + transform.OffsetY);
+        width = checked(transform.ScaleX * width); height = checked(transform.ScaleY * height);
         ValidateSquareCorners(reader.GetAttribute("rx"));
         ValidateSquareCorners(reader.GetAttribute("ry"));
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
@@ -132,14 +132,19 @@ internal static class SvgRootParser
 
     private static string? GetProperty(XmlReader reader, string? inlineValue, string name) => inlineValue ?? reader.GetAttribute(name);
 
-    private static (int X, int Y) ParseTranslation(string? value)
+    private static AxisTransform ParseTransform(string? value)
     {
-        if (value is null) return (0, 0);
+        if (value is null) return AxisTransform.Identity;
         ReadOnlySpan<char> token = value.AsSpan().Trim();
-        if (!token.StartsWith("translate(", StringComparison.OrdinalIgnoreCase) || !token.EndsWith(')')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate() transforms are implemented.");
-        string[] values = token[10..^1].ToString().Split([',', ' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (values.Length is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "translate() requires one or two coordinates.");
-        return (ParseInteger(values[0]), values.Length == 2 ? ParseInteger(values[1]) : 0);
+        bool translate = token.StartsWith("translate(", StringComparison.OrdinalIgnoreCase);
+        bool scale = token.StartsWith("scale(", StringComparison.OrdinalIgnoreCase);
+        if ((!translate && !scale) || !token.EndsWith(')')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate() and positive scale() transforms are implemented.");
+        string[] values = token[(translate ? 10 : 6)..^1].ToString().Split([',', ' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (values.Length is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
+        int first = ParseInteger(values[0]); int second = values.Length == 2 ? ParseInteger(values[1]) : first;
+        if (translate) return new AxisTransform(1, 1, first, values.Length == 2 ? second : 0);
+        if (first <= 0 || second <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive integer scale() values are implemented.");
+        return new AxisTransform(first, second, 0, 0);
     }
 
     private static void ValidateNonGroupStyle(InlineStyle style)
@@ -354,7 +359,13 @@ internal static class SvgRootParser
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.");
     }
 
-    private readonly record struct GroupScope(int Depth, SvgPaint Paint, bool IsDisplayed, bool IsVisible, int OffsetX, int OffsetY);
+    private readonly record struct GroupScope(int Depth, SvgPaint Paint, bool IsDisplayed, bool IsVisible, AxisTransform Transform);
+
+    private readonly record struct AxisTransform(int ScaleX, int ScaleY, int OffsetX, int OffsetY)
+    {
+        internal static AxisTransform Identity { get; } = new(1, 1, 0, 0);
+        internal AxisTransform Compose(AxisTransform child) => new(checked(ScaleX * child.ScaleX), checked(ScaleY * child.ScaleY), checked(ScaleX * child.OffsetX + OffsetX), checked(ScaleY * child.OffsetY + OffsetY));
+    }
 
     private readonly record struct SvgPaint(SvgColor Color, bool HasFill, SvgColor CurrentColor)
     {

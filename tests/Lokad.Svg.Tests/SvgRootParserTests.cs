@@ -56,6 +56,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Composes_positive_integer_scale_and_translate_transforms()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(1, 2)'><g transform='scale(2, 3)'><rect x='4' y='5' width='1' height='2'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(9, root.Rectangles[0].X);
+        Assert.Equal(17, root.Rectangles[0].Y);
+        Assert.Equal(2, root.Rectangles[0].Width);
+        Assert.Equal(6, root.Rectangles[0].Height);
+    }
+
+    [Fact]
     public void Parses_supported_root_view_box_mapping()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' viewBox='1 2 3 4' preserveAspectRatio='none'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
