@@ -30,6 +30,7 @@ internal static class SvgInlineStyleParser
             if (separator <= 0 || declaration[(separator + 1)..].Contains(':')) throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
             ReadOnlySpan<char> property = declaration[..separator].Trim();
             ReadOnlySpan<char> propertyValue = declaration[(separator + 1)..].Trim();
+            if (property.Length > SvgSyntaxLimits.MaximumValueTokenCharacters || propertyValue.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Inline style property names and values exceed the configured syntax limit.");
             if (propertyValue.Length == 0 || propertyValue.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty and !important inline style declarations are not implemented.");
             if (property.Equals("color", StringComparison.OrdinalIgnoreCase)) color = propertyValue.ToString();
             else if (property.Equals("fill", StringComparison.OrdinalIgnoreCase)) fill = propertyValue.ToString();

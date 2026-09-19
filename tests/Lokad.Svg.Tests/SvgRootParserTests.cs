@@ -693,6 +693,27 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Enforces_value_and_transform_syntax_limits_before_expensive_parsing()
+    {
+        string value = new('1', SvgSyntaxLimits.MaximumValueTokenCharacters + 1);
+        string transform = new('t', SvgSyntaxLimits.MaximumTransformCharacters + 1);
+
+        SvgException rootLength = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='" + value + "'/>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException coordinate = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect x='" + value + "'/></svg>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException paint = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect fill='" + value + "'/></svg>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException inlineStyle = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect style='fill: " + value + "'/></svg>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException transformValue = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect transform='" + transform + "'/></svg>") , SvgRenderLimits.Default, CancellationToken.None));
+        SvgException pathCoordinate = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path d='M " + value + " 0'/></svg>") , SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, rootLength.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, coordinate.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, paint.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, inlineStyle.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, transformValue.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, pathCoordinate.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_work_limit_while_matching_stylesheet_rules()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 1);

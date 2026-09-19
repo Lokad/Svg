@@ -4,4 +4,6 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgSyntaxLimits
 {
     internal const int MaximumIdentifierCharacters = 1024;
+    internal const int MaximumValueTokenCharacters = 256;
+    internal const int MaximumTransformCharacters = 4096;
 }

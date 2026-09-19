@@ -9,12 +9,14 @@ internal static class SvgColorParser
 
     internal static byte ParseOpacity(ReadOnlySpan<char> value)
     {
+        if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Opacity values exceed the configured syntax limit.");
         if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double opacity) || !double.IsFinite(opacity) || opacity < 0 || opacity > 1) throw new SvgException(SvgErrorCode.MalformedInput, "Fill opacity must be a finite value from zero through one.");
         return checked((byte)Math.Round(opacity * 255, MidpointRounding.AwayFromZero));
     }
 
     internal static SvgColor Parse(string value, IReadOnlyDictionary<string, SvgColor> namedColors)
     {
+        if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "CSS color values exceed the configured syntax limit.");
         if (value.Equals("transparent", StringComparison.OrdinalIgnoreCase)) return SvgColor.Transparent;
         if (namedColors.TryGetValue(value, out SvgColor namedColor)) return namedColor;
         if (TryParseFunctionalRgb(value, out SvgColor functionalColor)) return functionalColor;

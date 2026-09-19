@@ -106,6 +106,7 @@ internal static class SvgOrthogonalGeometryTokenizer
 
     private static bool IsPathInteger(ReadOnlySpan<char> value)
     {
+        if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Path coordinate values exceed the configured syntax limit.");
         if (value.IsEmpty) return false;
         int start = value[0] == '-' ? 1 : 0;
         if (start == value.Length) return false;

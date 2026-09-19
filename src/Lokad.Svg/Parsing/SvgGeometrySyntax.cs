@@ -26,6 +26,7 @@ internal static class SvgGeometrySyntax
     internal static AxisTransform ParseTransform(string? value)
     {
         if (value is null) return AxisTransform.Identity;
+        if (value.Length > SvgSyntaxLimits.MaximumTransformCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform values exceed the configured syntax limit.");
         ReadOnlySpan<char> input = value.AsSpan();
         AxisTransform transform = AxisTransform.Identity;
         int position = 0;
@@ -58,6 +59,7 @@ internal static class SvgGeometrySyntax
     internal static double ParseRectangleCoordinate(string value)
     {
         ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle coordinate values exceed the configured syntax limit.");
         if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px rectangle coordinates are implemented.");
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle coordinates must be finite bounded numbers.");
@@ -70,6 +72,7 @@ internal static class SvgGeometrySyntax
     internal static int ParseInteger(ReadOnlySpan<char> value)
     {
         ReadOnlySpan<char> token = value.Trim();
+        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Integer coordinate values exceed the configured syntax limit.");
         if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px integer rectangle coordinates are implemented.");
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result != Math.Truncate(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer rectangle coordinates are implemented.");
@@ -80,6 +83,7 @@ internal static class SvgGeometrySyntax
     {
         if (value is null) return null;
         ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Root length values exceed the configured syntax limit.");
         double multiplier = 1;
         bool hasSupportedUnit = false;
         if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) { token = token[..^2].TrimEnd(); hasSupportedUnit = true; }
@@ -96,6 +100,8 @@ internal static class SvgGeometrySyntax
 
     internal static SvgViewBox? ParseViewBox(string? value, string? preserveAspectRatio)
     {
+        if (value is not null && value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "viewBox values exceed the configured syntax limit.");
+        if (preserveAspectRatio is not null && preserveAspectRatio.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "preserveAspectRatio values exceed the configured syntax limit.");
         if (value is null)
         {
             if (preserveAspectRatio is not null) ParsePreserveAspectRatio(preserveAspectRatio);
