@@ -11,6 +11,12 @@ Download and verify it into an ignored cache with:
 tools/setup-chrome.ps1 -CacheDirectory artifacts/chrome
 ```
 
+After a Release build, smoke-test provisioning, capture and exact comparison with:
+
+```powershell
+tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke
+```
+
 The setup script refuses an archive or extracted executable whose SHA-256 differs
 from the pin. This is only browser provisioning; a reviewed canonical reference
 still requires the full recipe metadata, repeated-capture stability checks, and
