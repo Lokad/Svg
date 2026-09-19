@@ -1096,6 +1096,21 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Stylesheet_matching_enforces_identifier_limits_independently()
+    {
+        string classValue = new('a', SvgSyntaxLimits.MaximumIdentifierCharacters + 1);
+        using System.Xml.XmlReader reader = System.Xml.XmlReader.Create(new System.IO.StringReader("<svg xmlns='http://www.w3.org/2000/svg'><rect class='" + classValue + "'/></svg>"));
+        Assert.True(reader.Read());
+        Assert.True(reader.Read());
+        CssRule rule = new(CssSelectorKind.Class, "selected", null, 10, default);
+
+        SvgException exception = Assert.Throws<SvgException>(() => rule.Matches(reader, true, false, false, new ParserWorkCounter(10), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Contains("identifiers and class values", exception.Message);
+    }
+
+    [Fact]
     public void Reserves_retained_stylesheet_strings_before_copying_selectors()
     {
         string identifier = new('a', SvgSyntaxLimits.MaximumIdentifierCharacters);

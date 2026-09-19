@@ -75,6 +75,7 @@ internal static class SvgStyleSheet
     internal static bool HasCssClass(string? value, string expected, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (value is null) return false;
+        ValidateIdentifierValue(value);
         ReadOnlySpan<char> classes = value.AsSpan();
         int position = 0;
         while (position < classes.Length)
@@ -86,6 +87,13 @@ internal static class SvgStyleSheet
             if (classes[start..position].Equals(expected, StringComparison.Ordinal)) return true;
         }
         return false;
+    }
+
+    internal static string? GetIdentifierAttribute(XmlReader reader, string name)
+    {
+        string? value = reader.GetAttribute(name);
+        if (value is not null) ValidateIdentifierValue(value);
+        return value;
     }
 
     private static OwnedStyleSheetText StripComments(string value, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -198,6 +206,11 @@ internal static class SvgStyleSheet
         if (value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "CSS identifiers exceed the configured syntax limit.");
         foreach (char character in value) if (!(char.IsAsciiLetterOrDigit(character) || character is '-' or '_')) return false;
         return true;
+    }
+
+    private static void ValidateIdentifierValue(string value)
+    {
+        if (value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
     }
 
     private static int SkipWhitespace(string value, int position, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -346,14 +359,14 @@ internal readonly record struct CssRule(CssSelectorKind Kind, string Value, stri
     {
         CssSelectorKind.Rectangle => reader.LocalName == "rect",
         CssSelectorKind.Group => reader.LocalName == "g",
-        CssSelectorKind.Id => string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
-        CssSelectorKind.Class => SvgStyleSheet.HasCssClass(reader.GetAttribute("class"), Value, workCounter, cancellationToken),
-        CssSelectorKind.RectangleClass => reader.LocalName == "rect" && SvgStyleSheet.HasCssClass(reader.GetAttribute("class"), Value, workCounter, cancellationToken),
-        CssSelectorKind.RectangleId => reader.LocalName == "rect" && string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
-        CssSelectorKind.GroupClass => reader.LocalName == "g" && SvgStyleSheet.HasCssClass(reader.GetAttribute("class"), Value, workCounter, cancellationToken),
-        CssSelectorKind.GroupId => reader.LocalName == "g" && string.Equals(Value, reader.GetAttribute("id"), StringComparison.Ordinal),
-        CssSelectorKind.AttributePresent => reader.GetAttribute(Value) is not null,
-        CssSelectorKind.AttributeEquals => string.Equals(reader.GetAttribute(Value), ExpectedValue, StringComparison.Ordinal),
+        CssSelectorKind.Id => string.Equals(Value, SvgStyleSheet.GetIdentifierAttribute(reader, "id"), StringComparison.Ordinal),
+        CssSelectorKind.Class => SvgStyleSheet.HasCssClass(SvgStyleSheet.GetIdentifierAttribute(reader, "class"), Value, workCounter, cancellationToken),
+        CssSelectorKind.RectangleClass => reader.LocalName == "rect" && SvgStyleSheet.HasCssClass(SvgStyleSheet.GetIdentifierAttribute(reader, "class"), Value, workCounter, cancellationToken),
+        CssSelectorKind.RectangleId => reader.LocalName == "rect" && string.Equals(Value, SvgStyleSheet.GetIdentifierAttribute(reader, "id"), StringComparison.Ordinal),
+        CssSelectorKind.GroupClass => reader.LocalName == "g" && SvgStyleSheet.HasCssClass(SvgStyleSheet.GetIdentifierAttribute(reader, "class"), Value, workCounter, cancellationToken),
+        CssSelectorKind.GroupId => reader.LocalName == "g" && string.Equals(Value, SvgStyleSheet.GetIdentifierAttribute(reader, "id"), StringComparison.Ordinal),
+        CssSelectorKind.AttributePresent => SvgStyleSheet.GetIdentifierAttribute(reader, Value) is not null,
+        CssSelectorKind.AttributeEquals => string.Equals(SvgStyleSheet.GetIdentifierAttribute(reader, Value), ExpectedValue, StringComparison.Ordinal),
         CssSelectorKind.DescendantGroup => hasGroupAncestor,
         CssSelectorKind.ChildGroup => !directChild && parentIsGroup,
         _ => false

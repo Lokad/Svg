@@ -100,9 +100,9 @@ Checks ran on Windows x64, SDK 10.0.401 / runtime 10.0.12. Linux execution,
 ARM64 equivalence and a clean installed-package consumer were not rerun in this
 review.
 
-### Current local verification (2026-09-19)
+### Current local verification (2026-09-20)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 216 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 217 unit tests
 and 70 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
@@ -134,7 +134,8 @@ Every supported root, group, definition, instance and rendered leaf now validate
 its bounded attributes before constructing the context that evaluates stylesheet
 selectors. Class-selector scans also consume shared-work checkpoints. This prevents
 an oversized identifier/class value from being matched before its syntax limit is
-enforced.
+enforced; the selector matcher independently applies that cap as a defense against
+future internal routing changes.
 
 The definition table reserves twice its requested capacity before `Dictionary`
 selects its prime backing capacity, then verifies the returned capacity stayed
