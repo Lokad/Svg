@@ -17,9 +17,18 @@ public sealed class ResearchProbeTests
         {
             string id = RequiredString(probe, "id");
             byte[] svg = File.ReadAllBytes(Path.Combine(research, RequiredString(probe, "path")));
-            Assert.True(svg.AsSpan().StartsWith("<!-- SPDX-License-Identifier: CC0-1.0 -->"u8), "Missing CC0 SPDX declaration: " + id);
+            Assert.True(svg.AsSpan().IndexOf("<!-- SPDX-License-Identifier: CC0-1.0 -->"u8) >= 0, "Missing CC0 SPDX declaration: " + id);
             Assert.Equal("CC0-1.0", RequiredString(probe, "license"));
-            Assert.Equal(RequiredString(probe, "sourceSha256"), Hash(svg));
+            string sourceHash = RequiredString(probe, "sourceSha256");
+            Assert.Equal(sourceHash, Hash(svg));
+            if (probe.TryGetProperty("originalSha256", out JsonElement originalHash))
+            {
+                string originalSourceHash = originalHash.GetString() ?? throw new InvalidDataException("originalSha256 is missing.");
+                Assert.Matches("^[0-9a-f]{64}$", originalSourceHash);
+                Assert.NotEqual(originalSourceHash, sourceHash);
+                Assert.False(string.IsNullOrWhiteSpace(RequiredString(probe, "sourceUrl")));
+                Assert.False(string.IsNullOrWhiteSpace(RequiredString(probe, "materialization")));
+            }
 
             JsonElement oracle = probe.GetProperty("oracle");
             Assert.Equal(3, oracle.GetProperty("freshProcessCaptures").GetInt32());

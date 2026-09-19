@@ -60,3 +60,13 @@ Windows-pinned-Chrome references for an
 coverage, subdivision, multi-subpath/winding, and outline targets for P1.3. The
 current converter asserts `UnsupportedFeature` for each; neither their stable
 browser captures nor this inventory admits a general path or stroke feature.
+
+## Path-heavy illustration classification
+
+[Tiger, Telemachos, Openclipart 16551](../tests/Research/tiger-16551.svg) is the
+first classified real illustration: its downloaded original hash is preserved in
+the research manifest, it contains 49 paths and four groups, and the
+SPDX-materialized input has a three-capture stable 362×296 Windows-pinned-Chrome
+reference. The current converter returns `UnsupportedFeature`; this classifies a
+needed general-path/composition workload without treating an unsupported browser
+reference as a feature admission.

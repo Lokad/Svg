@@ -144,6 +144,34 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-tiger-16551",
+      "path": "tiger-16551.svg",
+      "sourceUrl": "https://openclipart.org/detail/16551/tiger",
+      "creator": "Telemachos",
+      "sourceUploadDate": "2008-04-27",
+      "retrievalDate": "2026-09-19",
+      "license": "CC0-1.0",
+      "licenseEvidence": "The source page identifies Telemachos and Openclipart's CC0 policy at https://openclipart.org/share states that every uploaded work is released under CC0-1.0.",
+      "originalSha256": "a010007a1654f0ccfd3eb49ddce9ea9be030ebef0f3261907791097faf6cc0ac",
+      "materialization": "A CC0 SPDX comment is inserted after the XML declaration; all remaining bytes are the downloaded original.",
+      "sourceSha256": "f41062f8380d82b11d3bae162b30fe11b1a59ace12dd015488c0d9dabb0ddc12",
+      "featureTags": ["illustration", "path-heavy", "groups", "curves", "calibration"],
+      "width": 362,
+      "height": 296,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/tiger-16551.png",
+        "referenceSha256": "ece98927d48c0a140f7875b4e1c1935a0e973272c1704f26ef10997fa9f7aa5c",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "win64",
+        "captureRecipeRevision": "2",
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }

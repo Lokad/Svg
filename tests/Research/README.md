@@ -15,3 +15,10 @@ tools/capture-chrome.ps1 -InputPath tests/Research/circle-6x6.svg -OutputPath ar
 
 Do not replace a committed reference until the three-capture stability result,
 hashes and metadata have been reviewed.
+
+`tiger-16551.svg` is an external path-heavy research illustration from
+Openclipart. Its manifest preserves the downloaded original hash, creator, source
+page and CC0 evidence separately from the materialized SPDX-commented bytes used
+for its reference. It is not an admitted fixture and must remain
+`UnsupportedFeature` until the general path pipeline has independent exact
+evidence.
