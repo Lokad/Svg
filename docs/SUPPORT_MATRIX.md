@@ -33,6 +33,8 @@ conservative reader allowance; this is not exact BCL-allocation accounting.
 Supported element attributes are validated before stylesheet matching, while the
 selector matcher independently enforces the identifier cap; class-selector scans
 also observe the shared parser-work limit.
+Every XML-reader event is charged to that same limit, including inert metadata and
+the root closing event.
 The isolated Windows probe directly traverses both a full short-attribute root
 and 255 × 4 KiB attribute values below that allowance; those observations are
 pinned-runtime regression evidence, not a BCL or process-RSS guarantee.

@@ -8,13 +8,13 @@ internal static class SvgDocumentTraversal
 {
     internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, CancellationToken cancellationToken)
     {
+        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
         while (reader.Read())
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            workCounter.Consume(cancellationToken);
             if (reader.NodeType != XmlNodeType.Element) continue;
             ValidateElementStructure(reader, limits);
             if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
-            ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
             SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, workCounter, cancellationToken);
             return TraverseRoot(reader, limits, budget, namedColors, cancellationToken, workCounter, root);
         }
@@ -23,13 +23,17 @@ internal static class SvgDocumentTraversal
 
     private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root)
     {
-        if (reader.IsEmptyElement) return CompleteRoot(reader, cancellationToken, new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, 0, null));
+        if (reader.IsEmptyElement)
+        {
+            ValidateDocumentEnd(reader, workCounter, cancellationToken);
+            return new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, workCounter.Used, null);
+        }
         int rootDepth = reader.Depth;
         using SvgDocumentState state = new(budget, workCounter, cancellationToken);
         if (root.Opacity != 255) state.Scene.BeginOpacityScope(root.Opacity);
         while (reader.Read())
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            workCounter.Consume(cancellationToken);
             if (reader.NodeType == XmlNodeType.Element)
             {
                 ValidateElementStructure(reader, limits);
@@ -68,7 +72,11 @@ internal static class SvgDocumentTraversal
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, workCounter, cancellationToken);
                     if (root.Opacity != 255) state.Scene.EndOpacityScope();
                     SvgSceneStorage sceneStorage = state.Scene.Build();
-                    try { return CompleteRoot(reader, cancellationToken, new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Geometries, sceneStorage.Commands, state.HasUnsupportedContent, workCounter.Used, sceneStorage)); }
+                    try
+                    {
+                        ValidateDocumentEnd(reader, workCounter, cancellationToken);
+                        return new SvgRoot(root.Width, root.Height, root.ViewBox, sceneStorage.Geometries, sceneStorage.Commands, state.HasUnsupportedContent, workCounter.Used, sceneStorage);
+                    }
                     catch { sceneStorage.Dispose(); throw; }
                 }
             }
@@ -76,19 +84,14 @@ internal static class SvgDocumentTraversal
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
     }
 
-    private static SvgRoot CompleteRoot(XmlReader reader, CancellationToken cancellationToken, SvgRoot root)
+    private static void ValidateDocumentEnd(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        try
+        while (reader.Read())
         {
-            while (reader.Read())
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                if (reader.NodeType is XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace) continue;
-                throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has content after its root element.");
-            }
-            return root;
+            workCounter.Consume(cancellationToken);
+            if (reader.NodeType is XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace) continue;
+            throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has content after its root element.");
         }
-        catch { root.Dispose(); throw; }
     }
 
     private static void ValidateElementStructure(XmlReader reader, SvgRenderLimits limits)
