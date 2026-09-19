@@ -16,7 +16,7 @@ have exact decoded-pixel gates; this is not a general pixel-fidelity claim.
 | Caller-owned PNG destination | Implemented for the current empty/rectangle subset |
 | Integer rectangles | Document-order layers, bare-number/px integer coordinates, integer `translate()`, positive `scale()`, and axis-aligned `matrix(a 0 0 d e f)` transforms on rectangles and containers, and output-scaled geometry (only when scale preserves integral edges), SVG zero defaults for omitted coordinates/dimensions and zero `rx`/`ry`, SVG black default plus `none`/`transparent`/`currentColor`/`black`/`red`/`blue`/`lime`/classic comma-form `rgb()`/`rgba()`/`hsl()`/`hsla()`/`#RGB`/`#RGBA`/`#RRGGBB`/`#RRGGBBAA` fill, `nonzero`/`evenodd` fill rule, non-painting `stroke="none"`, `fill-opacity`, element `opacity`, and the corresponding supported inline properties, source-over; other attributes explicit unsupported |
 | Fractional rectangle coverage | Not implemented; stable pinned-Chrome probe and investigation note recorded |
-| Shapes, paths and composition | Other cases explicit unsupported-feature failure |
+| Shapes, paths and composition | Closed axis-aligned integer rectangle paths in `M…H…V…H…Z` form lower to the rectangle renderer; all other path grammar and shapes explicit unsupported-feature failure |
 | CSS, gradients, images, filters and text | CSS stylesheets are not implemented; the narrowly documented inline-style subset is supported. Gradients, images, filters and text are not implemented |
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned and caller destination output |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
