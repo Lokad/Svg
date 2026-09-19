@@ -126,14 +126,14 @@ internal static class SvgRootParser
 
     private static bool ParseDisplay(string? value)
     {
-        if (value is null or "inline") return true;
-        if (value == "none") return false;
+        if (value is null || value.Equals("inline", StringComparison.OrdinalIgnoreCase)) return true;
+        if (value.Equals("none", StringComparison.OrdinalIgnoreCase)) return false;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only inline and none display values are implemented.");
     }
 
     private static void ValidateFillRule(string? value)
     {
-        if (value is null or "nonzero" or "evenodd") return;
+        if (value is null || value.Equals("nonzero", StringComparison.OrdinalIgnoreCase) || value.Equals("evenodd", StringComparison.OrdinalIgnoreCase)) return;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero and evenodd fill rules are implemented.");
     }
 
@@ -146,8 +146,8 @@ internal static class SvgRootParser
     private static bool ParseVisibility(string? value, bool inheritedVisibility)
     {
         if (value is null) return inheritedVisibility;
-        if (value == "visible") return true;
-        if (value == "hidden") return false;
+        if (value.Equals("visible", StringComparison.OrdinalIgnoreCase)) return true;
+        if (value.Equals("hidden", StringComparison.OrdinalIgnoreCase)) return false;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only visible and hidden visibility values are implemented.");
     }
 
