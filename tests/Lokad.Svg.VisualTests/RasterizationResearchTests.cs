@@ -23,6 +23,25 @@ public sealed class RasterizationResearchTests
         Assert.Equal(6, comparison.MaximumMismatchY);
     }
 
+    [Fact]
+    public void Sixteen_by_sixteen_supersampled_triangle_baseline_is_not_Chrome_exact()
+    {
+        string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png");
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
+        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeSupersampledTriangle(16));
+
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(14, comparison.ChangedPixelCount);
+        Assert.Equal((byte)7, comparison.MaximumChannelError);
+        Assert.Equal((byte)7, comparison.MaximumAlphaError);
+        Assert.Equal(14, comparison.AlphaChangedPixelCount);
+        Assert.Equal(1, comparison.MinimumMismatchX);
+        Assert.Equal(1, comparison.MinimumMismatchY);
+        Assert.Equal(6, comparison.MaximumMismatchX);
+        Assert.Equal(6, comparison.MaximumMismatchY);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -37,6 +56,33 @@ public sealed class RasterizationResearchTests
                 int offset = (y * 8 + x) * 4;
                 pixels[offset] = 255;
                 pixels[offset + 3] = 255;
+            }
+        }
+        return new RgbaImage(8, 8, pixels);
+    }
+
+    private static RgbaImage RasterizeSupersampledTriangle(int samplesPerAxis)
+    {
+        byte[] pixels = new byte[8 * 8 * 4];
+        int samplesPerPixel = checked(samplesPerAxis * samplesPerAxis);
+        for (int y = 0; y < 8; y++)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                int coveredSamples = 0;
+                for (int sampleY = 0; sampleY < samplesPerAxis; sampleY++)
+                {
+                    for (int sampleX = 0; sampleX < samplesPerAxis; sampleX++)
+                    {
+                        double pixelX = x + (sampleX + 0.5) / samplesPerAxis;
+                        double pixelY = y + (sampleY + 0.5) / samplesPerAxis;
+                        if (IsInsideTriangle(pixelX, pixelY)) coveredSamples++;
+                    }
+                }
+                if (coveredSamples == 0) continue;
+                int offset = (y * 8 + x) * 4;
+                pixels[offset] = 255;
+                pixels[offset + 3] = (byte)((coveredSamples * 255 + samplesPerPixel / 2) / samplesPerPixel);
             }
         }
         return new RgbaImage(8, 8, pixels);

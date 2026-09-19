@@ -67,6 +67,11 @@ reference in 16 of 64 pixels, with maximum RGBA-channel error 255 and maximum
 alpha error 127 (mismatch bounds `(1,1)`–`(6,6)`). This is a quantitative rejection
 of binary pixel-centre coverage; it is not an implementation candidate.
 
+A uniform 16×16 supersampling variant improves the maximum channel/alpha error to
+7, but remains non-exact in 14 pixels with the same mismatch bounds. The result is
+also retained as a negative finding: higher uniform sample counts are not an
+admission strategy without a calibrated device-space edge rule.
+
 ## Path-heavy illustration classification
 
 [Tiger, Telemachos, Openclipart 16551](../tests/Research/tiger-16551.svg) is the
