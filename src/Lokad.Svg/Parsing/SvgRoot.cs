@@ -83,10 +83,10 @@ internal sealed class SvgSceneBuilder : IDisposable
     private readonly BudgetedSceneList<SvgDrawCommand> _commands;
     private bool _built;
 
-    internal SvgSceneBuilder(RenderBudget budget)
+    internal SvgSceneBuilder(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        _rectangles = new(budget, SvgSceneArrayKind.Rectangle);
-        _commands = new(budget, SvgSceneArrayKind.DrawCommand);
+        _rectangles = new(budget, SvgSceneArrayKind.Rectangle, workCounter, cancellationToken);
+        _commands = new(budget, SvgSceneArrayKind.DrawCommand, workCounter, cancellationToken);
     }
 
     internal void AddRectangle(SvgRectangle rectangle)
@@ -138,16 +138,21 @@ internal readonly record struct SvgSceneSlot(int RectangleIndex, int CommandInde
 
 internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
 {
+    private const int CopyCheckpointItems = 4_096;
     private readonly RenderBudget _budget;
     private readonly SvgSceneArrayKind _kind;
+    private readonly ParserWorkCounter _workCounter;
+    private readonly CancellationToken _cancellationToken;
     private T[] _items = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal BudgetedSceneList(RenderBudget budget, SvgSceneArrayKind kind)
+    internal BudgetedSceneList(RenderBudget budget, SvgSceneArrayKind kind, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         _budget = budget;
         _kind = kind;
+        _workCounter = workCounter;
+        _cancellationToken = cancellationToken;
     }
 
     internal int Count => _count;
@@ -167,7 +172,7 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
     internal void AddRange(ReadOnlySpan<T> items)
     {
         EnsureAdditionalCapacity(items.Length);
-        items.CopyTo(_items.AsSpan(_count));
+        CopyWithCheckpoints(items, _items.AsSpan(_count));
         _count += items.Length;
     }
 
@@ -183,7 +188,7 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         T[] exact;
         try { exact = new T[_count]; }
         catch { reservation.Dispose(); throw; }
-        _items.AsSpan(0, _count).CopyTo(exact);
+        CopyWithCheckpoints(_items.AsSpan(0, _count), exact);
         Dispose();
         return new OwnedSceneArray<T>(exact, reservation);
     }
@@ -209,10 +214,20 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         T[] replacement;
         try { replacement = new T[capacity]; }
         catch { replacementReservation.Dispose(); throw; }
-        _items.AsSpan(0, _count).CopyTo(replacement);
+        CopyWithCheckpoints(_items.AsSpan(0, _count), replacement);
         _reservation?.Dispose();
         _reservation = replacementReservation;
         _items = replacement;
+    }
+
+    private void CopyWithCheckpoints(ReadOnlySpan<T> source, Span<T> destination)
+    {
+        for (int offset = 0; offset < source.Length; offset += CopyCheckpointItems)
+        {
+            _workCounter.Consume(_cancellationToken);
+            int count = Math.Min(CopyCheckpointItems, source.Length - offset);
+            source.Slice(offset, count).CopyTo(destination.Slice(offset, count));
+        }
     }
 }
 

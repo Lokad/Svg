@@ -197,7 +197,7 @@ internal static class SvgRootParser
             SvgViewBox? viewBox = ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
             if (reader.IsEmptyElement) return CompleteRoot(new SvgRoot(width, height, viewBox, [], [], false, 0, null));
             int rootDepth = reader.Depth;
-            using SvgSceneBuilder scene = new(budget);
+            using SvgSceneBuilder scene = new(budget, workCounter, cancellationToken);
             if (rootOpacity != 255) scene.BeginOpacityScope(rootOpacity);
             using BudgetedParserList<GroupScope> groupDepths = new(budget, SvgMemoryCategory.Parser, GroupScopeStorageBytes);
             int nodeCount = 0;

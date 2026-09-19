@@ -754,6 +754,21 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Charges_scene_transfer_copies_to_the_shared_work_limit()
+    {
+        SvgRectangle rectangle = new(0, 0, 1, 1, new SvgColor(0, 0, 0, 255), true, null);
+        using SvgSceneBuilder limited = new(new RenderBudget(10_000), new ParserWorkCounter(1), CancellationToken.None);
+        limited.AddRectangles([rectangle]);
+
+        Assert.Throws<SvgException>(() => limited.Build());
+
+        using SvgSceneBuilder accepted = new(new RenderBudget(10_000), new ParserWorkCounter(20), CancellationToken.None);
+        accepted.AddRectangles([rectangle]);
+        using SvgSceneStorage storage = accepted.Build();
+        Assert.Equal([rectangle], storage.Rectangles);
+    }
+
+    [Fact]
     public void Enforces_the_work_limit_while_matching_stylesheet_rules()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 16, 16, 1);
