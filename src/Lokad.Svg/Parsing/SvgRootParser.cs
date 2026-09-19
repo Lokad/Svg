@@ -40,7 +40,7 @@ internal static class SvgRootParser
                     {
                         rectangles.Add(ParseRectangle(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint, groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed, groupDepths.Count == 0 ? rootVisibility : groupDepths[^1].IsVisible));
                     }
-                    else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "g")
+                    else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                     {
                         SvgPaint paint = ParseGroupPaint(reader, groupDepths.Count == 0 ? rootPaint : groupDepths[^1].Paint);
                         bool displayed = (groupDepths.Count == 0 ? rootVisible : groupDepths[^1].IsDisplayed) && ParseDisplay(reader.GetAttribute("display"));
@@ -68,7 +68,7 @@ internal static class SvgRootParser
             while (reader.MoveToNextAttribute())
             {
                 if (reader.Prefix == "xmlns" || reader.Name == "xmlns") continue;
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "fill" or "fill-opacity" or "display" or "visibility") continue;
+                if ((reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "href" or "fill" or "fill-opacity" or "display" or "visibility") || (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href")) continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
