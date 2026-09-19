@@ -365,6 +365,17 @@ public sealed class PublicContractTests
         Assert.Equal(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }, png[..8].ToArray());
     }
 
+    [Theory]
+    [InlineData("display='none'")]
+    [InlineData("visibility='hidden'")]
+    public void Root_presentation_hides_direct_local_use_instances(string rootPresentation)
+    {
+        ReadOnlyMemory<byte> actual = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' " + rootPresentation + "><defs><rect id='tile' width='1' height='1' fill='red'/></defs><use href='#tile'/></svg>"), SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> transparent = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(transparent.ToArray(), actual.ToArray());
+    }
+
     [Fact]
     public void Empty_explicitly_sized_svg_returns_png_bytes()
     {
