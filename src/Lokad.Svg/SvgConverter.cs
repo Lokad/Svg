@@ -82,7 +82,7 @@ public static class SvgConverter
             for (int x = Math.Max(0, rectangle.X); x < Math.Min(outputWidth, checked(rectangle.X + rectangle.Width)); x++)
             {
                 int offset = (y * outputWidth + x) * 4;
-                pixels[offset] = rectangle.Color.Red; pixels[offset + 1] = rectangle.Color.Green; pixels[offset + 2] = rectangle.Color.Blue; pixels[offset + 3] = 255;
+                BlendSourceOver(pixels.AsSpan(offset, 4), rectangle.Color);
             }
             }
         }
@@ -93,6 +93,20 @@ public static class SvgConverter
     {
         try { return SvgRootParser.Parse(svg, options.Limits, cancellationToken); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
+    }
+
+    private static void BlendSourceOver(Span<byte> destination, SvgColor source)
+    {
+        if (source.Alpha == 255) { destination[0] = source.Red; destination[1] = source.Green; destination[2] = source.Blue; destination[3] = 255; return; }
+        if (source.Alpha == 0) return;
+        int sourceAlpha = source.Alpha;
+        int destinationAlpha = destination[3];
+        int inverseSourceAlpha = 255 - sourceAlpha;
+        int outputAlpha = sourceAlpha + ((destinationAlpha * inverseSourceAlpha + 127) / 255);
+        destination[0] = (byte)((source.Red * sourceAlpha + ((destination[0] * destinationAlpha * inverseSourceAlpha + 127) / 255) + outputAlpha / 2) / outputAlpha);
+        destination[1] = (byte)((source.Green * sourceAlpha + ((destination[1] * destinationAlpha * inverseSourceAlpha + 127) / 255) + outputAlpha / 2) / outputAlpha);
+        destination[2] = (byte)((source.Blue * sourceAlpha + ((destination[2] * destinationAlpha * inverseSourceAlpha + 127) / 255) + outputAlpha / 2) / outputAlpha);
+        destination[3] = (byte)outputAlpha;
     }
 
     private readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels);

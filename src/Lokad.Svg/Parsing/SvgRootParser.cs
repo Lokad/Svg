@@ -62,7 +62,7 @@ internal static class SvgRootParser
         {
             while (reader.MoveToNextAttribute())
             {
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "x" or "y" or "width" or "height" or "fill") continue;
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "x" or "y" or "width" or "height" or "fill" or "fill-opacity") continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle attribute '" + reader.Name + "' is not implemented.");
             }
             reader.MoveToElement();
@@ -74,13 +74,21 @@ internal static class SvgRootParser
         string fill = reader.GetAttribute("fill") ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle fill is required currently.");
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
         if (fill.Length != 7 || fill[0] != '#' || !byte.TryParse(fill.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red) || !byte.TryParse(fill.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green) || !byte.TryParse(fill.AsSpan(5, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only #RRGGBB rectangle fills are implemented.");
-        return new SvgRectangle(x, y, width, height, new SvgColor(red, green, blue, 255));
+        byte alpha = ParseOpacity(reader.GetAttribute("fill-opacity"));
+        return new SvgRectangle(x, y, width, height, new SvgColor(red, green, blue, alpha));
     }
 
     private static int ParseInteger(string value)
     {
         if (!int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer rectangle coordinates are implemented.");
         return result;
+    }
+
+    private static byte ParseOpacity(string? value)
+    {
+        if (value is null) return 255;
+        if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double opacity) || !double.IsFinite(opacity) || opacity < 0 || opacity > 1) throw new SvgException(SvgErrorCode.MalformedInput, "Fill opacity must be a finite value from zero through one.");
+        return checked((byte)Math.Round(opacity * 255, MidpointRounding.AwayFromZero));
     }
 
     private static double? ParseLength(string? value)
