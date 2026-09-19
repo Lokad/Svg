@@ -115,7 +115,7 @@ internal static class SvgRootParser
 
     private static SvgPaint ParsePaint(string? fill, string? opacity, SvgPaint inheritedPaint)
     {
-        bool hasFill = fill is null ? inheritedPaint.HasFill : fill is not "none" and not "transparent";
+        bool hasFill = fill is null ? inheritedPaint.HasFill : !fill.Equals("none", StringComparison.OrdinalIgnoreCase) && !fill.Equals("transparent", StringComparison.OrdinalIgnoreCase);
         SvgColor color = fill is null ? inheritedPaint.Color : hasFill ? ParseColor(fill) : SvgColor.Transparent;
         byte alpha = opacity is null ? color.Alpha : ParseOpacity(opacity);
         return new SvgPaint(new SvgColor(color.Red, color.Green, color.Blue, alpha), hasFill);
@@ -153,10 +153,10 @@ internal static class SvgRootParser
 
     private static SvgColor ParseColor(string fill)
     {
-        if (fill == "transparent") return SvgColor.Transparent;
-        if (fill == "black") return new SvgColor(0, 0, 0, 255);
-        if (fill == "red") return new SvgColor(255, 0, 0, 255);
-        if (fill == "blue") return new SvgColor(0, 0, 255, 255);
+        if (fill.Equals("transparent", StringComparison.OrdinalIgnoreCase)) return SvgColor.Transparent;
+        if (fill.Equals("black", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 0, 0, 255);
+        if (fill.Equals("red", StringComparison.OrdinalIgnoreCase)) return new SvgColor(255, 0, 0, 255);
+        if (fill.Equals("blue", StringComparison.OrdinalIgnoreCase)) return new SvgColor(0, 0, 255, 255);
         if (TryParseFunctionalRgb(fill, out SvgColor functionalColor)) return functionalColor;
         if (fill.Length == 9 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red8) && byte.TryParse(fill.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green8) && byte.TryParse(fill.AsSpan(5, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue8) && byte.TryParse(fill.AsSpan(7, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte alpha8)) return new SvgColor(red8, green8, blue8, alpha8);
         if (fill.Length == 7 && fill[0] == '#' && byte.TryParse(fill.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte red) && byte.TryParse(fill.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte green) && byte.TryParse(fill.AsSpan(5, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte blue)) return new SvgColor(red, green, blue, 255);
@@ -167,8 +167,8 @@ internal static class SvgRootParser
 
     private static bool TryParseFunctionalRgb(string fill, out SvgColor color)
     {
-        bool hasAlpha = fill.StartsWith("rgba(", StringComparison.Ordinal) && fill.EndsWith(')');
-        bool isRgb = fill.StartsWith("rgb(", StringComparison.Ordinal) && fill.EndsWith(')');
+        bool hasAlpha = fill.StartsWith("rgba(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
+        bool isRgb = fill.StartsWith("rgb(", StringComparison.OrdinalIgnoreCase) && fill.EndsWith(')');
         if (!hasAlpha && !isRgb) { color = default; return false; }
         string[] channels = fill[(hasAlpha ? 5 : 4)..^1].Split(',', StringSplitOptions.TrimEntries);
         if (channels.Length != (hasAlpha ? 4 : 3) || !byte.TryParse(channels[0], NumberStyles.None, CultureInfo.InvariantCulture, out byte red) || !byte.TryParse(channels[1], NumberStyles.None, CultureInfo.InvariantCulture, out byte green) || !byte.TryParse(channels[2], NumberStyles.None, CultureInfo.InvariantCulture, out byte blue))
