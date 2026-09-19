@@ -9,18 +9,11 @@ internal static class SvgLeafParser
     internal static SvgGeometry ParseRectangle(XmlReader reader, SvgPaintableElementContext context)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        SvgElementAttributePolicy.ValidateRectangle(reader);
-        double x = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0");
-        double y = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0");
-        double width = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("width") ?? "0");
-        double height = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("height") ?? "0");
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
-        ValidateSquareCorners(reader.GetAttribute("rx"));
-        ValidateSquareCorners(reader.GetAttribute("ry"));
-        if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
         SvgResolvedShapePresentation presentation = context.ResolvePresentation(style, true);
-        SvgRectangle rectangle = transform.Apply(new SvgRectangle(x, y, width, height, presentation.Color, presentation.HasFill, null));
-        SvgStroke? stroke = ParseRectangleStroke(presentation.Style.Stroke, reader.GetAttribute("stroke-width"), presentation.Style.Color, context.InheritedPaint, transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, presentation.Opacity, rectangle.HasFill, context.NamedColors);
+        SvgRectangle rectangle = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, presentation.Color, presentation.HasFill, null));
+        SvgStroke? stroke = ParseRectangleStroke(presentation.Style.Stroke, syntax.StrokeWidth, presentation.Style.Color, context.InheritedPaint, transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, presentation.Opacity, rectangle.HasFill, context.NamedColors);
         return SvgGeometry.FromRectangle(rectangle with { Stroke = presentation.IsPainted ? stroke : null });
     }
 
@@ -73,11 +66,5 @@ internal static class SvgLeafParser
         int strokeWidth = SvgGeometrySyntax.ParseInteger(widthValue ?? "1");
         if (color.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0 || strokeWidth > width || strokeWidth > height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width rectangle strokes no larger than the rectangle dimensions are implemented.");
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(color, opacity), strokeWidth);
-    }
-
-    private static void ValidateSquareCorners(string? value)
-    {
-        if (value is null || SvgGeometrySyntax.ParseRectangleCoordinate(value) == 0) return;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only zero rectangle corner radii are implemented.");
     }
 }
