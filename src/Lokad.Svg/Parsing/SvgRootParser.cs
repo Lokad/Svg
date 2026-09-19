@@ -851,7 +851,8 @@ internal static class SvgRootParser
             int closingBrace = value.IndexOf('}', openingBrace + 1);
             if (closingBrace < 0 || value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1).Contains('{')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested stylesheet rules are not implemented.");
             InlineStyle style = ParseInlineStyle(value.AsSpan(openingBrace + 1, closingBrace - openingBrace - 1));
-            foreach (string selector in value[position..openingBrace].Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+            CssSelectorListReader selectors = new(value.AsSpan(position, openingBrace - position));
+            while (selectors.TryRead(out ReadOnlySpan<char> selector))
             {
                 if (rules.Count >= maximumRules) throw new SvgException(SvgErrorCode.LimitExceeded, "Stylesheet rule count exceeds the configured structural limit.");
                 rules.Add(ParseRectangleSelector(selector, style));
@@ -873,7 +874,7 @@ internal static class SvgRootParser
         return value;
     }
 
-    private static CssRule ParseRectangleSelector(string selector, InlineStyle style)
+    private static CssRule ParseRectangleSelector(ReadOnlySpan<char> selector, InlineStyle style)
     {
         CssSelectorTokenReader tokens = new(selector);
         if (!tokens.TryRead(out ReadOnlySpan<char> first)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rect type, ID, class, id/class attribute, g descendant, and g child stylesheet selectors are implemented.");
@@ -955,6 +956,28 @@ internal static class SvgRootParser
             while (_position < _value.Length && !char.IsWhiteSpace(_value[_position]) && _value[_position] != '>') _position++;
             token = _value[start.._position];
             return true;
+        }
+    }
+
+    private ref struct CssSelectorListReader
+    {
+        private readonly ReadOnlySpan<char> _value;
+        private int _position;
+
+        internal CssSelectorListReader(ReadOnlySpan<char> value) => _value = value;
+
+        internal bool TryRead(out ReadOnlySpan<char> selector)
+        {
+            while (_position < _value.Length)
+            {
+                int start = _position;
+                while (_position < _value.Length && _value[_position] != ',') _position++;
+                selector = _value[start.._position].Trim();
+                if (_position < _value.Length) _position++;
+                if (!selector.IsEmpty) return true;
+            }
+            selector = default;
+            return false;
         }
     }
 
