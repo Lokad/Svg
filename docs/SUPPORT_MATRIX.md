@@ -25,10 +25,10 @@ is not a general pixel-fidelity claim.
 | Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, and forty-three stable references |
 | Fixture corpus | Forty-three original CC0 probes with verified hashes; the manifest gate renders and compares all forty-three exactly |
 
-Stylesheet declaration/selector copies retained by rules and copied local-reference
-identifiers reserve their owned string and reservation-tracker storage before the
-copy, then release it with parser document state. Reader-provided transient
-attribute/style strings remain within the documented conservative reader allowance;
-this is not exact BCL-allocation accounting.
+Stylesheet declaration/selector copies retained by rules, definition identifiers
+and copied local-reference identifiers reserve their owned string and reservation-
+tracker storage before the copy, then release it with parser document state.
+Reader-provided transient attribute/style strings remain within the documented
+conservative reader allowance; this is not exact BCL-allocation accounting.
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).

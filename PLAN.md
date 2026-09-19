@@ -102,7 +102,7 @@ review.
 
 ### Current local verification (2026-09-19)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 212 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 213 unit tests
 and 70 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports an exact result with zero
 changed pixels. This is local, sequential evidence only; it does not establish a
@@ -122,11 +122,12 @@ report records 104,152 managed bytes against the 131,072-byte allowance. That is
 regression evidence for the pinned runtime, not an exact BCL-allocation or
 process-RSS guarantee.
 
-Parser-owned stylesheet declaration/selector strings and copied local-reference
-identifiers now reserve both their exact string bytes and conservative reservation
-tracker storage before copying, releasing that accounting with document state.
-Reader-provided transient attribute/style strings remain covered only by the
-conservative reader workspace; exact BCL string accounting is still open.
+Parser-owned stylesheet declaration/selector strings, definition identifiers and
+copied local-reference identifiers now reserve both their exact string bytes and
+conservative reservation tracker storage before copying, releasing that accounting
+with document state. Reader-provided transient attribute/style strings remain
+covered only by the conservative reader workspace; exact BCL string accounting is
+still open.
 
 ### P0.2 conversion-boundary matrix
 

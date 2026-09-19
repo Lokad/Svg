@@ -1089,6 +1089,18 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Reserves_definition_identifiers_before_retaining_them()
+    {
+        string identifier = new('a', SvgSyntaxLimits.MaximumIdentifierCharacters);
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='" + identifier + "' width='1' height='1'/></defs></svg>");
+        SvgRenderLimits limits = new(18_384, 4_096, 16, 256, 1_024, 16, 16, 16, 16, 1);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(limits.MaximumAccountedBytes), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Reserves_geometry_collection_capacity_before_allocation()
     {
         RenderBudget budget = new(63);
