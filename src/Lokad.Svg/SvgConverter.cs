@@ -123,7 +123,19 @@ public static class SvgConverter
 
         void RasterizeRectangle(SvgRectangle rectangle, byte[] destination)
         {
-            if (!rectangle.HasFill) return;
+            if (rectangle.HasFill) RasterizeSolidRectangle(rectangle, destination);
+            if (rectangle.Stroke is SvgStroke stroke)
+            {
+                double halfWidth = stroke.Width / 2d;
+                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y - halfWidth, rectangle.Width + stroke.Width, stroke.Width, stroke.Color, true), destination);
+                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y + rectangle.Height - halfWidth, rectangle.Width + stroke.Width, stroke.Width, stroke.Color, true), destination);
+                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y + halfWidth, stroke.Width, rectangle.Height - stroke.Width, stroke.Color, true), destination);
+                RasterizeSolidRectangle(new SvgRectangle(rectangle.X + rectangle.Width - halfWidth, rectangle.Y + halfWidth, stroke.Width, rectangle.Height - stroke.Width, stroke.Color, true), destination);
+            }
+        }
+
+        void RasterizeSolidRectangle(SvgRectangle rectangle, byte[] destination)
+        {
             double rectangleY = MapEdge(rectangle.Y, verticalScale, verticalOffset);
             double rectangleBottom = MapEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
             double rectangleX = MapEdge(rectangle.X, horizontalScale, horizontalOffset);
