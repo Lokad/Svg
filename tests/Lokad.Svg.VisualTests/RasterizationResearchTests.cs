@@ -151,6 +151,36 @@ public sealed class RasterizationResearchTests
         Assert.Equal(7, fractionalComparison.MaximumMismatchY);
     }
 
+    [Fact]
+    public void Half_grid_phase_triangle_baselines_are_not_Chrome_exact()
+    {
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-half-grid-8x8.png")), 64);
+        PixelComparison fixedAlpha = PixelComparer.Compare(reference, RasterizeFixedPointCoverageTriangle(HalfGridTriangle, false));
+        PixelComparison snappedEdge = PixelComparer.Compare(reference, RasterizeSixteenthSnappedEdgeStripTriangle(HalfGridTriangle));
+
+        Assert.True(fixedAlpha.DimensionsMatch);
+        Assert.False(fixedAlpha.IsExact);
+        Assert.Equal(22, fixedAlpha.ChangedPixelCount);
+        Assert.Equal((byte)255, fixedAlpha.MaximumChannelError);
+        Assert.Equal((byte)23, fixedAlpha.MaximumAlphaError);
+        Assert.Equal(22, fixedAlpha.AlphaChangedPixelCount);
+        Assert.Equal(1, fixedAlpha.MinimumMismatchX);
+        Assert.Equal(1, fixedAlpha.MinimumMismatchY);
+        Assert.Equal(7, fixedAlpha.MaximumMismatchX);
+        Assert.Equal(7, fixedAlpha.MaximumMismatchY);
+
+        Assert.True(snappedEdge.DimensionsMatch);
+        Assert.False(snappedEdge.IsExact);
+        Assert.Equal(20, snappedEdge.ChangedPixelCount);
+        Assert.Equal((byte)255, snappedEdge.MaximumChannelError);
+        Assert.Equal((byte)24, snappedEdge.MaximumAlphaError);
+        Assert.Equal(20, snappedEdge.AlphaChangedPixelCount);
+        Assert.Equal(1, snappedEdge.MinimumMismatchX);
+        Assert.Equal(1, snappedEdge.MinimumMismatchY);
+        Assert.Equal(7, snappedEdge.MaximumMismatchX);
+        Assert.Equal(7, snappedEdge.MaximumMismatchY);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -369,6 +399,7 @@ public sealed class RasterizationResearchTests
 
     private static readonly Point[] IntegerTriangle = [new(1, 1), new(7, 2), new(2, 7)];
     private static readonly Point[] FractionalTriangle = [new(1.25, 1.125), new(7.25, 2.125), new(2.25, 7.125)];
+    private static readonly Point[] HalfGridTriangle = [new(1.28125, 1.15625), new(7.28125, 2.15625), new(2.28125, 7.15625)];
 
     private readonly record struct Point(double X, double Y);
 }

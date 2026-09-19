@@ -55,13 +55,14 @@ The research inventory also retains three-capture, byte- and decoded-pixel-stabl
 Windows-pinned-Chrome references for an
 [8×8 diagonal triangle](../tests/Research/diagonal-triangle-8x8.svg),
 [fractional-coordinate diagonal triangle](../tests/Research/diagonal-triangle-fractional-8x8.svg),
+[half-sixteenth-grid diagonal triangle](../tests/Research/diagonal-triangle-half-grid-8x8.svg),
 [cubic arch](../tests/Research/cubic-arch-8x8.svg),
 [even-odd hole](../tests/Research/evenodd-hole-8x8.svg), and
 [round stroke join](../tests/Research/round-join-8x8.svg). They supply the first
-integer- and fractional-coordinate coverage, subdivision, multi-subpath/winding,
-and outline targets for P1.3. The current converter asserts `UnsupportedFeature`
-for each; neither their stable browser captures nor this inventory admits a
-general path or stroke feature.
+integer, grid-aligned fractional, and half-grid-coordinate coverage, subdivision,
+multi-subpath/winding, and outline targets for P1.3. The current converter asserts
+`UnsupportedFeature` for each; neither their stable browser captures nor this
+inventory admits a general path or stroke feature.
 
 The first deliberately simple experiment uses an opaque red, pixel-centre
 inside/outside rule for the diagonal triangle. It differs from the retained Chrome
@@ -108,6 +109,13 @@ the fractional-origin probe (maximum channel/alpha error 255/32). It is therefor
 useful evidence that device-space edge snapping matters, but is still a rejected
 phase-specific approximation: partial-row handling and alpha accumulation remain
 unmodelled.
+
+The half-sixteenth companion places all vertices at a rounding tie. Its
+fixed-alpha baseline changes 22 pixels (maximum channel/alpha error 255/23),
+while the snapped-strip baseline changes 20 (255/24). Although the latter is a
+small improvement over the grid-aligned fractional phase, neither is close to an
+admission result. The family therefore rules out choosing a grid phase or
+tie-breaking rule based on the integral near-fit.
 
 ## Calibration source pin
 
