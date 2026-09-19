@@ -73,9 +73,10 @@ internal static class SvgRootParser
         int height = ParseInteger(reader.GetAttribute("height") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle height is required."));
         string fill = reader.GetAttribute("fill") ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle fill is required currently.");
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Rectangle dimensions cannot be negative.");
-        SvgColor color = ParseColor(fill);
+        bool hasFill = fill != "none";
+        SvgColor color = hasFill ? ParseColor(fill) : SvgColor.Transparent;
         byte alpha = ParseOpacity(reader.GetAttribute("fill-opacity"));
-        return new SvgRectangle(x, y, width, height, new SvgColor(color.Red, color.Green, color.Blue, alpha));
+        return new SvgRectangle(x, y, width, height, new SvgColor(color.Red, color.Green, color.Blue, alpha), hasFill);
     }
 
     private static int ParseInteger(string value)

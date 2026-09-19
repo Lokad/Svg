@@ -76,6 +76,7 @@ public static class SvgConverter
         }
         foreach (SvgRectangle rectangle in root.Rectangles)
         {
+            if (!rectangle.HasFill) continue;
             for (int y = Math.Max(0, rectangle.Y); y < Math.Min(outputHeight, checked(rectangle.Y + rectangle.Height)); y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
