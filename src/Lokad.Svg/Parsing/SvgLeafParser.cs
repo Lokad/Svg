@@ -1,6 +1,4 @@
 using System.Xml;
-using Lokad.Svg.Rendering;
-
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Parses and lowers the currently supported paintable SVG leaves independently of XML traversal.</summary>
@@ -32,29 +30,6 @@ internal static class SvgLeafParser
         bool painted = context.InheritedDisplayed && SvgShapePresentationResolver.ParseDisplay(style.Display) && SvgShapePresentationResolver.ParseVisibility(style.Visibility, context.InheritedVisibility);
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor, opacity);
         return SvgGeometry.FromRectangle(syntax.X1 != syntax.X2 ? new SvgRectangle(Math.Min(syntax.X1, syntax.X2), syntax.Y1 - halfWidth, Math.Abs((long)syntax.X2 - syntax.X1), strokeWidth, color, painted, null) : new SvgRectangle(syntax.X1 - halfWidth, Math.Min(syntax.Y1, syntax.Y2), strokeWidth, Math.Abs((long)syntax.Y2 - syntax.Y1), color, painted, null));
-    }
-
-    internal static SvgParsedGeometry ParseOrthogonalPath(XmlReader reader, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget)
-    {
-        SvgElementAttributePolicy.ValidatePath(reader);
-        string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-        using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-        SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, "path", context.WorkCounter, context.CancellationToken);
-        SvgComputedStyle style = context.ResolveStyle(reader); AxisTransform transform = context.ResolveTransform(reader);
-        SvgResolvedShapePresentation presentation = context.ResolvePresentation(style, false);
-        using SvgOrthogonalGeometryLowering lowering = new(points, "path", true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-        return lowering.Lower(presentation.Color, presentation.HasFill, transform);
-    }
-
-    internal static SvgParsedGeometry ParseOrthogonalPointList(XmlReader reader, string elementName, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget)
-    {
-        SvgElementAttributePolicy.ValidatePointList(reader, elementName);
-        string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
-        using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-        using SvgOrthogonalGeometryLowering lowering = new(points, elementName, false, true, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-        SvgComputedStyle style = context.ResolveStyle(reader); AxisTransform transform = context.ResolveTransform(reader);
-        SvgResolvedShapePresentation presentation = context.ResolvePresentation(style, false);
-        return lowering.Lower(presentation.Color, presentation.HasFill, transform);
     }
 
     private static SvgStroke? ParseRectangleStroke(string? value, string? widthValue, string? currentColor, SvgPaint inheritedPaint, AxisTransform transform, double x, double y, double width, double height, byte opacity, bool hasFill, IReadOnlyDictionary<string, SvgColor> namedColors)
