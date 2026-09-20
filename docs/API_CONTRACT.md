@@ -5,7 +5,8 @@ The owned-memory result is independently owned and valid indefinitely. The
 corresponding synchronous and asynchronous overloads also write into caller-owned
 `Memory<byte>` or a writable `Stream`, returning the exact PNG byte count on
 success. Destination overloads may partially write on cancellation or failure.
-Input and destination memory must not overlap.
+Input and destination memory must not overlap. Both may be non-array-backed
+`Memory` instances; conversion does not require an `ArraySegment`.
 
 `SvgRenderOptions` is immutable. A logical viewport is optional and distinct from
 the positive output scale. Its `SvgRenderLimits` are validated at construction;

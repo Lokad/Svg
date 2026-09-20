@@ -161,7 +161,7 @@ review.
 
 ### Current local verification (2026-09-20)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 241 unit tests
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 243 unit tests
 and 81 visual-project tests on the current working revision. The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports three byte-identical,
 pixel-exact fresh-process captures. This is local, sequential evidence only; it does not establish a
@@ -322,7 +322,7 @@ behavior or collecting measurements.
 | P2.2 | Not started | Add host resources, PNG images and measured resampling. | P0.3, resource graph, composition | No implicit I/O; decoding/profile limits, mapped resources, nested SVG, alpha boundaries and scaling are exact or explicitly unsupported. First representative illustrations/diagrams work end to end. |
 | P3.1 | Not started | Implement the first filter set with surface lifetime planning. | Images, composition, budgets | Each primitive, color space, region and dependency case has exact evidence; graph/resource bombs fail within limits. |
 | P3.2 | Not started | Implement basic supplied-font text; then JPEG and broader static coverage. | Early text feasibility, geometry, resource budgets | TrueType parsing, layout and glyph rendering match the declared cases with identical font bytes. Unsupported scripts/formats fail explicitly. JPEG work has independent codec and memory gates. |
-| P4 | Started, package gate only | Optimize measured bottlenecks, finish hardening and prepare release. | Verified feature combinations and measurements | A clean consumer now restores only the freshly packed `Lokad.Svg` artifact from an isolated NuGet cache, executes a memory-only conversion, and rejects missing package entries, runtime-specific assets or declared dependencies. Full fixed inventory, required platform/cancellation/package gates, numerical performance/retention reports and accurate release docs remain open. |
+| P4 | Started, package and isolation gates only | Optimize measured bottlenecks, finish hardening and prepare release. | Verified feature combinations and measurements | A clean consumer now restores only the freshly packed `Lokad.Svg` artifact from an isolated NuGet cache, executes a memory-only conversion, and rejects missing package entries, runtime-specific assets or declared dependencies. Public contract tests also cover non-array-backed input/destination memory and concurrent independent owned results. Full fixed inventory, required platform/cancellation/package gates, numerical performance/retention reports and accurate release docs remain open. |
 
 ### Next implementation changes
 

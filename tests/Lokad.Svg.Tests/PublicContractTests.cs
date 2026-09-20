@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Buffers;
+using System.Runtime.InteropServices;
 
 namespace Lokad.Svg.Tests;
 
@@ -549,6 +551,37 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Supports_non_array_backed_input_and_destination_memory()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray();
+        byte[] expected = SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        using NonArrayMemory input = new(svg);
+        using NonArrayMemory destination = new(new byte[expected.Length]);
+
+        Assert.False(MemoryMarshal.TryGetArray((ReadOnlyMemory<byte>)input.Memory, out _));
+        Assert.False(MemoryMarshal.TryGetArray((ReadOnlyMemory<byte>)destination.Memory, out _));
+        int written = SvgConverter.ConvertToPng(input.Memory, destination.Memory, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(expected.Length, written);
+        Assert.Equal(expected, destination.Memory.Span[..written].ToArray());
+    }
+
+    [Fact]
+    public async Task Concurrent_owned_conversions_return_independent_exact_results()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray();
+        byte[] expected = SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Task<ReadOnlyMemory<byte>>[] tasks = Enumerable.Range(0, 8).Select(_ => SvgConverter.ConvertToPngAsync(svg, SvgRenderOptions.Default, CancellationToken.None)).ToArray();
+
+        ReadOnlyMemory<byte>[] results = await Task.WhenAll(tasks);
+
+        foreach (ReadOnlyMemory<byte> result in results) Assert.Equal(expected, result.ToArray());
+        Assert.True(MemoryMarshal.TryGetArray(results[0], out ArraySegment<byte> first));
+        Assert.True(MemoryMarshal.TryGetArray(results[1], out ArraySegment<byte> second));
+        Assert.NotSame(first.Array, second.Array);
+    }
+
+    [Fact]
     public void Prohibited_doctype_is_reported_as_malformed_public_input()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<!DOCTYPE svg><svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
@@ -648,5 +681,20 @@ public sealed class PublicContractTests
             if (disposing) _storage.Dispose();
             base.Dispose(disposing);
         }
+    }
+
+    private sealed class NonArrayMemory : MemoryManager<byte>
+    {
+        private readonly byte[] _storage;
+
+        internal NonArrayMemory(byte[] storage) => _storage = storage;
+
+        public override Span<byte> GetSpan() => _storage;
+
+        public override MemoryHandle Pin(int elementIndex = 0) => throw new NotSupportedException();
+
+        public override void Unpin() { }
+
+        protected override void Dispose(bool disposing) { }
     }
 }
