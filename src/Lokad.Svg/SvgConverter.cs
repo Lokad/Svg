@@ -112,8 +112,14 @@ public static class SvgConverter
         byte[] pixels = new byte[surfaceByteCount];
         if (options.BackgroundColor != SvgColor.Transparent)
         {
+            BackgroundInitializationProbe.Started();
             for (int pixel = 0; pixel < pixelCount; pixel++)
             {
+                if ((pixel & 4_095) == 0 && cancellationToken.IsCancellationRequested)
+                {
+                    BackgroundInitializationProbe.CancellationObserved();
+                    cancellationToken.ThrowIfCancellationRequested();
+                }
                 int offset = pixel * 4;
                 pixels[offset] = options.BackgroundColor.Red;
                 pixels[offset + 1] = options.BackgroundColor.Green;

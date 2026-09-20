@@ -36,6 +36,11 @@ does parsing/raster work once on the thread pool, then awaits each destination
 write in order; it does not use synchronous `Stream.Write` or leave a background
 producer after its task completes.
 
+Opaque background initialization checks cancellation in batches of at most 4,096
+pixels after the surface allocation. This bounds additional background writes after
+the token is observed; it is not a wall-clock latency guarantee, since allocation
+and runtime scheduling remain outside the renderer's control.
+
 Stream destinations must be writable but need not be seekable. They remain open,
 are not flushed by conversion, and receive PNG data in cancellation-checked chunks
 no larger than 64 KiB (apart from smaller PNG headers). The stream forms do not

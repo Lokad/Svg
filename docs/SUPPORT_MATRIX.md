@@ -41,7 +41,8 @@ also consumes one work unit and checks cancellation.
 Every XML-reader event is charged to that same limit, including inert metadata and
 the root closing event.
 Opaque-background initialization and PNG's per-pixel transparent-RGB normalization
-are also charged before those scans run.
+are also charged before those scans run. Opaque-background initialization checks
+cancellation every at most 4,096 pixels after allocation.
 Every compressed PNG byte produced by the owned/caller-memory buffer and both
 streaming IDAT sinks is charged before its copy, checksum, or output write.
 The isolated Windows probe directly traverses a 64 KiB text node, a full

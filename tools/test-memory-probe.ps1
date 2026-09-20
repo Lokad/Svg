@@ -165,6 +165,12 @@ $parserCancellationOutput = Join-Path $ResultsDirectory "$runId-parser-cancellat
 $parserCancelled = Invoke-Probe -Name 'parser-cancellation' -InputPath $parserCancellationInput -Output $parserCancellationOutput -ExpectedExitCode 3 -ExtraArguments @('--cancel-after-conversion-start-ms', '1')
 if ($parserCancelled['outcome'] -ne 'cancelled' -or $parserCancelled['cancellationMode'] -ne 'after-conversion-start' -or [int]$parserCancelled['inputBytes'] -lt 4MB -or (Test-Path -LiteralPath $parserCancellationOutput)) { throw 'The parser-stage cancellation probe completed, started too early, or wrote output.' }
 
+$backgroundCancellationInput = Join-Path $ResultsDirectory "$runId-background-cancellation.svg"
+[IO.File]::WriteAllText($backgroundCancellationInput, '<svg xmlns="http://www.w3.org/2000/svg" width="4096" height="4096"/>', [Text.UTF8Encoding]::new($false))
+$backgroundCancellationOutput = Join-Path $ResultsDirectory "$runId-background-cancellation.png"
+$backgroundCancelled = Invoke-Probe -Name 'background-cancellation' -InputPath $backgroundCancellationInput -Output $backgroundCancellationOutput -ExpectedExitCode 3 -ExtraArguments @('--background-color', '1,2,3,255', '--cancel-after-background-start-ms', '1')
+if ($backgroundCancelled['outcome'] -ne 'cancelled' -or $backgroundCancelled['cancellationMode'] -ne 'after-background-start' -or $backgroundCancelled['backgroundInitializationStarted'] -ne 'true' -or $backgroundCancelled['backgroundCancellationObserved'] -ne 'true' -or [long]$backgroundCancelled['conversionManagedAllocatedBytes'] -lt 64MB -or (Test-Path -LiteralPath $backgroundCancellationOutput)) { throw 'The opaque-background cancellation probe did not observe cancellation in the initialized background loop.' }
+
 $fingerprints = @($reports | ForEach-Object { $_.report.operatingSystem + '|' + $_.report.processArchitecture + '|' + $_.report.runtimeFramework } | Sort-Object -Unique)
 if ($fingerprints.Count -ne 1) { throw 'The child-process reports do not share one runtime/platform fingerprint.' }
 $runtime = $reports[0].report
