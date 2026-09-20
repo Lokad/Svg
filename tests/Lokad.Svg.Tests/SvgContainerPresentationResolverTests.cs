@@ -13,6 +13,21 @@ public sealed class SvgContainerPresentationResolverTests
     }
 
     [Fact]
+    public void Common_presentation_resolution_retains_inherited_paint_and_visibility()
+    {
+        SvgPaint inheritedPaint = new(new SvgColor(1, 2, 3, 255), true, 128, new SvgColor(4, 5, 6, 255), true);
+        SvgComputedStyle style = new(null, null, null, null, "none", "visible", "0.5", null);
+
+        SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, inheritedPaint, true, false, new Dictionary<string, SvgColor>());
+
+        Assert.Equal(inheritedPaint, presentation.Paint);
+        Assert.False(presentation.IsDisplayed);
+        Assert.True(presentation.IsVisible);
+        Assert.False(presentation.IsPainted);
+        Assert.Equal((byte)128, presentation.Opacity);
+    }
+
+    [Fact]
     public void Resolves_the_typed_container_presentation_from_the_computed_cascade()
     {
         IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase)

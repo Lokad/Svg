@@ -11,32 +11,15 @@ internal static class SvgShapePresentationResolver
 {
     internal static SvgResolvedShapePresentation Resolve(SvgComputedStyle style, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, bool allowsPaintedStroke, IReadOnlyDictionary<string, SvgColor> namedColors)
     {
-        SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, inheritedPaint, namedColors);
+        SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, inheritedPaint, inheritedDisplayed, inheritedVisibility, namedColors);
         ValidateFillRule(style.FillRule);
         if (!allowsPaintedStroke) ValidateStroke(style.Stroke);
-        byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
-        SvgColor color = SvgPaintResolver.ResolveFillColor(paint, opacity);
-        bool isPainted = IsPainted(style.Display, style.Visibility, inheritedDisplayed, inheritedVisibility);
-        return new SvgResolvedShapePresentation(style, paint, color, opacity, isPainted);
+        SvgColor color = SvgPaintResolver.ResolveFillColor(presentation.Paint, presentation.Opacity);
+        return new SvgResolvedShapePresentation(style, presentation.Paint, color, presentation.Opacity, presentation.IsPainted);
     }
 
     internal static bool IsPainted(string? display, string? visibility, bool inheritedDisplayed, bool inheritedVisibility)
-        => inheritedDisplayed && ParseDisplay(display) && ParseVisibility(visibility, inheritedVisibility);
-
-    internal static bool ParseDisplay(string? value)
-    {
-        if (value is null || value.Equals("inline", StringComparison.OrdinalIgnoreCase)) return true;
-        if (value.Equals("none", StringComparison.OrdinalIgnoreCase)) return false;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only inline and none display values are implemented.");
-    }
-
-    internal static bool ParseVisibility(string? value, bool inheritedVisibility)
-    {
-        if (value is null) return inheritedVisibility;
-        if (value.Equals("visible", StringComparison.OrdinalIgnoreCase)) return true;
-        if (value.Equals("hidden", StringComparison.OrdinalIgnoreCase)) return false;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only visible and hidden visibility values are implemented.");
-    }
+        => SvgPresentationResolver.IsPainted(display, visibility, inheritedDisplayed, inheritedVisibility);
 
     internal static void ValidateFillRule(string? value)
     {
