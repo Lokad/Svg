@@ -15,12 +15,14 @@ public sealed class SvgFontSnapshot : IDisposable
     private const int MaximumFaces = 256;
     private SvgPreparedFont[] _fonts;
     private IReadOnlyList<SvgPreparedFont> _fontView;
+    private readonly SvgFontSnapshotLease _lease;
     private bool _disposed;
 
-    private SvgFontSnapshot(SvgPreparedFont[] fonts)
+    private SvgFontSnapshot(SvgPreparedFont[] fonts, SvgFontSnapshotLease lease)
     {
         _fonts = fonts;
         _fontView = Array.AsReadOnly(fonts);
+        _lease = lease;
     }
 
     /// <summary>Gets verified selected faces and their caller-owned program bytes.</summary>
@@ -59,6 +61,7 @@ public sealed class SvgFontSnapshot : IDisposable
         ValidateSelections(selections);
         var programs = new Dictionary<string, (ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics)>(StringComparer.Ordinal);
         var prepared = new SvgPreparedFont[resolutions.Count];
+        var lease = new SvgFontSnapshotLease();
         long totalBytes = 0;
         for (int index = 0; index < resolutions.Count; index++)
         {
@@ -86,9 +89,9 @@ public sealed class SvgFontSnapshot : IDisposable
             ReadOnlyMemory<byte> bytes = program.Bytes;
             ValidateDeclaredProgram(resolution, bytes);
             OpenTypeFontMetrics metrics = program.Metrics;
-            prepared[index] = new SvgPreparedFont(resolution, bytes, metrics.UnitsPerEm, metrics.GlyphCount);
+            prepared[index] = new SvgPreparedFont(resolution, bytes, metrics.UnitsPerEm, metrics.GlyphCount, lease);
         }
-        return new SvgFontSnapshot(prepared);
+        return new SvgFontSnapshot(prepared, lease);
 
         static void ValidateDeclaredProgram(SvgFontProgramResolution resolution, ReadOnlyMemory<byte> bytes)
         {
@@ -154,6 +157,7 @@ public sealed class SvgFontSnapshot : IDisposable
     {
         if (_disposed) return;
         _disposed = true;
+        _lease.Dispose();
         _fonts = [];
         _fontView = Array.AsReadOnly(_fonts);
     }
@@ -202,20 +206,67 @@ public sealed class SvgFontSnapshot : IDisposable
 /// <summary>Represents one verified, caller-byte-backed font held by an immutable snapshot.</summary>
 public sealed class SvgPreparedFont
 {
-    internal SvgPreparedFont(SvgFontProgramResolution resolution, ReadOnlyMemory<byte> bytes, ushort unitsPerEm, ushort glyphCount)
+    private readonly SvgFontProgramResolution _resolution;
+    private readonly ReadOnlyMemory<byte> _bytes;
+    private readonly ushort _unitsPerEm;
+    private readonly ushort _glyphCount;
+    private readonly SvgFontSnapshotLease _lease;
+
+    internal SvgPreparedFont(SvgFontProgramResolution resolution, ReadOnlyMemory<byte> bytes, ushort unitsPerEm, ushort glyphCount, SvgFontSnapshotLease lease)
     {
-        Resolution = resolution;
-        Bytes = bytes;
-        UnitsPerEm = unitsPerEm;
-        GlyphCount = glyphCount;
+        _resolution = resolution;
+        _bytes = bytes;
+        _unitsPerEm = unitsPerEm;
+        _glyphCount = glyphCount;
+        _lease = lease;
     }
 
     /// <summary>Gets the catalog selection and verified source identity.</summary>
-    public SvgFontProgramResolution Resolution { get; }
+    public SvgFontProgramResolution Resolution
+    {
+        get
+        {
+            _lease.ThrowIfDisposed();
+            return _resolution;
+        }
+    }
     /// <summary>Gets caller-owned, integrity-verified font bytes retained for the snapshot lifetime.</summary>
-    public ReadOnlyMemory<byte> Bytes { get; }
+    public ReadOnlyMemory<byte> Bytes
+    {
+        get
+        {
+            _lease.ThrowIfDisposed();
+            return _bytes;
+        }
+    }
     /// <summary>Gets the validated font-unit scale.</summary>
-    public ushort UnitsPerEm { get; }
+    public ushort UnitsPerEm
+    {
+        get
+        {
+            _lease.ThrowIfDisposed();
+            return _unitsPerEm;
+        }
+    }
     /// <summary>Gets the validated glyph count.</summary>
-    public ushort GlyphCount { get; }
+    public ushort GlyphCount
+    {
+        get
+        {
+            _lease.ThrowIfDisposed();
+            return _glyphCount;
+        }
+    }
+}
+
+internal sealed class SvgFontSnapshotLease
+{
+    private volatile bool _disposed;
+
+    internal void Dispose() => _disposed = true;
+
+    internal void ThrowIfDisposed()
+    {
+        if (_disposed) throw new ObjectDisposedException(nameof(SvgFontSnapshot));
+    }
 }

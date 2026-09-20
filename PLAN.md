@@ -179,8 +179,8 @@ references, and subsequent lookup becomes missing-resource behavior.
 
 Initial corrections: catalog and snapshot now expose read-only array views rather
 than castable backing arrays, with mutation regressions; disposed snapshot access
-now fails explicitly. Remaining closure: concurrent-read/escaped-handle
-contracts. Distinguish immutable metadata from borrowed caller bytes and byte-lease
+now fails explicitly, including public prepared handles that escaped before disposal.
+Remaining closure: concurrent-read/escaped-handle contracts. Distinguish immutable metadata from borrowed caller bytes and byte-lease
 lifetime. Add mutation/disposal/concurrency tests without unconditional program copies.
 
 ### R08 / P1 — Preparation and painting implement different text languages — initial cascade repair 2026-09-20

@@ -376,6 +376,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Snapshot_invalidates_escaped_prepared_font_handles_on_disposal()
+    {
+        SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
+        SvgPreparedFont prepared = Assert.Single(snapshot.Fonts);
+        snapshot.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => _ = prepared.Resolution);
+        Assert.Throws<ObjectDisposedException>(() => _ = prepared.Bytes);
+        Assert.Throws<ObjectDisposedException>(() => _ = prepared.UnitsPerEm);
+        Assert.Throws<ObjectDisposedException>(() => _ = prepared.GlyphCount);
+    }
+
+    [Fact]
     public async Task Snapshot_acquires_one_program_once_for_multiple_same_face_aliases()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
