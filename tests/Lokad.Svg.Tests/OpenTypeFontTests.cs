@@ -414,6 +414,7 @@ public sealed class OpenTypeFontTests
         Assert.Equal((ushort)1, glyph.GlyphIndex);
         Assert.Equal(2, glyph.X);
         Assert.Equal(3, glyph.Y);
+        Assert.Empty(Assert.Single(SvgTextRunBuilder.GetGlyphContours(run, CancellationToken.None)));
     }
 
     [Fact]

@@ -13,6 +13,18 @@ internal static class SvgTextRunBuilder
         SvgPositionedGlyph[] glyphs = SvgGlyphLayout.Layout(font, text, style.FontSize, style.X, style.Y, cancellationToken);
         return new SvgTextRun(style, font, glyphs);
     }
+
+    /// <summary>Expands every positioned glyph in a simple text run into closed SVG-coordinate contours.</summary>
+    internal static SvgGlyphQuadraticContour[][] GetGlyphContours(SvgTextRun run, CancellationToken cancellationToken)
+    {
+        var glyphContours = new SvgGlyphQuadraticContour[run.Glyphs.Length][];
+        for (int index = 0; index < glyphContours.Length; index++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            glyphContours[index] = SvgGlyphOutline.GetContours(run.Font, run.Glyphs[index], run.Style.FontSize, cancellationToken);
+        }
+        return glyphContours;
+    }
 }
 
 /// <summary>Represents one simple single-font horizontal text run before glyph painting.</summary>
