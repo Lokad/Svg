@@ -43,12 +43,12 @@ internal static class SvgFontRequestDiscovery
                     if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
-                    TextStyle style = inherited.Count == 0 ? new TextStyle(null, 400, false) : inherited.Peek();
+                    TextStyle style = inherited.Count == 0 ? new TextStyle(null, 400, false, true, true) : inherited.Peek();
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
                     if (isSvgElement) style = ApplyAttributes(reader, style, workCounter, cancellationToken);
                     if (isSvgElement && reader.LocalName == "defs" && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
                     bool textElement = isSvgElement && reader.LocalName == "text";
-                    if (definitionsDepth < 0 && textElement && style.Family is string family)
+                    if (definitionsDepth < 0 && style.IsDisplayed && style.IsVisible && textElement && style.Family is string family)
                     {
                         var key = new TextRequestKey(family, style.Weight, style.Italic);
                         if (seen.Add(key))
@@ -76,17 +76,21 @@ internal static class SvgFontRequestDiscovery
 
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        SvgTextInlineFontProperties inline = SvgTextFontSyntax.ReadInlineProperties(reader, workCounter, cancellationToken);
+        InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+        SvgTextInlineFontProperties inline = inlineStyle.TextFont;
+        SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inlineStyle);
         string? family = inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family;
         if (family is not null) family = SvgTextFontSyntax.ParseFamily(family);
         string? weightValue = inline.Weight ?? reader.GetAttribute("font-weight");
         int weight = weightValue is null ? inherited.Weight : SvgTextFontSyntax.ParseWeight(weightValue);
         string? styleValue = inline.Style ?? reader.GetAttribute("font-style");
         bool italic = styleValue is null ? inherited.Italic : SvgTextFontSyntax.ParseItalic(styleValue);
-        return new TextStyle(family, weight, italic);
+        bool isDisplayed = inherited.IsDisplayed && SvgPresentationResolver.ParseDisplay(computedStyle.Display);
+        bool isVisible = SvgPresentationResolver.ParseVisibility(computedStyle.Visibility, inherited.IsVisible);
+        return new TextStyle(family, weight, italic, isDisplayed, isVisible);
     }
 
-    private readonly record struct TextStyle(string? Family, int Weight, bool Italic);
+    private readonly record struct TextStyle(string? Family, int Weight, bool Italic, bool IsDisplayed, bool IsVisible);
 
     private readonly record struct TextRequestKey(string Family, int Weight, bool Italic);
 
