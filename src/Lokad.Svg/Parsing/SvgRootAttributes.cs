@@ -9,7 +9,7 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
     {
         SvgElementAttributePolicy.ValidateRoot(reader, workCounter, cancellationToken);
         SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, workCounter, cancellationToken);
-        SvgResolvedContainerPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
+        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
         SvgRootSyntax syntax = SvgRootSyntax.Parse(reader);
         return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, AxisTransform.Identity), reader.GetAttribute("id"), presentation.Opacity, syntax.Width, syntax.Height, syntax.ViewBox);
     }

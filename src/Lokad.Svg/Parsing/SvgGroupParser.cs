@@ -10,7 +10,7 @@ internal static class SvgGroupParser
         SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
         SvgComputedStyle style = context.ResolveStyle(reader);
-        SvgResolvedContainerPresentation presentation = SvgContainerPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, namedColors);
+        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, namedColors);
         AxisTransform transform = context.ResolveTransform(reader);
         SvgGroupKind kind = reader.LocalName == "g" ? SvgGroupKind.Group : SvgGroupKind.Link;
         return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform), presentation.Opacity != 255), presentation.Opacity);

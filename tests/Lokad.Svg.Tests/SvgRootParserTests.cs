@@ -12,7 +12,7 @@ public sealed class SvgRootParserTests
         IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase) { ["red"] = new SvgColor(255, 0, 0, 255) };
         SvgComputedStyle style = new("red", "currentColor", "0.5", "none", "none", "hidden", "0.5", null);
 
-        SvgResolvedContainerPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
+        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), presentation.Paint.CurrentColor);
         Assert.True(presentation.Paint.FillUsesCurrentColor);

@@ -357,9 +357,10 @@ behavior or collecting measurements.
    local-instance presentation are now
    independently typed and characterized; the current resolved paintable-element
    value retains computed style once and atomically joins it with transform and
-   presentation for every leaf lowerer. Split a further *responsibility overlap*
-   between bounded XML syntax, computed paint values and shape lowering only when
-   it has independent behavior to test; preserve the P0 subset exactly and do not
+   presentation for every leaf lowerer, while container validation returns the
+   shared presentation state rather than duplicating it. Split a further
+   *responsibility overlap* between bounded XML syntax, computed paint values and
+   shape lowering only when it has independent behavior to test; preserve the P0 subset exactly and do not
    add another shape-specific path to `SvgRootParser` or a wrapper with no
    independent behavior.
 4. Hold P1.3 implementation work at calibration. The phase-shifted transparent
