@@ -71,7 +71,8 @@ internal static class SvgFontRequestDiscovery
                     bool directChild = reader.Depth == rootDepth + 1;
                     bool hasGroupAncestor = elementGroups.Any(static group => group);
                     bool parentIsGroup = elementGroups.Count > 0 && elementGroups.Peek();
-                    if (isSvgElement && reader.LocalName == "style" && directChild)
+                    bool rootStyleElement = isSvgElement && reader.LocalName == "style" && directChild;
+                    if (rootStyleElement)
                     {
                         if (sawStyleableNode || hasStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede supported definitions and rendered content.");
                         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
@@ -80,6 +81,7 @@ internal static class SvgFontRequestDiscovery
                         if (SvgStyleSheet.TargetsRootId(rootId, styleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
                         hasStyleSheet = true;
                     }
+                    if (rootStyleElement) continue;
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = parentAllowsText && textElement;
                     bool childAllowsText = parentAllowsText && isSvgElement && reader.LocalName is ("svg" or "g" or "a");
