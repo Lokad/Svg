@@ -3,6 +3,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Tests;
 
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Fonts;
 
 public sealed class RenderBudgetTests
 {
@@ -49,6 +50,45 @@ public sealed class RenderBudgetTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, options, budget, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+    public void Glyph_rasterization_charges_bounds_all_samples_and_pixel_dispatch()
+    {
+        RenderBudget budget = new(8);
+
+        using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits(517)), budget, CancellationToken.None);
+
+        Assert.Equal(517, surface.WorkUnits);
+        Assert.Equal(4, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Glyph_rasterization_denies_before_bounds_or_coverage_work_exceeds_the_limit()
+    {
+        RenderBudget boundsBudget = new(8);
+        SvgException bounds = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits(3)), boundsBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, bounds.ErrorCode);
+        AssertBudgetReleased(boundsBudget);
+
+        RenderBudget coverageBudget = new(8);
+        SvgException coverage = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits(516)), coverageBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, coverage.ErrorCode);
+        AssertBudgetReleased(coverageBudget);
+    }
+
+    [Fact]
+    public void Glyph_rasterization_observes_cancellation_at_coverage_entry()
+    {
+        RenderBudget budget = new(8);
+        using CancellationTokenSource cancellation = new();
+        bool coverageStarted = false;
+        using IDisposable probe = GlyphCoverageProbe.Arm(() => { coverageStarted = true; cancellation.Cancel(); });
+
+        Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits(517)), budget, cancellation.Token));
+
+        Assert.True(coverageStarted);
         AssertBudgetReleased(budget);
     }
 
@@ -112,7 +152,20 @@ public sealed class RenderBudgetTests
         Assert.Equal(long.MaxValue, budget.Snapshot().CurrentBytes);
     }
 
-    private static SvgRenderLimits Limits() => new(8, 8, 1, 1, 8, 8, 8, 8);
+    private static SvgRoot GlyphRoot()
+    {
+        SvgGlyphQuadraticContour contour = new([
+            Line(0, 0, 1, 0), Line(1, 0, 1, 1), Line(1, 1, 0, 1), Line(0, 1, 0, 0)]);
+        SvgGeometry geometry = SvgGeometry.FromGlyphContours(new SvgGlyphGeometry([contour], new SvgColor(0, 0, 0, 255)));
+        return new SvgRoot(1, 1, null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255)], false, 0, null);
+    }
+
+    private static SvgGlyphQuadraticSegment Line(double startX, double startY, double endX, double endY)
+        => new(new SvgGlyphOutlinePoint(startX, startY), new SvgGlyphOutlinePoint(endX, endY), new SvgGlyphOutlinePoint(endX, endY));
+
+    private static SvgRenderLimits Limits() => Limits(8);
+
+    private static SvgRenderLimits Limits(int maximumWorkUnits) => new(8, 8, 1, 1, 8, 8, 8, maximumWorkUnits);
 
     private static void AssertBudgetReleased(RenderBudget budget)
     {

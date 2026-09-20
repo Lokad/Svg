@@ -14,6 +14,7 @@ internal static class SvgGlyphCoverage
     {
         if (samplesPerAxis is < 1 or > 8) throw new ArgumentOutOfRangeException(nameof(samplesPerAxis));
         if (!double.IsFinite(left) || !double.IsFinite(top) || !double.IsFinite(width) || !double.IsFinite(height) || width <= 0 || height <= 0) throw new ArgumentOutOfRangeException(nameof(width));
+        GlyphCoverageProbe.Started();
         int covered = 0;
         int total = checked(samplesPerAxis * samplesPerAxis);
         for (int y = 0; y < samplesPerAxis; y++)

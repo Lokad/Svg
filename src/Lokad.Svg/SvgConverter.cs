@@ -9,6 +9,8 @@ using System.Xml;
 /// <summary>Converts static SVG bytes to PNG bytes.</summary>
 public static class SvgConverter
 {
+    private const int GlyphSamplesPerAxis = 4;
+
     /// <summary>Converts SVG bytes to an independently owned PNG result.</summary>
     public static ReadOnlyMemory<byte> ConvertToPng(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
@@ -211,6 +213,19 @@ public static class SvgConverter
         void RasterizeGlyphContours(SvgGlyphGeometry glyph, byte[] destination)
         {
             if (glyph.Contours.Length == 0) return;
+            long segmentCount;
+            long sampleWork;
+            try
+            {
+                segmentCount = SvgGlyphCoverage.GetSegmentCount(glyph.Contours);
+                sampleWork = checked(segmentCount * 8);
+            }
+            catch (OverflowException)
+            {
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the supported accounting range.");
+            }
+            if (segmentCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the configured work limit.");
+            workUnits += segmentCount;
             double minimumX = double.PositiveInfinity;
             double minimumY = double.PositiveInfinity;
             double maximumX = double.NegativeInfinity;
@@ -229,23 +244,22 @@ public static class SvgConverter
             int startY = ClampFloor(MapEdge(minimumY, verticalScale, verticalOffset), outputHeight);
             int endY = ClampCeiling(MapEdge(maximumY, verticalScale, verticalOffset), outputHeight);
             long coverage = (long)(endY - startY) * (endX - startX);
-            long glyphWork;
+            long coverageWork;
             try
             {
-                long sampleWork = SvgGlyphCoverage.GetSampleWorkUnits(glyph.Contours);
-                long boundsWork = SvgGlyphCoverage.GetSegmentCount(glyph.Contours);
-                glyphWork = checked(boundsWork + checked(coverage * checked(sampleWork + 1)));
+                long samplesPerPixel = checked(GlyphSamplesPerAxis * GlyphSamplesPerAxis);
+                coverageWork = checked(coverage * checked(sampleWork * samplesPerPixel + 1));
             }
             catch (OverflowException)
             {
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the supported accounting range.");
             }
-            if (glyphWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the configured work limit.");
-            workUnits += glyphWork;
+            if (coverageWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the configured work limit.");
+            workUnits += coverageWork;
             for (int y = startY; y < endY; y++)
             for (int x = startX; x < endX; x++)
             {
-                byte alpha = SvgGlyphCoverage.GetCoverage(glyph.Contours, (x - horizontalOffset) / horizontalScale, (y - verticalOffset) / verticalScale, 1 / horizontalScale, 1 / verticalScale, 4, cancellationToken);
+                byte alpha = SvgGlyphCoverage.GetCoverage(glyph.Contours, (x - horizontalOffset) / horizontalScale, (y - verticalOffset) / verticalScale, 1 / horizontalScale, 1 / verticalScale, GlyphSamplesPerAxis, cancellationToken);
                 if (alpha == 0) continue;
                 BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(glyph.Color.Red, glyph.Color.Green, glyph.Color.Blue, MultiplyAlpha(glyph.Color.Alpha, alpha)), true);
             }
