@@ -169,7 +169,8 @@ distinct declared sizes plus conflicting same-hash sizes before provider acquisi
 Selected nonzero standalone faces are also denied before provider access. Remaining
 closure: separate program hash and face
 identity; gate standalone face 0 and TTC explicitly. Test aliases, same-hash
-different paths/sizes, order independence and unused unsupported faces. Replace
+different paths/sizes, order independence and unused unsupported faces (retained:
+an unused nonzero face does not poison a selected standalone face). Replace
 the current dedup test's “valid” standalone face-1 alias with legitimate face-0
 aliases; keep unsupported face-index coverage separately.
 

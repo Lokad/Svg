@@ -451,6 +451,21 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Request_based_snapshot_does_not_reject_an_unused_unsupported_face()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }, { \"requestedFamily\": \"Unsupported\", \"resolvedFamily\": \"Unsupported\", \"relativeFontFile\": \"files/example.ttf\", \"faceIndex\": 1 }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var provider = new CountingFontProvider(new CountingFontSource(bytes));
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new SvgFontFaceRequest("Example", 400, false)], provider, CancellationToken.None);
+
+        Assert.Single(snapshot.Fonts);
+        Assert.Equal(1, provider.RequestCount);
+    }
+
+    [Fact]
     public async Task Snapshot_attaches_format_context_to_an_unsupported_font_program()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
