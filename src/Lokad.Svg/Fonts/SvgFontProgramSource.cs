@@ -16,6 +16,19 @@ public interface ISvgFontProgramSource
     ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken);
 }
 
+/// <summary>
+/// Locates caller-owned storage for one manifest-declared font program. The caller
+/// owns the provider's lifetime, storage, cache policy, concurrency and retries.
+/// Implementations must observe cancellation and must not return a source for a
+/// different program. Returning <see langword="null"/> reports that the program
+/// is unavailable; this library neither probes the file system nor performs I/O.
+/// </summary>
+public interface ISvgFontProgramSourceProvider
+{
+    /// <summary>Asynchronously locates storage for the exact manifest file.</summary>
+    ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken);
+}
+
 /// <summary>Provides immutable caller-owned bytes without copying or retaining a cache.</summary>
 public sealed class SvgMemoryFontProgramSource : ISvgFontProgramSource
 {

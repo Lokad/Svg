@@ -231,9 +231,11 @@ selector. It uses the same web-style JSON behavior, field defaults, safe relativ
 paths, case-insensitive family/alias matching, fallback order and final selection
 tie-breaks as the public OoxPdf 0.1.4 contract. `ISvgFontProgramSource` then binds
 a selected face to caller-provided asynchronous bytes and verifies the declared
-byte count/SHA-256 without copying, caching or doing I/O. It has no OoxPdf
-reference and does not parse font programs. The next P1 increment must connect
-selected sources to bounded preparation and font parsing.
+byte count/SHA-256 without copying, caching or doing I/O. `AcquireAsync` selects
+one face, asks an explicit caller-owned provider for only that declared file, and
+verifies it before returning; a missing source is `UnresolvedResource`. It has no
+OoxPdf reference and does not parse font programs. The next P1 increment must
+connect selected sources to bounded preparation and font parsing.
 
 ### Font footprint measured for this plan
 
@@ -318,7 +320,7 @@ repair details stay in Git history; unresolved raster evidence stays in
 | Order | Work | Dependencies and exit evidence |
 | --- | --- | --- |
 | P0 — current contract | F01–F03 complete: overlap rejection, dimension-limit categorization and bounded background cancellation are verified. Preserve the shared budget and current exact corpus. | Complete; no platform-CI prerequisite. Reopen only for a newly reproduced public-contract defect. |
-| P1 — fonts and oracle | `SvgFontPackCatalog` and `ISvgFontProgramSource` complete metadata selection plus caller-owned byte-size/hash verification. Implement bounded async preparation and host-neutral diagnostics; select/pin public font probes and repair F04. | Manifest metadata conformance, aliases, defaults, path safety, fallback selection, memory-backed sources, integrity failures and cancellation preservation have tests. Remaining evidence: selective acquisition, missing faces, real styles and no-I/O rasterization. No dependency on another Lokad package or a consuming application is introduced. |
+| P1 — fonts and oracle | `SvgFontPackCatalog`, `ISvgFontProgramSource` and `ISvgFontProgramSourceProvider` complete metadata selection, selective caller-owned acquisition, and byte-size/hash verification. Implement bounded async preparation and host-neutral diagnostics; select/pin public font probes and repair F04. | Manifest metadata conformance, aliases, defaults, path safety, fallback selection, memory-backed sources, integrity failures, selective acquisition, missing selected sources and cancellation preservation have tests. Remaining evidence: real styles and no-I/O rasterization. No dependency on another Lokad package or a consuming application is introduced. |
 | P2 — outlines and coverage | Add bounded TrueType outline parsing, typed general contours/glyph runs and the coverage/composition needed by real glyphs. Run discriminating font/path calibration early. | P1 supplies exact font identity. Existing 43 cases remain exact. Curved/simple/composite glyphs, holes, fractional origins, size changes and alpha interactions have independent references and classified outcomes. |
 | P3 — useful text | Integrate basic `text`/`tspan` parsing, inherited style, positioning, metrics, kerning and painting through the shared scene. | P1/P2. Labeled bars/axes, multiple spans/styles, Unicode scalar handling and missing-glyph cases work through every public output form. Demonstrate the preparation/async-stream path with a standalone test host, without an external application or private service. |
 | P4 — useful SVG breadth | Extend general paths/transforms/strokes, then paints/composition and mapped PNG images, guided by representative diagrams. Expand workload measurements. | Reuse the outline/style/resource infrastructure. Each feature needs combinations, limits and independent pixel evidence. |

@@ -102,6 +102,46 @@ public sealed class SvgFontPackCatalog
         return new SvgFontProgramResolution(resolution, new VerifiedSvgFontProgramSource(PackId, resolution.Face, source));
     }
 
+    /// <summary>
+    /// Selectively locates and integrity-verifies the program selected by this
+    /// catalog. No other manifest file is requested. The provider retains source
+    /// ownership and cache policy; the result retains neither bytes nor a cache.
+    /// </summary>
+    public ValueTask<SvgFontProgramResolution> AcquireAsync(SvgFontPackResolution resolution, ISvgFontProgramSourceProvider provider, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(resolution);
+        ArgumentNullException.ThrowIfNull(provider);
+        if (!_faces.Contains(resolution.Face)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
+        cancellationToken.ThrowIfCancellationRequested();
+        ValueTask<ISvgFontProgramSource?> pending = provider.GetSourceAsync(resolution.Face.File, cancellationToken);
+        return pending.IsCompletedSuccessfully
+            ? AcquireResolved(resolution, pending.Result, cancellationToken)
+            : AwaitAcquireAsync(resolution, pending, cancellationToken);
+    }
+
+    private ValueTask<SvgFontProgramResolution> AcquireResolved(SvgFontPackResolution resolution, ISvgFontProgramSource? source, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (source is null) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program is unavailable from the supplied provider.");
+        SvgFontProgramResolution bound = Bind(resolution, source);
+        ValueTask<ReadOnlyMemory<byte>> verification = bound.Source.GetBytesAsync(cancellationToken);
+        return verification.IsCompletedSuccessfully
+            ? ValueTask.FromResult(bound)
+            : AwaitVerificationAsync(bound, verification);
+    }
+
+    private async ValueTask<SvgFontProgramResolution> AwaitAcquireAsync(SvgFontPackResolution resolution, ValueTask<ISvgFontProgramSource?> pending, CancellationToken cancellationToken)
+    {
+        ISvgFontProgramSource? source = await pending.ConfigureAwait(false);
+        return await AcquireResolved(resolution, source, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static async ValueTask<SvgFontProgramResolution> AwaitVerificationAsync(SvgFontProgramResolution bound, ValueTask<ReadOnlyMemory<byte>> verification)
+    {
+        await verification.ConfigureAwait(false);
+        return bound;
+    }
+
     private static SvgFontPackFile[] ParseFiles(WireFile[]? entries)
     {
         if (entries is null || entries.Length == 0) throw InvalidManifest("The font pack manifest does not list any font files.");

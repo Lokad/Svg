@@ -13,14 +13,18 @@ public sealed class PublicContractTests
         MethodInfo parse = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.Parse), BindingFlags.Public | BindingFlags.Static)!;
         MethodInfo resolve = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.Resolve), BindingFlags.Public | BindingFlags.Instance)!;
         MethodInfo bind = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.Bind), BindingFlags.Public | BindingFlags.Instance)!;
+        MethodInfo acquire = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.AcquireAsync), BindingFlags.Public | BindingFlags.Instance)!;
         MethodInfo getBytes = typeof(ISvgFontProgramSource).GetMethod(nameof(ISvgFontProgramSource.GetBytesAsync), BindingFlags.Public | BindingFlags.Instance)!;
+        MethodInfo getSource = typeof(ISvgFontProgramSourceProvider).GetMethod(nameof(ISvgFontProgramSourceProvider.GetSourceAsync), BindingFlags.Public | BindingFlags.Instance)!;
 
         Assert.All(parse.GetParameters(), parameter => Assert.False(parameter.HasDefaultValue));
         Assert.All(resolve.GetParameters(), parameter => Assert.False(parameter.HasDefaultValue));
         Assert.All(bind.GetParameters(), parameter => Assert.False(parameter.HasDefaultValue));
+        Assert.All(acquire.GetParameters(), parameter => Assert.False(parameter.HasDefaultValue));
         ParameterInfo cancellation = Assert.Single(getBytes.GetParameters());
         Assert.Equal(typeof(CancellationToken), cancellation.ParameterType);
         Assert.False(cancellation.HasDefaultValue);
+        Assert.Equal(typeof(CancellationToken), getSource.GetParameters()[1].ParameterType);
     }
 
     [Fact]

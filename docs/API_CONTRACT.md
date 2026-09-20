@@ -33,9 +33,12 @@ remain `UnsupportedFeature`; malformed SVG values retain their parsing errors.
 format from caller-owned bytes without network or filesystem access. It validates
 the requested pack ID, safe relative paths, file byte counts and SHA-256 metadata,
 then resolves requested/resolved family aliases, styles and configured fallback
-families deterministically. This is metadata selection only: a caller still owns
-font-program acquisition and byte verification, and the current renderer does not
-yet consume catalog entries to render SVG text.
+families deterministically. `AcquireAsync` asks an explicit caller-owned
+`ISvgFontProgramSourceProvider` for only the selected file and verifies that
+program before returning; a missing source is `UnresolvedResource`. The provider
+owns I/O, retries, caching, concurrency and its source lifetime. The library does
+not probe storage, retain acquired bytes or request unrelated pack files, and the
+current renderer does not yet consume catalog entries to render SVG text.
 `ISvgFontProgramSource` is the explicit caller-owned byte boundary. Binding a
 catalog resolution wraps that source with declared byte-count/SHA-256 validation;
 it neither copies nor caches the returned program. Source storage must therefore
