@@ -428,6 +428,10 @@ executed command/result and relevant artifact when closing findings. This review
 updates PLAN.md only; companion-document repairs remain scheduled. Do not advertise
 ordinary text before semantic/resource/oracle gates pass.
 
+**2026-09-20 update — support matrix.** The support matrix now has a dedicated
+experimental-text note covering inherited single-font precedence, finite scalar
+coordinates, bounded text/CDATA extraction and the remaining explicit exclusions.
+
 ## 5. Actual blockers and execution order
 
 No demonstrated missing permission, private dependency or remote service blocks

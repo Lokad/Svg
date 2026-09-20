@@ -25,6 +25,17 @@ is not a general pixel-fidelity claim.
 | Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and forty-three stable references |
 | Fixture corpus | Forty-three original CC0 probes with verified hashes; the manifest gate renders and compares all forty-three exactly |
 
+### Experimental supplied-font text
+
+Direct text is an experimental, caller-snapshot-only path. Its admitted
+single-font family, weight, style and size inherit from `svg`, `g` or `a`
+presentation attributes and inline declarations, with direct text declarations
+taking precedence. It admits finite bare-number/`px` scalar position and offset
+values, bounded text/CDATA extraction, and `start`/`middle`/`end` anchors.
+Stylesheet font declarations, spans, lists, clipping, strokes and transforms remain
+explicitly unsupported. These mechanics do not constitute ordinary text or
+browser-fidelity support.
+
 Stylesheet declaration/selector copies retained by rules, definition identifiers
 and copied local-reference identifiers reserve their owned string and reservation-
 tracker storage before the copy, then release it with parser document state.
