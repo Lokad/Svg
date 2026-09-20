@@ -14,7 +14,7 @@ internal static class SvgFontRequestDiscovery
         SvgRenderLimits limits = SvgRenderLimits.Default;
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         var requests = new List<SvgFontFaceRequest>();
-        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var seen = new HashSet<TextRequestKey>(TextRequestKeyComparer.Instance);
         var inherited = new Stack<TextStyle>();
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         try
@@ -43,7 +43,7 @@ internal static class SvgFontRequestDiscovery
                     bool textElement = isSvgElement && reader.LocalName is "text" or "tspan";
                     if (textElement && style.Family is string family)
                     {
-                        string key = family + "\n" + style.Weight + "\n" + style.Italic;
+                        var key = new TextRequestKey(family, style.Weight, style.Italic);
                         if (seen.Add(key))
                         {
                             if (requests.Count == MaximumRequests) throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG text font request count exceeds the preparation limit.");
@@ -94,4 +94,17 @@ internal static class SvgFontRequestDiscovery
     }
 
     private readonly record struct TextStyle(string? Family, int Weight, bool Italic);
+
+    private readonly record struct TextRequestKey(string Family, int Weight, bool Italic);
+
+    private sealed class TextRequestKeyComparer : IEqualityComparer<TextRequestKey>
+    {
+        internal static TextRequestKeyComparer Instance { get; } = new();
+
+        public bool Equals(TextRequestKey left, TextRequestKey right)
+            => left.Weight == right.Weight && left.Italic == right.Italic && left.Family.Equals(right.Family, StringComparison.OrdinalIgnoreCase);
+
+        public int GetHashCode(TextRequestKey value)
+            => HashCode.Combine(StringComparer.OrdinalIgnoreCase.GetHashCode(value.Family), value.Weight, value.Italic);
+    }
 }

@@ -49,6 +49,16 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
+    public void Deduplicates_case_insensitive_equivalent_font_requests()
+    {
+        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>one</text><text font-family='example'>two</text></svg>"u8.ToArray(), CancellationToken.None));
+
+        Assert.Equal("Example", request.Family);
+        Assert.Equal(400, request.Weight);
+        Assert.False(request.Italic);
+    }
+
+    [Fact]
     public void Rejects_a_non_svg_root_instead_of_discovering_foreign_text()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover("<not-svg><text font-family='Example'>x</text></not-svg>"u8.ToArray(), CancellationToken.None));
