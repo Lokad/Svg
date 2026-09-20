@@ -334,23 +334,26 @@ behavior or collecting measurements.
 
 ### Next implementation changes
 
-1. Close the remaining P0.3 accounting evidence before adding scope: retain and
-   test the conservative `XmlReader` allowance unless a portable, stricter
-   accounting mechanism replaces it; make exact BCL XML/attribute-string
-   accounting explicitly measurable or retain it as a documented conservative
-   gap; and repeat child-process budget/cancellation probes on stable hosts before
-   turning the current local benchmark into a threshold.
+1. Retain the conservative `XmlReader` allowance and its fresh-process text,
+   short-attribute and large-attribute probes unless a portable, stricter
+   accounting mechanism replaces it. The staged managed-allocation observations
+   make the BCL/attribute scope inspectable; exact BCL and cross-runtime
+   attribute-string accounting remain documented conservative gaps. Repeat the
+   child-process budget/cancellation probes on stable hosts before turning the
+   current local benchmark into a threshold.
 2. Obtain remote evidence for the configured Windows and Linux jobs, then admit a
    canonical Linux baseline only through an explicit capture/provenance review.
    A configured workflow, a Windows-exact capture, or a freshly generated image is
    not admission evidence.
 3. Keep P1.2 focused on real ownership boundaries. Common inherited presentation,
    stylesheet precedence/source order and local-instance presentation are now
-   independently typed and characterized. Split a further *responsibility overlap*
-   between bounded XML syntax, computed paint values and shape lowering only when
-   it has independent behavior to test; preserve the P0 subset exactly and do not
-   add another shape-specific path to `SvgRootParser` or a wrapper with no
-   independent behavior.
+   independently typed and characterized; the current resolved paintable-element
+   value atomically joins computed style, transform and presentation for every
+   leaf lowerer. Split a further *responsibility overlap* between bounded XML
+   syntax, computed paint values and shape lowering only when it has independent
+   behavior to test; preserve the P0 subset exactly and do not add another
+   shape-specific path to `SvgRootParser` or a wrapper with no independent
+   behavior.
 4. Hold P1.3 implementation work at calibration. The phase-shifted transparent
    overlap rejects the fixed-edge/compositing model's earlier near fit; byte
    premultiplied intermediates improve both phases but remain non-exact. Do not
