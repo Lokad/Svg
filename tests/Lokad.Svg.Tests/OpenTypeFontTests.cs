@@ -856,6 +856,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Parser_failure_after_retaining_a_glyph_contour_releases_its_scene_budget()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        RenderBudget budget = new(1_000_000);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' font-size='100'>A</text><rect x='0.1' width='1'/></svg>"u8.ToArray();
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Charges_direct_glyph_sampling_work_to_the_public_conversion_limit()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
