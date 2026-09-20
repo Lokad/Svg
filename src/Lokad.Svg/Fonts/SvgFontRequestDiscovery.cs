@@ -45,6 +45,7 @@ internal static class SvgFontRequestDiscovery
             string? rootId = null;
             bool hasStyleSheet = false;
             bool sawStyleableNode = false;
+            bool hasUnsupportedContent = false;
             int nodeCount = 0;
             int inertDepth = -1;
             while (reader.Read())
@@ -85,6 +86,13 @@ internal static class SvgFontRequestDiscovery
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = parentAllowsText && textElement;
                     bool childAllowsText = parentAllowsText && isSvgElement && (reader.Depth == rootDepth || reader.LocalName is "g" or "a");
+                    bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol");
+                    if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && !isKnownContent)
+                    {
+                        hasUnsupportedContent = true;
+                        requests.Clear();
+                        seen.Clear();
+                    }
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
                     {
                         if (reader.Depth == 0) SvgElementAttributePolicy.ValidateRoot(reader, workCounter, cancellationToken);
@@ -95,7 +103,7 @@ internal static class SvgFontRequestDiscovery
                     if (inertDepth < 0 && isSvgElement && reader.LocalName is ("defs" or "title" or "desc" or "metadata") && !reader.IsEmptyElement) inertDepth = reader.Depth;
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null) SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
-                    TextRequestCandidate? candidate = inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.Text.Family is string family
+                    TextRequestCandidate? candidate = !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.Text.Family is string family
                         ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic))
                         : null;
                     if (reader.IsEmptyElement) AddCandidate(candidate, requests, seen);
