@@ -58,11 +58,14 @@ Windows-pinned-Chrome references for an
 [half-sixteenth-grid diagonal triangle](../tests/Research/diagonal-triangle-half-grid-8x8.svg),
 [transparent semi-opaque diagonal overlap](../tests/Research/diagonal-overlap-8x8.svg),
 [half-sixteenth-grid transparent semi-opaque diagonal overlap](../tests/Research/diagonal-overlap-half-grid-8x8.svg),
+[disjoint semi-opaque layer-opacity](../tests/Research/diagonal-layer-opacity-16x8.svg),
+[half-sixteenth-grid disjoint layer-opacity](../tests/Research/diagonal-layer-opacity-half-grid-16x8.svg),
 [cubic arch](../tests/Research/cubic-arch-8x8.svg),
 [even-odd hole](../tests/Research/evenodd-hole-8x8.svg), and
 [round stroke join](../tests/Research/round-join-8x8.svg). They supply the first
-integer, grid-aligned fractional, half-grid-coordinate, and two-phase semi-opaque overlap
-coverage, subdivision, multi-subpath/winding, and outline targets for P1.3. The current converter asserts
+integer, grid-aligned fractional, half-grid-coordinate, two-phase semi-opaque overlap,
+and pre-compositing opacity coverage, subdivision, multi-subpath/winding, and outline
+targets for P1.3. The current converter asserts
 `UnsupportedFeature` for each; neither their stable browser captures nor this
 inventory admits a general path or stroke feature.
 
@@ -192,6 +195,20 @@ the phase companion still has a large channel error. It rejects straight
 intermediate compositing as sufficient; it does not identify the browser backend.
 Do not tune it or admit geometry. Any resumed P1.3 work needs a new discriminating
 mechanism that matches both overlap phases exactly.
+
+The two disjoint 16×8 layer-opacity probes preserve the red and blue triangles'
+respective original and half-grid phases, but translate them into separate halves
+of a transparent image. They therefore measure each path's coverage × 0.5 opacity
+conversion before source-over can contribute. Both have three fresh
+Windows-pinned captures that are byte- and decoded-pixel-identical. Starting with
+the source-guided fixed-edge coverage, the ordinary rounded byte product misses
+18 of 128 pixels in the original phase (maximum channel/alpha error 1/1, bounds
+`(1,1)`–`(14,6)`) and 18 in the phase companion (5/5,
+`(1,1)`–`(14,7)`). The tested Skia-style byte product has the same two envelopes.
+Thus the retained residual begins before red/blue source-over, and compositing
+rounding alone cannot repair the prior overlap candidates. This is a classified
+negative calibration result: it does not identify Chrome's coverage backend and
+does not admit general geometry.
 
 ## Calibration source pin
 

@@ -530,6 +530,22 @@ public sealed class RasterizationResearchTests
         AssertNonExactComparison(phaseSkiaRounded, 21, 13, 5, 19, 0, 1, 6, 7);
     }
 
+    [Fact]
+    public void Layer_opacity_probe_reports_the_pre_compositing_candidate_envelope()
+    {
+        RgbaImage originalReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-layer-opacity-16x8.png")), 128);
+        RgbaImage phaseReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-layer-opacity-half-grid-16x8.png")), 128);
+        PixelComparison original = PixelComparer.Compare(originalReference, RasterizeLayerOpacity(RedOverlapTriangle, BlueOverlapTriangle, false));
+        PixelComparison phase = PixelComparer.Compare(phaseReference, RasterizeLayerOpacity(RedHalfGridOverlapTriangle, BlueHalfGridOverlapTriangle, false));
+        PixelComparison originalSkia = PixelComparer.Compare(originalReference, RasterizeLayerOpacity(RedOverlapTriangle, BlueOverlapTriangle, true));
+        PixelComparison phaseSkia = PixelComparer.Compare(phaseReference, RasterizeLayerOpacity(RedHalfGridOverlapTriangle, BlueHalfGridOverlapTriangle, true));
+
+        AssertNonExactComparison(original, 18, 1, 1, 18, 1, 1, 14, 6);
+        AssertNonExactComparison(phase, 18, 5, 5, 18, 1, 1, 14, 7);
+        AssertNonExactComparison(originalSkia, 18, 1, 1, 18, 1, 1, 14, 6);
+        AssertNonExactComparison(phaseSkia, 18, 5, 5, 18, 1, 1, 14, 7);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -684,6 +700,27 @@ public sealed class RasterizationResearchTests
             pixels[offset + 2] = Unpremultiply(pixels[offset + 2], alpha, roundUnpremultiply);
         }
         return new RgbaImage(8, 8, pixels);
+    }
+
+    private static RgbaImage RasterizeLayerOpacity(ReadOnlySpan<Point> redTriangle, ReadOnlySpan<Point> blueTriangle, bool useSkiaAlphaMultiply)
+    {
+        RgbaImage redCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(redTriangle);
+        RgbaImage blueCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(blueTriangle);
+        byte[] pixels = new byte[16 * 8 * 4];
+        for (int y = 0; y < 8; y++)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                int sourceOffset = (y * 8 + x) * 4;
+                int redOffset = (y * 16 + x) * 4;
+                int blueOffset = (y * 16 + x + 8) * 4;
+                byte redAlpha = ToCoverageOpacity(redCoverage.Pixels[sourceOffset + 3], useSkiaAlphaMultiply);
+                byte blueAlpha = ToCoverageOpacity(blueCoverage.Pixels[sourceOffset + 3], useSkiaAlphaMultiply);
+                if (redAlpha != 0) { pixels[redOffset] = byte.MaxValue; pixels[redOffset + 3] = redAlpha; }
+                if (blueAlpha != 0) { pixels[blueOffset + 2] = byte.MaxValue; pixels[blueOffset + 3] = blueAlpha; }
+            }
+        }
+        return new RgbaImage(16, 8, pixels);
     }
 
     private static byte ToCoverageOpacity(byte coverage, bool useSkiaAlphaMultiply)

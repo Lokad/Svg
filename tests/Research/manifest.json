@@ -184,6 +184,58 @@
       }
     },
     {
+      "id": "research-diagonal-layer-opacity-16x8",
+      "path": "diagonal-layer-opacity-16x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-20",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "de6ad8a3090546dc02470b0dbd63c5f3a14f01c6af4a1a7def8059fcd5d05694",
+      "featureTags": ["geometry", "path", "diagonal-edge", "opacity", "coverage", "pre-compositing", "calibration"],
+      "width": 16,
+      "height": 8,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/diagonal-layer-opacity-16x8.png",
+        "referenceSha256": "5a950a21def082b1cc1205b40edb0cc003f97018848763667c8c5e9b3120592d",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "2",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-diagonal-layer-opacity-half-grid-16x8",
+      "path": "diagonal-layer-opacity-half-grid-16x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-20",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "0edbaee6c1e5e37177fcddebedcba76719092ebc195e0fe394ccc78f09967b60",
+      "featureTags": ["geometry", "path", "diagonal-edge", "fractional-coordinates", "half-grid-phase", "opacity", "coverage", "pre-compositing", "calibration"],
+      "width": 16,
+      "height": 8,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/diagonal-layer-opacity-half-grid-16x8.png",
+        "referenceSha256": "7ebc094784c0e8803734273547b3d42044a76a2b38464df083e7d3942e16ee3a",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "2",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
       "id": "research-cubic-arch-8x8",
       "path": "cubic-arch-8x8.svg",
       "creator": "Lokad.Svg contributors",
