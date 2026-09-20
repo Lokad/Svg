@@ -22,6 +22,19 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    public void Normalizes_shared_text_font_tokens_before_constructing_a_request()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<text font-family=\"  'Example'  \" font-weight=' BOLD ' font-style=' ITALIC ' font-size='12'/>"));
+        reader.Read();
+
+        SvgTextStyle style = SvgTextSyntax.Parse(reader);
+
+        Assert.Equal("Example", style.Font.Family);
+        Assert.Equal(700, style.Font.Weight);
+        Assert.True(style.Font.Italic);
+    }
+
+    [Fact]
     public void Normalizes_a_quoted_direct_font_family()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family=\"'Example'\"/>"));

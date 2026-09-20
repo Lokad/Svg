@@ -69,22 +69,11 @@ internal static class SvgFontRequestDiscovery
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited)
     {
         string? family = GetProperty(reader, "font-family") ?? inherited.Family;
-        if (family is not null)
-        {
-            family = family.Trim();
-            if (family.Length == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty text font-family values are not implemented.");
-            if (family.Contains(',')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Font-family lists are not implemented by text preparation yet.");
-            if (family.Length >= 2 && ((family[0] == '\'' && family[^1] == '\'') || (family[0] == '"' && family[^1] == '"'))) family = family[1..^1];
-        }
+        if (family is not null) family = SvgTextFontSyntax.ParseFamily(family);
         string? weightValue = GetProperty(reader, "font-weight");
-        int weight = weightValue is null ? inherited.Weight : ParseWeight(weightValue);
+        int weight = weightValue is null ? inherited.Weight : SvgTextFontSyntax.ParseWeight(weightValue);
         string? styleValue = GetProperty(reader, "font-style");
-        bool italic = styleValue is null ? inherited.Italic : styleValue.Trim() switch
-        {
-            "normal" => false,
-            "italic" => true,
-            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal and italic text font-style values are implemented by preparation.")
-        };
+        bool italic = styleValue is null ? inherited.Italic : SvgTextFontSyntax.ParseItalic(styleValue);
         return new TextStyle(family, weight, italic);
     }
 
@@ -102,15 +91,6 @@ internal static class SvgFontRequestDiscovery
             }
         }
         return value ?? reader.GetAttribute(name);
-    }
-
-    private static int ParseWeight(string value)
-    {
-        string token = value.Trim();
-        if (token == "normal") return 400;
-        if (token == "bold") return 700;
-        if (!int.TryParse(token, System.Globalization.CultureInfo.InvariantCulture, out int weight) || weight <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive numeric, normal, and bold text font-weight values are implemented by preparation.");
-        return weight;
     }
 
     private readonly record struct TextStyle(string? Family, int Weight, bool Italic);
