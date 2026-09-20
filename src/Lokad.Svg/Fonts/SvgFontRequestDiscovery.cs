@@ -36,7 +36,7 @@ internal static class SvgFontRequestDiscovery
             using XmlReader reader = XmlReader.Create(stream, settings);
             bool hasRoot = false;
             int nodeCount = 0;
-            int definitionsDepth = -1;
+            int inertDepth = -1;
             while (reader.Read())
             {
                 workCounter.Consume(cancellationToken);
@@ -56,10 +56,10 @@ internal static class SvgFontRequestDiscovery
                     TextStyle style = inherited.Count == 0 ? new TextStyle(SvgInheritedTextStyle.Default, true, true, AxisTransform.Identity, null) : inherited.Peek();
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
                     if (isSvgElement && !insideDirectText) style = ApplyAttributes(reader, style, workCounter, cancellationToken);
-                    if (isSvgElement && reader.LocalName == "defs" && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
-                    if (definitionsDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && reader.GetAttribute("transform") is null) SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
-                    if (definitionsDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
-                    TextRequestCandidate? candidate = definitionsDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.Text.Family is string family
+                    if (inertDepth < 0 && isSvgElement && reader.LocalName is "defs" or "title" or "desc" or "metadata" && !reader.IsEmptyElement) inertDepth = reader.Depth;
+                    if (inertDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && reader.GetAttribute("transform") is null) SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
+                    if (inertDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
+                    TextRequestCandidate? candidate = inertDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.Text.Family is string family
                         ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic))
                         : null;
                     if (reader.IsEmptyElement) AddCandidate(candidate, requests, seen);
@@ -71,7 +71,7 @@ internal static class SvgFontRequestDiscovery
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
-                    if (reader.Depth == definitionsDepth) definitionsDepth = -1;
+                    if (reader.Depth == inertDepth) inertDepth = -1;
                     if (inherited.Count != 0)
                     {
                         inherited.Pop();

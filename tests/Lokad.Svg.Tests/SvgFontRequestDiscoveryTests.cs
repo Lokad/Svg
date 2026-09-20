@@ -91,6 +91,25 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Empty(requests);
     }
 
+    [Theory]
+    [InlineData("title")]
+    [InlineData("desc")]
+    [InlineData("metadata")]
+    public void Ignores_font_requests_from_other_inert_document_content(string container)
+    {
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><" + container + "><text font-family='Unused'>x</text></" + container + "></svg>"), CancellationToken.None);
+
+        Assert.Empty(requests);
+    }
+
+    [Fact]
+    public void Retains_the_outer_inert_boundary_after_a_nested_inert_element()
+    {
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><metadata><desc>ignored</desc><text font-family='Unused'>x</text></metadata></svg>"u8.ToArray(), CancellationToken.None);
+
+        Assert.Empty(requests);
+    }
+
     [Fact]
     public void Does_not_discover_fonts_from_unrenderable_span_children()
     {
