@@ -11,7 +11,14 @@ internal static class SvgTextRunBuilder
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(snapshot);
         SvgPreparedFont font = snapshot.GetFont(style.Font);
-        SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, checked(style.X + style.Dx), checked(style.Y + style.Dy), style.Anchor, budget, cancellationToken);
+        double originX = style.X + style.Dx;
+        double originY = style.Y + style.Dy;
+        if (!double.IsFinite(originX) || !double.IsFinite(originY))
+        {
+            throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
+        }
+
+        SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.Anchor, budget, cancellationToken);
         return new SvgTextRun(style, font, glyphs);
     }
 
