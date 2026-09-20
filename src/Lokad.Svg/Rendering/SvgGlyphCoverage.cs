@@ -5,6 +5,8 @@ using Lokad.Svg.Fonts;
 /// <summary>Samples closed quadratic glyph contours with the non-zero winding fill rule.</summary>
 internal static class SvgGlyphCoverage
 {
+    private const int QuadraticSubdivisions = 8;
+
     internal static byte GetCoverage(ReadOnlySpan<SvgGlyphQuadraticContour> contours, int pixelX, int pixelY, int samplesPerAxis, CancellationToken cancellationToken)
         => GetCoverage(contours, pixelX, pixelY, 1, 1, samplesPerAxis, cancellationToken);
 
@@ -20,23 +22,33 @@ internal static class SvgGlyphCoverage
             double sampleY = top + height * (y + 0.5) / samplesPerAxis;
             for (int x = 0; x < samplesPerAxis; x++)
             {
-                if (ContainsNonZero(contours, left + width * (x + 0.5) / samplesPerAxis, sampleY)) covered++;
+                if (ContainsNonZero(contours, left + width * (x + 0.5) / samplesPerAxis, sampleY, cancellationToken)) covered++;
             }
         }
         return (byte)((covered * 255 + total / 2) / total);
     }
 
-    private static bool ContainsNonZero(ReadOnlySpan<SvgGlyphQuadraticContour> contours, double x, double y)
+    /// <summary>Returns the fixed subdivision operations needed for one coverage sample across these contours.</summary>
+    internal static long GetSampleWorkUnits(ReadOnlySpan<SvgGlyphQuadraticContour> contours)
+    {
+        long segments = 0;
+        foreach (SvgGlyphQuadraticContour contour in contours) segments = checked(segments + contour.Segments.Length);
+        return checked(segments * QuadraticSubdivisions);
+    }
+
+    private static bool ContainsNonZero(ReadOnlySpan<SvgGlyphQuadraticContour> contours, double x, double y, CancellationToken cancellationToken)
     {
         int winding = 0;
+        int segmentCount = 0;
         foreach (SvgGlyphQuadraticContour contour in contours)
         {
             foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
             {
+                if ((segmentCount++ & 127) == 0) cancellationToken.ThrowIfCancellationRequested();
                 SvgGlyphOutlinePoint previous = segment.Start;
-                for (int step = 1; step <= 8; step++)
+                for (int step = 1; step <= QuadraticSubdivisions; step++)
                 {
-                    double t = step / 8d;
+                    double t = step / (double)QuadraticSubdivisions;
                     double inverse = 1 - t;
                     var current = new SvgGlyphOutlinePoint(inverse * inverse * segment.Start.X + 2 * inverse * t * segment.Control.X + t * t * segment.End.X, inverse * inverse * segment.Start.Y + 2 * inverse * t * segment.Control.Y + t * t * segment.End.Y);
                     if (previous.Y <= y)

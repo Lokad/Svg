@@ -155,9 +155,10 @@ buffer. Tests cover the overlapping growth denial and final-string release. This
 closes the extraction-buffer hole, but positioned glyphs, contour arrays and raster
 work still require their remaining aggregate limits.
 
-Raster work charges bounding pixels, but each pixel tests 16 samples against eight
-subdivisions of every segment. Bounds scans and inner winding loops lack charges/
-checkpoints. Composite depth/component/segment caps do not bound aggregate visits:
+Glyph raster work now preflights its fixed contour-sampling operations (segments ×
+eight subdivisions × samples × covered pixels) and checks cancellation while
+traversing segments. Bounds scans and remaining raster loops still need their own
+operation accounting. Composite depth/component/segment caps do not bound aggregate visits:
 repeated empty descendants consume work without adding segments. A 32,768-glyph
 per-run cap is not a document-wide cap.
 

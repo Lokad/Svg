@@ -728,6 +728,20 @@ public sealed class OpenTypeFontTests
         Assert.True(DecodeAlpha(png, 1, 1) > 0);
     }
 
+    [Fact]
+    public async Task Charges_direct_glyph_sampling_work_to_the_public_conversion_limit()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 30);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, limits, snapshot);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Contains("Glyph raster work", exception.Message);
+    }
+
     [Theory]
     [InlineData("clip-path='url(#missing)'")]
     [InlineData("fill-rule='evenodd'")]

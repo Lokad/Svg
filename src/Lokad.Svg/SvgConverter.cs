@@ -218,8 +218,18 @@ public static class SvgConverter
             int startY = ClampFloor(MapEdge(minimumY, verticalScale, verticalOffset), outputHeight);
             int endY = ClampCeiling(MapEdge(maximumY, verticalScale, verticalOffset), outputHeight);
             long coverage = (long)(endY - startY) * (endX - startX);
-            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the configured work limit.");
-            workUnits += coverage;
+            long glyphWork;
+            try
+            {
+                long sampleWork = SvgGlyphCoverage.GetSampleWorkUnits(glyph.Contours);
+                glyphWork = checked(coverage * checked(sampleWork + 1));
+            }
+            catch (OverflowException)
+            {
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the supported accounting range.");
+            }
+            if (glyphWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the configured work limit.");
+            workUnits += glyphWork;
             for (int y = startY; y < endY; y++)
             for (int x = startX; x < endX; x++)
             {

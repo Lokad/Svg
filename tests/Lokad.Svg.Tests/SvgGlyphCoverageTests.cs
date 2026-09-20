@@ -6,6 +6,17 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGlyphCoverageTests
 {
     [Fact]
+    public void Reports_fixed_subdivision_work_for_each_coverage_sample()
+    {
+        SvgGlyphQuadraticContour contour = new([
+            new SvgGlyphQuadraticSegment(new(0, 0), new(1, 0), new(1, 0)),
+            new SvgGlyphQuadraticSegment(new(1, 0), new(1, 1), new(1, 1))
+        ]);
+
+        Assert.Equal(16, SvgGlyphCoverage.GetSampleWorkUnits([contour]));
+    }
+
+    [Fact]
     public void Samples_a_closed_quadratic_square_with_nonzero_winding()
     {
         SvgGlyphQuadraticContour contour = new([
