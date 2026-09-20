@@ -7,6 +7,7 @@ namespace Lokad.Svg.Fonts;
 internal static class OpenTypeFont
 {
     private const int MaximumTableRecords = 128;
+    private const int MaximumSimpleGlyphContours = 4_096;
     private const uint TrueTypeScalerType = 0x00010000;
     private const uint TrueTypeCollectionTag = 0x74746366;
     private const uint HeadTag = 0x68656164;
@@ -154,6 +155,35 @@ internal static class OpenTypeFont
         return new OpenTypeGlyphHeader(contourCount, ReadInt16(data, glyph.Offset + 2), ReadInt16(data, glyph.Offset + 4), ReadInt16(data, glyph.Offset + 6), ReadInt16(data, glyph.Offset + 8));
     }
 
+    /// <summary>Reads bounded contour endpoints from a simple glyph and excludes its hint instructions.</summary>
+    internal static OpenTypeSimpleGlyphStructure GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+    {
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, cancellationToken);
+        if (glyph.Length == 0) return new OpenTypeSimpleGlyphStructure([], 0);
+        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, cancellationToken);
+        if (header is not OpenTypeGlyphHeader value) throw new InvalidOperationException("A nonempty glyph did not return a header.");
+        if (value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph decoding is not implemented yet.");
+        if (value.ContourCount > MaximumSimpleGlyphContours) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph contour count exceeds the supported limit.");
+        ReadOnlySpan<byte> data = bytes.Span;
+        int endpointBytes = checked(value.ContourCount * 2);
+        int instructionLengthOffset = checked(glyph.Offset + 10 + endpointBytes);
+        if (instructionLengthOffset > glyph.Offset + glyph.Length - 2) throw InvalidFont("The simple glyf contour endpoints are truncated.");
+        ushort instructionLength = ReadUInt16(data, instructionLengthOffset);
+        int pointDataOffset = checked(instructionLengthOffset + 2 + instructionLength);
+        if (pointDataOffset > glyph.Offset + glyph.Length) throw InvalidFont("The simple glyf instructions are truncated.");
+        var endpoints = new ushort[value.ContourCount];
+        ushort previous = 0;
+        for (int index = 0; index < endpoints.Length; index++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ushort endpoint = ReadUInt16(data, glyph.Offset + 10 + index * 2);
+            if (index != 0 && endpoint <= previous) throw InvalidFont("The simple glyf contour endpoints are not strictly increasing.");
+            endpoints[index] = endpoint;
+            previous = endpoint;
+        }
+        return new OpenTypeSimpleGlyphStructure(endpoints, pointDataOffset - glyph.Offset);
+    }
+
     private static int ReadGlyphLocation(ReadOnlySpan<byte> data, OpenTypeTableRange loca, int glyphIndex, short indexToLocFormat)
     {
         int offset = checked(loca.Offset + glyphIndex * (indexToLocFormat == 0 ? 2 : 4));
@@ -219,3 +249,6 @@ internal readonly record struct OpenTypeGlyphHeader(short ContourCount, short XM
 {
     internal bool IsComposite => ContourCount < 0;
 }
+
+/// <summary>Represents bounded simple-glyph contour metadata before flag and coordinate decoding.</summary>
+internal readonly record struct OpenTypeSimpleGlyphStructure(ushort[] ContourEndpoints, int PointDataOffset);

@@ -78,7 +78,7 @@ public sealed class OpenTypeFontTests
 
         OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
 
-        Assert.Equal(12, glyph.Length);
+        Assert.Equal(32, glyph.Length);
         font[glyph.Offset] = 42;
         Assert.Equal((byte)42, font[glyph.Offset]);
     }
@@ -105,6 +105,23 @@ public sealed class OpenTypeFontTests
         Assert.Null(OpenTypeFont.GetGlyphHeader(font, 0, CancellationToken.None));
     }
 
+    [Fact]
+    public void Reads_simple_glyph_contours_without_retaining_hint_instructions()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, 1);
+        WriteUInt16(font, glyph.Offset + 10, 2);
+        WriteUInt16(font, glyph.Offset + 12, 2);
+        font[glyph.Offset + 14] = 1;
+        font[glyph.Offset + 15] = 2;
+
+        OpenTypeSimpleGlyphStructure structure = OpenTypeFont.GetSimpleGlyphStructure(font, 1, CancellationToken.None);
+
+        Assert.Equal([2], structure.ContourEndpoints);
+        Assert.Equal(16, structure.PointDataOffset);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;
@@ -118,7 +135,7 @@ public sealed class OpenTypeFontTests
         int locaOffset = cmapOffset + 44;
         int locaLength = (glyphCount + 1) * (indexToLocFormat == 0 ? 2 : 4);
         int glyfOffset = locaOffset + locaLength;
-        byte[] font = new byte[glyfOffset + 12];
+        byte[] font = new byte[glyfOffset + 32];
         WriteUInt32(font, 0, 0x00010000);
         WriteUInt16(font, 4, tableCount);
         WriteTable(font, 0, 0x68656164, headOffset, 54);
@@ -127,7 +144,7 @@ public sealed class OpenTypeFontTests
         WriteTable(font, 3, 0x686D7478, hmtxOffset, hmtxLength);
         WriteTable(font, 4, 0x636D6170, cmapOffset, 44);
         WriteTable(font, 5, 0x6C6F6361, locaOffset, locaLength);
-        WriteTable(font, 6, 0x676C7966, glyfOffset, 12);
+        WriteTable(font, 6, 0x676C7966, glyfOffset, 32);
         WriteUInt16(font, headOffset + 18, unitsPerEm);
         WriteInt16(font, headOffset + 50, indexToLocFormat);
         WriteUInt16(font, maxpOffset + 4, glyphCount);
@@ -153,15 +170,15 @@ public sealed class OpenTypeFontTests
         {
             WriteUInt16(font, locaOffset, 0);
             WriteUInt16(font, locaOffset + 2, 0);
-            WriteUInt16(font, locaOffset + 4, 6);
-            WriteUInt16(font, locaOffset + 6, 6);
+            WriteUInt16(font, locaOffset + 4, 16);
+            WriteUInt16(font, locaOffset + 6, 16);
         }
         else
         {
             WriteUInt32(font, locaOffset, 0);
             WriteUInt32(font, locaOffset + 4, 0);
-            WriteUInt32(font, locaOffset + 8, 12);
-            WriteUInt32(font, locaOffset + 12, 12);
+            WriteUInt32(font, locaOffset + 8, 32);
+            WriteUInt32(font, locaOffset + 12, 32);
         }
         return font;
     }
