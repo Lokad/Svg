@@ -687,7 +687,9 @@ public sealed class OpenTypeFontTests
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), limits, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Equal(SvgFontFailureStage.Format, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+        SvgFontDiagnostic diagnostic = Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic);
+        Assert.Equal(SvgFontFailureStage.Format, diagnostic.Stage);
+        Assert.Equal("files/example.ttf:0", diagnostic.FaceIdentity);
         Assert.Equal(1, source.RequestCount);
     }
 

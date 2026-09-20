@@ -252,8 +252,9 @@ disposal may overlap a read. Test supported parallel reads/conversions and repea
 lifetime/retention; do not add unconditional byte copies or promise GC timing.
 
 Keep bounded primary errors plus phase, content/face identity and source location.
-Some diagnostics use path:index, others hash:index; element IDs remain empty.
-Do not include whole SVG/text/font payloads. Test long names and each failure
+Snapshot and provider diagnostics now both use bounded manifest `path:index` face
+identity; element IDs remain empty. Do not include whole SVG/text/font payloads.
+Test long names and each failure
 stage, not only source/format/integrity examples.
 
 Companion docs had remained inconsistent: the support matrix's text row required direct

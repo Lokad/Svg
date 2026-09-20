@@ -213,7 +213,7 @@ public sealed class SvgFontSnapshot : IDisposable
     }
 
     private static SvgFontDiagnostic CreateDiagnostic(SvgFontPackResolution selection, SvgFontFailureStage stage)
-        => new(stage, selection.Request.Family, selection.Face.ResolvedFamily, selection.Face.File.Sha256 + ":" + selection.Face.FaceIndex, string.Empty);
+        => new(stage, selection.Request.Family, selection.Face.ResolvedFamily, selection.Face.File.RelativePath + ":" + selection.Face.FaceIndex, string.Empty);
 }
 
 /// <summary>Represents one verified, caller-byte-backed font held by an immutable snapshot.</summary>
