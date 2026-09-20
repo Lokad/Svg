@@ -15,6 +15,7 @@ internal static class OpenTypeFont
     private const int MaximumCompositeGlyphComponents = 64;
     private const int MaximumCompositeGlyphDepth = 8;
     private const int MaximumExpandedGlyphSegments = 65_536;
+    private const ushort SupportedCompositeFlags = 1 | 2 | 8 | 32 | 64 | 128;
     private const uint TrueTypeScalerType = 0x00010000;
     private const uint TrueTypeCollectionTag = 0x74746366;
     private const uint HeadTag = 0x68656164;
@@ -428,6 +429,7 @@ internal static class OpenTypeFont
             flags = ReadUInt16(data, cursor);
             ushort componentGlyph = ReadUInt16(data, cursor + 2);
             cursor += 4;
+            if ((flags & ~SupportedCompositeFlags) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The composite glyf component uses flags outside the admitted placement and transform subset.");
             bool words = (flags & 1) != 0;
             bool xyValues = (flags & 2) != 0;
             int argumentBytes = words ? 4 : 2;

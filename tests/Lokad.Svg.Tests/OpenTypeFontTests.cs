@@ -442,6 +442,28 @@ public sealed class OpenTypeFontTests
         Assert.Equal(0.5, component.Transform.YY);
     }
 
+    [Theory]
+    [InlineData((ushort)4)]
+    [InlineData((ushort)256)]
+    [InlineData((ushort)512)]
+    [InlineData((ushort)1024)]
+    [InlineData((ushort)2048)]
+    [InlineData((ushort)4096)]
+    public void Rejects_composite_flags_outside_the_admitted_placement_and_transform_subset(ushort unsupportedFlag)
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, -1);
+        WriteUInt16(font, glyph.Offset + 10, 3 | unsupportedFlag);
+        WriteUInt16(font, glyph.Offset + 12, 1);
+        WriteInt16(font, glyph.Offset + 14, 0);
+        WriteInt16(font, glyph.Offset + 16, 0);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
     [Fact]
     public void Expands_composite_glyphs_with_their_affine_transform()
     {
