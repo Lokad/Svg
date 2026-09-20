@@ -480,6 +480,36 @@ public sealed class RasterizationResearchTests
         Assert.True(skiaAlphaMultiply.IsExact);
     }
 
+    [Fact]
+    public void Phase_shifted_diagonal_overlap_keeps_fixed_edge_and_byte_compositing_non_exact()
+    {
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-half-grid-8x8.png")), 64);
+        PixelComparison fixedEdge = PixelComparer.Compare(reference, RasterizeSourceGuidedDiagonalOverlap(RedHalfGridOverlapTriangle, BlueHalfGridOverlapTriangle));
+        PixelComparison quantized = PixelComparer.Compare(reference, RasterizeQuantizedSourceOverDiagonalOverlap(RedHalfGridOverlapTriangle, BlueHalfGridOverlapTriangle));
+
+        Assert.True(fixedEdge.DimensionsMatch);
+        Assert.False(fixedEdge.IsExact);
+        Assert.Equal(29, fixedEdge.ChangedPixelCount);
+        Assert.Equal((byte)13, fixedEdge.MaximumChannelError);
+        Assert.Equal((byte)5, fixedEdge.MaximumAlphaError);
+        Assert.Equal(24, fixedEdge.AlphaChangedPixelCount);
+        Assert.Equal(0, fixedEdge.MinimumMismatchX);
+        Assert.Equal(1, fixedEdge.MinimumMismatchY);
+        Assert.Equal(6, fixedEdge.MaximumMismatchX);
+        Assert.Equal(7, fixedEdge.MaximumMismatchY);
+
+        Assert.True(quantized.DimensionsMatch);
+        Assert.False(quantized.IsExact);
+        Assert.Equal(23, quantized.ChangedPixelCount);
+        Assert.Equal((byte)13, quantized.MaximumChannelError);
+        Assert.Equal((byte)5, quantized.MaximumAlphaError);
+        Assert.Equal(18, quantized.AlphaChangedPixelCount);
+        Assert.Equal(0, quantized.MinimumMismatchX);
+        Assert.Equal(1, quantized.MinimumMismatchY);
+        Assert.Equal(6, quantized.MaximumMismatchX);
+        Assert.Equal(7, quantized.MaximumMismatchY);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -570,9 +600,12 @@ public sealed class RasterizationResearchTests
     }
 
     private static RgbaImage RasterizeSourceGuidedDiagonalOverlap()
+        => RasterizeSourceGuidedDiagonalOverlap(RedOverlapTriangle, BlueOverlapTriangle);
+
+    private static RgbaImage RasterizeSourceGuidedDiagonalOverlap(ReadOnlySpan<Point> redTriangle, ReadOnlySpan<Point> blueTriangle)
     {
-        RgbaImage redCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(RedOverlapTriangle);
-        RgbaImage blueCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(BlueOverlapTriangle);
+        RgbaImage redCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(redTriangle);
+        RgbaImage blueCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(blueTriangle);
         byte[] pixels = new byte[8 * 8 * 4];
         for (int index = 0; index < 8 * 8; index++)
         {
@@ -589,12 +622,18 @@ public sealed class RasterizationResearchTests
     }
 
     private static RgbaImage RasterizeQuantizedSourceOverDiagonalOverlap()
-        => RasterizeQuantizedSourceOverDiagonalOverlap(false);
+        => RasterizeQuantizedSourceOverDiagonalOverlap(RedOverlapTriangle, BlueOverlapTriangle, false);
 
     private static RgbaImage RasterizeQuantizedSourceOverDiagonalOverlap(bool useSkiaAlphaMultiply)
+        => RasterizeQuantizedSourceOverDiagonalOverlap(RedOverlapTriangle, BlueOverlapTriangle, useSkiaAlphaMultiply);
+
+    private static RgbaImage RasterizeQuantizedSourceOverDiagonalOverlap(ReadOnlySpan<Point> redTriangle, ReadOnlySpan<Point> blueTriangle)
+        => RasterizeQuantizedSourceOverDiagonalOverlap(redTriangle, blueTriangle, false);
+
+    private static RgbaImage RasterizeQuantizedSourceOverDiagonalOverlap(ReadOnlySpan<Point> redTriangle, ReadOnlySpan<Point> blueTriangle, bool useSkiaAlphaMultiply)
     {
-        RgbaImage redCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(RedOverlapTriangle);
-        RgbaImage blueCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(BlueOverlapTriangle);
+        RgbaImage redCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(redTriangle);
+        RgbaImage blueCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(blueTriangle);
         byte[] pixels = new byte[8 * 8 * 4];
         for (int index = 0; index < 8 * 8; index++)
         {
@@ -1161,6 +1200,8 @@ public sealed class RasterizationResearchTests
     private static readonly Point[] HalfGridTriangle = [new(1.28125, 1.15625), new(7.28125, 2.15625), new(2.28125, 7.15625)];
     private static readonly Point[] RedOverlapTriangle = [new(1.25, 1.125), new(7.25, 2.125), new(2.25, 7.125)];
     private static readonly Point[] BlueOverlapTriangle = [new(0.75, 2.375), new(6.75, 1.375), new(5.75, 7.375)];
+    private static readonly Point[] RedHalfGridOverlapTriangle = [new(1.28125, 1.15625), new(7.28125, 2.15625), new(2.28125, 7.15625)];
+    private static readonly Point[] BlueHalfGridOverlapTriangle = [new(0.78125, 2.40625), new(6.78125, 1.40625), new(5.78125, 7.40625)];
 
     private enum EdgeRounding { Floor, Nearest, Ceiling }
 

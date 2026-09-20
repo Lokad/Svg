@@ -57,10 +57,11 @@ Windows-pinned-Chrome references for an
 [fractional-coordinate diagonal triangle](../tests/Research/diagonal-triangle-fractional-8x8.svg),
 [half-sixteenth-grid diagonal triangle](../tests/Research/diagonal-triangle-half-grid-8x8.svg),
 [transparent semi-opaque diagonal overlap](../tests/Research/diagonal-overlap-8x8.svg),
+[half-sixteenth-grid transparent semi-opaque diagonal overlap](../tests/Research/diagonal-overlap-half-grid-8x8.svg),
 [cubic arch](../tests/Research/cubic-arch-8x8.svg),
 [even-odd hole](../tests/Research/evenodd-hole-8x8.svg), and
 [round stroke join](../tests/Research/round-join-8x8.svg). They supply the first
-integer, grid-aligned fractional, half-grid-coordinate, and semi-opaque overlap
+integer, grid-aligned fractional, half-grid-coordinate, and two-phase semi-opaque overlap
 coverage, subdivision, multi-subpath/winding, and outline targets for P1.3. The current converter asserts
 `UnsupportedFeature` for each; neither their stable browser captures nor this
 inventory admits a general path or stroke feature.
@@ -163,17 +164,23 @@ isolated explanation, not an inference about production Skia behavior. The next
 probe must overlap semi-opaque diagonal paths on a transparent background; the
 current one-path, opaque family cannot distinguish coverage from source-over.
 
-That next probe is now the original two-path
-[8×8 diagonal overlap](../tests/Research/diagonal-overlap-8x8.svg). Its three
-fresh Windows-pinned captures are byte- and decoded-pixel-identical. Continuous
-analytic coverage plus straight source-over changes 37 of 64 pixels (maximum
-channel/alpha error 33/27). Reusing the source-guided fixed-edge coverage lowers
-this to 26 (3/1). Applying byte opacity and source-over reduces the count to 22,
-but increases the maximum channel error to six while alpha remains within one.
-The conventional divide-by-255 product and the tested Skia-style alpha product
-produce identical decoded candidates for this probe. None is exact; the next
-evidence must be a phase-shifted overlap companion, not a rounding adjustment or
-geometry implementation based on this near fit.
+The original two-path [8×8 diagonal overlap](../tests/Research/diagonal-overlap-8x8.svg)
+and its [half-sixteenth-grid phase companion](../tests/Research/diagonal-overlap-half-grid-8x8.svg)
+each have three fresh Windows-pinned captures that are byte- and decoded-pixel-identical.
+On the original phase, continuous analytic coverage plus straight source-over changes
+37 of 64 pixels (maximum channel/alpha error 33/27). Reusing the source-guided
+fixed-edge coverage lowers this to 26 (3/1). Applying byte opacity and source-over
+reduces the count to 22, but increases the maximum channel error to six while alpha
+remains within one. The conventional divide-by-255 product and the tested Skia-style
+alpha product produce identical decoded candidates for that probe.
+
+The phase companion rejects treating the latter result as a calibration lead:
+source-guided fixed-edge coverage plus continuous source-over changes 29 of 64
+pixels (13/5), while byte opacity/compositing changes 23 (13/5). Both mismatch
+envelopes are `(0,1)`–`(6,7)`. The original near fit was therefore phase-specific.
+None of these candidates is exact; do not adjust another rounding rule or admit
+geometry from it. Any resumed P1.3 work needs a new discriminating mechanism that
+matches both overlap phases exactly.
 
 ## Calibration source pin
 

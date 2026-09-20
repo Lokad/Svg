@@ -158,6 +158,32 @@
       }
     },
     {
+      "id": "research-diagonal-overlap-half-grid-8x8",
+      "path": "diagonal-overlap-half-grid-8x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-20",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "bcef9fcc3f75d86093c331f98814d2bde2d16a8a119122a56da78cbc2c893eeb",
+      "featureTags": ["geometry", "path", "diagonal-edge", "fractional-coordinates", "half-grid-phase", "overlap", "opacity", "source-over", "coverage", "calibration"],
+      "width": 8,
+      "height": 8,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/diagonal-overlap-half-grid-8x8.png",
+        "referenceSha256": "4729358f75abccc014b2cf66b2e9fa34732c9eb7d63049d66b55571a540f76f2",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "2",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
       "id": "research-cubic-arch-8x8",
       "path": "cubic-arch-8x8.svg",
       "creator": "Lokad.Svg contributors",
