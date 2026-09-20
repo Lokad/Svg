@@ -6,17 +6,21 @@ using Lokad.Svg.Fonts;
 internal static class SvgGlyphCoverage
 {
     internal static byte GetCoverage(ReadOnlySpan<SvgGlyphQuadraticContour> contours, int pixelX, int pixelY, int samplesPerAxis, CancellationToken cancellationToken)
+        => GetCoverage(contours, pixelX, pixelY, 1, 1, samplesPerAxis, cancellationToken);
+
+    internal static byte GetCoverage(ReadOnlySpan<SvgGlyphQuadraticContour> contours, double left, double top, double width, double height, int samplesPerAxis, CancellationToken cancellationToken)
     {
         if (samplesPerAxis is < 1 or > 8) throw new ArgumentOutOfRangeException(nameof(samplesPerAxis));
+        if (!double.IsFinite(left) || !double.IsFinite(top) || !double.IsFinite(width) || !double.IsFinite(height) || width <= 0 || height <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         int covered = 0;
         int total = checked(samplesPerAxis * samplesPerAxis);
         for (int y = 0; y < samplesPerAxis; y++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            double sampleY = pixelY + (y + 0.5) / samplesPerAxis;
+            double sampleY = top + height * (y + 0.5) / samplesPerAxis;
             for (int x = 0; x < samplesPerAxis; x++)
             {
-                if (ContainsNonZero(contours, pixelX + (x + 0.5) / samplesPerAxis, sampleY)) covered++;
+                if (ContainsNonZero(contours, left + width * (x + 0.5) / samplesPerAxis, sampleY)) covered++;
             }
         }
         return (byte)((covered * 255 + total / 2) / total);

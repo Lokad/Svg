@@ -2,6 +2,7 @@ namespace Lokad.Svg;
 
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Encoding;
+using Lokad.Svg.Fonts;
 using Lokad.Svg.Rendering;
 using System.Xml;
 
@@ -180,6 +181,9 @@ public static class SvgConverter
                 case SvgGeometryKind.OrthogonalBand:
                     RasterizeOrthogonalBand(geometry.Rectangle, destination);
                     return;
+                case SvgGeometryKind.GlyphContours:
+                    RasterizeGlyphContours(geometry.Glyph, destination);
+                    return;
                 default:
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG scene geometry is not implemented.");
             }
@@ -193,6 +197,36 @@ public static class SvgConverter
         void RasterizeOrthogonalBand(SvgRectangle band, byte[] destination)
         {
             if (band.HasFill) RasterizeSolidRectangle(band, destination);
+        }
+
+        void RasterizeGlyphContours(SvgGlyphGeometry glyph, byte[] destination)
+        {
+            if (glyph.Contours.Length == 0) return;
+            double minimumX = double.PositiveInfinity;
+            double minimumY = double.PositiveInfinity;
+            double maximumX = double.NegativeInfinity;
+            double maximumY = double.NegativeInfinity;
+            foreach (SvgGlyphQuadraticContour contour in glyph.Contours)
+            foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
+            foreach (SvgGlyphOutlinePoint point in new[] { segment.Start, segment.Control, segment.End })
+            {
+                minimumX = Math.Min(minimumX, point.X); minimumY = Math.Min(minimumY, point.Y);
+                maximumX = Math.Max(maximumX, point.X); maximumY = Math.Max(maximumY, point.Y);
+            }
+            int startX = ClampFloor(MapEdge(minimumX, horizontalScale, horizontalOffset), outputWidth);
+            int endX = ClampCeiling(MapEdge(maximumX, horizontalScale, horizontalOffset), outputWidth);
+            int startY = ClampFloor(MapEdge(minimumY, verticalScale, verticalOffset), outputHeight);
+            int endY = ClampCeiling(MapEdge(maximumY, verticalScale, verticalOffset), outputHeight);
+            long coverage = (long)(endY - startY) * (endX - startX);
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the configured work limit.");
+            workUnits += coverage;
+            for (int y = startY; y < endY; y++)
+            for (int x = startX; x < endX; x++)
+            {
+                byte alpha = SvgGlyphCoverage.GetCoverage(glyph.Contours, (x - horizontalOffset) / horizontalScale, (y - verticalOffset) / verticalScale, 1 / horizontalScale, 1 / verticalScale, 4, cancellationToken);
+                if (alpha == 0) continue;
+                BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(glyph.Color.Red, glyph.Color.Green, glyph.Color.Blue, MultiplyAlpha(glyph.Color.Alpha, alpha)), true);
+            }
         }
 
         void RasterizeRectangle(SvgRectangle rectangle, byte[] destination)
