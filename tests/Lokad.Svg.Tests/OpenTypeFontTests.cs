@@ -430,7 +430,8 @@ public sealed class OpenTypeFontTests
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([first, second], CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
-        Assert.Equal(1, source.RequestCount);
+        Assert.Equal(SvgFontFailureStage.Integrity, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+        Assert.Equal(0, source.RequestCount);
     }
 
     [Fact]
@@ -441,6 +442,35 @@ public sealed class OpenTypeFontTests
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(resolutions, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
+    public async Task Request_based_snapshot_rejects_declared_programs_over_its_byte_limit_before_provider_access()
+    {
+        const string Hash = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": 33554433, \"sha256\": \"" + Hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var provider = new CountingFontProvider(new CountingFontSource([]));
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(catalog, [new SvgFontFaceRequest("Example", 400, false)], provider, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, provider.RequestCount);
+    }
+
+    [Fact]
+    public async Task Request_based_snapshot_rejects_conflicting_same_hash_sizes_before_provider_access()
+    {
+        const string Hash = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/one.ttf\", \"byteSize\": 1, \"sha256\": \"" + Hash + "\" }, { \"relativePath\": \"files/two.ttf\", \"byteSize\": 2, \"sha256\": \"" + Hash + "\" }], \"families\": [{ \"requestedFamily\": \"One\", \"resolvedFamily\": \"One\", \"relativeFontFile\": \"files/one.ttf\" }, { \"requestedFamily\": \"Two\", \"resolvedFamily\": \"Two\", \"relativeFontFile\": \"files/two.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var provider = new CountingFontProvider(new CountingFontSource([]));
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(catalog, [new SvgFontFaceRequest("One", 400, false), new SvgFontFaceRequest("Two", 400, false)], provider, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
+        Assert.Equal(SvgFontFailureStage.Integrity, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+        Assert.Equal(0, provider.RequestCount);
     }
 
     [Fact]

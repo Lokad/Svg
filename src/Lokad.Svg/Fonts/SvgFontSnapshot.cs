@@ -55,7 +55,8 @@ public sealed class SvgFontSnapshot : IDisposable
     {
         ArgumentNullException.ThrowIfNull(resolutions);
         cancellationToken.ThrowIfCancellationRequested();
-        if (resolutions.Count > MaximumFaces) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font face count exceeds the snapshot limit.");
+        SvgFontPackResolution[] selections = GetSelections(resolutions, nameof(resolutions));
+        ValidateSelections(selections);
         var programs = new Dictionary<string, (ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics)>(StringComparer.Ordinal);
         var prepared = new SvgPreparedFont[resolutions.Count];
         long totalBytes = 0;
@@ -63,7 +64,6 @@ public sealed class SvgFontSnapshot : IDisposable
         {
             cancellationToken.ThrowIfCancellationRequested();
             SvgFontProgramResolution resolution = resolutions[index] ?? throw new ArgumentException("The selected font list contains a null resolution.", nameof(resolutions));
-            if (resolution.Resolution.Face.FaceIndex != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Standalone TrueType font snapshots require face index zero.", CreateDiagnostic(resolution, SvgFontFailureStage.Format));
             string programKey = resolution.Resolution.Face.File.Sha256;
             if (!programs.TryGetValue(programKey, out (ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics) program))
             {
@@ -72,14 +72,14 @@ public sealed class SvgFontSnapshot : IDisposable
                 catch (SvgException exception) when (exception.FontDiagnostic is null)
                 {
                     SvgFontFailureStage stage = exception.ErrorCode == SvgErrorCode.UnresolvedResource ? SvgFontFailureStage.Integrity : SvgFontFailureStage.Format;
-                    throw new SvgException(exception.ErrorCode, exception.Message, CreateDiagnostic(resolution, stage));
+                    throw new SvgException(exception.ErrorCode, exception.Message, CreateDiagnostic(resolution.Resolution, stage));
                 }
                 totalBytes = checked(totalBytes + loadedBytes.Length);
                 if (totalBytes > MaximumBorrowedBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font programs exceed the snapshot byte limit.");
                 try { program = (loadedBytes, OpenTypeFont.ParseMetrics(loadedBytes, cancellationToken)); }
                 catch (SvgException exception)
                 {
-                    throw new SvgException(exception.ErrorCode, exception.Message, CreateDiagnostic(resolution, SvgFontFailureStage.Format));
+                    throw new SvgException(exception.ErrorCode, exception.Message, CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Format));
                 }
                 programs.Add(programKey, program);
             }
@@ -93,15 +93,9 @@ public sealed class SvgFontSnapshot : IDisposable
         static void ValidateDeclaredProgram(SvgFontProgramResolution resolution, ReadOnlyMemory<byte> bytes)
         {
             SvgFontPackFile file = resolution.Resolution.Face.File;
-            if (bytes.Length != file.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.", CreateDiagnostic(resolution, SvgFontFailureStage.Integrity));
+            if (bytes.Length != file.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.", CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
             string hash = Convert.ToHexString(SHA256.HashData(bytes.Span));
-            if (!hash.Equals(file.Sha256, StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.", CreateDiagnostic(resolution, SvgFontFailureStage.Integrity));
-        }
-
-        static SvgFontDiagnostic CreateDiagnostic(SvgFontProgramResolution resolution, SvgFontFailureStage stage)
-        {
-            SvgFontPackResolution selection = resolution.Resolution;
-            return new SvgFontDiagnostic(stage, selection.Request.Family, selection.Face.ResolvedFamily, selection.Face.File.Sha256 + ":" + selection.Face.FaceIndex, string.Empty);
+            if (!hash.Equals(file.Sha256, StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.", CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
         }
     }
 
@@ -117,12 +111,20 @@ public sealed class SvgFontSnapshot : IDisposable
         ArgumentNullException.ThrowIfNull(provider);
         cancellationToken.ThrowIfCancellationRequested();
         if (requests.Count > MaximumFaces) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font face count exceeds the snapshot limit.");
+        var selections = new SvgFontPackResolution[requests.Count];
+        for (int index = 0; index < requests.Count; index++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            SvgFontFaceRequest request = requests[index] ?? throw new ArgumentException("The font request list contains a null request.", nameof(requests));
+            selections[index] = catalog.Resolve(request);
+        }
+        ValidateSelections(selections);
         var sources = new Dictionary<string, ISvgFontProgramSource>(StringComparer.Ordinal);
         var resolutions = new SvgFontProgramResolution[requests.Count];
         for (int index = 0; index < requests.Count; index++)
         {
-            SvgFontFaceRequest request = requests[index] ?? throw new ArgumentException("The font request list contains a null request.", nameof(requests));
-            SvgFontPackResolution selection = catalog.Resolve(request);
+            cancellationToken.ThrowIfCancellationRequested();
+            SvgFontPackResolution selection = selections[index];
             string programKey = selection.Face.File.Sha256;
             if (!sources.TryGetValue(programKey, out ISvgFontProgramSource? source))
             {
@@ -160,6 +162,41 @@ public sealed class SvgFontSnapshot : IDisposable
     {
         if (_disposed) throw new ObjectDisposedException(nameof(SvgFontSnapshot));
     }
+
+    private static SvgFontPackResolution[] GetSelections(IReadOnlyList<SvgFontProgramResolution> resolutions, string parameterName)
+    {
+        if (resolutions.Count > MaximumFaces) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font face count exceeds the snapshot limit.");
+        var selections = new SvgFontPackResolution[resolutions.Count];
+        for (int index = 0; index < resolutions.Count; index++)
+        {
+            SvgFontProgramResolution resolution = resolutions[index] ?? throw new ArgumentException("The selected font list contains a null resolution.", parameterName);
+            selections[index] = resolution.Resolution;
+        }
+        return selections;
+    }
+
+    private static void ValidateSelections(IReadOnlyList<SvgFontPackResolution> selections)
+    {
+        var declaredSizes = new Dictionary<string, long>(StringComparer.Ordinal);
+        long totalBytes = 0;
+        foreach (SvgFontPackResolution selection in selections)
+        {
+            if (selection.Face.FaceIndex != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Standalone TrueType font snapshots require face index zero.", CreateDiagnostic(selection, SvgFontFailureStage.Format));
+            string programKey = selection.Face.File.Sha256;
+            long declaredSize = selection.Face.File.ByteSize;
+            if (declaredSizes.TryGetValue(programKey, out long previousSize))
+            {
+                if (previousSize != declaredSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "Selected font declarations with the same SHA-256 have conflicting byte sizes.", CreateDiagnostic(selection, SvgFontFailureStage.Integrity));
+                continue;
+            }
+            if (declaredSize > MaximumBorrowedBytes - totalBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font programs exceed the snapshot byte limit.");
+            declaredSizes.Add(programKey, declaredSize);
+            totalBytes += declaredSize;
+        }
+    }
+
+    private static SvgFontDiagnostic CreateDiagnostic(SvgFontPackResolution selection, SvgFontFailureStage stage)
+        => new(stage, selection.Request.Family, selection.Face.ResolvedFamily, selection.Face.File.Sha256 + ":" + selection.Face.FaceIndex, string.Empty);
 }
 
 /// <summary>Represents one verified, caller-byte-backed font held by an immutable snapshot.</summary>

@@ -126,8 +126,9 @@ per-run cap is not a document-wide cap.
 Initial corrections: request discovery now rejects non-SVG roots before acquisition
 and applies default input/depth/attribute/node limits; direct extraction caps text
 at 32,768 UTF-16 characters before layout and observes cancellation per reader node.
-It remains unbudgeted and does not share caller-provided render options. Remaining closure: one operation
-context through preparation, parsing, layout, outlines,
+Snapshot preparation now preflights distinct declared program sizes and conflicting
+same-hash sizes before provider I/O. It remains unbudgeted and does not share
+caller-provided render options. Remaining closure: one operation context through preparation, parsing, layout, outlines,
 raster and output. Reserve owned capacities and overlapping old/new/nested storage
 before allocation; preflight declared acquisition sizes. Bound total characters,
 glyphs, graph/table visits, fallback and sample/edge work. Read text incrementally.
@@ -158,9 +159,9 @@ the second binding's verification. Selection order determines which size is chec
 A standalone TTF with `faceIndex=7` is also accepted; parsing always uses face 0.
 
 Initial correction: snapshots now revalidate every selected declaration against
-reused bytes and reject nonzero face indices for standalone TrueType. Remaining
-closure: validate every selected declaration despite byte-storage deduplication;
-reject conflicting metadata before acquisition. Separate program hash and face
+reused bytes, reject nonzero face indices for standalone TrueType, and preflight
+distinct declared sizes plus conflicting same-hash sizes before provider acquisition.
+Remaining closure: separate program hash and face
 identity; gate standalone face 0 and TTC explicitly. Test aliases, same-hash
 different paths/sizes, order independence and unused unsupported faces. Replace
 the current dedup test's “valid” standalone face-1 alias with legitimate face-0

@@ -56,8 +56,9 @@ standalone-TrueType core metrics, and retains at most 256 face records and 32 Mi
 of borrowed bytes for its disposable lifetime. Snapshot access after disposal
 throws `ObjectDisposedException`; callers must not retain/use escaped prepared-font
 values after that lifetime. It neither parses SVG nor performs
-storage I/O. Its request-based overload resolves explicit family/style requests
-through a catalog and selectively asks a provider for each distinct program. Its
+storage I/O. Its request-based overload resolves all explicit family/style requests,
+preflights distinct declared byte sizes and same-hash consistency, then selectively
+asks a provider for each distinct program. Its
 SVG-driven overload accepts only an SVG-namespaced root and discovers inherited
 single-family `text`/`tspan` attributes and inline-style properties (`font-family`,
 `font-weight`, `font-style`) within default input, XML depth, attribute and node
