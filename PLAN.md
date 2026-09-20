@@ -134,6 +134,11 @@ Charge before work, count samples in both axes, and reject arithmetic overflow a
 Use incremental text reads and deterministic during-phase cancellation tests;
 per-run caps, timer tests and cancellation checks alone are not work accounting.
 
+**Repaired 2026-09-20:** SVG-coordinate glyph transformation and contour splitting
+now consume the same counter as decode/expansion. The three-segment triangle path
+uses exactly 25 units through decode, transformed insertion, SVG mapping and
+closure scanning; 24 denies and releases all temporary reservations.
+
 ### R04c / P0 — Raster failures bypass surface-reservation cleanup
 
 **Reproduced through the internal rasterizer.** `Rasterize` reserves its main

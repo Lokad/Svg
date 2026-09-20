@@ -1738,6 +1738,28 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Glyph_outline_charges_svg_transform_and_contour_splitting_to_the_shared_work_counter()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgPreparedFont font = Assert.Single(snapshot.Fonts);
+        var glyph = new SvgPositionedGlyph(1, 0, 0, 1);
+        RenderBudget successfulBudget = new(10_000);
+        var successfulWork = new ParserWorkCounter(25);
+
+        SvgGlyphQuadraticContour contour = Assert.Single(SvgGlyphOutline.GetContours(font, glyph, 1, successfulBudget, successfulWork, CancellationToken.None));
+
+        Assert.Equal(3, contour.Segments.Length);
+        Assert.Equal(25, successfulWork.Used);
+        Assert.Equal(0, successfulBudget.Snapshot().CurrentBytes);
+        RenderBudget deniedBudget = new(10_000);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphOutline.GetContours(font, glyph, 1, deniedBudget, new ParserWorkCounter(24), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Parser_failure_after_retaining_a_glyph_contour_releases_its_scene_budget()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);

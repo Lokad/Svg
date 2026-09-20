@@ -29,33 +29,43 @@ internal static class SvgGlyphOutline
             var transformed = new SvgGlyphQuadraticSegment[source.Length];
             for (int index = 0; index < transformed.Length; index++)
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                Consume(workCounter, cancellationToken);
                 OpenTypeQuadraticSegment segment = source[index];
                 transformed[index] = new SvgGlyphQuadraticSegment(Transform(segment.Start), Transform(segment.Control), Transform(segment.End));
             }
-            return SplitClosedContours(transformed, cancellationToken);
+            return SplitClosedContours(transformed, workCounter, cancellationToken);
         }
         finally { reservation.Dispose(); }
 
         SvgGlyphOutlinePoint Transform(OpenTypeOutlinePoint point) => new(glyph.X + point.X * scale, glyph.Y - point.Y * scale);
     }
 
-    private static SvgGlyphQuadraticContour[] SplitClosedContours(ReadOnlySpan<SvgGlyphQuadraticSegment> segments, CancellationToken cancellationToken)
+    private static SvgGlyphQuadraticContour[] SplitClosedContours(ReadOnlySpan<SvgGlyphQuadraticSegment> segments, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (segments.Length == 0) return [];
         var contours = new List<SvgGlyphQuadraticContour>();
         int first = 0;
         while (first < segments.Length)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            Consume(workCounter, cancellationToken);
             SvgGlyphOutlinePoint start = segments[first].Start;
             int last = first;
-            while (last < segments.Length && segments[last].End != start) last++;
+            while (last < segments.Length && segments[last].End != start)
+            {
+                Consume(workCounter, cancellationToken);
+                last++;
+            }
             if (last == segments.Length) throw new SvgException(SvgErrorCode.MalformedInput, "A decoded glyph contour is not closed.");
             contours.Add(new SvgGlyphQuadraticContour(segments[first..(last + 1)].ToArray()));
             first = last + 1;
         }
         return contours.ToArray();
+    }
+
+    private static void Consume(ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        if (workCounter is null) cancellationToken.ThrowIfCancellationRequested();
+        else workCounter.Consume(cancellationToken);
     }
 }
 
