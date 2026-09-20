@@ -28,6 +28,7 @@ internal static class SvgFontRequestDiscovery
             using XmlReader reader = XmlReader.Create(stream, settings);
             bool hasRoot = false;
             int nodeCount = 0;
+            int definitionsDepth = -1;
             while (reader.Read())
             {
                 workCounter.Consume(cancellationToken);
@@ -45,8 +46,9 @@ internal static class SvgFontRequestDiscovery
                     TextStyle style = inherited.Count == 0 ? new TextStyle(null, 400, false) : inherited.Peek();
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
                     if (isSvgElement) style = ApplyAttributes(reader, style, workCounter, cancellationToken);
+                    if (isSvgElement && reader.LocalName == "defs" && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
                     bool textElement = isSvgElement && reader.LocalName is "text" or "tspan";
-                    if (textElement && style.Family is string family)
+                    if (definitionsDepth < 0 && textElement && style.Family is string family)
                     {
                         var key = new TextRequestKey(family, style.Weight, style.Italic);
                         if (seen.Add(key))
@@ -59,6 +61,7 @@ internal static class SvgFontRequestDiscovery
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
+                    if (reader.Depth == definitionsDepth) definitionsDepth = -1;
                     if (inherited.Count != 0) inherited.Pop();
                 }
             }

@@ -86,4 +86,12 @@ public sealed class SvgFontRequestDiscoveryTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Ignores_font_requests_from_inert_definition_content()
+    {
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><defs><text font-family='Unused'>x</text></defs><rect width='1' height='1'/></svg>"u8.ToArray(), CancellationToken.None);
+
+        Assert.Empty(requests);
+    }
 }
