@@ -50,7 +50,7 @@ traffic is not live memory; a ledger leak is not proof of permanent heap retenti
 | Finding | Current status and remaining boundary |
 | --- | --- |
 | R01: transparent triangle / missing positive text path | Original blocker closed. The corrected synthetic flag is `0x33`, not `0x13`. Tests retain decoded points, closed contours, scene presence, visible PNG pixels and equivalent results through all six APIs. A separate off-curve quadratic smoke test exists. Neither is an ordinary-font oracle. |
-| R02: text skips its next sibling | Original cursor defect repaired with subtree consumption. Immediate rectangle adjacency through six APIs and CDATA adjacency pass. Complete the empty-text, group, comment, unsupported-sibling and malformed-tail matrix; do not describe the old bug as still reproduced. |
+| R02: text skips its next sibling | Original cursor defect repaired with subtree consumption. Immediate rectangle adjacency through six APIs and CDATA adjacency pass; empty direct text now preserves its sibling and does not require a font. Complete the group, comment, unsupported-sibling and malformed-tail matrix; do not describe the old bug as still reproduced. |
 | R03: silent text attributes | Attribute policy now gates direct text; scalar dx/dy and start/middle/end anchors are implemented. Child elements, clipping, strokes, nonidentity transforms and evenodd text fill are rejected. Whitespace/chunk semantics and broader admission remain open. |
 | R04: text/resource bypasses | Partial. Text extraction and exact positioned-glyph storage are reserved; 32,768 UTF-16 characters are capped across the document; inline scans are checkpointed. Nested contours, font work, stale record sizes and raster cleanup remain open below. |
 | R05: malformed cmap | Format-12 short-length, selected-glyph overflow and full-group validation cases are repaired; format-4 segment and glyph-index payload checks are added. Broader validation and repeated-lookup work remain below. |
@@ -227,8 +227,9 @@ and backgrounds; do not declare ordinary text supported from nonzero alpha.
 does not contribute an `Unused` request when only a rectangle is rendered outside
 the definitions. Discovery no longer treats standalone `tspan` as eligible and
 inherits direct/inline `display` and `visibility`, matching those renderer boundaries.
-Other eligibility rules can still
-request resources not needed for painting. Its default input/depth/node/attribute/work
+Empty direct text now validates structurally without requesting or requiring a font;
+its immediate rectangle sibling still renders from an empty snapshot. Other eligibility
+rules can still request resources not needed for painting. Its default input/depth/node/attribute/work
 limits formerly could not express caller render limits; the new preparation overload
 now accepts and applies caller limits. It still discards the parse and style state.
 
@@ -240,7 +241,7 @@ family/generic mapping and coverage fallback remain absent.
 Direct text/CDATA is concatenated without SVG whitespace/chunk normalization.
 
 Closure: cross-test preparation and painting for root/g/a inheritance, precedence,
-quotes/case, namespaces, defs/metadata, hidden/inert text, empty text and unsupported
+quotes/case, namespaces, defs/metadata, hidden/inert text and unsupported
 children. Specify eligibility before acquisition. Share bounded computed semantics
 and retain admitted parse/style/resource state in a disposable prepared document.
 Keep preparation async, rendering memory-only, and shape-only input offline.
