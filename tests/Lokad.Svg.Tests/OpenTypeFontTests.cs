@@ -102,6 +102,16 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Text_layout_observes_cancellation_at_the_cmap_lookup_checkpoint()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 0))], CancellationToken.None);
+        using CancellationTokenSource cancellation = new();
+        using IDisposable probe = CmapLookupProbe.Arm(cancellation.Cancel);
+
+        Assert.ThrowsAny<OperationCanceledException>(() => SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "A", 10, 0, 0, SvgTextAnchor.Start, new RenderBudget(1_024), new ParserWorkCounter(100), cancellation.Token));
+    }
+
+    [Fact]
     public void Maps_a_supplementary_scalar_through_a_format_12_cmap()
     {
         byte[] font = CreateFormat12Font();

@@ -87,6 +87,7 @@ internal static class OpenTypeFont
     internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (scalar > 0x10FFFF || scalar is >= 0xD800 and <= 0xDFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
+        CmapLookupProbe.Started();
         workCounter?.Consume(cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange cmap = FindTable(data, CmapTag, "cmap", workCounter, cancellationToken);
