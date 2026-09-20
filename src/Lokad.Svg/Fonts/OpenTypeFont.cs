@@ -13,6 +13,7 @@ internal static class OpenTypeFont
     private const uint MaxpTag = 0x6D617870;
     private const uint HheaTag = 0x68686561;
     private const uint HmtxTag = 0x686D7478;
+    private const uint CmapTag = 0x636D6170;
 
     internal static OpenTypeFontMetrics ParseMetrics(ReadOnlyMemory<byte> bytes, CancellationToken cancellationToken)
     {
@@ -58,6 +59,84 @@ internal static class OpenTypeFont
         int hmtxBytes = checked(numberOfHMetrics * 4 + (glyphCount - numberOfHMetrics) * 2);
         RequireTableLength(hmtx, hmtxBytes, "hmtx");
         return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat);
+    }
+
+    /// <summary>Maps one Unicode scalar through a validated format-4 character map.</summary>
+    internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, CancellationToken cancellationToken)
+    {
+        if (scalar > 0x10FFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
+        OpenTypeFontMetrics metrics = ParseMetrics(bytes, cancellationToken);
+        if (scalar > 0xFFFF) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported supplementary-plane character map.");
+        ReadOnlySpan<byte> data = bytes.Span;
+        OpenTypeTableRange cmap = FindTable(data, CmapTag, "cmap");
+        RequireTableLength(cmap, 4, "cmap");
+        int encodingCount = ReadUInt16(data, cmap.Offset + 2);
+        RequireTableLength(cmap, checked(4 + encodingCount * 8), "cmap");
+        OpenTypeTableRange? selected = null;
+        for (int index = 0; index < encodingCount; index++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            int record = cmap.Offset + 4 + index * 8;
+            ushort platform = ReadUInt16(data, record);
+            ushort encoding = ReadUInt16(data, record + 2);
+            uint relativeOffset = ReadUInt32(data, record + 4);
+            if (relativeOffset > int.MaxValue || relativeOffset > cmap.Length - 2) throw InvalidFont("A cmap encoding record points outside its table.");
+            int offset = checked(cmap.Offset + (int)relativeOffset);
+            if (ReadUInt16(data, offset) == 4 && (platform == 3 && (encoding == 1 || encoding == 0))) selected = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
+        }
+        if (selected is not OpenTypeTableRange format4) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported Unicode cmap format 4 table.");
+        RequireTableLength(format4, 16, "cmap format 4");
+        int length = ReadUInt16(data, format4.Offset + 2);
+        if (length < 16 || length > format4.Length) throw InvalidFont("The cmap format 4 length is invalid.");
+        int segmentsX2 = ReadUInt16(data, format4.Offset + 6);
+        if (segmentsX2 == 0 || (segmentsX2 & 1) != 0) throw InvalidFont("The cmap format 4 segment count is invalid.");
+        int segments = segmentsX2 / 2;
+        int required = checked(16 + segments * 8);
+        if (required > length) throw InvalidFont("The cmap format 4 arrays are truncated.");
+        int endCodes = format4.Offset + 14;
+        int startCodes = endCodes + segments * 2 + 2;
+        int deltas = startCodes + segments * 2;
+        int ranges = deltas + segments * 2;
+        for (int index = 0; index < segments; index++)
+        {
+            ushort end = ReadUInt16(data, endCodes + index * 2);
+            if (scalar > end) continue;
+            ushort start = ReadUInt16(data, startCodes + index * 2);
+            if (scalar < start) return 0;
+            short delta = ReadInt16(data, deltas + index * 2);
+            ushort rangeOffset = ReadUInt16(data, ranges + index * 2);
+            ushort glyph = rangeOffset == 0
+                ? unchecked((ushort)(scalar + delta))
+                : ApplyDelta(ReadGlyphFromRange(data, format4, length, ranges + index * 2, rangeOffset, scalar - start), delta);
+            if (glyph >= metrics.GlyphCount && glyph != 0) throw InvalidFont("The cmap maps a scalar to a glyph outside maxp.");
+            return glyph;
+        }
+        return 0;
+    }
+
+    private static ushort ReadGlyphFromRange(ReadOnlySpan<byte> data, OpenTypeTableRange table, int length, int rangeOffsetLocation, ushort rangeOffset, uint relativeGlyphIndex)
+    {
+        int glyphOffset = checked(rangeOffsetLocation + rangeOffset + checked((int)relativeGlyphIndex * 2));
+        if (glyphOffset < table.Offset || glyphOffset > table.Offset + length - 2) throw InvalidFont("The cmap glyph-index array is truncated.");
+        return ReadUInt16(data, glyphOffset);
+    }
+
+    private static ushort ApplyDelta(ushort glyph, short delta) => glyph == 0 ? (ushort)0 : unchecked((ushort)(glyph + delta));
+
+    private static OpenTypeTableRange FindTable(ReadOnlySpan<byte> data, uint wantedTag, string name)
+    {
+        int count = ReadUInt16(data, 4);
+        for (int index = 0; index < count; index++)
+        {
+            int entry = 12 + index * 16;
+            if (ReadUInt32(data, entry) != wantedTag) continue;
+            uint offset = ReadUInt32(data, entry + 8);
+            uint length = ReadUInt32(data, entry + 12);
+            if (offset > int.MaxValue || length > int.MaxValue) throw InvalidFont("The SFNT " + name + " table range exceeds the supported input size.");
+            RequireRange(data, (int)offset, (int)length, "SFNT " + name + " table");
+            return new OpenTypeTableRange((int)offset, (int)length);
+        }
+        throw InvalidFont("The SFNT font is missing its " + name + " table.");
     }
 
     private static OpenTypeTableRange RequiredTable(IReadOnlyDictionary<uint, OpenTypeTableRange> tables, uint tag, string name)
