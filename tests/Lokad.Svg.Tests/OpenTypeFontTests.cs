@@ -726,7 +726,7 @@ public sealed class OpenTypeFontTests
         string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
-        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 14);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 15);
 
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), limits, CancellationToken.None));
 
@@ -805,6 +805,21 @@ public sealed class OpenTypeFontTests
         var source = new CountingFontSource(bytes);
 
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused' fill-rule='evenodd'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(0, source.RequestCount);
+    }
+
+    [Fact]
+    public async Task Svg_based_snapshot_rejects_unsupported_group_presentation_before_font_acquisition()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Unused\", \"resolvedFamily\": \"Unused\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><g style='fill-rule:evenodd'><text font-family='Unused'>x</text></g></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, source.RequestCount);

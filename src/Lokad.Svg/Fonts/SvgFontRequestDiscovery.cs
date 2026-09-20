@@ -60,6 +60,11 @@ internal static class SvgFontRequestDiscovery
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = parentAllowsText && textElement;
                     bool childAllowsText = parentAllowsText && isSvgElement && reader.LocalName is ("svg" or "g" or "a");
+                    if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
+                    {
+                        if (reader.Depth == 0) SvgElementAttributePolicy.ValidateRoot(reader, workCounter, cancellationToken);
+                        else if (reader.LocalName is "g" or "a") SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
+                    }
                     if (isSvgElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "g" or "a" or "text")) style = ApplyAttributes(reader, style, workCounter, cancellationToken);
                     if (inertDepth < 0 && isSvgElement && reader.LocalName is ("defs" or "title" or "desc" or "metadata") && !reader.IsEmptyElement) inertDepth = reader.Depth;
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null) SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
@@ -108,6 +113,7 @@ internal static class SvgFontRequestDiscovery
     {
         InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inlineStyle);
+        if (reader.LocalName is "svg" or "g" or "a" && computedStyle.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
         SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, inlineStyle.TextFont);
         bool isDisplayed = inherited.IsDisplayed && SvgPresentationResolver.ParseDisplay(computedStyle.Display);
         bool isVisible = SvgPresentationResolver.ParseVisibility(computedStyle.Visibility, inherited.IsVisible);
