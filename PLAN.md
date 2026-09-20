@@ -50,11 +50,11 @@ traffic is not live memory; a ledger leak is not proof of permanent heap retenti
 | R02: text skips its next sibling | Original cursor defect repaired with subtree consumption. Immediate rectangle adjacency through six APIs and CDATA adjacency pass. Complete the empty-text, group, comment, unsupported-sibling and malformed-tail matrix; do not describe the old bug as still reproduced. |
 | R03: silent text attributes | Attribute policy now gates direct text; scalar dx/dy and start/middle/end anchors are implemented. Child elements, clipping, strokes, nonidentity transforms and evenodd text fill are rejected. Whitespace/chunk semantics and broader admission remain open. |
 | R04: text/resource bypasses | Partial. Text extraction and exact positioned-glyph storage are reserved; 32,768 UTF-16 characters are capped across the document; inline scans are checkpointed. Nested contours, font work, stale record sizes and raster cleanup remain open below. |
-| R05: malformed cmap | Original format-12 short-length and selected-glyph overflow cases repaired; format-4 segment checks added. New table-validation holes are reproduced below. |
+| R05: malformed cmap | Format-12 short-length, selected-glyph overflow and full-group validation cases are repaired; format-4 segment and glyph-index payload checks are added. Broader validation and repeated-lookup work remain below. |
 | R06: dedup/integrity/face index | Demonstrated defects repaired: conflicting same-hash sizes and selected nonzero standalone faces fail before provider access; legitimate face-0 aliases share acquisition; unused unsupported faces do not poison selection. Repeated hashing remains R14, not a reason to undo these checks. |
 | R07: mutable public arrays / disposal | Read-only views and escaped-handle access checks are repaired and regression-tested. Concurrent-read lifetime and retained references after disposal still need explicit evidence/wording. Borrowed bytes are intentionally not copied. |
 | R08: discovery/painting disagreement | Quoting, case-insensitive requests, last inline declaration and root/group/link font inheritance have improved. Eligibility, caller limits and retained preparation state still differ. |
-| R09: fractional text / fidelity | Finite fractional text syntax is admitted. Numeric closure, a shape-admission regression and independent curved-glyph fidelity remain open. |
+| R09: fractional text / fidelity | Finite fractional text syntax and finite coordinate-sum closure are admitted. Shapes retain their mapped quarter-pixel gate; independent curved-glyph fidelity remains open. |
 | R10: font semantics | Format 12 handles BMP/supplementary scalars; Unicode-platform records are accepted and symbol records are not misclassified. Composite matrix semantics and broader font validation remain open. |
 | R11: diagnostic failure masking | Long fields truncate instead of replacing the primary error; snapshot integrity/format stages are retained. Source location and consistent identity/stage coverage remain open. |
 | R12–R16 | Instrumentation, meaningful corpus, repeated work, weak invariants and companion-document drift remain active work, detailed below. |
@@ -204,16 +204,14 @@ of each admitted coordinate sum must be checked explicitly.
 anchor, outline-transform and device-mapping arithmetic need one finite-result
 policy and categorized failure at the SVG boundary.
 
-**Reproduced public conversion:** a 1×1 viewport with `viewBox='0 0 3 3'` and a
-1×1 rectangle now succeeds, mapping its edge to one third of a device pixel.
-The shared `MapEdge` quarter-pixel restriction was removed for text, broadening
-shape admission as well. This contradicts the support matrix and the prior
-“unchanged rectangle fast path” claim; it does not by itself prove a pixel mismatch.
+**Repaired 2026-09-20:** a 1×1 viewport with `viewBox='0 0 3 3'` and a 1×1
+rectangle now returns `UnsupportedFeature`: rectangle edges are checked after
+mapping and must remain on the documented quarter-pixel grid. General finite
+glyph mapping stays separate from this shape gate.
 
-Closure: separate general finite glyph mapping from the established shape gate.
-Restore the documented mapped-edge restriction, or deliberately admit additional
-shapes only with fresh independent references and matching docs. Preserve all
-43 exact cases. Check nonfinite intermediate results before bounds/raster loops.
+Remaining closure: preserve all 43 exact cases and check nonfinite intermediate
+results before bounds/raster loops. Additional shape admission requires fresh
+independent references and matching docs.
 
 Fixed 4×4 sampling and eight subdivisions per quadratic still have no
 scale-dependent error bound or same-font curved-glyph oracle. Keep fidelity open
@@ -364,7 +362,7 @@ small buildable commits, each including its tests and relevant documentation.
 | S1 — complete 2026-09-20 | Correct type-coupled storage sizing and main-surface failure ownership (R04a/c). `BudgetedParserList<T>` now derives each value-array charge from `Unsafe.SizeOf<T>()`, removing stale point/geometry/group/rule/pending-use constants; dictionary allowances remain separately conservative. `Rasterize` transfers its surface reservation only on success and releases it on any intervening exception. | 390 unit plus 83 visual tests pass. New tracked checks cover geometry and CSS-rule array charges and verify zero surface/current ledger bytes after actual background-loop cancellation and malformed-scene failure. The general path and point-list lowerers use the same generic list. Nested glyph contours remain S3. |
 | S2 — complete 2026-09-20 | Make current glyph bounds/sample charging exact and preflighted (R04b). Bounds segment work is preflighted and charged before traversal; coverage charges segments × eight subdivisions × 4×4 samples plus one pixel-dispatch unit. `GlyphCoverageProbe` is an execution-context-local entry seam used only for deterministic tests. | 393 unit plus 83 visual tests pass. A one-pixel/four-segment contour charges exactly 517 work units; limits 3 and 516 deny before bounds and coverage respectively; coverage-entry cancellation is observed and returns the surface ledger to zero. Aggregate font/table/graph work remains S5. |
 | S3 — after S1 | Budget decoded/transformed/nested contours and define transfer ownership (R04a). | Capacity/old-new overlap and partial insertion/detach failures; retained contours charged while reachable by the scene; release after conversion/failure. No new public prepared-document API needed for this slice. |
-| S4 — in progress | Correct cmap validation, asymmetric composite matrices and numeric/shape admission (R05/R10/R09). Selected format-12 groups are fully validated before lookup returns; nonzero format-4 offsets must be aligned and point into `glyphIdArray`. The OpenType scale01/scale10 file-order mismatch is repaired: an asymmetric scale01 vector now maps (10,3) to (10,8), rather than transposing it to (11.5,3). Finite text-coordinate sums are checked at the public text-run boundary and report `LimitExceeded` rather than a CLR range exception. | 397 unit plus 83 visual tests pass. Retain malformed-cmap, matrix and overflowing-coordinate vectors; shape admission remains a separate commit. Preserve all 43 shape references. |
+| S4 — complete 2026-09-20 | Correct cmap validation, asymmetric composite matrices and numeric/shape admission (R05/R10/R09). Selected format-12 groups are fully validated before lookup returns; nonzero format-4 offsets must be aligned and point into `glyphIdArray`. The OpenType scale01/scale10 file-order mismatch is repaired: an asymmetric scale01 vector maps (10,3) to (10,8), rather than transposing it to (11.5,3). Finite text-coordinate sums report `LimitExceeded` rather than a CLR range exception, while mapped rectangle edges retain the documented quarter-pixel gate. | 398 unit plus 83 visual tests pass. Tracked vectors cover malformed cmap, matrix order, overflowing coordinates and non-quarter shape mapping. All 43 shape references pass. |
 | S5 — after S2/S3 | Aggregate font/table/graph work and phase observations (R04b/R12). | Branching empty glyphs stop by work limit; bounded chunked text reads; deterministic during-phase cancellation; category/work/cleanup reports from font-aware probes. |
 | S6 — after S3/S5; semantic tests can start earlier | Coherent discovery/style/preparation and verified program lifetime (R07/R08/R11/R14). | Eligibility before acquisition, caller-controlled shared limits, preparation/painting agreement, one required program acquisition, supported concurrent-read lifetime and bounded diagnostic context. |
 | S7 — oracle investigation can start now; admission after S4–S6 | Licensed ordinary fonts, explicit font semantics and font-aware oracle (R09/R10/R12/R13). | Intended-font controls and three stable captures; separate metric/pixel comparisons for curves/holes/composites/fractional origins; then real styles, pair positioning, spans/fallback and a useful labeled diagram via public APIs. |

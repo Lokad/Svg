@@ -286,10 +286,10 @@ public static class SvgConverter
 
         void RasterizeSolidRectangle(SvgRectangle rectangle, byte[] destination)
         {
-            double rectangleY = MapEdge(rectangle.Y, verticalScale, verticalOffset);
-            double rectangleBottom = MapEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
-            double rectangleX = MapEdge(rectangle.X, horizontalScale, horizontalOffset);
-            double rectangleRight = MapEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
+            double rectangleY = MapRectangleEdge(rectangle.Y, verticalScale, verticalOffset);
+            double rectangleBottom = MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
+            double rectangleX = MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset);
+            double rectangleRight = MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
             bool hasFractionalEdge = rectangleY != Math.Truncate(rectangleY) || rectangleBottom != Math.Truncate(rectangleBottom) || rectangleX != Math.Truncate(rectangleX) || rectangleRight != Math.Truncate(rectangleRight);
             int startY = ClampFloor(rectangleY, outputHeight);
             int endY = ClampCeiling(rectangleBottom, outputHeight);
@@ -317,6 +317,13 @@ public static class SvgConverter
             double scaled = value * scale + offset;
             if (!double.IsFinite(scaled)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Output scaling and viewBox mapping must preserve finite edges.");
             return scaled;
+        }
+
+        static double MapRectangleEdge(double value, double scale, double offset)
+        {
+            double edge = MapEdge(value, scale, offset);
+            if (Math.Abs(edge * 4 - Math.Round(edge * 4, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle viewBox mapping must preserve quarter-pixel output edges.");
+            return edge;
         }
 
         static int ClampFloor(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Floor(value));
