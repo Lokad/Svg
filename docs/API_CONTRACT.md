@@ -29,6 +29,14 @@ integral dimensions returns `SvgErrorCode.LimitExceeded` before surface allocati
 or output writes. Nonpositive, non-finite or fractional resolved output dimensions
 remain `UnsupportedFeature`; malformed SVG values retain their parsing errors.
 
+`Lokad.Svg.Fonts.SvgFontPackCatalog` parses the public OoxPdf 0.1.4 manifest
+format from caller-owned bytes without network or filesystem access. It validates
+the requested pack ID, safe relative paths, file byte counts and SHA-256 metadata,
+then resolves requested/resolved family aliases, styles and configured fallback
+families deterministically. This is metadata selection only: a caller still owns
+font-program acquisition and byte verification, and the current renderer does not
+yet consume catalog entries to render SVG text.
+
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does
 not create per-shape or per-pixel tasks. Asynchronous stream conversion likewise

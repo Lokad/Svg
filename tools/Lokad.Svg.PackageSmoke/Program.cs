@@ -1,4 +1,5 @@
 using Lokad.Svg;
+using Lokad.Svg.Fonts;
 
 ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
 ReadOnlySpan<byte> pngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
@@ -33,3 +34,15 @@ foreach (bool asynchronous in new[] { false, true })
 }
 
 Console.WriteLine("Installed package conversion, overlap rejection and dimension-limit scenarios passed.");
+
+SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse("""
+    {
+      "packId": "test-pack",
+      "files": [{ "relativePath": "files/example.ttf", "byteSize": 1, "sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" }],
+      "families": [{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/example.ttf" }]
+    }
+    """u8.ToArray(), "test-pack");
+SvgFontPackResolution resolution = catalog.Resolve(new SvgFontFaceRequest("example", 400, false));
+if (resolution.IsFallback || resolution.Face.File.RelativePath != "files/example.ttf") throw new InvalidOperationException("The installed package did not resolve the compatible font-pack manifest.");
+
+Console.WriteLine("Installed package font-pack catalog scenario passed.");
