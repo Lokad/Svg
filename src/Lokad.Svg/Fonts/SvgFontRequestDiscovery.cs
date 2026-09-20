@@ -53,14 +53,14 @@ internal static class SvgFontRequestDiscovery
                     nodeCount++;
                     bool insideDirectText = directText.Any(ancestorCandidate => ancestorCandidate is not null);
                     foreach (TextRequestCandidate? ancestorCandidate in directText) if (ancestorCandidate is not null) ancestorCandidate.HasChildElement = true;
-                    TextStyle style = inherited.Count == 0 ? new TextStyle(null, 400, false, true, true, AxisTransform.Identity, null) : inherited.Peek();
+                    TextStyle style = inherited.Count == 0 ? new TextStyle(SvgInheritedTextStyle.Default, true, true, AxisTransform.Identity, null) : inherited.Peek();
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
                     if (isSvgElement && !insideDirectText) style = ApplyAttributes(reader, style, workCounter, cancellationToken);
                     if (isSvgElement && reader.LocalName == "defs" && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
                     if (definitionsDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && reader.GetAttribute("transform") is null) SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                     if (definitionsDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
-                    TextRequestCandidate? candidate = definitionsDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.Family is string family
-                        ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Weight, style.Italic))
+                    TextRequestCandidate? candidate = definitionsDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.Text.Family is string family
+                        ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic))
                         : null;
                     if (reader.IsEmptyElement) AddCandidate(candidate, requests, seen);
                     else
@@ -100,21 +100,15 @@ internal static class SvgFontRequestDiscovery
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
-        SvgTextInlineFontProperties inline = inlineStyle.TextFont;
         SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inlineStyle);
-        string? family = inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family;
-        if (family is not null) family = SvgTextFontSyntax.ParseFamily(family);
-        string? weightValue = inline.Weight ?? reader.GetAttribute("font-weight");
-        int weight = weightValue is null ? inherited.Weight : SvgTextFontSyntax.ParseWeight(weightValue);
-        string? styleValue = inline.Style ?? reader.GetAttribute("font-style");
-        bool italic = styleValue is null ? inherited.Italic : SvgTextFontSyntax.ParseItalic(styleValue);
+        SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, inlineStyle.TextFont);
         bool isDisplayed = inherited.IsDisplayed && SvgPresentationResolver.ParseDisplay(computedStyle.Display);
         bool isVisible = SvgPresentationResolver.ParseVisibility(computedStyle.Visibility, inherited.IsVisible);
         AxisTransform transform = inherited.Transform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
-        return new TextStyle(family, weight, italic, isDisplayed, isVisible, transform, computedStyle.FillRule);
+        return new TextStyle(text, isDisplayed, isVisible, transform, computedStyle.FillRule);
     }
 
-    private readonly record struct TextStyle(string? Family, int Weight, bool Italic, bool IsDisplayed, bool IsVisible, AxisTransform Transform, string? FillRule);
+    private readonly record struct TextStyle(SvgInheritedTextStyle Text, bool IsDisplayed, bool IsVisible, AxisTransform Transform, string? FillRule);
 
     private readonly record struct TextRequestKey(string Family, int Weight, bool Italic);
 

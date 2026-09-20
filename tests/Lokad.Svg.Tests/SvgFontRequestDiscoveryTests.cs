@@ -117,6 +117,14 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Equal("Example", request.Family);
     }
 
+    [Fact]
+    public void Rejects_an_invalid_inherited_font_size_with_the_renderer_font_inheritance_rules()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg' font-size='0'><text font-family='Example'>x</text></svg>"u8.ToArray(), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
     [Theory]
     [InlineData("display='none'")]
     [InlineData("visibility='hidden'")]
