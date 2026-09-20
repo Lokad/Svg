@@ -667,6 +667,21 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Svg_based_snapshot_does_not_acquire_fonts_for_text_with_child_elements()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Unused\", \"resolvedFamily\": \"Unused\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'><tspan>x</tspan></text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None);
+
+        Assert.Empty(snapshot.Fonts);
+        Assert.Equal(0, source.RequestCount);
+    }
+
+    [Fact]
     public async Task Lays_out_verified_glyph_advances_and_reports_missing_glyphs()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);

@@ -20,6 +20,7 @@ internal static class SvgFontRequestDiscovery
         var requests = new List<SvgFontFaceRequest>();
         var seen = new HashSet<TextRequestKey>(TextRequestKeyComparer.Instance);
         var inherited = new Stack<TextStyle>();
+        var directText = new Stack<TextRequestCandidate?>();
         var workCounter = new ParserWorkCounter(limits.MaximumWorkUnits);
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         try
@@ -43,26 +44,30 @@ internal static class SvgFontRequestDiscovery
                     if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
+                    bool insideDirectText = directText.Any(ancestorCandidate => ancestorCandidate is not null);
+                    foreach (TextRequestCandidate? ancestorCandidate in directText) if (ancestorCandidate is not null) ancestorCandidate.HasChildElement = true;
                     TextStyle style = inherited.Count == 0 ? new TextStyle(null, 400, false, true, true) : inherited.Peek();
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
-                    if (isSvgElement) style = ApplyAttributes(reader, style, workCounter, cancellationToken);
+                    if (isSvgElement && !insideDirectText) style = ApplyAttributes(reader, style, workCounter, cancellationToken);
                     if (isSvgElement && reader.LocalName == "defs" && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
-                    bool textElement = isSvgElement && reader.LocalName == "text";
-                    if (definitionsDepth < 0 && style.IsDisplayed && style.IsVisible && textElement && style.Family is string family)
+                    TextRequestCandidate? candidate = definitionsDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && style.IsDisplayed && style.IsVisible && style.Family is string family
+                        ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Weight, style.Italic))
+                        : null;
+                    if (reader.IsEmptyElement) AddCandidate(candidate, requests, seen);
+                    else
                     {
-                        var key = new TextRequestKey(family, style.Weight, style.Italic);
-                        if (seen.Add(key))
-                        {
-                            if (requests.Count == MaximumRequests) throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG text font request count exceeds the preparation limit.");
-                            requests.Add(new SvgFontFaceRequest(family, style.Weight, style.Italic));
-                        }
+                        inherited.Push(style);
+                        directText.Push(candidate);
                     }
-                    if (!reader.IsEmptyElement) inherited.Push(style);
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
                     if (reader.Depth == definitionsDepth) definitionsDepth = -1;
-                    if (inherited.Count != 0) inherited.Pop();
+                    if (inherited.Count != 0)
+                    {
+                        inherited.Pop();
+                        AddCandidate(directText.Pop(), requests, seen);
+                    }
                 }
             }
             if (!hasRoot) throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
@@ -72,6 +77,15 @@ internal static class SvgFontRequestDiscovery
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message);
         }
         return requests.ToArray();
+    }
+
+    private static void AddCandidate(TextRequestCandidate? candidate, List<SvgFontFaceRequest> requests, HashSet<TextRequestKey> seen)
+    {
+        if (candidate is null || candidate.HasChildElement) return;
+        SvgFontFaceRequest request = candidate.Request;
+        if (!seen.Add(new TextRequestKey(request.Family, request.Weight, request.Italic))) return;
+        if (requests.Count == MaximumRequests) throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG text font request count exceeds the preparation limit.");
+        requests.Add(request);
     }
 
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -93,6 +107,13 @@ internal static class SvgFontRequestDiscovery
     private readonly record struct TextStyle(string? Family, int Weight, bool Italic, bool IsDisplayed, bool IsVisible);
 
     private readonly record struct TextRequestKey(string Family, int Weight, bool Italic);
+
+    private sealed class TextRequestCandidate(SvgFontFaceRequest request)
+    {
+        internal SvgFontFaceRequest Request { get; } = request;
+
+        internal bool HasChildElement { get; set; }
+    }
 
     private sealed class TextRequestKeyComparer : IEqualityComparer<TextRequestKey>
     {

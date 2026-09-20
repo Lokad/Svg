@@ -5,7 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFontRequestDiscoveryTests
 {
     [Fact]
-    public void Discovers_the_renderable_text_font_request_without_span_overrides()
+    public void Does_not_discover_fonts_from_text_with_unrenderable_span_children()
     {
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("""
             <svg xmlns="http://www.w3.org/2000/svg" font-family="Root">
@@ -13,10 +13,7 @@ public sealed class SvgFontRequestDiscoveryTests
             </svg>
             """u8.ToArray(), CancellationToken.None);
 
-        SvgFontFaceRequest request = Assert.Single(requests);
-        Assert.Equal("Example", request.Family);
-        Assert.Equal(700, request.Weight);
-        Assert.False(request.Italic);
+        Assert.Empty(requests);
     }
 
     [Fact]
