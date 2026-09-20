@@ -48,7 +48,9 @@ each exact against the stored smoke reference and byte-identical to the other tw
 plus a JSON runtime fingerprint. The fingerprint records the capture count and
 each candidate hash as well as the pin, executable hash and file version when
 exposed by the platform, OS/architecture, locale, recipe and
-headless/GPU/sandbox/viewport policy.
+headless/GPU/sandbox/viewport policy. Each capture CLI has a 120-second deadline
+by default (`-CaptureTimeoutMilliseconds` changes it) and is terminated with its
+child process tree on timeout.
 CI uploads that directory only when its job fails.
 
 The setup script refuses an archive or extracted executable whose SHA-256 differs

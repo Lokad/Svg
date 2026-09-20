@@ -4,11 +4,13 @@ param(
     [Parameter(Mandatory = $true)]
     [string] $ResultsDirectory,
     [string] $PinPath = (Join-Path $PSScriptRoot 'chrome-for-testing.json'),
-    [int] $CaptureRuns = 3
+    [int] $CaptureRuns = 3,
+    [int] $CaptureTimeoutMilliseconds = 120000
 )
 
 $ErrorActionPreference = 'Stop'
 if ($CaptureRuns -le 0) { throw 'CaptureRuns must be positive.' }
+if ($CaptureTimeoutMilliseconds -le 0) { throw 'CaptureTimeoutMilliseconds must be positive.' }
 
 $pin = Get-Content -LiteralPath $PinPath -Raw | ConvertFrom-Json
 $setupChrome = Join-Path $PSScriptRoot 'setup-chrome.ps1'
@@ -26,7 +28,10 @@ if (-not (Test-Path -LiteralPath $diffTool)) { throw "Visual-diff tool is not bu
 New-Item -ItemType Directory -Force -Path $ResultsDirectory | Out-Null
 
 function Invoke-ChromeCapture {
-    param([Parameter(Mandatory = $true)] [string] $Candidate)
+    param(
+        [Parameter(Mandatory = $true)] [string] $Candidate,
+        [Parameter(Mandatory = $true)] [int] $TimeoutMilliseconds
+    )
 
     $start = [System.Diagnostics.ProcessStartInfo]::new('dotnet')
     $start.UseShellExecute = $false
@@ -40,15 +45,27 @@ function Invoke-ChromeCapture {
     $process = [System.Diagnostics.Process]::Start($start)
     if ($null -eq $process) { throw 'Chrome capture process could not be started.' }
     try {
-        $input = [System.IO.File]::OpenRead($fixture)
-        try { $input.CopyTo($process.StandardInput.BaseStream) }
-        finally { $input.Dispose(); $process.StandardInput.Close() }
         $output = [System.IO.File]::Create($Candidate)
-        try { $process.StandardOutput.BaseStream.CopyTo($output) }
+        try {
+            $outputTask = $process.StandardOutput.BaseStream.CopyToAsync($output)
+            $standardErrorTask = $process.StandardError.ReadToEndAsync()
+            $input = [System.IO.File]::OpenRead($fixture)
+            try { $input.CopyTo($process.StandardInput.BaseStream) }
+            finally { $input.Dispose(); $process.StandardInput.Close() }
+            if (-not $process.WaitForExit($TimeoutMilliseconds))
+            {
+                $process.Kill($true)
+                throw "Pinned Chrome capture exceeded $TimeoutMilliseconds ms and was terminated."
+            }
+            [void]$outputTask.GetAwaiter().GetResult()
+            $standardError = $standardErrorTask.GetAwaiter().GetResult()
+            if ($process.ExitCode -ne 0) { throw "Pinned Chrome capture failed: $standardError" }
+        }
         finally { $output.Dispose() }
-        $standardError = $process.StandardError.ReadToEnd()
-        $process.WaitForExit()
-        if ($process.ExitCode -ne 0) { throw "Pinned Chrome capture failed: $standardError" }
+    }
+    catch {
+        if (-not $process.HasExited) { $process.Kill($true) }
+        throw
     }
     finally { $process.Dispose() }
 }
@@ -59,7 +76,7 @@ $candidateHashes = [System.Collections.Generic.List[string]]::new()
 for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
 {
     $candidate = Join-Path $ResultsDirectory "pinned-chrome-smoke-$captureId-$attempt.png"
-    Invoke-ChromeCapture $candidate
+    Invoke-ChromeCapture -Candidate $candidate -TimeoutMilliseconds $CaptureTimeoutMilliseconds
     & dotnet $diffTool $reference $candidate
     if ($LASTEXITCODE -ne 0) { throw "Pinned Chrome smoke capture $attempt differs from its reference." }
     $candidateHash = (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
