@@ -610,6 +610,49 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Expands_nested_composite_glyph_transforms_in_parent_order()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeFontMetrics originalMetrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+        OpenTypeTableRange loca = Assert.IsType<OpenTypeTableRange>(originalMetrics.Loca);
+        OpenTypeTableRange glyf = Assert.IsType<OpenTypeTableRange>(originalMetrics.Glyf);
+        Array.Resize(ref font, glyf.Offset + 72);
+        WriteUInt32(font, 120, 72);
+        WriteUInt32(font, loca.Offset, 0);
+        WriteUInt32(font, loca.Offset + 4, 32);
+        WriteUInt32(font, loca.Offset + 8, 52);
+        WriteUInt32(font, loca.Offset + 12, 72);
+        int leaf = glyf.Offset;
+        int child = leaf + 32;
+        int root = leaf + 52;
+        WriteInt16(font, leaf, 1);
+        WriteUInt16(font, leaf + 10, 1);
+        WriteUInt16(font, leaf + 12, 0);
+        font[leaf + 14] = 0x37;
+        font[leaf + 15] = 0x37;
+        font[leaf + 16] = 10;
+        font[leaf + 17] = 5;
+        font[leaf + 18] = 3;
+        font[leaf + 19] = 0;
+        WriteInt16(font, child, -1);
+        WriteUInt16(font, child + 10, 3);
+        WriteUInt16(font, child + 12, 0);
+        WriteInt16(font, child + 14, 2);
+        WriteInt16(font, child + 16, 1);
+        WriteInt16(font, root, -1);
+        WriteUInt16(font, root + 10, 11);
+        WriteUInt16(font, root + 12, 1);
+        WriteInt16(font, root + 14, 4);
+        WriteInt16(font, root + 16, 6);
+        WriteInt16(font, root + 18, 8192);
+
+        OpenTypeQuadraticSegment segment = OpenTypeFont.GetGlyphContours(font, 2, CancellationToken.None)[0];
+
+        Assert.Equal(new OpenTypeOutlinePoint(10, 8), segment.Start);
+        Assert.Equal(new OpenTypeOutlinePoint(12.5, 8), segment.Control);
+    }
+
+    [Fact]
     public void Rejects_a_cycle_in_composite_glyph_references()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
