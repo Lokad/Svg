@@ -943,6 +943,33 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Branching_composite_expansion_charges_each_empty_leaf_visit_to_the_shared_work_counter()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange firstComposite = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
+        OpenTypeTableRange rootComposite = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, firstComposite.Offset, -1);
+        WriteUInt16(font, firstComposite.Offset + 10, 35);
+        WriteUInt16(font, firstComposite.Offset + 12, 0);
+        WriteInt16(font, firstComposite.Offset + 14, 0);
+        WriteInt16(font, firstComposite.Offset + 16, 0);
+        WriteUInt16(font, firstComposite.Offset + 18, 3);
+        WriteUInt16(font, firstComposite.Offset + 20, 0);
+        WriteInt16(font, firstComposite.Offset + 22, 0);
+        WriteInt16(font, firstComposite.Offset + 24, 0);
+        WriteInt16(font, rootComposite.Offset, -1);
+        WriteUInt16(font, rootComposite.Offset + 10, 3);
+        WriteUInt16(font, rootComposite.Offset + 12, 1);
+        WriteInt16(font, rootComposite.Offset + 14, 0);
+        WriteInt16(font, rootComposite.Offset + 16, 0);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, new RenderBudget(10_000), new ParserWorkCounter(3), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Glyph_expansion_observes_cancellation_at_its_entry_checkpoint()
     {
         byte[] font = CreateTriangleFont();
