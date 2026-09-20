@@ -662,6 +662,14 @@ public sealed class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(font)], CancellationToken.None);
         var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
 
+        OpenTypeQuadraticSegment[] decoded = OpenTypeFont.GetGlyphContours(font, 1, CancellationToken.None);
+        Assert.Equal([new OpenTypeOutlinePoint(10, 10), new OpenTypeOutlinePoint(20, 10), new OpenTypeOutlinePoint(10, 20)], decoded.Select(segment => segment.Start));
+        Assert.Equal(decoded[0].Start, decoded[^1].End);
+        using (SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, new RenderBudget(SvgRenderLimits.Default.MaximumAccountedBytes), snapshot, CancellationToken.None))
+        {
+            Assert.Contains(root.Geometries, geometry => geometry.Kind == SvgGeometryKind.GlyphContours);
+        }
+
         byte[] owned = SvgConverter.ConvertToPng(svg, options, CancellationToken.None).ToArray();
         byte[] memory = new byte[owned.Length];
         int memoryLength = SvgConverter.ConvertToPng(svg, memory, options, CancellationToken.None);

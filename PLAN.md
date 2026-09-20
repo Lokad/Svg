@@ -66,6 +66,12 @@ alpha through all six APIs. Add an actual quadratic curve separately. Never chan
 a desired positive assertion to the observed failure, or remove it to regain green,
 without recording the unresolved defect.
 
+**2026-09-20 update — retained smoke chain.** The corrected three-point triangle
+fixture is now asserted at each boundary: complete decoded point sequence, closed
+outline, retained glyph geometry, nonzero output alpha, adjacent-shape preservation,
+and byte-equivalent PNGs through all six public output forms. It remains a synthetic
+straight-segment smoke fixture; a real curved-glyph oracle is still required.
+
 ### R02 / P0 — Text consumption skips the next XML sibling
 
 **Public rendering reproduction.**
