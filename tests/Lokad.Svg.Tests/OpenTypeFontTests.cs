@@ -883,6 +883,23 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Composite_expansion_charges_empty_child_glyph_visits_to_the_shared_work_counter()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange composite = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, composite.Offset, -1);
+        WriteUInt16(font, composite.Offset + 10, 3);
+        WriteUInt16(font, composite.Offset + 12, 0);
+        WriteInt16(font, composite.Offset + 14, 0);
+        WriteInt16(font, composite.Offset + 16, 0);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, new RenderBudget(10_000), new ParserWorkCounter(1), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public async Task Parser_failure_after_retaining_a_glyph_contour_releases_its_scene_budget()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
