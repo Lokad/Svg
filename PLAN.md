@@ -253,8 +253,10 @@ lifetime/retention; do not add unconditional byte copies or promise GC timing.
 
 Keep bounded primary errors plus phase, content/face identity and source location.
 Snapshot and provider diagnostics now both use bounded manifest `path:index` face
-identity. Direct text retains its bounded `id` into glyph-stage diagnostics; other
-source-location coverage remains open. Do not include whole SVG/text/font payloads.
+identity. Direct text retains its bounded `id` into glyph-stage diagnostics; source
+and integrity/format failures occur during preparation before a direct-text run is
+materialized, so they intentionally retain no element ID. Do not include whole
+SVG/text/font payloads.
 Test long names and each failure
 stage, not only source/format/integrity examples.
 
