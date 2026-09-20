@@ -23,7 +23,7 @@ See [PLAN.md](PLAN.md) for the product contract and implementation roadmap, and
 dotnet restore --locked-mode
 dotnet build -c Release
 dotnet test -c Release
-dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release
+dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release -o artifacts/packages
 ```
 
 The package will have no runtime package dependencies. Tests, Chrome tooling and
@@ -63,10 +63,8 @@ their probe reports) with:
 tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe
 ```
 
-To smoke-test the packed package from a clean consumer directory:
+To inspect the packed package and smoke-test it from a clean consumer directory:
 
 ```powershell
-dotnet new console --output $env:TEMP/lokad-svg-smoke
-dotnet add $env:TEMP/lokad-svg-smoke package Lokad.Svg --version 0.1.0-preview.1 --source artifacts/packages
-dotnet build $env:TEMP/lokad-svg-smoke -c Release
+tools/test-package.ps1 -PackageDirectory artifacts/packages -ResultsDirectory artifacts/package-smoke
 ```

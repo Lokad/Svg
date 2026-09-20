@@ -322,7 +322,7 @@ behavior or collecting measurements.
 | P2.2 | Not started | Add host resources, PNG images and measured resampling. | P0.3, resource graph, composition | No implicit I/O; decoding/profile limits, mapped resources, nested SVG, alpha boundaries and scaling are exact or explicitly unsupported. First representative illustrations/diagrams work end to end. |
 | P3.1 | Not started | Implement the first filter set with surface lifetime planning. | Images, composition, budgets | Each primitive, color space, region and dependency case has exact evidence; graph/resource bombs fail within limits. |
 | P3.2 | Not started | Implement basic supplied-font text; then JPEG and broader static coverage. | Early text feasibility, geometry, resource budgets | TrueType parsing, layout and glyph rendering match the declared cases with identical font bytes. Unsupported scripts/formats fail explicitly. JPEG work has independent codec and memory gates. |
-| P4 | Not started | Optimize measured bottlenecks, finish hardening and prepare release. | Verified feature combinations and measurements | Full fixed inventory, required platform/cancellation/package gates, numerical performance/retention reports and accurate release docs. Initial stable scope and unresolved advanced backlog remain explicit. |
+| P4 | Started, package gate only | Optimize measured bottlenecks, finish hardening and prepare release. | Verified feature combinations and measurements | A clean consumer now restores only the freshly packed `Lokad.Svg` artifact from an isolated NuGet cache, executes a memory-only conversion, and rejects missing package entries, runtime-specific assets or declared dependencies. Full fixed inventory, required platform/cancellation/package gates, numerical performance/retention reports and accurate release docs remain open. |
 
 ### Next implementation changes
 
@@ -552,9 +552,10 @@ memory/cancellation. Start with measured baselines; investigate repeatable >10%
 regressions on stable hosts, while deterministic memory/work failures belong in
 ordinary CI. Optimize only after locating a measured bottleneck.
 
-Required CI should add full manifest integrity/render gates, dependency and actual
-package-content audits, a clean installed-package consumer exercising memory-only
-conversion, and a pinned live-Chrome smoke job. Scheduled/manual jobs exercise
+CI now performs the pinned live-Chrome smoke, package-content audit and a clean
+installed-package consumer exercising memory-only conversion; it retains their
+controlled diagnostic artifacts on failure. Required CI still needs a reviewed
+remote Windows/Linux result before it is treated as evidence. Scheduled/manual jobs exercise
 full captures, larger scales, fuzz/stress/cancellation and architectures. Retain
 failure artifacts for committed cases; do not upload arbitrary user SVGs.
 
