@@ -1,6 +1,7 @@
 namespace Lokad.Svg.Fonts;
 
 using System.Security.Cryptography;
+using Lokad.Svg.Parsing;
 
 /// <summary>
 /// Represents one immutable, caller-byte-backed set of selected standalone
@@ -54,6 +55,9 @@ public sealed class SvgFontSnapshot : IDisposable
     /// program SHA-256 acquire and account for that program only once.
     /// </summary>
     public static async ValueTask<SvgFontSnapshot> CreateAsync(IReadOnlyList<SvgFontProgramResolution> resolutions, CancellationToken cancellationToken)
+        => await CreateAsync(resolutions, null, cancellationToken).ConfigureAwait(false);
+
+    private static async ValueTask<SvgFontSnapshot> CreateAsync(IReadOnlyList<SvgFontProgramResolution> resolutions, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(resolutions);
         cancellationToken.ThrowIfCancellationRequested();
@@ -79,7 +83,7 @@ public sealed class SvgFontSnapshot : IDisposable
                 }
                 totalBytes = checked(totalBytes + loadedBytes.Length);
                 if (totalBytes > MaximumBorrowedBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font programs exceed the snapshot byte limit.");
-                try { program = (loadedBytes, OpenTypeFont.ParseMetrics(loadedBytes, cancellationToken)); }
+                try { program = (loadedBytes, OpenTypeFont.ParseMetrics(loadedBytes, workCounter, cancellationToken)); }
                 catch (SvgException exception)
                 {
                     throw new SvgException(exception.ErrorCode, exception.Message, CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Format));
@@ -108,6 +112,9 @@ public sealed class SvgFontSnapshot : IDisposable
     /// the SVG overload to discover requests from the supported direct-text subset.
     /// </summary>
     public static async ValueTask<SvgFontSnapshot> CreateAsync(SvgFontPackCatalog catalog, IReadOnlyList<SvgFontFaceRequest> requests, ISvgFontProgramSourceProvider provider, CancellationToken cancellationToken)
+        => await CreateAsync(catalog, requests, provider, null, cancellationToken).ConfigureAwait(false);
+
+    private static async ValueTask<SvgFontSnapshot> CreateAsync(SvgFontPackCatalog catalog, IReadOnlyList<SvgFontFaceRequest> requests, ISvgFontProgramSourceProvider provider, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(requests);
@@ -138,7 +145,7 @@ public sealed class SvgFontSnapshot : IDisposable
             }
             resolutions[index] = catalog.Bind(selection, source);
         }
-        return await CreateAsync(resolutions, cancellationToken).ConfigureAwait(false);
+        return await CreateAsync(resolutions, workCounter, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -153,8 +160,9 @@ public sealed class SvgFontSnapshot : IDisposable
     public static ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
-        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(svg, limits, cancellationToken);
-        return CreateAsync(catalog, requests, provider, cancellationToken);
+        var workCounter = new ParserWorkCounter(limits.MaximumWorkUnits);
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(svg, limits, workCounter, cancellationToken);
+        return CreateAsync(catalog, requests, provider, workCounter, cancellationToken);
     }
 
     /// <summary>Releases references to caller-owned font byte regions retained by this snapshot.</summary>

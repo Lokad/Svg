@@ -26,8 +26,12 @@ internal static class OpenTypeFont
     private const uint GlyfTag = 0x676C7966;
 
     internal static OpenTypeFontMetrics ParseMetrics(ReadOnlyMemory<byte> bytes, CancellationToken cancellationToken)
+        => ParseMetrics(bytes, null, cancellationToken);
+
+    /// <summary>Parses core metrics while charging visited SFNT directory records to one operation work counter.</summary>
+    internal static OpenTypeFontMetrics ParseMetrics(ReadOnlyMemory<byte> bytes, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        Consume(workCounter, cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
         RequireRange(data, 0, 12, "SFNT header");
         uint scalerType = ReadUInt32(data, 0);
@@ -40,7 +44,7 @@ internal static class OpenTypeFont
         var tables = new Dictionary<uint, OpenTypeTableRange>(tableCount);
         for (int index = 0; index < tableCount; index++)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            Consume(workCounter, cancellationToken);
             int offset = 12 + index * 16;
             uint tag = ReadUInt32(data, offset);
             uint tableOffset = ReadUInt32(data, offset + 8);
