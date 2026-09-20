@@ -106,7 +106,7 @@ internal static class SvgFontRequestDiscovery
                         textEligibleChildren.Push(childAllowsText);
                         elementGroups.Push(isSvgElement && reader.LocalName == "g");
                     }
-                    if (isSvgElement && reader.LocalName is ("g" or "a" or "text")) sawStyleableNode = true;
+                    if (isSvgElement && parentAllowsText && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "text")) sawStyleableNode = true;
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
