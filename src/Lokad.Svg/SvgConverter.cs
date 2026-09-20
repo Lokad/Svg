@@ -14,12 +14,8 @@ public static class SvgConverter
     /// <summary>Converts SVG bytes to an independently owned PNG result.</summary>
     public static ReadOnlyMemory<byte> ConvertToPng(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
-        ValidateInvocation(svg, options, cancellationToken);
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
-        if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
-        using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
-        return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+        using RasterizedConversion conversion = PrepareRasterization(svg, options, cancellationToken);
+        return PngEncoder.Encode(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
     /// <summary>Schedules one conversion on the thread pool.</summary>
@@ -33,11 +29,8 @@ public static class SvgConverter
     {
         ValidateInvocation(svg, options, cancellationToken);
         if (svg.Span.Overlaps(destination.Span)) throw new ArgumentException("PNG destination must not overlap SVG input memory.", nameof(destination));
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
-        if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
-        using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
-        return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+        using RasterizedConversion conversion = PrepareRasterizationCore(svg, options, cancellationToken);
+        return PngEncoder.EncodeInto(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, destination, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
     /// <summary>Converts SVG bytes to caller-owned writable stream output.</summary>
@@ -45,12 +38,8 @@ public static class SvgConverter
     {
         ArgumentNullException.ThrowIfNull(destination);
         if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
-        ValidateInvocation(svg, options, cancellationToken);
-        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
-        if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
-        using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
-        return PngEncoder.EncodeTo(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+        using RasterizedConversion conversion = PrepareRasterization(svg, options, cancellationToken);
+        return PngEncoder.EncodeTo(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, destination, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
     /// <summary>Schedules one destination conversion on the thread pool.</summary>
@@ -66,12 +55,8 @@ public static class SvgConverter
         {
             ArgumentNullException.ThrowIfNull(destination);
             if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
-            ValidateInvocation(svg, options, cancellationToken);
-            RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-            using SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
-            if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
-            using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
-            return await PngEncoder.EncodeToAsync(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken).ConfigureAwait(false);
+            using RasterizedConversion conversion = PrepareRasterization(svg, options, cancellationToken);
+            return await PngEncoder.EncodeToAsync(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, destination, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken).ConfigureAwait(false);
         }, cancellationToken);
     }
 
@@ -82,6 +67,29 @@ public static class SvgConverter
         if (svg.Length > options.Limits.MaximumInputBytes)
         {
             throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
+        }
+    }
+
+    /// <summary>Creates the one budgeted parse-and-raster lifetime shared by every output API.</summary>
+    private static RasterizedConversion PrepareRasterization(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
+    {
+        ValidateInvocation(svg, options, cancellationToken);
+        return PrepareRasterizationCore(svg, options, cancellationToken);
+    }
+
+    private static RasterizedConversion PrepareRasterizationCore(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
+    {
+        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
+        try
+        {
+            if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
+            return new RasterizedConversion(budget, root, Rasterize(root, options, budget, cancellationToken));
+        }
+        catch
+        {
+            root.Dispose();
+            throw;
         }
     }
 
@@ -397,5 +405,28 @@ public static class SvgConverter
     internal readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation, long WorkUnits) : IDisposable
     {
         public void Dispose() => Reservation.Dispose();
+    }
+
+    /// <summary>Owns the parsed scene and surface reservations until one output path has completed or failed.</summary>
+    private sealed class RasterizedConversion : IDisposable
+    {
+        private readonly SvgRoot _root;
+
+        internal RasterizedConversion(RenderBudget budget, SvgRoot root, RasterizedSurface surface)
+        {
+            Budget = budget;
+            _root = root;
+            Surface = surface;
+        }
+
+        internal RenderBudget Budget { get; }
+
+        internal RasterizedSurface Surface { get; }
+
+        public void Dispose()
+        {
+            Surface.Dispose();
+            _root.Dispose();
+        }
     }
 }
