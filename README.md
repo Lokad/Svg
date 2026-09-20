@@ -58,7 +58,8 @@ scenarios, not a renderer memory guarantee. `--cancel-after-ms` starts before in
 `--cancel-after-conversion-start-ms` starts after the input is loaded; both are
 timing dependent and are stress evidence rather than exact unit-test assertions.
 The scenario runner also retains one JSON summary per run, including every child
-report and their shared runtime/platform fingerprint.
+report, the scenario-script/probe/fixture hashes, and their shared
+runtime/platform fingerprint.
 
 Run the child-process success, budget-denial, XML-workspace-denial, direct
 XML-reader workspace measurements (a 64 KiB text node, 256 short attributes and

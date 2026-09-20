@@ -206,8 +206,9 @@ retained whenever their CI probe step completes, alongside a runtime/platform
 fingerprint; package diagnostics remain failure-only. The local WSL Ubuntu 24.04.3
 x64/.NET 10.0.12 XML-reader observations reproduce the three Windows envelopes,
 but are not remote CI evidence. Each retained scenario run also has one JSON
-summary that includes every child report and rejects mixed runtime/platform
-fingerprints before it is written.
+summary that includes every child report, binds its scenario script, probe and
+fixed-fixture hashes, and rejects mixed runtime/platform fingerprints before it
+is written.
 
 Parser-owned stylesheet declaration/selector strings, definition identifiers and
 copied local-reference identifiers now reserve both their exact string bytes and
