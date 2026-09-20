@@ -70,7 +70,9 @@ without recording the unresolved defect.
 fixture is now asserted at each boundary: complete decoded point sequence, closed
 outline, retained glyph geometry, nonzero output alpha, adjacent-shape preservation,
 and byte-equivalent PNGs through all six public output forms. It remains a synthetic
-straight-segment smoke fixture; a real curved-glyph oracle is still required.
+straight-segment smoke fixture. A separate retained off-curve-point vector now
+asserts decoded control/end points and nonzero public PNG output for a true quadratic
+segment; a real curved-glyph oracle is still required.
 
 ### R02 / P0 — Text consumption skips the next XML sibling
 

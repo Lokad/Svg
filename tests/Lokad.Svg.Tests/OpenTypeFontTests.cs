@@ -717,6 +717,25 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Converts_direct_text_with_a_true_quadratic_glyph_segment()
+    {
+        byte[] font = CreateTriangleFont();
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
+        font[glyph.Offset + 15] = 0x32;
+        OpenTypeQuadraticSegment quadratic = Assert.Single(OpenTypeFont.GetGlyphContours(font, 1, CancellationToken.None), segment => segment.Control != segment.End);
+        Assert.Equal(new OpenTypeOutlinePoint(20, 10), quadratic.Control);
+        Assert.Equal(new OpenTypeOutlinePoint(10, 20), quadratic.End);
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(font)], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
+
+        byte[] png = SvgConverter.ConvertToPng(svg, options, CancellationToken.None).ToArray();
+
+        Assert.True(DecodeAlpha(png, 1, 1) > 0);
+    }
+
+    [Fact]
     public async Task Converts_direct_text_with_fractional_coordinates()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
