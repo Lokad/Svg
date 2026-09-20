@@ -250,6 +250,10 @@ internal static class OpenTypeFont
 
     /// <summary>Reads simple-glyph structure using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeSimpleGlyphStructure GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
+        => GetSimpleGlyphStructure(bytes, glyphIndex, metrics, null, cancellationToken);
+
+    /// <summary>Reads simple-glyph structure while charging its contour records to a conversion work counter.</summary>
+    internal static OpenTypeSimpleGlyphStructure GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
         if (glyph.Length == 0) return new OpenTypeSimpleGlyphStructure([], 0);
@@ -268,7 +272,7 @@ internal static class OpenTypeFont
         ushort previous = 0;
         for (int index = 0; index < endpoints.Length; index++)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            Consume(workCounter, cancellationToken);
             ushort endpoint = ReadUInt16(data, glyph.Offset + 10 + index * 2);
             if (index != 0 && endpoint <= previous) throw InvalidFont("The simple glyf contour endpoints are not strictly increasing.");
             endpoints[index] = endpoint;
@@ -283,8 +287,12 @@ internal static class OpenTypeFont
 
     /// <summary>Decodes simple-glyph points using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
+        => GetSimpleGlyphPoints(bytes, glyphIndex, metrics, null, cancellationToken);
+
+    /// <summary>Decodes simple-glyph points while charging flag and coordinate records to a conversion work counter.</summary>
+    internal static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, cancellationToken);
+        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
         if (structure.ContourEndpoints.Length == 0) return [];
         int pointCount = checked(structure.ContourEndpoints[^1] + 1);
         if (pointCount > MaximumSimpleGlyphPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph point count exceeds the supported limit.");
@@ -295,7 +303,7 @@ internal static class OpenTypeFont
         var flags = new byte[pointCount];
         for (int index = 0; index < flags.Length;)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            Consume(workCounter, cancellationToken);
             if (cursor >= end) throw InvalidFont("The simple glyf flags are truncated.");
             byte flag = data[cursor++];
             int repeats = 1;
@@ -312,12 +320,14 @@ internal static class OpenTypeFont
         int x = 0;
         for (int index = 0; index < points.Length; index++)
         {
+            Consume(workCounter, cancellationToken);
             x = checked(x + ReadCoordinate(data, ref cursor, end, flags[index], 2, 16, "horizontal"));
             points[index] = new OpenTypeGlyphPoint(x, 0, (flags[index] & 1) != 0);
         }
         int y = 0;
         for (int index = 0; index < points.Length; index++)
         {
+            Consume(workCounter, cancellationToken);
             y = checked(y + ReadCoordinate(data, ref cursor, end, flags[index], 4, 32, "vertical"));
             points[index] = points[index] with { Y = y };
         }
@@ -326,6 +336,9 @@ internal static class OpenTypeFont
 
     /// <summary>Builds closed quadratic segments from decoded simple-glyph contours, including implied on-curve points.</summary>
     internal static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints)
+        => BuildQuadraticContours(points, endpoints, null, CancellationToken.None);
+
+    private static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (endpoints.Length == 0) return [];
         if (points.Length == 0 || endpoints[^1] != points.Length - 1) throw new ArgumentException("Contour endpoints must cover the supplied points.", nameof(endpoints));
@@ -333,6 +346,7 @@ internal static class OpenTypeFont
         int first = 0;
         foreach (ushort lastValue in endpoints)
         {
+            Consume(workCounter, cancellationToken);
             int last = lastValue;
             if (last < first) throw new ArgumentException("Contour endpoints must be strictly increasing.", nameof(endpoints));
             OpenTypeGlyphPoint initial = points[first];
@@ -342,6 +356,7 @@ internal static class OpenTypeFont
             OpenTypeOutlinePoint? control = null;
             for (int index = first; index <= last; index++)
             {
+                Consume(workCounter, cancellationToken);
                 OpenTypeGlyphPoint point = points[index];
                 if (point.IsOnCurve)
                 {
@@ -373,11 +388,15 @@ internal static class OpenTypeFont
 
     /// <summary>Decodes simple-glyph contours using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
+        => GetSimpleGlyphContours(bytes, glyphIndex, metrics, null, cancellationToken);
+
+    /// <summary>Decodes simple-glyph contours while charging decoded records to a conversion work counter.</summary>
+    internal static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, cancellationToken);
+        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
         if (structure.ContourEndpoints.Length == 0) return [];
-        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, cancellationToken);
-        return BuildQuadraticContours(points, structure.ContourEndpoints);
+        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        return BuildQuadraticContours(points, structure.ContourEndpoints, workCounter, cancellationToken);
     }
 
     /// <summary>Reads bounded composite-glyph component metadata without recursively expanding outlines.</summary>
@@ -386,6 +405,10 @@ internal static class OpenTypeFont
 
     /// <summary>Reads composite-glyph components using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeCompositeGlyphComponent[] GetCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
+        => GetCompositeGlyphComponents(bytes, glyphIndex, metrics, null, cancellationToken);
+
+    /// <summary>Reads composite-glyph components while charging each component record to a conversion work counter.</summary>
+    internal static OpenTypeCompositeGlyphComponent[] GetCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
@@ -397,7 +420,7 @@ internal static class OpenTypeFont
         ushort flags;
         do
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            Consume(workCounter, cancellationToken);
             if (components.Count == MaximumCompositeGlyphComponents) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph component count exceeds the supported limit.");
             if (cursor > end - 4) throw InvalidFont("The composite glyf component is truncated.");
             flags = ReadUInt16(data, cursor);
@@ -456,7 +479,7 @@ internal static class OpenTypeFont
             if (header is null) return;
             if (!header.Value.IsComposite)
             {
-                foreach (OpenTypeQuadraticSegment segment in GetSimpleGlyphContours(bytes, glyphIndex, metrics, cancellationToken))
+                foreach (OpenTypeQuadraticSegment segment in GetSimpleGlyphContours(bytes, glyphIndex, metrics, workCounter, cancellationToken))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     if (contours.Count == MaximumExpandedGlyphSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded glyph segment count exceeds the supported limit.");
@@ -464,7 +487,7 @@ internal static class OpenTypeFont
                 }
                 return;
             }
-            foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, metrics, cancellationToken))
+            foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, metrics, workCounter, cancellationToken))
             {
                 ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, workCounter, cancellationToken);
             }
