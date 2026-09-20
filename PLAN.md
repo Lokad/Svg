@@ -175,7 +175,7 @@ review.
 
 `dotnet restore --locked-mode`, the Release solution build, and
 `dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` pass on the current
-working revision (246 unit and 82 visual-project tests). The Windows pinned
+working revision (247 unit and 82 visual-project tests). The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports three byte-identical,
 pixel-exact fresh-process captures. This is local, sequential evidence only; it
 does not establish a successful remote CI run, a canonical Linux baseline, ARM64
@@ -353,7 +353,8 @@ behavior or collecting measurements.
    A configured workflow, a Windows-exact capture, or a freshly generated image is
    not admission evidence.
 3. Keep P1.2 focused on real ownership boundaries. Common inherited presentation,
-   stylesheet precedence/source order and local-instance presentation are now
+   the shared non-painting-stroke policy, stylesheet precedence/source order and
+   local-instance presentation are now
    independently typed and characterized; the current resolved paintable-element
    value retains computed style once and atomically joins it with transform and
    presentation for every leaf lowerer. Split a further *responsibility overlap*

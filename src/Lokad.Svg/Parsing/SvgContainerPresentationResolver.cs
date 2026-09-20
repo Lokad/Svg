@@ -9,7 +9,7 @@ internal static class SvgContainerPresentationResolver
     internal static SvgResolvedContainerPresentation Resolve(SvgComputedStyle style, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, IReadOnlyDictionary<string, SvgColor> namedColors)
     {
         if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
-        SvgShapePresentationResolver.ValidateStroke(style.Stroke);
+        SvgPresentationResolver.ValidateStroke(style.Stroke);
         SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, inheritedPaint, inheritedDisplayed, inheritedVisibility, namedColors);
         return new SvgResolvedContainerPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, presentation.Opacity);
     }

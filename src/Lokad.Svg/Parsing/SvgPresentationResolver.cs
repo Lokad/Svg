@@ -6,7 +6,7 @@ internal readonly record struct SvgResolvedPresentation(SvgPaint Paint, bool IsD
     internal bool IsPainted => IsDisplayed && IsVisible;
 }
 
-/// <summary>Owns presentation properties shared by container and paintable-shape resolution.</summary>
+/// <summary>Owns the common paint, visibility, opacity, and non-painting-stroke policy shared by containers and shapes.</summary>
 internal static class SvgPresentationResolver
 {
     internal static SvgResolvedPresentation Resolve(SvgComputedStyle style, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, IReadOnlyDictionary<string, SvgColor> namedColors)
@@ -19,6 +19,12 @@ internal static class SvgPresentationResolver
 
     internal static bool IsPainted(string? display, string? visibility, bool inheritedDisplayed, bool inheritedVisibility)
         => inheritedDisplayed && ParseDisplay(display) && ParseVisibility(visibility, inheritedVisibility);
+
+    internal static void ValidateStroke(string? value)
+    {
+        if (value is null || value.Equals("none", StringComparison.OrdinalIgnoreCase)) return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-painting stroke='none' is implemented.");
+    }
 
     internal static bool ParseDisplay(string? value)
     {

@@ -5,11 +5,11 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgContainerPresentationResolverTests
 {
     [Fact]
-    public void Shared_leaf_visibility_resolution_observes_both_inherited_states()
+    public void Shared_presentation_visibility_resolution_observes_both_inherited_states()
     {
-        Assert.False(SvgShapePresentationResolver.IsPainted("inline", "visible", false, true));
-        Assert.False(SvgShapePresentationResolver.IsPainted("inline", null, true, false));
-        Assert.True(SvgShapePresentationResolver.IsPainted("inline", "visible", true, false));
+        Assert.False(SvgPresentationResolver.IsPainted("inline", "visible", false, true));
+        Assert.False(SvgPresentationResolver.IsPainted("inline", null, true, false));
+        Assert.True(SvgPresentationResolver.IsPainted("inline", "visible", true, false));
     }
 
     [Fact]
@@ -42,5 +42,15 @@ public sealed class SvgContainerPresentationResolverTests
         Assert.False(presentation.IsDisplayed);
         Assert.False(presentation.IsVisible);
         Assert.Equal((byte)128, presentation.Opacity);
+    }
+
+    [Fact]
+    public void Rejects_painted_stroke_through_the_shared_presentation_policy()
+    {
+        SvgComputedStyle style = new(null, null, null, "red", null, null, null, null);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, new Dictionary<string, SvgColor>()));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 }
