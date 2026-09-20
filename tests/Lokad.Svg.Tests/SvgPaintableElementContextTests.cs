@@ -23,6 +23,22 @@ public sealed class SvgPaintableElementContextTests
     }
 
     [Fact]
+    public void Retains_inline_text_font_declarations_from_the_paint_style_scan()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<text style='fill: #f00; font-family: Example; font-weight: 700; font-style: italic; font-size: 12'/>"));
+        Assert.True(reader.Read());
+        SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), default, new Dictionary<string, SvgColor>(), new ParserWorkCounter(100), CancellationToken.None);
+
+        SvgResolvedDirectTextElement element = context.ResolveTextShape(reader);
+
+        Assert.Equal("#f00", element.PaintableElement.Style.Fill);
+        Assert.Equal("Example", element.InlineFont.Family);
+        Assert.Equal("700", element.InlineFont.Weight);
+        Assert.Equal("italic", element.InlineFont.Style);
+        Assert.Equal("12", element.InlineFont.Size);
+    }
+
+    [Fact]
     public void Uses_the_root_or_current_group_as_one_inherited_presentation()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<svg xmlns='http://www.w3.org/2000/svg'><g><rect/></g></svg>"));

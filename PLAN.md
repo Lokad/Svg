@@ -133,6 +133,14 @@ of oversized values. This narrows inline-style allocation and cancellation expos
 but it does not budget generic paint-style parsing, glyph/contour storage, or raster
 work.
 
+**2026-09-20 update — eliminate direct-text rescan.** Paint resolution now retains
+the admitted inline text-font declarations from its existing streaming style scan;
+direct text receives that typed result instead of scanning `style` again. The generic
+style reader is the sole work/cancellation checkpoint owner, including delimiter
+boundaries. A focused integration test verifies that paint and all four supported
+font declarations come from the same scan. Stylesheet font declarations and text
+inheritance remain intentionally unsupported.
+
 Raster work charges bounding pixels, but each pixel tests 16 samples against eight
 subdivisions of every segment. Bounds scans and inner winding loops lack charges/
 checkpoints. Composite depth/component/segment caps do not bound aggregate visits:
@@ -339,7 +347,7 @@ R08 correctness precedes style refactoring; performance changes need measurement
 
 | Duplication/repeated work | Consequence | Direction |
 | --- | --- | --- |
-| Eight paint fields remain repeated in `InlineStyle`/`SvgComputedStyle`. Discovery and render text syntax now share one bounded parse of their inline font declarations plus family/weight/style token normalization, fixing precedence, quoting, whitespace and keyword-case drift for the admitted direct font subset. | Wider paint inheritance remains distinct. | Shared bounded parser and computed semantics; retain genuine distinction between raw declarations and computed values. |
+| Eight paint fields remain repeated in `InlineStyle`/`SvgComputedStyle`. The direct-text paint scan now retains typed admitted font declarations for layout, while discovery and direct rendering share family/weight/style token normalization. | Wider paint inheritance remains distinct. | Shared bounded parser and computed semantics; retain genuine distinction between raw declarations and computed values. |
 | Discovery reparses SVG later and discards structure/style. | Different languages and separate limits. | Prepared-document ownership retaining admitted state and one operation budget; preserve convenience APIs. |
 | `AcquireAsync` verifies/discards bytes; snapshot fetches/verifies again; provider overload duplicates acquisition routing. | Repeated provider/hash work in acquire-then-snapshot composition; divergent dedup/diagnostics. | One verified-byte lease/handle path, explicit lifetime, lazy binding and host-owned cache policy. |
 | `OpenTypeFont` still reparses directories in cmap, advances, glyph range/header/structure calls; repeated characters decode again. Prepared-font layout and outline decoding now reuse snapshot-validated core metrics. | Repeated dictionaries, scans and temporary arrays. | One validated budgeted program/table view and bounded needed-glyph reuse; benchmark repeated versus distinct glyphs. |

@@ -1,7 +1,10 @@
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents the supported specified-style declarations before cascade resolution.</summary>
-internal readonly record struct InlineStyle(string? Color, string? Fill, string? FillOpacity, string? Stroke, string? Display, string? Visibility, string? Opacity, string? FillRule);
+internal readonly record struct InlineStyle(string? Color, string? Fill, string? FillOpacity, string? Stroke, string? Display, string? Visibility, string? Opacity, string? FillRule)
+{
+    internal SvgTextInlineFontProperties TextFont { get; init; }
+}
 
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
 internal static class SvgInlineStyleParser
@@ -19,26 +22,18 @@ internal static class SvgInlineStyleParser
         => ParseCore(value, null, default);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        workCounter.ConsumeText(value.Length, cancellationToken);
-        return ParseCore(value, workCounter, cancellationToken);
-    }
+        => ParseCore(value, workCounter, cancellationToken);
 
     private static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
-    {
-        workCounter.ConsumeText(value.Length, cancellationToken);
-        return ParseCore(value, workCounter, cancellationToken, null, allowsDirectTextFontProperties);
-    }
+        => ParseCore(value, workCounter, cancellationToken, null, allowsDirectTextFontProperties);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        workCounter.ConsumeText(value.Length, cancellationToken);
-        return ParseCore(value, workCounter, cancellationToken, strings);
-    }
+        => ParseCore(value, workCounter, cancellationToken, strings);
 
     private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings = null, bool allowsDirectTextFontProperties = false)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
+        string? family = null, weight = null, fontStyle = null, size = null;
         StyleDeclarationReader declarations = new(value, workCounter, cancellationToken);
         while (declarations.TryRead(out ReadOnlySpan<char> declaration))
         {
@@ -56,10 +51,13 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("visibility", StringComparison.OrdinalIgnoreCase)) visibility = Copy(propertyValue, strings);
             else if (property.Equals("opacity", StringComparison.OrdinalIgnoreCase)) opacity = Copy(propertyValue, strings);
             else if (property.Equals("fill-rule", StringComparison.OrdinalIgnoreCase)) fillRule = Copy(propertyValue, strings);
-            else if (allowsDirectTextFontProperties && (property.Equals("font-family", StringComparison.OrdinalIgnoreCase) || property.Equals("font-weight", StringComparison.OrdinalIgnoreCase) || property.Equals("font-style", StringComparison.OrdinalIgnoreCase) || property.Equals("font-size", StringComparison.OrdinalIgnoreCase))) { }
+            else if (allowsDirectTextFontProperties && property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) family = Copy(propertyValue, strings);
+            else if (allowsDirectTextFontProperties && property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) weight = Copy(propertyValue, strings);
+            else if (allowsDirectTextFontProperties && property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) fontStyle = Copy(propertyValue, strings);
+            else if (allowsDirectTextFontProperties && property.Equals("font-size", StringComparison.OrdinalIgnoreCase)) size = Copy(propertyValue, strings);
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size) };
     }
 
     private static string Copy(ReadOnlySpan<char> value, BudgetedParserStringStore? strings) => strings is null ? value.ToString() : strings.Copy(value);
@@ -88,6 +86,7 @@ internal static class SvgInlineStyleParser
                 while (_position < _value.Length && _value[_position] != ';') { _position++; ConsumeCheckpoints(); }
                 declaration = _value[start.._position].Trim();
                 if (_position < _value.Length) _position++;
+                ConsumeCheckpoints();
                 if (!declaration.IsEmpty) return true;
             }
             declaration = default;
@@ -96,7 +95,7 @@ internal static class SvgInlineStyleParser
 
         private void ConsumeCheckpoints()
         {
-            while (_nextCheckpoint < _value.Length && _position >= _nextCheckpoint)
+            while (_nextCheckpoint <= _value.Length && _position >= _nextCheckpoint)
             {
                 _workCounter?.Consume(_cancellationToken);
                 _nextCheckpoint += 4096;

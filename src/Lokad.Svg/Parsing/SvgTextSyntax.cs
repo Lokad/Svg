@@ -21,7 +21,13 @@ internal static class SvgTextSyntax
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(workCounter);
-        SvgTextInlineFontProperties inline = SvgTextFontSyntax.ReadInlineProperties(reader, workCounter, cancellationToken);
+        return Parse(reader, SvgTextFontSyntax.ReadInlineProperties(reader, workCounter, cancellationToken));
+    }
+
+    /// <summary>Parses direct text font syntax from declarations already scanned by style resolution.</summary>
+    internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
         string family = SvgTextFontSyntax.ParseFamily(inline.Family ?? reader.GetAttribute("font-family") ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text requires an explicit font-family in the initial supported subset."));
         int weight = SvgTextFontSyntax.ParseWeight(inline.Weight ?? reader.GetAttribute("font-weight") ?? "normal");
         bool italic = SvgTextFontSyntax.ParseItalic(inline.Style ?? reader.GetAttribute("font-style") ?? "normal");
