@@ -142,6 +142,18 @@ public sealed class OpenTypeFontTests
         Assert.Equal([new OpenTypeGlyphPoint(10, 3, true), new OpenTypeGlyphPoint(10, 3, true)], points);
     }
 
+    [Fact]
+    public void Builds_quadratic_contours_with_implied_on_curve_midpoints()
+    {
+        OpenTypeGlyphPoint[] points = [new(0, 0, true), new(4, 4, false), new(8, 0, false), new(12, 0, true)];
+
+        OpenTypeQuadraticSegment[] segments = OpenTypeFont.BuildQuadraticContours(points, [3]);
+
+        Assert.Equal(new OpenTypeQuadraticSegment(new(0, 0), new(4, 4), new(6, 2)), segments[0]);
+        Assert.Equal(new OpenTypeQuadraticSegment(new(6, 2), new(8, 0), new(12, 0)), segments[1]);
+        Assert.Equal(new OpenTypeQuadraticSegment(new(12, 0), new(0, 0), new(0, 0)), segments[2]);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;

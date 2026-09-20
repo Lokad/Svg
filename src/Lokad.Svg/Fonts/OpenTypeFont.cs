@@ -228,6 +228,53 @@ internal static class OpenTypeFont
         return points;
     }
 
+    /// <summary>Builds closed quadratic segments from decoded simple-glyph contours, including implied on-curve points.</summary>
+    internal static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints)
+    {
+        if (endpoints.Length == 0) return [];
+        if (points.Length == 0 || endpoints[^1] != points.Length - 1) throw new ArgumentException("Contour endpoints must cover the supplied points.", nameof(endpoints));
+        var segments = new List<OpenTypeQuadraticSegment>(points.Length * 2);
+        int first = 0;
+        foreach (ushort lastValue in endpoints)
+        {
+            int last = lastValue;
+            if (last < first) throw new ArgumentException("Contour endpoints must be strictly increasing.", nameof(endpoints));
+            OpenTypeGlyphPoint initial = points[first];
+            OpenTypeGlyphPoint final = points[last];
+            OpenTypeOutlinePoint start = initial.IsOnCurve ? ToOutlinePoint(initial) : final.IsOnCurve ? ToOutlinePoint(final) : Midpoint(ToOutlinePoint(final), ToOutlinePoint(initial));
+            OpenTypeOutlinePoint current = start;
+            OpenTypeOutlinePoint? control = null;
+            for (int index = first; index <= last; index++)
+            {
+                OpenTypeGlyphPoint point = points[index];
+                if (point.IsOnCurve)
+                {
+                    OpenTypeOutlinePoint destination = ToOutlinePoint(point);
+                    if (control is OpenTypeOutlinePoint pending) segments.Add(new OpenTypeQuadraticSegment(current, pending, destination));
+                    else if (current != destination) segments.Add(new OpenTypeQuadraticSegment(current, destination, destination));
+                    current = destination;
+                    control = null;
+                }
+                else if (control is OpenTypeOutlinePoint pending)
+                {
+                    OpenTypeOutlinePoint implied = Midpoint(pending, ToOutlinePoint(point));
+                    segments.Add(new OpenTypeQuadraticSegment(current, pending, implied));
+                    current = implied;
+                    control = ToOutlinePoint(point);
+                }
+                else control = ToOutlinePoint(point);
+            }
+            if (control is OpenTypeOutlinePoint closingControl) segments.Add(new OpenTypeQuadraticSegment(current, closingControl, start));
+            else if (current != start) segments.Add(new OpenTypeQuadraticSegment(current, start, start));
+            first = last + 1;
+        }
+        return segments.ToArray();
+    }
+
+    private static OpenTypeOutlinePoint ToOutlinePoint(OpenTypeGlyphPoint point) => new(point.X, point.Y);
+
+    private static OpenTypeOutlinePoint Midpoint(OpenTypeOutlinePoint left, OpenTypeOutlinePoint right) => new((left.X + right.X) / 2d, (left.Y + right.Y) / 2d);
+
     private static int ReadCoordinate(ReadOnlySpan<byte> data, ref int cursor, int end, byte flag, byte shortMask, byte sameMask, string axis)
     {
         if ((flag & shortMask) != 0)
@@ -314,3 +361,9 @@ internal readonly record struct OpenTypeSimpleGlyphStructure(ushort[] ContourEnd
 
 /// <summary>Represents one decoded simple-glyph point in font units.</summary>
 internal readonly record struct OpenTypeGlyphPoint(int X, int Y, bool IsOnCurve);
+
+/// <summary>Represents one floating-point point in a decoded TrueType outline.</summary>
+internal readonly record struct OpenTypeOutlinePoint(double X, double Y);
+
+/// <summary>Represents one quadratic segment; a line has its control equal to its end.</summary>
+internal readonly record struct OpenTypeQuadraticSegment(OpenTypeOutlinePoint Start, OpenTypeOutlinePoint Control, OpenTypeOutlinePoint End);
