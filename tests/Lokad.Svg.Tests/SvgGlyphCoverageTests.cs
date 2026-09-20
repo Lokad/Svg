@@ -15,5 +15,17 @@ public sealed class SvgGlyphCoverageTests
         Assert.Equal(0, SvgGlyphCoverage.GetCoverage([contour], 2, 0, 4, CancellationToken.None));
     }
 
+    [Fact]
+    public void Uses_opposite_winding_to_leave_a_glyph_counter_transparent()
+    {
+        SvgGlyphQuadraticContour outer = new([
+            Line(0, 0, 4, 0), Line(4, 0, 4, 4), Line(4, 4, 0, 4), Line(0, 4, 0, 0)]);
+        SvgGlyphQuadraticContour inner = new([
+            Line(1, 1, 1, 3), Line(1, 3, 3, 3), Line(3, 3, 3, 1), Line(3, 1, 1, 1)]);
+
+        Assert.Equal(255, SvgGlyphCoverage.GetCoverage([outer, inner], 0, 0, 4, CancellationToken.None));
+        Assert.Equal(0, SvgGlyphCoverage.GetCoverage([outer, inner], 1, 1, 4, CancellationToken.None));
+    }
+
     private static SvgGlyphQuadraticSegment Line(double x1, double y1, double x2, double y2) => new(new(x1, y1), new(x2, y2), new(x2, y2));
 }
