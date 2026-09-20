@@ -61,7 +61,7 @@ internal static class SvgRenderedLeafParser
                 SvgResolvedPaintableElement textElement = context.ResolveShape(reader, false, true);
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
                 if (textElement.Style.FillRule is not null && !textElement.Style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
-                SvgTextStyle textStyle = SvgTextSyntax.Parse(reader);
+                SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, workCounter, cancellationToken);
                 string text = ReadDirectTextContent(reader, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, workCounter, cancellationToken);
                 state.TextCharacterCount += text.Length;
                 using SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text, fontSnapshot, budget, cancellationToken);

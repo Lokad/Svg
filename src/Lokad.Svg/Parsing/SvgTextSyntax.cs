@@ -14,12 +14,17 @@ internal static class SvgTextLimits
 internal static class SvgTextSyntax
 {
     internal static SvgTextStyle Parse(XmlReader reader)
+        => Parse(reader, new ParserWorkCounter(long.MaxValue), CancellationToken.None);
+
+    /// <summary>Parses direct text font syntax while charging inline-property scans to the current conversion.</summary>
+    internal static SvgTextStyle Parse(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
-        string family = SvgTextFontSyntax.ParseFamily(SvgTextFontSyntax.GetProperty(reader, "font-family") ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text requires an explicit font-family in the initial supported subset."));
-        int weight = SvgTextFontSyntax.ParseWeight(SvgTextFontSyntax.GetProperty(reader, "font-weight") ?? "normal");
-        bool italic = SvgTextFontSyntax.ParseItalic(SvgTextFontSyntax.GetProperty(reader, "font-style") ?? "normal");
-        double fontSize = SvgGeometrySyntax.ParseRectangleCoordinate(SvgTextFontSyntax.GetProperty(reader, "font-size") ?? "16");
+        ArgumentNullException.ThrowIfNull(workCounter);
+        string family = SvgTextFontSyntax.ParseFamily(SvgTextFontSyntax.GetProperty(reader, "font-family", workCounter, cancellationToken) ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text requires an explicit font-family in the initial supported subset."));
+        int weight = SvgTextFontSyntax.ParseWeight(SvgTextFontSyntax.GetProperty(reader, "font-weight", workCounter, cancellationToken) ?? "normal");
+        bool italic = SvgTextFontSyntax.ParseItalic(SvgTextFontSyntax.GetProperty(reader, "font-style", workCounter, cancellationToken) ?? "normal");
+        double fontSize = SvgGeometrySyntax.ParseRectangleCoordinate(SvgTextFontSyntax.GetProperty(reader, "font-size", workCounter, cancellationToken) ?? "16");
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor") ?? "start");
         return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("dy") ?? "0"), anchor);
@@ -65,14 +70,16 @@ internal static class SvgTextFontSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal and italic text font styles are supported.");
     }
 
-    internal static string? GetProperty(XmlReader reader, string name)
+    internal static string? GetProperty(XmlReader reader, string name, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentNullException.ThrowIfNull(workCounter);
         string? inline = reader.GetAttribute("style");
         string? value = null;
         if (inline is not null)
         {
+            workCounter.ConsumeText(inline.Length, cancellationToken);
             foreach (string declaration in inline.Split(';', StringSplitOptions.RemoveEmptyEntries))
             {
                 int separator = declaration.IndexOf(':');

@@ -16,6 +16,7 @@ internal static class SvgFontRequestDiscovery
         var requests = new List<SvgFontFaceRequest>();
         var seen = new HashSet<TextRequestKey>(TextRequestKeyComparer.Instance);
         var inherited = new Stack<TextStyle>();
+        var workCounter = new ParserWorkCounter(limits.MaximumWorkUnits);
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         try
         {
@@ -25,7 +26,7 @@ internal static class SvgFontRequestDiscovery
             int nodeCount = 0;
             while (reader.Read())
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                workCounter.Consume(cancellationToken);
                 if (reader.NodeType == XmlNodeType.Element)
                 {
                     if (!hasRoot)
@@ -39,7 +40,7 @@ internal static class SvgFontRequestDiscovery
                     nodeCount++;
                     TextStyle style = inherited.Count == 0 ? new TextStyle(null, 400, false) : inherited.Peek();
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
-                    if (isSvgElement) style = ApplyAttributes(reader, style);
+                    if (isSvgElement) style = ApplyAttributes(reader, style, workCounter, cancellationToken);
                     bool textElement = isSvgElement && reader.LocalName is "text" or "tspan";
                     if (textElement && style.Family is string family)
                     {
@@ -66,13 +67,13 @@ internal static class SvgFontRequestDiscovery
         return requests.ToArray();
     }
 
-    private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited)
+    private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        string? family = SvgTextFontSyntax.GetProperty(reader, "font-family") ?? inherited.Family;
+        string? family = SvgTextFontSyntax.GetProperty(reader, "font-family", workCounter, cancellationToken) ?? inherited.Family;
         if (family is not null) family = SvgTextFontSyntax.ParseFamily(family);
-        string? weightValue = SvgTextFontSyntax.GetProperty(reader, "font-weight");
+        string? weightValue = SvgTextFontSyntax.GetProperty(reader, "font-weight", workCounter, cancellationToken);
         int weight = weightValue is null ? inherited.Weight : SvgTextFontSyntax.ParseWeight(weightValue);
-        string? styleValue = SvgTextFontSyntax.GetProperty(reader, "font-style");
+        string? styleValue = SvgTextFontSyntax.GetProperty(reader, "font-style", workCounter, cancellationToken);
         bool italic = styleValue is null ? inherited.Italic : SvgTextFontSyntax.ParseItalic(styleValue);
         return new TextStyle(family, weight, italic);
     }
