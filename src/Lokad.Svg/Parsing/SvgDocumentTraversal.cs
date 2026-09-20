@@ -41,11 +41,12 @@ internal static class SvgDocumentTraversal
                 state.NodeCount++;
                 bool directChild = reader.Depth == rootDepth + 1;
                 bool nestedInGroup = state.Groups.Count > 0;
+                bool textElement = reader.LocalName == "text";
                 if (SvgDefinitionParser.TryParse(reader, directChild, root, state, namedColors, workCounter, cancellationToken)) { }
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
                 else if (SvgRenderedLeafParser.TryParse(reader, directChild, directChild || nestedInGroup, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {
-                    state.HasUnsupportedContent |= reader.LocalName != "text" && !reader.IsEmptyElement;
+                    state.HasUnsupportedContent |= !textElement && !reader.IsEmptyElement;
                     state.SawStyleableNode = true;
                 }
                 else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
