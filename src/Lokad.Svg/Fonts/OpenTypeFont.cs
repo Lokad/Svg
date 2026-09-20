@@ -70,13 +70,13 @@ internal static class OpenTypeFont
     {
         if (scalar > 0x10FFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
         OpenTypeFontMetrics metrics = ParseMetrics(bytes, cancellationToken);
-        if (scalar > 0xFFFF) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported supplementary-plane character map.");
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange cmap = FindTable(data, CmapTag, "cmap");
         RequireTableLength(cmap, 4, "cmap");
         int encodingCount = ReadUInt16(data, cmap.Offset + 2);
         RequireTableLength(cmap, checked(4 + encodingCount * 8), "cmap");
-        OpenTypeTableRange? selected = null;
+        OpenTypeTableRange? format4Candidate = null;
+        OpenTypeTableRange? format12Candidate = null;
         for (int index = 0; index < encodingCount; index++)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -86,9 +86,13 @@ internal static class OpenTypeFont
             uint relativeOffset = ReadUInt32(data, record + 4);
             if (relativeOffset > int.MaxValue || relativeOffset > cmap.Length - 2) throw InvalidFont("A cmap encoding record points outside its table.");
             int offset = checked(cmap.Offset + (int)relativeOffset);
-            if (ReadUInt16(data, offset) == 4 && (platform == 3 && (encoding == 1 || encoding == 0))) selected = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
+            ushort format = ReadUInt16(data, offset);
+            if (format == 4 && platform == 3 && (encoding == 1 || encoding == 0)) format4Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
+            if (format == 12 && platform == 3 && encoding == 10) format12Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
         }
-        if (selected is not OpenTypeTableRange format4) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported Unicode cmap format 4 table.");
+        if (scalar > 0xFFFF) return format12Candidate is OpenTypeTableRange selected12 ? GetFormat12GlyphIndex(data, selected12, scalar, metrics.GlyphCount) : throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported supplementary-plane character map.");
+        if (format4Candidate is not OpenTypeTableRange selected4) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported Unicode cmap format 4 table.");
+        OpenTypeTableRange format4 = selected4;
         RequireTableLength(format4, 16, "cmap format 4");
         int length = ReadUInt16(data, format4.Offset + 2);
         if (length < 16 || length > format4.Length) throw InvalidFont("The cmap format 4 length is invalid.");
@@ -114,6 +118,29 @@ internal static class OpenTypeFont
                 : ApplyDelta(ReadGlyphFromRange(data, format4, length, ranges + index * 2, rangeOffset, scalar - start), delta);
             if (glyph >= metrics.GlyphCount && glyph != 0) throw InvalidFont("The cmap maps a scalar to a glyph outside maxp.");
             return glyph;
+        }
+        return 0;
+    }
+
+    private static ushort GetFormat12GlyphIndex(ReadOnlySpan<byte> data, OpenTypeTableRange table, uint scalar, ushort glyphCount)
+    {
+        RequireTableLength(table, 16, "cmap format 12");
+        uint length = ReadUInt32(data, table.Offset + 4);
+        uint groups = ReadUInt32(data, table.Offset + 12);
+        if (length > table.Length || groups > (length - 16) / 12) throw InvalidFont("The cmap format 12 length is invalid.");
+        uint previousEnd = 0;
+        for (uint index = 0; index < groups; index++)
+        {
+            int offset = checked(table.Offset + 16 + (int)index * 12);
+            uint start = ReadUInt32(data, offset);
+            uint end = ReadUInt32(data, offset + 4);
+            uint startGlyph = ReadUInt32(data, offset + 8);
+            if (start > end || end > 0x10FFFF || (index != 0 && start <= previousEnd)) throw InvalidFont("The cmap format 12 groups are not strictly ordered.");
+            previousEnd = end;
+            if (scalar < start || scalar > end) continue;
+            uint glyph = checked(startGlyph + scalar - start);
+            if (glyph >= glyphCount) throw InvalidFont("The cmap maps a scalar to a glyph outside maxp.");
+            return (ushort)glyph;
         }
         return 0;
     }

@@ -62,6 +62,15 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Maps_a_supplementary_scalar_through_a_format_12_cmap()
+    {
+        byte[] font = CreateFormat12Font();
+
+        Assert.Equal((ushort)2, OpenTypeFont.GetGlyphIndex(font, 0x1F600, CancellationToken.None));
+        Assert.Equal((ushort)0, OpenTypeFont.GetGlyphIndex(font, 0x1F601, CancellationToken.None));
+    }
+
+    [Fact]
     public void Reads_hmtx_advances_including_the_final_shared_advance()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
@@ -250,6 +259,25 @@ public sealed class OpenTypeFontTests
             WriteUInt32(font, locaOffset + 8, 32);
             WriteUInt32(font, locaOffset + 12, 32);
         }
+        return font;
+    }
+
+    private static byte[] CreateFormat12Font()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        const int cmapOffset = 230;
+        WriteUInt16(font, cmapOffset, 0);
+        WriteUInt16(font, cmapOffset + 2, 1);
+        WriteUInt16(font, cmapOffset + 4, 3);
+        WriteUInt16(font, cmapOffset + 6, 10);
+        WriteUInt32(font, cmapOffset + 8, 12);
+        int subtable = cmapOffset + 12;
+        WriteUInt16(font, subtable, 12);
+        WriteUInt32(font, subtable + 4, 28);
+        WriteUInt32(font, subtable + 12, 1);
+        WriteUInt32(font, subtable + 16, 0x1F600);
+        WriteUInt32(font, subtable + 20, 0x1F600);
+        WriteUInt32(font, subtable + 24, 2);
         return font;
     }
 
