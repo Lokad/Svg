@@ -55,7 +55,9 @@ uses data URLs while HTTP(S), file, FTP and WebSocket URL patterns are blocked
 through the DevTools Network domain. Each capture CLI has a 120-second deadline by
 default (`-CaptureTimeoutMilliseconds` changes it) and is terminated with its
 child process tree on timeout.
-CI uploads that directory only when its job fails.
+CI uploads this controlled, fixed-fixture directory on every completed Windows and
+Linux job so successful smoke provenance can be reviewed; the broader diagnostic
+artifact remains failure-only. No arbitrary user SVG is uploaded.
 
 The setup script refuses an archive or extracted executable whose SHA-256 differs
 from the pin; `-Offline` also refuses a cache miss rather than downloading. The

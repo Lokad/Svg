@@ -30,12 +30,17 @@ jobs:
       - if: runner.os == 'Linux'
         shell: pwsh
         run: tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-smoke-${{ matrix.os }}
+          path: artifacts/chrome-smoke
+          if-no-files-found: warn
       - run: dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build -o artifacts/packages
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: diagnostics-${{ matrix.os }}
           path: |
-            artifacts/chrome-smoke
             artifacts/memory-probe
           if-no-files-found: ignore
