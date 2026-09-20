@@ -465,6 +465,22 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Rejects_a_composite_component_with_conflicting_scale_encodings()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, -1);
+        WriteUInt16(font, glyph.Offset + 10, 3 | 8 | 64);
+        WriteUInt16(font, glyph.Offset + 12, 1);
+        WriteInt16(font, glyph.Offset + 14, 0);
+        WriteInt16(font, glyph.Offset + 16, 0);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Expands_composite_glyphs_with_their_affine_transform()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);

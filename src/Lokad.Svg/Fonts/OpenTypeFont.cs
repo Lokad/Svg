@@ -430,6 +430,8 @@ internal static class OpenTypeFont
             ushort componentGlyph = ReadUInt16(data, cursor + 2);
             cursor += 4;
             if ((flags & ~SupportedCompositeFlags) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The composite glyf component uses flags outside the admitted placement and transform subset.");
+            ushort scaleFlags = (ushort)(flags & (8 | 64 | 128));
+            if (scaleFlags is not 0 and not 8 and not 64 and not 128) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The composite glyf component combines incompatible scale encodings.");
             bool words = (flags & 1) != 0;
             bool xyValues = (flags & 2) != 0;
             int argumentBytes = words ? 4 : 2;
