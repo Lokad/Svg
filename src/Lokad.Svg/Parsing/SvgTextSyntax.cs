@@ -21,9 +21,18 @@ internal static class SvgTextSyntax
         bool italic = SvgTextFontSyntax.ParseItalic(reader.GetAttribute("font-style") ?? "normal");
         double fontSize = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("font-size") ?? "16");
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
-        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0"));
+        SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor") ?? "start");
+        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0"), anchor);
     }
 
+    private static SvgTextAnchor ParseAnchor(string value)
+    {
+        string token = value.Trim();
+        if (token.Equals("start", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.Start;
+        if (token.Equals("middle", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.Middle;
+        if (token.Equals("end", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.End;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only start, middle, and end text-anchor values are supported.");
+    }
 }
 
 /// <summary>Normalizes the explicit single-family text font tokens shared by discovery and direct rendering.</summary>
@@ -58,4 +67,7 @@ internal static class SvgTextFontSyntax
 }
 
 /// <summary>Represents the explicit single-font style and baseline origin of one initial text run.</summary>
-internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y);
+internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y, SvgTextAnchor Anchor);
+
+/// <summary>Identifies the admitted horizontal anchor for one direct text run.</summary>
+internal enum SvgTextAnchor { Start, Middle, End }

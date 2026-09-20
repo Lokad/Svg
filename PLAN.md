@@ -90,6 +90,11 @@ and failure category, not merely successful parsing.
 pixels. These are incorrect successful interpretations, not explicit exclusions.
 Whole-element string reading also cannot model nested spans or SVG whitespace/chunks.
 
+Initial corrections: attribute validation now gates the direct text path; `dx` and
+clipping remain explicit unsupported failures, while scalar `text-anchor` `start`,
+`middle` and `end` are admitted and position the complete direct run. Subtree
+reading preserves text boundaries but child elements remain unsupported.
+
 Closure: validate text attributes before layout; implement or reject positioning,
 clipping, stroke, events, whitespace and child semantics explicitly. Supplying a
 snapshot must not weaken fail-closed rendering. Cover both unsupported errors and

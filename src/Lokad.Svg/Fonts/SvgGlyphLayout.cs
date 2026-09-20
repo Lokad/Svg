@@ -8,12 +8,18 @@ using Lokad.Svg.Rendering;
 internal static class SvgGlyphLayout
 {
     internal static SvgPositionedGlyph[] Layout(SvgPreparedFont font, string text, double fontSize, double originX, double originY, CancellationToken cancellationToken)
+        => Layout(font, text, fontSize, originX, originY, SvgTextAnchor.Start, cancellationToken);
+
+    internal static SvgPositionedGlyph[] Layout(SvgPreparedFont font, string text, double fontSize, double originX, double originY, SvgTextAnchor anchor, CancellationToken cancellationToken)
     {
-        using SvgPositionedGlyphStorage storage = CreateStorage(font, text, fontSize, originX, originY, new RenderBudget(long.MaxValue), cancellationToken);
+        using SvgPositionedGlyphStorage storage = CreateStorage(font, text, fontSize, originX, originY, anchor, new RenderBudget(long.MaxValue), cancellationToken);
         return storage.Glyphs;
     }
 
     internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, RenderBudget budget, CancellationToken cancellationToken)
+        => CreateStorage(font, text, fontSize, originX, originY, SvgTextAnchor.Start, budget, cancellationToken);
+
+    internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, SvgTextAnchor anchor, RenderBudget budget, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(text);
@@ -47,6 +53,15 @@ internal static class SvgGlyphLayout
                 glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, x, originY, scaledAdvance);
                 x += scaledAdvance;
             }
+            double anchorOffset = anchor switch
+            {
+                SvgTextAnchor.Start => 0,
+                SvgTextAnchor.Middle => (originX - x) / 2,
+                SvgTextAnchor.End => originX - x,
+                _ => throw new ArgumentOutOfRangeException(nameof(anchor))
+            };
+            if (!double.IsFinite(anchorOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+            for (int index = 0; index < glyphs.Length; index++) glyphs[index] = glyphs[index] with { X = glyphs[index].X + anchorOffset };
             return new SvgPositionedGlyphStorage(glyphs, reservation);
         }
         catch

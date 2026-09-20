@@ -613,6 +613,20 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Positions_direct_glyph_runs_for_admitted_text_anchors()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
+
+        SvgPositionedGlyph[] middle = SvgGlyphLayout.Layout(snapshot.Fonts[0], "AA", 10, 20, 3, SvgTextAnchor.Middle, CancellationToken.None);
+        SvgPositionedGlyph[] end = SvgGlyphLayout.Layout(snapshot.Fonts[0], "AA", 10, 20, 3, SvgTextAnchor.End, CancellationToken.None);
+
+        Assert.Equal(20 - 6000d / 1024, middle[0].X);
+        Assert.Equal(20, middle[1].X);
+        Assert.Equal(20 - 12000d / 1024, end[0].X);
+        Assert.Equal(20 - 6000d / 1024, end[1].X);
+    }
+
+    [Fact]
     public async Task Snapshot_finds_a_prepared_face_by_case_insensitive_request()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -672,7 +686,6 @@ public sealed class OpenTypeFontTests
 
     [Theory]
     [InlineData("dx='2'")]
-    [InlineData("text-anchor='end'")]
     [InlineData("clip-path='url(#missing)'")]
     public async Task Rejects_unimplemented_direct_text_attributes(string attribute)
     {
@@ -726,7 +739,7 @@ public sealed class OpenTypeFontTests
     public async Task Builds_a_simple_text_run_from_one_prepared_face()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 2, 3);
+        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 2, 3, SvgTextAnchor.Start);
 
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         RenderBudget budget = new(64);
