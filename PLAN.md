@@ -406,6 +406,11 @@ small buildable commits, each including its tests and relevant documentation.
 | S7 — blocked on an approved font asset; admission after S4–S6 | Licensed ordinary fonts, explicit font semantics and font-aware oracle (R09/R10/R12/R13). The repository has Chrome/PNG oracle tooling and shape references, but no tracked font program, font-pack manifest, or font-bearing fixture with license/provenance; system/browser fonts cannot establish intended-font controls. | Supply an approved font program plus compatible manifest and provenance. Then create three fresh-process intended-font captures; compare metrics and pixels separately for curves/holes/composites/fractional origins; then real styles, pair positioning, spans/fallback and a useful labeled diagram via public APIs. |
 | Each slice | Synchronize API/support docs and update this plan (R16). The direct-text inheritance and caller-limit wording is synchronized with the implemented subset. | Record revision, command/result and regression/artifact; replace stale status instead of appending contradictory history. |
 
+Status correction 2026-09-20: S3 is reopened for the glyph contour-array
+reservation-transfer boundary recorded in R04a; its earlier completion evidence
+continues to cover decoded/transformed accumulator ownership, not this later split
+into final contour arrays.
+
 Milestone interpretation:
 
 - M0, experimental vertical slice: original triangle/cursor/attribute defects have
