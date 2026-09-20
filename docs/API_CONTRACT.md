@@ -43,6 +43,10 @@ current renderer does not yet consume catalog entries to render SVG text.
 catalog resolution wraps that source with declared byte-count/SHA-256 validation;
 it neither copies nor caches the returned program. Source storage must therefore
 remain valid and unchanged for its consumer lifetime.
+When a selected provider has no source, the `UnresolvedResource` exception carries
+a bounded `SvgFontDiagnostic`: failure stage, requested/resolved family, face
+identity and (when future text parsing retains it) element ID. It never contains
+font bytes or source text.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does

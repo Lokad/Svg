@@ -122,7 +122,7 @@ public sealed class SvgFontPackCatalog
     private ValueTask<SvgFontProgramResolution> AcquireResolved(SvgFontPackResolution resolution, ISvgFontProgramSource? source, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        if (source is null) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program is unavailable from the supplied provider.");
+        if (source is null) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program is unavailable from the supplied provider.", new SvgFontDiagnostic(SvgFontFailureStage.Source, resolution.Request.Family, resolution.Face.ResolvedFamily, resolution.Face.File.RelativePath + ":" + resolution.Face.FaceIndex, string.Empty));
         SvgFontProgramResolution bound = Bind(resolution, source);
         ValueTask<ReadOnlyMemory<byte>> verification = bound.Source.GetBytesAsync(cancellationToken);
         return verification.IsCompletedSuccessfully

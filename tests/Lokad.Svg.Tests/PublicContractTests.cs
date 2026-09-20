@@ -28,6 +28,16 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Font_diagnostics_are_bounded_and_do_not_require_source_text()
+    {
+        SvgFontDiagnostic diagnostic = new(SvgFontFailureStage.Glyph, "Requested", "Resolved", "face:0", string.Empty);
+
+        Assert.Equal(SvgFontFailureStage.Glyph, diagnostic.Stage);
+        Assert.Equal("face:0", diagnostic.FaceIdentity);
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgFontDiagnostic(SvgFontFailureStage.Source, new string('x', 257), string.Empty, string.Empty, string.Empty));
+    }
+
+    [Fact]
     public void Explicit_viewports_override_root_outer_dimensions()
     {
         SvgRenderOptions options = new(new SvgViewport(2, 3), 1, SvgColor.Transparent, SvgRenderLimits.Default);

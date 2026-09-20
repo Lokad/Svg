@@ -92,6 +92,12 @@ public sealed class SvgFontProgramSourceTests
 
         Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
         Assert.Equal(["files/example.ttf"], provider.RequestedPaths);
+        SvgFontDiagnostic diagnostic = Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic);
+        Assert.Equal(SvgFontFailureStage.Source, diagnostic.Stage);
+        Assert.Equal("Example", diagnostic.RequestedFamily);
+        Assert.Equal("Example", diagnostic.ResolvedFamily);
+        Assert.Equal("files/example.ttf:0", diagnostic.FaceIdentity);
+        Assert.Empty(diagnostic.SourceElementId);
     }
 
     [Fact]
