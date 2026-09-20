@@ -355,12 +355,12 @@ behavior or collecting measurements.
 3. Keep P1.2 focused on real ownership boundaries. Common inherited presentation,
    stylesheet precedence/source order and local-instance presentation are now
    independently typed and characterized; the current resolved paintable-element
-   value atomically joins computed style, transform and presentation for every
-   leaf lowerer. Split a further *responsibility overlap* between bounded XML
-   syntax, computed paint values and shape lowering only when it has independent
-   behavior to test; preserve the P0 subset exactly and do not add another
-   shape-specific path to `SvgRootParser` or a wrapper with no independent
-   behavior.
+   value retains computed style once and atomically joins it with transform and
+   presentation for every leaf lowerer. Split a further *responsibility overlap*
+   between bounded XML syntax, computed paint values and shape lowering only when
+   it has independent behavior to test; preserve the P0 subset exactly and do not
+   add another shape-specific path to `SvgRootParser` or a wrapper with no
+   independent behavior.
 4. Hold P1.3 implementation work at calibration. The phase-shifted transparent
    overlap rejects the fixed-edge/compositing model's earlier near fit; byte
    premultiplied intermediates improve both phases but remain non-exact. The new

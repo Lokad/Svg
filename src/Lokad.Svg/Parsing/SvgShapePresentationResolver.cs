@@ -1,7 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Represents the supported computed presentation values for a paintable leaf.</summary>
-internal readonly record struct SvgResolvedShapePresentation(SvgComputedStyle Style, SvgPaint Paint, SvgColor Color, SvgColor? StrokeColor, byte Opacity, bool IsPainted)
+/// <summary>Represents the resolved presentation outcome for a paintable leaf; the computed style remains on its element.</summary>
+internal readonly record struct SvgResolvedShapePresentation(SvgPaint Paint, SvgColor Color, SvgColor? StrokeColor, byte Opacity, bool IsPainted)
 {
     internal bool HasFill => Paint.HasFill && IsPainted;
 }
@@ -16,7 +16,7 @@ internal static class SvgShapePresentationResolver
         if (!allowsPaintedStroke) ValidateStroke(style.Stroke);
         SvgColor color = SvgPaintResolver.ResolveFillColor(presentation.Paint, presentation.Opacity);
         SvgColor? strokeColor = allowsPaintedStroke ? ResolveStrokeColor(style.Stroke, style.Color, inheritedPaint, namedColors) : null;
-        return new SvgResolvedShapePresentation(style, presentation.Paint, color, strokeColor, presentation.Opacity, presentation.IsPainted);
+        return new SvgResolvedShapePresentation(presentation.Paint, color, strokeColor, presentation.Opacity, presentation.IsPainted);
     }
 
     internal static bool IsPainted(string? display, string? visibility, bool inheritedDisplayed, bool inheritedVisibility)
