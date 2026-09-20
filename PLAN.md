@@ -166,7 +166,8 @@ A standalone TTF with `faceIndex=7` is also accepted; parsing always uses face 0
 Initial correction: snapshots now revalidate every selected declaration against
 reused bytes, reject nonzero face indices for standalone TrueType, and preflight
 distinct declared sizes plus conflicting same-hash sizes before provider acquisition.
-Remaining closure: separate program hash and face
+Selected nonzero standalone faces are also denied before provider access. Remaining
+closure: separate program hash and face
 identity; gate standalone face 0 and TTC explicitly. Test aliases, same-hash
 different paths/sizes, order independence and unused unsupported faces. Replace
 the current dedup test's “valid” standalone face-1 alias with legitimate face-0
