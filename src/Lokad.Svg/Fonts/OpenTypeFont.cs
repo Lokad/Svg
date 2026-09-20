@@ -14,6 +14,8 @@ internal static class OpenTypeFont
     private const uint HheaTag = 0x68686561;
     private const uint HmtxTag = 0x686D7478;
     private const uint CmapTag = 0x636D6170;
+    private const uint LocaTag = 0x6C6F6361;
+    private const uint GlyfTag = 0x676C7966;
 
     internal static OpenTypeFontMetrics ParseMetrics(ReadOnlyMemory<byte> bytes, CancellationToken cancellationToken)
     {
@@ -123,6 +125,30 @@ internal static class OpenTypeFont
         OpenTypeTableRange hmtx = FindTable(data, HmtxTag, "hmtx");
         int metricIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
         return ReadUInt16(data, hmtx.Offset + metricIndex * 4);
+    }
+
+    /// <summary>Gets the validated borrowed glyf-table range for one glyph, which may be empty.</summary>
+    internal static OpenTypeTableRange GetGlyphDataRange(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+    {
+        OpenTypeFontMetrics metrics = ParseMetrics(bytes, cancellationToken);
+        if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
+        ReadOnlySpan<byte> data = bytes.Span;
+        OpenTypeTableRange loca = FindTable(data, LocaTag, "loca");
+        OpenTypeTableRange glyf = FindTable(data, GlyfTag, "glyf");
+        int entrySize = metrics.IndexToLocFormat == 0 ? 2 : 4;
+        RequireTableLength(loca, checked((metrics.GlyphCount + 1) * entrySize), "loca");
+        int start = ReadGlyphLocation(data, loca, glyphIndex, metrics.IndexToLocFormat);
+        int end = ReadGlyphLocation(data, loca, glyphIndex + 1, metrics.IndexToLocFormat);
+        if (end < start || end > glyf.Length) throw InvalidFont("The loca table contains an invalid glyph range.");
+        return new OpenTypeTableRange(checked(glyf.Offset + start), end - start);
+    }
+
+    private static int ReadGlyphLocation(ReadOnlySpan<byte> data, OpenTypeTableRange loca, int glyphIndex, short indexToLocFormat)
+    {
+        int offset = checked(loca.Offset + glyphIndex * (indexToLocFormat == 0 ? 2 : 4));
+        uint location = indexToLocFormat == 0 ? checked((uint)ReadUInt16(data, offset) * 2) : ReadUInt32(data, offset);
+        if (location > int.MaxValue) throw InvalidFont("The loca table contains an unsupported glyph offset.");
+        return (int)location;
     }
 
     private static ushort ReadGlyphFromRange(ReadOnlySpan<byte> data, OpenTypeTableRange table, int length, int rangeOffsetLocation, ushort rangeOffset, uint relativeGlyphIndex)
