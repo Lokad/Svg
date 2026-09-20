@@ -222,6 +222,33 @@ public sealed class OpenTypeFontTests
         Assert.Equal(0.5, component.Transform.YY);
     }
 
+    [Fact]
+    public void Expands_composite_glyphs_with_their_affine_transform()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange simple = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
+        WriteInt16(font, simple.Offset, 1);
+        WriteUInt16(font, simple.Offset + 10, 1);
+        WriteUInt16(font, simple.Offset + 12, 0);
+        font[simple.Offset + 14] = 0x37;
+        font[simple.Offset + 15] = 0x37;
+        font[simple.Offset + 16] = 10;
+        font[simple.Offset + 17] = 5;
+        font[simple.Offset + 18] = 3;
+        font[simple.Offset + 19] = 0;
+        OpenTypeTableRange composite = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, composite.Offset, -1);
+        WriteUInt16(font, composite.Offset + 10, 11);
+        WriteUInt16(font, composite.Offset + 12, 1);
+        WriteInt16(font, composite.Offset + 14, 2);
+        WriteInt16(font, composite.Offset + 16, -3);
+        WriteInt16(font, composite.Offset + 18, 8192);
+
+        OpenTypeQuadraticSegment[] segments = OpenTypeFont.GetGlyphContours(font, 2, CancellationToken.None);
+
+        Assert.Equal([new OpenTypeQuadraticSegment(new(7, -1.5), new(9.5, -1.5), new(9.5, -1.5)), new OpenTypeQuadraticSegment(new(9.5, -1.5), new(7, -1.5), new(7, -1.5))], segments);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;
