@@ -58,6 +58,15 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Observes_cancellation_between_SFNT_directory_records()
+    {
+        using CancellationTokenSource cancellation = new();
+        using IDisposable probe = FontMetricsProbe.Arm(cancellation.Cancel);
+
+        Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.ParseMetrics(CreateFont(1024, 3, 2, 0), new ParserWorkCounter(100), cancellation.Token));
+    }
+
+    [Fact]
     public void Maps_a_BMP_scalar_through_a_format_4_cmap()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);

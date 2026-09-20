@@ -52,6 +52,7 @@ internal static class OpenTypeFont
             if (tableOffset > int.MaxValue || length > int.MaxValue) throw InvalidFont("An SFNT table range exceeds the supported input size.");
             RequireRange(data, (int)tableOffset, (int)length, "SFNT table");
             if (!tables.TryAdd(tag, new OpenTypeTableRange((int)tableOffset, (int)length))) throw InvalidFont("The SFNT directory contains duplicate table tags.");
+            FontMetricsProbe.TableRecordVisited();
         }
 
         OpenTypeTableRange head = RequiredTable(tables, HeadTag, "head");
