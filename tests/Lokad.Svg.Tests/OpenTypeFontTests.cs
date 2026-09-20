@@ -75,6 +75,29 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Rejects_a_format_12_cmap_with_a_length_smaller_than_its_header()
+    {
+        byte[] font = CreateFormat12Font();
+        WriteUInt32(font, 246, 0);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphIndex(font, 0x1F600, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Categorizes_a_format_12_glyph_index_overflow_as_malformed_input()
+    {
+        byte[] font = CreateFormat12Font();
+        WriteUInt32(font, 262, 0x1F601);
+        WriteUInt32(font, 266, uint.MaxValue);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphIndex(font, 0x1F601, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Reads_hmtx_advances_including_the_final_shared_advance()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
@@ -287,11 +310,11 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Snapshot_acquires_one_program_once_for_multiple_manifest_faces()
+    public async Task Snapshot_acquires_one_program_once_for_multiple_same_face_aliases()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
         string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\", \"faceIndex\": 0 }, { \"requestedFamily\": \"Example Alt\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\", \"faceIndex\": 1 }] }";
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\", \"faceIndex\": 0 }, { \"requestedFamily\": \"Example Alt\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\", \"faceIndex\": 0 }] }";
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
         SvgFontProgramResolution first = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), source);
@@ -301,6 +324,37 @@ public sealed class OpenTypeFontTests
 
         Assert.Equal(1, source.RequestCount);
         Assert.Equal(2, snapshot.Fonts.Count);
+    }
+
+    [Fact]
+    public async Task Snapshot_rejects_a_nonzero_face_index_for_a_standalone_font()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\", \"faceIndex\": 1 }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new SvgMemoryFontProgramSource("caller-font", bytes));
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public async Task Snapshot_validates_every_selected_declaration_when_program_bytes_are_deduplicated()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/one.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }, { \"relativePath\": \"files/two.ttf\", \"byteSize\": " + (bytes.Length + 1) + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"One\", \"resolvedFamily\": \"One\", \"relativeFontFile\": \"files/one.ttf\" }, { \"requestedFamily\": \"Two\", \"resolvedFamily\": \"Two\", \"relativeFontFile\": \"files/two.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+        SvgFontProgramResolution first = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("One", 400, false)), source);
+        SvgFontProgramResolution second = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Two", 400, false)), source);
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([first, second], CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
+        Assert.Equal(1, source.RequestCount);
     }
 
     [Fact]

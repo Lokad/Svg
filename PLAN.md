@@ -129,7 +129,7 @@ before allocation; preflight declared acquisition sizes. Bound total characters,
 glyphs, graph/table visits, fallback and sample/edge work. Read text incrementally.
 Test exact boundaries, early denial, during-phase cancellation and release on failure.
 
-### R05 / P0 — Malformed cmap escapes validation/error categorization
+### R05 / P0 — Malformed cmap escapes validation/error categorization — initial repair 2026-09-20
 
 **Internal-reader reproduction.**
 [OpenTypeFont.GetFormat12GlyphIndex](src/Lokad.Svg/Fonts/OpenTypeFont.cs) omits
@@ -138,12 +138,14 @@ length 0, one group and U+10000 → glyph 1 is accepted. A group U+10000–U+100
 `startGlyph = uint.MaxValue` throws raw `OverflowException`, not `SvgException`.
 Managed memory safety does not establish table isolation or the failure contract.
 
-Closure: validated table-local ranges and overflow-safe mappings; lengths 0–15,
+Initial correction: format-12 lengths below 16 and group glyph-range overflow now
+fail as `MalformedInput`, with retained regression vectors. Remaining closure:
+validated table-local ranges and overflow-safe mappings; lengths 0–15,
 truncated/overlapping/unordered groups, invalid offsets/scalars/glyphs and arithmetic
 boundaries. Malformed data must produce categorized failures, not incidental BCL
 exceptions.
 
-### R06 / P0 — Deduplication bypasses selected-program integrity
+### R06 / P0 — Deduplication bypasses selected-program integrity — initial repair 2026-09-20
 
 **Public snapshot reproduction.** Two manifest files with the same SHA-256 and
 declared sizes 342 and 343 both enter the snapshot using 342 bytes.
@@ -151,7 +153,9 @@ declared sizes 342 and 343 both enter the snapshot using 342 bytes.
 the second binding's verification. Selection order determines which size is checked.
 A standalone TTF with `faceIndex=7` is also accepted; parsing always uses face 0.
 
-Closure: validate every selected declaration despite byte-storage deduplication;
+Initial correction: snapshots now revalidate every selected declaration against
+reused bytes and reject nonzero face indices for standalone TrueType. Remaining
+closure: validate every selected declaration despite byte-storage deduplication;
 reject conflicting metadata before acquisition. Separate program hash and face
 identity; gate standalone face 0 and TTC explicitly. Test aliases, same-hash
 different paths/sizes, order independence and unused unsupported faces. Replace

@@ -1,5 +1,7 @@
 namespace Lokad.Svg.Fonts;
 
+using System.Security.Cryptography;
+
 /// <summary>
 /// Represents one immutable, caller-byte-backed set of selected standalone
 /// TrueType fonts. The caller keeps every returned byte region valid and unchanged
@@ -47,6 +49,7 @@ public sealed class SvgFontSnapshot : IDisposable
         {
             cancellationToken.ThrowIfCancellationRequested();
             SvgFontProgramResolution resolution = resolutions[index] ?? throw new ArgumentException("The selected font list contains a null resolution.", nameof(resolutions));
+            if (resolution.Resolution.Face.FaceIndex != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Standalone TrueType font snapshots require face index zero.");
             string programKey = resolution.Resolution.Face.File.Sha256;
             if (!programs.TryGetValue(programKey, out (ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics) program))
             {
@@ -57,10 +60,18 @@ public sealed class SvgFontSnapshot : IDisposable
                 programs.Add(programKey, program);
             }
             ReadOnlyMemory<byte> bytes = program.Bytes;
+            ValidateDeclaredProgram(resolution.Resolution.Face.File, bytes);
             OpenTypeFontMetrics metrics = program.Metrics;
             prepared[index] = new SvgPreparedFont(resolution, bytes, metrics.UnitsPerEm, metrics.GlyphCount);
         }
         return new SvgFontSnapshot(prepared);
+
+        static void ValidateDeclaredProgram(SvgFontPackFile file, ReadOnlyMemory<byte> bytes)
+        {
+            if (bytes.Length != file.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.");
+            string hash = Convert.ToHexString(SHA256.HashData(bytes.Span));
+            if (!hash.Equals(file.Sha256, StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.");
+        }
     }
 
     /// <summary>

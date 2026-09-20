@@ -130,7 +130,7 @@ internal static class OpenTypeFont
         RequireTableLength(table, 16, "cmap format 12");
         uint length = ReadUInt32(data, table.Offset + 4);
         uint groups = ReadUInt32(data, table.Offset + 12);
-        if (length > table.Length || groups > (length - 16) / 12) throw InvalidFont("The cmap format 12 length is invalid.");
+        if (length < 16 || length > (uint)table.Length || groups > (length - 16) / 12) throw InvalidFont("The cmap format 12 length is invalid.");
         uint previousEnd = 0;
         for (uint index = 0; index < groups; index++)
         {
@@ -141,7 +141,9 @@ internal static class OpenTypeFont
             if (start > end || end > 0x10FFFF || (index != 0 && start <= previousEnd)) throw InvalidFont("The cmap format 12 groups are not strictly ordered.");
             previousEnd = end;
             if (scalar < start || scalar > end) continue;
-            uint glyph = checked(startGlyph + scalar - start);
+            uint offsetWithinGroup = scalar - start;
+            if (startGlyph > uint.MaxValue - offsetWithinGroup) throw InvalidFont("The cmap format 12 group glyph range overflows.");
+            uint glyph = startGlyph + offsetWithinGroup;
             if (glyph >= glyphCount) throw InvalidFont("The cmap maps a scalar to a glyph outside maxp.");
             return (ushort)glyph;
         }
