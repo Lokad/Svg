@@ -113,7 +113,12 @@ internal static class SvgTextFontSyntax
 }
 
 /// <summary>Represents the direct-text font declarations found in one inline style value.</summary>
-internal readonly record struct SvgTextInlineFontProperties(string? Family, string? Weight, string? Style, string? Size);
+internal readonly record struct SvgTextInlineFontProperties(string? Family, string? Weight, string? Style, string? Size)
+{
+    /// <summary>Uses this declaration's explicitly present values before the lower-precedence declarations.</summary>
+    internal SvgTextInlineFontProperties Overlay(SvgTextInlineFontProperties lower)
+        => new(Family ?? lower.Family, Weight ?? lower.Weight, Style ?? lower.Style, Size ?? lower.Size);
+}
 
 /// <summary>Represents the explicit single-font style and baseline origin of one initial text run.</summary>
 internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y, double Dx, double Dy, SvgTextAnchor Anchor, string SourceElementId);

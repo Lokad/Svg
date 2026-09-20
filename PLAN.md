@@ -246,8 +246,9 @@ now accepts and applies caller limits. It still discards the parse and style sta
 **Repaired 2026-09-20:** discovery now uses `SvgTextInheritance.Resolve`, the
 same direct/inline family, weight, style and size precedence path as rendering.
 The declaration scanner and token normalization are shared, while direct text
-still parses its final scalar positioning. Stylesheet font properties, ordered
-family/generic mapping and coverage fallback remain absent.
+still parses its final scalar positioning. Stylesheet font properties now share
+per-property selector specificity and direct-inline precedence with both discovery
+and rendering; ordered family/generic mapping and coverage fallback remain absent.
 Direct text/CDATA is concatenated without SVG whitespace/chunk normalization.
 
 Closure: cross-test preparation and painting for root/g/a inheritance, precedence,

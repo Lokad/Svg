@@ -155,7 +155,7 @@ internal static class SvgFontRequestDiscovery
         InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inlineStyle, styleSheet);
         if (reader.LocalName is "svg" or "g" or "a" && computedStyle.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
-        SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, inlineStyle.TextFont);
+        SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, inlineStyle.TextFont.Overlay(styleSheet.TextFont));
         bool isDisplayed = inherited.IsDisplayed && SvgPresentationResolver.ParseDisplay(computedStyle.Display);
         bool isVisible = SvgPresentationResolver.ParseVisibility(computedStyle.Visibility, inherited.IsVisible);
         bool hasFill = computedStyle.Fill is null ? inherited.HasFill : !computedStyle.Fill.Equals("none", StringComparison.OrdinalIgnoreCase) && !computedStyle.Fill.Equals("transparent", StringComparison.OrdinalIgnoreCase);

@@ -30,6 +30,9 @@ internal static class SvgInlineStyleParser
     internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => ParseCore(value, workCounter, cancellationToken, strings, false);
 
+    internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
+        => ParseCore(value, workCounter, cancellationToken, strings, allowsDirectTextFontProperties);
+
     private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings, bool allowsDirectTextFontProperties)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
