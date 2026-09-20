@@ -169,6 +169,34 @@ public sealed class OpenTypeFontTests
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
+    [Theory]
+    [InlineData((ushort)0)]
+    [InlineData((ushort)1)]
+    [InlineData((ushort)2)]
+    [InlineData((ushort)3)]
+    [InlineData((ushort)4)]
+    [InlineData((ushort)5)]
+    [InlineData((ushort)6)]
+    [InlineData((ushort)7)]
+    [InlineData((ushort)8)]
+    [InlineData((ushort)9)]
+    [InlineData((ushort)10)]
+    [InlineData((ushort)11)]
+    [InlineData((ushort)12)]
+    [InlineData((ushort)13)]
+    [InlineData((ushort)14)]
+    [InlineData((ushort)15)]
+    public void Rejects_every_format_4_declared_length_smaller_than_its_header(ushort length)
+    {
+        byte[] font = CreateFont(1024, 3, 2, 0);
+        const int Subtable = 242;
+        WriteUInt16(font, Subtable + 2, length);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphIndex(font, 'A', CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
     [Fact]
     public void Categorizes_a_format_12_glyph_index_overflow_as_malformed_input()
     {
