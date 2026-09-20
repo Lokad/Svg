@@ -41,6 +41,7 @@ internal static class SvgGlyphLayout
         foreach (Rune scalar in text.EnumerateRunes())
         {
             cancellationToken.ThrowIfCancellationRequested();
+            workCounter?.Consume(cancellationToken);
             if (glyphCount == SvgTextLimits.MaximumCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The text glyph count exceeds the admitted layout limit.");
             glyphCount++;
         }
@@ -54,6 +55,7 @@ internal static class SvgGlyphLayout
             foreach (Rune scalar in text.EnumerateRunes())
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                workCounter?.Consume(cancellationToken);
                 ushort glyphIndex = OpenTypeFont.GetGlyphIndex(font.Bytes, (uint)scalar.Value, font.Metrics, workCounter, cancellationToken);
                 if (glyphIndex == 0) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font has no glyph for an admitted text scalar.", new SvgFontDiagnostic(SvgFontFailureStage.Glyph, font.Resolution.Resolution.Request.Family, font.Resolution.Resolution.Face.ResolvedFamily, font.Resolution.Resolution.Face.File.RelativePath + ":" + font.Resolution.Resolution.Face.FaceIndex, sourceElementId));
                 ushort advance = OpenTypeFont.GetAdvanceWidth(font.Bytes, glyphIndex, font.Metrics, workCounter, cancellationToken);
@@ -70,7 +72,11 @@ internal static class SvgGlyphLayout
                 _ => throw new ArgumentOutOfRangeException(nameof(anchor))
             };
             if (!double.IsFinite(anchorOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
-            for (int index = 0; index < glyphs.Length; index++) glyphs[index] = glyphs[index] with { X = glyphs[index].X + anchorOffset };
+            for (int index = 0; index < glyphs.Length; index++)
+            {
+                workCounter?.Consume(cancellationToken);
+                glyphs[index] = glyphs[index] with { X = glyphs[index].X + anchorOffset };
+            }
             return new SvgPositionedGlyphStorage(glyphs, reservation);
         }
         catch

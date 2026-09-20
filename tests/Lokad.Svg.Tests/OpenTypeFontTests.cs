@@ -93,18 +93,18 @@ public sealed class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 0))], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         RenderBudget successfulBudget = new(1_024);
-        var successfulWork = new ParserWorkCounter(6);
+        var successfulWork = new ParserWorkCounter(9);
 
         using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, "A", 10, 0, 0, SvgTextAnchor.Start, successfulBudget, successfulWork, CancellationToken.None))
         {
             Assert.Single(glyphs.Glyphs);
         }
 
-        Assert.Equal(6, successfulWork.Used);
+        Assert.Equal(9, successfulWork.Used);
         Assert.Equal(0, successfulBudget.Snapshot().CurrentBytes);
         RenderBudget deniedBudget = new(1_024);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(font, "A", 10, 0, 0, SvgTextAnchor.Start, deniedBudget, new ParserWorkCounter(5), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(font, "A", 10, 0, 0, SvgTextAnchor.Start, deniedBudget, new ParserWorkCounter(8), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
