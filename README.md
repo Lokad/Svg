@@ -58,8 +58,9 @@ scenarios, not a renderer memory guarantee. `--cancel-after-ms` starts before in
 `--cancel-after-conversion-start-ms` starts after the input is loaded; both are
 timing dependent and are stress evidence rather than exact unit-test assertions.
 The scenario runner verifies every child's input bytes and SHA-256 against the
-input it launched, then retains one JSON summary per run containing every child
-report, the scenario-script/probe/renderer/fixture hashes, and their shared
+input it launched, then retains one schema-2 JSON summary per run containing every
+child report, the newline-normalized scenario-script source hash, byte-exact
+probe/renderer/fixture hashes, and their shared
 runtime/platform fingerprint.
 
 Run the child-process success, budget-denial, XML-workspace-denial, direct

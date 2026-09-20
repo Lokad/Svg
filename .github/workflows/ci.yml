@@ -29,6 +29,8 @@ jobs:
       - if: runner.os == 'Linux'
         shell: pwsh
         run: tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json
+      - shell: pwsh
+        run: tools/validate-ci-artifacts.ps1 -Platform ${{ runner.os }} -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe
       - if: always()
         uses: actions/upload-artifact@v4
         with:
