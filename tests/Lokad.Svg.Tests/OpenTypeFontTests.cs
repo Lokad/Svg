@@ -249,6 +249,22 @@ public sealed class OpenTypeFontTests
         Assert.Equal([new OpenTypeQuadraticSegment(new(7, -1.5), new(9.5, -1.5), new(9.5, -1.5)), new OpenTypeQuadraticSegment(new(9.5, -1.5), new(7, -1.5), new(7, -1.5))], segments);
     }
 
+    [Fact]
+    public void Rejects_a_cycle_in_composite_glyph_references()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange composite = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, composite.Offset, -1);
+        WriteUInt16(font, composite.Offset + 10, 3);
+        WriteUInt16(font, composite.Offset + 12, 2);
+        WriteInt16(font, composite.Offset + 14, 0);
+        WriteInt16(font, composite.Offset + 16, 0);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;
