@@ -11,6 +11,10 @@ internal static class SvgInlineStyleParser
     internal static InlineStyle Parse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => value is null ? default : Parse(value.AsSpan(), workCounter, cancellationToken);
 
+    /// <summary>Parses inline paint declarations while tolerating the direct-text font declarations handled by text syntax.</summary>
+    internal static InlineStyle Parse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
+        => value is null ? default : Parse(value.AsSpan(), workCounter, cancellationToken, allowsDirectTextFontProperties);
+
     internal static InlineStyle Parse(ReadOnlySpan<char> value)
         => ParseCore(value, null, default);
 
@@ -20,13 +24,19 @@ internal static class SvgInlineStyleParser
         return ParseCore(value, workCounter, cancellationToken);
     }
 
+    private static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
+    {
+        workCounter.ConsumeText(value.Length, cancellationToken);
+        return ParseCore(value, workCounter, cancellationToken, null, allowsDirectTextFontProperties);
+    }
+
     internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.ConsumeText(value.Length, cancellationToken);
         return ParseCore(value, workCounter, cancellationToken, strings);
     }
 
-    private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings = null)
+    private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings = null, bool allowsDirectTextFontProperties = false)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
         StyleDeclarationReader declarations = new(value, workCounter, cancellationToken);
@@ -46,6 +56,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("visibility", StringComparison.OrdinalIgnoreCase)) visibility = Copy(propertyValue, strings);
             else if (property.Equals("opacity", StringComparison.OrdinalIgnoreCase)) opacity = Copy(propertyValue, strings);
             else if (property.Equals("fill-rule", StringComparison.OrdinalIgnoreCase)) fillRule = Copy(propertyValue, strings);
+            else if (allowsDirectTextFontProperties && (property.Equals("font-family", StringComparison.OrdinalIgnoreCase) || property.Equals("font-weight", StringComparison.OrdinalIgnoreCase) || property.Equals("font-style", StringComparison.OrdinalIgnoreCase) || property.Equals("font-size", StringComparison.OrdinalIgnoreCase))) { }
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
         return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);

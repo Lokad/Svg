@@ -13,6 +13,8 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
 
     internal SvgComputedStyle ResolveStyle(XmlReader reader) => SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken);
 
+    internal SvgComputedStyle ResolveStyle(XmlReader reader, bool allowsDirectTextFontProperties) => SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, allowsDirectTextFontProperties);
+
     internal AxisTransform ResolveTransform(XmlReader reader) => InheritedPresentation.Transform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
 
     internal SvgResolvedShapePresentation ResolvePresentation(SvgComputedStyle style, bool acceptsStroke)
@@ -21,6 +23,12 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgResolvedPaintableElement ResolveShape(XmlReader reader, bool acceptsStroke)
     {
         SvgComputedStyle style = ResolveStyle(reader);
+        return new SvgResolvedPaintableElement(style, ResolveTransform(reader), ResolvePresentation(style, acceptsStroke));
+    }
+
+    internal SvgResolvedPaintableElement ResolveShape(XmlReader reader, bool acceptsStroke, bool allowsDirectTextFontProperties)
+    {
+        SvgComputedStyle style = ResolveStyle(reader, allowsDirectTextFontProperties);
         return new SvgResolvedPaintableElement(style, ResolveTransform(reader), ResolvePresentation(style, acceptsStroke));
     }
 }

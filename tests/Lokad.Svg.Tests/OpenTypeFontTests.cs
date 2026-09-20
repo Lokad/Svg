@@ -684,6 +684,18 @@ public sealed class OpenTypeFontTests
         Assert.Equal(owned.Length, asyncStreamLength);
     }
 
+    [Fact]
+    public async Task Converts_direct_text_with_admitted_inline_font_properties()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text style='font-family: Example; font-size: 100' y='3'>A</text></svg>"u8.ToArray();
+
+        byte[] png = SvgConverter.ConvertToPng(svg, options, CancellationToken.None).ToArray();
+
+        Assert.True(DecodeAlpha(png, 1, 1) > 0);
+    }
+
     [Theory]
     [InlineData("clip-path='url(#missing)'")]
     [InlineData("fill-rule='evenodd'")]
