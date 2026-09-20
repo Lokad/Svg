@@ -1,12 +1,14 @@
 param(
     [Parameter(Mandatory = $true)]
     [string] $ResultsDirectory,
-    [int] $TimeoutMilliseconds = 120000
+    [int] $TimeoutMilliseconds = 120000,
+    [int] $XmlReaderProbeRuns = 3
 )
 
 $ErrorActionPreference = 'Stop'
 
 if ($TimeoutMilliseconds -le 0) { throw 'TimeoutMilliseconds must be positive.' }
+if ($XmlReaderProbeRuns -le 0) { throw 'XmlReaderProbeRuns must be positive.' }
 
 $probeTool = Join-Path $PSScriptRoot 'Lokad.Svg.MemoryProbe/bin/Release/net10.0/Lokad.Svg.MemoryProbe.dll'
 $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
@@ -68,6 +70,28 @@ function Invoke-Probe {
     finally { $process.Dispose() }
 }
 
+function Assert-XmlReaderMeasurements {
+    param(
+        [Parameter(Mandatory = $true)] [string] $Name,
+        [Parameter(Mandatory = $true)] [string] $InputPath,
+        [Parameter(Mandatory = $true)] [long] $MinimumTouchedCharacters
+    )
+
+    for ($attempt = 1; $attempt -le $XmlReaderProbeRuns; $attempt++)
+    {
+        $output = Join-Path $ResultsDirectory "$runId-$Name-$attempt.png"
+        $measurement = Invoke-Probe -Name "$Name-$attempt" -InputPath $InputPath -Output $output -ExpectedExitCode 0 -ExtraArguments @('--mode', 'xml-reader')
+        if ($measurement['outcome'] -ne 'xml-reader-measured' -or -not $measurement.ContainsKey('xmlReaderManagedAllocatedBytes') -or -not $measurement.ContainsKey('xmlReaderWorkspaceBytes') -or -not $measurement.ContainsKey('xmlReaderTouchedCharacters') -or (Test-Path -LiteralPath $output))
+        {
+            throw "The $Name XML reader measurement did not emit a complete no-output report."
+        }
+        if ([long]$measurement['xmlReaderManagedAllocatedBytes'] -le 0 -or [long]$measurement['xmlReaderTouchedCharacters'] -lt $MinimumTouchedCharacters -or [long]$measurement['xmlReaderManagedAllocatedBytes'] -gt [long]$measurement['xmlReaderWorkspaceBytes'])
+        {
+            throw "The $Name XML reader measurement exceeds its renderer workspace allowance."
+        }
+    }
+}
+
 $successOutput = Join-Path $ResultsDirectory "$runId-success.png"
 $success = Invoke-Probe -Name 'success' -InputPath $fixture -Output $successOutput -ExpectedExitCode 0 -ExtraArguments @('--maximum-accounted-bytes', '1048576')
 if ($success['outcome'] -ne 'success' -or -not (Test-Path -LiteralPath $successOutput)) { throw 'The successful probe did not produce its expected PNG.' }
@@ -95,19 +119,13 @@ $xmlAttributeOutput = Join-Path $ResultsDirectory "$runId-xml-attributes.png"
 $xmlAttributesProbe = Invoke-Probe -Name 'xml-attributes' -InputPath $xmlAttributeInput -Output $xmlAttributeOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '131071')
 if ($xmlAttributesProbe['outcome'] -ne 'svg-error' -or $xmlAttributesProbe['svgErrorCode'] -ne 'LimitExceeded' -or $xmlAttributesProbe['inputBytes'] -ne $xmlAttributeBytes.ToString() -or (Test-Path -LiteralPath $xmlAttributeOutput)) { throw 'The XML attribute workspace probe did not deny the input reservation before output.' }
 
-$xmlReaderOutput = Join-Path $ResultsDirectory "$runId-xml-reader.png"
-$xmlReader = Invoke-Probe -Name 'xml-reader' -InputPath $xmlAttributeInput -Output $xmlReaderOutput -ExpectedExitCode 0 -ExtraArguments @('--mode', 'xml-reader')
-if ($xmlReader['outcome'] -ne 'xml-reader-measured' -or -not $xmlReader.ContainsKey('xmlReaderManagedAllocatedBytes') -or -not $xmlReader.ContainsKey('xmlReaderWorkspaceBytes') -or -not $xmlReader.ContainsKey('xmlReaderTouchedCharacters') -or (Test-Path -LiteralPath $xmlReaderOutput)) { throw 'The direct XML reader probe did not emit a complete no-output measurement.' }
-if ([long]$xmlReader['xmlReaderManagedAllocatedBytes'] -le 0 -or [long]$xmlReader['xmlReaderTouchedCharacters'] -le 0 -or [long]$xmlReader['xmlReaderManagedAllocatedBytes'] -gt [long]$xmlReader['xmlReaderWorkspaceBytes']) { throw 'The direct XML reader measurement exceeds its renderer workspace allowance.' }
+Assert-XmlReaderMeasurements -Name 'xml-reader' -InputPath $xmlAttributeInput -MinimumTouchedCharacters 1
 
 $xmlReaderAttributeValueInput = Join-Path $ResultsDirectory "$runId-xml-reader-attribute-values.svg"
 $xmlReaderAttributeValue = New-Object string('x', 4KB)
 $xmlReaderAttributeValues = (0..254 | ForEach-Object { " data-a$_=`"$xmlReaderAttributeValue`"" }) -join ''
 [IO.File]::WriteAllText($xmlReaderAttributeValueInput, '<svg xmlns="http://www.w3.org/2000/svg"' + $xmlReaderAttributeValues + '/>', [Text.UTF8Encoding]::new($false))
-$xmlReaderAttributeValueOutput = Join-Path $ResultsDirectory "$runId-xml-reader-attribute-values.png"
-$xmlReaderAttributeValuesProbe = Invoke-Probe -Name 'xml-reader-attribute-values' -InputPath $xmlReaderAttributeValueInput -Output $xmlReaderAttributeValueOutput -ExpectedExitCode 0 -ExtraArguments @('--mode', 'xml-reader')
-if ($xmlReaderAttributeValuesProbe['outcome'] -ne 'xml-reader-measured' -or -not $xmlReaderAttributeValuesProbe.ContainsKey('xmlReaderManagedAllocatedBytes') -or -not $xmlReaderAttributeValuesProbe.ContainsKey('xmlReaderWorkspaceBytes') -or -not $xmlReaderAttributeValuesProbe.ContainsKey('xmlReaderTouchedCharacters') -or (Test-Path -LiteralPath $xmlReaderAttributeValueOutput)) { throw 'The large-attribute XML reader probe did not emit a complete no-output measurement.' }
-if ([long]$xmlReaderAttributeValuesProbe['xmlReaderManagedAllocatedBytes'] -le 0 -or [long]$xmlReaderAttributeValuesProbe['xmlReaderTouchedCharacters'] -lt $xmlReaderAttributeValue.Length * 255 -or [long]$xmlReaderAttributeValuesProbe['xmlReaderManagedAllocatedBytes'] -gt [long]$xmlReaderAttributeValuesProbe['xmlReaderWorkspaceBytes']) { throw 'The large-attribute XML reader measurement exceeds its renderer workspace allowance.' }
+Assert-XmlReaderMeasurements -Name 'xml-reader-attribute-values' -InputPath $xmlReaderAttributeValueInput -MinimumTouchedCharacters ($xmlReaderAttributeValue.Length * 255)
 
 $cancellationInput = Join-Path $ResultsDirectory "$runId-cancellation.svg"
 [IO.File]::WriteAllText($cancellationInput, '<svg xmlns="http://www.w3.org/2000/svg" width="4096" height="4096"><rect width="4096" height="4096" fill="red"/></svg>', [Text.UTF8Encoding]::new($false))
@@ -122,4 +140,4 @@ $parserCancellationOutput = Join-Path $ResultsDirectory "$runId-parser-cancellat
 $parserCancelled = Invoke-Probe -Name 'parser-cancellation' -InputPath $parserCancellationInput -Output $parserCancellationOutput -ExpectedExitCode 3 -ExtraArguments @('--cancel-after-conversion-start-ms', '1')
 if ($parserCancelled['outcome'] -ne 'cancelled' -or $parserCancelled['cancellationMode'] -ne 'after-conversion-start' -or [int]$parserCancelled['inputBytes'] -lt 4MB -or (Test-Path -LiteralPath $parserCancellationOutput)) { throw 'The parser-stage cancellation probe completed, started too early, or wrote output.' }
 
-Write-Output "Memory probe scenarios passed. Reports retained in $ResultsDirectory."
+Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements per attribute shape. Reports retained in $ResultsDirectory."
