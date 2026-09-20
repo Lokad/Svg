@@ -23,8 +23,8 @@ milestone. Keep the existing workflow/tools; revisit remote platform evidence
 when CI work resumes.
 
 This revision replaces the historical progress diary with a current baseline,
-an actionable review and dependency-ordered work. It changes the plan, not the
-implemented support contract: text is still unsupported. The earlier R1–R10
+an actionable review and dependency-ordered work. Follow-up implementation status
+is recorded against the findings below; text is still unsupported. The earlier R1–R10
 audit and detailed repair history remain available in Git history at the
 Lokad.Svg revision above.
 
@@ -43,7 +43,8 @@ It is not yet suitable for arbitrary exported SVGs or diagrams containing text.
 | Research | 13 retained probes, including a path-heavy illustration, have browser reference evidence and explicit unsupported assertions. They are not supported fixtures. |
 | Resource limits | One conversion budget covers parser/scene/geometry/surfaces/PNG storage, with structural/work limits and cancellation checks. XML/BCL allocation accounting remains conservative; this is not a process-memory ceiling. |
 | Local verification rerun for this review | Locked restore, Release solution build with zero warnings/errors, 247 unit tests and 82 visual-project tests pass on Windows x64, SDK 10.0.401 / runtime 10.0.12. |
-| Evidence not rerun here | Live Chrome captures, fresh-process memory probes, benchmarks and installed-package smoke. Earlier local evidence remains documented; no successful remote CI result is claimed. |
+| F01/F02 implementation follow-up | Locked restore and Release solution build with zero warnings/errors; 275 unit tests and 82 visual-project tests pass. The 28 new regression cases cover overlap and resolved output dimensions without changing admitted pixel output. The fresh-process memory suite and clean installed-package consumer also pass; the latter now checks both repaired failure contracts. |
+| Evidence not rerun in this follow-up | Live Chrome captures and benchmarks. Earlier local evidence remains documented; no successful remote CI result is claimed. |
 
 The previous audit's paint inheritance, stylesheet routing, EOF/numeric handling,
 named-color and missing fixture-gate defects were repaired. Streaming PNG output,
@@ -64,14 +65,15 @@ The [support matrix](docs/SUPPORT_MATRIX.md) remains the detailed current contra
 
 ## 2. Findings from this review
 
-These findings concern the current revision. "Reproduced" means a public-API probe
-was run during this review; "inspection" identifies a source/design gap without
-claiming a measured failure or latency.
+These findings describe the reviewed baseline; completed corrections are marked
+explicitly. "Reproduced" means a public-API probe was run during the review;
+"inspection" identifies a source/design gap without claiming a measured failure
+or latency.
 
 | ID / priority | Finding and evidence | Planned correction / acceptance |
 | --- | --- | --- |
-| F01 / P0 | Detectable input/output aliasing is not rejected. Reproduced: put a 2×1 empty SVG at the start of a 1,024-byte array, pass its occupied slice as input and the whole array as destination. Conversion succeeds with a 68-byte PNG and overwrites the SVG. This violates the planned rejection rule; the API documentation already forbids callers from overlapping memory. | Reject detectable overlap before work/writes in both caller-memory APIs; retain the caller's responsibility for aliases that a custom memory provider cannot expose. Test exact, partial and disjoint slices plus custom memory. |
-| F02 / P0 | Configured dimension denial uses the wrong category. Reproduced: a valid 2×1 SVG with `MaximumDimension=1` returns `UnsupportedFeature`. `Rasterize` combines dimension limits with unsupported fractional/non-finite output checks. | Return `LimitExceeded` for configured caps; keep malformed/unsupported geometry distinctions separate. Cover both axes, viewport/scale and exact limit boundaries. |
+| F01 / P0 — complete | The reviewed revision accepted detectable input/output aliasing. Reproduced: a 2×1 SVG in a 1,024-byte array was overwritten when the same array was used as destination. | Both caller-memory APIs now reject span-visible overlap with `ArgumentException` before parsing/writing. `DestinationOverlapTests` covers exact, containing/contained and partial overlaps, adjacent disjoint slices, arrays and distinct custom managers over shared storage. Caller responsibility remains for aliases the spans cannot expose. |
+| F02 / P0 — complete | The reviewed revision returned `UnsupportedFeature` for a valid 2×1 SVG with `MaximumDimension=1`, combining dimension caps with unsupported output geometry. | Resolved integral dimensions exceeding a cap now return `LimitExceeded` before narrowing, allocation or output. `OutputDimensionTests` exercises all six API forms, both axes, viewport/scale, exact boundaries and integer overflow; fractional/non-finite/underflowed output remains explicitly unsupported. |
 | F03 / P0 | Nontransparent background initialization has no cancellation checkpoint inside its full-surface loop in `SvgConverter.Rasterize`. Inspection: work is precharged, but cancellation is not observed again until a later phase. | Check cancellation in bounded batches, including empty SVGs with a large caller background. Measure observation during work; do not infer a latency guarantee from pre-cancelled tests. |
 | F04 / P1 | The oracle is not ready to establish font identity. `ChromeSvgCapture` creates a target with the SVG-containing page before enabling network blocking, then waits for `img.decode()`; it has no positive check that the intended face was used. Inspection establishes an ordering/readiness gap, not an observed network leak. | Start blank, configure blocking/emulation, then navigate. Add missing/corrupt/font-substitution controls and same-font image-context probes before admitting text goldens. |
 | F05 / P1 | No text pipeline exists. Traversal does not retain text runs; rendered-leaf routing has no text case; computed style lacks font/text properties; options expose no font catalog. | Add bounded text syntax, inherited text style, deterministic font resolution and typed glyph runs as separate responsibilities. Preserve text/CDATA order and whitespace across spans. |
@@ -83,9 +85,10 @@ claiming a measured failure or latency.
 | F11 / planning | The old plan mixed historical failures, completed repairs and next work, and placed CI evidence ahead of product progress while leaving text behind filters. | This revision separates current findings from completed work, brings text forward, and records CI as deferred. |
 | F12 / P1–P3 | Lokad.Svg accepts only memory input. A prepared-font snapshot alone would require an embedding application to parse SVG itself to discover the needed fonts, or to preload the entire pack. | Supply a bounded library preparation API that identifies and acquires only required fonts through caller-provided sources. Demonstrate bounded asynchronous stream intake and PNG output in a standalone test host. Keep SVG parsing and font/layout policy inside the library. |
 
-F01–F03 are finite repairs, not a new open-ended hardening phase. Font contract and
-oracle work can proceed independently of them. This review logs these findings;
-it does not claim to have implemented their corrections.
+F01–F03 are finite repairs, not a new open-ended hardening phase. F01/F02 are
+implemented and locally verified; F03 remains open, including evidence of
+cancellation during background work. Font contract and oracle work can proceed
+independently. Other corrections below remain planned unless marked complete.
 
 ## 3. Font management: share ooxpdf's font packs and manifest
 
@@ -306,7 +309,7 @@ repair details stay in Git history; unresolved raster evidence stays in
 
 | Order | Work | Dependencies and exit evidence |
 | --- | --- | --- |
-| P0 — current contract | Repair F01–F03 with public boundary/cancellation tests. Preserve the shared budget and current exact corpus. | Finite changes; all six API forms retain documented behavior. No platform-CI prerequisite. |
+| P0 — current contract | F01/F02 complete; finish F03's background cancellation checkpoints and during-work evidence. Preserve the shared budget and current exact corpus. | Finite changes; all six API forms retain documented behavior. No platform-CI prerequisite. |
 | P1 — fonts and oracle | Implement an independent reader/provider layer compatible with ooxpdf's unchanged manifest and font files, plus bounded async preparation, deterministic selection and host-neutral diagnostics. Select/pin public font probes and repair F04. | Can start alongside P0. Manifest conformance, selective acquisition, memory-backed sources, missing faces, real styles, fallback, cancellation, integrity failures and no-I/O rasterization have tests. No dependency on another Lokad package or a consuming application is introduced. |
 | P2 — outlines and coverage | Add bounded TrueType outline parsing, typed general contours/glyph runs and the coverage/composition needed by real glyphs. Run discriminating font/path calibration early. | P1 supplies exact font identity. Existing 43 cases remain exact. Curved/simple/composite glyphs, holes, fractional origins, size changes and alpha interactions have independent references and classified outcomes. |
 | P3 — useful text | Integrate basic `text`/`tspan` parsing, inherited style, positioning, metrics, kerning and painting through the shared scene. | P1/P2. Labeled bars/axes, multiple spans/styles, Unicode scalar handling and missing-glyph cases work through every public output form. Demonstrate the preparation/async-stream path with a standalone test host, without an external application or private service. |
@@ -314,9 +317,10 @@ repair details stay in Git history; unresolved raster evidence stays in
 | P5 — later scope | First filters, JPEG, advanced text/shaping and further static SVG families. Optimize only measured bottlenecks. | After useful text and diagrams. Independent acceptance gates for codecs, filters and script/font-format additions. |
 | Deferred — CI/release | Inspect remote Windows/Linux jobs, admit a canonical Linux oracle deliberately, then finish release/platform/package evidence. | Resume when requested. Local development does not wait for this row. Publication remains a separate operation. |
 
-The next implementation sequence is P0's small repairs, P1's compatible manifest
-reader/providers and font-aware oracle, then one end-to-end curved-glyph vertical
-slice through P2/P3. P1's first deliverable is manifest/asset compatibility with
+The next implementation sequence is P0's remaining background-cancellation repair,
+P1's compatible manifest reader/providers and font-aware oracle, then one
+end-to-end curved-glyph vertical slice through P2/P3. P1's first deliverable is
+manifest/asset compatibility with
 independent tests, before claiming glyph rendering or full text support.
 Do not complete every SVG path command, paint server or filter before attempting
 that slice. Conversely, an Ahem-style rectangular-glyph demonstration alone must
