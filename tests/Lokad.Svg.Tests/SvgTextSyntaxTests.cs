@@ -63,6 +63,18 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    public void Scans_one_inline_font_declaration_set_once()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<text style='font-family: Example; font-weight: 700; font-style: italic; font-size: 12'/>"));
+        reader.Read();
+        var workCounter = new ParserWorkCounter(100);
+
+        SvgTextSyntax.Parse(reader, workCounter, CancellationToken.None);
+
+        Assert.Equal(1, workCounter.Used);
+    }
+
+    [Fact]
     public void Normalizes_a_quoted_direct_font_family()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family=\"'Example'\"/>"));

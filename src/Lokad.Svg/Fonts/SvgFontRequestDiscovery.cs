@@ -69,11 +69,12 @@ internal static class SvgFontRequestDiscovery
 
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        string? family = SvgTextFontSyntax.GetProperty(reader, "font-family", workCounter, cancellationToken) ?? inherited.Family;
+        SvgTextInlineFontProperties inline = SvgTextFontSyntax.ReadInlineProperties(reader, workCounter, cancellationToken);
+        string? family = inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family;
         if (family is not null) family = SvgTextFontSyntax.ParseFamily(family);
-        string? weightValue = SvgTextFontSyntax.GetProperty(reader, "font-weight", workCounter, cancellationToken);
+        string? weightValue = inline.Weight ?? reader.GetAttribute("font-weight");
         int weight = weightValue is null ? inherited.Weight : SvgTextFontSyntax.ParseWeight(weightValue);
-        string? styleValue = SvgTextFontSyntax.GetProperty(reader, "font-style", workCounter, cancellationToken);
+        string? styleValue = inline.Style ?? reader.GetAttribute("font-style");
         bool italic = styleValue is null ? inherited.Italic : SvgTextFontSyntax.ParseItalic(styleValue);
         return new TextStyle(family, weight, italic);
     }
