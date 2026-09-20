@@ -458,6 +458,21 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Snapshot_observes_cancellation_between_integrity_hash_chunks()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        Array.Resize(ref bytes, 8_192);
+        SvgFontProgramResolution resolution = CreateResolution(bytes);
+        using CancellationTokenSource cancellation = new();
+        bool completedChunk = false;
+        using IDisposable probe = FontIntegrityProbe.Arm(() => { completedChunk = true; cancellation.Cancel(); });
+
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => await SvgFontSnapshot.CreateAsync([resolution], cancellation.Token));
+
+        Assert.True(completedChunk);
+    }
+
+    [Fact]
     public async Task Snapshot_does_not_expose_its_prepared_face_array_for_mutation()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);

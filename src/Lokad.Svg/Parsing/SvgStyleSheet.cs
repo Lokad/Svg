@@ -434,6 +434,7 @@ internal static class SvgStyleSheet
 
 internal sealed class ParserWorkCounter
 {
+    internal const int ByteCheckpointSize = 4_096;
     private readonly long _maximumWorkUnits;
     private long _used;
 
@@ -449,7 +450,7 @@ internal sealed class ParserWorkCounter
     internal void ConsumeBytes(int byteCount, CancellationToken cancellationToken)
     {
         if (byteCount < 0) throw new ArgumentOutOfRangeException(nameof(byteCount));
-        for (int index = 0; index < byteCount; index += 4096) Consume(cancellationToken);
+        for (int index = 0; index < byteCount; index += ByteCheckpointSize) Consume(cancellationToken);
     }
 
     internal void Consume(CancellationToken cancellationToken)
