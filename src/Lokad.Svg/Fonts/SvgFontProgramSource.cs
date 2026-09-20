@@ -62,22 +62,25 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
 
     public ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         ValueTask<ReadOnlyMemory<byte>> pending = source.GetBytesAsync(cancellationToken);
-        return pending.IsCompletedSuccessfully ? ValueTask.FromResult(Validate(pending.Result)) : AwaitAndValidate(pending);
+        return pending.IsCompletedSuccessfully ? ValueTask.FromResult(Validate(pending.Result, cancellationToken)) : AwaitAndValidate(pending, cancellationToken);
     }
 
-    private ValueTask<ReadOnlyMemory<byte>> AwaitAndValidate(ValueTask<ReadOnlyMemory<byte>> pending)
+    private ValueTask<ReadOnlyMemory<byte>> AwaitAndValidate(ValueTask<ReadOnlyMemory<byte>> pending, CancellationToken cancellationToken)
     {
-        return new ValueTask<ReadOnlyMemory<byte>>(AwaitAsync(pending));
+        return new ValueTask<ReadOnlyMemory<byte>>(AwaitAsync(pending, cancellationToken));
     }
 
-    private async Task<ReadOnlyMemory<byte>> AwaitAsync(ValueTask<ReadOnlyMemory<byte>> pending)
+    private async Task<ReadOnlyMemory<byte>> AwaitAsync(ValueTask<ReadOnlyMemory<byte>> pending, CancellationToken cancellationToken)
     {
-        return Validate(await pending.ConfigureAwait(false));
+        ReadOnlyMemory<byte> bytes = await pending.ConfigureAwait(false);
+        return Validate(bytes, cancellationToken);
     }
 
-    private ReadOnlyMemory<byte> Validate(ReadOnlyMemory<byte> bytes)
+    private ReadOnlyMemory<byte> Validate(ReadOnlyMemory<byte> bytes, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         if (bytes.Length != face.File.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.");
         string hash = Convert.ToHexString(SHA256.HashData(bytes.Span));
         if (!hash.Equals(face.File.Sha256, StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.");

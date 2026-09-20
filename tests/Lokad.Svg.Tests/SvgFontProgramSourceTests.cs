@@ -48,10 +48,30 @@ public sealed class SvgFontProgramSourceTests
         Assert.Throws<ArgumentException>(() => first.Bind(second.Resolve(new SvgFontFaceRequest("Example", 400, false)), new SvgMemoryFontProgramSource("memory", bytes)));
     }
 
+    [Fact]
+    public async Task Bound_source_preserves_cancellation_when_a_provider_ignores_it()
+    {
+        byte[] bytes = [1];
+        SvgFontPackCatalog catalog = CreateCatalog(bytes);
+        SvgFontProgramResolution bound = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new IgnoringCancellationSource(bytes));
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+
+        OperationCanceledException exception = await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await bound.Source.GetBytesAsync(cancellation.Token));
+
+        Assert.Equal(cancellation.Token, exception.CancellationToken);
+    }
+
     private static SvgFontPackCatalog CreateCatalog(byte[] bytes)
     {
         string hash = Convert.ToHexString(SHA256.HashData(bytes));
         string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
         return SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+    }
+
+    private sealed class IgnoringCancellationSource(byte[] bytes) : ISvgFontProgramSource
+    {
+        public string StableId => "ignoring-cancellation";
+        public ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken) => ValueTask.FromResult<ReadOnlyMemory<byte>>(bytes);
     }
 }
