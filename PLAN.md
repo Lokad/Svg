@@ -27,7 +27,7 @@ gates, not prerequisites for the local repairs below.
 | Resources | All 16 child-process memory scenarios pass, including three repetitions per XML measurement shape and cancellation observed inside background initialization. These probes do not establish text-pipeline accounting or failure-time ledger release. |
 | Packaging | Runtime/symbol package checks and an isolated installed-package consumer pass conversion, overlap, dimension-limit and font-catalog checks. No publication performed. |
 | Fonts/research | No tracked TTF/OTF/TTC/WOFF assets; 13 separately inventoried research probes remain outside admitted support. |
-| Not rerun | Live Chrome, BenchmarkDotNet, Linux execution and remote CI. Historical results are not fresh verification. |
+| Not rerun | Live Chrome, Linux execution and remote CI. Historical results are not fresh verification. A fresh Windows BenchmarkDotNet `ShortRun` completed for the four rectangle output APIs at 1/64/512 pixels; its ignored raw reports are shape-only and do not measure fonts, repeated/distinct glyphs, or phase attribution. |
 
 Fresh local diagnostics are in ignored `artifacts/review-20260920-refresh/`:
 `Review.csproj`, `Program.cs`, `results.jsonl`, `memory/`, `package/` and
@@ -36,6 +36,9 @@ Fresh local diagnostics are in ignored `artifacts/review-20260920-refresh/`:
 The review harness uses public APIs and, where explicitly identified, existing
 internal access plus reflection into the private rasterizer. It does not alter
 production code. These artifacts are local investigation aids, not portable tests:
+the fresh benchmark raw CSV/HTML/Markdown reports are in ignored
+`BenchmarkDotNet.Artifacts/results/` (Windows x64, .NET 10.0.12, ShortRun with
+three warmups and three measurement iterations).
 promote the decisive vectors/assertions into tracked tests with each repair.
 
 Evidence labels below mean: **reproduced** in this review, **inspection** from
