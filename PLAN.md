@@ -343,6 +343,9 @@ behavior or collecting measurements.
 | P3.2 | Not started | Implement basic supplied-font text; then JPEG and broader static coverage. | Early text feasibility, geometry, resource budgets | TrueType parsing, layout and glyph rendering match the declared cases with identical font bytes. Unsupported scripts/formats fail explicitly. JPEG work has independent codec and memory gates. |
 | P4 | Started, package and isolation gates only | Optimize measured bottlenecks, finish hardening and prepare release. | Verified feature combinations and measurements | A clean consumer now restores only the freshly packed `Lokad.Svg` artifact from an isolated NuGet cache, executes a memory-only conversion, and rejects missing package entries, runtime-specific assets or declared dependencies. Public contract tests also cover non-array-backed input/destination memory and concurrent independent owned results. Full fixed inventory, required platform/cancellation/package gates, numerical performance/retention reports and accurate release docs remain open. |
 
+The package gate also requires exactly one matching `.snupkg` with the `net10.0`
+`Lokad.Svg.pdb`, and rejects runtime-specific symbol assets.
+
 ### Next implementation changes
 
 1. Retain the conservative `XmlReader` allowance and its fresh-process text,

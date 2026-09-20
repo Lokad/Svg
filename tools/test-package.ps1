@@ -13,6 +13,10 @@ $ResultsDirectory = [IO.Path]::GetFullPath($ResultsDirectory)
 $packages = @(Get-ChildItem -LiteralPath $PackageDirectory -Filter 'Lokad.Svg.*.nupkg' -File)
 if ($packages.Count -ne 1) { throw "Expected exactly one Lokad.Svg package in $PackageDirectory; found $($packages.Count)." }
 $package = $packages[0]
+$symbolPackages = @(Get-ChildItem -LiteralPath $PackageDirectory -Filter 'Lokad.Svg.*.snupkg' -File)
+if ($symbolPackages.Count -ne 1) { throw "Expected exactly one Lokad.Svg symbol package in $PackageDirectory; found $($symbolPackages.Count)." }
+$symbolPackage = $symbolPackages[0]
+if ($symbolPackage.BaseName -ne $package.BaseName) { throw "Symbol package $($symbolPackage.Name) does not match runtime package $($package.Name)." }
 
 Add-Type -AssemblyName System.IO.Compression
 $archive = [IO.Compression.ZipFile]::OpenRead($package.FullName)
@@ -34,6 +38,14 @@ try {
     if ([string]::IsNullOrWhiteSpace($version)) { throw 'Package nuspec has no version.' }
 }
 finally { $archive.Dispose() }
+
+$symbolArchive = [IO.Compression.ZipFile]::OpenRead($symbolPackage.FullName)
+try {
+    $symbolEntries = @($symbolArchive.Entries | ForEach-Object FullName)
+    if ($symbolEntries -notcontains 'lib/net10.0/Lokad.Svg.pdb') { throw 'Symbol package is missing the net10.0 Lokad.Svg PDB.' }
+    if ($symbolEntries | Where-Object { $_.StartsWith('runtimes/', [StringComparison]::OrdinalIgnoreCase) }) { throw 'Symbol package must not contain runtime-specific assets.' }
+}
+finally { $symbolArchive.Dispose() }
 
 New-Item -ItemType Directory -Force -Path $ResultsDirectory | Out-Null
 $consumer = Join-Path $ResultsDirectory ('package-consumer-' + [Guid]::NewGuid().ToString('N'))

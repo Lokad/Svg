@@ -67,7 +67,8 @@ scenarios (which retain their probe reports) with:
 tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe
 ```
 
-To inspect the packed package and smoke-test it from a clean consumer directory:
+To inspect the packed runtime and symbol packages and smoke-test the runtime
+package from a clean consumer directory:
 
 ```powershell
 tools/test-package.ps1 -PackageDirectory artifacts/packages -ResultsDirectory artifacts/package-smoke
