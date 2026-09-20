@@ -73,8 +73,8 @@ positioning lists or general shaping. Its direct or inline `style` font subset i
 `font-family`, `font-weight`, `font-style` and `font-size`; admitted scalar
 positioning is `x`, `y`, `dx`, `dy` and `text-anchor` (`start`, `middle`, `end`).
 Its direct text content is limited to 32,768 UTF-16 characters across one
-conversion before layout; subtree reader nodes consume the conversion's parser-work
-limit. Positioned glyph storage is reserved from the conversion's geometry budget
+conversion before layout; subtree reader nodes and cmap/advance lookup traversal
+consume the conversion's parser-work limit. Positioned glyph storage is reserved from the conversion's geometry budget
 before allocation and released after each direct text run is lowered.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on

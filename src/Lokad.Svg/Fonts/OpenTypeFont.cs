@@ -77,8 +77,13 @@ internal static class OpenTypeFont
 
     /// <summary>Maps one Unicode scalar using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
+        => GetGlyphIndex(bytes, scalar, metrics, null, cancellationToken);
+
+    /// <summary>Maps one Unicode scalar with the conversion work counter used by direct-text layout.</summary>
+    internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (scalar > 0x10FFFF || scalar is >= 0xD800 and <= 0xDFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
+        workCounter?.Consume(cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange cmap = FindTable(data, CmapTag, "cmap");
         RequireTableLength(cmap, 4, "cmap");
@@ -88,7 +93,7 @@ internal static class OpenTypeFont
         OpenTypeTableRange? format12Candidate = null;
         for (int index = 0; index < encodingCount; index++)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            Consume(workCounter, cancellationToken);
             int record = cmap.Offset + 4 + index * 8;
             ushort platform = ReadUInt16(data, record);
             ushort encoding = ReadUInt16(data, record + 2);
@@ -101,7 +106,7 @@ internal static class OpenTypeFont
             if (isUnicodeFormat4) format4Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
             if (isUnicodeFormat12) format12Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
         }
-        if (format12Candidate is OpenTypeTableRange selected12) return GetFormat12GlyphIndex(data, selected12, scalar, metrics.GlyphCount);
+        if (format12Candidate is OpenTypeTableRange selected12) return GetFormat12GlyphIndex(data, selected12, scalar, metrics.GlyphCount, workCounter, cancellationToken);
         if (format4Candidate is not OpenTypeTableRange selected4) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported Unicode cmap format 4 table.");
         OpenTypeTableRange format4 = selected4;
         RequireTableLength(format4, 16, "cmap format 4");
@@ -116,9 +121,10 @@ internal static class OpenTypeFont
         int startCodes = endCodes + segments * 2 + 2;
         int deltas = startCodes + segments * 2;
         int ranges = deltas + segments * 2;
-        ValidateFormat4Segments(data, format4, length, segments, endCodes, startCodes, ranges, cancellationToken);
+        ValidateFormat4Segments(data, format4, length, segments, endCodes, startCodes, ranges, workCounter, cancellationToken);
         for (int index = 0; index < segments; index++)
         {
+            Consume(workCounter, cancellationToken);
             ushort end = ReadUInt16(data, endCodes + index * 2);
             if (scalar > end) continue;
             ushort start = ReadUInt16(data, startCodes + index * 2);
@@ -134,7 +140,7 @@ internal static class OpenTypeFont
         return 0;
     }
 
-    private static ushort GetFormat12GlyphIndex(ReadOnlySpan<byte> data, OpenTypeTableRange table, uint scalar, ushort glyphCount)
+    private static ushort GetFormat12GlyphIndex(ReadOnlySpan<byte> data, OpenTypeTableRange table, uint scalar, ushort glyphCount, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         RequireTableLength(table, 16, "cmap format 12");
         uint length = ReadUInt32(data, table.Offset + 4);
@@ -144,6 +150,7 @@ internal static class OpenTypeFont
         ushort glyph = 0;
         for (uint index = 0; index < groups; index++)
         {
+            Consume(workCounter, cancellationToken);
             int offset = checked(table.Offset + 16 + (int)index * 12);
             uint start = ReadUInt32(data, offset);
             uint end = ReadUInt32(data, offset + 4);
@@ -159,13 +166,13 @@ internal static class OpenTypeFont
         return glyph;
     }
 
-    private static void ValidateFormat4Segments(ReadOnlySpan<byte> data, OpenTypeTableRange format4, int length, int segments, int endCodes, int startCodes, int ranges, CancellationToken cancellationToken)
+    private static void ValidateFormat4Segments(ReadOnlySpan<byte> data, OpenTypeTableRange format4, int length, int segments, int endCodes, int startCodes, int ranges, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         int glyphIndexArray = checked(ranges + segments * 2);
         ushort previousEnd = 0;
         for (int index = 0; index < segments; index++)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            Consume(workCounter, cancellationToken);
             ushort end = ReadUInt16(data, endCodes + index * 2);
             ushort start = ReadUInt16(data, startCodes + index * 2);
             if (start > end || (index != 0 && end <= previousEnd)) throw InvalidFont("The cmap format 4 segments are not strictly ordered.");
@@ -186,8 +193,13 @@ internal static class OpenTypeFont
 
     /// <summary>Gets one advance using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static ushort GetAdvanceWidth(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
+        => GetAdvanceWidth(bytes, glyphIndex, metrics, null, cancellationToken);
+
+    /// <summary>Gets one advance with the conversion work counter used by direct-text layout.</summary>
+    internal static ushort GetAdvanceWidth(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
+        workCounter?.Consume(cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange hmtx = FindTable(data, HmtxTag, "hmtx");
         int metricIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
@@ -510,6 +522,12 @@ internal static class OpenTypeFont
     }
 
     private static ushort ApplyDelta(ushort glyph, short delta) => glyph == 0 ? (ushort)0 : unchecked((ushort)(glyph + delta));
+
+    private static void Consume(ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        if (workCounter is null) cancellationToken.ThrowIfCancellationRequested();
+        else workCounter.Consume(cancellationToken);
+    }
 
     private static OpenTypeTableRange FindTable(ReadOnlySpan<byte> data, uint wantedTag, string name)
     {

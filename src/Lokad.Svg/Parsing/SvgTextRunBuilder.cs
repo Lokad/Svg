@@ -7,6 +7,10 @@ using Lokad.Svg.Rendering;
 internal static class SvgTextRunBuilder
 {
     internal static SvgTextRun Create(SvgTextStyle style, string text, SvgFontSnapshot snapshot, RenderBudget budget, CancellationToken cancellationToken)
+        => Create(style, text, snapshot, budget, null, cancellationToken);
+
+    /// <summary>Builds one text run while sharing its font-table work with the containing conversion.</summary>
+    internal static SvgTextRun Create(SvgTextStyle style, string text, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(snapshot);
@@ -18,7 +22,7 @@ internal static class SvgTextRunBuilder
             throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
         }
 
-        SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.Anchor, budget, cancellationToken);
+        SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.Anchor, budget, workCounter, cancellationToken);
         return new SvgTextRun(style, font, glyphs);
     }
 
