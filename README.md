@@ -45,7 +45,7 @@ timed cancellation request, with:
 dotnet run -c Release --project tools/Lokad.Svg.MemoryProbe -- tests/Fixtures/original/solid-red.svg $env:TEMP/lokad-svg-probe.png --maximum-accounted-bytes 1048576
 ```
 
-The probe emits machine-readable elapsed-time, input-byte, cancellation-mode,
+The probe emits machine-readable elapsed-time, input-byte/input-SHA-256, cancellation-mode,
 conversion-managed-allocation, OS peak-working-set, operating-system,
 process-architecture and runtime-framework fields. `--mode xml-reader` instead
 emits a warmed direct BCL `XmlReader` traversal's managed allocation, renderer
@@ -57,8 +57,9 @@ These fields are observations for bounded child-process
 scenarios, not a renderer memory guarantee. `--cancel-after-ms` starts before input loading, while
 `--cancel-after-conversion-start-ms` starts after the input is loaded; both are
 timing dependent and are stress evidence rather than exact unit-test assertions.
-The scenario runner also retains one JSON summary per run, including every child
-report, the scenario-script/probe/fixture hashes, and their shared
+The scenario runner verifies every child's input bytes and SHA-256 against the
+input it launched, then retains one JSON summary per run containing every child
+report, the scenario-script/probe/renderer/fixture hashes, and their shared
 runtime/platform fingerprint.
 
 Run the child-process success, budget-denial, XML-workspace-denial, direct

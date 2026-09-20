@@ -18,16 +18,18 @@ internal static class Program
         CancellationTokenSource? conversionCancellation = null;
         string cancellationMode = options.CancelAfterConversionStartMilliseconds is not null ? "after-conversion-start" : options.CancelAfterMilliseconds is not null ? "before-input-load" : "none";
         int? inputBytes = null;
+        string? inputSha256 = null;
         long? conversionManagedAllocatedBytes = null;
         Stopwatch stopwatch = Stopwatch.StartNew();
         try
         {
             byte[] svg = File.ReadAllBytes(options.InputPath);
             inputBytes = svg.Length;
+            inputSha256 = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(svg)).ToLowerInvariant();
             if (options.Mode == ProbeMode.XmlReader)
             {
                 XmlReaderWorkspaceMeasurement measurement = XmlReaderWorkspaceProbe.Measure(svg, SvgRenderLimits.Default);
-                WriteReport("xml-reader-measured", stopwatch, process, null, null, inputBytes, cancellationMode, null, measurement.ManagedAllocatedBytes, measurement.WorkspaceBytes, measurement.TouchedCharacters, measurement.TextNodeCount, measurement.ReaderSetupManagedAllocatedBytes, measurement.ReaderTraversalManagedAllocatedBytes, measurement.AttributeAccessManagedAllocatedBytes);
+                WriteReport("xml-reader-measured", stopwatch, process, null, null, inputBytes, inputSha256, cancellationMode, null, measurement.ManagedAllocatedBytes, measurement.WorkspaceBytes, measurement.TouchedCharacters, measurement.TextNodeCount, measurement.ReaderSetupManagedAllocatedBytes, measurement.ReaderTraversalManagedAllocatedBytes, measurement.AttributeAccessManagedAllocatedBytes);
                 return 0;
             }
             conversionCancellation = options.CancelAfterConversionStartMilliseconds is int conversionDelay ? new CancellationTokenSource(conversionDelay) : null;
@@ -37,23 +39,23 @@ internal static class Program
             try { png = SvgConverter.ConvertToPng(svg, CreateOptions(options.MaximumAccountedBytes), cancellationToken); }
             finally { conversionManagedAllocatedBytes = GC.GetTotalAllocatedBytes(precise: true) - allocationStart; }
             File.WriteAllBytes(options.OutputPath, png.Span);
-            WriteReport("success", stopwatch, process, png.Length, null, inputBytes, cancellationMode, conversionManagedAllocatedBytes);
+            WriteReport("success", stopwatch, process, png.Length, null, inputBytes, inputSha256, cancellationMode, conversionManagedAllocatedBytes);
             return 0;
         }
         catch (SvgException exception)
         {
-            WriteReport("svg-error", stopwatch, process, null, exception.ErrorCode, inputBytes, cancellationMode, conversionManagedAllocatedBytes);
+            WriteReport("svg-error", stopwatch, process, null, exception.ErrorCode, inputBytes, inputSha256, cancellationMode, conversionManagedAllocatedBytes);
             return 1;
         }
         catch (OperationCanceledException) when ((cancellation is { IsCancellationRequested: true }) || (conversionCancellation is { IsCancellationRequested: true }))
         {
-            WriteReport("cancelled", stopwatch, process, null, null, inputBytes, cancellationMode, conversionManagedAllocatedBytes);
+            WriteReport("cancelled", stopwatch, process, null, null, inputBytes, inputSha256, cancellationMode, conversionManagedAllocatedBytes);
             return 3;
         }
         catch (Exception exception)
         {
             Console.Error.WriteLine(exception);
-            WriteReport("unhandled-" + exception.GetType().Name, stopwatch, process, null, null, inputBytes, cancellationMode, conversionManagedAllocatedBytes);
+            WriteReport("unhandled-" + exception.GetType().Name, stopwatch, process, null, null, inputBytes, inputSha256, cancellationMode, conversionManagedAllocatedBytes);
             return 4;
         }
         finally { conversionCancellation?.Dispose(); }
@@ -108,7 +110,7 @@ internal static class Program
         return new SvgRenderOptions(null, 1, SvgColor.Transparent, limits);
     }
 
-    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode, int? inputBytes, string cancellationMode, long? conversionManagedAllocatedBytes, long? xmlReaderManagedAllocatedBytes = null, long? xmlReaderWorkspaceBytes = null, long? xmlReaderTouchedCharacters = null, long? xmlReaderTextNodeCount = null, long? xmlReaderSetupManagedAllocatedBytes = null, long? xmlReaderTraversalManagedAllocatedBytes = null, long? xmlReaderAttributeAccessManagedAllocatedBytes = null)
+    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode, int? inputBytes, string? inputSha256, string cancellationMode, long? conversionManagedAllocatedBytes, long? xmlReaderManagedAllocatedBytes = null, long? xmlReaderWorkspaceBytes = null, long? xmlReaderTouchedCharacters = null, long? xmlReaderTextNodeCount = null, long? xmlReaderSetupManagedAllocatedBytes = null, long? xmlReaderTraversalManagedAllocatedBytes = null, long? xmlReaderAttributeAccessManagedAllocatedBytes = null)
     {
         process.Refresh();
         Console.WriteLine("outcome=" + outcome);
@@ -120,6 +122,7 @@ internal static class Program
         Console.WriteLine("cancellationMode=" + cancellationMode);
         if (conversionManagedAllocatedBytes is not null) Console.WriteLine("conversionManagedAllocatedBytes=" + conversionManagedAllocatedBytes.Value);
         if (inputBytes is not null) Console.WriteLine("inputBytes=" + inputBytes.Value);
+        if (inputSha256 is not null) Console.WriteLine("inputSha256=" + inputSha256);
         if (pngBytes is not null) Console.WriteLine("pngBytes=" + pngBytes.Value);
         if (svgErrorCode is not null) Console.WriteLine("svgErrorCode=" + svgErrorCode.Value);
         if (xmlReaderManagedAllocatedBytes is not null) Console.WriteLine("xmlReaderManagedAllocatedBytes=" + xmlReaderManagedAllocatedBytes.Value);

@@ -51,9 +51,11 @@ BCL or process-RSS guarantee. Each retained XML-reader report breaks managed
 allocation into setup, traversal and `Name`/`Value` property-access deltas,
 and counts text/CDATA nodes without retrieving their values; property access is a subset of
 traversal. This makes the probe's attribution inspectable without claiming
-cross-runtime exactness. One retained JSON summary groups every child report
-under its shared platform/runtime fingerprint, binds the scenario script, probe
-and fixed fixture hashes, and fails a mixed fingerprint.
+cross-runtime exactness. Each child report records its exact input byte count and
+SHA-256, which the parent verifies against the launched input. One retained JSON
+summary then groups every child report under its shared platform/runtime
+fingerprint, binds the scenario script, probe, renderer and fixed fixture hashes, and
+fails a mixed fingerprint.
 The definition table reserves a two-times requested-capacity allowance before the
 BCL selects its prime backing capacity, and verifies that returned capacity is
 within the allowance.

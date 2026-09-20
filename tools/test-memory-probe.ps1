@@ -11,8 +11,10 @@ if ($TimeoutMilliseconds -le 0) { throw 'TimeoutMilliseconds must be positive.' 
 if ($XmlReaderProbeRuns -le 0) { throw 'XmlReaderProbeRuns must be positive.' }
 
 $probeTool = Join-Path $PSScriptRoot 'Lokad.Svg.MemoryProbe/bin/Release/net10.0/Lokad.Svg.MemoryProbe.dll'
+$rendererAssembly = Join-Path (Split-Path -Parent $probeTool) 'Lokad.Svg.dll'
 $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
 if (-not (Test-Path -LiteralPath $probeTool)) { throw "Memory probe is not built: $probeTool" }
+if (-not (Test-Path -LiteralPath $rendererAssembly)) { throw "Memory probe renderer is not built: $rendererAssembly" }
 if (-not (Test-Path -LiteralPath $fixture)) { throw "Probe fixture is missing: $fixture" }
 
 New-Item -ItemType Directory -Force -Path $ResultsDirectory | Out-Null
@@ -28,6 +30,8 @@ function Invoke-Probe {
         [string[]] $ExtraArguments = @()
     )
 
+    $expectedInputBytes = [IO.FileInfo]::new($InputPath).Length
+    $expectedInputSha256 = (Get-FileHash -LiteralPath $InputPath -Algorithm SHA256).Hash.ToLowerInvariant()
     $start = [System.Diagnostics.ProcessStartInfo]::new('dotnet')
     $start.UseShellExecute = $false
     $start.CreateNoWindow = $true
@@ -62,12 +66,16 @@ function Invoke-Probe {
             $separator = $line.IndexOf('=')
             if ($separator -gt 0) { $values[$line.Substring(0, $separator)] = $line.Substring($separator + 1) }
         }
-        foreach ($requiredField in @('outcome', 'elapsedMilliseconds', 'peakWorkingSetBytes', 'operatingSystem', 'processArchitecture', 'runtimeFramework'))
+        foreach ($requiredField in @('outcome', 'elapsedMilliseconds', 'peakWorkingSetBytes', 'inputBytes', 'inputSha256', 'operatingSystem', 'processArchitecture', 'runtimeFramework'))
         {
             if (-not $values.ContainsKey($requiredField) -or [string]::IsNullOrWhiteSpace($values[$requiredField]))
             {
                 throw "The $Name probe did not emit a complete report. See $ResultsDirectory for its output."
             }
+        }
+        if ($values['inputBytes'] -ne $expectedInputBytes.ToString() -or $values['inputSha256'] -cne $expectedInputSha256)
+        {
+            throw "The $Name probe did not measure the expected input bytes. See $ResultsDirectory for its output."
         }
         $reports.Add([PSCustomObject]@{
             name = $Name
@@ -158,6 +166,7 @@ $summary = [ordered]@{
     runId = $runId
     scenarioScriptSha256 = (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash.ToLowerInvariant()
     probeToolSha256 = (Get-FileHash -LiteralPath $probeTool -Algorithm SHA256).Hash.ToLowerInvariant()
+    rendererAssemblySha256 = (Get-FileHash -LiteralPath $rendererAssembly -Algorithm SHA256).Hash.ToLowerInvariant()
     fixtureSha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant()
     runtimeFingerprint = [ordered]@{
         operatingSystem = $runtime.operatingSystem
