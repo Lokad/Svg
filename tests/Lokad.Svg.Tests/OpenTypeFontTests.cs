@@ -84,18 +84,18 @@ public sealed class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 0))], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         RenderBudget successfulBudget = new(1_024);
-        var successfulWork = new ParserWorkCounter(6);
+        var successfulWork = new ParserWorkCounter(15);
 
         using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, "A", 10, 0, 0, SvgTextAnchor.Start, successfulBudget, successfulWork, CancellationToken.None))
         {
             Assert.Single(glyphs.Glyphs);
         }
 
-        Assert.Equal(6, successfulWork.Used);
+        Assert.Equal(15, successfulWork.Used);
         Assert.Equal(0, successfulBudget.Snapshot().CurrentBytes);
         RenderBudget deniedBudget = new(1_024);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(font, "A", 10, 0, 0, SvgTextAnchor.Start, deniedBudget, new ParserWorkCounter(5), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(font, "A", 10, 0, 0, SvgTextAnchor.Start, deniedBudget, new ParserWorkCounter(14), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
@@ -1058,7 +1058,7 @@ public sealed class OpenTypeFontTests
     public async Task Charges_direct_glyph_sampling_work_to_the_public_conversion_limit()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
-        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 30);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 100);
         var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, limits, snapshot);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
 

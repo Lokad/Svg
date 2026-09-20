@@ -85,7 +85,7 @@ internal static class OpenTypeFont
         if (scalar > 0x10FFFF || scalar is >= 0xD800 and <= 0xDFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
         workCounter?.Consume(cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
-        OpenTypeTableRange cmap = FindTable(data, CmapTag, "cmap");
+        OpenTypeTableRange cmap = FindTable(data, CmapTag, "cmap", workCounter, cancellationToken);
         RequireTableLength(cmap, 4, "cmap");
         int encodingCount = ReadUInt16(data, cmap.Offset + 2);
         RequireTableLength(cmap, checked(4 + encodingCount * 8), "cmap");
@@ -201,7 +201,7 @@ internal static class OpenTypeFont
         if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
         workCounter?.Consume(cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
-        OpenTypeTableRange hmtx = FindTable(data, HmtxTag, "hmtx");
+        OpenTypeTableRange hmtx = FindTable(data, HmtxTag, "hmtx", workCounter, cancellationToken);
         int metricIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
         return ReadUInt16(data, hmtx.Offset + metricIndex * 4);
     }
@@ -530,10 +530,14 @@ internal static class OpenTypeFont
     }
 
     private static OpenTypeTableRange FindTable(ReadOnlySpan<byte> data, uint wantedTag, string name)
+        => FindTable(data, wantedTag, name, null, CancellationToken.None);
+
+    private static OpenTypeTableRange FindTable(ReadOnlySpan<byte> data, uint wantedTag, string name, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         int count = ReadUInt16(data, 4);
         for (int index = 0; index < count; index++)
         {
+            Consume(workCounter, cancellationToken);
             int entry = 12 + index * 16;
             if (ReadUInt32(data, entry) != wantedTag) continue;
             uint offset = ReadUInt32(data, entry + 8);
