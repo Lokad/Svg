@@ -174,6 +174,24 @@ public sealed class OpenTypeFontTests
         Assert.Equal([new OpenTypeQuadraticSegment(new(10, 3), new(15, 3), new(15, 3)), new OpenTypeQuadraticSegment(new(15, 3), new(10, 3), new(10, 3))], segments);
     }
 
+    [Fact]
+    public void Rejects_truncated_simple_glyph_flags_and_invalid_contour_endpoints()
+    {
+        byte[] truncated = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange truncatedGlyph = OpenTypeFont.GetGlyphDataRange(truncated, 1, CancellationToken.None);
+        WriteInt16(truncated, truncatedGlyph.Offset, 1);
+        WriteUInt16(truncated, truncatedGlyph.Offset + 10, 1);
+        WriteUInt16(truncated, truncatedGlyph.Offset + 12, 15);
+        byte[] invalid = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange invalidGlyph = OpenTypeFont.GetGlyphDataRange(invalid, 1, CancellationToken.None);
+        WriteInt16(invalid, invalidGlyph.Offset, 2);
+        WriteUInt16(invalid, invalidGlyph.Offset + 10, 2);
+        WriteUInt16(invalid, invalidGlyph.Offset + 12, 1);
+
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetSimpleGlyphPoints(truncated, 1, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetSimpleGlyphStructure(invalid, 1, CancellationToken.None)).ErrorCode);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;
