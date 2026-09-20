@@ -510,6 +510,26 @@ public sealed class RasterizationResearchTests
         Assert.Equal(7, quantized.MaximumMismatchY);
     }
 
+    [Fact]
+    public void Premultiplied_source_over_overlap_research_baselines_are_not_Chrome_exact()
+    {
+        RgbaImage originalReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-8x8.png")), 64);
+        RgbaImage phaseReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-half-grid-8x8.png")), 64);
+        PixelComparison originalRounded = PixelComparer.Compare(originalReference, RasterizePremultipliedSourceOverDiagonalOverlap(RedOverlapTriangle, BlueOverlapTriangle, false, true));
+        PixelComparison originalFloored = PixelComparer.Compare(originalReference, RasterizePremultipliedSourceOverDiagonalOverlap(RedOverlapTriangle, BlueOverlapTriangle, false, false));
+        PixelComparison originalSkiaRounded = PixelComparer.Compare(originalReference, RasterizePremultipliedSourceOverDiagonalOverlap(RedOverlapTriangle, BlueOverlapTriangle, true, true));
+        PixelComparison phaseRounded = PixelComparer.Compare(phaseReference, RasterizePremultipliedSourceOverDiagonalOverlap(RedHalfGridOverlapTriangle, BlueHalfGridOverlapTriangle, false, true));
+        PixelComparison phaseFloored = PixelComparer.Compare(phaseReference, RasterizePremultipliedSourceOverDiagonalOverlap(RedHalfGridOverlapTriangle, BlueHalfGridOverlapTriangle, false, false));
+        PixelComparison phaseSkiaRounded = PixelComparer.Compare(phaseReference, RasterizePremultipliedSourceOverDiagonalOverlap(RedHalfGridOverlapTriangle, BlueHalfGridOverlapTriangle, true, true));
+
+        AssertNonExactComparison(originalRounded, 19, 3, 1, 17, 0, 1, 7, 6);
+        AssertNonExactComparison(originalFloored, 26, 4, 1, 17, 0, 1, 7, 6);
+        AssertNonExactComparison(originalSkiaRounded, 21, 6, 2, 17, 0, 1, 7, 6);
+        AssertNonExactComparison(phaseRounded, 20, 13, 5, 18, 0, 1, 6, 7);
+        AssertNonExactComparison(phaseFloored, 24, 14, 5, 18, 0, 1, 6, 7);
+        AssertNonExactComparison(phaseSkiaRounded, 21, 13, 5, 19, 0, 1, 6, 7);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -646,8 +666,44 @@ public sealed class RasterizationResearchTests
         return new RgbaImage(8, 8, pixels);
     }
 
+    private static RgbaImage RasterizePremultipliedSourceOverDiagonalOverlap(ReadOnlySpan<Point> redTriangle, ReadOnlySpan<Point> blueTriangle, bool useSkiaAlphaMultiply, bool roundUnpremultiply)
+    {
+        RgbaImage redCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(redTriangle);
+        RgbaImage blueCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(blueTriangle);
+        byte[] pixels = new byte[8 * 8 * 4];
+        for (int index = 0; index < 8 * 8; index++)
+        {
+            int offset = index * 4;
+            byte redAlpha = ToCoverageOpacity(redCoverage.Pixels[offset + 3], useSkiaAlphaMultiply);
+            byte blueAlpha = ToCoverageOpacity(blueCoverage.Pixels[offset + 3], useSkiaAlphaMultiply);
+            BlendPremultipliedSourceOver(pixels.AsSpan(offset, 4), redAlpha, 0, 0, redAlpha, useSkiaAlphaMultiply);
+            BlendPremultipliedSourceOver(pixels.AsSpan(offset, 4), 0, 0, blueAlpha, blueAlpha, useSkiaAlphaMultiply);
+            byte alpha = pixels[offset + 3];
+            pixels[offset] = Unpremultiply(pixels[offset], alpha, roundUnpremultiply);
+            pixels[offset + 1] = Unpremultiply(pixels[offset + 1], alpha, roundUnpremultiply);
+            pixels[offset + 2] = Unpremultiply(pixels[offset + 2], alpha, roundUnpremultiply);
+        }
+        return new RgbaImage(8, 8, pixels);
+    }
+
     private static byte ToCoverageOpacity(byte coverage, bool useSkiaAlphaMultiply)
         => useSkiaAlphaMultiply ? (byte)((coverage * 128 + 255) >> 8) : (byte)((coverage * 128 + 127) / 255);
+
+    private static void BlendPremultipliedSourceOver(Span<byte> destination, byte red, byte green, byte blue, byte alpha, bool useSkiaAlphaMultiply)
+    {
+        int inverseSourceAlpha = byte.MaxValue - alpha;
+        destination[0] = AddSaturate(red, MultiplyByte(destination[0], inverseSourceAlpha, useSkiaAlphaMultiply));
+        destination[1] = AddSaturate(green, MultiplyByte(destination[1], inverseSourceAlpha, useSkiaAlphaMultiply));
+        destination[2] = AddSaturate(blue, MultiplyByte(destination[2], inverseSourceAlpha, useSkiaAlphaMultiply));
+        destination[3] = AddSaturate(alpha, MultiplyByte(destination[3], inverseSourceAlpha, useSkiaAlphaMultiply));
+    }
+
+    private static byte MultiplyByte(byte left, int right, bool useSkiaAlphaMultiply)
+        => useSkiaAlphaMultiply ? (byte)((left * right + 255) >> 8) : (byte)((left * right + 127) / 255);
+
+    private static byte AddSaturate(byte left, byte right) => (byte)Math.Min(byte.MaxValue, left + right);
+
+    private static byte Unpremultiply(byte value, byte alpha, bool round) => alpha == 0 ? byte.MinValue : (byte)Math.Min(byte.MaxValue, round ? (value * byte.MaxValue + alpha / 2) / alpha : value * byte.MaxValue / alpha);
 
     private static void BlendSourceOver(Span<byte> destination, byte red, byte green, byte blue, byte alpha)
     {
@@ -668,6 +724,20 @@ public sealed class RasterizationResearchTests
         int sourceContribution = (source * sourceAlpha + outputAlpha / 2) / outputAlpha;
         int retainedContribution = (destination * destinationAlpha * inverseSourceAlpha + 255 * outputAlpha - 1) / (255 * outputAlpha);
         return checked((byte)(sourceContribution + retainedContribution));
+    }
+
+    private static void AssertNonExactComparison(PixelComparison comparison, int changedPixelCount, byte maximumChannelError, byte maximumAlphaError, int alphaChangedPixelCount, int minimumMismatchX, int minimumMismatchY, int maximumMismatchX, int maximumMismatchY)
+    {
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(changedPixelCount, comparison.ChangedPixelCount);
+        Assert.Equal(maximumChannelError, comparison.MaximumChannelError);
+        Assert.Equal(maximumAlphaError, comparison.MaximumAlphaError);
+        Assert.Equal(alphaChangedPixelCount, comparison.AlphaChangedPixelCount);
+        Assert.Equal(minimumMismatchX, comparison.MinimumMismatchX);
+        Assert.Equal(minimumMismatchY, comparison.MinimumMismatchY);
+        Assert.Equal(maximumMismatchX, comparison.MaximumMismatchX);
+        Assert.Equal(maximumMismatchY, comparison.MaximumMismatchY);
     }
 
     private static List<Point> ClipToPixel(ReadOnlySpan<Point> polygon, int x, int y)

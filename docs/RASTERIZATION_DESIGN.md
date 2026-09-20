@@ -178,9 +178,20 @@ The phase companion rejects treating the latter result as a calibration lead:
 source-guided fixed-edge coverage plus continuous source-over changes 29 of 64
 pixels (13/5), while byte opacity/compositing changes 23 (13/5). Both mismatch
 envelopes are `(0,1)`–`(6,7)`. The original near fit was therefore phase-specific.
-None of these candidates is exact; do not adjust another rounding rule or admit
-geometry from it. Any resumed P1.3 work needs a new discriminating mechanism that
-matches both overlap phases exactly.
+
+A distinct discrete compositing experiment retains `coverage × opacity` as byte
+premultiplied channels across both source-over operations, then unpremultiplies only
+once for PNG output. This is not an edge-rounding variant. With ordinary rounded
+byte products and rounded final unpremultiplication, it improves the original phase
+to 19 changed pixels (maximum channel/alpha error 3/1) and the companion to 20
+(13/5). Flooring final unpremultiplication is worse at 26 (4/1) and 24 (14/5),
+respectively; the tested Skia-style byte product is also worse at 21 (6/2) and 21
+(13/5). The retained premultiplied intermediate is therefore a measurable
+cross-phase improvement over the straight-byte candidate, but it is non-exact and
+the phase companion still has a large channel error. It rejects straight
+intermediate compositing as sufficient; it does not identify the browser backend.
+Do not tune it or admit geometry. Any resumed P1.3 work needs a new discriminating
+mechanism that matches both overlap phases exactly.
 
 ## Calibration source pin
 
