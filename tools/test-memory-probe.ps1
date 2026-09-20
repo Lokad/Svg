@@ -61,9 +61,12 @@ function Invoke-Probe {
             $separator = $line.IndexOf('=')
             if ($separator -gt 0) { $values[$line.Substring(0, $separator)] = $line.Substring($separator + 1) }
         }
-        if (-not $values.ContainsKey('outcome') -or -not $values.ContainsKey('elapsedMilliseconds') -or -not $values.ContainsKey('peakWorkingSetBytes'))
+        foreach ($requiredField in @('outcome', 'elapsedMilliseconds', 'peakWorkingSetBytes', 'operatingSystem', 'processArchitecture', 'runtimeFramework'))
         {
-            throw "The $Name probe did not emit a complete report. See $ResultsDirectory for its output."
+            if (-not $values.ContainsKey($requiredField) -or [string]::IsNullOrWhiteSpace($values[$requiredField]))
+            {
+                throw "The $Name probe did not emit a complete report. See $ResultsDirectory for its output."
+            }
         }
         return $values
     }

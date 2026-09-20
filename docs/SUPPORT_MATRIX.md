@@ -46,8 +46,9 @@ Every compressed PNG byte produced by the owned/caller-memory buffer and both
 streaming IDAT sinks is charged before its copy, checksum, or output write.
 The isolated Windows probe directly traverses a 64 KiB text node, a full
 short-attribute root and 255 × 4 KiB attribute values below that allowance;
-those observations are pinned-runtime regression evidence, not a BCL or
-process-RSS guarantee. Each retained XML-reader report breaks managed allocation
+those observations are platform/runtime-fingerprinted regression evidence, not a
+BCL or process-RSS guarantee. Each retained XML-reader report breaks managed
+allocation
 into setup, traversal and `Name`/`Value` property-access deltas, and counts
 text/CDATA nodes without retrieving their values; property access is a subset of
 traversal. This makes the probe's attribution inspectable without claiming

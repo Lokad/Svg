@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace Lokad.Svg.MemoryProbe;
 
@@ -113,6 +114,9 @@ internal static class Program
         Console.WriteLine("outcome=" + outcome);
         Console.WriteLine("elapsedMilliseconds=" + stopwatch.ElapsedMilliseconds);
         Console.WriteLine("peakWorkingSetBytes=" + process.PeakWorkingSet64);
+        Console.WriteLine("operatingSystem=" + RuntimeInformation.OSDescription);
+        Console.WriteLine("processArchitecture=" + RuntimeInformation.ProcessArchitecture);
+        Console.WriteLine("runtimeFramework=" + RuntimeInformation.FrameworkDescription);
         Console.WriteLine("cancellationMode=" + cancellationMode);
         if (conversionManagedAllocatedBytes is not null) Console.WriteLine("conversionManagedAllocatedBytes=" + conversionManagedAllocatedBytes.Value);
         if (inputBytes is not null) Console.WriteLine("inputBytes=" + inputBytes.Value);

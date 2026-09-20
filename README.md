@@ -46,10 +46,11 @@ dotnet run -c Release --project tools/Lokad.Svg.MemoryProbe -- tests/Fixtures/or
 ```
 
 The probe emits machine-readable elapsed-time, input-byte, cancellation-mode,
-conversion-managed-allocation and OS peak-working-set fields. `--mode xml-reader`
-instead emits a warmed direct BCL `XmlReader` traversal's managed allocation,
-renderer workspace allowance and touched attribute characters without producing a
-PNG. Its XML-reader report separately records construction, whole-traversal and
+conversion-managed-allocation, OS peak-working-set, operating-system,
+process-architecture and runtime-framework fields. `--mode xml-reader` instead
+emits a warmed direct BCL `XmlReader` traversal's managed allocation, renderer
+workspace allowance and touched attribute characters without producing a PNG. Its
+XML-reader report separately records construction, whole-traversal and
 `Name`/`Value`-access allocation deltas, so the scope of each managed observation
 can be inspected, and counts text/CDATA nodes without materializing their values.
 These fields are observations for bounded child-process
