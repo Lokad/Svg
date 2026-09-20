@@ -786,6 +786,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Concurrent_direct_text_conversions_share_an_immutable_snapshot_safely()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
+        byte[] expected = SvgConverter.ConvertToPng(svg, options, CancellationToken.None).ToArray();
+
+        ReadOnlyMemory<byte>[] results = await Task.WhenAll(Enumerable.Range(0, 8).Select(_ => SvgConverter.ConvertToPngAsync(svg, options, CancellationToken.None)));
+
+        Assert.All(results, result => Assert.Equal(expected, result.ToArray()));
+    }
+
+    [Fact]
     public async Task Converts_direct_text_with_a_true_quadratic_glyph_segment()
     {
         byte[] font = CreateTriangleFont();
