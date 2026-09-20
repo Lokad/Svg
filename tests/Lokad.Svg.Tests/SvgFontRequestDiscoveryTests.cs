@@ -164,4 +164,12 @@ public sealed class SvgFontRequestDiscoveryTests
 
         Assert.Empty(requests);
     }
+
+    [Fact]
+    public void Applies_the_renderer_stylesheet_cascade_when_discovering_hidden_text()
+    {
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><style>.hidden { display: none; }</style><g class='hidden'><text font-family='Unused'>x</text></g></svg>"u8.ToArray(), CancellationToken.None);
+
+        Assert.Empty(requests);
+    }
 }
