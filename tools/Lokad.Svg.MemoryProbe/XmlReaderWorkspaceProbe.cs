@@ -16,6 +16,7 @@ internal static class XmlReaderWorkspaceProbe
             managedAllocatedBytes,
             SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement),
             traversal.TouchedCharacters,
+            traversal.TextNodeCount,
             traversal.ReaderSetupManagedAllocatedBytes,
             traversal.ReaderTraversalManagedAllocatedBytes,
             traversal.AttributeAccessManagedAllocatedBytes);
@@ -40,6 +41,7 @@ internal static class XmlReaderWorkspaceProbe
             IgnoreProcessingInstructions = true
         };
         long touchedCharacters = 0;
+        long textNodeCount = 0;
         long attributeAccessManagedAllocatedBytes = 0;
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, settings);
@@ -47,6 +49,7 @@ internal static class XmlReaderWorkspaceProbe
         long traversalStart = GC.GetTotalAllocatedBytes(precise: true);
         while (reader.Read())
         {
+            if (reader.NodeType is XmlNodeType.Text or XmlNodeType.CDATA) textNodeCount = checked(textNodeCount + 1);
             if (reader.NodeType != XmlNodeType.Element || !reader.HasAttributes) continue;
             while (reader.MoveToNextAttribute())
             {
@@ -59,7 +62,7 @@ internal static class XmlReaderWorkspaceProbe
             reader.MoveToElement();
         }
         long readerTraversalManagedAllocatedBytes = GC.GetTotalAllocatedBytes(precise: true) - traversalStart;
-        return new XmlReaderTraversalMeasurement(touchedCharacters, readerSetupManagedAllocatedBytes, readerTraversalManagedAllocatedBytes, attributeAccessManagedAllocatedBytes);
+        return new XmlReaderTraversalMeasurement(touchedCharacters, textNodeCount, readerSetupManagedAllocatedBytes, readerTraversalManagedAllocatedBytes, attributeAccessManagedAllocatedBytes);
     }
 }
 
@@ -67,12 +70,14 @@ internal readonly record struct XmlReaderWorkspaceMeasurement(
     long ManagedAllocatedBytes,
     long WorkspaceBytes,
     long TouchedCharacters,
+    long TextNodeCount,
     long ReaderSetupManagedAllocatedBytes,
     long ReaderTraversalManagedAllocatedBytes,
     long AttributeAccessManagedAllocatedBytes);
 
 internal readonly record struct XmlReaderTraversalMeasurement(
     long TouchedCharacters,
+    long TextNodeCount,
     long ReaderSetupManagedAllocatedBytes,
     long ReaderTraversalManagedAllocatedBytes,
     long AttributeAccessManagedAllocatedBytes);

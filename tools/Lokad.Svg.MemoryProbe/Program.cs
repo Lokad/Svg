@@ -26,7 +26,7 @@ internal static class Program
             if (options.Mode == ProbeMode.XmlReader)
             {
                 XmlReaderWorkspaceMeasurement measurement = XmlReaderWorkspaceProbe.Measure(svg, SvgRenderLimits.Default);
-                WriteReport("xml-reader-measured", stopwatch, process, null, null, inputBytes, cancellationMode, null, measurement.ManagedAllocatedBytes, measurement.WorkspaceBytes, measurement.TouchedCharacters, measurement.ReaderSetupManagedAllocatedBytes, measurement.ReaderTraversalManagedAllocatedBytes, measurement.AttributeAccessManagedAllocatedBytes);
+                WriteReport("xml-reader-measured", stopwatch, process, null, null, inputBytes, cancellationMode, null, measurement.ManagedAllocatedBytes, measurement.WorkspaceBytes, measurement.TouchedCharacters, measurement.TextNodeCount, measurement.ReaderSetupManagedAllocatedBytes, measurement.ReaderTraversalManagedAllocatedBytes, measurement.AttributeAccessManagedAllocatedBytes);
                 return 0;
             }
             conversionCancellation = options.CancelAfterConversionStartMilliseconds is int conversionDelay ? new CancellationTokenSource(conversionDelay) : null;
@@ -107,7 +107,7 @@ internal static class Program
         return new SvgRenderOptions(null, 1, SvgColor.Transparent, limits);
     }
 
-    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode, int? inputBytes, string cancellationMode, long? conversionManagedAllocatedBytes, long? xmlReaderManagedAllocatedBytes = null, long? xmlReaderWorkspaceBytes = null, long? xmlReaderTouchedCharacters = null, long? xmlReaderSetupManagedAllocatedBytes = null, long? xmlReaderTraversalManagedAllocatedBytes = null, long? xmlReaderAttributeAccessManagedAllocatedBytes = null)
+    private static void WriteReport(string outcome, Stopwatch stopwatch, Process process, int? pngBytes, SvgErrorCode? svgErrorCode, int? inputBytes, string cancellationMode, long? conversionManagedAllocatedBytes, long? xmlReaderManagedAllocatedBytes = null, long? xmlReaderWorkspaceBytes = null, long? xmlReaderTouchedCharacters = null, long? xmlReaderTextNodeCount = null, long? xmlReaderSetupManagedAllocatedBytes = null, long? xmlReaderTraversalManagedAllocatedBytes = null, long? xmlReaderAttributeAccessManagedAllocatedBytes = null)
     {
         process.Refresh();
         Console.WriteLine("outcome=" + outcome);
@@ -121,6 +121,7 @@ internal static class Program
         if (xmlReaderManagedAllocatedBytes is not null) Console.WriteLine("xmlReaderManagedAllocatedBytes=" + xmlReaderManagedAllocatedBytes.Value);
         if (xmlReaderWorkspaceBytes is not null) Console.WriteLine("xmlReaderWorkspaceBytes=" + xmlReaderWorkspaceBytes.Value);
         if (xmlReaderTouchedCharacters is not null) Console.WriteLine("xmlReaderTouchedCharacters=" + xmlReaderTouchedCharacters.Value);
+        if (xmlReaderTextNodeCount is not null) Console.WriteLine("xmlReaderTextNodeCount=" + xmlReaderTextNodeCount.Value);
         if (xmlReaderSetupManagedAllocatedBytes is not null) Console.WriteLine("xmlReaderSetupManagedAllocatedBytes=" + xmlReaderSetupManagedAllocatedBytes.Value);
         if (xmlReaderTraversalManagedAllocatedBytes is not null) Console.WriteLine("xmlReaderTraversalManagedAllocatedBytes=" + xmlReaderTraversalManagedAllocatedBytes.Value);
         if (xmlReaderAttributeAccessManagedAllocatedBytes is not null) Console.WriteLine("xmlReaderAttributeAccessManagedAllocatedBytes=" + xmlReaderAttributeAccessManagedAllocatedBytes.Value);

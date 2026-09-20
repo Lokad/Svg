@@ -186,8 +186,9 @@ timer after input is loaded and cancels a 4 MiB stylesheet scan without producin
 output. Its Windows child-process suite now also warms and directly traverses a
 64 KiB metadata text node, a 256-short-attribute root and a root with 255 4 KiB
 attribute values through the same BCL `XmlReader` settings and non-copying stream,
-records managed allocation/touched characters, and rejects a measured allocation
-above the renderer workspace allowance. The current Windows reports record
+records managed allocation, touched attribute characters and text/CDATA node
+counts, and rejects a measured allocation above the renderer workspace allowance.
+The current Windows reports record
 27,216 managed bytes against the 262,412-byte text allowance, 104,152 bytes
 against 131,072 for short attributes, and 2,233,296 bytes against 4,190,904 for
 large values. That is regression evidence for the pinned runtime, not an exact
