@@ -497,7 +497,7 @@ internal static class OpenTypeFont
             {
                 foreach (OpenTypeQuadraticSegment segment in GetSimpleGlyphContours(bytes, glyphIndex, metrics, workCounter, cancellationToken))
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    Consume(workCounter, cancellationToken);
                     if (contours.Count == MaximumExpandedGlyphSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded glyph segment count exceeds the supported limit.");
                     contours.Add(Transform(segment, transform));
                 }

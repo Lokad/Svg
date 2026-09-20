@@ -1715,6 +1715,29 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Glyph_expansion_charges_transformed_segment_insertion_to_the_shared_work_counter()
+    {
+        byte[] font = CreateTriangleFont();
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+        RenderBudget successfulBudget = new(10_000);
+        var successfulWork = new ParserWorkCounter(19);
+
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetGlyphContours(font, 1, metrics, successfulBudget, successfulWork, CancellationToken.None))
+        {
+            Assert.Equal(3, contours.Segments.Length);
+        }
+
+        Assert.Equal(19, successfulWork.Used);
+        Assert.Equal(0, successfulBudget.Snapshot().CurrentBytes);
+        RenderBudget deniedBudget = new(10_000);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 1, metrics, deniedBudget, new ParserWorkCounter(18), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Parser_failure_after_retaining_a_glyph_contour_releases_its_scene_budget()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
