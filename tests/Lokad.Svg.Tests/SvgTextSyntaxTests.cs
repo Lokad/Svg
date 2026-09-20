@@ -6,6 +6,13 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgTextSyntaxTests
 {
     [Fact]
+    public void Inherited_text_style_requires_a_positive_weight_and_font_size()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 0, false, 16));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 0));
+    }
+
+    [Fact]
     public void Parses_the_initial_explicit_text_style_and_baseline()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Example' font-weight='bold' font-style='italic' font-size='12.5' x='2' y='3'/>"));

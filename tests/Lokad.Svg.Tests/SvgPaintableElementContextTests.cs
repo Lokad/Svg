@@ -12,7 +12,7 @@ public sealed class SvgPaintableElementContextTests
         using XmlReader reader = XmlReader.Create(new StringReader("<rect fill='currentColor' color='blue' display='none' transform='translate(4, 5)'/>"));
         Assert.True(reader.Read());
         IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase) { ["blue"] = new SvgColor(0, 0, 255, 255) };
-        SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), default, namedColors, new ParserWorkCounter(100), CancellationToken.None);
+        SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, default, namedColors, new ParserWorkCounter(100), CancellationToken.None);
 
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
 
@@ -27,7 +27,7 @@ public sealed class SvgPaintableElementContextTests
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text style='fill: #f00; font-family: Example; font-weight: 700; font-style: italic; font-size: 12'/>"));
         Assert.True(reader.Read());
-        SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), default, new Dictionary<string, SvgColor>(), new ParserWorkCounter(100), CancellationToken.None);
+        SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, default, new Dictionary<string, SvgColor>(), new ParserWorkCounter(100), CancellationToken.None);
 
         SvgResolvedDirectTextElement element = context.ResolveTextShape(reader);
 
@@ -48,12 +48,12 @@ public sealed class SvgPaintableElementContextTests
         ParserWorkCounter workCounter = new(100);
         using SvgDocumentState state = new(new RenderBudget(10_000), workCounter, CancellationToken.None);
         SvgInheritedPresentation rootPresentation = new(new SvgPaint(new SvgColor(1, 2, 3, 255), false, 255, new SvgColor(4, 5, 6, 255), false), true, true, AxisTransform.Identity);
-        SvgRootAttributes root = new(rootPresentation, null, 255, null, null, null);
+        SvgRootAttributes root = new(rootPresentation, SvgInheritedTextStyle.Default, null, 255, null, null, null);
 
         SvgPaintableElementContext rootContext = SvgPaintableElementContext.Create(reader, false, root, state, new Dictionary<string, SvgColor>(), workCounter, CancellationToken.None);
 
         SvgInheritedPresentation groupPresentation = new(new SvgPaint(new SvgColor(7, 8, 9, 255), true, 128, new SvgColor(10, 11, 12, 255), true), false, false, new AxisTransform(2, 3, 4, 5));
-        state.Groups.Add(new SvgGroupScope(1, SvgGroupKind.Group, groupPresentation, false));
+        state.Groups.Add(new SvgGroupScope(1, SvgGroupKind.Group, groupPresentation, SvgInheritedTextStyle.Default, false));
         SvgPaintableElementContext groupContext = SvgPaintableElementContext.Create(reader, false, root, state, new Dictionary<string, SvgColor>(), workCounter, CancellationToken.None);
 
         Assert.Equal(rootPresentation, rootContext.InheritedPresentation);

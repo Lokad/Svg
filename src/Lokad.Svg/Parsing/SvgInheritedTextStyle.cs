@@ -3,9 +3,24 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents the admitted single-font text properties inherited by a rendered text descendant.</summary>
-internal readonly record struct SvgInheritedTextStyle(string? Family, int Weight, bool Italic, double FontSize)
+internal sealed class SvgInheritedTextStyle
 {
     internal static SvgInheritedTextStyle Default { get; } = new(null, 400, false, 16);
+
+    internal SvgInheritedTextStyle(string? family, int weight, bool italic, double fontSize)
+    {
+        if (weight <= 0) throw new ArgumentOutOfRangeException(nameof(weight));
+        if (!double.IsFinite(fontSize) || fontSize <= 0) throw new ArgumentOutOfRangeException(nameof(fontSize));
+        Family = family;
+        Weight = weight;
+        Italic = italic;
+        FontSize = fontSize;
+    }
+
+    internal string? Family { get; }
+    internal int Weight { get; }
+    internal bool Italic { get; }
+    internal double FontSize { get; }
 }
 
 /// <summary>Combines inline, presentation, and ancestor text properties using the direct-text precedence subset.</summary>
