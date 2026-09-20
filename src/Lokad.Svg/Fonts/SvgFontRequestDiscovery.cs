@@ -127,6 +127,10 @@ internal static class SvgFontRequestDiscovery
                         elementGroups.Pop();
                     }
                 }
+                else if (reader.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
+                {
+                    if (directText.TryPeek(out TextRequestCandidate? candidate) && candidate is not null) candidate.HasTextContent = true;
+                }
             }
             if (!hasRoot) throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
         }
@@ -139,7 +143,7 @@ internal static class SvgFontRequestDiscovery
 
     private static void AddCandidate(TextRequestCandidate? candidate, List<SvgFontFaceRequest> requests, HashSet<TextRequestKey> seen)
     {
-        if (candidate is null || candidate.HasChildElement) return;
+        if (candidate is null || candidate.HasChildElement || !candidate.HasTextContent) return;
         SvgFontFaceRequest request = candidate.Request;
         if (!seen.Add(new TextRequestKey(request.Family, request.Weight, request.Italic))) return;
         if (requests.Count == MaximumRequests) throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG text font request count exceeds the preparation limit.");
@@ -168,6 +172,8 @@ internal static class SvgFontRequestDiscovery
         internal SvgFontFaceRequest Request { get; } = request;
 
         internal bool HasChildElement { get; set; }
+
+        internal bool HasTextContent { get; set; }
     }
 
     private sealed class TextRequestKeyComparer : IEqualityComparer<TextRequestKey>
