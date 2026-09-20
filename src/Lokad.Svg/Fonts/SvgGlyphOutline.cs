@@ -19,7 +19,8 @@ internal static class SvgGlyphOutline
         double scale = fontSize / font.UnitsPerEm;
         if (!double.IsFinite(scale)) throw new ArgumentOutOfRangeException(nameof(fontSize));
 
-        OpenTypeQuadraticSegment[] source = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, cancellationToken);
+        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, budget, cancellationToken);
+        OpenTypeQuadraticSegment[] source = decoded.Segments;
         if (source.Length == 0) return [];
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + (long)source.Length * 48L), SvgMemoryCategory.Geometry);
         try

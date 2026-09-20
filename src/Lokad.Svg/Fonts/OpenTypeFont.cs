@@ -1,5 +1,7 @@
 namespace Lokad.Svg.Fonts;
 
+using Lokad.Svg.Rendering;
+
 /// <summary>
 /// Validates the bounded standalone-TrueType subset required before glyph parsing.
 /// This reader borrows its input and does not retain, copy, or cache font bytes.
@@ -411,6 +413,19 @@ internal static class OpenTypeFont
         return contours.ToArray();
     }
 
+    /// <summary>Expands one glyph and owns the budget reservation for the decoded segment array until its consumer disposes the storage.</summary>
+    internal static OpenTypeGlyphContourStorage GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        var active = new HashSet<ushort>();
+        var contours = new List<OpenTypeQuadraticSegment>();
+        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, cancellationToken);
+        if (contours.Count == 0) return new([], null);
+        RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + (long)contours.Count * 48L), SvgMemoryCategory.Geometry);
+        try { return new(contours.ToArray(), reservation); }
+        catch { reservation.Dispose(); throw; }
+    }
+
     private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, HashSet<ushort> active, int depth, OpenTypeOutlineTransform transform, List<OpenTypeQuadraticSegment> contours, CancellationToken cancellationToken)
     {
         if (glyphIndex >= metrics.GlyphCount) throw InvalidFont("A composite glyf component references a glyph outside maxp.");
@@ -553,6 +568,26 @@ internal readonly record struct OpenTypeOutlinePoint(double X, double Y);
 
 /// <summary>Represents one quadratic segment; a line has its control equal to its end.</summary>
 internal readonly record struct OpenTypeQuadraticSegment(OpenTypeOutlinePoint Start, OpenTypeOutlinePoint Control, OpenTypeOutlinePoint End);
+
+/// <summary>Owns decoded glyph segments and their temporary geometry reservation until SVG-coordinate transformation completes.</summary>
+internal sealed class OpenTypeGlyphContourStorage : IDisposable
+{
+    private RenderBudget.BudgetReservation? _reservation;
+
+    internal OpenTypeGlyphContourStorage(OpenTypeQuadraticSegment[] segments, RenderBudget.BudgetReservation? reservation)
+    {
+        Segments = segments;
+        _reservation = reservation;
+    }
+
+    internal OpenTypeQuadraticSegment[] Segments { get; }
+
+    public void Dispose()
+    {
+        _reservation?.Dispose();
+        _reservation = null;
+    }
+}
 
 /// <summary>Represents the linear part of one validated composite-glyph transform.</summary>
 internal readonly record struct OpenTypeAffineTransform(double XX, double XY, double YX, double YY);
