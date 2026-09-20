@@ -36,6 +36,12 @@ jobs:
           name: chrome-smoke-${{ matrix.os }}
           path: artifacts/chrome-smoke
           if-no-files-found: warn
+      - if: always() && runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: memory-probe-windows
+          path: artifacts/memory-probe
+          if-no-files-found: warn
       - run: dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build -o artifacts/packages
       - shell: pwsh
         run: tools/test-package.ps1 -PackageDirectory artifacts/packages -ResultsDirectory artifacts/package-smoke
