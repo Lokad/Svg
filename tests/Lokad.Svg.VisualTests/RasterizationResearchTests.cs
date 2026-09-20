@@ -423,6 +423,63 @@ public sealed class RasterizationResearchTests
         Assert.Equal(6, halfGrid.MaximumMismatchY);
     }
 
+    [Fact]
+    public void Analytic_semiopaque_diagonal_source_over_baseline_is_not_Chrome_exact()
+    {
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-8x8.png")), 64);
+        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeAnalyticDiagonalOverlap());
+
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(37, comparison.ChangedPixelCount);
+        Assert.Equal((byte)33, comparison.MaximumChannelError);
+        Assert.Equal((byte)27, comparison.MaximumAlphaError);
+        Assert.Equal(36, comparison.AlphaChangedPixelCount);
+        Assert.Equal(0, comparison.MinimumMismatchX);
+        Assert.Equal(1, comparison.MinimumMismatchY);
+        Assert.Equal(7, comparison.MaximumMismatchX);
+        Assert.Equal(7, comparison.MaximumMismatchY);
+    }
+
+    [Fact]
+    public void Source_guided_fixed_edge_semiopaque_source_over_baseline_is_not_Chrome_exact()
+    {
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-8x8.png")), 64);
+        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeSourceGuidedDiagonalOverlap());
+
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(26, comparison.ChangedPixelCount);
+        Assert.Equal((byte)3, comparison.MaximumChannelError);
+        Assert.Equal((byte)1, comparison.MaximumAlphaError);
+        Assert.Equal(19, comparison.AlphaChangedPixelCount);
+        Assert.Equal(0, comparison.MinimumMismatchX);
+        Assert.Equal(1, comparison.MinimumMismatchY);
+        Assert.Equal(7, comparison.MaximumMismatchX);
+        Assert.Equal(6, comparison.MaximumMismatchY);
+    }
+
+    [Fact]
+    public void Quantized_source_over_diagonal_overlap_baseline_is_not_Chrome_exact()
+    {
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-8x8.png")), 64);
+        RgbaImage candidate = RasterizeQuantizedSourceOverDiagonalOverlap();
+        PixelComparison comparison = PixelComparer.Compare(reference, candidate);
+        PixelComparison skiaAlphaMultiply = PixelComparer.Compare(candidate, RasterizeQuantizedSourceOverDiagonalOverlap(true));
+
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(22, comparison.ChangedPixelCount);
+        Assert.Equal((byte)6, comparison.MaximumChannelError);
+        Assert.Equal((byte)1, comparison.MaximumAlphaError);
+        Assert.Equal(17, comparison.AlphaChangedPixelCount);
+        Assert.Equal(0, comparison.MinimumMismatchX);
+        Assert.Equal(1, comparison.MinimumMismatchY);
+        Assert.Equal(7, comparison.MaximumMismatchX);
+        Assert.Equal(6, comparison.MaximumMismatchY);
+        Assert.True(skiaAlphaMultiply.IsExact);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -490,6 +547,97 @@ public sealed class RasterizationResearchTests
             }
         }
         return new RgbaImage(8, 8, pixels);
+    }
+
+    private static RgbaImage RasterizeAnalyticDiagonalOverlap()
+    {
+        byte[] pixels = new byte[8 * 8 * 4];
+        for (int y = 0; y < 8; y++)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                double redAlpha = Area(ClipToPixel(RedOverlapTriangle, x, y)) * 0.5;
+                double blueAlpha = Area(ClipToPixel(BlueOverlapTriangle, x, y)) * 0.5;
+                double alpha = blueAlpha + redAlpha * (1 - blueAlpha);
+                if (alpha == 0) continue;
+                int offset = (y * 8 + x) * 4;
+                pixels[offset] = ToByte(redAlpha * (1 - blueAlpha) / alpha);
+                pixels[offset + 2] = ToByte(blueAlpha / alpha);
+                pixels[offset + 3] = ToByte(alpha);
+            }
+        }
+        return new RgbaImage(8, 8, pixels);
+    }
+
+    private static RgbaImage RasterizeSourceGuidedDiagonalOverlap()
+    {
+        RgbaImage redCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(RedOverlapTriangle);
+        RgbaImage blueCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(BlueOverlapTriangle);
+        byte[] pixels = new byte[8 * 8 * 4];
+        for (int index = 0; index < 8 * 8; index++)
+        {
+            double redAlpha = redCoverage.Pixels[index * 4 + 3] / 255d * 0.5;
+            double blueAlpha = blueCoverage.Pixels[index * 4 + 3] / 255d * 0.5;
+            double alpha = blueAlpha + redAlpha * (1 - blueAlpha);
+            if (alpha == 0) continue;
+            int offset = index * 4;
+            pixels[offset] = ToByte(redAlpha * (1 - blueAlpha) / alpha);
+            pixels[offset + 2] = ToByte(blueAlpha / alpha);
+            pixels[offset + 3] = ToByte(alpha);
+        }
+        return new RgbaImage(8, 8, pixels);
+    }
+
+    private static RgbaImage RasterizeQuantizedSourceOverDiagonalOverlap()
+        => RasterizeQuantizedSourceOverDiagonalOverlap(false);
+
+    private static RgbaImage RasterizeQuantizedSourceOverDiagonalOverlap(bool useSkiaAlphaMultiply)
+    {
+        RgbaImage redCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(RedOverlapTriangle);
+        RgbaImage blueCoverage = RasterizeSourceGuidedFixedEdgeStripTriangle(BlueOverlapTriangle);
+        byte[] pixels = new byte[8 * 8 * 4];
+        for (int index = 0; index < 8 * 8; index++)
+        {
+            int offset = index * 4;
+            byte redAlpha = ToCoverageOpacity(redCoverage.Pixels[offset + 3], useSkiaAlphaMultiply);
+            byte blueAlpha = ToCoverageOpacity(blueCoverage.Pixels[offset + 3], useSkiaAlphaMultiply);
+            BlendSourceOver(pixels.AsSpan(offset, 4), byte.MaxValue, 0, 0, redAlpha);
+            BlendSourceOver(pixels.AsSpan(offset, 4), 0, 0, byte.MaxValue, blueAlpha);
+        }
+        return new RgbaImage(8, 8, pixels);
+    }
+
+    private static byte ToCoverageOpacity(byte coverage, bool useSkiaAlphaMultiply)
+        => useSkiaAlphaMultiply ? (byte)((coverage * 128 + 255) >> 8) : (byte)((coverage * 128 + 127) / 255);
+
+    private static void BlendSourceOver(Span<byte> destination, byte red, byte green, byte blue, byte alpha)
+    {
+        if (alpha == 0) return;
+        int sourceAlpha = alpha;
+        int destinationAlpha = destination[3];
+        int inverseSourceAlpha = byte.MaxValue - sourceAlpha;
+        int outputAlpha = sourceAlpha + (destinationAlpha * inverseSourceAlpha + 127) / 255;
+        if (outputAlpha == 0) return;
+        destination[0] = ComposeChannel(destination[0], red, destinationAlpha, sourceAlpha, inverseSourceAlpha, outputAlpha);
+        destination[1] = ComposeChannel(destination[1], green, destinationAlpha, sourceAlpha, inverseSourceAlpha, outputAlpha);
+        destination[2] = ComposeChannel(destination[2], blue, destinationAlpha, sourceAlpha, inverseSourceAlpha, outputAlpha);
+        destination[3] = (byte)outputAlpha;
+    }
+
+    private static byte ComposeChannel(byte destination, byte source, int destinationAlpha, int sourceAlpha, int inverseSourceAlpha, int outputAlpha)
+    {
+        int sourceContribution = (source * sourceAlpha + outputAlpha / 2) / outputAlpha;
+        int retainedContribution = (destination * destinationAlpha * inverseSourceAlpha + 255 * outputAlpha - 1) / (255 * outputAlpha);
+        return checked((byte)(sourceContribution + retainedContribution));
+    }
+
+    private static List<Point> ClipToPixel(ReadOnlySpan<Point> polygon, int x, int y)
+    {
+        List<Point> clipped = [.. polygon];
+        clipped = Clip(clipped, x, true, true);
+        clipped = Clip(clipped, x + 1, false, true);
+        clipped = Clip(clipped, y, true, false);
+        return Clip(clipped, y + 1, false, false);
     }
 
     private static RgbaImage RasterizeFixedPointCoverageTriangle(ReadOnlySpan<Point> triangle, bool snapEndpoints)
@@ -1011,6 +1159,8 @@ public sealed class RasterizationResearchTests
     private static readonly Point[] IntegerTriangle = [new(1, 1), new(7, 2), new(2, 7)];
     private static readonly Point[] FractionalTriangle = [new(1.25, 1.125), new(7.25, 2.125), new(2.25, 7.125)];
     private static readonly Point[] HalfGridTriangle = [new(1.28125, 1.15625), new(7.28125, 2.15625), new(2.28125, 7.15625)];
+    private static readonly Point[] RedOverlapTriangle = [new(1.25, 1.125), new(7.25, 2.125), new(2.25, 7.125)];
+    private static readonly Point[] BlueOverlapTriangle = [new(0.75, 2.375), new(6.75, 1.375), new(5.75, 7.375)];
 
     private enum EdgeRounding { Floor, Nearest, Ceiling }
 
@@ -1027,4 +1177,6 @@ public sealed class RasterizationResearchTests
     }
 
     private static long ToFixed(double value) => checked((long)Math.Round(value * 65_536, MidpointRounding.AwayFromZero));
+
+    private static byte ToByte(double value) => checked((byte)Math.Round(value * byte.MaxValue, MidpointRounding.AwayFromZero));
 }

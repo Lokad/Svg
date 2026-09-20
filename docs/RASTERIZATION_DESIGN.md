@@ -56,11 +56,12 @@ Windows-pinned-Chrome references for an
 [8×8 diagonal triangle](../tests/Research/diagonal-triangle-8x8.svg),
 [fractional-coordinate diagonal triangle](../tests/Research/diagonal-triangle-fractional-8x8.svg),
 [half-sixteenth-grid diagonal triangle](../tests/Research/diagonal-triangle-half-grid-8x8.svg),
+[transparent semi-opaque diagonal overlap](../tests/Research/diagonal-overlap-8x8.svg),
 [cubic arch](../tests/Research/cubic-arch-8x8.svg),
 [even-odd hole](../tests/Research/evenodd-hole-8x8.svg), and
 [round stroke join](../tests/Research/round-join-8x8.svg). They supply the first
-integer, grid-aligned fractional, and half-grid-coordinate coverage, subdivision,
-multi-subpath/winding, and outline targets for P1.3. The current converter asserts
+integer, grid-aligned fractional, half-grid-coordinate, and semi-opaque overlap
+coverage, subdivision, multi-subpath/winding, and outline targets for P1.3. The current converter asserts
 `UnsupportedFeature` for each; neither their stable browser captures nor this
 inventory admits a general path or stroke feature.
 
@@ -161,6 +162,18 @@ Chrome's selected backend, so this is a rejection of those alpha operations as a
 isolated explanation, not an inference about production Skia behavior. The next
 probe must overlap semi-opaque diagonal paths on a transparent background; the
 current one-path, opaque family cannot distinguish coverage from source-over.
+
+That next probe is now the original two-path
+[8×8 diagonal overlap](../tests/Research/diagonal-overlap-8x8.svg). Its three
+fresh Windows-pinned captures are byte- and decoded-pixel-identical. Continuous
+analytic coverage plus straight source-over changes 37 of 64 pixels (maximum
+channel/alpha error 33/27). Reusing the source-guided fixed-edge coverage lowers
+this to 26 (3/1). Applying byte opacity and source-over reduces the count to 22,
+but increases the maximum channel error to six while alpha remains within one.
+The conventional divide-by-255 product and the tested Skia-style alpha product
+produce identical decoded candidates for this probe. None is exact; the next
+evidence must be a phase-shifted overlap companion, not a rounding adjustment or
+geometry implementation based on this near fit.
 
 ## Calibration source pin
 
