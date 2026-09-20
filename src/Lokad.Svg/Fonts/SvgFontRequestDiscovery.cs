@@ -91,16 +91,17 @@ internal static class SvgFontRequestDiscovery
     private static string? GetProperty(XmlReader reader, string name)
     {
         string? inline = reader.GetAttribute("style");
+        string? value = null;
         if (inline is not null)
         {
             foreach (string declaration in inline.Split(';', StringSplitOptions.RemoveEmptyEntries))
             {
                 int separator = declaration.IndexOf(':');
                 if (separator < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Malformed inline text style declarations are not implemented by preparation.");
-                if (declaration[..separator].Trim().Equals(name, StringComparison.OrdinalIgnoreCase)) return declaration[(separator + 1)..].Trim();
+                if (declaration[..separator].Trim().Equals(name, StringComparison.OrdinalIgnoreCase)) value = declaration[(separator + 1)..].Trim();
             }
         }
-        return reader.GetAttribute(name);
+        return value ?? reader.GetAttribute(name);
     }
 
     private static int ParseWeight(string value)

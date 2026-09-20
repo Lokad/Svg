@@ -179,7 +179,7 @@ explicit disposal/concurrent-read/escaped-handle
 contracts. Distinguish immutable metadata from borrowed caller bytes and byte-lease
 lifetime. Add mutation/disposal/concurrency tests without unconditional program copies.
 
-### R08 / P1 — Preparation and painting implement different text languages
+### R08 / P1 — Preparation and painting implement different text languages — initial cascade repair 2026-09-20
 
 **Reproduced/inspection.**
 [Discovery](src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs) supports inheritance,
@@ -190,7 +190,9 @@ cannot find quoted `"Example"` although discovery strips the quotes. Computed st
 has no font properties. CSS lists, generic mappings, stylesheet-driven selection and
 coverage fallback are missing. Discovery deduplicates case-sensitively; lookup does not.
 
-Closure: shared bounded declaration parsing, precedence and typed computed text
+Initial correction: preparation now uses last-declaration-wins for repeated inline
+font properties, matching the existing inline style parser. Remaining closure:
+shared bounded declaration parsing, precedence and typed computed text
 style. Retain admitted syntax/style in prepared documents; cross-test inheritance,
 inline/stylesheet declarations, quoting/case, namespaces, hidden/inert nodes and
 fallback boundaries. A prepared face list is not a prepared SVG document.
