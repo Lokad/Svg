@@ -53,7 +53,9 @@ font bytes or source text.
 `SvgFontSnapshot.CreateAsync` is the explicit preparation building block for
 already-selected programs. It re-verifies caller-owned bytes, validates the
 standalone-TrueType core metrics, and retains at most 256 face records and 32 MiB
-of borrowed bytes for its disposable lifetime. It neither parses SVG nor performs
+of borrowed bytes for its disposable lifetime. Snapshot access after disposal
+throws `ObjectDisposedException`; callers must not retain/use escaped prepared-font
+values after that lifetime. It neither parses SVG nor performs
 storage I/O. Its request-based overload resolves explicit family/style requests
 through a catalog and selectively asks a provider for each distinct program. Its
 SVG-driven overload accepts only an SVG-namespaced root and discovers inherited

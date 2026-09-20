@@ -15,6 +15,7 @@ public sealed class SvgFontSnapshot : IDisposable
     private const int MaximumFaces = 256;
     private SvgPreparedFont[] _fonts;
     private IReadOnlyList<SvgPreparedFont> _fontView;
+    private bool _disposed;
 
     private SvgFontSnapshot(SvgPreparedFont[] fonts)
     {
@@ -23,12 +24,20 @@ public sealed class SvgFontSnapshot : IDisposable
     }
 
     /// <summary>Gets verified selected faces and their caller-owned program bytes.</summary>
-    public IReadOnlyList<SvgPreparedFont> Fonts => _fontView;
+    public IReadOnlyList<SvgPreparedFont> Fonts
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _fontView;
+        }
+    }
 
     /// <summary>Gets the prepared face selected for one previously prepared family/style request.</summary>
     internal SvgPreparedFont GetFont(SvgFontFaceRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
+        ThrowIfDisposed();
         foreach (SvgPreparedFont font in _fonts)
         {
             SvgFontFaceRequest selected = font.Resolution.Resolution.Request;
@@ -141,8 +150,15 @@ public sealed class SvgFontSnapshot : IDisposable
     /// <summary>Releases references to caller-owned font byte regions retained by this snapshot.</summary>
     public void Dispose()
     {
+        if (_disposed) return;
+        _disposed = true;
         _fonts = [];
         _fontView = Array.AsReadOnly(_fonts);
+    }
+
+    private void ThrowIfDisposed()
+    {
+        if (_disposed) throw new ObjectDisposedException(nameof(SvgFontSnapshot));
     }
 }
 

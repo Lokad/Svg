@@ -349,6 +349,17 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Snapshot_rejects_access_after_disposal()
+    {
+        var snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
+        snapshot.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => _ = snapshot.Fonts);
+        Assert.Throws<ObjectDisposedException>(() => snapshot.GetFont(new SvgFontFaceRequest("Example", 400, false)));
+        snapshot.Dispose();
+    }
+
+    [Fact]
     public async Task Snapshot_acquires_one_program_once_for_multiple_same_face_aliases()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
