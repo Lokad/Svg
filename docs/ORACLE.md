@@ -47,9 +47,13 @@ Each smoke output directory receives three independent fresh-process PNG capture
 each exact against the stored smoke reference and byte-identical to the other two,
 plus a JSON runtime fingerprint. The fingerprint records the capture count and
 each candidate hash as well as the pin, executable hash and file version when
-exposed by the platform, OS/architecture, locale, recipe and
-headless/GPU/sandbox/viewport policy. Each capture CLI has a 120-second deadline
-by default (`-CaptureTimeoutMilliseconds` changes it) and is terminated with its
+exposed by the platform, input/reference hashes, OS/architecture/runtime, locale,
+time zone, recipe and headless/GPU/sandbox/viewport policy. It also states the
+resource, color-space and font policy: the smoke has no text; Chrome captures its
+browser-default PNG output without a DevTools color-space override; and the page
+uses data URLs while HTTP(S), file, FTP and WebSocket URL patterns are blocked
+through the DevTools Network domain. Each capture CLI has a 120-second deadline by
+default (`-CaptureTimeoutMilliseconds` changes it) and is terminated with its
 child process tree on timeout.
 CI uploads that directory only when its job fails.
 
