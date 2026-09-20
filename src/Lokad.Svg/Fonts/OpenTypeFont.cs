@@ -8,6 +8,7 @@ internal static class OpenTypeFont
 {
     private const int MaximumTableRecords = 128;
     private const int MaximumSimpleGlyphContours = 4_096;
+    private const int MaximumSimpleGlyphPoints = 32_768;
     private const uint TrueTypeScalerType = 0x00010000;
     private const uint TrueTypeCollectionTag = 0x74746366;
     private const uint HeadTag = 0x68656164;
@@ -184,6 +185,64 @@ internal static class OpenTypeFont
         return new OpenTypeSimpleGlyphStructure(endpoints, pointDataOffset - glyph.Offset);
     }
 
+    /// <summary>Decodes bounded simple-glyph flags and delta coordinates into borrowed-font outline points.</summary>
+    internal static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+    {
+        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, cancellationToken);
+        if (structure.ContourEndpoints.Length == 0) return [];
+        int pointCount = checked(structure.ContourEndpoints[^1] + 1);
+        if (pointCount > MaximumSimpleGlyphPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph point count exceeds the supported limit.");
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, cancellationToken);
+        ReadOnlySpan<byte> data = bytes.Span;
+        int cursor = checked(glyph.Offset + structure.PointDataOffset);
+        int end = checked(glyph.Offset + glyph.Length);
+        var flags = new byte[pointCount];
+        for (int index = 0; index < flags.Length;)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (cursor >= end) throw InvalidFont("The simple glyf flags are truncated.");
+            byte flag = data[cursor++];
+            int repeats = 1;
+            if ((flag & 8) != 0)
+            {
+                if (cursor >= end) throw InvalidFont("The simple glyf flag repetition is truncated.");
+                repeats += data[cursor++];
+            }
+            if (repeats > flags.Length - index) throw InvalidFont("The simple glyf flag repetition exceeds its point count.");
+            flags.AsSpan(index, repeats).Fill(flag);
+            index += repeats;
+        }
+        var points = new OpenTypeGlyphPoint[pointCount];
+        int x = 0;
+        for (int index = 0; index < points.Length; index++)
+        {
+            x = checked(x + ReadCoordinate(data, ref cursor, end, flags[index], 2, 16, "horizontal"));
+            points[index] = new OpenTypeGlyphPoint(x, 0, (flags[index] & 1) != 0);
+        }
+        int y = 0;
+        for (int index = 0; index < points.Length; index++)
+        {
+            y = checked(y + ReadCoordinate(data, ref cursor, end, flags[index], 4, 32, "vertical"));
+            points[index] = points[index] with { Y = y };
+        }
+        return points;
+    }
+
+    private static int ReadCoordinate(ReadOnlySpan<byte> data, ref int cursor, int end, byte flag, byte shortMask, byte sameMask, string axis)
+    {
+        if ((flag & shortMask) != 0)
+        {
+            if (cursor >= end) throw InvalidFont("The simple glyf " + axis + " coordinates are truncated.");
+            int delta = data[cursor++];
+            return (flag & sameMask) != 0 ? delta : -delta;
+        }
+        if ((flag & sameMask) != 0) return 0;
+        if (cursor > end - 2) throw InvalidFont("The simple glyf " + axis + " coordinates are truncated.");
+        int value = ReadInt16(data, cursor);
+        cursor += 2;
+        return value;
+    }
+
     private static int ReadGlyphLocation(ReadOnlySpan<byte> data, OpenTypeTableRange loca, int glyphIndex, short indexToLocFormat)
     {
         int offset = checked(loca.Offset + glyphIndex * (indexToLocFormat == 0 ? 2 : 4));
@@ -252,3 +311,6 @@ internal readonly record struct OpenTypeGlyphHeader(short ContourCount, short XM
 
 /// <summary>Represents bounded simple-glyph contour metadata before flag and coordinate decoding.</summary>
 internal readonly record struct OpenTypeSimpleGlyphStructure(ushort[] ContourEndpoints, int PointDataOffset);
+
+/// <summary>Represents one decoded simple-glyph point in font units.</summary>
+internal readonly record struct OpenTypeGlyphPoint(int X, int Y, bool IsOnCurve);
