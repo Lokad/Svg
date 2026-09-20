@@ -61,6 +61,16 @@ public sealed class OpenTypeFontTests
         Assert.Equal((ushort)0, OpenTypeFont.GetGlyphIndex(font, 'B', CancellationToken.None));
     }
 
+    [Fact]
+    public void Reads_hmtx_advances_including_the_final_shared_advance()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 0);
+
+        Assert.Equal((ushort)500, OpenTypeFont.GetAdvanceWidth(font, 0, CancellationToken.None));
+        Assert.Equal((ushort)600, OpenTypeFont.GetAdvanceWidth(font, 1, CancellationToken.None));
+        Assert.Equal((ushort)600, OpenTypeFont.GetAdvanceWidth(font, 2, CancellationToken.None));
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 5;
@@ -83,6 +93,8 @@ public sealed class OpenTypeFontTests
         WriteInt16(font, headOffset + 50, indexToLocFormat);
         WriteUInt16(font, maxpOffset + 4, glyphCount);
         WriteUInt16(font, hheaOffset + 34, numberOfHMetrics);
+        WriteUInt16(font, hmtxOffset, 500);
+        if (numberOfHMetrics > 1) WriteUInt16(font, hmtxOffset + 4, 600);
         WriteUInt16(font, cmapOffset, 0);
         WriteUInt16(font, cmapOffset + 2, 1);
         WriteUInt16(font, cmapOffset + 4, 3);

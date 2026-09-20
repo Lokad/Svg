@@ -114,6 +114,17 @@ internal static class OpenTypeFont
         return 0;
     }
 
+    /// <summary>Gets the validated horizontal advance for one existing glyph index.</summary>
+    internal static ushort GetAdvanceWidth(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+    {
+        OpenTypeFontMetrics metrics = ParseMetrics(bytes, cancellationToken);
+        if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
+        ReadOnlySpan<byte> data = bytes.Span;
+        OpenTypeTableRange hmtx = FindTable(data, HmtxTag, "hmtx");
+        int metricIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
+        return ReadUInt16(data, hmtx.Offset + metricIndex * 4);
+    }
+
     private static ushort ReadGlyphFromRange(ReadOnlySpan<byte> data, OpenTypeTableRange table, int length, int rangeOffsetLocation, ushort rangeOffset, uint relativeGlyphIndex)
     {
         int glyphOffset = checked(rangeOffsetLocation + rangeOffset + checked((int)relativeGlyphIndex * 2));
