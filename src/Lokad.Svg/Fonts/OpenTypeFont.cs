@@ -271,6 +271,15 @@ internal static class OpenTypeFont
         return segments.ToArray();
     }
 
+    /// <summary>Decodes a bounded simple glyph into closed quadratic outline segments.</summary>
+    internal static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+    {
+        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, cancellationToken);
+        if (structure.ContourEndpoints.Length == 0) return [];
+        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, glyphIndex, cancellationToken);
+        return BuildQuadraticContours(points, structure.ContourEndpoints);
+    }
+
     private static OpenTypeOutlinePoint ToOutlinePoint(OpenTypeGlyphPoint point) => new(point.X, point.Y);
 
     private static OpenTypeOutlinePoint Midpoint(OpenTypeOutlinePoint left, OpenTypeOutlinePoint right) => new((left.X + right.X) / 2d, (left.Y + right.Y) / 2d);

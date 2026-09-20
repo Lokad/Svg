@@ -154,6 +154,26 @@ public sealed class OpenTypeFontTests
         Assert.Equal(new OpenTypeQuadraticSegment(new(12, 0), new(0, 0), new(0, 0)), segments[2]);
     }
 
+    [Fact]
+    public void Combines_simple_glyph_data_into_quadratic_contours()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, 1);
+        WriteUInt16(font, glyph.Offset + 10, 1);
+        WriteUInt16(font, glyph.Offset + 12, 0);
+        font[glyph.Offset + 14] = 0x37;
+        font[glyph.Offset + 15] = 0x37;
+        font[glyph.Offset + 16] = 10;
+        font[glyph.Offset + 17] = 5;
+        font[glyph.Offset + 18] = 3;
+        font[glyph.Offset + 19] = 0;
+
+        OpenTypeQuadraticSegment[] segments = OpenTypeFont.GetSimpleGlyphContours(font, 1, CancellationToken.None);
+
+        Assert.Equal([new OpenTypeQuadraticSegment(new(10, 3), new(15, 3), new(15, 3)), new OpenTypeQuadraticSegment(new(15, 3), new(10, 3), new(10, 3))], segments);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;
