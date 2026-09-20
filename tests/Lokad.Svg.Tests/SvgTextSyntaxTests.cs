@@ -123,6 +123,21 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    public void Parses_finite_text_coordinates_without_rectangle_quantization()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Example' font-size='12.3' x='0.1' y='2.2' dx='3.3' dy='4.4'/>"));
+        reader.Read();
+
+        SvgTextStyle style = SvgTextSyntax.Parse(reader);
+
+        Assert.Equal(12.3, style.FontSize);
+        Assert.Equal(0.1, style.X);
+        Assert.Equal(2.2, style.Y);
+        Assert.Equal(3.3, style.Dx);
+        Assert.Equal(4.4, style.Dy);
+    }
+
+    [Fact]
     public void Rejects_a_missing_or_list_font_family()
     {
         using XmlReader missing = XmlReader.Create(new StringReader("<text/>"));

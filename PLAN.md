@@ -249,6 +249,12 @@ encounters `MapEdge`'s quarter-pixel restriction on glyph bounds. Fixed 4×4 sam
 and eight subdivisions per quadratic have neither an independent curved-glyph
 reference nor a scale-dependent error bound; they do not prove Chrome fidelity.
 
+**2026-09-20 update — direct text coordinates.** Direct text now uses finite
+bare-number/`px` coordinates independently from the rectangle fast path's
+quarter-pixel admission rule; output mapping also preserves finite fractional edges.
+Syntax coverage includes fractional font size, origin and offsets. This is an
+admission correction only, not a claim of reference-quality glyph rasterization.
+
 Closure: general finite text/user/device coordinates alongside the unchanged
 rectangle fast path; explicit contour topology, validated bounds and bounded
 subdivision. Compare curves, counters, composites, fractional origins/sizes,

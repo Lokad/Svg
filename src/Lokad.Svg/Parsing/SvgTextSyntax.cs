@@ -31,10 +31,10 @@ internal static class SvgTextSyntax
         string family = SvgTextFontSyntax.ParseFamily(inline.Family ?? reader.GetAttribute("font-family") ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text requires an explicit font-family in the initial supported subset."));
         int weight = SvgTextFontSyntax.ParseWeight(inline.Weight ?? reader.GetAttribute("font-weight") ?? "normal");
         bool italic = SvgTextFontSyntax.ParseItalic(inline.Style ?? reader.GetAttribute("font-style") ?? "normal");
-        double fontSize = SvgGeometrySyntax.ParseRectangleCoordinate(inline.Size ?? reader.GetAttribute("font-size") ?? "16");
+        double fontSize = SvgGeometrySyntax.ParseTextCoordinate(inline.Size ?? reader.GetAttribute("font-size") ?? "16");
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor") ?? "start");
-        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("dy") ?? "0"), anchor);
+        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dy") ?? "0"), anchor);
     }
 
     private static SvgTextAnchor ParseAnchor(string value)

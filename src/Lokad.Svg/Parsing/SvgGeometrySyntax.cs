@@ -49,6 +49,17 @@ internal static class SvgGeometrySyntax
         return result;
     }
 
+    /// <summary>Parses one finite direct-text coordinate without the rectangle fast path's quarter-pixel restriction.</summary>
+    internal static double ParseTextCoordinate(string value)
+    {
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Text coordinate values exceed the configured syntax limit.");
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px text coordinates are implemented.");
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text coordinates must be finite numbers.");
+        return result;
+    }
+
     internal static int ParseInteger(string value) => ParseInteger(value.AsSpan());
 
     internal static int ParseInteger(ReadOnlySpan<char> value)
