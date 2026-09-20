@@ -62,7 +62,7 @@ storage I/O. Its request-based overload resolves all explicit family/style reque
 preflights distinct declared byte sizes and same-hash consistency, then selectively
 asks a provider for each distinct program. Its
 SVG-driven overload accepts only an SVG-namespaced root and discovers inherited
-single-family `text`/`tspan` attributes and inline-style properties (`font-family`,
+single-family direct-`text` attributes and inline-style properties (`font-family`,
 `font-weight`, `font-style`) within either default limits or caller-supplied input,
 XML depth, attribute, node and work limits before doing the same; CSS family lists, stylesheet font properties and
 text-run retention remain unsupported. A snapshot can already be supplied through render

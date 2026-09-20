@@ -259,10 +259,10 @@ stage, not only source/format/integrity examples.
 Companion docs had remained inconsistent: the support matrix's text row required direct
 font declarations while its added note described inheritance, and its viewport/
 fractional rows disagreed. The inheritance and quarter-pixel viewport wording now
-match `MapEdge`. API-contract wording also
-still says direct-only fonts, and snapshot comments call SVG discovery a future
-phase despite the existing overload. Blanket deterministic-reservation claims
-exceed R04's evidence. Update these with the corresponding repairs, distinguishing
+match `MapEdge`. The API contract and snapshot comments now describe the implemented
+direct-text discovery subset and caller-limit overload rather than calling discovery a
+future phase. Blanket deterministic-reservation claims exceed R04's evidence. Keep
+the documentation aligned with the corresponding repairs, distinguishing
 implemented experiment, admitted subset, known defect and future requirement.
 
 ## 4. Instrumentation, tests, duplication and types

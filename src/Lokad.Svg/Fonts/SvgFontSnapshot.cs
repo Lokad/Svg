@@ -104,8 +104,8 @@ public sealed class SvgFontSnapshot : IDisposable
 
     /// <summary>
     /// Resolves explicit requests, selectively asks the caller-owned provider for
-    /// the resulting distinct programs, and creates one verified snapshot. This
-    /// does not parse SVG; SVG-driven request discovery remains a later phase.
+    /// the resulting distinct programs, and creates one verified snapshot. Use
+    /// the SVG overload to discover requests from the supported direct-text subset.
     /// </summary>
     public static async ValueTask<SvgFontSnapshot> CreateAsync(SvgFontPackCatalog catalog, IReadOnlyList<SvgFontFaceRequest> requests, ISvgFontProgramSourceProvider provider, CancellationToken cancellationToken)
     {
