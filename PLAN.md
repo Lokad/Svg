@@ -350,9 +350,10 @@ Do not repeat rejected raster experiments without a discriminating hypothesis.
   matrix semantics (R09/R10).
 - Replace unsupported-content booleans with bounded cause/location when introducing
   diagnostic context. Couple budget categories/sizes to typed owned storage.
-- Internal optional parameters remain (for example `SvgInlineStyleParser.ParseCore`
-  and budgeted collections), contrary to the C# guidelines; the public reflection
-  test does not check internal code. Fix touched APIs/callers together.
+- `SvgInlineStyleParser.ParseCore` now requires explicit parser-context arguments;
+  audit remaining internal optional parameters and budgeted collections, because the
+  public reflection test does not check internal code. Fix touched APIs/callers
+  together.
 
 These changes belong with the behavior/ownership repairs that justify them.
 They are not a prerequisite for every small regression or an excuse for a broad

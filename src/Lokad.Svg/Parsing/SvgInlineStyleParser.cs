@@ -19,18 +19,18 @@ internal static class SvgInlineStyleParser
         => value is null ? default : Parse(value.AsSpan(), workCounter, cancellationToken, allowsDirectTextFontProperties);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value)
-        => ParseCore(value, null, default);
+        => ParseCore(value, null, default, null, false);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => ParseCore(value, workCounter, cancellationToken);
+        => ParseCore(value, workCounter, cancellationToken, null, false);
 
     private static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
         => ParseCore(value, workCounter, cancellationToken, null, allowsDirectTextFontProperties);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => ParseCore(value, workCounter, cancellationToken, strings);
+        => ParseCore(value, workCounter, cancellationToken, strings, false);
 
-    private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings = null, bool allowsDirectTextFontProperties = false)
+    private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings, bool allowsDirectTextFontProperties)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
         string? family = null, weight = null, fontStyle = null, size = null;
