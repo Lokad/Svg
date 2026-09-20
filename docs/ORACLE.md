@@ -88,9 +88,11 @@ from the pin; `-Offline` also refuses a cache miss rather than downloading. The
 smoke command performs that cache-only verification before capture. This is only browser provisioning; a reviewed canonical reference
 still requires the full recipe metadata, repeated-capture stability checks, and
 fixture admission.
-The current capture recipe is revision 2. It explicitly sets an RGBA-transparent
-default background before screenshot capture. Each reference records the recipe
+The current capture recipe is revision 3. It first creates a blank target,
+configures page/network blocking, emulation and the RGBA-transparent default
+background, then navigates to the data-URL page and waits for its load event
+before image decoding and screenshot capture. Each reference records the recipe
 that produced it: retained historical references may therefore record revision 1,
-while newly admitted references must record revision 2. A recipe change requires
+2 or 3, while newly admitted references must record revision 3. A recipe change requires
 an explicit review of affected baselines; do not rewrite that provenance field to
 make the inventory uniform.

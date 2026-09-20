@@ -9,6 +9,7 @@ internal sealed class DevToolsConnection : IAsyncDisposable
 {
     internal const int MaximumMessageBytes = 16 * 1024 * 1024;
     private readonly ClientWebSocket _socket;
+    private readonly Queue<string> _events = new();
     private int _nextCommandId;
 
     private DevToolsConnection(ClientWebSocket socket) { _socket = socket; }
@@ -66,10 +67,40 @@ internal sealed class DevToolsConnection : IAsyncDisposable
         {
             string message = await ReceiveTextMessageAsync(cancellationToken);
             using JsonDocument response = JsonDocument.Parse(message);
-            if (!response.RootElement.TryGetProperty("id", out JsonElement responseId) || !responseId.TryGetInt32(out int responseCommandId) || responseCommandId != id) continue;
+            if (!response.RootElement.TryGetProperty("id", out JsonElement responseId) || !responseId.TryGetInt32(out int responseCommandId) || responseCommandId != id)
+            {
+                if (response.RootElement.TryGetProperty("method", out JsonElement methodName) && methodName.ValueKind == JsonValueKind.String) _events.Enqueue(message);
+                continue;
+            }
             ValidateSuccessfulResponse(method, response.RootElement);
             return message;
         }
+    }
+
+    /// <summary>Waits for a DevTools event while preserving events observed during a prior command.</summary>
+    internal async Task WaitForEventAsync(string method, CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(method);
+        int queuedCount = _events.Count;
+        for (int index = 0; index < queuedCount; index++)
+        {
+            string queued = _events.Dequeue();
+            if (HasMethod(queued, method)) return;
+            _events.Enqueue(queued);
+        }
+        while (true)
+        {
+            string message = await ReceiveTextMessageAsync(cancellationToken);
+            if (HasMethod(message, method)) return;
+            using JsonDocument response = JsonDocument.Parse(message);
+            if (response.RootElement.TryGetProperty("method", out JsonElement methodName) && methodName.ValueKind == JsonValueKind.String) _events.Enqueue(message);
+        }
+    }
+
+    internal static bool HasMethod(string message, string method)
+    {
+        using JsonDocument response = JsonDocument.Parse(message);
+        return response.RootElement.TryGetProperty("method", out JsonElement methodName) && methodName.ValueKind == JsonValueKind.String && methodName.GetString() == method;
     }
 
     /// <summary>Rejects a matched DevTools response that cannot represent a successful command.</summary>

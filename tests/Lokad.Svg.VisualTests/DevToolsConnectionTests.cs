@@ -79,6 +79,14 @@ public sealed class DevToolsConnectionTests
     }
 
     [Fact]
+    public void Identifies_only_the_requested_DevTools_event()
+    {
+        Assert.True(DevToolsConnection.HasMethod("""{"method":"Page.loadEventFired","params":{}}""", "Page.loadEventFired"));
+        Assert.False(DevToolsConnection.HasMethod("""{"method":"Page.frameStartedLoading","params":{}}""", "Page.loadEventFired"));
+        Assert.False(DevToolsConnection.HasMethod("""{"id":1,"result":{}}""", "Page.loadEventFired"));
+    }
+
+    [Fact]
     public void Rejects_outgoing_protocol_messages_before_allocating_an_oversized_frame()
     {
         string parameters = new('x', DevToolsConnection.MaximumMessageBytes);
