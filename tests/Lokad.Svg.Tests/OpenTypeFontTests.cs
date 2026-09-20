@@ -693,6 +693,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Preserves_an_immediate_shape_sibling_after_direct_cdata_text()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><![CDATA[A]]></text><rect width='1' height='1' fill='red'/></svg>"u8.ToArray();
+
+        byte[] png = SvgConverter.ConvertToPng(svg, options, CancellationToken.None).ToArray();
+
+        Assert.Equal(255, DecodeAlpha(png, 0, 0));
+        Assert.True(DecodeAlpha(png, 1, 1) > 0);
+    }
+
+    [Fact]
     public async Task Converts_direct_text_with_admitted_inline_font_properties()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);

@@ -90,6 +90,12 @@ empty/nonempty text, groups, unsupported nodes, comments/CDATA, root/group closu
 and trailing malformed input. Assert draw order, group state, node/work accounting
 and failure category, not merely successful parsing.
 
+**2026-09-20 update — CDATA sibling regression.** A public supplied-font test now
+places CDATA-backed direct text immediately before a rectangle and verifies both the
+glyph and sibling pixels. This covers the subtree-reader CDATA path without
+weakening the existing all-output-form adjacency test; comments, empty text and
+malformed trailing-content coverage remain separate closure work.
+
 ### R03 / P0 — Unsupported text attributes are silently ignored
 
 **Reproduced.** The text arm bypasses
