@@ -377,6 +377,32 @@ public sealed class OpenTypeFontTests
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(SvgFontFailureStage.Format, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+    }
+
+    [Fact]
+    public async Task Snapshot_attaches_format_context_to_an_unsupported_font_program()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        WriteUInt32(bytes, 0, 0x4F54544Fu);
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(SvgFontFailureStage.Format, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+    }
+
+    [Fact]
+    public async Task Snapshot_attaches_integrity_context_when_bound_font_bytes_change()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        SvgFontProgramResolution resolution = CreateResolution(bytes);
+        bytes[0] ^= 1;
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
+        Assert.Equal(SvgFontFailureStage.Integrity, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
     }
 
     [Fact]

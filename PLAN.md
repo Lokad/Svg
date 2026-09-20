@@ -243,9 +243,10 @@ not only synthetic programs constructed around this reader's assumptions.
 identity is empty; unsupported content is a boolean. Some face IDs use path:index
 rather than hash:index.
 
-Initial correction: diagnostic fields truncate to their bounded maximum instead
-of throwing, and a 257-character missing family remains `UnresolvedResource`.
-Remaining closure: consistent
+Initial corrections: diagnostic fields truncate to their bounded maximum instead
+of throwing, and a 257-character missing family remains `UnresolvedResource`;
+snapshot format and integrity failures now retain the primary category with their
+corresponding bounded stage. Remaining closure: consistent
 admission limits. Include stage, bounded source location/ID and content/face identity,
 never full text/font bytes. Test long names/paths/IDs and every failure stage.
 
