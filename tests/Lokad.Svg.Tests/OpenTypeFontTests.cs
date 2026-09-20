@@ -1,5 +1,6 @@
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 using System.Buffers.Binary;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -684,13 +685,17 @@ public sealed class OpenTypeFontTests
         var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 2, 3);
 
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
-        SvgTextRun run = SvgTextRunBuilder.Create(style, "A", snapshot, CancellationToken.None);
+        RenderBudget budget = new(64);
+        using SvgTextRun run = SvgTextRunBuilder.Create(style, "A", snapshot, budget, CancellationToken.None);
 
         SvgPositionedGlyph glyph = Assert.Single(run.Glyphs);
         Assert.Equal((ushort)1, glyph.GlyphIndex);
         Assert.Equal(2, glyph.X);
         Assert.Equal(3, glyph.Y);
         Assert.Empty(Assert.Single(SvgTextRunBuilder.GetGlyphContours(run, CancellationToken.None)));
+        Assert.Equal(64, budget.Snapshot().CurrentBytes);
+        run.Dispose();
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

@@ -56,18 +56,20 @@ internal static class SvgRenderedLeafParser
                 }
                 return true;
             case "text":
+            {
                 if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
                 SvgResolvedPaintableElement textElement = context.ResolveShape(reader, false);
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader);
                 string text = ReadDirectTextContent(reader, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, workCounter, cancellationToken);
                 state.TextCharacterCount += text.Length;
-                SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text, fontSnapshot, cancellationToken);
+                using SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text, fontSnapshot, budget, cancellationToken);
                 if (textElement.Presentation.HasFill)
                 {
                     foreach (SvgGlyphQuadraticContour[] contours in SvgTextRunBuilder.GetGlyphContours(run, cancellationToken)) state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(new SvgGlyphGeometry(contours, textElement.Presentation.Color)));
                 }
                 return true;
+            }
         }
         return false;
 

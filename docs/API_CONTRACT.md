@@ -70,7 +70,8 @@ supported feature and does not accept spans, stylesheet/inline font declarations
 anchors, positioning lists or general shaping.
 Its direct text content is limited to 32,768 UTF-16 characters across one
 conversion before layout; subtree reader nodes consume the conversion's parser-work
-limit.
+limit. Positioned glyph storage is reserved from the conversion's geometry budget
+before allocation and released after each direct text run is lowered.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does
