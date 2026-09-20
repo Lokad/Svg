@@ -392,9 +392,11 @@ public sealed class OpenTypeFontTests
 
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         SvgPositionedGlyph positioned = Assert.Single(SvgGlyphLayout.Layout(snapshot.Fonts[0], "A", 102.4, 2, 3, CancellationToken.None));
-        SvgGlyphQuadraticSegment first = SvgGlyphOutline.GetContours(snapshot.Fonts[0], positioned, 102.4, CancellationToken.None)[0];
+        SvgGlyphQuadraticContour contour = Assert.Single(SvgGlyphOutline.GetContours(snapshot.Fonts[0], positioned, 102.4, CancellationToken.None));
+        SvgGlyphQuadraticSegment first = contour.Segments[0];
 
         Assert.Equal(new SvgGlyphQuadraticSegment(new(3, 2.7), new(3.5, 2.7), new(3.5, 2.7)), first);
+        Assert.Equal(first.Start, contour.Segments[^1].End);
     }
 
     private static SvgFontProgramResolution CreateResolution(byte[] bytes)
