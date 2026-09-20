@@ -52,7 +52,7 @@ internal static class SvgFontRequestDiscovery
 
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited)
     {
-        string? family = reader.GetAttribute("font-family") ?? inherited.Family;
+        string? family = GetProperty(reader, "font-family") ?? inherited.Family;
         if (family is not null)
         {
             family = family.Trim();
@@ -60,9 +60,9 @@ internal static class SvgFontRequestDiscovery
             if (family.Contains(',')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Font-family lists are not implemented by text preparation yet.");
             if (family.Length >= 2 && ((family[0] == '\'' && family[^1] == '\'') || (family[0] == '"' && family[^1] == '"'))) family = family[1..^1];
         }
-        string? weightValue = reader.GetAttribute("font-weight");
+        string? weightValue = GetProperty(reader, "font-weight");
         int weight = weightValue is null ? inherited.Weight : ParseWeight(weightValue);
-        string? styleValue = reader.GetAttribute("font-style");
+        string? styleValue = GetProperty(reader, "font-style");
         bool italic = styleValue is null ? inherited.Italic : styleValue.Trim() switch
         {
             "normal" => false,
@@ -70,6 +70,21 @@ internal static class SvgFontRequestDiscovery
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal and italic text font-style values are implemented by preparation.")
         };
         return new TextStyle(family, weight, italic);
+    }
+
+    private static string? GetProperty(XmlReader reader, string name)
+    {
+        string? inline = reader.GetAttribute("style");
+        if (inline is not null)
+        {
+            foreach (string declaration in inline.Split(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                int separator = declaration.IndexOf(':');
+                if (separator < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Malformed inline text style declarations are not implemented by preparation.");
+                if (declaration[..separator].Trim().Equals(name, StringComparison.OrdinalIgnoreCase)) return declaration[(separator + 1)..].Trim();
+            }
+        }
+        return reader.GetAttribute(name);
     }
 
     private static int ParseWeight(string value)

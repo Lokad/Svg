@@ -54,8 +54,9 @@ of borrowed bytes for its disposable lifetime. It neither parses SVG nor perform
 storage I/O. Its request-based overload resolves explicit family/style requests
 through a catalog and selectively asks a provider for each distinct program. Its
 SVG-driven overload discovers inherited single-family `text`/`tspan` attributes
-(`font-family`, `font-weight`, `font-style`) before doing the same; CSS family
-lists, stylesheet font properties and text-run retention remain unsupported.
+and inline-style properties (`font-family`, `font-weight`, `font-style`) before
+doing the same; CSS family lists, stylesheet font properties and text-run
+retention remain unsupported.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does
