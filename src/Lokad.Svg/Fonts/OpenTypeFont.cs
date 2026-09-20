@@ -9,6 +9,7 @@ internal static class OpenTypeFont
     private const int MaximumTableRecords = 128;
     private const int MaximumSimpleGlyphContours = 4_096;
     private const int MaximumSimpleGlyphPoints = 32_768;
+    private const int MaximumCompositeGlyphComponents = 64;
     private const uint TrueTypeScalerType = 0x00010000;
     private const uint TrueTypeCollectionTag = 0x74746366;
     private const uint HeadTag = 0x68656164;
@@ -307,6 +308,53 @@ internal static class OpenTypeFont
         return BuildQuadraticContours(points, structure.ContourEndpoints);
     }
 
+    /// <summary>Reads bounded composite-glyph component metadata without recursively expanding outlines.</summary>
+    internal static OpenTypeCompositeGlyphComponent[] GetCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+    {
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, cancellationToken);
+        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, cancellationToken);
+        if (header is not OpenTypeGlyphHeader value || !value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The requested glyph is not a composite TrueType glyph.");
+        ReadOnlySpan<byte> data = bytes.Span;
+        int cursor = glyph.Offset + 10;
+        int end = glyph.Offset + glyph.Length;
+        var components = new List<OpenTypeCompositeGlyphComponent>();
+        ushort flags;
+        do
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (components.Count == MaximumCompositeGlyphComponents) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph component count exceeds the supported limit.");
+            if (cursor > end - 4) throw InvalidFont("The composite glyf component is truncated.");
+            flags = ReadUInt16(data, cursor);
+            ushort componentGlyph = ReadUInt16(data, cursor + 2);
+            cursor += 4;
+            bool words = (flags & 1) != 0;
+            bool xyValues = (flags & 2) != 0;
+            int argumentBytes = words ? 4 : 2;
+            if (cursor > end - argumentBytes) throw InvalidFont("The composite glyf arguments are truncated.");
+            if (!xyValues) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Point-matched composite TrueType glyph components are not implemented yet.");
+            int horizontalOffset = words ? ReadInt16(data, cursor) : unchecked((sbyte)data[cursor]);
+            int verticalOffset = words ? ReadInt16(data, cursor + (words ? 2 : 1)) : unchecked((sbyte)data[cursor + 1]);
+            cursor += argumentBytes;
+            OpenTypeAffineTransform transform = ReadCompositeTransform(data, ref cursor, end, flags);
+            components.Add(new OpenTypeCompositeGlyphComponent(componentGlyph, horizontalOffset, verticalOffset, transform));
+        } while ((flags & 32) != 0);
+        return components.ToArray();
+    }
+
+    private static OpenTypeAffineTransform ReadCompositeTransform(ReadOnlySpan<byte> data, ref int cursor, int end, ushort flags)
+    {
+        int values = (flags & 128) != 0 ? 4 : (flags & 64) != 0 ? 2 : (flags & 8) != 0 ? 1 : 0;
+        if (cursor > end - values * 2) throw InvalidFont("The composite glyf transform is truncated.");
+        double first = values == 0 ? 1 : ReadF2Dot14(data, cursor);
+        double second = values == 4 ? ReadF2Dot14(data, cursor + 2) : 0;
+        double third = values == 4 ? ReadF2Dot14(data, cursor + 4) : 0;
+        double fourth = values == 4 ? ReadF2Dot14(data, cursor + 6) : values == 2 ? ReadF2Dot14(data, cursor + 2) : first;
+        cursor += values * 2;
+        return new OpenTypeAffineTransform(first, second, third, fourth);
+    }
+
+    private static double ReadF2Dot14(ReadOnlySpan<byte> data, int offset) => ReadInt16(data, offset) / 16384d;
+
     private static OpenTypeOutlinePoint ToOutlinePoint(OpenTypeGlyphPoint point) => new(point.X, point.Y);
 
     private static OpenTypeOutlinePoint Midpoint(OpenTypeOutlinePoint left, OpenTypeOutlinePoint right) => new((left.X + right.X) / 2d, (left.Y + right.Y) / 2d);
@@ -403,3 +451,9 @@ internal readonly record struct OpenTypeOutlinePoint(double X, double Y);
 
 /// <summary>Represents one quadratic segment; a line has its control equal to its end.</summary>
 internal readonly record struct OpenTypeQuadraticSegment(OpenTypeOutlinePoint Start, OpenTypeOutlinePoint Control, OpenTypeOutlinePoint End);
+
+/// <summary>Represents the linear part of one validated composite-glyph transform.</summary>
+internal readonly record struct OpenTypeAffineTransform(double XX, double XY, double YX, double YY);
+
+/// <summary>Represents one validated, non-expanded component in a composite TrueType glyph.</summary>
+internal readonly record struct OpenTypeCompositeGlyphComponent(ushort GlyphIndex, int HorizontalOffset, int VerticalOffset, OpenTypeAffineTransform Transform);
