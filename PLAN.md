@@ -93,7 +93,8 @@ Whole-element string reading also cannot model nested spans or SVG whitespace/ch
 Initial corrections: attribute validation now gates the direct text path; `dx` and
 `dy`, scalar `text-anchor` `start`, `middle` and `end` are admitted and position
 the complete direct run; clipping remains an explicit unsupported failure. Subtree
-reading preserves text boundaries but child elements remain unsupported.
+reading preserves text boundaries but child elements remain unsupported. Direct text
+also rejects `evenodd` rather than silently applying its fixed nonzero glyph fill.
 
 Closure: validate text attributes before layout; implement or reject positioning,
 clipping, stroke, events, whitespace and child semantics explicitly. Supplying a

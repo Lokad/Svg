@@ -686,6 +686,7 @@ public sealed class OpenTypeFontTests
 
     [Theory]
     [InlineData("clip-path='url(#missing)'")]
+    [InlineData("fill-rule='evenodd'")]
     public async Task Rejects_unimplemented_direct_text_attributes(string attribute)
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
