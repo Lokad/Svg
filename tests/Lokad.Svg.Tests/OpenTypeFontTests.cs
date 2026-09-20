@@ -78,9 +78,31 @@ public sealed class OpenTypeFontTests
 
         OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
 
-        Assert.Equal(4, glyph.Length);
+        Assert.Equal(12, glyph.Length);
         font[glyph.Offset] = 42;
         Assert.Equal((byte)42, font[glyph.Offset]);
+    }
+
+    [Fact]
+    public void Reads_the_fixed_header_of_a_nonempty_glyph()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, 1);
+        WriteInt16(font, glyph.Offset + 2, -2);
+        WriteInt16(font, glyph.Offset + 4, -3);
+        WriteInt16(font, glyph.Offset + 6, 4);
+        WriteInt16(font, glyph.Offset + 8, 5);
+
+        OpenTypeGlyphHeader? parsed = OpenTypeFont.GetGlyphHeader(font, 1, CancellationToken.None);
+        Assert.True(parsed.HasValue);
+        OpenTypeGlyphHeader header = parsed.Value;
+
+        Assert.Equal((short)1, header.ContourCount);
+        Assert.Equal((short)-2, header.XMinimum);
+        Assert.Equal((short)5, header.YMaximum);
+        Assert.False(header.IsComposite);
+        Assert.Null(OpenTypeFont.GetGlyphHeader(font, 0, CancellationToken.None));
     }
 
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
@@ -130,15 +152,15 @@ public sealed class OpenTypeFontTests
         if (indexToLocFormat == 0)
         {
             WriteUInt16(font, locaOffset, 0);
-            WriteUInt16(font, locaOffset + 2, 1);
-            WriteUInt16(font, locaOffset + 4, 3);
+            WriteUInt16(font, locaOffset + 2, 0);
+            WriteUInt16(font, locaOffset + 4, 6);
             WriteUInt16(font, locaOffset + 6, 6);
         }
         else
         {
             WriteUInt32(font, locaOffset, 0);
-            WriteUInt32(font, locaOffset + 4, 4);
-            WriteUInt32(font, locaOffset + 8, 8);
+            WriteUInt32(font, locaOffset + 4, 0);
+            WriteUInt32(font, locaOffset + 8, 12);
             WriteUInt32(font, locaOffset + 12, 12);
         }
         return font;

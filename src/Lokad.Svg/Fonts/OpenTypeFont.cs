@@ -143,6 +143,17 @@ internal static class OpenTypeFont
         return new OpenTypeTableRange(checked(glyf.Offset + start), end - start);
     }
 
+    /// <summary>Reads a nonempty glyph header after validating its loca/glyf range.</summary>
+    internal static OpenTypeGlyphHeader? GetGlyphHeader(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+    {
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, cancellationToken);
+        if (glyph.Length == 0) return null;
+        if (glyph.Length < 10) throw InvalidFont("A nonempty glyf record is shorter than its header.");
+        ReadOnlySpan<byte> data = bytes.Span;
+        short contourCount = ReadInt16(data, glyph.Offset);
+        return new OpenTypeGlyphHeader(contourCount, ReadInt16(data, glyph.Offset + 2), ReadInt16(data, glyph.Offset + 4), ReadInt16(data, glyph.Offset + 6), ReadInt16(data, glyph.Offset + 8));
+    }
+
     private static int ReadGlyphLocation(ReadOnlySpan<byte> data, OpenTypeTableRange loca, int glyphIndex, short indexToLocFormat)
     {
         int offset = checked(loca.Offset + glyphIndex * (indexToLocFormat == 0 ? 2 : 4));
@@ -202,3 +213,9 @@ internal static class OpenTypeFont
 internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat);
 
 internal readonly record struct OpenTypeTableRange(int Offset, int Length);
+
+/// <summary>Represents the validated fixed header of one nonempty TrueType glyf record.</summary>
+internal readonly record struct OpenTypeGlyphHeader(short ContourCount, short XMinimum, short YMinimum, short XMaximum, short YMaximum)
+{
+    internal bool IsComposite => ContourCount < 0;
+}
