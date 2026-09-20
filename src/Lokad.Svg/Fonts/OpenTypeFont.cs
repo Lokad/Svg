@@ -11,6 +11,7 @@ internal static class OpenTypeFont
     private const int MaximumSimpleGlyphPoints = 32_768;
     private const int MaximumCompositeGlyphComponents = 64;
     private const int MaximumCompositeGlyphDepth = 8;
+    private const int MaximumExpandedGlyphSegments = 65_536;
     private const uint TrueTypeScalerType = 0x00010000;
     private const uint TrueTypeCollectionTag = 0x74746366;
     private const uint HeadTag = 0x68656164;
@@ -347,10 +348,12 @@ internal static class OpenTypeFont
     {
         OpenTypeFontMetrics metrics = ParseMetrics(bytes, cancellationToken);
         var active = new HashSet<ushort>();
-        return ExpandGlyph(bytes, glyphIndex, metrics, active, 0, cancellationToken).ToArray();
+        var contours = new List<OpenTypeQuadraticSegment>();
+        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, cancellationToken);
+        return contours.ToArray();
     }
 
-    private static List<OpenTypeQuadraticSegment> ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, HashSet<ushort> active, int depth, CancellationToken cancellationToken)
+    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, HashSet<ushort> active, int depth, OpenTypeOutlineTransform transform, List<OpenTypeQuadraticSegment> contours, CancellationToken cancellationToken)
     {
         if (glyphIndex >= metrics.GlyphCount) throw InvalidFont("A composite glyf component references a glyph outside maxp.");
         if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph nesting depth exceeds the supported limit.");
@@ -358,23 +361,27 @@ internal static class OpenTypeFont
         try
         {
             OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, cancellationToken);
-            if (header is null) return [];
-            if (!header.Value.IsComposite) return new List<OpenTypeQuadraticSegment>(GetSimpleGlyphContours(bytes, glyphIndex, cancellationToken));
-            var result = new List<OpenTypeQuadraticSegment>();
+            if (header is null) return;
+            if (!header.Value.IsComposite)
+            {
+                foreach (OpenTypeQuadraticSegment segment in GetSimpleGlyphContours(bytes, glyphIndex, cancellationToken))
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (contours.Count == MaximumExpandedGlyphSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded glyph segment count exceeds the supported limit.");
+                    contours.Add(Transform(segment, transform));
+                }
+                return;
+            }
             foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, cancellationToken))
             {
-                foreach (OpenTypeQuadraticSegment segment in ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, cancellationToken)) result.Add(Transform(segment, component));
+                ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, cancellationToken);
             }
-            return result;
         }
         finally { active.Remove(glyphIndex); }
     }
 
-    private static OpenTypeQuadraticSegment Transform(OpenTypeQuadraticSegment segment, OpenTypeCompositeGlyphComponent component)
-        => new(Transform(segment.Start, component), Transform(segment.Control, component), Transform(segment.End, component));
-
-    private static OpenTypeOutlinePoint Transform(OpenTypeOutlinePoint point, OpenTypeCompositeGlyphComponent component)
-        => new(component.Transform.XX * point.X + component.Transform.XY * point.Y + component.HorizontalOffset, component.Transform.YX * point.X + component.Transform.YY * point.Y + component.VerticalOffset);
+    private static OpenTypeQuadraticSegment Transform(OpenTypeQuadraticSegment segment, OpenTypeOutlineTransform transform)
+        => new(transform.Apply(segment.Start), transform.Apply(segment.Control), transform.Apply(segment.End));
 
     private static OpenTypeAffineTransform ReadCompositeTransform(ReadOnlySpan<byte> data, ref int cursor, int end, ushort flags)
     {
@@ -489,6 +496,17 @@ internal readonly record struct OpenTypeQuadraticSegment(OpenTypeOutlinePoint St
 
 /// <summary>Represents the linear part of one validated composite-glyph transform.</summary>
 internal readonly record struct OpenTypeAffineTransform(double XX, double XY, double YX, double YY);
+
+/// <summary>Represents an affine transform accumulated while expanding a composite glyph.</summary>
+internal readonly record struct OpenTypeOutlineTransform(double XX, double XY, double YX, double YY, double TX, double TY)
+{
+    internal static OpenTypeOutlineTransform Identity => new(1, 0, 0, 1, 0, 0);
+
+    internal OpenTypeOutlinePoint Apply(OpenTypeOutlinePoint point) => new(XX * point.X + XY * point.Y + TX, YX * point.X + YY * point.Y + TY);
+
+    internal OpenTypeOutlineTransform Compose(OpenTypeCompositeGlyphComponent component)
+        => new(XX * component.Transform.XX + XY * component.Transform.YX, XX * component.Transform.XY + XY * component.Transform.YY, YX * component.Transform.XX + YY * component.Transform.YX, YX * component.Transform.XY + YY * component.Transform.YY, XX * component.HorizontalOffset + XY * component.VerticalOffset + TX, YX * component.HorizontalOffset + YY * component.VerticalOffset + TY);
+}
 
 /// <summary>Represents one validated, non-expanded component in a composite TrueType glyph.</summary>
 internal readonly record struct OpenTypeCompositeGlyphComponent(ushort GlyphIndex, int HorizontalOffset, int VerticalOffset, OpenTypeAffineTransform Transform);
