@@ -11,7 +11,10 @@ $ErrorActionPreference = 'Stop'
 if ($CaptureRuns -le 0) { throw 'CaptureRuns must be positive.' }
 
 $pin = Get-Content -LiteralPath $PinPath -Raw | ConvertFrom-Json
-$executable = & (Join-Path $PSScriptRoot 'setup-chrome.ps1') -CacheDirectory $CacheDirectory -PinPath $PinPath
+$setupChrome = Join-Path $PSScriptRoot 'setup-chrome.ps1'
+$executable = & $setupChrome -CacheDirectory $CacheDirectory -PinPath $PinPath
+$offlineExecutable = & $setupChrome -CacheDirectory $CacheDirectory -PinPath $PinPath -Offline
+if ($offlineExecutable -ne $executable) { throw 'Offline Chrome provisioning resolved a different executable.' }
 $executableVersion = (Get-Item -LiteralPath $executable).VersionInfo.ProductVersion
 if (-not [string]::IsNullOrWhiteSpace($executableVersion) -and -not $executableVersion.Contains($pin.version, [StringComparison]::Ordinal)) { throw "Pinned Chrome executable version does not match its pin: $executableVersion" }
 $chromeTool = Join-Path $PSScriptRoot 'Lokad.Svg.Chrome/bin/Release/net10.0/Lokad.Svg.Chrome.dll'

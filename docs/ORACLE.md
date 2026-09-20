@@ -15,6 +15,13 @@ Download and verify it into an ignored cache with:
 tools/setup-chrome.ps1 -CacheDirectory artifacts/chrome
 ```
 
+Once provisioned, verify that the same archive and executable are usable without
+network access:
+
+```powershell
+tools/setup-chrome.ps1 -CacheDirectory artifacts/chrome -Offline
+```
+
 After a Release build, smoke-test provisioning, capture and exact comparison with:
 
 ```powershell
@@ -45,7 +52,8 @@ headless/GPU/sandbox/viewport policy.
 CI uploads that directory only when its job fails.
 
 The setup script refuses an archive or extracted executable whose SHA-256 differs
-from the pin. This is only browser provisioning; a reviewed canonical reference
+from the pin; `-Offline` also refuses a cache miss rather than downloading. The
+smoke command performs that cache-only verification before capture. This is only browser provisioning; a reviewed canonical reference
 still requires the full recipe metadata, repeated-capture stability checks, and
 fixture admission.
 The current capture recipe is revision 2. It explicitly sets an RGBA-transparent

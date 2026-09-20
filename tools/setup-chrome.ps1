@@ -1,14 +1,19 @@
 param(
     [Parameter(Mandatory = $true)]
     [string] $CacheDirectory,
-    [string] $PinPath = (Join-Path $PSScriptRoot 'chrome-for-testing.json')
+    [string] $PinPath = (Join-Path $PSScriptRoot 'chrome-for-testing.json'),
+    [switch] $Offline
 )
 
 $pin = Get-Content -LiteralPath $PinPath -Raw | ConvertFrom-Json
 $archive = Join-Path $CacheDirectory ('chrome-' + $pin.version + '-' + $pin.platform + '.zip')
 $install = Join-Path $CacheDirectory ('chrome-' + $pin.version + '-' + $pin.platform)
 New-Item -ItemType Directory -Force -Path $CacheDirectory | Out-Null
-if (-not (Test-Path -LiteralPath $archive)) { Invoke-WebRequest $pin.archiveUrl -OutFile $archive }
+if (-not (Test-Path -LiteralPath $archive))
+{
+    if ($Offline) { throw "Pinned Chrome archive is not available in the offline cache: $archive" }
+    Invoke-WebRequest $pin.archiveUrl -OutFile $archive
+}
 $actual = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($actual -ne $pin.archiveSha256) { throw "Chrome archive hash mismatch." }
 $executable = Join-Path $install $pin.executableRelativePath
