@@ -36,9 +36,11 @@ tools/capture-chrome.ps1 -InputPath tests/Research/circle-6x6.svg -OutputPath ar
 Repeat this command in separate processes and compare decoded PNGs before adding
 or changing research-oracle metadata.
 
-Each smoke output directory receives the exact PNG compared plus a JSON runtime
-fingerprint. The fingerprint records the pin, executable hash and file version
-when exposed by the platform, OS/architecture, locale, recipe and
+Each smoke output directory receives three independent fresh-process PNG captures,
+each exact against the stored smoke reference and byte-identical to the other two,
+plus a JSON runtime fingerprint. The fingerprint records the capture count and
+each candidate hash as well as the pin, executable hash and file version when
+exposed by the platform, OS/architecture, locale, recipe and
 headless/GPU/sandbox/viewport policy.
 CI uploads that directory only when its job fails.
 

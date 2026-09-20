@@ -22,7 +22,7 @@ is not a general pixel-fidelity claim.
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms compress directly to at-most-64 KiB `IDAT` chunks, while memory forms retain a bounded compressed buffer; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, and forty-three stable references |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and forty-three stable references |
 | Fixture corpus | Forty-three original CC0 probes with verified hashes; the manifest gate renders and compares all forty-three exactly |
 
 Stylesheet declaration/selector copies retained by rules, definition identifiers
