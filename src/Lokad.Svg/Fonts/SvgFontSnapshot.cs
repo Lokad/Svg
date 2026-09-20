@@ -91,16 +91,21 @@ public sealed class SvgFontSnapshot : IDisposable
                 programs.Add(programKey, program);
             }
             ReadOnlyMemory<byte> bytes = program.Bytes;
-            ValidateDeclaredProgram(resolution, bytes);
+            try { ValidateDeclaredProgram(resolution, bytes, workCounter, cancellationToken); }
+            catch (SvgException exception) when (exception.FontDiagnostic is null)
+            {
+                throw new SvgException(exception.ErrorCode, exception.Message, CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
+            }
             OpenTypeFontMetrics metrics = program.Metrics;
             prepared[index] = new SvgPreparedFont(resolution, bytes, metrics, lease);
         }
         return new SvgFontSnapshot(prepared, lease);
 
-        static void ValidateDeclaredProgram(SvgFontProgramResolution resolution, ReadOnlyMemory<byte> bytes)
+        static void ValidateDeclaredProgram(SvgFontProgramResolution resolution, ReadOnlyMemory<byte> bytes, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
         {
             SvgFontPackFile file = resolution.Resolution.Face.File;
             if (bytes.Length != file.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.", CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
+            workCounter?.ConsumeBytes(bytes.Length, cancellationToken);
             string hash = Convert.ToHexString(SHA256.HashData(bytes.Span));
             if (!hash.Equals(file.Sha256, StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.", CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
         }

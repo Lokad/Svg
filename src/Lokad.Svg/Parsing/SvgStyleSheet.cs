@@ -443,7 +443,13 @@ internal sealed class ParserWorkCounter
 
     internal void ConsumeText(int characterCount, CancellationToken cancellationToken)
     {
-        for (int index = 0; index < characterCount; index += 4096) Consume(cancellationToken);
+        ConsumeBytes(characterCount, cancellationToken);
+    }
+
+    internal void ConsumeBytes(int byteCount, CancellationToken cancellationToken)
+    {
+        if (byteCount < 0) throw new ArgumentOutOfRangeException(nameof(byteCount));
+        for (int index = 0; index < byteCount; index += 4096) Consume(cancellationToken);
     }
 
     internal void Consume(CancellationToken cancellationToken)

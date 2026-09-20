@@ -64,7 +64,7 @@ asks a provider for each distinct program. Its
 SVG-driven overload accepts only an SVG-namespaced root and discovers inherited
 single-family direct-`text` attributes and inline-style properties (`font-family`,
 `font-weight`, `font-style`) within either default limits or caller-supplied input,
-XML depth, attribute, node and work limits through metric validation before doing the same; CSS family lists, stylesheet font properties and
+XML depth, attribute, node and work limits through metric validation and program integrity verification before doing the same; CSS family lists, stylesheet font properties and
 text-run retention remain unsupported. A snapshot can already be supplied through render
 options. The renderer's experimental direct-text path accepts only direct
 single-face attributes and text/CDATA content; it does not make SVG text a
