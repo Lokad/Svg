@@ -110,6 +110,7 @@ $xmlWorkspaceBudget = [long]$xmlWorkspaceBytes * 4 - 1
 $xmlWorkspaceOutput = Join-Path $ResultsDirectory "$runId-xml-workspace.png"
 $xmlWorkspace = Invoke-Probe -Name 'xml-workspace' -InputPath $xmlWorkspaceInput -Output $xmlWorkspaceOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', $xmlWorkspaceBudget.ToString())
 if ($xmlWorkspace['outcome'] -ne 'svg-error' -or $xmlWorkspace['svgErrorCode'] -ne 'LimitExceeded' -or $xmlWorkspace['inputBytes'] -ne $xmlWorkspaceBytes.ToString() -or (Test-Path -LiteralPath $xmlWorkspaceOutput)) { throw 'The XML workspace probe did not deny the input reservation before output.' }
+Assert-XmlReaderMeasurements -Name 'xml-reader-text' -InputPath $xmlWorkspaceInput -MinimumTouchedCharacters 0
 
 $xmlAttributeInput = Join-Path $ResultsDirectory "$runId-xml-attributes.svg"
 $xmlAttributes = (0..254 | ForEach-Object { " data-a$_=`"x`"" }) -join ''
@@ -140,4 +141,4 @@ $parserCancellationOutput = Join-Path $ResultsDirectory "$runId-parser-cancellat
 $parserCancelled = Invoke-Probe -Name 'parser-cancellation' -InputPath $parserCancellationInput -Output $parserCancellationOutput -ExpectedExitCode 3 -ExtraArguments @('--cancel-after-conversion-start-ms', '1')
 if ($parserCancelled['outcome'] -ne 'cancelled' -or $parserCancelled['cancellationMode'] -ne 'after-conversion-start' -or [int]$parserCancelled['inputBytes'] -lt 4MB -or (Test-Path -LiteralPath $parserCancellationOutput)) { throw 'The parser-stage cancellation probe completed, started too early, or wrote output.' }
 
-Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements per attribute shape. Reports retained in $ResultsDirectory."
+Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text and attribute shapes. Reports retained in $ResultsDirectory."

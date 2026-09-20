@@ -37,6 +37,11 @@ byte produced by the owned/caller-memory and sync/async stream paths. A low
 ceiling therefore bounds structural traversal, raster setup and PNG preparation
 as well as syntax-specific scans.
 
+The fresh-process XML-reader probe also traverses a 64 KiB metadata text node,
+separately from the short- and large-attribute shapes. This directly exercises
+the input-derived four-times-input allowance rather than only proving that the
+renderer denies a budget one byte below that reservation.
+
 Root and group presentation now share `SvgContainerPresentationResolver`, which
 turns their computed style and inherited context into typed paint, display,
 visibility and opacity state before their separate traversal roles continue.
@@ -162,12 +167,13 @@ review.
 
 ### Current local verification (2026-09-20)
 
-`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` passes 243 unit tests
-and 81 visual-project tests on the current working revision. The Windows pinned
+`dotnet restore --locked-mode`, the Release solution build, and
+`dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` pass on the current
+working revision (243 unit and 81 visual-project tests). The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports three byte-identical,
-pixel-exact fresh-process captures. This is local, sequential evidence only; it does not establish a
-successful remote CI run, a canonical Linux baseline, ARM64 equivalence or
-installed-package behavior.
+pixel-exact fresh-process captures. This is local, sequential evidence only; it
+does not establish a successful remote CI run, a canonical Linux baseline, ARM64
+equivalence or installed-package behavior.
 
 Public P0.3 boundary tests now include structural denials, XML-reader traversal,
 and long stylesheet or geometry-token scans that exhaust the one shared work
@@ -176,14 +182,15 @@ exhausted work ceiling before reserving its first owned character buffer.
 The isolated memory probe additionally rejects metadata input one byte below its
 four-times-input XML workspace allowance, then starts its parser-cancellation
 timer after input is loaded and cancels a 4 MiB stylesheet scan without producing
-output. Its Windows child-process suite now also warms and directly traverses
-both a 256-short-attribute root and a root with 255 4 KiB attribute values through
-the same BCL `XmlReader` settings and non-copying stream, records managed
-allocation/touched characters, and rejects a measured allocation above the
-renderer workspace allowance. The current Windows reports record 104,152 managed
-bytes against the 131,072-byte allowance and 2,233,296 bytes against 4,190,904
-bytes, respectively. That is regression evidence for the pinned runtime, not an
-exact BCL-allocation or process-RSS guarantee.
+output. Its Windows child-process suite now also warms and directly traverses a
+64 KiB metadata text node, a 256-short-attribute root and a root with 255 4 KiB
+attribute values through the same BCL `XmlReader` settings and non-copying stream,
+records managed allocation/touched characters, and rejects a measured allocation
+above the renderer workspace allowance. The current Windows reports record
+27,216 managed bytes against the 262,412-byte text allowance, 104,152 bytes
+against 131,072 for short attributes, and 2,233,296 bytes against 4,190,904 for
+large values. That is regression evidence for the pinned runtime, not an exact
+BCL-allocation or process-RSS guarantee.
 
 Parser-owned stylesheet declaration/selector strings, definition identifiers and
 copied local-reference identifiers now reserve both their exact string bytes and
