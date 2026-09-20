@@ -256,9 +256,10 @@ Some diagnostics use path:index, others hash:index; element IDs remain empty.
 Do not include whole SVG/text/font payloads. Test long names and each failure
 stage, not only source/format/integrity examples.
 
-Companion docs remain inconsistent: the support matrix's text row requires direct
-font declarations while its added note describes inheritance; its viewport/
-fractional rows disagree and no longer match `MapEdge`. API-contract wording also
+Companion docs had remained inconsistent: the support matrix's text row required direct
+font declarations while its added note described inheritance, and its viewport/
+fractional rows disagreed. The inheritance and quarter-pixel viewport wording now
+match `MapEdge`. API-contract wording also
 still says direct-only fonts, and snapshot comments call SVG discovery a future
 phase despite the existing overload. Blanket deterministic-reservation claims
 exceed R04's evidence. Update these with the corresponding repairs, distinguishing
