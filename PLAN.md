@@ -56,9 +56,10 @@ visibility and accumulated transform through one leaf-lowering context; its
 factory is directly characterized for root fallback and group selection.
 `SvgResolvedPaintableElement` now atomically resolves and carries one computed
 style, accumulated transform and resolved paintability through rectangle, line
-and orthogonal-shape lowering, so those lowerers cannot separately resolve a
-different style; a direct characterization locks its `currentColor`, display and
-transform results.
+and orthogonal-shape lowering, including the typed optional stroke color for
+stroke-capable leaves, so those lowerers cannot separately resolve a different
+style or paint; direct and conversion characterizations lock its `currentColor`,
+display and transform results.
 `SvgReferenceResolver.ResolveOrDefer` now owns typed immediate versus forward
 local-reference resolution, with direct scene tests for both outcomes; the XML
 definition router only selects and parses the reference.
@@ -169,7 +170,7 @@ review.
 
 `dotnet restore --locked-mode`, the Release solution build, and
 `dotnet test Lokad.Svg.slnx -c Release --no-restore -m:1` pass on the current
-working revision (243 unit and 81 visual-project tests). The Windows pinned
+working revision (246 unit and 81 visual-project tests). The Windows pinned
 Chrome smoke (`tools/test-chrome.ps1`) also reports three byte-identical,
 pixel-exact fresh-process captures. This is local, sequential evidence only; it
 does not establish a successful remote CI run, a canonical Linux baseline, ARM64

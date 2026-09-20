@@ -496,6 +496,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Resolves_current_color_for_bounded_rectangle_and_line_strokes()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='none' color='blue' stroke='currentColor' stroke-width='2'/><line x1='0' y1='6' x2='4' y2='6' color='red' stroke='currentColor' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgStroke(new SvgColor(0, 0, 255, 255), 2), root.Rectangles[0].Stroke);
+        Assert.Equal(new SvgRectangle(0, 5, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[1]);
+    }
+
+    [Fact]
     public void Lowers_bounded_axis_aligned_lines_to_stroke_bands()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='1' y1='3' x2='5' y2='3' stroke='red' stroke-width='2'/><line x1='4' y1='1' x2='4' y2='5' stroke='blue' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

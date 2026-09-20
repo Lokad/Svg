@@ -1,7 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents the supported computed presentation values for a paintable leaf.</summary>
-internal readonly record struct SvgResolvedShapePresentation(SvgComputedStyle Style, SvgPaint Paint, SvgColor Color, byte Opacity, bool IsPainted)
+internal readonly record struct SvgResolvedShapePresentation(SvgComputedStyle Style, SvgPaint Paint, SvgColor Color, SvgColor? StrokeColor, byte Opacity, bool IsPainted)
 {
     internal bool HasFill => Paint.HasFill && IsPainted;
 }
@@ -15,7 +15,8 @@ internal static class SvgShapePresentationResolver
         ValidateFillRule(style.FillRule);
         if (!allowsPaintedStroke) ValidateStroke(style.Stroke);
         SvgColor color = SvgPaintResolver.ResolveFillColor(presentation.Paint, presentation.Opacity);
-        return new SvgResolvedShapePresentation(style, presentation.Paint, color, presentation.Opacity, presentation.IsPainted);
+        SvgColor? strokeColor = allowsPaintedStroke ? ResolveStrokeColor(style.Stroke, style.Color, inheritedPaint, namedColors) : null;
+        return new SvgResolvedShapePresentation(style, presentation.Paint, color, strokeColor, presentation.Opacity, presentation.IsPainted);
     }
 
     internal static bool IsPainted(string? display, string? visibility, bool inheritedDisplayed, bool inheritedVisibility)
@@ -32,4 +33,7 @@ internal static class SvgShapePresentationResolver
         if (value is null || value.Equals("none", StringComparison.OrdinalIgnoreCase)) return;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-painting stroke='none' is implemented.");
     }
+
+    private static SvgColor? ResolveStrokeColor(string? value, string? currentColor, SvgPaint inheritedPaint, IReadOnlyDictionary<string, SvgColor> namedColors)
+        => value is null || value.Equals("none", StringComparison.OrdinalIgnoreCase) ? null : SvgPaintResolver.ResolveStrokeColor(value, currentColor, inheritedPaint, namedColors);
 }
