@@ -75,6 +75,35 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Maps_a_BMP_scalar_through_a_format_12_cmap_when_format_4_is_absent()
+    {
+        byte[] font = CreateFormat12Font();
+        WriteUInt32(font, 258, 'A');
+        WriteUInt32(font, 262, 'A');
+        WriteUInt32(font, 266, 1);
+
+        Assert.Equal((ushort)1, OpenTypeFont.GetGlyphIndex(font, 'A', CancellationToken.None));
+    }
+
+    [Fact]
+    public void Accepts_a_unicode_platform_zero_format_4_cmap_but_not_a_windows_symbol_cmap()
+    {
+        byte[] unicode = CreateFont(1024, 3, 2, 0);
+        WriteUInt16(unicode, 234, 0);
+        byte[] symbol = CreateFont(1024, 3, 2, 0);
+        WriteUInt16(symbol, 236, 0);
+
+        Assert.Equal((ushort)1, OpenTypeFont.GetGlyphIndex(unicode, 'A', CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphIndex(symbol, 'A', CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_a_surrogate_code_point_as_a_non_scalar_value()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => OpenTypeFont.GetGlyphIndex(CreateFont(1024, 3, 2, 0), 0xD800, CancellationToken.None));
+    }
+
+    [Fact]
     public void Rejects_a_format_12_cmap_with_a_length_smaller_than_its_header()
     {
         byte[] font = CreateFormat12Font();

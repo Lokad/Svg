@@ -206,7 +206,7 @@ subdivision. Compare curves, counters, composites, fractional origins/sizes,
 viewBox/scale and alpha against pinned same-font references. Preserve exact gates
 and negative raster research; do not retune composition without new evidence.
 
-### R10 / P1 — Font/text admission exceeds semantic validation
+### R10 / P1 — Font/text admission exceeds semantic validation — initial cmap repair 2026-09-20
 
 **Reproduced/inspection.** A format-12-only font mapping BMP `A` fails: format 12 is
 consulted only above U+FFFF. Unicode-platform cmap records are not selected; Windows
@@ -219,7 +219,10 @@ Layout maps scalars plus advances, without pair positioning, whitespace/chunk
 normalization or script eligibility checks. Required `kern`/GPOS behavior can be
 silently ignored; Unicode scalar iteration is not universal shaping support.
 
-Closure: explicit tested subset, deterministic supported cmap selection (including
+Initial correction: Unicode format-12 maps now handle BMP and supplementary
+scalars; Unicode platform-0 records are accepted, Windows symbol records are not
+misclassified, and surrogate values are rejected. Remaining closure: explicit
+tested subset, deterministic supported cmap selection (including
 BMP in format 12), metadata/composite validation and implemented-or-rejected required
 positioning/shaping. Use independent binary vectors and licensed ordinary fonts,
 not only synthetic programs constructed around this reader's assumptions.

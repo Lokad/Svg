@@ -68,10 +68,10 @@ internal static class OpenTypeFont
         return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat);
     }
 
-    /// <summary>Maps one Unicode scalar through a validated format-4 character map.</summary>
+    /// <summary>Maps one Unicode scalar through a validated Unicode format-4 or format-12 character map.</summary>
     internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, CancellationToken cancellationToken)
     {
-        if (scalar > 0x10FFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
+        if (scalar > 0x10FFFF || scalar is >= 0xD800 and <= 0xDFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
         OpenTypeFontMetrics metrics = ParseMetrics(bytes, cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange cmap = FindTable(data, CmapTag, "cmap");
@@ -90,10 +90,12 @@ internal static class OpenTypeFont
             if (relativeOffset > int.MaxValue || relativeOffset > cmap.Length - 2) throw InvalidFont("A cmap encoding record points outside its table.");
             int offset = checked(cmap.Offset + (int)relativeOffset);
             ushort format = ReadUInt16(data, offset);
-            if (format == 4 && platform == 3 && (encoding == 1 || encoding == 0)) format4Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
-            if (format == 12 && platform == 3 && encoding == 10) format12Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
+            bool isUnicodeFormat4 = format == 4 && (platform == 0 || (platform == 3 && encoding == 1));
+            bool isUnicodeFormat12 = format == 12 && (platform == 0 || (platform == 3 && encoding == 10));
+            if (isUnicodeFormat4) format4Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
+            if (isUnicodeFormat12) format12Candidate = new OpenTypeTableRange(offset, cmap.Length - (int)relativeOffset);
         }
-        if (scalar > 0xFFFF) return format12Candidate is OpenTypeTableRange selected12 ? GetFormat12GlyphIndex(data, selected12, scalar, metrics.GlyphCount) : throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported supplementary-plane character map.");
+        if (format12Candidate is OpenTypeTableRange selected12) return GetFormat12GlyphIndex(data, selected12, scalar, metrics.GlyphCount);
         if (format4Candidate is not OpenTypeTableRange selected4) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The selected font has no supported Unicode cmap format 4 table.");
         OpenTypeTableRange format4 = selected4;
         RequireTableLength(format4, 16, "cmap format 4");
