@@ -199,9 +199,11 @@ text allowance, 104,152 bytes
 against 131,072 for short attributes, and 2,233,296 bytes against 4,190,904 for
 large values. That is regression evidence for the pinned runtime, not an exact
 BCL-allocation or process-RSS guarantee.
-The fixed-input Windows child-process reports are retained whenever that CI probe
-step completes, alongside their runtime/platform fingerprint; package diagnostics
-remain failure-only.
+The fixed-input Windows and Linux child-process reports are configured to be
+retained whenever their CI probe step completes, alongside a runtime/platform
+fingerprint; package diagnostics remain failure-only. The local WSL Ubuntu 24.04.3
+x64/.NET 10.0.12 XML-reader observations reproduce the three Windows envelopes,
+but are not remote CI evidence.
 
 Parser-owned stylesheet declaration/selector strings, definition identifiers and
 copied local-reference identifiers now reserve both their exact string bytes and

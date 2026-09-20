@@ -21,12 +21,11 @@ jobs:
       - run: dotnet restore --locked-mode
       - run: dotnet build Lokad.Svg.slnx -c Release --no-restore
       - run: dotnet test Lokad.Svg.slnx -c Release --no-build
+      - shell: pwsh
+        run: tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe
       - if: runner.os == 'Windows'
         shell: pwsh
         run: tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke
-      - if: runner.os == 'Windows'
-        shell: pwsh
-        run: tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe
       - if: runner.os == 'Linux'
         shell: pwsh
         run: tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json
@@ -36,10 +35,10 @@ jobs:
           name: chrome-smoke-${{ matrix.os }}
           path: artifacts/chrome-smoke
           if-no-files-found: warn
-      - if: always() && runner.os == 'Windows'
+      - if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: memory-probe-windows
+          name: memory-probe-${{ matrix.os }}
           path: artifacts/memory-probe
           if-no-files-found: warn
       - run: dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build -o artifacts/packages
