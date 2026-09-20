@@ -34,23 +34,15 @@ internal static class SvgStyleSheet
 
     internal static InlineStyle Resolve(XmlReader reader, BudgetedParserList<CssRule> rules, bool directChild, bool hasGroupAncestor, bool parentIsGroup, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
-        int colorSpecificity = -1, fillSpecificity = -1, fillOpacitySpecificity = -1, strokeSpecificity = -1, displaySpecificity = -1, visibilitySpecificity = -1, opacitySpecificity = -1, fillRuleSpecificity = -1;
+        SvgStyleCascade cascade = new();
         for (int ruleIndex = 0; ruleIndex < rules.Count; ruleIndex++)
         {
             CssRule rule = rules[ruleIndex];
             workCounter.Consume(cancellationToken);
             if (!rule.Matches(reader, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken)) continue;
-            if (rule.Style.Color is not null && rule.Specificity >= colorSpecificity) { color = rule.Style.Color; colorSpecificity = rule.Specificity; }
-            if (rule.Style.Fill is not null && rule.Specificity >= fillSpecificity) { fill = rule.Style.Fill; fillSpecificity = rule.Specificity; }
-            if (rule.Style.FillOpacity is not null && rule.Specificity >= fillOpacitySpecificity) { fillOpacity = rule.Style.FillOpacity; fillOpacitySpecificity = rule.Specificity; }
-            if (rule.Style.Stroke is not null && rule.Specificity >= strokeSpecificity) { stroke = rule.Style.Stroke; strokeSpecificity = rule.Specificity; }
-            if (rule.Style.Display is not null && rule.Specificity >= displaySpecificity) { display = rule.Style.Display; displaySpecificity = rule.Specificity; }
-            if (rule.Style.Visibility is not null && rule.Specificity >= visibilitySpecificity) { visibility = rule.Style.Visibility; visibilitySpecificity = rule.Specificity; }
-            if (rule.Style.Opacity is not null && rule.Specificity >= opacitySpecificity) { opacity = rule.Style.Opacity; opacitySpecificity = rule.Specificity; }
-            if (rule.Style.FillRule is not null && rule.Specificity >= fillRuleSpecificity) { fillRule = rule.Style.FillRule; fillRuleSpecificity = rule.Specificity; }
+            cascade.Apply(rule.Style, rule.Specificity);
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule);
+        return cascade.ToInlineStyle();
     }
 
     internal static bool TargetsRootId(string? rootId, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
