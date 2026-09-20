@@ -190,6 +190,8 @@ is used. This explicitly excludes grid rounding, instructions, component metrics
 overlap and scaled/unscaled offset semantics rather than silently discarding them.
 Conflicting scale encodings are also rejected. Composite instruction extents are
 validated before their unsupported semantics are rejected.
+The complementary asymmetric scale10 vector maps (10,3) to (11.5,3), while
+the existing scale01 vector maps it to (10,8), fixing both file-order coefficients.
 `name`/`OS/2` metadata and required pair positioning are not validated; scalar
 mapping plus advances is not universal text shaping.
 
