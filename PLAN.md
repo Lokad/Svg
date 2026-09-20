@@ -152,8 +152,10 @@ per-run caps, timer tests and cancellation checks alone are not work accounting.
 
 **Repaired 2026-09-20:** SVG-coordinate glyph transformation and contour splitting
 now consume the same counter as decode/expansion. The three-segment triangle path
-uses exactly 25 units through decode, transformed insertion, SVG mapping and
-closure scanning; 24 denies and releases all temporary reservations.
+uses exactly 24 units through decode, transformed insertion, SVG mapping and
+closure scanning; 23 denies and releases all temporary reservations. Simple-glyph
+contour lowering reuses its already-decoded structure rather than reparsing
+endpoints before point decoding.
 
 ### R04c / P0 — Raster failures bypass surface-reservation cleanup
 

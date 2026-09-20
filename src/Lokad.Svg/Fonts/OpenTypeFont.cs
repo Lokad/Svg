@@ -296,6 +296,12 @@ internal static class OpenTypeFont
     internal static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        return GetSimpleGlyphPoints(bytes, glyphIndex, metrics, structure, workCounter, cancellationToken);
+    }
+
+    /// <summary>Decodes point flags and coordinates from already-validated simple-glyph structure.</summary>
+    private static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeSimpleGlyphStructure structure, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
         if (structure.ContourEndpoints.Length == 0) return [];
         int pointCount = checked(structure.ContourEndpoints[^1] + 1);
         if (pointCount > MaximumSimpleGlyphPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph point count exceeds the supported limit.");
@@ -398,7 +404,7 @@ internal static class OpenTypeFont
     {
         OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
         if (structure.ContourEndpoints.Length == 0) return [];
-        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, structure, workCounter, cancellationToken);
         return BuildQuadraticContours(points, structure.ContourEndpoints, workCounter, cancellationToken);
     }
 
