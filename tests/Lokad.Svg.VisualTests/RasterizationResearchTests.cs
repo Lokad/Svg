@@ -4,6 +4,8 @@ namespace Lokad.Svg.VisualTests;
 
 public sealed class RasterizationResearchTests
 {
+    private const long FixedOne = 65_536;
+
     [Fact]
     public void Pixel_center_triangle_baseline_is_not_Chrome_exact()
     {
@@ -331,6 +333,96 @@ public sealed class RasterizationResearchTests
         Assert.Equal(6, halfGrid.MaximumMismatchY);
     }
 
+    [Fact]
+    public void Source_guided_incremental_alpha_accumulation_does_not_make_edge_strip_coverage_exact()
+    {
+        RgbaImage integerReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png")), 64);
+        RgbaImage fractionalReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-fractional-8x8.png")), 64);
+        RgbaImage halfGridReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-half-grid-8x8.png")), 64);
+
+        PixelComparison integer = PixelComparer.Compare(integerReference, RasterizeSourceGuidedFixedEdgeStripTriangle(IntegerTriangle, true));
+        PixelComparison fractional = PixelComparer.Compare(fractionalReference, RasterizeSourceGuidedFixedEdgeStripTriangle(FractionalTriangle, true));
+        PixelComparison halfGrid = PixelComparer.Compare(halfGridReference, RasterizeSourceGuidedFixedEdgeStripTriangle(HalfGridTriangle, true));
+
+        Assert.True(integer.DimensionsMatch);
+        Assert.False(integer.IsExact);
+        Assert.Equal(2, integer.ChangedPixelCount);
+        Assert.Equal((byte)1, integer.MaximumChannelError);
+        Assert.Equal((byte)1, integer.MaximumAlphaError);
+        Assert.Equal(2, integer.AlphaChangedPixelCount);
+        Assert.Equal(1, integer.MinimumMismatchX);
+        Assert.Equal(1, integer.MinimumMismatchY);
+        Assert.Equal(6, integer.MaximumMismatchX);
+        Assert.Equal(1, integer.MaximumMismatchY);
+
+        Assert.True(fractional.DimensionsMatch);
+        Assert.False(fractional.IsExact);
+        Assert.Equal(12, fractional.ChangedPixelCount);
+        Assert.Equal((byte)2, fractional.MaximumChannelError);
+        Assert.Equal((byte)2, fractional.MaximumAlphaError);
+        Assert.Equal(12, fractional.AlphaChangedPixelCount);
+        Assert.Equal(1, fractional.MinimumMismatchX);
+        Assert.Equal(1, fractional.MinimumMismatchY);
+        Assert.Equal(7, fractional.MaximumMismatchX);
+        Assert.Equal(6, fractional.MaximumMismatchY);
+
+        Assert.True(halfGrid.DimensionsMatch);
+        Assert.False(halfGrid.IsExact);
+        Assert.Equal(15, halfGrid.ChangedPixelCount);
+        Assert.Equal((byte)2, halfGrid.MaximumChannelError);
+        Assert.Equal((byte)2, halfGrid.MaximumAlphaError);
+        Assert.Equal(15, halfGrid.AlphaChangedPixelCount);
+        Assert.Equal(1, halfGrid.MinimumMismatchX);
+        Assert.Equal(1, halfGrid.MinimumMismatchY);
+        Assert.Equal(7, halfGrid.MaximumMismatchX);
+        Assert.Equal(6, halfGrid.MaximumMismatchY);
+    }
+
+    [Fact]
+    public void Source_guided_trapezoid_alpha_math_does_not_make_coverage_exact()
+    {
+        RgbaImage integerReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-8x8.png")), 64);
+        RgbaImage fractionalReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-fractional-8x8.png")), 64);
+        RgbaImage halfGridReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-triangle-half-grid-8x8.png")), 64);
+
+        PixelComparison integer = PixelComparer.Compare(integerReference, RasterizeSourceGuidedTrapezoidAlphaTriangle(IntegerTriangle));
+        PixelComparison fractional = PixelComparer.Compare(fractionalReference, RasterizeSourceGuidedTrapezoidAlphaTriangle(FractionalTriangle));
+        PixelComparison halfGrid = PixelComparer.Compare(halfGridReference, RasterizeSourceGuidedTrapezoidAlphaTriangle(HalfGridTriangle));
+
+        Assert.True(integer.DimensionsMatch);
+        Assert.False(integer.IsExact);
+        Assert.Equal(6, integer.ChangedPixelCount);
+        Assert.Equal((byte)255, integer.MaximumChannelError);
+        Assert.Equal((byte)211, integer.MaximumAlphaError);
+        Assert.Equal(6, integer.AlphaChangedPixelCount);
+        Assert.Equal(1, integer.MinimumMismatchX);
+        Assert.Equal(1, integer.MinimumMismatchY);
+        Assert.Equal(6, integer.MaximumMismatchX);
+        Assert.Equal(1, integer.MaximumMismatchY);
+
+        Assert.True(fractional.DimensionsMatch);
+        Assert.False(fractional.IsExact);
+        Assert.Equal(18, fractional.ChangedPixelCount);
+        Assert.Equal((byte)255, fractional.MaximumChannelError);
+        Assert.Equal((byte)249, fractional.MaximumAlphaError);
+        Assert.Equal(18, fractional.AlphaChangedPixelCount);
+        Assert.Equal(1, fractional.MinimumMismatchX);
+        Assert.Equal(1, fractional.MinimumMismatchY);
+        Assert.Equal(7, fractional.MaximumMismatchX);
+        Assert.Equal(6, fractional.MaximumMismatchY);
+
+        Assert.True(halfGrid.DimensionsMatch);
+        Assert.False(halfGrid.IsExact);
+        Assert.Equal(18, halfGrid.ChangedPixelCount);
+        Assert.Equal((byte)255, halfGrid.MaximumChannelError);
+        Assert.Equal((byte)249, halfGrid.MaximumAlphaError);
+        Assert.Equal(18, halfGrid.AlphaChangedPixelCount);
+        Assert.Equal(1, halfGrid.MinimumMismatchX);
+        Assert.Equal(1, halfGrid.MinimumMismatchY);
+        Assert.Equal(7, halfGrid.MaximumMismatchX);
+        Assert.Equal(6, halfGrid.MaximumMismatchY);
+    }
+
     private static RgbaImage RasterizePixelCenterTriangle()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -494,6 +586,9 @@ public sealed class RasterizationResearchTests
     }
 
     private static RgbaImage RasterizeSourceGuidedFixedEdgeStripTriangle(ReadOnlySpan<Point> triangle)
+        => RasterizeSourceGuidedFixedEdgeStripTriangle(triangle, false);
+
+    private static RgbaImage RasterizeSourceGuidedFixedEdgeStripTriangle(ReadOnlySpan<Point> triangle, bool accumulateEachStrip)
     {
         FixedPoint[] fixedTriangle = new FixedPoint[triangle.Length];
         for (int index = 0; index < triangle.Length; index++) fixedTriangle[index] = FixedPoint.From(triangle[index]);
@@ -511,6 +606,7 @@ public sealed class RasterizationResearchTests
             for (int x = 0; x < 8; x++)
             {
                 double area = 0;
+                int accumulatedAlpha = 0;
                 for (int interval = 0; interval < boundaries.Count - 1; interval++)
                 {
                     long top = boundaries[interval];
@@ -524,9 +620,14 @@ public sealed class RasterizationResearchTests
                     polygon = Clip(polygon, x + 1, false, true);
                     polygon = Clip(polygon, y, true, false);
                     polygon = Clip(polygon, y + 1, false, false);
-                    area += Area(polygon);
+                    if (accumulateEachStrip)
+                    {
+                        int stripAlpha = (int)Math.Floor(Area(polygon) * 256);
+                        accumulatedAlpha = Math.Min(byte.MaxValue, accumulatedAlpha + stripAlpha);
+                    }
+                    else area += Area(polygon);
                 }
-                int fixedPointAlpha = (int)Math.Floor(area * 256);
+                int fixedPointAlpha = accumulateEachStrip ? accumulatedAlpha : (int)Math.Floor(area * 256);
                 if (fixedPointAlpha == 0) continue;
                 int offset = (y * 8 + x) * 4;
                 pixels[offset] = byte.MaxValue;
@@ -535,6 +636,243 @@ public sealed class RasterizationResearchTests
         }
         return new RgbaImage(8, 8, pixels);
     }
+
+    private static RgbaImage RasterizeSourceGuidedTrapezoidAlphaTriangle(ReadOnlySpan<Point> triangle)
+    {
+        FixedPoint[] fixedTriangle = new FixedPoint[triangle.Length];
+        for (int index = 0; index < triangle.Length; index++) fixedTriangle[index] = FixedPoint.From(triangle[index]);
+
+        byte[] alpha = new byte[8 * 8];
+        for (int y = 0; y < 8; y++)
+        {
+            List<long> boundaries = [ToFixed(y), ToFixed(y + 1)];
+            foreach (FixedPoint point in fixedTriangle)
+            {
+                if (point.Y > boundaries[0] && point.Y < boundaries[1]) boundaries.Add(point.Y);
+            }
+            boundaries.Sort();
+
+            for (int interval = 0; interval < boundaries.Count - 1; interval++)
+            {
+                long top = boundaries[interval];
+                long bottom = boundaries[interval + 1];
+                FixedTrapezoid? trapezoid = SourceGuidedFixedTrapezoid(fixedTriangle, top, bottom);
+                if (trapezoid is null) continue;
+                BlitSourceGuidedTrapezoid(alpha, (int)(top >> 16), trapezoid.Value, ToAlphaForHeight(bottom - top));
+            }
+        }
+
+        byte[] pixels = new byte[8 * 8 * 4];
+        for (int index = 0; index < alpha.Length; index++)
+        {
+            if (alpha[index] == 0) continue;
+            int offset = index * 4;
+            pixels[offset] = byte.MaxValue;
+            pixels[offset + 3] = alpha[index];
+        }
+        return new RgbaImage(8, 8, pixels);
+    }
+
+    private static void BlitSourceGuidedTrapezoid(byte[] mask, int y, FixedTrapezoid trapezoid, byte fullAlpha)
+    {
+        long upperLeft = trapezoid.UpperLeft;
+        long upperRight = trapezoid.UpperRight;
+        long lowerLeft = trapezoid.LowerLeft;
+        long lowerRight = trapezoid.LowerRight;
+        if (upperLeft > upperRight) return;
+        if (lowerLeft > lowerRight)
+        {
+            long intersection = (Math.Max(upperLeft, lowerLeft) + Math.Min(upperRight, lowerRight)) / 2;
+            lowerLeft = intersection;
+            lowerRight = intersection;
+        }
+        if (upperLeft == upperRight && lowerLeft == lowerRight) return;
+        if (upperLeft > lowerLeft) (upperLeft, lowerLeft) = (lowerLeft, upperLeft);
+        if (upperRight > lowerRight) (upperRight, lowerRight) = (lowerRight, upperRight);
+
+        long joinLeft = CeilToFixed(lowerLeft);
+        long joinRight = FloorToFixed(upperRight);
+        if (joinLeft <= joinRight)
+        {
+            if (upperLeft < joinLeft)
+            {
+                int length = CeilToInt(joinLeft - upperLeft);
+                if (length == 1)
+                {
+                    BlitSingle(mask, y, FloorToInt(upperLeft), TrapezoidToAlpha(joinLeft - upperLeft, joinLeft - lowerLeft), fullAlpha);
+                }
+                else if (length == 2)
+                {
+                    long first = FloorToFixed(upperLeft) + FixedOne - upperLeft;
+                    long second = lowerLeft - upperLeft - first;
+                    BlitTwo(mask, y, FloorToInt(upperLeft), fullAlpha - PartialTriangleToAlpha(first, trapezoid.LeftInverseSlope), PartialTriangleToAlpha(second, trapezoid.LeftInverseSlope));
+                }
+                else BlitAaaTrapezoid(mask, y, upperLeft, joinLeft, lowerLeft, joinLeft, trapezoid.LeftInverseSlope, int.MaxValue, fullAlpha);
+            }
+            if (joinLeft < joinRight) BlitFull(mask, y, FloorToInt(joinLeft), FloorToInt(joinRight - joinLeft), fullAlpha);
+            if (lowerRight > joinRight)
+            {
+                int length = CeilToInt(lowerRight - joinRight);
+                if (length == 1)
+                {
+                    BlitSingle(mask, y, FloorToInt(joinRight), TrapezoidToAlpha(upperRight - joinRight, lowerRight - joinRight), fullAlpha);
+                }
+                else if (length == 2)
+                {
+                    long first = joinRight + FixedOne - upperRight;
+                    long second = lowerRight - upperRight - first;
+                    BlitTwo(mask, y, FloorToInt(joinRight), PartialTriangleToAlpha(first, trapezoid.RightInverseSlope), fullAlpha - PartialTriangleToAlpha(second, trapezoid.RightInverseSlope));
+                }
+                else BlitAaaTrapezoid(mask, y, joinRight, upperRight, joinRight, lowerRight, int.MaxValue, trapezoid.RightInverseSlope, fullAlpha);
+            }
+        }
+        else BlitAaaTrapezoid(mask, y, upperLeft, upperRight, lowerLeft, lowerRight, trapezoid.LeftInverseSlope, trapezoid.RightInverseSlope, fullAlpha);
+    }
+
+    private static void BlitAaaTrapezoid(byte[] mask, int y, long upperLeft, long upperRight, long lowerLeft, long lowerRight, long leftInverseSlope, long rightInverseSlope, byte fullAlpha)
+    {
+        int left = FloorToInt(upperLeft);
+        int right = CeilToInt(lowerRight);
+        int length = right - left;
+        if (length == 1)
+        {
+            BlitSingle(mask, y, left, TrapezoidToAlpha(upperRight - upperLeft, lowerRight - lowerLeft), fullAlpha);
+            return;
+        }
+
+        int[] alphas = Enumerable.Repeat((int)fullAlpha, length).ToArray();
+        int upperLeftPixel = FloorToInt(upperLeft);
+        int lowerLeftPixel = CeilToInt(lowerLeft);
+        if (upperLeftPixel + 2 == lowerLeftPixel)
+        {
+            long first = FloorToFixed(upperLeft) + FixedOne - upperLeft;
+            long second = lowerLeft - upperLeft - first;
+            SubtractAlpha(alphas, 0, fullAlpha - PartialTriangleToAlpha(first, leftInverseSlope));
+            SubtractAlpha(alphas, 1, PartialTriangleToAlpha(second, leftInverseSlope));
+        }
+        else SubtractAlpha(alphas, upperLeftPixel - left, ComputeAlphaBelow(upperLeft - FloorToFixed(upperLeftPixel), lowerLeft - FloorToFixed(upperLeftPixel), leftInverseSlope, fullAlpha));
+
+        int upperRightPixel = FloorToInt(upperRight);
+        int lowerRightPixel = CeilToInt(lowerRight);
+        if (upperRightPixel + 2 == lowerRightPixel)
+        {
+            long first = FloorToFixed(upperRight) + FixedOne - upperRight;
+            long second = lowerRight - upperRight - first;
+            SubtractAlpha(alphas, length - 2, PartialTriangleToAlpha(first, rightInverseSlope));
+            SubtractAlpha(alphas, length - 1, fullAlpha - PartialTriangleToAlpha(second, rightInverseSlope));
+        }
+        else SubtractAlpha(alphas, upperRightPixel - left, ComputeAlphaAbove(upperRight - FloorToFixed(upperRightPixel), lowerRight - FloorToFixed(upperRightPixel), rightInverseSlope, fullAlpha));
+
+        for (int index = 0; index < alphas.Length; index++) AddAlpha(mask, y, left + index, alphas[index]);
+    }
+
+    private static int[] ComputeAlphaAbove(long left, long right, long inverseSlope, byte fullAlpha)
+    {
+        int count = CeilToInt(right);
+        int[] alphas = new int[count];
+        if (count == 0) return alphas;
+        if (count == 1)
+        {
+            alphas[0] = GetPartialAlpha((int)(((2L * FixedOne) - left - right) >> 9), fullAlpha);
+            return alphas;
+        }
+        long first = FixedOne - left;
+        long last = right - (count - 1) * FixedOne;
+        long firstHeight = FixedMultiply(first, inverseSlope);
+        alphas[0] = (int)(FixedMultiply(first, firstHeight) >> 9);
+        long alpha16 = firstHeight + (inverseSlope >> 1);
+        for (int index = 1; index < count - 1; index++)
+        {
+            alphas[index] = (int)((alpha16 >> 8) & byte.MaxValue);
+            alpha16 += inverseSlope;
+        }
+        alphas[^1] = fullAlpha - PartialTriangleToAlpha(last, inverseSlope);
+        return alphas;
+    }
+
+    private static int[] ComputeAlphaBelow(long left, long right, long inverseSlope, byte fullAlpha)
+    {
+        int count = CeilToInt(right);
+        int[] alphas = new int[count];
+        if (count == 0) return alphas;
+        if (count == 1)
+        {
+            alphas[0] = GetPartialAlpha(TrapezoidToAlpha(left, right), fullAlpha);
+            return alphas;
+        }
+        long first = FixedOne - left;
+        long last = right - (count - 1) * FixedOne;
+        long lastHeight = FixedMultiply(last, inverseSlope);
+        alphas[^1] = (int)(FixedMultiply(last, lastHeight) >> 9);
+        long alpha16 = lastHeight + (inverseSlope >> 1);
+        for (int index = count - 2; index > 0; index--)
+        {
+            alphas[index] = (int)((alpha16 >> 8) & byte.MaxValue);
+            alpha16 += inverseSlope;
+        }
+        alphas[0] = fullAlpha - PartialTriangleToAlpha(first, inverseSlope);
+        return alphas;
+    }
+
+    private static void SubtractAlpha(int[] destination, int offset, int value)
+    {
+        if (offset < 0 || offset >= destination.Length) return;
+        destination[offset] = Math.Max(0, destination[offset] - value);
+    }
+
+    private static void SubtractAlpha(int[] destination, int offset, ReadOnlySpan<int> values)
+    {
+        for (int index = 0; index < values.Length; index++) SubtractAlpha(destination, offset + index, values[index]);
+    }
+
+    private static void BlitSingle(byte[] mask, int y, int x, int alpha, byte fullAlpha)
+    {
+        if (fullAlpha == byte.MaxValue) SetAlpha(mask, y, x, alpha);
+        else AddAlpha(mask, y, x, GetPartialAlpha(alpha, fullAlpha));
+    }
+
+    private static void BlitTwo(byte[] mask, int y, int x, int first, int second)
+    {
+        AddAlpha(mask, y, x, first);
+        AddAlpha(mask, y, x + 1, second);
+    }
+
+    private static void BlitFull(byte[] mask, int y, int x, int length, byte alpha)
+    {
+        for (int index = 0; index < length; index++) AddAlpha(mask, y, x + index, alpha);
+    }
+
+    private static void AddAlpha(byte[] mask, int y, int x, int alpha)
+    {
+        if ((uint)x >= 8 || (uint)y >= 8 || alpha <= 0) return;
+        int offset = y * 8 + x;
+        mask[offset] = (byte)Math.Min(byte.MaxValue, mask[offset] + alpha);
+    }
+
+    private static void SetAlpha(byte[] mask, int y, int x, int alpha)
+    {
+        if ((uint)x >= 8 || (uint)y >= 8 || alpha <= 0) return;
+        mask[y * 8 + x] = (byte)Math.Min(byte.MaxValue, alpha);
+    }
+
+    private static byte ToAlphaForHeight(long height) => (byte)Math.Min(byte.MaxValue, (byte)((byte.MaxValue * height + FixedOne / 2) >> 16));
+
+    private static int TrapezoidToAlpha(long first, long second) => (int)(((first + second) / 2) >> 8);
+
+    private static int PartialTriangleToAlpha(long width, long inverseSlope)
+        => (int)((((width >> 11) * (width >> 11) * (inverseSlope >> 11)) >> 8) & byte.MaxValue);
+
+    private static int GetPartialAlpha(int alpha, byte fullAlpha) => alpha * fullAlpha >> 8;
+
+    private static long FixedMultiply(long left, long right) => checked(left * right >> 16);
+
+    private static int FloorToInt(long value) => (int)(value >> 16);
+
+    private static int CeilToInt(long value) => (int)((value + FixedOne - 1) >> 16);
+
+    private static long FloorToFixed(long value) => value & ~(FixedOne - 1);
+
+    private static long CeilToFixed(long value) => checked((long)CeilToInt(value) * FixedOne);
 
     private static (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? SnappedStrip(ReadOnlySpan<Point> triangle, double top, double bottom, EdgeRounding rounding)
     {
@@ -559,6 +897,16 @@ public sealed class RasterizationResearchTests
 
     private static (Point LeftTop, Point RightTop, Point LeftBottom, Point RightBottom)? SourceGuidedSnappedStrip(ReadOnlySpan<FixedPoint> triangle, long top, long bottom)
     {
+        FixedTrapezoid? trapezoid = SourceGuidedFixedTrapezoid(triangle, top, bottom);
+        return trapezoid is null ? null : new(
+            new Point(trapezoid.Value.UpperLeft / 65_536d, top / 65_536d),
+            new Point(trapezoid.Value.UpperRight / 65_536d, top / 65_536d),
+            new Point(trapezoid.Value.LowerLeft / 65_536d, bottom / 65_536d),
+            new Point(trapezoid.Value.LowerRight / 65_536d, bottom / 65_536d));
+    }
+
+    private static FixedTrapezoid? SourceGuidedFixedTrapezoid(ReadOnlySpan<FixedPoint> triangle, long top, long bottom)
+    {
         long middle = top + (bottom - top) / 2;
         List<(FixedPoint Top, FixedPoint Bottom)> edges = [];
         for (int index = 0; index < triangle.Length; index++)
@@ -569,22 +917,28 @@ public sealed class RasterizationResearchTests
         }
         if (edges.Count == 0) return null;
         Assert.Equal(2, edges.Count);
-        Point firstTop = SourceGuidedSnapEdgeX(edges[0].Top, edges[0].Bottom, top);
-        Point firstBottom = SourceGuidedSnapEdgeX(edges[0].Top, edges[0].Bottom, bottom);
-        Point secondTop = SourceGuidedSnapEdgeX(edges[1].Top, edges[1].Bottom, top);
-        Point secondBottom = SourceGuidedSnapEdgeX(edges[1].Top, edges[1].Bottom, bottom);
-        return firstTop.X <= secondTop.X
-            ? (firstTop, secondTop, firstBottom, secondBottom)
-            : (secondTop, firstTop, secondBottom, firstBottom);
+        long firstTop = SourceGuidedSnapEdgeX(edges[0].Top, edges[0].Bottom, top);
+        long firstBottom = SourceGuidedSnapEdgeX(edges[0].Top, edges[0].Bottom, bottom);
+        long secondTop = SourceGuidedSnapEdgeX(edges[1].Top, edges[1].Bottom, top);
+        long secondBottom = SourceGuidedSnapEdgeX(edges[1].Top, edges[1].Bottom, bottom);
+        return firstTop <= secondTop
+            ? new FixedTrapezoid(firstTop, secondTop, firstBottom, secondBottom, SourceGuidedInverseSlope(edges[0].Top, edges[0].Bottom), SourceGuidedInverseSlope(edges[1].Top, edges[1].Bottom))
+            : new FixedTrapezoid(secondTop, firstTop, secondBottom, firstBottom, SourceGuidedInverseSlope(edges[1].Top, edges[1].Bottom), SourceGuidedInverseSlope(edges[0].Top, edges[0].Bottom));
     }
 
-    private static Point SourceGuidedSnapEdgeX(FixedPoint first, FixedPoint second, long y)
+    private static long SourceGuidedSnapEdgeX(FixedPoint first, FixedPoint second, long y)
     {
         if (first.Y > second.Y) (first, second) = (second, first);
         long slope = checked((second.X - first.X) << 16) / (second.Y - first.Y);
         long x = checked(first.X + ((slope * (y - first.Y)) >> 16));
-        long snappedX = (x + 2_048) & ~4_095L;
-        return new Point(snappedX / 65_536d, y / 65_536d);
+        return (x + 2_048) & ~4_095L;
+    }
+
+    private static long SourceGuidedInverseSlope(FixedPoint first, FixedPoint second)
+    {
+        if (first.Y > second.Y) (first, second) = (second, first);
+        long slope = checked((second.X - first.X) << 16) / (second.Y - first.Y);
+        return slope == 0 ? int.MaxValue : Math.Abs(checked((65_536L << 16) / slope));
     }
 
     private static Point SnapEdgeX(Point first, Point second, double y, EdgeRounding rounding)
@@ -661,6 +1015,8 @@ public sealed class RasterizationResearchTests
     private enum EdgeRounding { Floor, Nearest, Ceiling }
 
     private readonly record struct Point(double X, double Y);
+
+    private readonly record struct FixedTrapezoid(long UpperLeft, long UpperRight, long LowerLeft, long LowerRight, long LeftInverseSlope, long RightInverseSlope);
 
     private readonly record struct FixedPoint(long X, long Y)
     {

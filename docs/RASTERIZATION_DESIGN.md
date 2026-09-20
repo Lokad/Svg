@@ -150,6 +150,18 @@ walker: it retains analytic strip-area quantization rather than the source's
 per-row alpha operations, and it makes no claim about the browser raster path.
 It is therefore another non-exact component result, not a geometry admission.
 
+Quantizing and saturating each of those strip contributions independently to one
+byte has the identical 2/64, 12/64 and 15/64 envelopes. A deeper partial model
+then ports the matched source's trapezoid-alpha branches and byte-mask
+accumulation while retaining the source-guided endpoint and edge setup. It is
+decisively worse: the integral reference changes 6 pixels with maximum
+channel/alpha error 255/211, and both fractional references change 18 with
+255/249. The model still omits the full source edge builder and does not identify
+Chrome's selected backend, so this is a rejection of those alpha operations as an
+isolated explanation, not an inference about production Skia behavior. The next
+probe must overlap semi-opaque diagonal paths on a transparent background; the
+current one-path, opaque family cannot distinguish coverage from source-over.
+
 ## Calibration source pin
 
 The Chromium `153.0.8010.52` tag used by the retained Windows recipe pins
