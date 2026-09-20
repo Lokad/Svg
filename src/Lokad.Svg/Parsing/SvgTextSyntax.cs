@@ -24,7 +24,7 @@ internal static class SvgTextSyntax
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(workCounter);
-        return Parse(reader, SvgTextFontSyntax.ReadInlineProperties(reader, workCounter, cancellationToken), inherited);
+        return Parse(reader, SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true).TextFont, inherited);
     }
 
     /// <summary>Parses direct text font syntax from declarations already scanned by style resolution.</summary>
@@ -87,29 +87,6 @@ internal static class SvgTextFontSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal and italic text font styles are supported.");
     }
 
-    internal static SvgTextInlineFontProperties ReadInlineProperties(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(reader);
-        ArgumentNullException.ThrowIfNull(workCounter);
-        string? inline = reader.GetAttribute("style");
-        if (inline is null) return default;
-        string? family = null, weight = null, style = null, size = null;
-        SvgInlineStyleParser.SvgInlineDeclarationReader declarations = new(inline.AsSpan(), workCounter, cancellationToken);
-        while (declarations.TryRead(out ReadOnlySpan<char> declaration))
-        {
-            int separator = declaration.IndexOf(':');
-            if (separator <= 0 || declaration[(separator + 1)..].Contains(':')) throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
-            ReadOnlySpan<char> property = declaration[..separator].Trim();
-            ReadOnlySpan<char> value = declaration[(separator + 1)..].Trim();
-            if (property.Length > SvgSyntaxLimits.MaximumValueTokenCharacters || value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Inline text font property names and values exceed the configured syntax limit.");
-            if (value.IsEmpty || value.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty and !important inline style declarations are not implemented.");
-            if (property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) family = value.ToString();
-            else if (property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) weight = value.ToString();
-            else if (property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) style = value.ToString();
-            else if (property.Equals("font-size", StringComparison.OrdinalIgnoreCase)) size = value.ToString();
-        }
-        return new SvgTextInlineFontProperties(family, weight, style, size);
-    }
 }
 
 /// <summary>Represents the direct-text font declarations found in one inline style value.</summary>

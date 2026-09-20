@@ -167,7 +167,7 @@ public sealed class SvgTextSyntaxTests
         using XmlReader childReader = XmlReader.Create(new StringReader("<text font-family='Attribute' font-weight='400' style='font-family: Inline; font-size: 14'/>"));
         childReader.Read();
 
-        SvgTextInlineFontProperties inline = SvgTextFontSyntax.ReadInlineProperties(childReader, new ParserWorkCounter(10), CancellationToken.None);
+        SvgTextInlineFontProperties inline = SvgInlineStyleParser.Parse(childReader.GetAttribute("style"), new ParserWorkCounter(10), CancellationToken.None, true).TextFont;
         SvgInheritedTextStyle resolved = SvgTextInheritance.Resolve(childReader, ancestor, inline);
 
         Assert.Equal("Inline", resolved.Family);

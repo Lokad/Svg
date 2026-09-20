@@ -334,7 +334,7 @@ regeneration. More helpers or passing runner cases do not close a feature gate.
 
 | Current duplication / repeated work | Bounded direction and evidence needed |
 | --- | --- |
-| Three font-inheritance paths; paint and font readers repeat declaration validation/dispatch even after sharing the scanner. | Share precedence/admission with table-driven cross-tests; retain the distinction between raw declarations and computed values. Direct text's former second style scan is already removed. |
+| Three font-inheritance paths; paint and font readers repeat declaration validation/dispatch even after sharing the scanner. | Share precedence/admission with table-driven cross-tests; retain the distinction between raw declarations and computed values. The standalone direct-text parser now uses the same inline declaration scanner as discovery and rendering, rather than maintaining a second grammar. |
 | Discovery reparses SVG during conversion and throws away style/structure. | Prepared-document ownership under shared limits (R08); avoid a second incompatible language. |
 | `AcquireAsync` verifies bytes then returns a resolution; snapshot can fetch again. The bound source hashes on fetch, then snapshot hashes again for every alias. | One verified byte/program lease and validated declaration binding per operation; count provider calls and hash bytes, preserve R06 checks and caller-owned caching. |
 | Core metrics now retain validated cmap/hmtx/loca/glyf table ranges, so direct layout and glyph expansion no longer rescan the SFNT directory; cmap validation and glyph decoding still repeat per character. | Extend bounded needed-glyph reuse where evidence warrants it; benchmark repeated versus distinct glyphs, never an unbounded global cache. |
