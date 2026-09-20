@@ -48,6 +48,17 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.True(request.Italic);
     }
 
+    [Theory]
+    [InlineData("font-family:", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("font-family: Example !important", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("font-family:: Example", SvgErrorCode.MalformedInput)]
+    public void Rejects_the_same_invalid_inline_font_declarations_as_rendering(string declaration, SvgErrorCode expectedErrorCode)
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(System.Text.Encoding.UTF8.GetBytes($"<svg xmlns='http://www.w3.org/2000/svg'><text style='{declaration}'>x</text></svg>"), CancellationToken.None));
+
+        Assert.Equal(expectedErrorCode, exception.ErrorCode);
+    }
+
     [Fact]
     public void Deduplicates_case_insensitive_equivalent_font_requests()
     {

@@ -86,6 +86,20 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
 
+    [Theory]
+    [InlineData("font-family:", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("font-family: Example !important", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("font-family:: Example", SvgErrorCode.MalformedInput)]
+    public void Rejects_inline_font_declarations_outside_the_paint_style_subset(string declaration, SvgErrorCode expectedErrorCode)
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader($"<text style='{declaration}'/>"));
+        reader.Read();
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgTextSyntax.Parse(reader));
+
+        Assert.Equal(expectedErrorCode, exception.ErrorCode);
+    }
+
     [Fact]
     public void Normalizes_a_quoted_direct_font_family()
     {

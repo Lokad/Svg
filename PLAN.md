@@ -241,7 +241,9 @@ coverage fallback are missing. Discovery deduplicates case-sensitively; lookup d
 
 Initial corrections: preparation now uses last-declaration-wins for repeated inline
 font properties, matching the existing inline style parser; direct rendering also
-normalizes quoted families. Remaining closure:
+normalizes quoted families. Empty, malformed and `!important` inline font
+declarations now have the same categorized rejection in discovery and rendering.
+Remaining closure:
 shared bounded declaration parsing, precedence and typed computed text
 style. Retain admitted syntax/style in prepared documents; cross-test inheritance,
 inline/stylesheet declarations, quoting/case, namespaces, hidden/inert nodes and
