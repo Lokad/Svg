@@ -1139,6 +1139,54 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Preserves_an_outer_shape_sibling_after_direct_text_in_a_group()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><text font-family='Example' font-size='100' y='3'>A</text></g><rect width='1' height='1' fill='red'/></svg>"u8.ToArray();
+
+        byte[] png = SvgConverter.ConvertToPng(svg, options, CancellationToken.None).ToArray();
+
+        Assert.Equal(255, DecodeAlpha(png, 0, 0));
+        Assert.True(DecodeAlpha(png, 1, 1) > 0);
+    }
+
+    [Fact]
+    public async Task Preserves_an_immediate_shape_sibling_after_direct_text_with_a_comment()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<!-- retained as ignored XML markup --></text><rect width='1' height='1' fill='red'/></svg>"u8.ToArray();
+
+        byte[] png = SvgConverter.ConvertToPng(svg, options, CancellationToken.None).ToArray();
+
+        Assert.Equal(255, DecodeAlpha(png, 0, 0));
+        Assert.True(DecodeAlpha(png, 1, 1) > 0);
+    }
+
+    [Fact]
+    public async Task Rejects_a_malformed_tail_after_direct_text()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text><rect width='1' height='1' fill='red'/>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
+    public async Task Rejects_an_unsupported_sibling_after_direct_text()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text><foreignObject/></svg>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public async Task Converts_direct_text_with_admitted_inline_font_properties()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
