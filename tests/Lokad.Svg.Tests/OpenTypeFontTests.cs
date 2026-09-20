@@ -362,12 +362,8 @@ public sealed class OpenTypeFontTests
     public async Task Lays_out_verified_glyph_advances_and_reports_missing_glyphs()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
-        SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new SvgMemoryFontProgramSource("caller-font", bytes));
 
-        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         SvgPositionedGlyph glyph = Assert.Single(SvgGlyphLayout.Layout(snapshot.Fonts[0], "A", 10, 2, 3, CancellationToken.None));
         SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphLayout.Layout(snapshot.Fonts[0], "B", 10, 2, 3, CancellationToken.None));
 
@@ -377,6 +373,36 @@ public sealed class OpenTypeFontTests
         Assert.Equal(6000d / 1024, glyph.Advance);
         Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
         Assert.Equal(SvgFontFailureStage.Glyph, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+    }
+
+    [Fact]
+    public async Task Converts_glyph_outlines_from_font_units_to_svg_coordinates()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(bytes, 1, CancellationToken.None);
+        WriteInt16(bytes, glyph.Offset, 1);
+        WriteUInt16(bytes, glyph.Offset + 10, 1);
+        WriteUInt16(bytes, glyph.Offset + 12, 0);
+        bytes[glyph.Offset + 14] = 0x37;
+        bytes[glyph.Offset + 15] = 0x37;
+        bytes[glyph.Offset + 16] = 10;
+        bytes[glyph.Offset + 17] = 5;
+        bytes[glyph.Offset + 18] = 3;
+        bytes[glyph.Offset + 19] = 0;
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
+        SvgPositionedGlyph positioned = Assert.Single(SvgGlyphLayout.Layout(snapshot.Fonts[0], "A", 102.4, 2, 3, CancellationToken.None));
+        SvgGlyphQuadraticSegment first = SvgGlyphOutline.GetContours(snapshot.Fonts[0], positioned, 102.4, CancellationToken.None)[0];
+
+        Assert.Equal(new SvgGlyphQuadraticSegment(new(3, 2.7), new(3.5, 2.7), new(3.5, 2.7)), first);
+    }
+
+    private static SvgFontProgramResolution CreateResolution(byte[] bytes)
+    {
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        return catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new SvgMemoryFontProgramSource("caller-font", bytes));
     }
 
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
