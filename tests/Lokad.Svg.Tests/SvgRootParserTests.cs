@@ -969,6 +969,22 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Scene_growth_reserves_replacement_geometry_before_releasing_its_previous_capacity()
+    {
+        RenderBudget budget = new(10_000);
+        SvgRectangle rectangle = new(0, 0, 1, 1, new SvgColor(0, 0, 0, 255), true, null);
+        using var scene = new SvgSceneBuilder(budget, new ParserWorkCounter(100), CancellationToken.None);
+        for (int index = 0; index < 4; index++) scene.AddGeometry(SvgGeometry.FromRectangle(rectangle));
+        long beforeGrowth = budget.Snapshot().CurrentBytes;
+
+        scene.AddGeometry(SvgGeometry.FromRectangle(rectangle));
+
+        RenderBudgetSnapshot afterGrowth = budget.Snapshot();
+        Assert.True(afterGrowth.PeakBytes > afterGrowth.CurrentBytes);
+        Assert.True(afterGrowth.PeakBytes > beforeGrowth);
+    }
+
+    [Fact]
     public void Charges_parser_collection_transfer_copies_to_the_shared_work_limit()
     {
         RenderBudget budget = new(1_000);
