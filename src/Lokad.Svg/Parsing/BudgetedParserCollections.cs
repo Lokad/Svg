@@ -76,6 +76,12 @@ internal sealed class BudgetedTextBuffer : IDisposable
     internal void Append(string value, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(value);
+        Append(value.AsSpan(), maximumLength, workCounter, cancellationToken);
+    }
+
+    /// <summary>Copies one reader-provided text chunk without first materializing it as a string.</summary>
+    internal void Append(ReadOnlySpan<char> value, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
         ArgumentNullException.ThrowIfNull(workCounter);
         if (value.Length > maximumLength - _length) throw new SvgException(SvgErrorCode.LimitExceeded, "The document direct text character count exceeds the admitted layout limit.");
         EnsureCapacity(checked(_length + value.Length), workCounter, cancellationToken);
@@ -83,7 +89,7 @@ internal sealed class BudgetedTextBuffer : IDisposable
         {
             workCounter.Consume(cancellationToken);
             int count = Math.Min(CopyCheckpointCharacters, value.Length - offset);
-            value.AsSpan(offset, count).CopyTo(_characters.AsSpan(_length + offset));
+            value.Slice(offset, count).CopyTo(_characters.AsSpan(_length + offset));
         }
         _length += value.Length;
     }

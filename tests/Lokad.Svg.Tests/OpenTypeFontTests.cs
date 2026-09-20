@@ -896,6 +896,17 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Reads_direct_text_in_bounded_reader_chunks()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' font-size='100'>" + new string('A', 5_000) + "</text></svg>");
+
+        using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, new RenderBudget(10_000_000), snapshot, CancellationToken.None);
+
+        Assert.Equal(5_000, root.Geometries.Length);
+    }
+
+    [Fact]
     public async Task Charges_direct_glyph_sampling_work_to_the_public_conversion_limit()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);

@@ -83,13 +83,20 @@ internal static class SvgRenderedLeafParser
         {
             using var text = new BudgetedTextBuffer(budget);
             if (element.IsEmptyElement) return text.Detach();
+            using RenderBudget.BudgetReservation chunkReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount(4_096, sizeof(char)), SvgMemoryCategory.Parser);
+            char[] chunk = new char[4_096];
             using XmlReader subtree = element.ReadSubtree();
             while (subtree.Read())
             {
                 workCounter.Consume(cancellationToken);
                 if (subtree.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
                 {
-                    text.Append(subtree.Value, maximumCharacters, workCounter, cancellationToken);
+                    int read;
+                    do
+                    {
+                        read = subtree.ReadValueChunk(chunk, 0, chunk.Length);
+                        if (read != 0) text.Append(chunk.AsSpan(0, read), maximumCharacters, workCounter, cancellationToken);
+                    } while (read != 0);
                     continue;
                 }
                 if (subtree.NodeType == XmlNodeType.Element && subtree.Depth != 0)
