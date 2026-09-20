@@ -11,7 +11,7 @@ internal static class SvgTextRunBuilder
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(snapshot);
         SvgPreparedFont font = snapshot.GetFont(style.Font);
-        SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, style.X, style.Y, style.Anchor, budget, cancellationToken);
+        SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, checked(style.X + style.Dx), checked(style.Y + style.Dy), style.Anchor, budget, cancellationToken);
         return new SvgTextRun(style, font, glyphs);
     }
 

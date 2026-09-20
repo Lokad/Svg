@@ -19,6 +19,8 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal(12.5, style.FontSize);
         Assert.Equal(2, style.X);
         Assert.Equal(3, style.Y);
+        Assert.Equal(0, style.Dx);
+        Assert.Equal(0, style.Dy);
         Assert.Equal(SvgTextAnchor.Start, style.Anchor);
     }
 
@@ -55,6 +57,20 @@ public sealed class SvgTextSyntaxTests
         SvgTextStyle style = SvgTextSyntax.Parse(reader);
 
         Assert.Equal(SvgTextAnchor.Middle, style.Anchor);
+    }
+
+    [Fact]
+    public void Parses_scalar_direct_text_position_adjustments()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Example' x='2' y='3' dx='4' dy='5'/>"));
+        reader.Read();
+
+        SvgTextStyle style = SvgTextSyntax.Parse(reader);
+
+        Assert.Equal(2, style.X);
+        Assert.Equal(3, style.Y);
+        Assert.Equal(4, style.Dx);
+        Assert.Equal(5, style.Dy);
     }
 
     [Fact]

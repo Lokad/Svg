@@ -685,7 +685,6 @@ public sealed class OpenTypeFontTests
     }
 
     [Theory]
-    [InlineData("dx='2'")]
     [InlineData("clip-path='url(#missing)'")]
     public async Task Rejects_unimplemented_direct_text_attributes(string attribute)
     {
@@ -739,7 +738,7 @@ public sealed class OpenTypeFontTests
     public async Task Builds_a_simple_text_run_from_one_prepared_face()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 2, 3, SvgTextAnchor.Start);
+        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 2, 3, 4, 5, SvgTextAnchor.Start);
 
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         RenderBudget budget = new(64);
@@ -747,8 +746,8 @@ public sealed class OpenTypeFontTests
 
         SvgPositionedGlyph glyph = Assert.Single(run.Glyphs);
         Assert.Equal((ushort)1, glyph.GlyphIndex);
-        Assert.Equal(2, glyph.X);
-        Assert.Equal(3, glyph.Y);
+        Assert.Equal(6, glyph.X);
+        Assert.Equal(8, glyph.Y);
         Assert.Empty(Assert.Single(SvgTextRunBuilder.GetGlyphContours(run, CancellationToken.None)));
         Assert.Equal(64, budget.Snapshot().CurrentBytes);
         run.Dispose();

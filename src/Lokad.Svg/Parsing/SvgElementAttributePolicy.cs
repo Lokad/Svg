@@ -55,7 +55,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.Use => reader.LocalName is "id" or "class" or "href" or "x" or "y" or "transform" or "fill" or "opacity" or "display" or "visibility" or "style",
             SvgElementKind.Path => reader.LocalName is "id" or "class" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform",
             SvgElementKind.PointList => reader.LocalName is "id" or "class" or "points" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform",
-            SvgElementKind.Text => reader.LocalName is "x" or "y" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility",
+            SvgElementKind.Text => reader.LocalName is "x" or "y" or "dx" or "dy" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility",
             SvgElementKind.Symbol => reader.LocalName == "id",
             _ => false
         };
@@ -64,7 +64,7 @@ internal static class SvgElementAttributePolicy
         return allowed;
     }
 
-    private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "x" or "y" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "text-anchor";
+    private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "text-anchor";
 
     private enum SvgElementKind { Root, Group, Rectangle, Line, Use, Path, PointList, Text, Symbol }
 }

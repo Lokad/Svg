@@ -69,8 +69,8 @@ text-run retention remain unsupported. A snapshot can already be supplied throug
 options. The renderer's experimental direct-text path accepts only direct
 single-face attributes and text/CDATA content; it does not make SVG text a
 supported feature and does not accept spans, stylesheet/inline font declarations,
-positioning lists or general shaping. Its admitted scalar `text-anchor` values are
-`start`, `middle` and `end`.
+positioning lists or general shaping. Its admitted scalar positioning is `x`, `y`,
+`dx`, `dy` and `text-anchor` (`start`, `middle`, `end`).
 Its direct text content is limited to 32,768 UTF-16 characters across one
 conversion before layout; subtree reader nodes consume the conversion's parser-work
 limit. Positioned glyph storage is reserved from the conversion's geometry budget
