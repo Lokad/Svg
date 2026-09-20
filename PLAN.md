@@ -1,12 +1,16 @@
 # Lokad.Svg implementation plan
 
 Revised 2026-09-20 after reviewing Lokad.Svg at
-`2bce6f5426b44bf98b572a0273175b9e16a463f4` and the local ooxpdf checkout at
-`8e4b033354b788e1845ec9441a70e5653a79721c`.
-The subsequent Studio integration review inspected `main` at
-`dcff3aca18f4d1292a1e73f7a634e83f97cca653`, including its Lokad.OoxPdf 0.1.4
-package contract. Studio requirements below are design/acceptance requirements;
-this document update does not implement integration in either repository.
+`2bce6f5426b44bf98b572a0273175b9e16a463f4`. Font-pack interoperability targets
+the publicly documented Lokad.OoxPdf 0.1.4 contract. The requirements below are
+planned behavior, not implemented text support or application integration.
+
+This is a standalone public-library plan. Keep documentation, examples, fixtures
+and tests independent of private applications and repositories. Describe host
+requirements through generic public contracts only; application-specific wiring,
+configuration, deployment locations and internal source references belong in the
+consuming application's repository, not here. Builds and tests must not require
+access to private code or services.
 
 The next product milestone is useful SVG labels: supplied-font `<text>` and
 `<tspan>`, backed by bounded font parsing, layout and glyph rasterization.
@@ -77,7 +81,7 @@ claiming a measured failure or latency.
 | F09 / P3–P4 | Tests/measurements remain concentrated on tiny primitives. Benchmarks measure one solid rectangle at 1, 64 and 512 pixels per side; there is no working labeled chart, multi-font run or text-heavy retention case. | Add representative label/diagram fixtures and cold/warm font, many-glyph, repeated-call and concurrent measurements. Keep feature/fidelity inventories distinct. |
 | F10 / P1–P3 | Unsupported-child reporting often reduces to a boolean and the generic "This SVG child element is not implemented yet." There is no bounded diagnostic record identifying a missing face, glyph or source text location. | Design bounded diagnostics alongside fonts: source location/element ID, requested/resolved family, face identity and failure stage. Never echo an unbounded text node or font data into an error. |
 | F11 / planning | The old plan mixed historical failures, completed repairs and next work, and placed CI evidence ahead of product progress while leaving text behind filters. | This revision separates current findings from completed work, brings text forward, and records CI as deferred. |
-| F12 / P1–P3 | Studio's existing converter accepts VFS streams and downloads selected fonts lazily in the backend. Lokad.Svg accepts only memory input, and the proposed prepared-font snapshot alone gives Studio no way to discover needed fonts without parsing SVG itself. | Supply a bounded library preparation API that identifies and acquires only required fonts through caller-provided sources. A Studio backend adapter performs bounded asynchronous stream intake and writes PNG through the existing async stream API. Keep SVG parsing and font/layout policy out of the shell command. |
+| F12 / P1–P3 | Lokad.Svg accepts only memory input. A prepared-font snapshot alone would require an embedding application to parse SVG itself to discover the needed fonts, or to preload the entire pack. | Supply a bounded library preparation API that identifies and acquires only required fonts through caller-provided sources. Demonstrate bounded asynchronous stream intake and PNG output in a standalone test host. Keep SVG parsing and font/layout policy inside the library. |
 
 F01–F03 are finite repairs, not a new open-ended hardening phase. Font contract and
 oracle work can proceed independently of them. This review logs these findings;
@@ -92,7 +96,7 @@ duplicate deployment of the font assets. This is data-format compatibility;
 Lokad.Svg owns its implementation and public types under `Lokad.Svg.Fonts`.
 It must not reference the Lokad.OoxPdf assembly, NuGet package or project.
 Focused duplication/adaptation of ooxpdf font-management code is explicitly
-permitted by the user; a shared runtime library is not required.
+allowed; a shared runtime library is not required.
 
 The reviewed ooxpdf implementation uses:
 
@@ -101,7 +105,7 @@ FontRequest -> IFontResolver -> FontFaceResolution
             -> IFontProgramSource -> OpenTypeFont -> embedded PDF font
 ```
 
-Its sources under `../ooxpdf/src/Lokad.OoxPdf/Fonts/` establish the following:
+The public font APIs and font-pack contract motivate the following design:
 
 | Mechanism | Observed design | Adaptation for Lokad.Svg |
 | --- | --- | --- |
@@ -112,20 +116,14 @@ Its sources under `../ooxpdf/src/Lokad.OoxPdf/Fonts/` establish the following:
 | Coverage | `FontCoverageFallback` tests Unicode scalar coverage and splits simple text into runs. | Use a deterministic, bounded fallback order for the declared simple-text subset. Do not treat per-scalar fallback as complex-script shaping. |
 | Font parsing/output | `OpenTypeFont` reads mapping/metrics/pair positioning; the PDF writer/subsetter embeds TrueType programs. It does not rasterize their outlines into PNG pixels. | Lokad.Svg additionally needs validated outline decoding, layout and glyph rasterization. PDF embedding/subsetting is not a text renderer to transplant. |
 
-There is no fixed bundled font pack in ooxpdf: no tracked TTF/OTF/TTC/WOFF font
-files were found. Its README uses an example URL. The later Studio inspection
-found a real configured `office-compatible-v1` source in both Web and Console
-settings; this is the deployment to target, not a new SVG-only pack. The remote
-manifest and font bytes were not fetched in this review, so its actual file count,
-size and availability remain unverified. Ignored diagnostic/extracted font copies
-are not a distribution set.
+The host selects the pack and supplies its location or bytes. Compatibility does
+not mandate a particular deployment, endpoint or bundled set of fonts. The
+public package documentation's example source is not a distribution commitment.
 
-Adopt the architecture, not every implementation choice. In particular,
-`FontProgramLoader.Load` blocks on `GetBytesAsync` and copies the returned memory
-with `ToArray()`; file/HTTP sources retain cached bytes; Windows discovery uses a
-shared cache; and fallback can choose a first available face. Those choices
-cannot be imported unchanged into Lokad.Svg's synchronous, deterministic,
-per-conversion memory contract. No dependency on Lokad.OoxPdf is introduced.
+Adopt the separation of responsibilities while preserving Lokad.Svg's contract:
+no synchronous blocking on async acquisition, unconditional font copies,
+unbounded shared caches or machine-dependent fallback. Font acquisition and
+host discovery remain separate from deterministic, memory-only rendering.
 
 ### Manifest compatibility contract
 
@@ -161,9 +159,10 @@ pack or downloading every file. Report an explicit format limitation when such a
 face is selected for rendering. The initial standalone-TrueType subset must work
 from the full shared manifest without requiring a pruned SVG-specific copy.
 
-Pin conformance fixtures to the reviewed ooxpdf revision and Studio's pinned
-0.1.4 package contract (also present in its installed-package README): unchanged
-manifest bytes, known font-file hashes and expected family/style/face selections. Tests
+Pin conformance fixtures to the public Lokad.OoxPdf 0.1.4 font-pack contract
+documented in its packaged README: unchanged manifest bytes, known font-file
+hashes and expected family/style/face selections. Use synthetic manifests and
+redistributable test fonts, never a private deployment's manifest or assets. Tests
 must cover omitted defaults, aliases, case handling, fallback order, multiple
 faces per file, unknown metadata, unused unsupported faces, size/hash failures,
 unsafe paths, cancellation and selective loading. Keep those fixtures and
@@ -192,8 +191,8 @@ Renderer: prepared SVG + resolved font snapshot
 - Keep async acquisition explicit and separate from rasterization. Provide a
   bounded preparation API in Lokad.Svg that parses SVG text/style requests and
   awaits caller-provided font sources only as needed, including bounded coverage
-  fallback. Studio must not duplicate SVG parsing or preload the entire pack to
-  create a snapshot. Hosts with prepared bytes can still supply them directly;
+  fallback. Hosts must not need to duplicate SVG parsing or preload the entire
+  pack to create a snapshot. Hosts with prepared bytes can supply them directly;
   the six existing render APIs retain their memory-only font path.
 - Preparation returns a disposable prepared document owning its retained parse
   state and font snapshot; define a single-conversion lifetime initially. Carry
@@ -227,27 +226,20 @@ unless the host explicitly shares an appropriate storage abstraction.
 
 ### Font footprint measured for this plan
 
-Sizes below are uncompressed font-file bytes measured on this workstation on
-2026-09-20. MB means 1,000,000 bytes; MiB means 1,048,576 bytes. These numbers are
-neither package-compressed sizes nor parsed-font/glyph-cache memory estimates.
+The optional example below was measured from installed font files on 2026-09-20;
+versions and sizes can differ across machines. MB means 1,000,000 bytes; MiB means
+1,048,576 bytes. These are uncompressed file sizes, not package-compressed sizes
+or parsed-font/glyph-cache memory estimates.
 
 | Scope | Files | Bytes | MB | MiB |
 | --- | ---: | ---: | ---: | ---: |
 | Fonts currently bundled in Lokad.Svg | 0 | 0 | 0 | 0 |
 | Fonts required to be bundled by the proposed core design | 0 | 0 | 0 | 0 |
 | Example host set: Arial, Times New Roman, Courier New; four styles each | 12 | 10,506,328 | 10.506 | 10.020 |
-| Windows Fonts discovery directory on this host | 342 | 363,278,230 | 363.278 | 346.449 |
-| Office CloudFonts discovery directory on this host | 94 | 65,917,280 | 65.917 | 62.864 |
-| Both default ooxpdf discovery directories combined | 436 | 429,195,510 | 429.196 | 409.313 |
 
-The combined pool contains 418 TTF files and 18 TTC files. This counts files
-present before ooxpdf's metadata/format filtering, not unique families or
-renderable faces; it includes possible duplicate programs. It is not a proposed
-436-file Lokad.Svg dependency.
-It is also not an inventory of Studio's configured remote font pack. Obtain that
-pack's distinct file sizes/hashes when preparing deployment evidence; do not use
-the workstation's 429.196 MB figure as the Studio deployment size. Sharing the
-pack between renderers does not inherently double stored font-file bytes.
+Actual pack size depends on the caller's selection. Count distinct files, not
+family aliases or collection faces. Sharing a pack between renderers does not
+inherently double stored font-file bytes.
 
 The 12-file example is explicitly:
 
@@ -257,10 +249,8 @@ The 12-file example is explicitly:
 | Times New Roman | `times.ttf`, `timesbd.ttf`, `timesi.ttf`, `timesbi.ttf` | 4,193,740 |
 | Courier New | `cour.ttf`, `courbd.ttf`, `couri.ttf`, `courbi.ttf` | 2,856,676 |
 
-Measure the same footprint using file lengths under `%WINDIR%/Fonts` (top level)
-and `%LOCALAPPDATA%/Microsoft/FontCache/4/CloudFonts` (recursive), filtered
-case-insensitively to `.ttf`, `.otf` and `.ttc`. Both repositories' tracked
-font inventories were checked with
+Measure this example using the lengths of the twelve listed files under
+`%WINDIR%/Fonts`. Check Lokad.Svg's tracked font inventory with
 `git ls-files '*.ttf' '*.otf' '*.ttc' '*.woff' '*.woff2'`.
 
 No fonts are copied or packaged by this plan change. The 12-file set is a
@@ -271,87 +261,42 @@ A portable public reference pack remains to be selected, pinned and measured in
 P1. Original SVG artwork remains CC0; any separately licensed test fonts must be
 identified explicitly rather than relabelled CC0 or MIT.
 
-### Studio integration contract
+### Generic host integration contract
 
-Studio's existing OOXML shell integration is the reference. All source paths in
-this subsection are relative to the inspected `main` checkout, not dependencies
-of Lokad.Svg's build. No Studio code or settings are changed by this plan.
+The public API must support embedding without knowing the consuming application's
+architecture, configuration system or storage implementation. The host owns
+resource locations, credentials, acquisition policy and cache lifetime; the
+library owns SVG analysis, font selection, layout and rendering.
 
-| Inspected integration | Consequence for Lokad.Svg |
-| --- | --- |
-| `Studio/Studio.Backend/Studio.Backend.csproj` references Lokad.OoxPdf; `Directory.Packages.props` pins 0.1.4. Backend and Brain target `net10.0`. | Add the future Lokad.Svg NuGet dependency only to Backend, using central version management. The existing target framework is compatible. Brain/shell contracts must not expose renderer-package types. |
-| `Studio/Studio.Brain/Shell/OoxPdf/OoxPdfShellConverter.cs` declares a Studio-owned async converter interface over input/output streams and neutral diagnostic DTOs. | Plan an equivalent `ISvgShellConverter` contract, with Studio-owned request/options/results. Map viewport/scale/background, diagnostics and errors in Backend. Lokad.Svg itself has no Studio, Lokad.Shell or Lokad.OoxPdf dependency. |
-| `Studio/Studio.Backend/OoxPdfShellConverter.cs` owns configuration, HttpClient use, resolver initialization and diagnostic mapping. | Backend owns the compatible SVG font-pack adapter and its lifetime. Reuse configured pack ID/source values; do not embed a deployment URL in the library or expose network/font-directory flags in the shell tool. |
-| `Studio/Studio.Backend/StudioConfig.cs`, Web/Console `appsettings.json` | Both application entry points configure `OoxPdf:FontPackId=office-compatible-v1` and `OoxPdf:FontSourceUri`. Pass these same values to both independent implementations, or factor a Studio-owned shared config with backward-compatible binding. No mandatory configuration migration or second font pool. |
-| `Studio/Studio.Backend/StudioService.cs`, `Studio/Studio.Brain/BrainContext.cs`, `Full/FullWizard*.cs`, Console `Program.cs`, `CmdRunFull.cs` and `CmdReplay.cs` | Wire the converter through the same service/context/wizard injection path for Web, console runs and replay. Update test fakes along that path together. |
-| `Studio/Studio.Brain/Shell/StudioShellTools.cs` registers `pptx-to-pdf`/`docx-to-pdf` explicitly. | Register a future `svg-to-png` Studio custom command. Do not add a font-dependent builtin or package dependency to general-purpose Lokad.Shell/BasicShellHost. |
-| `Studio/Studio.Brain/Shell/OoxPdf/OoxPdfTool.cs` uses `HostDescriptorReadStream` and `CreateDescriptorWriteStream`, closes descriptors and removes incomplete output. | Preserve binary VFS I/O and cancellation, reject input/output/diagnostics path aliases before truncation, and remove partial PNG output on failed/cancelled conversion. No operating-system paths or temp files. |
-| `Studio/Studio.Brain/BigFiles/ViewImageTool.cs` already accepts PNG, with a 20 MiB input cap. | Generated PNGs can use the existing `view_image` path. Studio's initial viewable-output profile should cap encoded PNG at 20 MiB rather than inheriting the library's 128 MiB default. |
+1. Stream intake: current SVG APIs require `ReadOnlyMemory<byte>`. Demonstrate a
+   host adapter that reads asynchronously into bounded memory, preserves XML
+   encoding/BOM bytes and enforces `MaximumInputBytes` during growth. It must
+   support streams without `Length`, `Position` or seeking. Account for its input
+   buffer separately from renderer-owned storage; no unbounded buffering or
+   string round-trip. A new public stream-input overload is not required initially.
+2. Font acquisition: load only selected programs and verify them before caching.
+   Bound retained bytes and concurrent loads. Shared acquisition must isolate
+   individual caller cancellation, have a host-controlled lifetime and permit
+   retry after failure. Hosts may share verified raw bytes between independent
+   renderers; parsed caches remain separately owned. Shape-only SVGs must work
+   offline without triggering font acquisition.
+3. Output and cancellation: await writes to nonseekable streams, propagate
+   backpressure and write failures, and leave caller streams open. Pass the
+   operation token through all phases; cancellation remains
+   `OperationCanceledException`. Document that failures can leave partial output;
+   hosts own destination cleanup or transactional publication.
+4. Diagnostics and limits: provide bounded, machine-readable resource, integrity,
+   feature and limit failures without application-specific DTOs or error codes.
+   Hosts choose input/output/concurrency caps appropriate for their consumers.
+   Count host input buffers and shared caches separately from conversion storage.
 
-The separate `deck/pdf` endpoint/`Lokad.Deck.PdfConverter` path is not the OOXML
-shell integration and is not a prerequisite for adding `svg-to-png`.
-
-The planned data flow is:
-
-```text
-Studio shell command: VFS input/output descriptors
-  -> Studio-owned async converter interface
-  -> Studio.Backend: bounded stream intake + shared pack configuration
-  -> Lokad.Svg preparation: bounded SVG analysis + selected async font sources
-  -> Lokad.Svg rendering: prepared state -> async PNG destination stream
-  -> Studio shell: diagnostics / output completion / view_image
-```
-
-Resolve the following boundaries before declaring P1/P3 ready for Studio:
-
-1. Stream intake: current SVG APIs require `ReadOnlyMemory<byte>`. Initially the
-   Backend adapter may read the VFS stream asynchronously into bounded memory,
-   preserving XML encoding/BOM bytes. Enforce `MaximumInputBytes` during growth,
-   support streams without `Length`, `Position` or seeking, and account for the
-   adapter's input buffer separately from renderer-owned storage. Do not use an
-   unbounded `CopyToAsync`/`ToArray` or UTF-8 string round-trip. A new public stream
-   input overload is not required for this integration.
-2. Font initialization: match Studio's successful-manifest reuse and retry after
-   fault/cancellation. Its current implementation uses a shared initialization
-   task and per-caller `WaitAsync`, so canceling one waiter does not cancel the
-   resolver for other sessions. Preserve that isolation, with host deadlines and
-   lifetime management for shared work; a failed task must not poison later calls.
-   Acquire selected font programs only, verify before caching, and bound retained
-   bytes/concurrent loads. Reuse the same assets without coupling CLR resolver
-   types; optional host sharing of verified raw bytes is independent of each
-   renderer's parsed caches. A shape-only SVG need not trigger a font download.
-3. Async output: use actual asynchronous writes to the nonseekable VFS stream,
-   propagate backpressure/write failures and leave caller streams open. Pass the
-   operation token through intake, selected-font acquisition, preparation and
-   rendering. Cancellation stays `OperationCanceledException`; do not translate
-   it into successful output or an ordinary conversion diagnostic.
-4. Diagnostics: expose stable machine-readable categories for invalid/missing
-   packs, downloads, integrity mismatches and SVG/resource/limit failures, plus
-   bounded source/feature/fallback details. Map them to Studio-owned IDs/DTOs in
-   Backend. Mirror shell `--diagnostics`/`--strict` and exit meanings: 0 success,
-   1 I/O/conversion failure, 2 usage error, 3 completed conversion with diagnostics
-   rejected by strict mode. This must not weaken Lokad.Svg's explicit rejection
-   of unsupported rendering or unresolved required fonts.
-5. Limits/ownership: Studio chooses a bounded conversion profile and concurrency
-   ceiling; agent input cannot disable resource limits. Its 20 MiB PNG cap applies
-   during encoding. Shared font-cache storage, per-call input storage and the
-   renderer's budget are distinct parts of service memory. Conversion only writes
-   the session VFS draft; publishing to product storage remains a separate flow.
-
-Acceptance mirrors the inspected
-`Studio/Studio.Backend.Tests/OoxPdfShellConverterTests.cs` and
-`Studio/Studio.Brain.Tests/Shell/OoxPdfToolTests.cs`: independent manifest vectors,
-injected HTTP responses, retained-manifest reuse, retry after failure, exact
-download/hash diagnostics, selected-files-only acquisition, binary/nonseekable
-streams, cancellations and incomplete-output cleanup. Add concurrent canceled
-waiters, a shape-only offline case, the 20 MiB output boundary, and a real supported
-font-backed label displayed as PNG. Some current backend tests use synthetic
-non-font bytes to test transport; they do not prove glyph rendering.
-
-Keep library conformance/package tests runnable without `main` or ooxpdf checkouts.
-When the Studio adapter is implemented later, add Backend/Brain tests with fakes
-and verify Web/Console/replay wiring there. This review checked source, configuration
-and the installed 0.1.4 README; it did not run Studio tests or fetch its remote pack.
+Exercise these requirements in self-contained tests using synthetic manifests,
+redistributable font assets, fake acquisition responses and nonseekable streams.
+Cover selective loading, retry, concurrent cancellation, output limits, partial
+output and a shape-only offline case. P3 must also demonstrate a real supported
+font-backed label through preparation and async PNG output; transport tests alone
+do not prove text rendering. Application-specific adapters and their wiring tests
+belong in their respective consumer repositories.
 
 ## 4. Execution order and completion criteria
 
@@ -362,9 +307,9 @@ repair details stay in Git history; unresolved raster evidence stays in
 | Order | Work | Dependencies and exit evidence |
 | --- | --- | --- |
 | P0 — current contract | Repair F01–F03 with public boundary/cancellation tests. Preserve the shared budget and current exact corpus. | Finite changes; all six API forms retain documented behavior. No platform-CI prerequisite. |
-| P1 — fonts and oracle | Implement an independent reader/provider layer compatible with ooxpdf's unchanged manifest and font files, plus bounded async preparation, deterministic selection and diagnostics suitable for Studio's backend adapter. Select/pin public font probes and repair F04. | Can start alongside P0. Manifest conformance, selective acquisition, memory-backed sources, missing faces, real styles, fallback, cancellation, integrity failures and no-I/O rasterization have tests. No Lokad.OoxPdf/Studio/Lokad.Shell dependency is introduced. |
+| P1 — fonts and oracle | Implement an independent reader/provider layer compatible with ooxpdf's unchanged manifest and font files, plus bounded async preparation, deterministic selection and host-neutral diagnostics. Select/pin public font probes and repair F04. | Can start alongside P0. Manifest conformance, selective acquisition, memory-backed sources, missing faces, real styles, fallback, cancellation, integrity failures and no-I/O rasterization have tests. No dependency on another Lokad package or a consuming application is introduced. |
 | P2 — outlines and coverage | Add bounded TrueType outline parsing, typed general contours/glyph runs and the coverage/composition needed by real glyphs. Run discriminating font/path calibration early. | P1 supplies exact font identity. Existing 43 cases remain exact. Curved/simple/composite glyphs, holes, fractional origins, size changes and alpha interactions have independent references and classified outcomes. |
-| P3 — useful text | Integrate basic `text`/`tspan` parsing, inherited style, positioning, metrics, kerning and painting through the shared scene. | P1/P2. Labeled bars/axes, multiple spans/styles, Unicode scalar handling and missing-glyph cases work through every public output form. Demonstrate the Studio-compatible preparation/async-stream path with a test host; actual Studio wiring remains a later integration change. |
+| P3 — useful text | Integrate basic `text`/`tspan` parsing, inherited style, positioning, metrics, kerning and painting through the shared scene. | P1/P2. Labeled bars/axes, multiple spans/styles, Unicode scalar handling and missing-glyph cases work through every public output form. Demonstrate the preparation/async-stream path with a standalone test host, without an external application or private service. |
 | P4 — useful SVG breadth | Extend general paths/transforms/strokes, then paints/composition and mapped PNG images, guided by representative diagrams. Expand workload measurements. | Reuse the outline/style/resource infrastructure. Each feature needs combinations, limits and independent pixel evidence. |
 | P5 — later scope | First filters, JPEG, advanced text/shaping and further static SVG families. Optimize only measured bottlenecks. | After useful text and diagrams. Independent acceptance gates for codecs, filters and script/font-format additions. |
 | Deferred — CI/release | Inspect remote Windows/Linux jobs, admit a canonical Linux oracle deliberately, then finish release/platform/package evidence. | Resume when requested. Local development does not wait for this row. Publication remains a separate operation. |
