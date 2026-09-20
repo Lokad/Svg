@@ -1079,6 +1079,24 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Direct_inline_font_properties_override_a_stylesheet_group_font_family()
+    {
+        byte[] bytes = CreateTriangleFont();
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>g { font-family: Missing; font-size: 100; }</style><g><text style='font-family: Example' y='3'>A</text></g></svg>"u8.ToArray();
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, new CountingFontProvider(source), CancellationToken.None);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None);
+
+        Assert.Equal("Example", Assert.Single(snapshot.Fonts).Resolution.Resolution.Request.Family);
+        Assert.Equal(1, source.RequestCount);
+        Assert.True(DecodeAlpha(png, 1, 1) > 0);
+    }
+
+    [Fact]
     public async Task Svg_based_snapshot_does_not_acquire_fonts_for_stylesheet_hidden_text()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
