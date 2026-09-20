@@ -127,6 +127,22 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Rejects_malformed_format_4_segments_even_when_the_requested_scalar_bypasses_them()
+    {
+        byte[] unordered = CreateFont(1024, 3, 2, 0);
+        byte[] truncatedRange = CreateFont(1024, 3, 2, 0);
+        const int Subtable = 242;
+        WriteUInt16(unordered, Subtable + 20, 66);
+        WriteUInt16(truncatedRange, Subtable + 28, ushort.MaxValue);
+
+        SvgException unorderedException = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphIndex(unordered, 'B', CancellationToken.None));
+        SvgException truncatedRangeException = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphIndex(truncatedRange, 'B', CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, unorderedException.ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, truncatedRangeException.ErrorCode);
+    }
+
+    [Fact]
     public void Reads_hmtx_advances_including_the_final_shared_advance()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);

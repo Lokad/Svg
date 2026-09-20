@@ -144,7 +144,9 @@ length 0, one group and U+10000 → glyph 1 is accepted. A group U+10000–U+100
 Managed memory safety does not establish table isolation or the failure contract.
 
 Initial correction: format-12 lengths below 16 and group glyph-range overflow now
-fail as `MalformedInput`, with retained regression vectors. Remaining closure:
+fail as `MalformedInput`; format-4 lookup now validates every segment's ordering,
+sentinel and declared glyph-array range before scalar selection. Retained regression
+vectors cover bypassed malformed segments. Remaining closure:
 validated table-local ranges and overflow-safe mappings; lengths 0–15,
 truncated/overlapping/unordered groups, invalid offsets/scalars/glyphs and arithmetic
 boundaries. Malformed data must produce categorized failures, not incidental BCL

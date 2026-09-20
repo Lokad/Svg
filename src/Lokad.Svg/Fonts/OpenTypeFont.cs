@@ -110,6 +110,7 @@ internal static class OpenTypeFont
         int startCodes = endCodes + segments * 2 + 2;
         int deltas = startCodes + segments * 2;
         int ranges = deltas + segments * 2;
+        ValidateFormat4Segments(data, format4, length, segments, endCodes, startCodes, ranges, cancellationToken);
         for (int index = 0; index < segments; index++)
         {
             ushort end = ReadUInt16(data, endCodes + index * 2);
@@ -150,6 +151,25 @@ internal static class OpenTypeFont
             return (ushort)glyph;
         }
         return 0;
+    }
+
+    private static void ValidateFormat4Segments(ReadOnlySpan<byte> data, OpenTypeTableRange format4, int length, int segments, int endCodes, int startCodes, int ranges, CancellationToken cancellationToken)
+    {
+        ushort previousEnd = 0;
+        for (int index = 0; index < segments; index++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            ushort end = ReadUInt16(data, endCodes + index * 2);
+            ushort start = ReadUInt16(data, startCodes + index * 2);
+            if (start > end || (index != 0 && end <= previousEnd)) throw InvalidFont("The cmap format 4 segments are not strictly ordered.");
+            previousEnd = end;
+            ushort rangeOffset = ReadUInt16(data, ranges + index * 2);
+            if (rangeOffset == 0) continue;
+            int firstGlyph = checked(ranges + index * 2 + rangeOffset);
+            int lastGlyph = checked(firstGlyph + (end - start) * 2);
+            if (firstGlyph < format4.Offset || lastGlyph > format4.Offset + length - 2) throw InvalidFont("The cmap format 4 glyph-index array is truncated.");
+        }
+        if (previousEnd != ushort.MaxValue) throw InvalidFont("The cmap format 4 segments lack the required sentinel.");
     }
 
     /// <summary>Gets the validated horizontal advance for one existing glyph index.</summary>
