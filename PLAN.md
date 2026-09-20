@@ -149,8 +149,10 @@ tests and RSS probes do not exercise this transfer boundary.
 
 ### R05 / P0 — cmap validation still depends on the requested scalar
 
-**Reproduced internal-reader vectors** in
-[OpenTypeFont](src/Lokad.Svg/Fonts/OpenTypeFont.cs).
+**Repaired 2026-09-20:** [OpenTypeFont](src/Lokad.Svg/Fonts/OpenTypeFont.cs)
+now validates every selected format-12 group before returning a lookup result,
+and constrains nonzero format-4 offsets to the aligned `glyphIdArray` payload.
+The two decisive malformed-reader vectors are tracked as unit regressions.
 
 - Format 12: a valid first group maps U+0041 to glyph 1, followed by a reversed
   second range 100–99. Querying U+0041 succeeds; querying U+0042 produces
@@ -163,12 +165,10 @@ The [OpenType cmap definition](https://learn.microsoft.com/en-us/typography/open
 places nonzero format-4 offsets in the glyph-index array and defines ordered
 format-12 ranges. Validation must not become weaker when a lookup hits early.
 
-Closure: validate a bounded selected cmap view independently of scalar lookup;
-check complete group/glyph ranges, table-local offsets/alignment, ordering and
-arithmetic, then reuse that view. Retain lengths 0–15, truncation, later-invalid
-groups, offsets before/after payload and boundary scalars as independent vectors.
-Require categorized failures and bounded work/cancellation. Avoid reparsing and
-revalidating the whole table for every repeated character.
+Remaining closure: retain lengths 0–15, truncation, offsets after payload and
+boundary scalars as independent vectors. Require categorized failures and bounded
+work/cancellation. Avoid reparsing and revalidating the whole table for every
+repeated character.
 
 ### R10 / P0 — Composite transforms can produce wrong geometry
 
@@ -364,7 +364,7 @@ small buildable commits, each including its tests and relevant documentation.
 | S1 — complete 2026-09-20 | Correct type-coupled storage sizing and main-surface failure ownership (R04a/c). `BudgetedParserList<T>` now derives each value-array charge from `Unsafe.SizeOf<T>()`, removing stale point/geometry/group/rule/pending-use constants; dictionary allowances remain separately conservative. `Rasterize` transfers its surface reservation only on success and releases it on any intervening exception. | 390 unit plus 83 visual tests pass. New tracked checks cover geometry and CSS-rule array charges and verify zero surface/current ledger bytes after actual background-loop cancellation and malformed-scene failure. The general path and point-list lowerers use the same generic list. Nested glyph contours remain S3. |
 | S2 — complete 2026-09-20 | Make current glyph bounds/sample charging exact and preflighted (R04b). Bounds segment work is preflighted and charged before traversal; coverage charges segments × eight subdivisions × 4×4 samples plus one pixel-dispatch unit. `GlyphCoverageProbe` is an execution-context-local entry seam used only for deterministic tests. | 393 unit plus 83 visual tests pass. A one-pixel/four-segment contour charges exactly 517 work units; limits 3 and 516 deny before bounds and coverage respectively; coverage-entry cancellation is observed and returns the surface ledger to zero. Aggregate font/table/graph work remains S5. |
 | S3 — after S1 | Budget decoded/transformed/nested contours and define transfer ownership (R04a). | Capacity/old-new overlap and partial insertion/detach failures; retained contours charged while reachable by the scene; release after conversion/failure. No new public prepared-document API needed for this slice. |
-| S4 — in progress | Correct cmap validation, asymmetric composite matrices and numeric/shape admission (R05/R10/R09). The OpenType scale01/scale10 file-order mismatch is repaired: an asymmetric scale01 vector now maps (10,3) to (10,8), rather than transposing it to (11.5,3). Finite text-coordinate sums are now checked at the public text-run boundary and report `LimitExceeded` rather than a CLR range exception. | 395 unit plus 83 visual tests pass. Retain the independent matrix and overflowing-coordinate vectors; malformed cmap and shape admission remain separate commits. Preserve all 43 shape references. |
+| S4 — in progress | Correct cmap validation, asymmetric composite matrices and numeric/shape admission (R05/R10/R09). Selected format-12 groups are fully validated before lookup returns; nonzero format-4 offsets must be aligned and point into `glyphIdArray`. The OpenType scale01/scale10 file-order mismatch is repaired: an asymmetric scale01 vector now maps (10,3) to (10,8), rather than transposing it to (11.5,3). Finite text-coordinate sums are checked at the public text-run boundary and report `LimitExceeded` rather than a CLR range exception. | 397 unit plus 83 visual tests pass. Retain malformed-cmap, matrix and overflowing-coordinate vectors; shape admission remains a separate commit. Preserve all 43 shape references. |
 | S5 — after S2/S3 | Aggregate font/table/graph work and phase observations (R04b/R12). | Branching empty glyphs stop by work limit; bounded chunked text reads; deterministic during-phase cancellation; category/work/cleanup reports from font-aware probes. |
 | S6 — after S3/S5; semantic tests can start earlier | Coherent discovery/style/preparation and verified program lifetime (R07/R08/R11/R14). | Eligibility before acquisition, caller-controlled shared limits, preparation/painting agreement, one required program acquisition, supported concurrent-read lifetime and bounded diagnostic context. |
 | S7 — oracle investigation can start now; admission after S4–S6 | Licensed ordinary fonts, explicit font semantics and font-aware oracle (R09/R10/R12/R13). | Intended-font controls and three stable captures; separate metric/pixel comparisons for curves/holes/composites/fractional origins; then real styles, pair positioning, spans/fallback and a useful labeled diagram via public APIs. |

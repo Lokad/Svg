@@ -138,6 +138,7 @@ internal static class OpenTypeFont
         uint groups = ReadUInt32(data, table.Offset + 12);
         if (length < 16 || length > (uint)table.Length || groups > (length - 16) / 12) throw InvalidFont("The cmap format 12 length is invalid.");
         uint previousEnd = 0;
+        ushort glyph = 0;
         for (uint index = 0; index < groups; index++)
         {
             int offset = checked(table.Offset + 16 + (int)index * 12);
@@ -146,18 +147,18 @@ internal static class OpenTypeFont
             uint startGlyph = ReadUInt32(data, offset + 8);
             if (start > end || end > 0x10FFFF || (index != 0 && start <= previousEnd)) throw InvalidFont("The cmap format 12 groups are not strictly ordered.");
             previousEnd = end;
-            if (scalar < start || scalar > end) continue;
-            uint offsetWithinGroup = scalar - start;
-            if (startGlyph > uint.MaxValue - offsetWithinGroup) throw InvalidFont("The cmap format 12 group glyph range overflows.");
-            uint glyph = startGlyph + offsetWithinGroup;
-            if (glyph >= glyphCount) throw InvalidFont("The cmap maps a scalar to a glyph outside maxp.");
-            return (ushort)glyph;
+            uint groupLength = end - start;
+            if (startGlyph > uint.MaxValue - groupLength) throw InvalidFont("The cmap format 12 group glyph range overflows.");
+            uint lastGlyph = startGlyph + groupLength;
+            if (lastGlyph >= glyphCount) throw InvalidFont("The cmap maps a scalar to a glyph outside maxp.");
+            if (scalar >= start && scalar <= end) glyph = (ushort)(startGlyph + scalar - start);
         }
-        return 0;
+        return glyph;
     }
 
     private static void ValidateFormat4Segments(ReadOnlySpan<byte> data, OpenTypeTableRange format4, int length, int segments, int endCodes, int startCodes, int ranges, CancellationToken cancellationToken)
     {
+        int glyphIndexArray = checked(ranges + segments * 2);
         ushort previousEnd = 0;
         for (int index = 0; index < segments; index++)
         {
@@ -168,9 +169,10 @@ internal static class OpenTypeFont
             previousEnd = end;
             ushort rangeOffset = ReadUInt16(data, ranges + index * 2);
             if (rangeOffset == 0) continue;
+            if ((rangeOffset & 1) != 0) throw InvalidFont("The cmap format 4 glyph-index offset is not word-aligned.");
             int firstGlyph = checked(ranges + index * 2 + rangeOffset);
             int lastGlyph = checked(firstGlyph + (end - start) * 2);
-            if (firstGlyph < format4.Offset || lastGlyph > format4.Offset + length - 2) throw InvalidFont("The cmap format 4 glyph-index array is truncated.");
+            if (firstGlyph < glyphIndexArray || lastGlyph > format4.Offset + length - 2) throw InvalidFont("The cmap format 4 glyph-index array is truncated.");
         }
         if (previousEnd != ushort.MaxValue) throw InvalidFont("The cmap format 4 segments lack the required sentinel.");
     }

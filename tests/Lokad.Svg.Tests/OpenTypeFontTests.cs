@@ -140,6 +140,28 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Rejects_a_later_malformed_format_12_group_even_when_an_earlier_group_matches()
+    {
+        byte[] font = CreateFormat12FontWithLaterMalformedGroup();
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphIndex(font, 'A', CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_a_format_4_range_offset_that_points_before_its_glyph_index_array()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 0);
+        const int Subtable = 242;
+        WriteUInt16(font, Subtable + 28, 2);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphIndex(font, 'A', CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Rejects_malformed_format_4_segments_even_when_the_requested_scalar_bypasses_them()
     {
         byte[] unordered = CreateFont(1024, 3, 2, 0);
@@ -1035,6 +1057,30 @@ public sealed class OpenTypeFontTests
         WriteUInt32(font, subtable + 16, 0x1F600);
         WriteUInt32(font, subtable + 20, 0x1F600);
         WriteUInt32(font, subtable + 24, 2);
+        return font;
+    }
+
+    private static byte[] CreateFormat12FontWithLaterMalformedGroup()
+    {
+        byte[] font = CreateFormat12Font();
+        Array.Resize(ref font, 500);
+        const int cmapOffset = 400;
+        WriteTable(font, 4, 0x636D6170, cmapOffset, 52);
+        WriteUInt16(font, cmapOffset, 0);
+        WriteUInt16(font, cmapOffset + 2, 1);
+        WriteUInt16(font, cmapOffset + 4, 3);
+        WriteUInt16(font, cmapOffset + 6, 10);
+        WriteUInt32(font, cmapOffset + 8, 12);
+        int subtable = cmapOffset + 12;
+        WriteUInt16(font, subtable, 12);
+        WriteUInt32(font, subtable + 4, 40);
+        WriteUInt32(font, subtable + 12, 2);
+        WriteUInt32(font, subtable + 16, 'A');
+        WriteUInt32(font, subtable + 20, 'A');
+        WriteUInt32(font, subtable + 24, 1);
+        WriteUInt32(font, subtable + 28, 100);
+        WriteUInt32(font, subtable + 32, 99);
+        WriteUInt32(font, subtable + 36, 1);
         return font;
     }
 
