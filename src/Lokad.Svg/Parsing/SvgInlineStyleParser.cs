@@ -34,7 +34,7 @@ internal static class SvgInlineStyleParser
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
         string? family = null, weight = null, fontStyle = null, size = null;
-        StyleDeclarationReader declarations = new(value, workCounter, cancellationToken);
+        SvgInlineDeclarationReader declarations = new(value, workCounter, cancellationToken);
         while (declarations.TryRead(out ReadOnlySpan<char> declaration))
         {
             int separator = declaration.IndexOf(':');
@@ -62,7 +62,8 @@ internal static class SvgInlineStyleParser
 
     private static string Copy(ReadOnlySpan<char> value, BudgetedParserStringStore? strings) => strings is null ? value.ToString() : strings.Copy(value);
 
-    private ref struct StyleDeclarationReader
+    /// <summary>Streams nonempty semicolon-delimited declarations while charging each 4 KiB scan checkpoint once.</summary>
+    internal ref struct SvgInlineDeclarationReader
     {
         private readonly ReadOnlySpan<char> _value;
         private readonly ParserWorkCounter? _workCounter;
@@ -70,7 +71,7 @@ internal static class SvgInlineStyleParser
         private int _position;
         private int _nextCheckpoint;
 
-        internal StyleDeclarationReader(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        internal SvgInlineDeclarationReader(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
         {
             _value = value;
             _workCounter = workCounter;

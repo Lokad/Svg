@@ -94,25 +94,9 @@ internal static class SvgTextFontSyntax
         string? inline = reader.GetAttribute("style");
         if (inline is null) return default;
         string? family = null, weight = null, style = null, size = null;
-        ReadOnlySpan<char> declarations = inline.AsSpan();
-        int position = 0;
-        int nextCheckpoint = 0;
-        while (position < declarations.Length)
+        SvgInlineStyleParser.SvgInlineDeclarationReader declarations = new(inline.AsSpan(), workCounter, cancellationToken);
+        while (declarations.TryRead(out ReadOnlySpan<char> declaration))
         {
-            int start = position;
-            while (position < declarations.Length)
-            {
-                if (position >= nextCheckpoint)
-                {
-                    workCounter.Consume(cancellationToken);
-                    nextCheckpoint += 4096;
-                }
-                if (declarations[position] == ';') break;
-                position++;
-            }
-            ReadOnlySpan<char> declaration = declarations[start..position].Trim();
-            if (position < declarations.Length) position++;
-            if (declaration.IsEmpty) continue;
             int separator = declaration.IndexOf(':');
             if (separator <= 0 || declaration[(separator + 1)..].Contains(':')) throw new SvgException(SvgErrorCode.MalformedInput, "Inline style declarations must use property:value syntax.");
             ReadOnlySpan<char> property = declaration[..separator].Trim();
