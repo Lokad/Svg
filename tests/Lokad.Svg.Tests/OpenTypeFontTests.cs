@@ -479,10 +479,13 @@ public sealed class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         SvgPreparedFont font = snapshot.GetFont(new SvgFontFaceRequest("example", 400, false));
         SvgException exception = Assert.Throws<SvgException>(() => snapshot.GetFont(new SvgFontFaceRequest("missing", 400, false)));
+        SvgException longFamily = Assert.Throws<SvgException>(() => snapshot.GetFont(new SvgFontFaceRequest(new string('x', 257), 400, false)));
 
         Assert.Equal((ushort)3, font.GlyphCount);
         Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
         Assert.Equal(SvgFontFailureStage.Source, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+        Assert.Equal(SvgErrorCode.UnresolvedResource, longFamily.ErrorCode);
+        Assert.Equal(256, Assert.IsType<SvgFontDiagnostic>(longFamily.FontDiagnostic).RequestedFamily.Length);
     }
 
     [Fact]

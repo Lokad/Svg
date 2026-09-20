@@ -25,10 +25,10 @@ public sealed class SvgFontDiagnostic
     /// <summary>Initializes one bounded font diagnostic.</summary>
     public SvgFontDiagnostic(SvgFontFailureStage stage, string requestedFamily, string resolvedFamily, string faceIdentity, string sourceElementId)
     {
-        RequestedFamily = Validate(requestedFamily, nameof(requestedFamily));
-        ResolvedFamily = Validate(resolvedFamily, nameof(resolvedFamily));
-        FaceIdentity = Validate(faceIdentity, nameof(faceIdentity));
-        SourceElementId = Validate(sourceElementId, nameof(sourceElementId));
+        RequestedFamily = Bound(requestedFamily);
+        ResolvedFamily = Bound(resolvedFamily);
+        FaceIdentity = Bound(faceIdentity);
+        SourceElementId = Bound(sourceElementId);
         Stage = stage;
     }
 
@@ -43,10 +43,9 @@ public sealed class SvgFontDiagnostic
     /// <summary>Gets the source element ID when retained by a future text parser.</summary>
     public string SourceElementId { get; }
 
-    private static string Validate(string value, string parameterName)
+    private static string Bound(string value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        if (value.Length > MaximumValueLength) throw new ArgumentOutOfRangeException(parameterName);
-        return value;
+        return value.Length <= MaximumValueLength ? value : value[..MaximumValueLength];
     }
 }

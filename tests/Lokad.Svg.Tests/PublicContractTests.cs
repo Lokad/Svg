@@ -37,7 +37,8 @@ public sealed class PublicContractTests
 
         Assert.Equal(SvgFontFailureStage.Glyph, diagnostic.Stage);
         Assert.Equal("face:0", diagnostic.FaceIdentity);
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgFontDiagnostic(SvgFontFailureStage.Source, new string('x', 257), string.Empty, string.Empty, string.Empty));
+        SvgFontDiagnostic truncated = new(SvgFontFailureStage.Source, new string('x', 257), string.Empty, string.Empty, string.Empty);
+        Assert.Equal(256, truncated.RequestedFamily.Length);
     }
 
     [Fact]

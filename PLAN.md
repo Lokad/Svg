@@ -227,7 +227,7 @@ BMP in format 12), metadata/composite validation and implemented-or-rejected req
 positioning/shaping. Use independent binary vectors and licensed ordinary fonts,
 not only synthetic programs constructed around this reader's assumptions.
 
-### R11 / P1 — Diagnostics can replace the primary failure
+### R11 / P1 — Diagnostics can replace the primary failure — initial repair 2026-09-20
 
 **Reproduced/inspection.** Missing-family lookup with 257 characters throws
 `ArgumentOutOfRangeException` while constructing
@@ -237,7 +237,9 @@ not only synthetic programs constructed around this reader's assumptions.
 identity is empty; unsupported content is a boolean. Some face IDs use path:index
 rather than hash:index.
 
-Closure: bounded context without changing the primary failure, or consistent
+Initial correction: diagnostic fields truncate to their bounded maximum instead
+of throwing, and a 257-character missing family remains `UnresolvedResource`.
+Remaining closure: consistent
 admission limits. Include stage, bounded source location/ID and content/face identity,
 never full text/font bytes. Test long names/paths/IDs and every failure stage.
 
