@@ -300,6 +300,16 @@ public sealed class OpenTypeFontTests
         Assert.Equal(2, snapshot.Fonts.Count);
     }
 
+    [Fact]
+    public async Task Snapshot_checks_its_face_limit_before_reading_any_font_source()
+    {
+        SvgFontProgramResolution[] resolutions = new SvgFontProgramResolution[257];
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(resolutions, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;

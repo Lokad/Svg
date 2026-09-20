@@ -49,8 +49,9 @@ identity and (when future text parsing retains it) element ID. It never contains
 font bytes or source text.
 `SvgFontSnapshot.CreateAsync` is the explicit preparation building block for
 already-selected programs. It re-verifies caller-owned bytes, validates the
-standalone-TrueType core metrics, and retains up to 32 MiB of borrowed bytes for
-its disposable lifetime. It neither parses SVG nor performs storage I/O.
+standalone-TrueType core metrics, and retains at most 256 face records and 32 MiB
+of borrowed bytes for its disposable lifetime. It neither parses SVG nor performs
+storage I/O.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does

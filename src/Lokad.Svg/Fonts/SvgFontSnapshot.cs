@@ -10,6 +10,7 @@ namespace Lokad.Svg.Fonts;
 public sealed class SvgFontSnapshot : IDisposable
 {
     private const long MaximumBorrowedBytes = 32L * 1024 * 1024;
+    private const int MaximumFaces = 256;
     private SvgPreparedFont[] _fonts;
 
     private SvgFontSnapshot(SvgPreparedFont[] fonts) => _fonts = fonts;
@@ -26,6 +27,7 @@ public sealed class SvgFontSnapshot : IDisposable
     {
         ArgumentNullException.ThrowIfNull(resolutions);
         cancellationToken.ThrowIfCancellationRequested();
+        if (resolutions.Count > MaximumFaces) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font face count exceeds the snapshot limit.");
         var programs = new Dictionary<string, (ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics)>(StringComparer.Ordinal);
         var prepared = new SvgPreparedFont[resolutions.Count];
         long totalBytes = 0;
