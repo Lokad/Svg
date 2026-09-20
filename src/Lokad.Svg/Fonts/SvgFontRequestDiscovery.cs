@@ -84,7 +84,7 @@ internal static class SvgFontRequestDiscovery
                     if (rootStyleElement) continue;
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = parentAllowsText && textElement;
-                    bool childAllowsText = parentAllowsText && isSvgElement && reader.LocalName is ("svg" or "g" or "a");
+                    bool childAllowsText = parentAllowsText && isSvgElement && (reader.Depth == rootDepth || reader.LocalName is "g" or "a");
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
                     {
                         if (reader.Depth == 0) SvgElementAttributePolicy.ValidateRoot(reader, workCounter, cancellationToken);

@@ -121,6 +121,14 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
+    public void Does_not_discover_fonts_from_text_below_an_unsupported_nested_svg()
+    {
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><svg><text font-family='Unused'>x</text></svg></svg>"u8.ToArray(), CancellationToken.None);
+
+        Assert.Empty(requests);
+    }
+
+    [Fact]
     public void Does_not_discover_fonts_from_unrenderable_span_children()
     {
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><tspan font-family='Unused'>x</tspan></svg>"u8.ToArray(), CancellationToken.None);
