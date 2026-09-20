@@ -593,6 +593,18 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Rejects_direct_text_before_materializing_more_than_the_admitted_character_limit()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>" + new string('A', SvgTextLimits.MaximumCharacters + 1) + "</text></svg>");
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public async Task Builds_a_simple_text_run_from_one_prepared_face()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);

@@ -123,9 +123,10 @@ checkpoints. Composite depth/component/segment caps do not bound aggregate visit
 repeated empty descendants consume work without adding segments. A 32,768-glyph
 per-run cap is not a document-wide cap.
 
-Initial correction: request discovery now rejects non-SVG roots before acquisition
-and applies default input/depth/attribute/node limits. It remains unbudgeted and
-does not share caller-provided render options. Remaining closure: one operation
+Initial corrections: request discovery now rejects non-SVG roots before acquisition
+and applies default input/depth/attribute/node limits; direct extraction caps text
+at 32,768 UTF-16 characters before layout and observes cancellation per reader node.
+It remains unbudgeted and does not share caller-provided render options. Remaining closure: one operation
 context through preparation, parsing, layout, outlines,
 raster and output. Reserve owned capacities and overlapping old/new/nested storage
 before allocation; preflight declared acquisition sizes. Bound total characters,

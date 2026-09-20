@@ -4,6 +4,12 @@ using Lokad.Svg.Fonts;
 using System.Globalization;
 using System.Xml;
 
+/// <summary>Defines the bounded direct-text subset shared by extraction and simple layout.</summary>
+internal static class SvgTextLimits
+{
+    internal const int MaximumCharacters = 32_768;
+}
+
 /// <summary>Parses the initial explicit single-font SVG text attribute subset.</summary>
 internal static class SvgTextSyntax
 {

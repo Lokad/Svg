@@ -1,6 +1,7 @@
 namespace Lokad.Svg.Fonts;
 
 using System.Text;
+using Lokad.Svg.Parsing;
 
 /// <summary>Builds bounded horizontal glyph positions from one prepared standalone-TrueType face.</summary>
 internal static class SvgGlyphLayout
@@ -11,7 +12,6 @@ internal static class SvgGlyphLayout
         ArgumentNullException.ThrowIfNull(text);
         if (!double.IsFinite(fontSize) || fontSize <= 0) throw new ArgumentOutOfRangeException(nameof(fontSize));
         if (!double.IsFinite(originX) || !double.IsFinite(originY)) throw new ArgumentOutOfRangeException(nameof(originX));
-        const int maximumGlyphs = 32_768;
         var glyphs = new List<SvgPositionedGlyph>();
         double scale = fontSize / font.UnitsPerEm;
         if (!double.IsFinite(scale)) throw new ArgumentOutOfRangeException(nameof(fontSize));
@@ -19,7 +19,7 @@ internal static class SvgGlyphLayout
         foreach (Rune scalar in text.EnumerateRunes())
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (glyphs.Count == maximumGlyphs) throw new SvgException(SvgErrorCode.LimitExceeded, "The text glyph count exceeds the admitted layout limit.");
+            if (glyphs.Count == SvgTextLimits.MaximumCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The text glyph count exceeds the admitted layout limit.");
             ushort glyphIndex = OpenTypeFont.GetGlyphIndex(font.Bytes, (uint)scalar.Value, cancellationToken);
             if (glyphIndex == 0) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font has no glyph for an admitted text scalar.", new SvgFontDiagnostic(SvgFontFailureStage.Glyph, font.Resolution.Resolution.Request.Family, font.Resolution.Resolution.Face.ResolvedFamily, font.Resolution.Resolution.Face.File.RelativePath + ":" + font.Resolution.Resolution.Face.FaceIndex, string.Empty));
             ushort advance = OpenTypeFont.GetAdvanceWidth(font.Bytes, glyphIndex, cancellationToken);
