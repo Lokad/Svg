@@ -30,9 +30,9 @@ are secondary unless they fix a reported defect or unlock that pipeline.
 | P1.3 geometry feasibility research | Started, calibration only | Twelve original CC0 probes plus one classified external path-heavy illustration retain three identical fresh-process Windows-pinned-Chrome captures, hashes, recipe metadata and public `UnsupportedFeature` assertions: circle coverage, a four-pixel object-bounding-box linear gradient, integer/grid-aligned/half-grid diagonal coverage, two phase-separated semi-opaque overlaps, two corresponding disjoint transparent layer-opacity probes, a cubic curve, an even-odd hole, a round stroke join, and Tiger (49 paths/four groups, with original and SPDX-materialized hashes preserved). The Chrome tag's `DEPS` pins the matching Skia source revision for inspection, without inferring a raster path. Pixel-centre, supersampling, analytic-area, fixed-point-alpha, fixed-edge, endpoint-quantized, 16.16-edge and partial trapezoid/mask candidates are all quantitatively rejected across the diagonal phases; the closest one-path candidate still misses 15/64 pixels (2/2). The original/shifted overlaps reject treating one phase's near fit as a model: the best retained premultiplied-byte candidates miss 19/64 (3/1) and 20/64 (13/5). The new disjoint 16×8 probes preserve those path phases while removing source-over: both ordinary and tested Skia-style `coverage × opacity` products miss 18/128 pixels in each phase, at 1/1 and 5/5 respectively. The residual therefore begins before source-over; compositing rounding alone cannot repair the overlap mismatch. These are classified negative calibration results only: no model establishes the browser backend or admits geometry. |
 
 Chrome smoke fingerprints bind the CFT archive and extracted executable plus the
-exact capture and comparison-tool DLLs used for the evidence. They therefore
-identify both browser and local oracle tooling without replacing the required
-review of a remote platform capture.
+exact pin, smoke/setup-script, capture and comparison-tool hashes used for the
+evidence. They therefore identify both browser and local oracle tooling without
+replacing the required review of a remote platform capture.
 
 The shared conversion-work ceiling is also charged for every `XmlReader` event
 and every attribute traversed by supported-element policy validation, including

@@ -86,6 +86,7 @@ for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
 }
 
 $fingerprint = [ordered]@{
+    pinSha256 = (Get-FileHash -LiteralPath $PinPath -Algorithm SHA256).Hash.ToLowerInvariant()
     pinVersion = $pin.version
     chromiumRevision = $pin.chromiumRevision
     platform = $pin.platform
@@ -93,6 +94,8 @@ $fingerprint = [ordered]@{
     executableSha256 = $pin.executableSha256
     executableFileVersion = $executableVersion
     captureRecipeRevision = $pin.captureRecipeRevision
+    smokeScriptSha256 = (Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    setupScriptSha256 = (Get-FileHash -LiteralPath $setupChrome -Algorithm SHA256).Hash.ToLowerInvariant()
     captureToolSha256 = (Get-FileHash -LiteralPath $chromeTool -Algorithm SHA256).Hash.ToLowerInvariant()
     comparisonToolSha256 = (Get-FileHash -LiteralPath $diffTool -Algorithm SHA256).Hash.ToLowerInvariant()
     fixtureSha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant()
