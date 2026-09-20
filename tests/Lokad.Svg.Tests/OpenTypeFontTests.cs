@@ -444,7 +444,6 @@ public sealed class OpenTypeFontTests
 
     [Theory]
     [InlineData((ushort)4)]
-    [InlineData((ushort)256)]
     [InlineData((ushort)512)]
     [InlineData((ushort)1024)]
     [InlineData((ushort)2048)]
@@ -478,6 +477,40 @@ public sealed class OpenTypeFontTests
         SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Validates_and_rejects_composite_glyph_instructions()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, -1);
+        WriteUInt16(font, glyph.Offset + 10, 3 | 256);
+        WriteUInt16(font, glyph.Offset + 12, 1);
+        WriteInt16(font, glyph.Offset + 14, 0);
+        WriteInt16(font, glyph.Offset + 16, 0);
+        WriteUInt16(font, glyph.Offset + 18, 0);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_truncated_composite_glyph_instructions_as_malformed_input()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, -1);
+        WriteUInt16(font, glyph.Offset + 10, 3 | 256);
+        WriteUInt16(font, glyph.Offset + 12, 1);
+        WriteInt16(font, glyph.Offset + 14, 0);
+        WriteInt16(font, glyph.Offset + 16, 0);
+        WriteUInt16(font, glyph.Offset + 18, 1);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
     [Fact]

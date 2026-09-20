@@ -15,7 +15,7 @@ internal static class OpenTypeFont
     private const int MaximumCompositeGlyphComponents = 64;
     private const int MaximumCompositeGlyphDepth = 8;
     private const int MaximumExpandedGlyphSegments = 65_536;
-    private const ushort SupportedCompositeFlags = 1 | 2 | 8 | 32 | 64 | 128;
+    private const ushort SupportedCompositeFlags = 1 | 2 | 8 | 32 | 64 | 128 | 256;
     private const uint TrueTypeScalerType = 0x00010000;
     private const uint TrueTypeCollectionTag = 0x74746366;
     private const uint HeadTag = 0x68656164;
@@ -420,6 +420,7 @@ internal static class OpenTypeFont
         int cursor = glyph.Offset + 10;
         int end = glyph.Offset + glyph.Length;
         var components = new List<OpenTypeCompositeGlyphComponent>();
+        bool hasInstructions = false;
         ushort flags;
         do
         {
@@ -434,6 +435,7 @@ internal static class OpenTypeFont
             if (scaleFlags is not 0 and not 8 and not 64 and not 128) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The composite glyf component combines incompatible scale encodings.");
             bool words = (flags & 1) != 0;
             bool xyValues = (flags & 2) != 0;
+            hasInstructions |= (flags & 256) != 0;
             int argumentBytes = words ? 4 : 2;
             if (cursor > end - argumentBytes) throw InvalidFont("The composite glyf arguments are truncated.");
             if (!xyValues) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Point-matched composite TrueType glyph components are not implemented yet.");
@@ -443,6 +445,14 @@ internal static class OpenTypeFont
             OpenTypeAffineTransform transform = ReadCompositeTransform(data, ref cursor, end, flags);
             components.Add(new OpenTypeCompositeGlyphComponent(componentGlyph, horizontalOffset, verticalOffset, transform));
         } while ((flags & 32) != 0);
+        if (hasInstructions)
+        {
+            if (cursor > end - 2) throw InvalidFont("The composite glyf instruction length is truncated.");
+            ushort instructionLength = ReadUInt16(data, cursor);
+            cursor += 2;
+            if (cursor > end - instructionLength) throw InvalidFont("The composite glyf instructions are truncated.");
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph instructions are not implemented.");
+        }
         return components.ToArray();
     }
 
