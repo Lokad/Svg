@@ -5,7 +5,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Owns the bounded mutable state for one SVG document while XML traversal remains streaming.</summary>
 internal sealed class SvgDocumentState : IDisposable
 {
-    private const int GroupScopeStorageBytes = 64;
+    private const int GroupScopeStorageBytes = 96;
     private const int CssRuleStorageBytes = 96;
     private const int DefinitionStorageBytes = 256;
     private const int PendingUseStorageBytes = 96;
@@ -62,6 +62,9 @@ internal sealed class SvgDocumentState : IDisposable
 }
 
 /// <summary>Represents one inherited group or link context while streaming the document.</summary>
-internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, bool IsolatesOpacity);
+internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, bool IsolatesOpacity)
+{
+    internal SvgInheritedTextStyle InheritedTextStyle { get; init; }
+}
 
 internal enum SvgGroupKind { Group, Link }

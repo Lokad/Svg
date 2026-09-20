@@ -705,6 +705,18 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Converts_direct_text_with_root_and_group_inherited_font_properties()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5' font-family='Example' font-weight='400' font-size='100'><g style='font-style: normal'><text y='3'>A</text></g></svg>"u8.ToArray();
+
+        byte[] png = SvgConverter.ConvertToPng(svg, options, CancellationToken.None).ToArray();
+
+        Assert.True(DecodeAlpha(png, 1, 1) > 0);
+    }
+
+    [Fact]
     public async Task Converts_direct_text_with_fractional_coordinates()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);

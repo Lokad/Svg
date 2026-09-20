@@ -243,6 +243,9 @@ Initial corrections: preparation now uses last-declaration-wins for repeated inl
 font properties, matching the existing inline style parser; direct rendering also
 normalizes quoted families. Empty, malformed and `!important` inline font
 declarations now have the same categorized rejection in discovery and rendering.
+Direct rendering now also retains the admitted root/group font properties (including
+inline declarations) as typed inheritance state, matching discovery for the
+single-font subset.
 Remaining closure:
 shared bounded declaration parsing, precedence and typed computed text
 style. Retain admitted syntax/style in prepared documents; cross-test inheritance,

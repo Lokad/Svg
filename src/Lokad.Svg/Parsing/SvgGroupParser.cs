@@ -9,11 +9,13 @@ internal static class SvgGroupParser
     {
         SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-        SvgComputedStyle style = context.ResolveStyle(reader);
+        InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, namedColors);
         AxisTransform transform = context.ResolveTransform(reader);
         SvgGroupKind kind = reader.LocalName == "g" ? SvgGroupKind.Group : SvgGroupKind.Link;
-        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform), presentation.Opacity != 255), presentation.Opacity);
+        SvgInheritedTextStyle inheritedTextStyle = SvgTextInheritance.Resolve(reader, context.InheritedTextStyle, inline.TextFont);
+        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform), presentation.Opacity != 255) { InheritedTextStyle = inheritedTextStyle }, presentation.Opacity);
     }
 }
 

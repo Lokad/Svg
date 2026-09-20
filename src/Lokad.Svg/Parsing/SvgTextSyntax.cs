@@ -14,24 +14,34 @@ internal static class SvgTextLimits
 internal static class SvgTextSyntax
 {
     internal static SvgTextStyle Parse(XmlReader reader)
-        => Parse(reader, new ParserWorkCounter(long.MaxValue), CancellationToken.None);
+        => Parse(reader, new ParserWorkCounter(long.MaxValue), CancellationToken.None, SvgInheritedTextStyle.Default);
 
     /// <summary>Parses direct text font syntax while charging inline-property scans to the current conversion.</summary>
     internal static SvgTextStyle Parse(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => Parse(reader, workCounter, cancellationToken, SvgInheritedTextStyle.Default);
+
+    internal static SvgTextStyle Parse(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken, SvgInheritedTextStyle inherited)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(workCounter);
-        return Parse(reader, SvgTextFontSyntax.ReadInlineProperties(reader, workCounter, cancellationToken));
+        return Parse(reader, SvgTextFontSyntax.ReadInlineProperties(reader, workCounter, cancellationToken), inherited);
     }
 
     /// <summary>Parses direct text font syntax from declarations already scanned by style resolution.</summary>
     internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline)
+        => Parse(reader, inline, SvgInheritedTextStyle.Default);
+
+    /// <summary>Parses direct text font syntax from declarations already scanned by style resolution and bounded ancestor inheritance.</summary>
+    internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited)
     {
         ArgumentNullException.ThrowIfNull(reader);
-        string family = SvgTextFontSyntax.ParseFamily(inline.Family ?? reader.GetAttribute("font-family") ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text requires an explicit font-family in the initial supported subset."));
-        int weight = SvgTextFontSyntax.ParseWeight(inline.Weight ?? reader.GetAttribute("font-weight") ?? "normal");
-        bool italic = SvgTextFontSyntax.ParseItalic(inline.Style ?? reader.GetAttribute("font-style") ?? "normal");
-        double fontSize = SvgGeometrySyntax.ParseTextCoordinate(inline.Size ?? reader.GetAttribute("font-size") ?? "16");
+        string family = SvgTextFontSyntax.ParseFamily(inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text requires an explicit font-family in the initial supported subset."));
+        string? weightValue = inline.Weight ?? reader.GetAttribute("font-weight");
+        int weight = weightValue is null ? inherited.Weight : SvgTextFontSyntax.ParseWeight(weightValue);
+        string? styleValue = inline.Style ?? reader.GetAttribute("font-style");
+        bool italic = styleValue is null ? inherited.Italic : SvgTextFontSyntax.ParseItalic(styleValue);
+        string? sizeValue = inline.Size ?? reader.GetAttribute("font-size");
+        double fontSize = sizeValue is null ? inherited.FontSize : SvgGeometrySyntax.ParseTextCoordinate(sizeValue);
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor") ?? "start");
         return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dy") ?? "0"), anchor);
