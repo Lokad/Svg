@@ -343,6 +343,21 @@ public sealed class OpenTypeFontTests
         Assert.Equal("Example", diagnostic.RequestedFamily);
     }
 
+    [Fact]
+    public async Task Svg_based_snapshot_discovers_and_prepares_a_selected_font()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync("<svg><text font-family='Example'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None);
+
+        Assert.Single(snapshot.Fonts);
+        Assert.Equal(1, source.RequestCount);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;
