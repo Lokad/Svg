@@ -110,6 +110,16 @@ public sealed class SvgFontRequestDiscoveryTests
         Assert.Empty(requests);
     }
 
+    [Theory]
+    [InlineData("symbol")]
+    [InlineData("unsupported-container")]
+    public void Does_not_discover_fonts_from_text_outside_renderable_container_paths(string container)
+    {
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><" + container + "><text font-family='Unused'>x</text></" + container + "></svg>"), CancellationToken.None);
+
+        Assert.Empty(requests);
+    }
+
     [Fact]
     public void Does_not_discover_fonts_from_unrenderable_span_children()
     {
