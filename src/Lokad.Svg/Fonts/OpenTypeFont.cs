@@ -72,7 +72,7 @@ internal static class OpenTypeFont
         if (numberOfHMetrics == 0 || numberOfHMetrics > glyphCount) throw InvalidFont("The hhea numberOfHMetrics value is invalid.");
         int hmtxBytes = checked(numberOfHMetrics * 4 + (glyphCount - numberOfHMetrics) * 2);
         RequireTableLength(hmtx, hmtxBytes, "hmtx");
-        return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat);
+        return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null);
     }
 
     /// <summary>Maps one Unicode scalar through a validated Unicode format-4 or format-12 character map.</summary>
@@ -90,7 +90,7 @@ internal static class OpenTypeFont
         CmapLookupProbe.Started();
         workCounter?.Consume(cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
-        OpenTypeTableRange cmap = FindTable(data, CmapTag, "cmap", workCounter, cancellationToken);
+        OpenTypeTableRange cmap = metrics.Cmap ?? throw InvalidFont("The SFNT font is missing its cmap table.");
         RequireTableLength(cmap, 4, "cmap");
         int encodingCount = ReadUInt16(data, cmap.Offset + 2);
         RequireTableLength(cmap, checked(4 + encodingCount * 8), "cmap");
@@ -206,7 +206,7 @@ internal static class OpenTypeFont
         if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
         workCounter?.Consume(cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
-        OpenTypeTableRange hmtx = FindTable(data, HmtxTag, "hmtx", workCounter, cancellationToken);
+        OpenTypeTableRange hmtx = metrics.Hmtx;
         int metricIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
         return ReadUInt16(data, hmtx.Offset + metricIndex * 4);
     }
@@ -600,7 +600,7 @@ internal static class OpenTypeFont
 }
 
 /// <summary>Represents validated core metrics from borrowed standalone-TrueType data.</summary>
-internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat);
+internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap);
 
 internal readonly record struct OpenTypeTableRange(int Offset, int Length);
 
