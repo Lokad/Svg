@@ -194,6 +194,8 @@ The complementary asymmetric scale10 vector maps (10,3) to (11.5,3), while
 the existing scale01 vector maps it to (10,8), fixing both file-order coefficients.
 A nested translated-child/scaled-root vector maps the leaf start to (10,8),
 proving parent-order composition rather than independent component transforms.
+A full two-by-two rotation maps (10,3) to (-3,10), covering both off-diagonal
+coefficients together.
 `name`/`OS/2` metadata and required pair positioning are not validated; scalar
 mapping plus advances is not universal text shaping.
 

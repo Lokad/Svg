@@ -653,6 +653,40 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Expands_composite_glyphs_with_a_two_by_two_rotation_matrix()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        Array.Resize(ref font, font.Length + 8);
+        WriteUInt32(font, 120, 60);
+        WriteUInt32(font, 286, 60);
+        OpenTypeTableRange simple = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
+        WriteInt16(font, simple.Offset, 1);
+        WriteUInt16(font, simple.Offset + 10, 1);
+        WriteUInt16(font, simple.Offset + 12, 0);
+        font[simple.Offset + 14] = 0x37;
+        font[simple.Offset + 15] = 0x37;
+        font[simple.Offset + 16] = 10;
+        font[simple.Offset + 17] = 5;
+        font[simple.Offset + 18] = 3;
+        font[simple.Offset + 19] = 0;
+        OpenTypeTableRange composite = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, composite.Offset, -1);
+        WriteUInt16(font, composite.Offset + 10, 131);
+        WriteUInt16(font, composite.Offset + 12, 1);
+        WriteInt16(font, composite.Offset + 14, 0);
+        WriteInt16(font, composite.Offset + 16, 0);
+        WriteInt16(font, composite.Offset + 18, 0);
+        WriteInt16(font, composite.Offset + 20, 16384);
+        WriteInt16(font, composite.Offset + 22, -16384);
+        WriteInt16(font, composite.Offset + 24, 0);
+
+        OpenTypeQuadraticSegment segment = OpenTypeFont.GetGlyphContours(font, 2, CancellationToken.None)[0];
+
+        Assert.Equal(new OpenTypeOutlinePoint(-3, 10), segment.Start);
+        Assert.Equal(new OpenTypeOutlinePoint(-3, 15), segment.Control);
+    }
+
+    [Fact]
     public void Rejects_a_cycle_in_composite_glyph_references()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
