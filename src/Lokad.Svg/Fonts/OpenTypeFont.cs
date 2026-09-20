@@ -448,7 +448,9 @@ internal static class OpenTypeFont
         double third = values == 4 ? ReadF2Dot14(data, cursor + 4) : 0;
         double fourth = values == 4 ? ReadF2Dot14(data, cursor + 6) : values == 2 ? ReadF2Dot14(data, cursor + 2) : first;
         cursor += values * 2;
-        return new OpenTypeAffineTransform(first, second, third, fourth);
+        // OpenType stores (xScale, scale01, scale10, yScale), whereas the
+        // renderer stores row coefficients (XX, XY, YX, YY).
+        return new OpenTypeAffineTransform(first, third, second, fourth);
     }
 
     private static double ReadF2Dot14(ReadOnlySpan<byte> data, int offset) => ReadInt16(data, offset) / 16384d;
