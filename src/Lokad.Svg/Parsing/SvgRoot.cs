@@ -172,6 +172,7 @@ internal sealed class SvgSceneStorage : IDisposable
         }
         catch
         {
+            foreach (SvgGeometry geometry in ownedGeometries.Items) geometry.Dispose();
             ownedGeometries.Dispose();
             throw;
         }
