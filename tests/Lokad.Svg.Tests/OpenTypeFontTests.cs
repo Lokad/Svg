@@ -198,6 +198,30 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Rejects_a_format_4_declared_length_that_truncates_its_segment_arrays()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 0);
+        const int Subtable = 242;
+        WriteUInt16(font, Subtable + 2, 31);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphIndex(font, 'A', CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_a_format_4_range_offset_that_starts_after_its_declared_payload()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 0);
+        const int Subtable = 242;
+        WriteUInt16(font, Subtable + 28, 4);
+
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphIndex(font, 'A', CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Categorizes_a_format_12_glyph_index_overflow_as_malformed_input()
     {
         byte[] font = CreateFormat12Font();
