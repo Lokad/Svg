@@ -48,11 +48,11 @@ The isolated Windows probe directly traverses a 64 KiB text node, a full
 short-attribute root and 255 × 4 KiB attribute values below that allowance;
 those observations are platform/runtime-fingerprinted regression evidence, not a
 BCL or process-RSS guarantee. Each retained XML-reader report breaks managed
-allocation
-into setup, traversal and `Name`/`Value` property-access deltas, and counts
-text/CDATA nodes without retrieving their values; property access is a subset of
+allocation into setup, traversal and `Name`/`Value` property-access deltas,
+and counts text/CDATA nodes without retrieving their values; property access is a subset of
 traversal. This makes the probe's attribution inspectable without claiming
-cross-runtime exactness.
+cross-runtime exactness. One retained JSON summary groups every child report
+under its shared platform/runtime fingerprint and fails a mixed fingerprint.
 The definition table reserves a two-times requested-capacity allowance before the
 BCL selects its prime backing capacity, and verifies that returned capacity is
 within the allowance.

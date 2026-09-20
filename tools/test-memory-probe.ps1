@@ -17,6 +17,7 @@ if (-not (Test-Path -LiteralPath $fixture)) { throw "Probe fixture is missing: $
 
 New-Item -ItemType Directory -Force -Path $ResultsDirectory | Out-Null
 $runId = [Guid]::NewGuid().ToString('N')
+$reports = [System.Collections.Generic.List[object]]::new()
 
 function Invoke-Probe {
     param(
@@ -68,6 +69,10 @@ function Invoke-Probe {
                 throw "The $Name probe did not emit a complete report. See $ResultsDirectory for its output."
             }
         }
+        $reports.Add([PSCustomObject]@{
+            name = $Name
+            report = [PSCustomObject]$values
+        })
         return $values
     }
     finally { $process.Dispose() }
@@ -145,4 +150,20 @@ $parserCancellationOutput = Join-Path $ResultsDirectory "$runId-parser-cancellat
 $parserCancelled = Invoke-Probe -Name 'parser-cancellation' -InputPath $parserCancellationInput -Output $parserCancellationOutput -ExpectedExitCode 3 -ExtraArguments @('--cancel-after-conversion-start-ms', '1')
 if ($parserCancelled['outcome'] -ne 'cancelled' -or $parserCancelled['cancellationMode'] -ne 'after-conversion-start' -or [int]$parserCancelled['inputBytes'] -lt 4MB -or (Test-Path -LiteralPath $parserCancellationOutput)) { throw 'The parser-stage cancellation probe completed, started too early, or wrote output.' }
 
-Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text and attribute shapes. Reports retained in $ResultsDirectory."
+$fingerprints = @($reports | ForEach-Object { $_.report.operatingSystem + '|' + $_.report.processArchitecture + '|' + $_.report.runtimeFramework } | Sort-Object -Unique)
+if ($fingerprints.Count -ne 1) { throw 'The child-process reports do not share one runtime/platform fingerprint.' }
+$runtime = $reports[0].report
+$summary = [ordered]@{
+    schemaVersion = 1
+    runId = $runId
+    runtimeFingerprint = [ordered]@{
+        operatingSystem = $runtime.operatingSystem
+        processArchitecture = $runtime.processArchitecture
+        runtimeFramework = $runtime.runtimeFramework
+    }
+    reports = @($reports)
+}
+$summaryPath = Join-Path $ResultsDirectory "$runId-summary.json"
+[IO.File]::WriteAllText($summaryPath, ($summary | ConvertTo-Json -Depth 6), [Text.UTF8Encoding]::new($false))
+
+Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text and attribute shapes. Summary retained at $summaryPath."
