@@ -44,7 +44,7 @@ internal static class SvgTextSyntax
         double fontSize = sizeValue is null ? inherited.FontSize : SvgGeometrySyntax.ParseTextCoordinate(sizeValue);
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor") ?? "start");
-        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dy") ?? "0"), anchor);
+        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dy") ?? "0"), anchor, reader.GetAttribute("id") ?? string.Empty);
     }
 
     private static SvgTextAnchor ParseAnchor(string value)
@@ -116,7 +116,7 @@ internal static class SvgTextFontSyntax
 internal readonly record struct SvgTextInlineFontProperties(string? Family, string? Weight, string? Style, string? Size);
 
 /// <summary>Represents the explicit single-font style and baseline origin of one initial text run.</summary>
-internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y, double Dx, double Dy, SvgTextAnchor Anchor);
+internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y, double Dx, double Dy, SvgTextAnchor Anchor, string SourceElementId);
 
 /// <summary>Identifies the admitted horizontal anchor for one direct text run.</summary>
 internal enum SvgTextAnchor { Start, Middle, End }

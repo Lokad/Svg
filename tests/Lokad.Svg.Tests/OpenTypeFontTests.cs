@@ -813,6 +813,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Text_run_glyph_diagnostics_retain_the_bounded_source_element_id()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
+        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 0, 0, 0, 0, SvgTextAnchor.Start, "caption");
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgTextRunBuilder.Create(style, "B", snapshot, new RenderBudget(1_024), CancellationToken.None));
+
+        SvgFontDiagnostic diagnostic = Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic);
+        Assert.Equal(SvgFontFailureStage.Glyph, diagnostic.Stage);
+        Assert.Equal("caption", diagnostic.SourceElementId);
+    }
+
+    [Fact]
     public async Task Positions_direct_glyph_runs_for_admitted_text_anchors()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
@@ -1199,7 +1212,7 @@ public sealed class OpenTypeFontTests
     public async Task Builds_a_simple_text_run_from_one_prepared_face()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 2, 3, 4, 5, SvgTextAnchor.Start);
+        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 2, 3, 4, 5, SvgTextAnchor.Start, string.Empty);
 
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         RenderBudget budget = new(64);

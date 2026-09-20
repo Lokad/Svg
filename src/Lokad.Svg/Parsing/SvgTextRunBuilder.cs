@@ -22,7 +22,7 @@ internal static class SvgTextRunBuilder
             throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
         }
 
-        SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.Anchor, budget, workCounter, cancellationToken);
+        SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.Anchor, budget, style.SourceElementId, workCounter, cancellationToken);
         return new SvgTextRun(style, font, glyphs);
     }
 
