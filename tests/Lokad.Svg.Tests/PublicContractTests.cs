@@ -26,7 +26,7 @@ public sealed class PublicContractTests
         Assert.Equal(typeof(CancellationToken), cancellation.ParameterType);
         Assert.False(cancellation.HasDefaultValue);
         Assert.Equal(typeof(CancellationToken), getSource.GetParameters()[1].ParameterType);
-        Assert.Equal(3, snapshots.Length);
+        Assert.Equal(4, snapshots.Length);
         Assert.All(snapshots.SelectMany(method => method.GetParameters()), parameter => Assert.False(parameter.HasDefaultValue));
     }
 

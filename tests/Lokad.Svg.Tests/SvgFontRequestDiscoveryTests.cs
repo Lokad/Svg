@@ -76,4 +76,14 @@ public sealed class SvgFontRequestDiscoveryTests
 
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Applies_caller_selected_structural_limits_during_discovery()
+    {
+        SvgRenderLimits limits = new(1_000_000, 1_024, 128, 1_024, 1_024, 1, 16, 1_000);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), limits, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
 }

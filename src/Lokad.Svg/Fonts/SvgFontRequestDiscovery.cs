@@ -10,8 +10,12 @@ internal static class SvgFontRequestDiscovery
     private const string SvgNamespace = "http://www.w3.org/2000/svg";
 
     internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, CancellationToken cancellationToken)
+        => Discover(svg, SvgRenderLimits.Default, cancellationToken);
+
+    /// <summary>Discovers admitted text requests under the same caller-selected structural and work limits as rendering.</summary>
+    internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
-        SvgRenderLimits limits = SvgRenderLimits.Default;
+        ArgumentNullException.ThrowIfNull(limits);
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         var requests = new List<SvgFontFaceRequest>();
         var seen = new HashSet<TextRequestKey>(TextRequestKeyComparer.Instance);

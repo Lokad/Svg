@@ -147,8 +147,13 @@ public sealed class SvgFontSnapshot : IDisposable
     /// not retain text runs or render text.
     /// </summary>
     public static ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, CancellationToken cancellationToken)
+        => CreateAsync(svg, catalog, provider, SvgRenderLimits.Default, cancellationToken);
+
+    /// <summary>Discovers and acquires admitted text fonts under caller-selected SVG limits before producing an immutable snapshot.</summary>
+    public static ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, SvgRenderLimits limits, CancellationToken cancellationToken)
     {
-        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(svg, cancellationToken);
+        ArgumentNullException.ThrowIfNull(limits);
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(svg, limits, cancellationToken);
         return CreateAsync(catalog, requests, provider, cancellationToken);
     }
 
