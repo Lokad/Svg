@@ -52,8 +52,8 @@ plus a JSON runtime fingerprint. The fingerprint records the capture count and
 each candidate hash as well as the pin JSON, archive and executable hashes, the
 smoke/setup scripts and capture/comparison-tool binary hashes, executable file
 version when exposed by the platform, input/reference hashes,
-OS/architecture/runtime, locale, time zone, recipe and headless/GPU/sandbox/viewport
-policy. It also states the resource,
+OS/architecture/runtime, locale, time zone, recipe, actual capture deadline and
+headless/GPU/sandbox/viewport policy. It also states the resource,
 color-space and font policy: the smoke has no text; Chrome captures its
 browser-default PNG output without a DevTools color-space override; and the page
 uses data URLs while HTTP(S), file, FTP and WebSocket URL patterns are blocked

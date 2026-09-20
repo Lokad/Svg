@@ -86,6 +86,7 @@ for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
 }
 
 $fingerprint = [ordered]@{
+    schemaVersion = 1
     pinSha256 = (Get-FileHash -LiteralPath $PinPath -Algorithm SHA256).Hash.ToLowerInvariant()
     pinVersion = $pin.version
     chromiumRevision = $pin.chromiumRevision
@@ -114,6 +115,7 @@ $fingerprint = [ordered]@{
     viewport = @{ width = 2; height = 2; deviceScaleFactor = 1 }
     background = 'transparent'
     freshProcessCaptures = $CaptureRuns
+    captureTimeoutMilliseconds = $CaptureTimeoutMilliseconds
     candidatePngs = @($candidates | ForEach-Object { [IO.Path]::GetFileName($_) })
     candidateSha256 = @($candidateHashes)
 }

@@ -32,8 +32,9 @@ are secondary unless they fix a reported defect or unlock that pipeline.
 Chrome smoke fingerprints bind the CFT archive and extracted executable plus the
 exact pin, smoke/setup-script, capture and comparison-tool hashes used for the
 evidence, and the smoke command rejects any count other than three fresh processes.
-They therefore identify both browser and local oracle tooling without replacing
-the required review of a remote platform capture.
+Its schema-versioned record also states the actual capture deadline. These details
+identify both browser and local oracle tooling without replacing the required
+review of a remote platform capture.
 
 The shared conversion-work ceiling is also charged for every `XmlReader` event
 and every attribute traversed by supported-element policy validation, including
