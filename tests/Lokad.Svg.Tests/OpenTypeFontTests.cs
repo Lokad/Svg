@@ -863,7 +863,7 @@ public sealed class OpenTypeFontTests
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         SvgPositionedGlyph positioned = Assert.Single(SvgGlyphLayout.Layout(snapshot.Fonts[0], "A", 100, 0, 0, CancellationToken.None));
-        RenderBudget budget = new(200);
+        RenderBudget budget = new(350);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphOutline.GetContours(snapshot.Fonts[0], positioned, 100, budget, CancellationToken.None));
 

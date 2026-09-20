@@ -408,7 +408,7 @@ internal static class OpenTypeFont
     internal static OpenTypeQuadraticSegment[] GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
         var active = new HashSet<ushort>();
-        var contours = new List<OpenTypeQuadraticSegment>();
+        using var contours = new OpenTypeSegmentAccumulator(null);
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, cancellationToken);
         return contours.ToArray();
     }
@@ -418,7 +418,7 @@ internal static class OpenTypeFont
     {
         ArgumentNullException.ThrowIfNull(budget);
         var active = new HashSet<ushort>();
-        var contours = new List<OpenTypeQuadraticSegment>();
+        using var contours = new OpenTypeSegmentAccumulator(budget);
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, cancellationToken);
         if (contours.Count == 0) return new([], null);
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + (long)contours.Count * 48L), SvgMemoryCategory.Geometry);
@@ -426,7 +426,7 @@ internal static class OpenTypeFont
         catch { reservation.Dispose(); throw; }
     }
 
-    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, HashSet<ushort> active, int depth, OpenTypeOutlineTransform transform, List<OpenTypeQuadraticSegment> contours, CancellationToken cancellationToken)
+    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, HashSet<ushort> active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, CancellationToken cancellationToken)
     {
         if (glyphIndex >= metrics.GlyphCount) throw InvalidFont("A composite glyf component references a glyph outside maxp.");
         if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph nesting depth exceeds the supported limit.");
@@ -586,6 +586,60 @@ internal sealed class OpenTypeGlyphContourStorage : IDisposable
     {
         _reservation?.Dispose();
         _reservation = null;
+    }
+}
+
+/// <summary>Builds decoded segments with reservation-backed capacity growth when glyph expansion belongs to a conversion budget.</summary>
+internal sealed class OpenTypeSegmentAccumulator : IDisposable
+{
+    private readonly RenderBudget? _budget;
+    private OpenTypeQuadraticSegment[] _segments = [];
+    private RenderBudget.BudgetReservation? _reservation;
+    private int _count;
+
+    internal OpenTypeSegmentAccumulator(RenderBudget? budget) => _budget = budget;
+
+    internal int Count => _count;
+
+    internal void Add(OpenTypeQuadraticSegment segment)
+    {
+        if (_count == _segments.Length) Grow();
+        _segments[_count++] = segment;
+    }
+
+    internal OpenTypeQuadraticSegment[] ToArray()
+    {
+        if (_count == 0) return [];
+        var copy = new OpenTypeQuadraticSegment[_count];
+        _segments.AsSpan(0, _count).CopyTo(copy);
+        return copy;
+    }
+
+    public void Dispose()
+    {
+        _reservation?.Dispose();
+        _reservation = null;
+        _segments = [];
+        _count = 0;
+    }
+
+    private void Grow()
+    {
+        int capacity = _segments.Length == 0 ? 4 : checked(_segments.Length * 2);
+        RenderBudget.BudgetReservation? replacementReservation = _budget?.Reserve(checked(32L + (long)capacity * 48L), SvgMemoryCategory.Geometry);
+        try
+        {
+            var replacement = new OpenTypeQuadraticSegment[capacity];
+            _segments.AsSpan(0, _count).CopyTo(replacement);
+            _reservation?.Dispose();
+            _reservation = replacementReservation;
+            _segments = replacement;
+        }
+        catch
+        {
+            replacementReservation?.Dispose();
+            throw;
+        }
     }
 }
 
