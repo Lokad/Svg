@@ -832,6 +832,24 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Inherited_nonpainting_text_with_an_empty_prepared_snapshot_does_not_require_a_font()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Unused\", \"resolvedFamily\": \"Unused\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><g fill='none'><text font-family='Unused'>x</text></g></svg>"u8.ToArray();
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, new CountingFontProvider(source), CancellationToken.None);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None);
+
+        Assert.True(png.Length > 0);
+        Assert.Empty(snapshot.Fonts);
+        Assert.Equal(0, source.RequestCount);
+    }
+
+    [Fact]
     public async Task Svg_based_snapshot_does_not_acquire_fonts_after_unsupported_sibling_content()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
