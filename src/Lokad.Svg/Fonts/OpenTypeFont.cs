@@ -191,8 +191,11 @@ internal static class OpenTypeFont
 
     /// <summary>Gets the validated borrowed glyf-table range for one glyph, which may be empty.</summary>
     internal static OpenTypeTableRange GetGlyphDataRange(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+        => GetGlyphDataRange(bytes, glyphIndex, ParseMetrics(bytes, cancellationToken), cancellationToken);
+
+    /// <summary>Gets one borrowed glyph range using metrics already validated for these unchanged caller-owned bytes.</summary>
+    internal static OpenTypeTableRange GetGlyphDataRange(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
-        OpenTypeFontMetrics metrics = ParseMetrics(bytes, cancellationToken);
         if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange loca = FindTable(data, LocaTag, "loca");
@@ -207,8 +210,12 @@ internal static class OpenTypeFont
 
     /// <summary>Reads a nonempty glyph header after validating its loca/glyf range.</summary>
     internal static OpenTypeGlyphHeader? GetGlyphHeader(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+        => GetGlyphHeader(bytes, glyphIndex, ParseMetrics(bytes, cancellationToken), cancellationToken);
+
+    /// <summary>Reads one glyph header using metrics already validated for these unchanged caller-owned bytes.</summary>
+    internal static OpenTypeGlyphHeader? GetGlyphHeader(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
-        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, cancellationToken);
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
         if (glyph.Length == 0) return null;
         if (glyph.Length < 10) throw InvalidFont("A nonempty glyf record is shorter than its header.");
         ReadOnlySpan<byte> data = bytes.Span;
@@ -218,10 +225,14 @@ internal static class OpenTypeFont
 
     /// <summary>Reads bounded contour endpoints from a simple glyph and excludes its hint instructions.</summary>
     internal static OpenTypeSimpleGlyphStructure GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+        => GetSimpleGlyphStructure(bytes, glyphIndex, ParseMetrics(bytes, cancellationToken), cancellationToken);
+
+    /// <summary>Reads simple-glyph structure using metrics already validated for these unchanged caller-owned bytes.</summary>
+    internal static OpenTypeSimpleGlyphStructure GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
-        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, cancellationToken);
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
         if (glyph.Length == 0) return new OpenTypeSimpleGlyphStructure([], 0);
-        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, cancellationToken);
+        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is not OpenTypeGlyphHeader value) throw new InvalidOperationException("A nonempty glyph did not return a header.");
         if (value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph decoding is not implemented yet.");
         if (value.ContourCount > MaximumSimpleGlyphContours) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph contour count exceeds the supported limit.");
@@ -247,12 +258,16 @@ internal static class OpenTypeFont
 
     /// <summary>Decodes bounded simple-glyph flags and delta coordinates into borrowed-font outline points.</summary>
     internal static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+        => GetSimpleGlyphPoints(bytes, glyphIndex, ParseMetrics(bytes, cancellationToken), cancellationToken);
+
+    /// <summary>Decodes simple-glyph points using metrics already validated for these unchanged caller-owned bytes.</summary>
+    internal static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
-        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, cancellationToken);
+        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, cancellationToken);
         if (structure.ContourEndpoints.Length == 0) return [];
         int pointCount = checked(structure.ContourEndpoints[^1] + 1);
         if (pointCount > MaximumSimpleGlyphPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph point count exceeds the supported limit.");
-        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, cancellationToken);
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
         int cursor = checked(glyph.Offset + structure.PointDataOffset);
         int end = checked(glyph.Offset + glyph.Length);
@@ -333,18 +348,26 @@ internal static class OpenTypeFont
 
     /// <summary>Decodes a bounded simple glyph into closed quadratic outline segments.</summary>
     internal static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+        => GetSimpleGlyphContours(bytes, glyphIndex, ParseMetrics(bytes, cancellationToken), cancellationToken);
+
+    /// <summary>Decodes simple-glyph contours using metrics already validated for these unchanged caller-owned bytes.</summary>
+    internal static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
-        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, cancellationToken);
+        OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, cancellationToken);
         if (structure.ContourEndpoints.Length == 0) return [];
-        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, glyphIndex, cancellationToken);
+        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, cancellationToken);
         return BuildQuadraticContours(points, structure.ContourEndpoints);
     }
 
     /// <summary>Reads bounded composite-glyph component metadata without recursively expanding outlines.</summary>
     internal static OpenTypeCompositeGlyphComponent[] GetCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+        => GetCompositeGlyphComponents(bytes, glyphIndex, ParseMetrics(bytes, cancellationToken), cancellationToken);
+
+    /// <summary>Reads composite-glyph components using metrics already validated for these unchanged caller-owned bytes.</summary>
+    internal static OpenTypeCompositeGlyphComponent[] GetCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
-        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, cancellationToken);
-        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, cancellationToken);
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
+        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is not OpenTypeGlyphHeader value || !value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The requested glyph is not a composite TrueType glyph.");
         ReadOnlySpan<byte> data = bytes.Span;
         int cursor = glyph.Offset + 10;
@@ -375,8 +398,11 @@ internal static class OpenTypeFont
 
     /// <summary>Expands bounded simple and composite glyphs into transformed quadratic segments.</summary>
     internal static OpenTypeQuadraticSegment[] GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+        => GetGlyphContours(bytes, glyphIndex, ParseMetrics(bytes, cancellationToken), cancellationToken);
+
+    /// <summary>Expands glyph contours using metrics already validated for these unchanged caller-owned bytes.</summary>
+    internal static OpenTypeQuadraticSegment[] GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
-        OpenTypeFontMetrics metrics = ParseMetrics(bytes, cancellationToken);
         var active = new HashSet<ushort>();
         var contours = new List<OpenTypeQuadraticSegment>();
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, cancellationToken);
@@ -390,11 +416,11 @@ internal static class OpenTypeFont
         if (!active.Add(glyphIndex)) throw InvalidFont("The composite glyph graph contains a cycle.");
         try
         {
-            OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, cancellationToken);
+            OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
             if (header is null) return;
             if (!header.Value.IsComposite)
             {
-                foreach (OpenTypeQuadraticSegment segment in GetSimpleGlyphContours(bytes, glyphIndex, cancellationToken))
+                foreach (OpenTypeQuadraticSegment segment in GetSimpleGlyphContours(bytes, glyphIndex, metrics, cancellationToken))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     if (contours.Count == MaximumExpandedGlyphSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded glyph segment count exceeds the supported limit.");
@@ -402,7 +428,7 @@ internal static class OpenTypeFont
                 }
                 return;
             }
-            foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, cancellationToken))
+            foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, metrics, cancellationToken))
             {
                 ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, cancellationToken);
             }

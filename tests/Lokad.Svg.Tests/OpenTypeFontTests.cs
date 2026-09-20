@@ -329,7 +329,8 @@ public sealed class OpenTypeFontTests
         WriteInt16(font, composite.Offset + 16, -3);
         WriteInt16(font, composite.Offset + 18, 8192);
 
-        OpenTypeQuadraticSegment[] segments = OpenTypeFont.GetGlyphContours(font, 2, CancellationToken.None);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+        OpenTypeQuadraticSegment[] segments = OpenTypeFont.GetGlyphContours(font, 2, metrics, CancellationToken.None);
 
         Assert.Equal([new OpenTypeQuadraticSegment(new(7, -1.5), new(9.5, -1.5), new(9.5, -1.5)), new OpenTypeQuadraticSegment(new(9.5, -1.5), new(7, -1.5), new(7, -1.5))], segments);
     }

@@ -12,7 +12,7 @@ internal static class SvgGlyphOutline
         double scale = fontSize / font.UnitsPerEm;
         if (!double.IsFinite(scale)) throw new ArgumentOutOfRangeException(nameof(fontSize));
 
-        OpenTypeQuadraticSegment[] source = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, cancellationToken);
+        OpenTypeQuadraticSegment[] source = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, cancellationToken);
         var transformed = new SvgGlyphQuadraticSegment[source.Length];
         for (int index = 0; index < transformed.Length; index++)
         {
