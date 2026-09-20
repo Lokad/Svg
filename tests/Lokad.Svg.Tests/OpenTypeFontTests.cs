@@ -1,4 +1,5 @@
 using Lokad.Svg.Fonts;
+using System.Security.Cryptography;
 
 namespace Lokad.Svg.Tests;
 
@@ -263,6 +264,23 @@ public sealed class OpenTypeFontTests
         SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
+    public async Task Creates_a_bounded_snapshot_from_verified_caller_owned_font_bytes()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new SvgMemoryFontProgramSource("caller-font", bytes));
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None);
+
+        SvgPreparedFont font = Assert.Single(snapshot.Fonts);
+        Assert.Equal((ushort)1024, font.UnitsPerEm);
+        Assert.Equal((ushort)3, font.GlyphCount);
+        Assert.True(font.Bytes.Span.SequenceEqual(bytes));
     }
 
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
