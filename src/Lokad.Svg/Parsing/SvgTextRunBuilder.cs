@@ -23,12 +23,12 @@ internal static class SvgTextRunBuilder
     }
 
     /// <summary>Yields each positioned glyph's closed SVG-coordinate contours without retaining whole-run contour storage.</summary>
-    internal static IEnumerable<SvgGlyphQuadraticContour[]> GetGlyphContours(SvgTextRun run, CancellationToken cancellationToken)
+    internal static IEnumerable<SvgGlyphQuadraticContour[]> GetGlyphContours(SvgTextRun run, RenderBudget budget, CancellationToken cancellationToken)
     {
         for (int index = 0; index < run.Glyphs.Length; index++)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            yield return SvgGlyphOutline.GetContours(run.Font, run.Glyphs[index], run.Style.FontSize, cancellationToken);
+            yield return SvgGlyphOutline.GetContours(run.Font, run.Glyphs[index], run.Style.FontSize, budget, cancellationToken);
         }
     }
 }

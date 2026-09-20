@@ -1,11 +1,18 @@
 namespace Lokad.Svg.Fonts;
 
+using Lokad.Svg.Rendering;
+
 /// <summary>Converts one decoded TrueType glyph outline into SVG user coordinates.</summary>
 internal static class SvgGlyphOutline
 {
     internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, CancellationToken cancellationToken)
+        => GetContours(font, glyph, fontSize, new RenderBudget(long.MaxValue), cancellationToken);
+
+    /// <summary>Converts one glyph while reserving its temporary transformed segment buffer until contour splitting completes.</summary>
+    internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(font);
+        ArgumentNullException.ThrowIfNull(budget);
         if (glyph.GlyphIndex == 0 || glyph.GlyphIndex >= font.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyph));
         if (!double.IsFinite(fontSize) || fontSize <= 0) throw new ArgumentOutOfRangeException(nameof(fontSize));
         if (!double.IsFinite(glyph.X) || !double.IsFinite(glyph.Y)) throw new ArgumentOutOfRangeException(nameof(glyph));
@@ -13,14 +20,20 @@ internal static class SvgGlyphOutline
         if (!double.IsFinite(scale)) throw new ArgumentOutOfRangeException(nameof(fontSize));
 
         OpenTypeQuadraticSegment[] source = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, cancellationToken);
-        var transformed = new SvgGlyphQuadraticSegment[source.Length];
-        for (int index = 0; index < transformed.Length; index++)
+        if (source.Length == 0) return [];
+        RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + (long)source.Length * 48L), SvgMemoryCategory.Geometry);
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            OpenTypeQuadraticSegment segment = source[index];
-            transformed[index] = new SvgGlyphQuadraticSegment(Transform(segment.Start), Transform(segment.Control), Transform(segment.End));
+            var transformed = new SvgGlyphQuadraticSegment[source.Length];
+            for (int index = 0; index < transformed.Length; index++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                OpenTypeQuadraticSegment segment = source[index];
+                transformed[index] = new SvgGlyphQuadraticSegment(Transform(segment.Start), Transform(segment.Control), Transform(segment.End));
+            }
+            return SplitClosedContours(transformed, cancellationToken);
         }
-        return SplitClosedContours(transformed, cancellationToken);
+        finally { reservation.Dispose(); }
 
         SvgGlyphOutlinePoint Transform(OpenTypeOutlinePoint point) => new(glyph.X + point.X * scale, glyph.Y - point.Y * scale);
     }

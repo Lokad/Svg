@@ -843,6 +843,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Glyph_outline_transformation_reserves_before_allocating_its_temporary_segments()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgPositionedGlyph positioned = Assert.Single(SvgGlyphLayout.Layout(snapshot.Fonts[0], "A", 100, 0, 0, CancellationToken.None));
+        RenderBudget budget = new(64);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphOutline.GetContours(snapshot.Fonts[0], positioned, 100, budget, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Charges_direct_glyph_sampling_work_to_the_public_conversion_limit()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -921,7 +934,7 @@ public sealed class OpenTypeFontTests
         Assert.Equal((ushort)1, glyph.GlyphIndex);
         Assert.Equal(6, glyph.X);
         Assert.Equal(8, glyph.Y);
-        Assert.Empty(Assert.Single(SvgTextRunBuilder.GetGlyphContours(run, CancellationToken.None)));
+        Assert.Empty(Assert.Single(SvgTextRunBuilder.GetGlyphContours(run, budget, CancellationToken.None)));
         Assert.Equal(64, budget.Snapshot().CurrentBytes);
         run.Dispose();
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
