@@ -1,11 +1,28 @@
 using System.Reflection;
 using System.Buffers;
 using System.Runtime.InteropServices;
+using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Tests;
 
 public sealed class PublicContractTests
 {
+    [Fact]
+    public void Font_pack_public_contract_requires_explicit_selection_and_cancellation_parameters()
+    {
+        MethodInfo parse = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.Parse), BindingFlags.Public | BindingFlags.Static)!;
+        MethodInfo resolve = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.Resolve), BindingFlags.Public | BindingFlags.Instance)!;
+        MethodInfo bind = typeof(SvgFontPackCatalog).GetMethod(nameof(SvgFontPackCatalog.Bind), BindingFlags.Public | BindingFlags.Instance)!;
+        MethodInfo getBytes = typeof(ISvgFontProgramSource).GetMethod(nameof(ISvgFontProgramSource.GetBytesAsync), BindingFlags.Public | BindingFlags.Instance)!;
+
+        Assert.All(parse.GetParameters(), parameter => Assert.False(parameter.HasDefaultValue));
+        Assert.All(resolve.GetParameters(), parameter => Assert.False(parameter.HasDefaultValue));
+        Assert.All(bind.GetParameters(), parameter => Assert.False(parameter.HasDefaultValue));
+        ParameterInfo cancellation = Assert.Single(getBytes.GetParameters());
+        Assert.Equal(typeof(CancellationToken), cancellation.ParameterType);
+        Assert.False(cancellation.HasDefaultValue);
+    }
+
     [Fact]
     public void Explicit_viewports_override_root_outer_dimensions()
     {
