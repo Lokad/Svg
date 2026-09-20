@@ -401,6 +401,10 @@ internal static class OpenTypeFont
 
     /// <summary>Decodes simple-glyph contours while charging decoded records to a conversion work counter.</summary>
     internal static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => GetSimpleGlyphContours(bytes, glyphIndex, metrics, null, workCounter, cancellationToken);
+
+    /// <summary>Decodes simple contours while reserving temporary decoder buffers when invoked from a budgeted expansion.</summary>
+    private static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
         if (structure.ContourEndpoints.Length == 0) return [];
@@ -501,7 +505,7 @@ internal static class OpenTypeFont
             if (header is null) return;
             if (!header.Value.IsComposite)
             {
-                foreach (OpenTypeQuadraticSegment segment in GetSimpleGlyphContours(bytes, glyphIndex, metrics, workCounter, cancellationToken))
+                foreach (OpenTypeQuadraticSegment segment in GetSimpleGlyphContours(bytes, glyphIndex, metrics, contours.Budget, workCounter, cancellationToken))
                 {
                     Consume(workCounter, cancellationToken);
                     if (contours.Count == MaximumExpandedGlyphSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded glyph segment count exceeds the supported limit.");
@@ -674,6 +678,9 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
     internal OpenTypeSegmentAccumulator(RenderBudget? budget) => _budget = budget;
 
     internal int Count => _count;
+
+    /// <summary>Provides the conversion budget for short-lived decoder buffers that feed this accumulator.</summary>
+    internal RenderBudget? Budget => _budget;
 
     internal void Add(OpenTypeQuadraticSegment segment)
     {
