@@ -193,7 +193,7 @@ public static class SvgConverter
                     RasterizeOrthogonalBand(geometry.Rectangle, destination);
                     return;
                 case SvgGeometryKind.GlyphContours:
-                    RasterizeGlyphContours(geometry.Glyph, destination);
+                    RasterizeGlyphContours(geometry.Glyph ?? throw new SvgException(SvgErrorCode.MalformedInput, "SVG glyph geometry is missing its contours."), destination);
                     return;
                 default:
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG scene geometry is not implemented.");

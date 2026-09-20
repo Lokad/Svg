@@ -829,6 +829,20 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Retained_glyph_contours_hold_and_release_scene_budget_ownership()
+    {
+        SvgGlyphQuadraticContour[] contours = [new SvgGlyphQuadraticContour([new SvgGlyphQuadraticSegment(new(0, 0), new(1, 0), new(1, 0))])];
+        RenderBudget budget = new(1_024);
+
+        using (SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, new SvgColor(0, 0, 0, 255), budget))
+        {
+            Assert.True(budget.Snapshot().CurrentBytes > 0);
+        }
+
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Charges_direct_glyph_sampling_work_to_the_public_conversion_limit()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
