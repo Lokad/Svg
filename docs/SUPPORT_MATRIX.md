@@ -46,7 +46,10 @@ Every compressed PNG byte produced by the owned/caller-memory buffer and both
 streaming IDAT sinks is charged before its copy, checksum, or output write.
 The isolated Windows probe directly traverses both a full short-attribute root
 and 255 × 4 KiB attribute values below that allowance; those observations are
-pinned-runtime regression evidence, not a BCL or process-RSS guarantee.
+pinned-runtime regression evidence, not a BCL or process-RSS guarantee. Each
+retained XML-reader report breaks managed allocation into setup, traversal and
+`Name`/`Value` property-access deltas; the last is a subset of traversal, which
+makes the probe's attribution inspectable without claiming cross-runtime exactness.
 The definition table reserves a two-times requested-capacity allowance before the
 BCL selects its prime backing capacity, and verifies that returned capacity is
 within the allowance.

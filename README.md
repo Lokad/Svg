@@ -49,8 +49,10 @@ The probe emits machine-readable elapsed-time, input-byte, cancellation-mode,
 conversion-managed-allocation and OS peak-working-set fields. `--mode xml-reader`
 instead emits a warmed direct BCL `XmlReader` traversal's managed allocation,
 renderer workspace allowance and touched attribute characters without producing a
-PNG. These fields are observations for bounded child-process scenarios, not a
-renderer memory guarantee. `--cancel-after-ms` starts before input loading, while
+PNG. Its XML-reader report separately records construction, whole-traversal and
+`Name`/`Value`-access allocation deltas, so the scope of each managed observation
+can be inspected. These fields are observations for bounded child-process
+scenarios, not a renderer memory guarantee. `--cancel-after-ms` starts before input loading, while
 `--cancel-after-conversion-start-ms` starts after the input is loaded; both are
 timing dependent and are stress evidence rather than exact unit-test assertions.
 

@@ -81,11 +81,11 @@ function Assert-XmlReaderMeasurements {
     {
         $output = Join-Path $ResultsDirectory "$runId-$Name-$attempt.png"
         $measurement = Invoke-Probe -Name "$Name-$attempt" -InputPath $InputPath -Output $output -ExpectedExitCode 0 -ExtraArguments @('--mode', 'xml-reader')
-        if ($measurement['outcome'] -ne 'xml-reader-measured' -or -not $measurement.ContainsKey('xmlReaderManagedAllocatedBytes') -or -not $measurement.ContainsKey('xmlReaderWorkspaceBytes') -or -not $measurement.ContainsKey('xmlReaderTouchedCharacters') -or (Test-Path -LiteralPath $output))
+        if ($measurement['outcome'] -ne 'xml-reader-measured' -or -not $measurement.ContainsKey('xmlReaderManagedAllocatedBytes') -or -not $measurement.ContainsKey('xmlReaderWorkspaceBytes') -or -not $measurement.ContainsKey('xmlReaderTouchedCharacters') -or -not $measurement.ContainsKey('xmlReaderSetupManagedAllocatedBytes') -or -not $measurement.ContainsKey('xmlReaderTraversalManagedAllocatedBytes') -or -not $measurement.ContainsKey('xmlReaderAttributeAccessManagedAllocatedBytes') -or (Test-Path -LiteralPath $output))
         {
             throw "The $Name XML reader measurement did not emit a complete no-output report."
         }
-        if ([long]$measurement['xmlReaderManagedAllocatedBytes'] -le 0 -or [long]$measurement['xmlReaderTouchedCharacters'] -lt $MinimumTouchedCharacters -or [long]$measurement['xmlReaderManagedAllocatedBytes'] -gt [long]$measurement['xmlReaderWorkspaceBytes'])
+        if ([long]$measurement['xmlReaderManagedAllocatedBytes'] -le 0 -or [long]$measurement['xmlReaderTouchedCharacters'] -lt $MinimumTouchedCharacters -or [long]$measurement['xmlReaderManagedAllocatedBytes'] -gt [long]$measurement['xmlReaderWorkspaceBytes'] -or [long]$measurement['xmlReaderSetupManagedAllocatedBytes'] -lt 0 -or [long]$measurement['xmlReaderTraversalManagedAllocatedBytes'] -lt 0 -or [long]$measurement['xmlReaderAttributeAccessManagedAllocatedBytes'] -lt 0 -or [long]$measurement['xmlReaderSetupManagedAllocatedBytes'] -gt [long]$measurement['xmlReaderManagedAllocatedBytes'] -or [long]$measurement['xmlReaderTraversalManagedAllocatedBytes'] -gt [long]$measurement['xmlReaderManagedAllocatedBytes'] -or [long]$measurement['xmlReaderAttributeAccessManagedAllocatedBytes'] -gt [long]$measurement['xmlReaderTraversalManagedAllocatedBytes'])
         {
             throw "The $Name XML reader measurement exceeds its renderer workspace allowance."
         }
