@@ -82,6 +82,17 @@ public sealed class SvgFontSnapshot : IDisposable
         return await CreateAsync(resolutions, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Discovers the admitted explicit text font requests from SVG bytes, then
+    /// selectively acquires their resolved programs. This preparation step does
+    /// not retain text runs or render text.
+    /// </summary>
+    public static ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, CancellationToken cancellationToken)
+    {
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(svg, cancellationToken);
+        return CreateAsync(catalog, requests, provider, cancellationToken);
+    }
+
     /// <summary>Releases references to caller-owned font byte regions retained by this snapshot.</summary>
     public void Dispose() => _fonts = [];
 }

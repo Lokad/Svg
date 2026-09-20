@@ -52,7 +52,10 @@ already-selected programs. It re-verifies caller-owned bytes, validates the
 standalone-TrueType core metrics, and retains at most 256 face records and 32 MiB
 of borrowed bytes for its disposable lifetime. It neither parses SVG nor performs
 storage I/O. Its request-based overload resolves explicit family/style requests
-through a catalog and selectively asks a provider for each distinct program.
+through a catalog and selectively asks a provider for each distinct program. Its
+SVG-driven overload discovers inherited single-family `text`/`tspan` attributes
+(`font-family`, `font-weight`, `font-style`) before doing the same; CSS family
+lists, stylesheet font properties and text-run retention remain unsupported.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does
