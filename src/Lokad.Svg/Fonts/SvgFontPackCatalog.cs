@@ -90,6 +90,18 @@ public sealed class SvgFontPackCatalog
         return new SvgFontPackResolution(request, SelectBest(textFaces.Length == 0 ? _faces : textFaces, request), true);
     }
 
+    /// <summary>
+    /// Binds a catalog resolution to caller-owned program storage without fetching
+    /// data. The returned source validates byte count and SHA-256 on every access.
+    /// </summary>
+    public SvgFontProgramResolution Bind(SvgFontPackResolution resolution, ISvgFontProgramSource source)
+    {
+        ArgumentNullException.ThrowIfNull(resolution);
+        ArgumentNullException.ThrowIfNull(source);
+        if (!_faces.Contains(resolution.Face)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
+        return new SvgFontProgramResolution(resolution, new VerifiedSvgFontProgramSource(PackId, resolution.Face, source));
+    }
+
     private static SvgFontPackFile[] ParseFiles(WireFile[]? entries)
     {
         if (entries is null || entries.Length == 0) throw InvalidManifest("The font pack manifest does not list any font files.");

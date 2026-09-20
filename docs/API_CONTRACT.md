@@ -36,6 +36,10 @@ then resolves requested/resolved family aliases, styles and configured fallback
 families deterministically. This is metadata selection only: a caller still owns
 font-program acquisition and byte verification, and the current renderer does not
 yet consume catalog entries to render SVG text.
+`ISvgFontProgramSource` is the explicit caller-owned byte boundary. Binding a
+catalog resolution wraps that source with declared byte-count/SHA-256 validation;
+it neither copies nor caches the returned program. Source storage must therefore
+remain valid and unchanged for its consumer lifetime.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does
