@@ -429,6 +429,7 @@ internal static class OpenTypeFont
 
     private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, HashSet<ushort> active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
+        GlyphExpansionProbe.Started();
         workCounter?.Consume(cancellationToken);
         if (glyphIndex >= metrics.GlyphCount) throw InvalidFont("A composite glyf component references a glyph outside maxp.");
         if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph nesting depth exceeds the supported limit.");

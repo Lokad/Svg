@@ -900,6 +900,17 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Glyph_expansion_observes_cancellation_at_its_entry_checkpoint()
+    {
+        byte[] font = CreateTriangleFont();
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+        using CancellationTokenSource cancellation = new();
+        using IDisposable probe = GlyphExpansionProbe.Arm(cancellation.Cancel);
+
+        Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.GetGlyphContours(font, 1, metrics, new RenderBudget(10_000), new ParserWorkCounter(100), cancellation.Token));
+    }
+
+    [Fact]
     public async Task Parser_failure_after_retaining_a_glyph_contour_releases_its_scene_budget()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
