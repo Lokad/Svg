@@ -60,7 +60,8 @@ internal static class SvgRenderedLeafParser
                 SvgResolvedPaintableElement textElement = context.ResolveShape(reader, false);
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader);
-                string text = ReadDirectTextContent(reader, cancellationToken);
+                string text = ReadDirectTextContent(reader, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, workCounter, cancellationToken);
+                state.TextCharacterCount += text.Length;
                 SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text, fontSnapshot, cancellationToken);
                 if (textElement.Presentation.HasFill)
                 {
@@ -70,17 +71,17 @@ internal static class SvgRenderedLeafParser
         }
         return false;
 
-        static string ReadDirectTextContent(XmlReader element, CancellationToken cancellationToken)
+        static string ReadDirectTextContent(XmlReader element, int maximumCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             if (element.IsEmptyElement) return string.Empty;
             var text = new StringBuilder();
             using XmlReader subtree = element.ReadSubtree();
             while (subtree.Read())
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                workCounter.Consume(cancellationToken);
                 if (subtree.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
                 {
-                    if (subtree.Value.Length > SvgTextLimits.MaximumCharacters - text.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "The direct text character count exceeds the admitted layout limit.");
+                    if (subtree.Value.Length > maximumCharacters - text.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "The document direct text character count exceeds the admitted layout limit.");
                     text.Append(subtree.Value);
                     continue;
                 }

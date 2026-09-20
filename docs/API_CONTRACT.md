@@ -68,6 +68,9 @@ options. The renderer's experimental direct-text path accepts only direct
 single-face attributes and text/CDATA content; it does not make SVG text a
 supported feature and does not accept spans, stylesheet/inline font declarations,
 anchors, positioning lists or general shaping.
+Its direct text content is limited to 32,768 UTF-16 characters across one
+conversion before layout; subtree reader nodes consume the conversion's parser-work
+limit.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does

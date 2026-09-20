@@ -125,7 +125,8 @@ per-run cap is not a document-wide cap.
 
 Initial corrections: request discovery now rejects non-SVG roots before acquisition
 and applies default input/depth/attribute/node limits; direct extraction caps text
-at 32,768 UTF-16 characters before layout and observes cancellation per reader node.
+at 32,768 UTF-16 characters across the document before layout, and charges each
+subtree reader node to parser work while observing cancellation.
 Snapshot preparation now preflights distinct declared program sizes and conflicting
 same-hash sizes before provider I/O. It remains unbudgeted and does not share
 caller-provided render options. Remaining closure: one operation context through preparation, parsing, layout, outlines,

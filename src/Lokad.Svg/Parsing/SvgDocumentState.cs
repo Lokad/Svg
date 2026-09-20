@@ -36,6 +36,8 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal int NodeCount { get; set; }
 
+    internal int TextCharacterCount { get; set; }
+
     internal bool HasUnsupportedContent { get; set; }
 
     internal bool SawStyleableNode { get; set; }
