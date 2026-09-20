@@ -28,6 +28,9 @@ After a Release build, smoke-test provisioning, capture and exact comparison wit
 tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke
 ```
 
+The smoke command requires exactly three fresh-process captures; use
+`capture-chrome.ps1` for an individual exploratory capture.
+
 On Linux, pass its explicit pin instead:
 
 ```powershell

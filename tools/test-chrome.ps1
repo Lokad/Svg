@@ -9,7 +9,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-if ($CaptureRuns -le 0) { throw 'CaptureRuns must be positive.' }
+if ($CaptureRuns -ne 3) { throw 'Pinned Chrome smoke requires exactly three fresh-process captures.' }
 if ($CaptureTimeoutMilliseconds -le 0) { throw 'CaptureTimeoutMilliseconds must be positive.' }
 
 $pin = Get-Content -LiteralPath $PinPath -Raw | ConvertFrom-Json
