@@ -49,6 +49,111 @@ internal sealed class BudgetedParserStringStore : IDisposable
     }
 }
 
+/// <summary>Builds one transient direct-text value with parser-budgeted backing storage and transfers its exact string reservation to the caller.</summary>
+internal sealed class BudgetedTextBuffer : IDisposable
+{
+    private const long StringHeaderBytes = 32;
+    private const int CopyCheckpointCharacters = 4_096;
+    private readonly RenderBudget _budget;
+    private char[] _characters = [];
+    private RenderBudget.BudgetReservation? _reservation;
+    private int _length;
+
+    internal BudgetedTextBuffer(RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        _budget = budget;
+    }
+
+    internal int Length => _length;
+
+    /// <summary>Copies text after reserving all live replacement storage and charges copying work to the current conversion.</summary>
+    internal void Append(string value, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (value.Length > maximumLength - _length) throw new SvgException(SvgErrorCode.LimitExceeded, "The document direct text character count exceeds the admitted layout limit.");
+        EnsureCapacity(checked(_length + value.Length), workCounter, cancellationToken);
+        for (int offset = 0; offset < value.Length; offset += CopyCheckpointCharacters)
+        {
+            workCounter.Consume(cancellationToken);
+            int count = Math.Min(CopyCheckpointCharacters, value.Length - offset);
+            value.AsSpan(offset, count).CopyTo(_characters.AsSpan(_length + offset));
+        }
+        _length += value.Length;
+    }
+
+    /// <summary>Transfers ownership of the exact final string reservation; the caller must dispose the returned value after layout.</summary>
+    internal BudgetedText Detach()
+    {
+        if (_length == 0)
+        {
+            Dispose();
+            return new BudgetedText(string.Empty, null);
+        }
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(checked(StringHeaderBytes + (long)_length * sizeof(char)), SvgMemoryCategory.Parser);
+        try
+        {
+            string text = new(_characters, 0, _length);
+            Dispose();
+            return new BudgetedText(text, reservation);
+        }
+        catch
+        {
+            reservation.Dispose();
+            throw;
+        }
+    }
+
+    public void Dispose()
+    {
+        _characters = [];
+        _length = 0;
+        _reservation?.Dispose();
+        _reservation = null;
+    }
+
+    private void EnsureCapacity(int requiredLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (requiredLength <= _characters.Length) return;
+        int capacity = _characters.Length == 0 ? Math.Max(256, requiredLength) : _characters.Length > int.MaxValue / 2 ? requiredLength : Math.Max(_characters.Length * 2, requiredLength);
+        RenderBudget.BudgetReservation replacementReservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount(capacity, sizeof(char)), SvgMemoryCategory.Parser);
+        char[] replacement;
+        try
+        {
+            replacement = new char[capacity];
+        }
+        catch
+        {
+            replacementReservation.Dispose();
+            throw;
+        }
+        try
+        {
+            for (int offset = 0; offset < _length; offset += CopyCheckpointCharacters)
+            {
+                workCounter.Consume(cancellationToken);
+                int count = Math.Min(CopyCheckpointCharacters, _length - offset);
+                _characters.AsSpan(offset, count).CopyTo(replacement.AsSpan(offset));
+            }
+        }
+        catch
+        {
+            replacementReservation.Dispose();
+            throw;
+        }
+        _reservation?.Dispose();
+        _reservation = replacementReservation;
+        _characters = replacement;
+    }
+}
+
+/// <summary>Owns the budget reservation for a transient direct-text string until its layout consumer disposes it.</summary>
+internal readonly record struct BudgetedText(string Value, RenderBudget.BudgetReservation? Reservation) : IDisposable
+{
+    public void Dispose() => Reservation?.Dispose();
+}
+
 /// <summary>Owns a growable parser array whose backing storage is reserved before allocation.</summary>
 internal sealed class BudgetedParserList<T> : IDisposable where T : struct
 {

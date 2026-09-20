@@ -1,5 +1,4 @@
 using System.Xml;
-using System.Text;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Rendering;
 
@@ -63,9 +62,9 @@ internal static class SvgRenderedLeafParser
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
                 if (textElement.Style.FillRule is not null && !textElement.Style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont);
-                string text = ReadDirectTextContent(reader, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, workCounter, cancellationToken);
-                state.TextCharacterCount += text.Length;
-                using SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text, fontSnapshot, budget, cancellationToken);
+                using BudgetedText text = ReadDirectTextContent(reader, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, budget, workCounter, cancellationToken);
+                state.TextCharacterCount += text.Value.Length;
+                using SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text.Value, fontSnapshot, budget, cancellationToken);
                 if (textElement.Presentation.HasFill)
                 {
                     foreach (SvgGlyphQuadraticContour[] contours in SvgTextRunBuilder.GetGlyphContours(run, cancellationToken)) state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(new SvgGlyphGeometry(contours, textElement.Presentation.Color)));
@@ -75,18 +74,17 @@ internal static class SvgRenderedLeafParser
         }
         return false;
 
-        static string ReadDirectTextContent(XmlReader element, int maximumCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static BudgetedText ReadDirectTextContent(XmlReader element, int maximumCharacters, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
-            if (element.IsEmptyElement) return string.Empty;
-            var text = new StringBuilder();
+            using var text = new BudgetedTextBuffer(budget);
+            if (element.IsEmptyElement) return text.Detach();
             using XmlReader subtree = element.ReadSubtree();
             while (subtree.Read())
             {
                 workCounter.Consume(cancellationToken);
                 if (subtree.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
                 {
-                    if (subtree.Value.Length > maximumCharacters - text.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "The document direct text character count exceeds the admitted layout limit.");
-                    text.Append(subtree.Value);
+                    text.Append(subtree.Value, maximumCharacters, workCounter, cancellationToken);
                     continue;
                 }
                 if (subtree.NodeType == XmlNodeType.Element && subtree.Depth != 0)
@@ -94,7 +92,7 @@ internal static class SvgRenderedLeafParser
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text child elements are not implemented.");
                 }
             }
-            return text.ToString();
+            return text.Detach();
         }
     }
 }

@@ -141,6 +141,14 @@ boundaries. A focused integration test verifies that paint and all four supporte
 font declarations come from the same scan. Stylesheet font declarations and text
 inheritance remain intentionally unsupported.
 
+**2026-09-20 update — budget direct-text extraction.** Direct text now accumulates
+in a parser-budgeted character buffer. Capacity growth reserves the replacement while
+the old backing array remains live, checks cancellation during copies, and transfers
+an exact final-string reservation to the glyph-layout scope before releasing the
+buffer. Tests cover the overlapping growth denial and final-string release. This
+closes the extraction-buffer hole, but positioned glyphs, contour arrays and raster
+work still require their remaining aggregate limits.
+
 Raster work charges bounding pixels, but each pixel tests 16 samples against eight
 subdivisions of every segment. Bounds scans and inner winding loops lack charges/
 checkpoints. Composite depth/component/segment caps do not bound aggregate visits:
