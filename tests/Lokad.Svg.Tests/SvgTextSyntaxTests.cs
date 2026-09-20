@@ -22,6 +22,17 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    public void Normalizes_a_quoted_direct_font_family()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<text font-family=\"'Example'\"/>"));
+        reader.Read();
+
+        SvgTextStyle style = SvgTextSyntax.Parse(reader);
+
+        Assert.Equal("Example", style.Font.Family);
+    }
+
+    [Fact]
     public void Rejects_a_missing_or_list_font_family()
     {
         using XmlReader missing = XmlReader.Create(new StringReader("<text/>"));

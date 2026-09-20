@@ -503,7 +503,7 @@ public sealed class OpenTypeFontTests
     public async Task Converts_direct_text_and_its_immediate_shape_sibling_through_every_public_output_form()
     {
         byte[] font = CreateTriangleFont();
-        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text><rect width='1' height='1' fill='red'/></svg>"u8.ToArray();
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family=\"'Example'\" font-size='100' y='3'>A</text><rect width='1' height='1' fill='red'/></svg>"u8.ToArray();
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(font)], CancellationToken.None);
         var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
 

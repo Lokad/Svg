@@ -190,8 +190,9 @@ cannot find quoted `"Example"` although discovery strips the quotes. Computed st
 has no font properties. CSS lists, generic mappings, stylesheet-driven selection and
 coverage fallback are missing. Discovery deduplicates case-sensitively; lookup does not.
 
-Initial correction: preparation now uses last-declaration-wins for repeated inline
-font properties, matching the existing inline style parser. Remaining closure:
+Initial corrections: preparation now uses last-declaration-wins for repeated inline
+font properties, matching the existing inline style parser; direct rendering also
+normalizes quoted families. Remaining closure:
 shared bounded declaration parsing, precedence and typed computed text
 style. Retain admitted syntax/style in prepared documents; cross-test inheritance,
 inline/stylesheet declarations, quoting/case, namespaces, hidden/inert nodes and
