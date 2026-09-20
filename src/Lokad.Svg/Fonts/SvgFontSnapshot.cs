@@ -18,6 +18,18 @@ public sealed class SvgFontSnapshot : IDisposable
     /// <summary>Gets verified selected faces and their caller-owned program bytes.</summary>
     public IReadOnlyList<SvgPreparedFont> Fonts => _fonts;
 
+    /// <summary>Gets the prepared face selected for one previously prepared family/style request.</summary>
+    internal SvgPreparedFont GetFont(SvgFontFaceRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        foreach (SvgPreparedFont font in _fonts)
+        {
+            SvgFontFaceRequest selected = font.Resolution.Resolution.Request;
+            if (selected.Weight == request.Weight && selected.Italic == request.Italic && selected.Family.Equals(request.Family, StringComparison.OrdinalIgnoreCase)) return font;
+        }
+        throw new SvgException(SvgErrorCode.UnresolvedResource, "The requested font face was not prepared in the supplied snapshot.", new SvgFontDiagnostic(SvgFontFailureStage.Source, request.Family, string.Empty, string.Empty, string.Empty));
+    }
+
     /// <summary>
     /// Asynchronously verifies and parses the selected caller-owned programs into
     /// one bounded snapshot. The input order is retained; faces sharing a declared

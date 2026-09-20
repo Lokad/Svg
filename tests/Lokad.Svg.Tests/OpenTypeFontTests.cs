@@ -376,6 +376,20 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Snapshot_finds_a_prepared_face_by_case_insensitive_request()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
+        SvgPreparedFont font = snapshot.GetFont(new SvgFontFaceRequest("example", 400, false));
+        SvgException exception = Assert.Throws<SvgException>(() => snapshot.GetFont(new SvgFontFaceRequest("missing", 400, false)));
+
+        Assert.Equal((ushort)3, font.GlyphCount);
+        Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
+        Assert.Equal(SvgFontFailureStage.Source, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+    }
+
+    [Fact]
     public async Task Converts_glyph_outlines_from_font_units_to_svg_coordinates()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
