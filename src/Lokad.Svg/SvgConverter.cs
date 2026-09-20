@@ -313,7 +313,7 @@ public static class SvgConverter
 
     private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
     {
-        try { return SvgRootParser.Parse(svg, options.Limits, budget, cancellationToken); }
+        try { return SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, cancellationToken); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 

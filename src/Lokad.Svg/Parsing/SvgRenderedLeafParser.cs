@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg.Fonts;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -6,7 +7,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Routes supported rendered leaves through their bounded lowerers outside XML traversal.</summary>
 internal static class SvgRenderedLeafParser
 {
-    internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!isEligible || reader.NamespaceURI != "http://www.w3.org/2000/svg") return false;
         switch (reader.LocalName)
@@ -22,6 +23,8 @@ internal static class SvgRenderedLeafParser
                 break;
             case "polygon" or "polyline":
                 SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken);
+                break;
+            case "text":
                 break;
             default:
                 return false;
@@ -48,6 +51,18 @@ internal static class SvgRenderedLeafParser
                 {
                     state.GeometryElementCount += pointList.ElementCount;
                     state.Scene.AddGeometries(pointList.Geometries);
+                }
+                return true;
+            case "text":
+                if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
+                SvgResolvedPaintableElement textElement = context.ResolveShape(reader, false);
+                if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
+                SvgTextStyle textStyle = SvgTextSyntax.Parse(reader);
+                string text = reader.ReadElementContentAsString();
+                SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text, fontSnapshot, cancellationToken);
+                if (textElement.Presentation.HasFill)
+                {
+                    foreach (SvgGlyphQuadraticContour[] contours in SvgTextRunBuilder.GetGlyphContours(run, cancellationToken)) state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(new SvgGlyphGeometry(contours, textElement.Presentation.Color)));
                 }
                 return true;
         }

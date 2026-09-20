@@ -164,19 +164,22 @@ internal static class SvgRootParser
         => Parse(svg, limits, new RenderBudget(long.MaxValue), cancellationToken);
 
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
+        => Parse(svg, limits, budget, null, cancellationToken);
+
+    internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken)
     {
-        try { return ParseCore(svg, limits, budget, cancellationToken); }
+        try { return ParseCore(svg, limits, budget, fontSnapshot, cancellationToken); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
-    private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, CancellationToken cancellationToken)
+    private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken)
     {
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, settings);
-        return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, cancellationToken);
+        return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, cancellationToken);
     }
 
     internal static long GetXmlReaderWorkspaceBytes(int inputBytes, int maximumAttributes)

@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Traverses one bounded SVG document after reader setup without materializing a DOM.</summary>
 internal static class SvgDocumentTraversal
 {
-    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, CancellationToken cancellationToken)
+    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken)
     {
         ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
         while (reader.Read())
@@ -16,12 +16,12 @@ internal static class SvgDocumentTraversal
             ValidateElementStructure(reader, limits);
             if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
             SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, workCounter, cancellationToken);
-            return TraverseRoot(reader, limits, budget, namedColors, cancellationToken, workCounter, root);
+            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root);
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
     }
 
-    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root)
+    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root)
     {
         if (reader.IsEmptyElement)
         {
@@ -43,9 +43,9 @@ internal static class SvgDocumentTraversal
                 bool nestedInGroup = state.Groups.Count > 0;
                 if (SvgDefinitionParser.TryParse(reader, directChild, root, state, namedColors, workCounter, cancellationToken)) { }
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
-                else if (SvgRenderedLeafParser.TryParse(reader, directChild, directChild || nestedInGroup, root, state, limits, budget, namedColors, workCounter, cancellationToken))
+                else if (SvgRenderedLeafParser.TryParse(reader, directChild, directChild || nestedInGroup, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {
-                    state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                    state.HasUnsupportedContent |= reader.LocalName != "text" && !reader.IsEmptyElement;
                     state.SawStyleableNode = true;
                 }
                 else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))

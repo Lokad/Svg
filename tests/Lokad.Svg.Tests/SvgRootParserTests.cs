@@ -1128,7 +1128,7 @@ public sealed class SvgRootParserTests
         state.StyleRules.Add(new CssRule(CssSelectorKind.Class, "selected", null, 10, default));
         SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), null, 255, null, null, null);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRenderedLeafParser.TryParse(reader, true, true, root, state, SvgRenderLimits.Default, budget, new Dictionary<string, SvgColor>(), workCounter, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRenderedLeafParser.TryParse(reader, true, true, root, state, SvgRenderLimits.Default, budget, new Dictionary<string, SvgColor>(), null, workCounter, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Contains("identifiers and class values", exception.Message);
