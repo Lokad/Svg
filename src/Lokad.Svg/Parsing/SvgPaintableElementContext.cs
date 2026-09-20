@@ -18,8 +18,11 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgResolvedShapePresentation ResolvePresentation(SvgComputedStyle style, bool acceptsStroke)
         => SvgShapePresentationResolver.Resolve(style, InheritedPresentation.Paint, InheritedPresentation.IsDisplayed, InheritedPresentation.IsVisible, acceptsStroke, NamedColors);
 
-    internal SvgResolvedPaintableElement ResolveShape(XmlReader reader, SvgComputedStyle style, bool acceptsStroke)
-        => new(style, ResolveTransform(reader), ResolvePresentation(style, acceptsStroke));
+    internal SvgResolvedPaintableElement ResolveShape(XmlReader reader, bool acceptsStroke)
+    {
+        SvgComputedStyle style = ResolveStyle(reader);
+        return new SvgResolvedPaintableElement(style, ResolveTransform(reader), ResolvePresentation(style, acceptsStroke));
+    }
 }
 
 /// <summary>Pairs one computed style with the inherited transform and resolved presentation used by a shape lowerer.</summary>

@@ -9,9 +9,8 @@ internal static class SvgLeafParser
 
     internal static SvgParsedRectangle ParseRectangleWithStyle(XmlReader reader, SvgPaintableElementContext context)
     {
-        SvgComputedStyle style = context.ResolveStyle(reader);
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
-        SvgResolvedPaintableElement element = context.ResolveShape(reader, style, true);
+        SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
         SvgStroke? stroke = ParseRectangleStroke(element.Presentation.Style.Stroke, syntax.StrokeWidth, element.Presentation.Style.Color, context.InheritedPresentation.Paint, element.Transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill, context.NamedColors);
         return new SvgParsedRectangle(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }), element.Style);
@@ -19,9 +18,8 @@ internal static class SvgLeafParser
 
     internal static SvgGeometry ParseLine(XmlReader reader, SvgPaintableElementContext context)
     {
-        SvgComputedStyle style = context.ResolveStyle(reader);
         SvgLineSyntax syntax = SvgLineSyntax.Parse(reader);
-        SvgResolvedPaintableElement element = context.ResolveShape(reader, style, true);
+        SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         string? stroke = element.Style.Stroke;
         if (element.Transform != AxisTransform.Identity || stroke is null || stroke.Equals("none", StringComparison.OrdinalIgnoreCase) || element.Presentation.Opacity != 255 || (syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque untransformed horizontal or vertical lines are implemented.");
         SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(stroke, element.Style.Color, context.InheritedPresentation.Paint, context.NamedColors);

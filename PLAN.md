@@ -49,9 +49,10 @@ offset and transform syntax before the use parser resolves presentation.
 `SvgInheritedPresentation` carries the root-or-current-group paint, display,
 visibility and accumulated transform through one leaf-lowering context; its
 factory is directly characterized for root fallback and group selection.
-`SvgResolvedPaintableElement` now carries one computed style, accumulated
-transform and resolved paintability through rectangle, line and orthogonal-shape
-lowering; a direct characterization locks its `currentColor`, display and
+`SvgResolvedPaintableElement` now atomically resolves and carries one computed
+style, accumulated transform and resolved paintability through rectangle, line
+and orthogonal-shape lowering, so those lowerers cannot separately resolve a
+different style; a direct characterization locks its `currentColor`, display and
 transform results.
 `SvgReferenceResolver.ResolveOrDefer` now owns typed immediate versus forward
 local-reference resolution, with direct scene tests for both outcomes; the XML

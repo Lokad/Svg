@@ -14,10 +14,9 @@ public sealed class SvgPaintableElementContextTests
         IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase) { ["blue"] = new SvgColor(0, 0, 255, 255) };
         SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), default, namedColors, new ParserWorkCounter(100), CancellationToken.None);
 
-        SvgComputedStyle style = context.ResolveStyle(reader);
-        SvgResolvedPaintableElement element = context.ResolveShape(reader, style, true);
+        SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
 
-        Assert.Equal(style, element.Style);
+        Assert.Equal(new SvgComputedStyle("blue", "currentColor", null, null, "none", null, null, null), element.Style);
         Assert.Equal(new AxisTransform(1, 1, 4, 5), element.Transform);
         Assert.Equal(new SvgColor(0, 0, 255, 255), element.Presentation.Color);
         Assert.False(element.Presentation.IsPainted);
