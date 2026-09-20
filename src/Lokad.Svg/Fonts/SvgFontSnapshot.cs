@@ -51,6 +51,37 @@ public sealed class SvgFontSnapshot : IDisposable
         return new SvgFontSnapshot(prepared);
     }
 
+    /// <summary>
+    /// Resolves explicit requests, selectively asks the caller-owned provider for
+    /// the resulting distinct programs, and creates one verified snapshot. This
+    /// does not parse SVG; SVG-driven request discovery remains a later phase.
+    /// </summary>
+    public static async ValueTask<SvgFontSnapshot> CreateAsync(SvgFontPackCatalog catalog, IReadOnlyList<SvgFontFaceRequest> requests, ISvgFontProgramSourceProvider provider, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(catalog);
+        ArgumentNullException.ThrowIfNull(requests);
+        ArgumentNullException.ThrowIfNull(provider);
+        cancellationToken.ThrowIfCancellationRequested();
+        if (requests.Count > MaximumFaces) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font face count exceeds the snapshot limit.");
+        var sources = new Dictionary<string, ISvgFontProgramSource>(StringComparer.Ordinal);
+        var resolutions = new SvgFontProgramResolution[requests.Count];
+        for (int index = 0; index < requests.Count; index++)
+        {
+            SvgFontFaceRequest request = requests[index] ?? throw new ArgumentException("The font request list contains a null request.", nameof(requests));
+            SvgFontPackResolution selection = catalog.Resolve(request);
+            string programKey = selection.Face.File.Sha256;
+            if (!sources.TryGetValue(programKey, out ISvgFontProgramSource? source))
+            {
+                source = await provider.GetSourceAsync(selection.Face.File, cancellationToken).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                if (source is null) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program is unavailable from the supplied provider.", new SvgFontDiagnostic(SvgFontFailureStage.Source, selection.Request.Family, selection.Face.ResolvedFamily, selection.Face.File.RelativePath + ":" + selection.Face.FaceIndex, string.Empty));
+                sources.Add(programKey, source);
+            }
+            resolutions[index] = catalog.Bind(selection, source);
+        }
+        return await CreateAsync(resolutions, cancellationToken).ConfigureAwait(false);
+    }
+
     /// <summary>Releases references to caller-owned font byte regions retained by this snapshot.</summary>
     public void Dispose() => _fonts = [];
 }

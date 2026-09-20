@@ -310,6 +310,23 @@ public sealed class OpenTypeFontTests
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
 
+    [Fact]
+    public async Task Snapshot_resolves_requests_and_selectively_acquires_distinct_programs()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }, { \"requestedFamily\": \"Alias\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+        var provider = new CountingFontProvider(source);
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new SvgFontFaceRequest("Example", 400, false), new SvgFontFaceRequest("Alias", 400, false)], provider, CancellationToken.None);
+
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
+        Assert.Equal(2, snapshot.Fonts.Count);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;
@@ -423,6 +440,17 @@ public sealed class OpenTypeFontTests
         {
             RequestCount++;
             return ValueTask.FromResult<ReadOnlyMemory<byte>>(bytes);
+        }
+    }
+
+    private sealed class CountingFontProvider(ISvgFontProgramSource source) : ISvgFontProgramSourceProvider
+    {
+        public int RequestCount { get; private set; }
+
+        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
+        {
+            RequestCount++;
+            return ValueTask.FromResult<ISvgFontProgramSource?>(source);
         }
     }
 }
