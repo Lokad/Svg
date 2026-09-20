@@ -68,29 +68,13 @@ internal static class SvgFontRequestDiscovery
 
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited)
     {
-        string? family = GetProperty(reader, "font-family") ?? inherited.Family;
+        string? family = SvgTextFontSyntax.GetProperty(reader, "font-family") ?? inherited.Family;
         if (family is not null) family = SvgTextFontSyntax.ParseFamily(family);
-        string? weightValue = GetProperty(reader, "font-weight");
+        string? weightValue = SvgTextFontSyntax.GetProperty(reader, "font-weight");
         int weight = weightValue is null ? inherited.Weight : SvgTextFontSyntax.ParseWeight(weightValue);
-        string? styleValue = GetProperty(reader, "font-style");
+        string? styleValue = SvgTextFontSyntax.GetProperty(reader, "font-style");
         bool italic = styleValue is null ? inherited.Italic : SvgTextFontSyntax.ParseItalic(styleValue);
         return new TextStyle(family, weight, italic);
-    }
-
-    private static string? GetProperty(XmlReader reader, string name)
-    {
-        string? inline = reader.GetAttribute("style");
-        string? value = null;
-        if (inline is not null)
-        {
-            foreach (string declaration in inline.Split(';', StringSplitOptions.RemoveEmptyEntries))
-            {
-                int separator = declaration.IndexOf(':');
-                if (separator < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Malformed inline text style declarations are not implemented by preparation.");
-                if (declaration[..separator].Trim().Equals(name, StringComparison.OrdinalIgnoreCase)) value = declaration[(separator + 1)..].Trim();
-            }
-        }
-        return value ?? reader.GetAttribute(name);
     }
 
     private readonly record struct TextStyle(string? Family, int Weight, bool Italic);

@@ -38,6 +38,20 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    public void Applies_last_inline_font_declarations_over_presentation_attributes()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Attribute' font-weight='400' style='font-family: First; font-family: Inline; font-weight: 700; font-style: italic; font-size: 12'/>"));
+        reader.Read();
+
+        SvgTextStyle style = SvgTextSyntax.Parse(reader);
+
+        Assert.Equal("Inline", style.Font.Family);
+        Assert.Equal(700, style.Font.Weight);
+        Assert.True(style.Font.Italic);
+        Assert.Equal(12, style.FontSize);
+    }
+
+    [Fact]
     public void Normalizes_a_quoted_direct_font_family()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family=\"'Example'\"/>"));
