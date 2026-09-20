@@ -327,6 +327,22 @@ public sealed class OpenTypeFontTests
         Assert.Equal(2, snapshot.Fonts.Count);
     }
 
+    [Fact]
+    public async Task Request_based_snapshot_reports_a_bounded_missing_source_diagnostic()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(catalog, [new SvgFontFaceRequest("Example", 400, false)], new MissingFontProvider(), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
+        SvgFontDiagnostic diagnostic = Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic);
+        Assert.Equal(SvgFontFailureStage.Source, diagnostic.Stage);
+        Assert.Equal("Example", diagnostic.RequestedFamily);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;
@@ -452,5 +468,11 @@ public sealed class OpenTypeFontTests
             RequestCount++;
             return ValueTask.FromResult<ISvgFontProgramSource?>(source);
         }
+    }
+
+    private sealed class MissingFontProvider : ISvgFontProgramSourceProvider
+    {
+        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
+            => ValueTask.FromResult<ISvgFontProgramSource?>(null);
     }
 }
