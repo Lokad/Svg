@@ -13,8 +13,10 @@ may be non-array-backed `Memory` instances; conversion does not require an
 expose, including distinct virtual mappings of the same storage or stream-backed
 aliases. Input memory must stay valid and unchanged until conversion completes.
 
-`SvgRenderOptions` is immutable. A logical viewport is optional and distinct from
-the positive output scale. Its `SvgRenderLimits` are validated at construction;
+`SvgRenderOptions` is immutable. Its five-argument constructor may carry a
+caller-owned prepared `SvgFontSnapshot`; the caller must keep that snapshot and
+its font bytes valid and undisposed until conversion completes. A logical viewport
+is optional and distinct from the positive output scale. Its `SvgRenderLimits` are validated at construction;
 renderer-owned live storage, input bytes, dimensions, output bytes and work are
 separate limits. The initial defaults are the provisional limits in PLAN.md. The
 internal ledger reserves live renderer-owned storage before the corresponding
@@ -56,7 +58,8 @@ through a catalog and selectively asks a provider for each distinct program. Its
 SVG-driven overload discovers inherited single-family `text`/`tspan` attributes
 and inline-style properties (`font-family`, `font-weight`, `font-style`) before
 doing the same; CSS family lists, stylesheet font properties and text-run
-retention remain unsupported.
+retention remain unsupported. A snapshot can already be supplied through render
+options, but text parsing and glyph painting remain unsupported at this stage.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does

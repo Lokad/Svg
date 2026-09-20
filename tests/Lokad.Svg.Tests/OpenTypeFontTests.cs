@@ -390,6 +390,17 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Render_options_retain_the_caller_owned_font_snapshot()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        Assert.Same(snapshot, options.FontSnapshot);
+    }
+
+    [Fact]
     public async Task Converts_glyph_outlines_from_font_units_to_svg_coordinates()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
