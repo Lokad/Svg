@@ -4,7 +4,8 @@ namespace Lokad.Svg.Fonts;
 /// Represents one immutable, caller-byte-backed set of selected standalone
 /// TrueType fonts. The caller keeps every returned byte region valid and unchanged
 /// until this snapshot is disposed. Instances are safe for concurrent reads after
-/// successful creation, but do not own a shared cache or perform I/O.
+/// successful creation, but do not own a shared cache or perform I/O. Multiple
+/// face records for one manifest program share one acquired byte region.
 /// </summary>
 public sealed class SvgFontSnapshot : IDisposable
 {
@@ -18,25 +19,31 @@ public sealed class SvgFontSnapshot : IDisposable
 
     /// <summary>
     /// Asynchronously verifies and parses the selected caller-owned programs into
-    /// one bounded snapshot. The input order is retained; duplicate source IDs are
-    /// rejected to keep byte accounting unambiguous.
+    /// one bounded snapshot. The input order is retained; faces sharing a declared
+    /// program SHA-256 acquire and account for that program only once.
     /// </summary>
     public static async ValueTask<SvgFontSnapshot> CreateAsync(IReadOnlyList<SvgFontProgramResolution> resolutions, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(resolutions);
         cancellationToken.ThrowIfCancellationRequested();
-        var sourceIds = new HashSet<string>(StringComparer.Ordinal);
+        var programs = new Dictionary<string, (ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics)>(StringComparer.Ordinal);
         var prepared = new SvgPreparedFont[resolutions.Count];
         long totalBytes = 0;
         for (int index = 0; index < resolutions.Count; index++)
         {
             cancellationToken.ThrowIfCancellationRequested();
             SvgFontProgramResolution resolution = resolutions[index] ?? throw new ArgumentException("The selected font list contains a null resolution.", nameof(resolutions));
-            if (!sourceIds.Add(resolution.Source.StableId)) throw new ArgumentException("The selected font list contains duplicate program sources.", nameof(resolutions));
-            ReadOnlyMemory<byte> bytes = await resolution.Source.GetBytesAsync(cancellationToken).ConfigureAwait(false);
-            totalBytes = checked(totalBytes + bytes.Length);
-            if (totalBytes > MaximumBorrowedBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font programs exceed the snapshot byte limit.");
-            OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, cancellationToken);
+            string programKey = resolution.Resolution.Face.File.Sha256;
+            if (!programs.TryGetValue(programKey, out (ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics) program))
+            {
+                ReadOnlyMemory<byte> loadedBytes = await resolution.Source.GetBytesAsync(cancellationToken).ConfigureAwait(false);
+                totalBytes = checked(totalBytes + loadedBytes.Length);
+                if (totalBytes > MaximumBorrowedBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font programs exceed the snapshot byte limit.");
+                program = (loadedBytes, OpenTypeFont.ParseMetrics(loadedBytes, cancellationToken));
+                programs.Add(programKey, program);
+            }
+            ReadOnlyMemory<byte> bytes = program.Bytes;
+            OpenTypeFontMetrics metrics = program.Metrics;
             prepared[index] = new SvgPreparedFont(resolution, bytes, metrics.UnitsPerEm, metrics.GlyphCount);
         }
         return new SvgFontSnapshot(prepared);

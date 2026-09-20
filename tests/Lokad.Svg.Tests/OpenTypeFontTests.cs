@@ -283,6 +283,23 @@ public sealed class OpenTypeFontTests
         Assert.True(font.Bytes.Span.SequenceEqual(bytes));
     }
 
+    [Fact]
+    public async Task Snapshot_acquires_one_program_once_for_multiple_manifest_faces()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\", \"faceIndex\": 0 }, { \"requestedFamily\": \"Example Alt\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\", \"faceIndex\": 1 }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+        SvgFontProgramResolution first = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), source);
+        SvgFontProgramResolution second = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example Alt", 400, false)), source);
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([first, second], CancellationToken.None);
+
+        Assert.Equal(1, source.RequestCount);
+        Assert.Equal(2, snapshot.Fonts.Count);
+    }
+
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
     {
         const int tableCount = 7;
@@ -385,5 +402,17 @@ public sealed class OpenTypeFontTests
         destination[offset + 1] = (byte)(value >> 16);
         destination[offset + 2] = (byte)(value >> 8);
         destination[offset + 3] = (byte)value;
+    }
+
+    private sealed class CountingFontSource(byte[] bytes) : ISvgFontProgramSource
+    {
+        public int RequestCount { get; private set; }
+        public string StableId => "counting-font";
+
+        public ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken)
+        {
+            RequestCount++;
+            return ValueTask.FromResult<ReadOnlyMemory<byte>>(bytes);
+        }
     }
 }
