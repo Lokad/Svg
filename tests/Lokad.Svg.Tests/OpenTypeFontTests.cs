@@ -75,6 +75,16 @@ public sealed class OpenTypeFontTests
         Assert.Equal((ushort)0, OpenTypeFont.GetGlyphIndex(font, 'B', CancellationToken.None));
     }
 
+    [Theory]
+    [InlineData((uint)64, (ushort)0)]
+    [InlineData((uint)65, (ushort)1)]
+    [InlineData((uint)66, (ushort)0)]
+    [InlineData((uint)0xFFFF, (ushort)0)]
+    public void Maps_format_4_segment_boundary_scalars(uint scalar, ushort expectedGlyph)
+    {
+        Assert.Equal(expectedGlyph, OpenTypeFont.GetGlyphIndex(CreateFont(1024, 3, 2, 0), scalar, CancellationToken.None));
+    }
+
     [Fact]
     public void Reuses_snapshot_validated_metrics_for_cmap_and_advance_queries()
     {
@@ -127,6 +137,15 @@ public sealed class OpenTypeFontTests
 
         Assert.Equal((ushort)2, OpenTypeFont.GetGlyphIndex(font, 0x1F600, CancellationToken.None));
         Assert.Equal((ushort)0, OpenTypeFont.GetGlyphIndex(font, 0x1F601, CancellationToken.None));
+    }
+
+    [Theory]
+    [InlineData(0x1F5FFu, (ushort)0)]
+    [InlineData(0x1F600u, (ushort)2)]
+    [InlineData(0x1F601u, (ushort)0)]
+    public void Maps_format_12_group_boundary_scalars(uint scalar, ushort expectedGlyph)
+    {
+        Assert.Equal(expectedGlyph, OpenTypeFont.GetGlyphIndex(CreateFormat12Font(), scalar, CancellationToken.None));
     }
 
     [Fact]
