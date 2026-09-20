@@ -1,6 +1,7 @@
 namespace Lokad.Svg.Fonts;
 
 using Lokad.Svg.Rendering;
+using Lokad.Svg.Parsing;
 
 /// <summary>
 /// Validates the bounded standalone-TrueType subset required before glyph parsing.
@@ -409,25 +410,26 @@ internal static class OpenTypeFont
     {
         var active = new HashSet<ushort>();
         using var contours = new OpenTypeSegmentAccumulator(null);
-        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, cancellationToken);
+        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, null, cancellationToken);
         return contours.ToArray();
     }
 
     /// <summary>Expands one glyph and owns the budget reservation for the decoded segment array until its consumer disposes the storage.</summary>
-    internal static OpenTypeGlyphContourStorage GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, CancellationToken cancellationToken)
+    internal static OpenTypeGlyphContourStorage GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
         var active = new HashSet<ushort>();
         using var contours = new OpenTypeSegmentAccumulator(budget);
-        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, cancellationToken);
+        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, workCounter, cancellationToken);
         if (contours.Count == 0) return new([], null);
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + (long)contours.Count * 48L), SvgMemoryCategory.Geometry);
         try { return new(contours.ToArray(), reservation); }
         catch { reservation.Dispose(); throw; }
     }
 
-    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, HashSet<ushort> active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, CancellationToken cancellationToken)
+    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, HashSet<ushort> active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
+        workCounter?.Consume(cancellationToken);
         if (glyphIndex >= metrics.GlyphCount) throw InvalidFont("A composite glyf component references a glyph outside maxp.");
         if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph nesting depth exceeds the supported limit.");
         if (!active.Add(glyphIndex)) throw InvalidFont("The composite glyph graph contains a cycle.");
@@ -447,7 +449,7 @@ internal static class OpenTypeFont
             }
             foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, metrics, cancellationToken))
             {
-                ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, cancellationToken);
+                ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, workCounter, cancellationToken);
             }
         }
         finally { active.Remove(glyphIndex); }

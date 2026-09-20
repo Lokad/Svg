@@ -1,15 +1,16 @@
 namespace Lokad.Svg.Fonts;
 
 using Lokad.Svg.Rendering;
+using Lokad.Svg.Parsing;
 
 /// <summary>Converts one decoded TrueType glyph outline into SVG user coordinates.</summary>
 internal static class SvgGlyphOutline
 {
     internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, CancellationToken cancellationToken)
-        => GetContours(font, glyph, fontSize, new RenderBudget(long.MaxValue), cancellationToken);
+        => GetContours(font, glyph, fontSize, new RenderBudget(long.MaxValue), null, cancellationToken);
 
     /// <summary>Converts one glyph while reserving its temporary transformed segment buffer until contour splitting completes.</summary>
-    internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, CancellationToken cancellationToken)
+    internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(budget);
@@ -19,7 +20,7 @@ internal static class SvgGlyphOutline
         double scale = fontSize / font.UnitsPerEm;
         if (!double.IsFinite(scale)) throw new ArgumentOutOfRangeException(nameof(fontSize));
 
-        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, budget, cancellationToken);
+        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, budget, workCounter, cancellationToken);
         OpenTypeQuadraticSegment[] source = decoded.Segments;
         if (source.Length == 0) return [];
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + (long)source.Length * 48L), SvgMemoryCategory.Geometry);
