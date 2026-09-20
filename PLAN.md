@@ -1,10 +1,16 @@
 # Lokad.Svg review and implementation plan
 
 Reviewed 2026-09-20 against `ebe9fa4586a0d619ccfd93ea037c562586f19275`.
-This is a source/test/instrumentation review and plan refresh, not a runtime repair.
+This plan records the source/test/instrumentation review and subsequent execution.
 It supersedes the earlier `a6b6827` baseline and appended progress notes.
 Finding IDs R01–R16 are retained for continuity; a repaired reproduction does not
 close its broader feature or resource gate.
+
+Font-source reassessment 2026-09-20: the user authorizes local testing with the
+existing OoxPdf deployment's font pack and unchanged manifest. Read access and one
+selected program's integrity were verified in memory. S7 no longer awaits font
+asset permission; private testing, renderer acceptance and public redistribution
+are separate gates. See sections 5–6 for evidence and confidentiality constraints.
 
 The next product milestone remains useful supplied-font SVG labels, before
 gradients, images and filters. The public experimental direct-text path exists
@@ -319,7 +325,7 @@ implemented experiment, admitted subset, known defect and future requirement.
 | XML-reader probes | Three fresh measurements per text/attribute shape, separate setup/traversal/property-access deltas. | Text nodes are counted without reading their values; this does not measure direct extraction, layout or preparation. Keep the conservative allowance and probe the actual consumption path. |
 | Cancellation seams | Background callback observes actual loop entry and cancellation. | Font tests mostly establish pre-cancellation, not interruption during cmap/expansion/layout/coverage. Add deterministic phase/checkpoint evidence and bounded remaining work; no timing SLA. |
 | Benchmarks | Four output paths at rectangle sizes 1/64/512, setup excluded, allocation reporting. | No fonts, repeated-vs-distinct text or phase attribution. Measure lookup, hash, parse, layout, outline, raster and encode before optimizing. Retain host/runtime/raw reports. |
-| Chrome/diff | Bounded transport, resource blocking, image decode wait, exact RGBA, retained metadata. | No proof that the intended font is used inside the SVG image. Add embedded same-font assets and missing/corrupt/substitution controls before admitting text references. Outer-page font readiness is insufficient. |
+| Chrome/diff | Bounded transport, resource blocking, image decode wait, exact RGBA, retained metadata. | Authorized private font bytes can now supply same-font experiments. Add font embedding inside the SVG image plus missing/corrupt/substitution controls; retain private inputs/captures outside the public corpus. Outer-page font readiness is insufficient. |
 
 The fresh background probe allocated 67,153,672 managed bytes and observed
 cancellation with no output in 33 ms. This is one fingerprinted run, not a latency
@@ -345,8 +351,10 @@ Prioritize tracked independent regressions for:
    scene/draw order, whitespace, finite arithmetic and shape mapping admission.
 4. Public supplied-font conversion: curves/holes/composites, inheritance/styles,
    missing resources/glyphs, backgrounds, anchors, six outputs and concurrent reads.
-5. A licensed ordinary-font corpus with independent metrics and a labeled diagram;
-   then representative sizes, origins, spans, styles and fallback boundaries.
+5. An ordinary-font corpus using the authorized private pack, with independent
+   metrics and a labeled diagram; then representative sizes, origins, spans,
+   styles and fallback boundaries. Public asset/reference admission requires
+   separate redistribution rights and must not hold up private investigation.
 
 Share binary fixture builders, not expected values derived from production
 decoding. Add deterministic mutation/truncation cases. Keep negative research and
@@ -401,10 +409,11 @@ wrapper rewrite.
 
 ## 5. Execution order and actual blockers
 
-All rows below are **pending** unless the status table above says a specific
-reproduction is repaired. Start with S1; do not extend text admission while the
-P0 resource and geometry defects remain. Each row is a work package to split into
-small buildable commits, each including its tests and relevant documentation.
+The row statuses distinguish completed repairs from remaining work. Resume with
+the reopened S3 ownership repair and unfinished S5/S6 work. Private S7 corpus
+preparation and characterization can proceed now; broader text admission still
+requires closing the relevant P0 resource and geometry defects. Each row is a work
+package to split into small buildable commits with tests and documentation.
 
 | Order / dependency | Work package | Required exit evidence |
 | --- | --- | --- |
@@ -414,7 +423,7 @@ small buildable commits, each including its tests and relevant documentation.
 | S4 — complete 2026-09-20 | Correct cmap validation, asymmetric composite matrices and numeric/shape admission (R05/R10/R09). Selected format-12 groups are fully validated before lookup returns; nonzero format-4 offsets must be aligned and point into `glyphIdArray`. The OpenType scale01/scale10 file-order mismatch is repaired: an asymmetric scale01 vector maps (10,3) to (10,8), rather than transposing it to (11.5,3). Finite text-coordinate sums report `LimitExceeded` rather than a CLR range exception, while mapped rectangle edges retain the documented quarter-pixel gate. | 398 unit plus 83 visual tests pass. Tracked vectors cover malformed cmap, matrix order, overflowing coordinates and non-quarter shape mapping. All 43 shape references pass. |
 | S5 — in progress | Aggregate font/table/graph work and phase observations (R04b/R12). Every visited glyph in decoded expansion consumes the shared conversion counter before header/empty/composite handling; simple-glyph contour endpoints, flag runs, coordinates, contour lowering and transformed-segment insertion plus composite component records now consume that counter too. Both a direct empty child and the second empty leaf of a branching composite graph are denied at their actual visits. The branching vector records exactly seven visits/records and zero retained geometry bytes after both success and denial. Direct-text layout charges rune enumeration, positioned-glyph construction and anchor adjustment as well as cmap encoding records and format-4/12 groups or segments, lookup scans and advance reads to the shared counter; snapshot metrics retain validated cmap/hmtx/loca/glyf table ranges, removing repeated SFNT directory scans from layout and glyph expansion. The one-glyph format-4 path now needs exactly 9 units and releases positioned-glyph storage when denied at 8. SVG-driven preparation shares its caller work limit from discovery through SFNT metric parsing and chunked integrity hashing. Metric parsing now exposes its one-shot execution-context-local `FontMetricsProbe` after an actual validated directory record, proving cancellation before the next record is charged. Hashing runs in the same 4 KiB checkpoint size as byte work, making cancellation observable between actual appended hash chunks through the execution-context-local `FontIntegrityProbe`; a padded valid-font regression cancels after its first chunk and before the second. `GlyphExpansionProbe` and `CmapLookupProbe` likewise prove cancellation at actual expansion and lookup checkpoints. Direct text is consumed through a budgeted 4 KiB `ReadValueChunk` buffer and span append, rather than materializing a whole XML node value. | 496 unit plus 83 visual tests pass. Next: remaining font/table phase observations. |
 | S6 — in progress | Coherent discovery/style/preparation and verified program lifetime (R07/R08/R11/R14). SVG-driven preparation has a caller-limits overload; discovery applies those structural/work limits and follows renderer eligibility: only direct-root or `g`/`a`-descendant text can be considered. It therefore excludes nested `svg`, inert `defs`/`title`/`desc`/`metadata` (retaining an outer inert boundary through nested inert elements), standalone `tspan`, `symbol` and arbitrary unsupported containers, text subtrees with unsupported child elements, text under nonidentity transforms, and text hidden by inherited direct/inline `display` or `visibility`. Empty text validates structurally but cannot acquire or require a font. Hidden and direct/inherited nonpainting text now complete text syntax/size validation and bounded extraction but exit before snapshot lookup/layout, so their empty preparation result can be converted. Unsupported render-path siblings clear and suppress requests, so they cannot trigger a provider before their eventual conversion failure. Discovery now retains and resolves the renderer's bounded root stylesheet rules using the same parser, selector cascade and leaf-ordering gate, so stylesheet-hidden/nonpainting text is skipped and late stylesheets reject before acquisition; it also performs root/group/link attribute validation and rejects their inline or stylesheet fill-rule presentation before acquisition. Direct untransformed text reuses the renderer's attribute and default-fill-rule policies before provider acquisition, and shares renderer font inheritance including invalid ancestor font-size handling. Root, group and paintable contexts now require validated inherited text state rather than an init-only default-prone struct. A bounded text `id` now reaches glyph-stage and render-time missing-prepared-face diagnostics. The full preparation path proves empty/inert definitions, unsupported text children, transformed text, stylesheet-hidden/direct-or-root/group/stylesheet-inherited-nonpainting text and unsupported sibling content trigger zero provider acquisition, while unsupported text attributes, nondefault fill rules and inline or stylesheet unsupported group presentation are rejected before acquisition; renderer regressions also retain direct-text siblings across CDATA/comments and group closure and reject malformed tails or unsupported siblings. One immutable supplied snapshot is proven safe across eight concurrent direct-text conversions. All six output APIs now use one owned parse/check/raster scope, eliminating duplicated lifetime paths without changing their validation order or stream-await behavior. | 456 unit plus 83 visual tests pass. Next: remaining eligibility, preparation/painting agreement and bounded diagnostic context. |
-| S7 — blocked on an approved font asset; admission after S4–S6 | Licensed ordinary fonts, explicit font semantics and font-aware oracle (R09/R10/R12/R13). The repository has Chrome/PNG oracle tooling and shape references, but no tracked font program, font-pack manifest, or font-bearing fixture with license/provenance; system/browser fonts cannot establish intended-font controls. | Supply an approved font program plus compatible manifest and provenance. Then create three fresh-process intended-font captures; compare metrics and pixels separately for curves/holes/composites/fractional origins; then real styles, pair positioning, spans/fallback and a useful labeled diagram via public APIs. |
+| S7 — private asset access verified; acceptance pending | Ordinary fonts, explicit font semantics and font-aware oracle (R09/R10/R12/R13). Local use of the existing OoxPdf pack and unchanged manifest is authorized; a bounded read verified the manifest identifier and one regular face-0 program's size/hash and TrueType table presence. No Svg parse/render or browser comparison was performed in this assessment. | Implement the opt-in private workflow in section 6, without private repository content or default network tests. Inventory actual selected faces and semantics, then create three fresh-process intended-font captures and compare independent metrics and pixels for curves/holes/composites/fractional origins. Exercise real styles, pair positioning, spans/fallback and a useful labeled diagram via public APIs. Admission depends on the relevant S3–S6 repairs; publication additionally needs redistributable assets. |
 | Each slice | Synchronize API/support docs and update this plan (R16). The direct-text inheritance and caller-limit wording is synchronized with the implemented subset. | Record revision, command/result and regression/artifact; replace stale status instead of appending contradictory history. |
 
 Status update 2026-09-20: the contour-array reservation-transfer boundary is
@@ -434,21 +443,26 @@ Milestone interpretation:
 - Deferred: remote CI, canonical Linux oracle and publication. No current private
   dependency or external permission prevents S1–S6 or local S7 investigation.
 
-The missing licensed-font oracle is an acceptance dependency, not evidence that
-contour accounting or validation must wait. Likewise, a clean build is a baseline,
-not closure of reproduced defects. If a probe changes the diagnosis, update the
-specific finding and dependency; retain its input and do not restart the review.
+Font-source permission and initial access are resolved. Remaining local blockers
+are implementation and evidence gaps: S3 buffer ownership, S5 phase accounting,
+S6 preparation/lifetime agreement, and S7 font semantics and intended-font oracle.
+Private asset availability does not establish rendering fidelity or authorize
+redistribution. Keep each failing input privately when necessary and promote only
+independent, synthetic regressions and sanitized findings to the repository.
 
 ## 6. Font, text and host requirements retained
 
 ### Shared public font-pack contract
 
-Target public Lokad.OoxPdf 0.1.4 manifest compatibility without referencing its
-assembly/package/project. Both renderers must use unchanged manifest/font files
-from one location: no converted/pruned SVG manifest, duplicated deployment or
-required shared runtime. Focused independent font-management adaptation is allowed;
-PDF embedding is not glyph rasterization. This is a retained requirement, not a new
-upstream audit. This review did not re-audit Lokad.OoxPdf or alter that contract.
+Preserve the public Lokad.OoxPdf 0.1.4 manifest contract; a focused source review of
+the local OoxPdf checkout at `8e4b0333` (declared version 0.1.5, not a verified
+published release) confirms the same fields and resolution order. The reviewed
+public files are `Fonts/OoxPdfFontPackResolver.cs`, `Fonts/FontProgramLoader.cs`,
+`FontTests.cs`, `README.md` and `docs/PrivateValidation.md`. Both renderers must use
+unchanged manifest/font files from one location, without a converted/pruned SVG
+manifest, duplicated deployment or OoxPdf assembly/package/project dependency.
+Focused independent font-management adaptation is allowed; PDF embedding and SVG
+glyph rasterization retain distinct responsibilities.
 
 | JSON location | Compatibility |
 | --- | --- |
@@ -465,6 +479,65 @@ when selected. Pin self-contained conformance fixtures to the public contract:
 defaults/aliases/fallback order, unknown metadata, paths, unused TTC and selective
 loading. No other renderer checkout is required.
 
+The focused comparison establishes these alignment targets; source inspection of
+upstream tests is not a claim that those tests were executed here:
+
+| OoxPdf behavior inspected | Lokad.Svg alignment and remaining work |
+| --- | --- |
+| Manifest first; font bytes fetched lazily for selected files and checked by length/SHA-256. | Keep `SvgFontPackCatalog` metadata-only and acquire through caller-owned sources during async preparation. Verify the unchanged private manifest with Svg itself before claiming end-to-end compatibility. |
+| Case-insensitive requested/resolved family matching; italic match, closest 400/700 weight, then deterministic family/path/face tie-breaks; ordered configured fallback. | Existing Svg selection follows that order and accepts numeric SVG weights. Add independent conformance vectors for aliases, four real styles, fallback and unused unsupported entries. OoxPdf's bold request maps to 700; preserve SVG's numeric weight semantics. |
+| Shared per-file sources coalesce concurrent downloads, cache successful bytes and use at most three attempts for transient transport failures. Manifest reads cap at 1 MiB; font reads cap at the smaller of the declared size and 64 MiB. | Put transport, bounded caching and retry in an opt-in test host/provider. Test concurrent reuse, cancellation and recovery with synthetic transport responses. Keep Svg's existing 32 MiB aggregate borrowed-program and 256-face caps explicit; the source's per-file cap does not replace them. |
+| Font loading can select collection faces; the inspected loader synchronously waits for bytes, copies them and can return no font for certain failures. | Retain Svg's async acquisition, immutable borrowed bytes and categorized required-font failures. Current face-0 standalone TrueType admission remains explicit; packs may contain unused TTC or other unsupported entries without rejecting the whole catalog. |
+| Private validation keeps manifests, inputs and reports ignored and commits anonymized findings. Download exceptions can contain source URIs. | Apply the private workflow below and redact transport errors before they reach repository reports or shared logs. Do not propagate private source identities through diagnostic `StableId` values. |
+
+### Authorized private font testing
+
+User authorization covers testing with the existing deployment's blob storage and
+manifest. It does not authorize committing or publishing any platform content.
+Never commit the storage address, account/container identifiers, credentials or
+SAS values, deployment pack identifier, actual manifest, font binaries, platform
+configuration/code, or derived artifacts that disclose them. This includes
+embedded-font SVG/data URLs, request/response traces, exception text and reports.
+Any retained private inputs, font caches and captures belong outside this repo or
+under its already-ignored `artifacts/private-fonts/`; check that they are untracked
+before use. Follow OoxPdf's private-validation approach with Svg's existing ignore
+layout. Ordinary builds/tests and public CI must remain offline and independent of
+the private source and sibling checkouts; do not upload private test artifacts.
+
+Evidence from this assessment: read the configured source without printing its
+location; streamed the unchanged manifest under 1 MiB and checked the requested
+identifier; fetched one selected regular face-0 program under its declared size
+and Svg's aggregate limit; verified exact length and SHA-256. It has the standalone
+TrueType signature and `head/maxp/hhea/hmtx/cmap/loca/glyf` table entries, plus
+`kern` and `GPOS`, and no `fvar` entry. These are initial format observations, not
+table validation, shaping support or a whole-pack inventory. All downloaded bytes
+stayed in memory. No Svg catalog/snapshot conversion, OoxPdf test run, browser
+capture or pixel comparison was performed in this assessment.
+
+Execute S7 through the following concrete steps:
+
+1. Add an opt-in generic local test host accepting a supplied manifest/byte source
+   or externally configured endpoint and pack identifier, with no real defaults
+   or platform configuration discovery in tracked code. Reuse unchanged assets;
+   retain private hashes/provenance locally. Share selection and source behavior
+   with the public OoxPdf contract without importing platform implementation.
+2. Parse the actual manifest with Svg, prepare only requested programs, and build
+   a private inventory of formats, faces/styles, coverage, composite flags and
+   positioning tables. Compare catalog selection with OoxPdf for representative
+   requests. Report unsupported semantics explicitly; do not rewrite the pack or
+   silently substitute a machine font. Turn reproducible defects into synthetic
+   tracked tests and fix them under S3–S6 before admitting wider text behavior.
+3. Generate small synthetic label inputs covering curves, counters, composites,
+   AV pairs, spaces, real styles and fractional origins/sizes. Feed identical
+   verified font bytes to Svg and an SVG-image-local browser font embedding.
+   Browser captures remain network-blocked; use missing/corrupt/substitution
+   controls to prove intended-font use. Retain three fresh-process captures,
+   independent layout metrics and exact RGBA comparisons in private artifacts.
+4. Record sanitized failure categories, feature gaps and measured outcomes here.
+   A private mismatch must remain visible even if public tests pass. Private
+   success may support local investigation, but public corpus/package admission
+   needs independently redistributable fixtures and reproducible public evidence.
+
 Hosts own locations, credentials, I/O/retry/concurrency and bounded shared caches;
 the library owns SVG analysis, ordered family/generic mapping, face selection,
 coverage fallback, layout and painting. Prefer real styles; no implicit synthetic
@@ -479,12 +552,10 @@ synchronously block on acquisition. Avoid unconditional font copies/unbounded
 global caches. Identity is hash plus face index; caller bytes stay valid/unchanged.
 Shape-only input works offline; required missing faces/glyphs cannot disappear.
 
-Core bundled/required font bytes remain zero. The earlier, not remeasured deployment
-example was 12 Windows files (four styles per family): Arial 3,455,912 bytes,
-Times New Roman 4,193,740, Courier New 2,856,676; total 10,506,328 bytes
-(10.506 MB / 10.020 MiB). Count files, not aliases/faces. This is neither a public
-redistributable pack nor parsed-memory estimate. Select/license/hash/measure public
-test fonts independently, retaining asset licenses instead of relabeling them CC0.
+Core bundled/required font bytes remain zero. Count distinct programs rather than
+aliases/faces and measure acquired bytes separately from parsed storage. Keep
+deployment inventories and private program identities out of this plan. Select
+redistributable public test fonts separately, retaining their asset licenses.
 
 ### First useful text milestone
 
@@ -521,7 +592,9 @@ platform/version, recipe, scale, locale/background and font/raster policy. Verif
 font use inside the SVG image with missing/corrupt/substitution controls; outer-page
 font readiness is insufficient. Require three stable fresh-process captures.
 Compare metrics/layout separately from pixels and keep candidates/references/diffs,
-bounds and classified findings. A box glyph or single size is insufficient.
+bounds and classified findings. Private evidence stays in the authorized local
+workflow above and must not enter public reference manifests or CI artifacts.
+A box glyph or single size is insufficient.
 
 Keep exact decoded RGBA8 comparison, ignoring RGB only for transparent pixels.
 No tolerance or silent reference regeneration. Separate support and fidelity
