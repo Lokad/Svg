@@ -55,7 +55,8 @@ already-selected programs. It re-verifies caller-owned bytes, validates the
 standalone-TrueType core metrics, and retains at most 256 face records and 32 MiB
 of borrowed bytes for its disposable lifetime. Snapshot access after disposal
 throws `ObjectDisposedException`; callers must not retain/use escaped prepared-font
-values after that lifetime. It neither parses SVG nor performs
+values after that lifetime. Prepared direct-text layout reuses those validated core
+metrics without reparsing them for every cmap or advance query. It neither parses SVG nor performs
 storage I/O. Its request-based overload resolves all explicit family/style requests,
 preflights distinct declared byte sizes and same-hash consistency, then selectively
 asks a provider for each distinct program. Its

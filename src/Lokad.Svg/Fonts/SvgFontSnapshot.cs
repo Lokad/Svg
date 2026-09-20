@@ -89,7 +89,7 @@ public sealed class SvgFontSnapshot : IDisposable
             ReadOnlyMemory<byte> bytes = program.Bytes;
             ValidateDeclaredProgram(resolution, bytes);
             OpenTypeFontMetrics metrics = program.Metrics;
-            prepared[index] = new SvgPreparedFont(resolution, bytes, metrics.UnitsPerEm, metrics.GlyphCount, lease);
+            prepared[index] = new SvgPreparedFont(resolution, bytes, metrics, lease);
         }
         return new SvgFontSnapshot(prepared, lease);
 
@@ -208,16 +208,14 @@ public sealed class SvgPreparedFont
 {
     private readonly SvgFontProgramResolution _resolution;
     private readonly ReadOnlyMemory<byte> _bytes;
-    private readonly ushort _unitsPerEm;
-    private readonly ushort _glyphCount;
+    private readonly OpenTypeFontMetrics _metrics;
     private readonly SvgFontSnapshotLease _lease;
 
-    internal SvgPreparedFont(SvgFontProgramResolution resolution, ReadOnlyMemory<byte> bytes, ushort unitsPerEm, ushort glyphCount, SvgFontSnapshotLease lease)
+    internal SvgPreparedFont(SvgFontProgramResolution resolution, ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, SvgFontSnapshotLease lease)
     {
         _resolution = resolution;
         _bytes = bytes;
-        _unitsPerEm = unitsPerEm;
-        _glyphCount = glyphCount;
+        _metrics = metrics;
         _lease = lease;
     }
 
@@ -245,7 +243,7 @@ public sealed class SvgPreparedFont
         get
         {
             _lease.ThrowIfDisposed();
-            return _unitsPerEm;
+            return _metrics.UnitsPerEm;
         }
     }
     /// <summary>Gets the validated glyph count.</summary>
@@ -254,7 +252,16 @@ public sealed class SvgPreparedFont
         get
         {
             _lease.ThrowIfDisposed();
-            return _glyphCount;
+            return _metrics.GlyphCount;
+        }
+    }
+
+    internal OpenTypeFontMetrics Metrics
+    {
+        get
+        {
+            _lease.ThrowIfDisposed();
+            return _metrics;
         }
     }
 }

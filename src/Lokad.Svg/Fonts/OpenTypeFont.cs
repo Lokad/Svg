@@ -70,9 +70,12 @@ internal static class OpenTypeFont
 
     /// <summary>Maps one Unicode scalar through a validated Unicode format-4 or format-12 character map.</summary>
     internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, CancellationToken cancellationToken)
+        => GetGlyphIndex(bytes, scalar, ParseMetrics(bytes, cancellationToken), cancellationToken);
+
+    /// <summary>Maps one Unicode scalar using metrics already validated for these unchanged caller-owned bytes.</summary>
+    internal static ushort GetGlyphIndex(ReadOnlyMemory<byte> bytes, uint scalar, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
         if (scalar > 0x10FFFF || scalar is >= 0xD800 and <= 0xDFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
-        OpenTypeFontMetrics metrics = ParseMetrics(bytes, cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange cmap = FindTable(data, CmapTag, "cmap");
         RequireTableLength(cmap, 4, "cmap");
@@ -174,8 +177,11 @@ internal static class OpenTypeFont
 
     /// <summary>Gets the validated horizontal advance for one existing glyph index.</summary>
     internal static ushort GetAdvanceWidth(ReadOnlyMemory<byte> bytes, ushort glyphIndex, CancellationToken cancellationToken)
+        => GetAdvanceWidth(bytes, glyphIndex, ParseMetrics(bytes, cancellationToken), cancellationToken);
+
+    /// <summary>Gets one advance using metrics already validated for these unchanged caller-owned bytes.</summary>
+    internal static ushort GetAdvanceWidth(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
-        OpenTypeFontMetrics metrics = ParseMetrics(bytes, cancellationToken);
         if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange hmtx = FindTable(data, HmtxTag, "hmtx");

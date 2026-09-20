@@ -67,6 +67,18 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Reuses_snapshot_validated_metrics_for_cmap_and_advance_queries()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 0);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+
+        ushort glyph = OpenTypeFont.GetGlyphIndex(font, 'A', metrics, CancellationToken.None);
+
+        Assert.Equal((ushort)1, glyph);
+        Assert.Equal((ushort)600, OpenTypeFont.GetAdvanceWidth(font, glyph, metrics, CancellationToken.None));
+    }
+
+    [Fact]
     public void Maps_a_supplementary_scalar_through_a_format_12_cmap()
     {
         byte[] font = CreateFormat12Font();
