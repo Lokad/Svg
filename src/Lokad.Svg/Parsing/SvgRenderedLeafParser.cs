@@ -1,4 +1,5 @@
 using System.Xml;
+using System.Text;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Rendering;
 
@@ -25,6 +26,7 @@ internal static class SvgRenderedLeafParser
                 SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken);
                 break;
             case "text":
+                SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                 break;
             default:
                 return false;
@@ -58,7 +60,7 @@ internal static class SvgRenderedLeafParser
                 SvgResolvedPaintableElement textElement = context.ResolveShape(reader, false);
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader);
-                string text = reader.ReadElementContentAsString();
+                string text = ReadDirectTextContent(reader);
                 SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text, fontSnapshot, cancellationToken);
                 if (textElement.Presentation.HasFill)
                 {
@@ -67,5 +69,25 @@ internal static class SvgRenderedLeafParser
                 return true;
         }
         return false;
+
+        static string ReadDirectTextContent(XmlReader element)
+        {
+            if (element.IsEmptyElement) return string.Empty;
+            var text = new StringBuilder();
+            using XmlReader subtree = element.ReadSubtree();
+            while (subtree.Read())
+            {
+                if (subtree.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
+                {
+                    text.Append(subtree.Value);
+                    continue;
+                }
+                if (subtree.NodeType == XmlNodeType.Element && subtree.Depth != 0)
+                {
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text child elements are not implemented.");
+                }
+            }
+            return text.ToString();
+        }
     }
 }

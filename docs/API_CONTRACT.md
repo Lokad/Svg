@@ -39,8 +39,9 @@ families deterministically. `AcquireAsync` asks an explicit caller-owned
 `ISvgFontProgramSourceProvider` for only the selected file and verifies that
 program before returning; a missing source is `UnresolvedResource`. The provider
 owns I/O, retries, caching, concurrency and its source lifetime. The library does
-not probe storage, retain acquired bytes or request unrelated pack files, and the
-current renderer does not yet consume catalog entries to render SVG text.
+not probe storage or request unrelated pack files. A caller can supply a verified
+snapshot through render options to exercise the deliberately narrow direct-text
+pipeline; catalog acquisition is not implicitly invoked by rendering.
 `ISvgFontProgramSource` is the explicit caller-owned byte boundary. Binding a
 catalog resolution wraps that source with declared byte-count/SHA-256 validation;
 it neither copies nor caches the returned program. Source storage must therefore
@@ -59,7 +60,10 @@ SVG-driven overload discovers inherited single-family `text`/`tspan` attributes
 and inline-style properties (`font-family`, `font-weight`, `font-style`) before
 doing the same; CSS family lists, stylesheet font properties and text-run
 retention remain unsupported. A snapshot can already be supplied through render
-options, but text parsing and glyph painting remain unsupported at this stage.
+options. The renderer's experimental direct-text path accepts only direct
+single-face attributes and text/CDATA content; it does not make SVG text a
+supported feature and does not accept spans, stylesheet/inline font declarations,
+anchors, positioning lists or general shaping.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does

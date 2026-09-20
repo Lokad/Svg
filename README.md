@@ -9,8 +9,10 @@ structure, inherited paint/visibility/display, limited element/group opacity,
 source-over composition, caller-provided backgrounds, and managed PNG output to
 owned memory, caller memory or a writable stream. Presentation attributes, inline
 styles and a deliberately narrow ordered root stylesheet cover the documented
-subset. Gradients, images, filters, text, general CSS and general path geometry
-remain unsupported; see the support matrix for exact syntax and failure behavior.
+subset. Gradients, images, filters, general CSS and general path geometry remain
+unsupported. An experimental supplied-font direct-text path is deliberately not an
+admitted text-support claim; see the support matrix for its exact narrow syntax and
+failure behavior.
 The prototype also retains documented accepted-input contract gaps, so rejected
 syntax must not be inferred solely from the absence of support claims.
 

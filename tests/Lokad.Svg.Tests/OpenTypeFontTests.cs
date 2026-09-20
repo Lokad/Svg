@@ -1,5 +1,7 @@
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
+using System.Buffers.Binary;
+using System.IO.Compression;
 using System.Security.Cryptography;
 
 namespace Lokad.Svg.Tests;
@@ -402,6 +404,62 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Converts_direct_text_and_its_immediate_shape_sibling_through_every_public_output_form()
+    {
+        byte[] font = CreateTriangleFont();
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text><rect width='1' height='1' fill='red'/></svg>"u8.ToArray();
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(font)], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        byte[] owned = SvgConverter.ConvertToPng(svg, options, CancellationToken.None).ToArray();
+        byte[] memory = new byte[owned.Length];
+        int memoryLength = SvgConverter.ConvertToPng(svg, memory, options, CancellationToken.None);
+        using var stream = new MemoryStream();
+        int streamLength = SvgConverter.ConvertToPng(svg, stream, options, CancellationToken.None);
+        byte[] asyncOwned = (await SvgConverter.ConvertToPngAsync(svg, options, CancellationToken.None)).ToArray();
+        byte[] asyncMemory = new byte[owned.Length];
+        int asyncMemoryLength = await SvgConverter.ConvertToPngAsync(svg, asyncMemory, options, CancellationToken.None);
+        using var asyncStream = new MemoryStream();
+        int asyncStreamLength = await SvgConverter.ConvertToPngAsync(svg, asyncStream, options, CancellationToken.None);
+
+        Assert.Equal(255, DecodeAlpha(owned, 0, 0));
+        Assert.True(DecodeAlpha(owned, 1, 1) > 0);
+        Assert.Equal(owned, memory.AsSpan(0, memoryLength).ToArray());
+        Assert.Equal(owned, stream.ToArray());
+        Assert.Equal(owned, asyncOwned);
+        Assert.Equal(owned, asyncMemory.AsSpan(0, asyncMemoryLength).ToArray());
+        Assert.Equal(owned, asyncStream.ToArray());
+        Assert.Equal(owned.Length, streamLength);
+        Assert.Equal(owned.Length, asyncStreamLength);
+    }
+
+    [Theory]
+    [InlineData("dx='2'")]
+    [InlineData("text-anchor='end'")]
+    [InlineData("clip-path='url(#missing)'")]
+    public async Task Rejects_unimplemented_direct_text_attributes(string attribute)
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' " + attribute + ">A</text></svg>");
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public async Task Rejects_direct_text_child_elements_until_span_semantics_are_implemented()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public async Task Builds_a_simple_text_run_from_one_prepared_face()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -447,6 +505,41 @@ public sealed class OpenTypeFontTests
         string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         return catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new SvgMemoryFontProgramSource("caller-font", bytes));
+    }
+
+    private static byte[] CreateTriangleFont()
+    {
+        byte[] font = CreateFont(1000, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, 1);
+        WriteUInt16(font, glyph.Offset + 10, 2);
+        WriteUInt16(font, glyph.Offset + 12, 0);
+        font[glyph.Offset + 14] = 0x37;
+        font[glyph.Offset + 15] = 0x33;
+        font[glyph.Offset + 16] = 0x27;
+        for (int offset = glyph.Offset + 17; offset <= glyph.Offset + 21; offset++) font[offset] = 10;
+        return font;
+    }
+
+    private static byte DecodeAlpha(ReadOnlyMemory<byte> png, int x, int y)
+    {
+        int width = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(16, 4));
+        int height = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(20, 4));
+        if ((uint)x >= (uint)width || (uint)y >= (uint)height) throw new ArgumentOutOfRangeException(nameof(x));
+        using var compressed = new MemoryStream();
+        for (int offset = 8; offset < png.Length;)
+        {
+            int length = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(offset, 4));
+            if (png.Span.Slice(offset + 4, 4).SequenceEqual("IDAT"u8)) compressed.Write(png.Span.Slice(offset + 8, length));
+            offset += length + 12;
+        }
+        compressed.Position = 0;
+        using var zlib = new ZLibStream(compressed, CompressionMode.Decompress);
+        byte[] pixels = new byte[checked((width * 4 + 1) * height)];
+        zlib.ReadExactly(pixels);
+        int row = y * (width * 4 + 1);
+        if (pixels[row] != 0) throw new InvalidDataException("Test PNG decoder expects an unfiltered scanline.");
+        return pixels[row + 1 + x * 4 + 3];
     }
 
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
