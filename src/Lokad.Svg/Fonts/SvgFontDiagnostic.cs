@@ -40,7 +40,7 @@ public sealed class SvgFontDiagnostic
     public string ResolvedFamily { get; }
     /// <summary>Gets a bounded face identity, never font bytes.</summary>
     public string FaceIdentity { get; }
-    /// <summary>Gets the bounded direct-text source element ID when the failure occurs during glyph layout.</summary>
+    /// <summary>Gets the bounded direct-text source element ID when the failure occurs while rendering text.</summary>
     public string SourceElementId { get; }
 
     private static string Bound(string value)

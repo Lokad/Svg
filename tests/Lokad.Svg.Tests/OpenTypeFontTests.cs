@@ -988,6 +988,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Direct_text_missing_prepared_face_diagnostics_retain_the_bounded_source_element_id()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><text id='caption' font-family='Missing'>x</text></svg>"u8.ToArray(), options, CancellationToken.None));
+
+        SvgFontDiagnostic diagnostic = Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic);
+        Assert.Equal(SvgFontFailureStage.Source, diagnostic.Stage);
+        Assert.Equal("caption", diagnostic.SourceElementId);
+    }
+
+    [Fact]
     public async Task Positions_direct_glyph_runs_for_admitted_text_anchors()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
