@@ -344,9 +344,10 @@ behavior or collecting measurements.
    add another shape-specific path to `SvgRootParser` or a wrapper with no
    independent behavior.
 4. Hold P1.3 implementation work at calibration. The phase-shifted transparent
-   overlap rejects the fixed-edge/compositing model's earlier near fit, so do not
-   tune another rounding rule or add a general geometry feature. Resume only from
-   a new discriminating mechanism that matches both overlap phases exactly; retain
+   overlap rejects the fixed-edge/compositing model's earlier near fit; byte
+   premultiplied intermediates improve both phases but remain non-exact. Do not
+   tune either rounding path or add a general geometry feature. Resume only from a
+   new discriminating mechanism that matches both overlap phases exactly; retain
    unsuccessful probes as classified evidence rather than relaxing the fidelity
    bar. Until then, prioritize P0.3 accounting evidence and a real P1.2
    responsibility overlap over another path-raster experiment.
