@@ -1,4 +1,5 @@
 using Lokad.Svg.Fonts;
+using Lokad.Svg.Parsing;
 using System.Security.Cryptography;
 
 namespace Lokad.Svg.Tests;
@@ -398,6 +399,21 @@ public sealed class OpenTypeFontTests
         var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
 
         Assert.Same(snapshot, options.FontSnapshot);
+    }
+
+    [Fact]
+    public async Task Builds_a_simple_text_run_from_one_prepared_face()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 2, 3);
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
+        SvgTextRun run = SvgTextRunBuilder.Create(style, "A", snapshot, CancellationToken.None);
+
+        SvgPositionedGlyph glyph = Assert.Single(run.Glyphs);
+        Assert.Equal((ushort)1, glyph.GlyphIndex);
+        Assert.Equal(2, glyph.X);
+        Assert.Equal(3, glyph.Y);
     }
 
     [Fact]
