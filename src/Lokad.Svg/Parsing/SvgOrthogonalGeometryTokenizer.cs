@@ -5,14 +5,12 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses bounded absolute orthogonal path and point-list syntax into charged point storage.</summary>
 internal static class SvgOrthogonalGeometryTokenizer
 {
-    private const int PointStorageBytes = 8;
-
     internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ValidatePathCommandCount(value, maximumGeometryElements, workCounter, cancellationToken);
         PathTokenReader tokens = new(value, workCounter, cancellationToken);
         if (tokens.End || tokens.ReadCommand() != 'M') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
-        BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, PointStorageBytes, workCounter, cancellationToken);
+        BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
         try
         {
             points.Add(new SvgPoint(tokens.ReadInteger(), tokens.ReadInteger()));
@@ -48,7 +46,7 @@ internal static class SvgOrthogonalGeometryTokenizer
     internal static BudgetedParserList<SvgPoint> ParsePointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ValidatePointListVertexCount(value, maximumGeometryElements, workCounter, cancellationToken);
-        BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, PointStorageBytes, workCounter, cancellationToken);
+        BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
         try
         {
             DelimitedTokenReader values = new(value, workCounter, cancellationToken);

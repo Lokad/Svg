@@ -5,9 +5,6 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Owns temporary orthogonal-contour lowering storage until retained rectangle bands detach.</summary>
 internal ref struct SvgOrthogonalGeometryLowering
 {
-    private const int IntegerStorageBytes = 4;
-    private const int GeometryStorageBytes = 64;
-
     private readonly BudgetedParserList<SvgPoint> _points;
     private readonly string _elementName;
     private readonly bool _isPath;
@@ -29,15 +26,15 @@ internal ref struct SvgOrthogonalGeometryLowering
         _cancellationToken = cancellationToken;
         if (validateContour) ValidateSimpleContour(points, elementName, workCounter, cancellationToken);
         _geometryElementCount = points.Count;
-        _boundaries = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, IntegerStorageBytes, workCounter, cancellationToken);
+        _boundaries = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
         try
         {
             for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) _boundaries.Add(points[pointIndex].Y);
             _boundaries.Sort(_workCounter, _cancellationToken);
-            _intersections = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, IntegerStorageBytes, workCounter, cancellationToken);
+            _intersections = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             try
             {
-                _geometries = new BudgetedParserList<SvgGeometry>(budget, SvgMemoryCategory.Geometry, GeometryStorageBytes, workCounter, cancellationToken);
+                _geometries = new BudgetedParserList<SvgGeometry>(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             }
             catch
             {

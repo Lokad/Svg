@@ -1,6 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
 using Lokad.Svg.Rendering;
+using System.Runtime.CompilerServices;
 
 /// <summary>Tracks parser collection backing storage against a conversion budget.</summary>
 internal static class ParserCollectionMemory
@@ -9,6 +10,10 @@ internal static class ParserCollectionMemory
 
     internal static long GetArrayByteCount(int count, int entryBytes)
         => count == 0 ? 0 : checked(ArrayHeaderBytes + (long)count * entryBytes);
+
+    /// <summary>Gets a conservative array charge using the runtime size of its value element type.</summary>
+    internal static long GetArrayByteCount<T>(int count) where T : struct
+        => GetArrayByteCount(count, Unsafe.SizeOf<T>());
 }
 
 /// <summary>Owns exact parser-string reservations for copies retained by stylesheet rules or deferred references.</summary>
@@ -160,19 +165,23 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
     private const int CopyCheckpointItems = 4_096;
     private readonly RenderBudget _budget;
     private readonly SvgMemoryCategory _category;
-    private readonly int _entryBytes;
     private readonly ParserWorkCounter? _workCounter;
     private readonly CancellationToken _cancellationToken;
     private T[] _items = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal BudgetedParserList(RenderBudget budget, SvgMemoryCategory category, int entryBytes, ParserWorkCounter? workCounter = null, CancellationToken cancellationToken = default)
+    internal BudgetedParserList(RenderBudget budget, SvgMemoryCategory category)
+        : this(budget, category, null, CancellationToken.None)
     {
-        if (entryBytes <= 0) throw new ArgumentOutOfRangeException(nameof(entryBytes));
+    }
+
+    /// <summary>Creates a value-type list whose exact runtime element size is charged before allocation.</summary>
+    internal BudgetedParserList(RenderBudget budget, SvgMemoryCategory category, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
         _budget = budget;
         _category = category;
-        _entryBytes = entryBytes;
         _workCounter = workCounter;
         _cancellationToken = cancellationToken;
     }
@@ -247,7 +256,7 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
             return new([], null);
         }
 
-        RenderBudget.BudgetReservation reservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount(_count, _entryBytes), _category);
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<T>(_count), _category);
         T[] exact;
         try
         {
@@ -288,7 +297,7 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
 
         if (requiredCount <= _items.Length) return;
         int capacity = _items.Length == 0 ? Math.Max(4, requiredCount) : _items.Length > int.MaxValue / 2 ? requiredCount : Math.Max(_items.Length * 2, requiredCount);
-        RenderBudget.BudgetReservation replacementReservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount(capacity, _entryBytes), _category);
+        RenderBudget.BudgetReservation replacementReservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<T>(capacity), _category);
         T[] replacement;
         try
         {

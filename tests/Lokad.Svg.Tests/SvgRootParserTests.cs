@@ -942,7 +942,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Charges_parser_collection_sorting_to_the_shared_work_limit()
     {
-        using BudgetedParserList<int> values = new(new RenderBudget(1_000), SvgMemoryCategory.Geometry, sizeof(int));
+        using BudgetedParserList<int> values = new(new RenderBudget(1_000), SvgMemoryCategory.Geometry);
         values.Add(3);
         values.Add(1);
         values.Add(2);
@@ -972,14 +972,14 @@ public sealed class SvgRootParserTests
     public void Charges_parser_collection_transfer_copies_to_the_shared_work_limit()
     {
         RenderBudget budget = new(1_000);
-        using (BudgetedParserList<int> limited = new(budget, SvgMemoryCategory.Parser, sizeof(int), new ParserWorkCounter(1), CancellationToken.None))
+        using (BudgetedParserList<int> limited = new(budget, SvgMemoryCategory.Parser, new ParserWorkCounter(1), CancellationToken.None))
         {
             for (int value = 0; value < 5; value++) limited.Add(value);
             Assert.Throws<SvgException>(() => limited.Detach());
         }
         Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Parser]);
 
-        using BudgetedParserList<int> accepted = new(new RenderBudget(1_000), SvgMemoryCategory.Parser, sizeof(int), new ParserWorkCounter(20), CancellationToken.None);
+        using BudgetedParserList<int> accepted = new(new RenderBudget(1_000), SvgMemoryCategory.Parser, new ParserWorkCounter(20), CancellationToken.None);
         for (int value = 0; value < 5; value++) accepted.Add(value);
         using OwnedParserArray<int> storage = accepted.Detach();
         Assert.Equal([0, 1, 2, 3, 4], storage.Items);
@@ -1187,7 +1187,7 @@ public sealed class SvgRootParserTests
     public void Reserves_geometry_collection_capacity_before_allocation()
     {
         RenderBudget budget = new(63);
-        using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, 8);
+        using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry);
 
         SvgException exception = Assert.Throws<SvgException>(() => points.Add(new SvgPoint(0, 0)));
 

@@ -5,19 +5,16 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Owns the bounded mutable state for one SVG document while XML traversal remains streaming.</summary>
 internal sealed class SvgDocumentState : IDisposable
 {
-    private const int GroupScopeStorageBytes = 96;
-    private const int CssRuleStorageBytes = 96;
     private const int DefinitionStorageBytes = 256;
-    private const int PendingUseStorageBytes = 96;
 
     internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         Scene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
         Strings = new BudgetedParserStringStore(budget);
-        Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, GroupScopeStorageBytes, workCounter, cancellationToken);
-        StyleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, CssRuleStorageBytes, workCounter, cancellationToken);
+        Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        StyleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
-        PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, PendingUseStorageBytes, workCounter, cancellationToken);
+        PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }
 
     internal SvgSceneBuilder Scene { get; }

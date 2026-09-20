@@ -83,7 +83,8 @@ public static class SvgConverter
         }
     }
 
-    private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+    /// <summary>Renders one parsed scene while retaining its surface reservation until the returned surface is disposed.</summary>
+    internal static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
     {
         (double width, double height) = options.Viewport is SvgViewport viewport ? (viewport.Width, viewport.Height) : (root.Width, root.Height) switch
         {
@@ -109,29 +110,37 @@ public static class SvgConverter
             if (pixelCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Background initialization exceeds the configured work limit.");
             workUnits += pixelCount;
         }
-        RenderBudget.BudgetReservation surface = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
-        byte[] pixels = new byte[surfaceByteCount];
-        if (options.BackgroundColor != SvgColor.Transparent)
-        {
-            BackgroundInitializationProbe.Started();
-            for (int pixel = 0; pixel < pixelCount; pixel++)
-            {
-                if ((pixel & 4_095) == 0 && cancellationToken.IsCancellationRequested)
-                {
-                    BackgroundInitializationProbe.CancellationObserved();
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-                int offset = pixel * 4;
-                pixels[offset] = options.BackgroundColor.Red;
-                pixels[offset + 1] = options.BackgroundColor.Green;
-                pixels[offset + 2] = options.BackgroundColor.Blue;
-                pixels[offset + 3] = options.BackgroundColor.Alpha;
-            }
-        }
         (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
-        int commandIndex = RenderCommands(0, pixels, false);
-        if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
-        return new RasterizedSurface(outputWidth, outputHeight, pixels, surface, workUnits);
+        RenderBudget.BudgetReservation surface = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
+        try
+        {
+            byte[] pixels = new byte[surfaceByteCount];
+            if (options.BackgroundColor != SvgColor.Transparent)
+            {
+                BackgroundInitializationProbe.Started();
+                for (int pixel = 0; pixel < pixelCount; pixel++)
+                {
+                    if ((pixel & 4_095) == 0 && cancellationToken.IsCancellationRequested)
+                    {
+                        BackgroundInitializationProbe.CancellationObserved();
+                        cancellationToken.ThrowIfCancellationRequested();
+                    }
+                    int offset = pixel * 4;
+                    pixels[offset] = options.BackgroundColor.Red;
+                    pixels[offset + 1] = options.BackgroundColor.Green;
+                    pixels[offset + 2] = options.BackgroundColor.Blue;
+                    pixels[offset + 3] = options.BackgroundColor.Alpha;
+                }
+            }
+            int commandIndex = RenderCommands(0, pixels, false);
+            if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
+            return new RasterizedSurface(outputWidth, outputHeight, pixels, surface, workUnits);
+        }
+        catch
+        {
+            surface.Dispose();
+            throw;
+        }
 
         int RenderCommands(int startIndex, byte[] destination, bool stopsAtGroupEnd)
         {
@@ -363,7 +372,8 @@ public static class SvgConverter
         return checked((byte)(sourceContribution + retainedContribution));
     }
 
-    private readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation, long WorkUnits) : IDisposable
+    /// <summary>Owns the pixel surface and its budget reservation until encoding or a failed caller releases it.</summary>
+    internal readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation, long WorkUnits) : IDisposable
     {
         public void Dispose() => Reservation.Dispose();
     }
