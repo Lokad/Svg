@@ -7,7 +7,7 @@ using Lokad.Svg.Parsing;
 /// Represents one immutable, caller-byte-backed set of selected standalone
 /// TrueType fonts. The caller keeps every returned byte region valid and unchanged
 /// until this snapshot is disposed. Instances are safe for concurrent reads after
-/// successful creation, but do not own a shared cache or perform I/O. Multiple
+/// successful creation when disposal does not overlap those reads, but do not own a shared cache or perform I/O. Multiple
 /// face records for one manifest program share one acquired byte region.
 /// </summary>
 public sealed class SvgFontSnapshot : IDisposable

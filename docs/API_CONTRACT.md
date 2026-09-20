@@ -54,7 +54,8 @@ font bytes or source text.
 already-selected programs. It re-verifies caller-owned bytes, validates the
 standalone-TrueType core metrics, and retains at most 256 face records and 32 MiB
 of borrowed bytes for its disposable lifetime. Snapshot access after disposal
-throws `ObjectDisposedException`; callers must not retain/use escaped prepared-font
+throws `ObjectDisposedException`; callers must not dispose a snapshot while a read
+or conversion using it is in progress, and must not retain/use escaped prepared-font
 values after that lifetime. Prepared direct-text layout and outline decoding reuse
 those validated core metrics without reparsing them for every cmap, advance, or
 glyph-structure query. It neither parses SVG nor performs
