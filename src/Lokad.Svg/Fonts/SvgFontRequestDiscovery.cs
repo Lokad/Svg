@@ -7,25 +7,40 @@ using System.Xml;
 internal static class SvgFontRequestDiscovery
 {
     private const int MaximumRequests = 256;
+    private const string SvgNamespace = "http://www.w3.org/2000/svg";
 
     internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, CancellationToken cancellationToken)
     {
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         var requests = new List<SvgFontFaceRequest>();
         var seen = new HashSet<string>(StringComparer.Ordinal);
         var inherited = new Stack<TextStyle>();
-        XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = svg.Length, IgnoreComments = true, IgnoreProcessingInstructions = true };
+        XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         try
         {
             using ReadOnlyMemoryStream stream = new(svg);
             using XmlReader reader = XmlReader.Create(stream, settings);
+            bool hasRoot = false;
+            int nodeCount = 0;
             while (reader.Read())
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (reader.NodeType == XmlNodeType.Element)
                 {
+                    if (!hasRoot)
+                    {
+                        if (reader.LocalName != "svg" || reader.NamespaceURI != SvgNamespace) throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
+                        hasRoot = true;
+                    }
+                    if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
+                    if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
+                    if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                    nodeCount++;
                     TextStyle style = inherited.Count == 0 ? new TextStyle(null, 400, false) : inherited.Peek();
-                    style = ApplyAttributes(reader, style);
-                    bool textElement = reader.LocalName is "text" or "tspan";
+                    bool isSvgElement = reader.NamespaceURI == SvgNamespace;
+                    if (isSvgElement) style = ApplyAttributes(reader, style);
+                    bool textElement = isSvgElement && reader.LocalName is "text" or "tspan";
                     if (textElement && style.Family is string family)
                     {
                         string key = family + "\n" + style.Weight + "\n" + style.Italic;
@@ -42,6 +57,7 @@ internal static class SvgFontRequestDiscovery
                     if (inherited.Count != 0) inherited.Pop();
                 }
             }
+            if (!hasRoot) throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
         }
         catch (XmlException exception)
         {

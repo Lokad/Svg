@@ -23,7 +23,7 @@ public sealed class SvgFontRequestDiscoveryTests
     [Fact]
     public void Rejects_font_family_lists_instead_of_silently_selecting_one()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover("<svg><text font-family='First, Second'>x</text></svg>"u8.ToArray(), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='First, Second'>x</text></svg>"u8.ToArray(), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
@@ -31,10 +31,18 @@ public sealed class SvgFontRequestDiscoveryTests
     [Fact]
     public void Inline_text_style_overrides_presentation_attributes()
     {
-        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg><text font-family='Attribute' font-weight='normal' style='font-family: Inline; font-weight: 700; font-style: italic'>x</text></svg>"u8.ToArray(), CancellationToken.None));
+        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Attribute' font-weight='normal' style='font-family: Inline; font-weight: 700; font-style: italic'>x</text></svg>"u8.ToArray(), CancellationToken.None));
 
         Assert.Equal("Inline", request.Family);
         Assert.Equal(700, request.Weight);
         Assert.True(request.Italic);
+    }
+
+    [Fact]
+    public void Rejects_a_non_svg_root_instead_of_discovering_foreign_text()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover("<not-svg><text font-family='Example'>x</text></not-svg>"u8.ToArray(), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 }

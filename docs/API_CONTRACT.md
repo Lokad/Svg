@@ -56,10 +56,11 @@ standalone-TrueType core metrics, and retains at most 256 face records and 32 Mi
 of borrowed bytes for its disposable lifetime. It neither parses SVG nor performs
 storage I/O. Its request-based overload resolves explicit family/style requests
 through a catalog and selectively asks a provider for each distinct program. Its
-SVG-driven overload discovers inherited single-family `text`/`tspan` attributes
-and inline-style properties (`font-family`, `font-weight`, `font-style`) before
-doing the same; CSS family lists, stylesheet font properties and text-run
-retention remain unsupported. A snapshot can already be supplied through render
+SVG-driven overload accepts only an SVG-namespaced root and discovers inherited
+single-family `text`/`tspan` attributes and inline-style properties (`font-family`,
+`font-weight`, `font-style`) within default input, XML depth, attribute and node
+limits before doing the same; CSS family lists, stylesheet font properties and
+text-run retention remain unsupported. A snapshot can already be supplied through render
 options. The renderer's experimental direct-text path accepts only direct
 single-face attributes and text/CDATA content; it does not make SVG text a
 supported feature and does not accept spans, stylesheet/inline font declarations,

@@ -95,7 +95,7 @@ clipping, stroke, events, whitespace and child semantics explicitly. Supplying a
 snapshot must not weaken fail-closed rendering. Cover both unsupported errors and
 implemented behavior.
 
-### R04 / P0 — Text bypasses shared storage/work limits
+### R04 / P0 — Text bypasses shared storage/work limits — initial discovery repair 2026-09-20
 
 **Inspection plus allocation/counter probes.** Discovery accepts no render limits
 or budget; `MaxCharactersInDocument = svg.Length` is not an independent input cap
@@ -123,7 +123,10 @@ checkpoints. Composite depth/component/segment caps do not bound aggregate visit
 repeated empty descendants consume work without adding segments. A 32,768-glyph
 per-run cap is not a document-wide cap.
 
-Closure: one operation context through preparation, parsing, layout, outlines,
+Initial correction: request discovery now rejects non-SVG roots before acquisition
+and applies default input/depth/attribute/node limits. It remains unbudgeted and
+does not share caller-provided render options. Remaining closure: one operation
+context through preparation, parsing, layout, outlines,
 raster and output. Reserve owned capacities and overlapping old/new/nested storage
 before allocation; preflight declared acquisition sizes. Bound total characters,
 glyphs, graph/table visits, fallback and sample/edge work. Read text incrementally.
