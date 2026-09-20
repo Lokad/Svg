@@ -237,6 +237,12 @@ now fails explicitly, including public prepared handles that escaped before disp
 Remaining closure: concurrent-read/escaped-handle contracts. Distinguish immutable metadata from borrowed caller bytes and byte-lease
 lifetime. Add mutation/disposal/concurrency tests without unconditional program copies.
 
+**2026-09-20 update — borrowed byte contract.** `SvgPreparedFont.Bytes` now
+states at its public boundary that it is an integrity-verified borrowed view, not a
+defensive copy, and that caller mutation remains prohibited until every usable
+snapshot/prepared handle is disposed. This preserves the no-copy policy while making
+the mutable-storage responsibility distinct from immutable metadata.
+
 ### R08 / P1 — Preparation and painting implement different text languages — initial cascade repair 2026-09-20
 
 **Reproduced/inspection.**

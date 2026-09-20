@@ -228,7 +228,11 @@ public sealed class SvgPreparedFont
             return _resolution;
         }
     }
-    /// <summary>Gets caller-owned, integrity-verified font bytes retained for the snapshot lifetime.</summary>
+    /// <summary>
+    /// Gets the caller-owned, integrity-verified program view retained for the snapshot lifetime.
+    /// This is not a defensive copy: callers must not mutate the underlying storage while this
+    /// snapshot or an escaped prepared-font handle remains usable. Metadata remains immutable.
+    /// </summary>
     public ReadOnlyMemory<byte> Bytes
     {
         get
