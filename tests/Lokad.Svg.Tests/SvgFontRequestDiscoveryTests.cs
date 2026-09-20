@@ -5,7 +5,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFontRequestDiscoveryTests
 {
     [Fact]
-    public void Discovers_inherited_and_overridden_text_font_requests()
+    public void Discovers_the_renderable_text_font_request_without_span_overrides()
     {
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("""
             <svg xmlns="http://www.w3.org/2000/svg" font-family="Root">
@@ -13,11 +13,10 @@ public sealed class SvgFontRequestDiscoveryTests
             </svg>
             """u8.ToArray(), CancellationToken.None);
 
-        Assert.Equal(2, requests.Length);
-        Assert.Equal("Example", requests[0].Family);
-        Assert.Equal(700, requests[0].Weight);
-        Assert.False(requests[0].Italic);
-        Assert.True(requests[1].Italic);
+        SvgFontFaceRequest request = Assert.Single(requests);
+        Assert.Equal("Example", request.Family);
+        Assert.Equal(700, request.Weight);
+        Assert.False(request.Italic);
     }
 
     [Fact]
@@ -91,6 +90,14 @@ public sealed class SvgFontRequestDiscoveryTests
     public void Ignores_font_requests_from_inert_definition_content()
     {
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><defs><text font-family='Unused'>x</text></defs><rect width='1' height='1'/></svg>"u8.ToArray(), CancellationToken.None);
+
+        Assert.Empty(requests);
+    }
+
+    [Fact]
+    public void Does_not_discover_fonts_from_unrenderable_span_children()
+    {
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><tspan font-family='Unused'>x</tspan></svg>"u8.ToArray(), CancellationToken.None);
 
         Assert.Empty(requests);
     }

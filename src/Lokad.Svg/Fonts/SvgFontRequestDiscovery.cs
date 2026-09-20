@@ -47,7 +47,7 @@ internal static class SvgFontRequestDiscovery
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
                     if (isSvgElement) style = ApplyAttributes(reader, style, workCounter, cancellationToken);
                     if (isSvgElement && reader.LocalName == "defs" && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
-                    bool textElement = isSvgElement && reader.LocalName is "text" or "tspan";
+                    bool textElement = isSvgElement && reader.LocalName == "text";
                     if (definitionsDepth < 0 && textElement && style.Family is string family)
                     {
                         var key = new TextRequestKey(family, style.Weight, style.Italic);
