@@ -106,6 +106,13 @@ contour ownership with transfer through lowering → builder → retained scene,
 release on insertion/detach failure, cancellation and disposal. Test denial exactly
 at growth/transfer boundaries, not only success under the default budget.
 
+**Reopened by inspection 2026-09-20:** `SvgGlyphOutline.SplitClosedContours`
+allocates per-contour arrays before `SvgGlyphGeometry.Create` reserves their final
+scene storage. Its transformed temporary buffer is reserved, but an eventual
+scene-reservation denial follows unaccounted contour-array allocation. Restore S3
+only after preflighting/sizing those arrays before allocation and testing that
+denial boundary.
+
 ### R04b / P0 — Work limits miss sampling and expensive font traversal
 
 **Reproduced through the internal rasterizer.**
