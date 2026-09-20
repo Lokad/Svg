@@ -77,18 +77,35 @@ internal static class SvgTextFontSyntax
         ArgumentNullException.ThrowIfNull(workCounter);
         string? inline = reader.GetAttribute("style");
         if (inline is null) return default;
-        workCounter.ConsumeText(inline.Length, cancellationToken);
         string? family = null, weight = null, style = null, size = null;
-        foreach (string declaration in inline.Split(';', StringSplitOptions.RemoveEmptyEntries))
+        ReadOnlySpan<char> declarations = inline.AsSpan();
+        int position = 0;
+        int nextCheckpoint = 0;
+        while (position < declarations.Length)
         {
+            int start = position;
+            while (position < declarations.Length)
+            {
+                if (position >= nextCheckpoint)
+                {
+                    workCounter.Consume(cancellationToken);
+                    nextCheckpoint += 4096;
+                }
+                if (declarations[position] == ';') break;
+                position++;
+            }
+            ReadOnlySpan<char> declaration = declarations[start..position].Trim();
+            if (position < declarations.Length) position++;
+            if (declaration.IsEmpty) continue;
             int separator = declaration.IndexOf(':');
             if (separator < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Malformed inline text style declarations are not implemented.");
-            string property = declaration[..separator].Trim();
-            string value = declaration[(separator + 1)..].Trim();
-            if (property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) family = value;
-            else if (property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) weight = value;
-            else if (property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) style = value;
-            else if (property.Equals("font-size", StringComparison.OrdinalIgnoreCase)) size = value;
+            ReadOnlySpan<char> property = declaration[..separator].Trim();
+            ReadOnlySpan<char> value = declaration[(separator + 1)..].Trim();
+            if (property.Length > SvgSyntaxLimits.MaximumValueTokenCharacters || value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Inline text font property names and values exceed the configured syntax limit.");
+            if (property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) family = value.ToString();
+            else if (property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) weight = value.ToString();
+            else if (property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) style = value.ToString();
+            else if (property.Equals("font-size", StringComparison.OrdinalIgnoreCase)) size = value.ToString();
         }
         return new SvgTextInlineFontProperties(family, weight, style, size);
     }

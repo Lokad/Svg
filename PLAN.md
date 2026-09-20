@@ -123,6 +123,16 @@ establishes missing reservations. Geometry-record sizing itself is not a reprodu
 undercount: x64 size is 128 bytes; a one-element reservation is 160 including the
 32-byte array allowance. Referenced arrays are the missing part.
 
+**2026-09-20 update — bounded inline font scans.** The shared direct-text and
+discovery parser now scans the `style` span incrementally, charging parser work and
+observing cancellation every 4 KiB. It keeps at most the four admitted font values
+instead of creating a split-string array and one temporary string per declaration;
+each retained property name/value is limited by `MaximumValueTokenCharacters`.
+Coverage verifies last-declaration precedence, one normal scan charge and rejection
+of oversized values. This narrows inline-style allocation and cancellation exposure,
+but it does not budget generic paint-style parsing, glyph/contour storage, or raster
+work.
+
 Raster work charges bounding pixels, but each pixel tests 16 samples against eight
 subdivisions of every segment. Bounds scans and inner winding loops lack charges/
 checkpoints. Composite depth/component/segment caps do not bound aggregate visits:

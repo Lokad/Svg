@@ -75,6 +75,18 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    public void Rejects_an_oversized_inline_font_value()
+    {
+        string family = new('A', SvgSyntaxLimits.MaximumValueTokenCharacters + 1);
+        using XmlReader reader = XmlReader.Create(new StringReader($"<text style='font-family: {family}'/>"));
+        reader.Read();
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgTextSyntax.Parse(reader));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Normalizes_a_quoted_direct_font_family()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family=\"'Example'\"/>"));
