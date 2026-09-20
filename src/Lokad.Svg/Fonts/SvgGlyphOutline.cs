@@ -7,10 +7,20 @@ using Lokad.Svg.Parsing;
 internal static class SvgGlyphOutline
 {
     internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, CancellationToken cancellationToken)
-        => GetContours(font, glyph, fontSize, new RenderBudget(long.MaxValue), null, cancellationToken);
+    {
+        using SvgGlyphContourStorage storage = GetContourStorage(font, glyph, fontSize, new RenderBudget(long.MaxValue), null, cancellationToken);
+        return storage.Contours;
+    }
 
     /// <summary>Converts one glyph while reserving its temporary transformed segment buffer until contour splitting completes.</summary>
     internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        using SvgGlyphContourStorage storage = GetContourStorage(font, glyph, fontSize, budget, workCounter, cancellationToken);
+        return storage.Contours;
+    }
+
+    /// <summary>Converts one glyph and transfers the final contour-array scene reservation to the retained glyph geometry.</summary>
+    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(budget);
@@ -22,7 +32,7 @@ internal static class SvgGlyphOutline
 
         using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, budget, workCounter, cancellationToken);
         OpenTypeQuadraticSegment[] source = decoded.Segments;
-        if (source.Length == 0) return [];
+        if (source.Length == 0) return new([], null);
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + (long)source.Length * 48L), SvgMemoryCategory.Geometry);
         try
         {
@@ -33,17 +43,17 @@ internal static class SvgGlyphOutline
                 OpenTypeQuadraticSegment segment = source[index];
                 transformed[index] = new SvgGlyphQuadraticSegment(Transform(segment.Start), Transform(segment.Control), Transform(segment.End));
             }
-            return SplitClosedContours(transformed, workCounter, cancellationToken);
+            return SplitClosedContours(transformed, budget, workCounter, cancellationToken);
         }
         finally { reservation.Dispose(); }
 
         SvgGlyphOutlinePoint Transform(OpenTypeOutlinePoint point) => new(glyph.X + point.X * scale, glyph.Y - point.Y * scale);
     }
 
-    private static SvgGlyphQuadraticContour[] SplitClosedContours(ReadOnlySpan<SvgGlyphQuadraticSegment> segments, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static SvgGlyphContourStorage SplitClosedContours(ReadOnlySpan<SvgGlyphQuadraticSegment> segments, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        if (segments.Length == 0) return [];
-        var contours = new List<SvgGlyphQuadraticContour>();
+        if (segments.Length == 0) return new([], null);
+        int contourCount = 0;
         int first = 0;
         while (first < segments.Length)
         {
@@ -56,10 +66,31 @@ internal static class SvgGlyphOutline
                 last++;
             }
             if (last == segments.Length) throw new SvgException(SvgErrorCode.MalformedInput, "A decoded glyph contour is not closed.");
-            contours.Add(new SvgGlyphQuadraticContour(segments[first..(last + 1)].ToArray()));
+            contourCount++;
             first = last + 1;
         }
-        return contours.ToArray();
+
+        RenderBudget.BudgetReservation reservation = budget.Reserve(SvgGlyphGeometry.GetStorageByteCount(contourCount, segments.Length), SvgMemoryCategory.Scene);
+        try
+        {
+            var contours = new SvgGlyphQuadraticContour[contourCount];
+            first = 0;
+            for (int contourIndex = 0; contourIndex < contours.Length; contourIndex++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                SvgGlyphOutlinePoint start = segments[first].Start;
+                int last = first;
+                while (segments[last].End != start) last++;
+                contours[contourIndex] = new SvgGlyphQuadraticContour(segments[first..(last + 1)].ToArray());
+                first = last + 1;
+            }
+            return new(contours, reservation);
+        }
+        catch
+        {
+            reservation.Dispose();
+            throw;
+        }
     }
 
     private static void Consume(ParserWorkCounter? workCounter, CancellationToken cancellationToken)
@@ -77,3 +108,31 @@ internal readonly record struct SvgGlyphQuadraticSegment(SvgGlyphOutlinePoint St
 
 /// <summary>Represents one closed sequence of quadratic segments in SVG user coordinates.</summary>
 internal readonly record struct SvgGlyphQuadraticContour(SvgGlyphQuadraticSegment[] Segments);
+
+/// <summary>Owns final glyph contour arrays and their scene reservation until ownership transfers to retained geometry.</summary>
+internal sealed class SvgGlyphContourStorage : IDisposable
+{
+    private RenderBudget.BudgetReservation? _reservation;
+
+    internal SvgGlyphContourStorage(SvgGlyphQuadraticContour[] contours, RenderBudget.BudgetReservation? reservation)
+    {
+        Contours = contours;
+        _reservation = reservation;
+    }
+
+    internal SvgGlyphQuadraticContour[] Contours { get; }
+
+    /// <summary>Transfers the scene reservation exactly once to the retained geometry that owns these arrays.</summary>
+    internal RenderBudget.BudgetReservation? DetachReservation()
+    {
+        RenderBudget.BudgetReservation? reservation = _reservation;
+        _reservation = null;
+        return reservation;
+    }
+
+    public void Dispose()
+    {
+        _reservation?.Dispose();
+        _reservation = null;
+    }
+}

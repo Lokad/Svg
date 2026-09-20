@@ -91,26 +91,44 @@ internal sealed class SvgGlyphGeometry : IDisposable
 
     internal SvgColor Color { get; }
 
+    internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color)
+    {
+        ArgumentNullException.ThrowIfNull(contours);
+        return new SvgGlyphGeometry(contours.Contours, color, contours.DetachReservation());
+    }
+
+    /// <summary>Reserves scene ownership for contours supplied by a non-rendering caller.</summary>
     internal static SvgGlyphGeometry Create(SvgGlyphQuadraticContour[] contours, SvgColor color, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(contours);
         ArgumentNullException.ThrowIfNull(budget);
-        long bytes;
+        int segmentCount = 0;
         try
         {
-            bytes = checked(32L + (long)contours.Length * Unsafe.SizeOf<SvgGlyphQuadraticContour>());
             foreach (SvgGlyphQuadraticContour contour in contours)
             {
                 ArgumentNullException.ThrowIfNull(contour.Segments);
-                bytes = checked(bytes + 32L + (long)contour.Segments.Length * Unsafe.SizeOf<SvgGlyphQuadraticSegment>());
+                segmentCount = checked(segmentCount + contour.Segments.Length);
             }
         }
         catch (OverflowException)
         {
             throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph contour storage exceeds the supported accounting range.");
         }
-        RenderBudget.BudgetReservation reservation = budget.Reserve(bytes, SvgMemoryCategory.Scene);
+        RenderBudget.BudgetReservation reservation = budget.Reserve(GetStorageByteCount(contours.Length, segmentCount), SvgMemoryCategory.Scene);
         return new SvgGlyphGeometry(contours, color, reservation);
+    }
+
+    internal static long GetStorageByteCount(int contourCount, int segmentCount)
+    {
+        try
+        {
+            return checked(32L + (long)contourCount * Unsafe.SizeOf<SvgGlyphQuadraticContour>() + (long)contourCount * 32L + (long)segmentCount * Unsafe.SizeOf<SvgGlyphQuadraticSegment>());
+        }
+        catch (OverflowException)
+        {
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph contour storage exceeds the supported accounting range.");
+        }
     }
 
     public void Dispose()

@@ -1760,6 +1760,31 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Glyph_outline_transfers_final_contour_scene_ownership_to_retained_geometry()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var glyph = new SvgPositionedGlyph(1, 0, 0, 1);
+        RenderBudget budget = new(10_000);
+        using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(snapshot.Fonts[0], glyph, 1, budget, new ParserWorkCounter(long.MaxValue), CancellationToken.None);
+
+        long chargedContours = budget.Snapshot().CurrentBytes;
+        long allocationPeak = budget.Snapshot().PeakBytes;
+        Assert.True(chargedContours > 0);
+        Assert.True(budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Scene] > 0);
+        using (SvgGlyphGeometry retained = SvgGlyphGeometry.Create(contours, new SvgColor(0, 0, 0, 255)))
+        {
+            Assert.Equal(chargedContours, budget.Snapshot().CurrentBytes);
+        }
+
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        RenderBudget deniedBudget = new(allocationPeak - 1);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphOutline.GetContourStorage(snapshot.Fonts[0], glyph, 1, deniedBudget, new ParserWorkCounter(long.MaxValue), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Parser_failure_after_retaining_a_glyph_contour_releases_its_scene_budget()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -1862,7 +1887,8 @@ public sealed class OpenTypeFontTests
         Assert.Equal((ushort)1, glyph.GlyphIndex);
         Assert.Equal(6, glyph.X);
         Assert.Equal(8, glyph.Y);
-        Assert.Empty(Assert.Single(SvgTextRunBuilder.GetGlyphContours(run, budget, new ParserWorkCounter(long.MaxValue), CancellationToken.None)));
+        using SvgGlyphContourStorage contours = Assert.Single(SvgTextRunBuilder.GetGlyphContours(run, budget, new ParserWorkCounter(long.MaxValue), CancellationToken.None));
+        Assert.Empty(contours.Contours);
         Assert.Equal(64, budget.Snapshot().CurrentBytes);
         run.Dispose();
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

@@ -69,9 +69,9 @@ internal static class SvgRenderedLeafParser
                 using SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text.Value, fontSnapshot, budget, workCounter, cancellationToken);
                 if (textElement.Presentation.HasFill)
                 {
-                    foreach (SvgGlyphQuadraticContour[] contours in SvgTextRunBuilder.GetGlyphContours(run, budget, workCounter, cancellationToken))
+                    foreach (SvgGlyphContourStorage contours in SvgTextRunBuilder.GetGlyphContours(run, budget, workCounter, cancellationToken))
                     {
-                        SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, textElement.Presentation.Color, budget);
+                        SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, textElement.Presentation.Color);
                         try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(glyph)); }
                         catch { glyph.Dispose(); throw; }
                     }
