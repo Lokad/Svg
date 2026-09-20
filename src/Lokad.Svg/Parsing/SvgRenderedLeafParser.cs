@@ -60,11 +60,11 @@ internal static class SvgRenderedLeafParser
                 SvgResolvedPaintableElement textElement = resolvedText.PaintableElement;
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
                 if (textElement.Style.FillRule is not null && !textElement.Style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
-                if (!textElement.Presentation.IsPainted) return true;
-                if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle);
                 using BudgetedText text = ReadDirectTextContent(reader, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, budget, workCounter, cancellationToken);
                 state.TextCharacterCount += text.Value.Length;
+                if (!textElement.Presentation.IsPainted || !textElement.Presentation.HasFill) return true;
+                if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
                 using SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text.Value, fontSnapshot, budget, workCounter, cancellationToken);
                 if (textElement.Presentation.HasFill)
                 {
