@@ -1,5 +1,6 @@
 namespace Lokad.Svg.Parsing;
 
+using Lokad.Svg.Fonts;
 using Lokad.Svg.Rendering;
 
 /// <summary>Represents the parsed root viewport dimensions before scene construction.</summary>
@@ -34,16 +35,18 @@ internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double 
     }
 }
 
-internal enum SvgGeometryKind { Rectangle, AxisAlignedLine, OrthogonalBand }
+internal enum SvgGeometryKind { Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours }
 
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
-internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle Rectangle, SvgAxisAlignedLine AxisAlignedLine)
+internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle Rectangle, SvgAxisAlignedLine AxisAlignedLine, SvgGlyphGeometry Glyph)
 {
-    internal static SvgGeometry FromRectangle(SvgRectangle rectangle) => new(SvgGeometryKind.Rectangle, rectangle, default);
+    internal static SvgGeometry FromRectangle(SvgRectangle rectangle) => new(SvgGeometryKind.Rectangle, rectangle, default, default);
 
-    internal static SvgGeometry FromAxisAlignedLine(SvgAxisAlignedLine line) => new(SvgGeometryKind.AxisAlignedLine, default, line);
+    internal static SvgGeometry FromAxisAlignedLine(SvgAxisAlignedLine line) => new(SvgGeometryKind.AxisAlignedLine, default, line, default);
 
-    internal static SvgGeometry FromOrthogonalBand(SvgRectangle band) => new(SvgGeometryKind.OrthogonalBand, band, default);
+    internal static SvgGeometry FromOrthogonalBand(SvgRectangle band) => new(SvgGeometryKind.OrthogonalBand, band, default, default);
+
+    internal static SvgGeometry FromGlyphContours(SvgGlyphGeometry glyph) => new(SvgGeometryKind.GlyphContours, default, default, glyph);
 
     internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
     {
@@ -61,6 +64,9 @@ internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle R
         return rectangles;
     }
 }
+
+/// <summary>Represents one filled closed-glyph contour collection retained by the scene.</summary>
+internal readonly record struct SvgGlyphGeometry(SvgGlyphQuadraticContour[] Contours, SvgColor Color);
 
 /// <summary>Retains one local definition's typed geometry and the narrow instance-style override capability.</summary>
 internal readonly record struct SvgDefinition(SvgGeometry Geometry, bool AllowsInstanceFillOverride);
