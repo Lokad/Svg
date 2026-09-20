@@ -208,10 +208,10 @@ public static class SvgConverter
             double maximumY = double.NegativeInfinity;
             foreach (SvgGlyphQuadraticContour contour in glyph.Contours)
             foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
-            foreach (SvgGlyphOutlinePoint point in new[] { segment.Start, segment.Control, segment.End })
             {
-                minimumX = Math.Min(minimumX, point.X); minimumY = Math.Min(minimumY, point.Y);
-                maximumX = Math.Max(maximumX, point.X); maximumY = Math.Max(maximumY, point.Y);
+                Include(segment.Start);
+                Include(segment.Control);
+                Include(segment.End);
             }
             int startX = ClampFloor(MapEdge(minimumX, horizontalScale, horizontalOffset), outputWidth);
             int endX = ClampCeiling(MapEdge(maximumX, horizontalScale, horizontalOffset), outputWidth);
@@ -226,6 +226,12 @@ public static class SvgConverter
                 byte alpha = SvgGlyphCoverage.GetCoverage(glyph.Contours, (x - horizontalOffset) / horizontalScale, (y - verticalOffset) / verticalScale, 1 / horizontalScale, 1 / verticalScale, 4, cancellationToken);
                 if (alpha == 0) continue;
                 BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(glyph.Color.Red, glyph.Color.Green, glyph.Color.Blue, MultiplyAlpha(glyph.Color.Alpha, alpha)), true);
+            }
+
+            void Include(SvgGlyphOutlinePoint point)
+            {
+                minimumX = Math.Min(minimumX, point.X); minimumY = Math.Min(minimumY, point.Y);
+                maximumX = Math.Max(maximumX, point.X); maximumY = Math.Max(maximumY, point.Y);
             }
         }
 
