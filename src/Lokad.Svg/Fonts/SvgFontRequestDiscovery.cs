@@ -57,6 +57,7 @@ internal static class SvgFontRequestDiscovery
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
                     if (isSvgElement && !insideDirectText) style = ApplyAttributes(reader, style, workCounter, cancellationToken);
                     if (isSvgElement && reader.LocalName == "defs" && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
+                    if (definitionsDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && reader.GetAttribute("transform") is null) SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                     TextRequestCandidate? candidate = definitionsDepth < 0 && !insideDirectText && isSvgElement && reader.LocalName == "text" && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.Family is string family
                         ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Weight, style.Italic))
                         : null;
