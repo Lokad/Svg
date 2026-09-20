@@ -336,12 +336,13 @@ behavior or collecting measurements.
    canonical Linux baseline only through an explicit capture/provenance review.
    A configured workflow, a Windows-exact capture, or a freshly generated image is
    not admission evidence.
-3. Continue P1.2 from the extracted bounded style syntax/cascade, root and local
-   reference syntax, precedence, resolver and scene builder: split a remaining
-   *responsibility overlap* between bounded XML syntax, computed paint values and
-   shape lowering only behind characterization tests. Preserve the P0 subset
-   exactly while moving responsibilities; do not add another shape-specific path
-   to `SvgRootParser` or one-attribute wrapper with no independent behavior.
+3. Keep P1.2 focused on real ownership boundaries. Common inherited presentation,
+   stylesheet precedence/source order and local-instance presentation are now
+   independently typed and characterized. Split a further *responsibility overlap*
+   between bounded XML syntax, computed paint values and shape lowering only when
+   it has independent behavior to test; preserve the P0 subset exactly and do not
+   add another shape-specific path to `SvgRootParser` or a wrapper with no
+   independent behavior.
 4. Hold P1.3 implementation work at calibration. The phase-shifted transparent
    overlap rejects the fixed-edge/compositing model's earlier near fit, so do not
    tune another rounding rule or add a general geometry feature. Resume only from
