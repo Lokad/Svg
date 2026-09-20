@@ -5,6 +5,23 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgFontPackCatalogTests
 {
+
+    [Fact]
+    public void Does_not_expose_manifest_arrays_for_mutation()
+    {
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse("""
+            { "packId": "pack", "files": [{ "relativePath": "fonts/example.ttf", "byteSize": 1, "sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" }], "families": [{ "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "fonts/example.ttf" }], "fallbacks": [{ "family": "Fallback" }] }
+            """u8.ToArray(), "pack");
+
+        Assert.False(catalog.Files is SvgFontPackFile[]);
+        Assert.False(catalog.Faces is SvgFontPackFace[]);
+        Assert.False(catalog.FallbackFamilies is string[]);
+        Assert.Throws<NotSupportedException>(() => ((IList<SvgFontPackFile>)catalog.Files)[0] = catalog.Files[0]);
+        Assert.Throws<NotSupportedException>(() => ((IList<SvgFontPackFace>)catalog.Faces)[0] = catalog.Faces[0]);
+        Assert.Throws<NotSupportedException>(() => ((IList<string>)catalog.FallbackFamilies)[0] = "Other");
+        Assert.Equal("fonts/example.ttf", Assert.Single(catalog.Files).RelativePath);
+    }
+
     private const string HashA = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
     private const string HashB = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 

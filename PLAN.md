@@ -162,7 +162,7 @@ different paths/sizes, order independence and unused unsupported faces. Replace
 the current dedup test's “valid” standalone face-1 alias with legitimate face-0
 aliases; keep unsupported face-index coverage separately.
 
-### R07 / P1 — Public “immutable” containers expose backing arrays
+### R07 / P1 — Public “immutable” containers expose backing arrays — initial repair 2026-09-20
 
 **Reproduced/inspection.** `snapshot.Fonts is SvgPreparedFont[]` is true. Catalog
 `Files`, `Faces` and `FallbackFamilies` also expose arrays as `IReadOnlyList`.
@@ -170,7 +170,9 @@ Callers can mutate resolution state despite immutable/concurrent-read promises.
 Disposal only replaces the snapshot array; escaped prepared fonts retain byte
 references, and subsequent lookup becomes missing-resource behavior.
 
-Closure: non-mutable views and explicit disposal/concurrent-read/escaped-handle
+Initial correction: catalog and snapshot now expose read-only array views rather
+than castable backing arrays, with mutation regressions. Remaining closure:
+explicit disposal/concurrent-read/escaped-handle
 contracts. Distinguish immutable metadata from borrowed caller bytes and byte-lease
 lifetime. Add mutation/disposal/concurrency tests without unconditional program copies.
 

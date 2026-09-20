@@ -16,11 +16,11 @@ public sealed class SvgFontPackCatalog
     private SvgFontPackCatalog(string packId, SvgFontPackFile[] files, SvgFontPackFace[] faces, string[] fallbackFamilies)
     {
         PackId = packId;
-        Files = files;
-        Faces = faces;
+        Files = Array.AsReadOnly(files);
+        Faces = Array.AsReadOnly(faces);
         _faces = faces;
         _fallbackFamilies = fallbackFamilies;
-        FallbackFamilies = fallbackFamilies;
+        FallbackFamilies = Array.AsReadOnly(fallbackFamilies);
     }
 
     /// <summary>Gets the pack identifier validated against the caller's requested identifier.</summary>

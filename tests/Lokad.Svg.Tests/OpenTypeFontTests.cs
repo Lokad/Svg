@@ -310,6 +310,16 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Snapshot_does_not_expose_its_prepared_face_array_for_mutation()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
+
+        Assert.False(snapshot.Fonts is SvgPreparedFont[]);
+        Assert.Throws<NotSupportedException>(() => ((IList<SvgPreparedFont>)snapshot.Fonts)[0] = snapshot.Fonts[0]);
+        Assert.Single(snapshot.Fonts);
+    }
+
+    [Fact]
     public async Task Snapshot_acquires_one_program_once_for_multiple_same_face_aliases()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);

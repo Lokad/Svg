@@ -14,11 +14,16 @@ public sealed class SvgFontSnapshot : IDisposable
     private const long MaximumBorrowedBytes = 32L * 1024 * 1024;
     private const int MaximumFaces = 256;
     private SvgPreparedFont[] _fonts;
+    private IReadOnlyList<SvgPreparedFont> _fontView;
 
-    private SvgFontSnapshot(SvgPreparedFont[] fonts) => _fonts = fonts;
+    private SvgFontSnapshot(SvgPreparedFont[] fonts)
+    {
+        _fonts = fonts;
+        _fontView = Array.AsReadOnly(fonts);
+    }
 
     /// <summary>Gets verified selected faces and their caller-owned program bytes.</summary>
-    public IReadOnlyList<SvgPreparedFont> Fonts => _fonts;
+    public IReadOnlyList<SvgPreparedFont> Fonts => _fontView;
 
     /// <summary>Gets the prepared face selected for one previously prepared family/style request.</summary>
     internal SvgPreparedFont GetFont(SvgFontFaceRequest request)
@@ -117,7 +122,11 @@ public sealed class SvgFontSnapshot : IDisposable
     }
 
     /// <summary>Releases references to caller-owned font byte regions retained by this snapshot.</summary>
-    public void Dispose() => _fonts = [];
+    public void Dispose()
+    {
+        _fonts = [];
+        _fontView = Array.AsReadOnly(_fonts);
+    }
 }
 
 /// <summary>Represents one verified, caller-byte-backed font held by an immutable snapshot.</summary>
