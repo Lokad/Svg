@@ -157,8 +157,8 @@ work still require their remaining aggregate limits.
 
 Glyph raster work now preflights its fixed contour-sampling operations (segments ×
 eight subdivisions × samples × covered pixels) and checks cancellation while
-traversing segments. Bounds scans and remaining raster loops still need their own
-operation accounting. Composite depth/component/segment caps do not bound aggregate visits:
+traversing segments, including the bounds pass. Remaining raster loops still need
+their own operation accounting. Composite depth/component/segment caps do not bound aggregate visits:
 repeated empty descendants consume work without adding segments. A 32,768-glyph
 per-run cap is not a document-wide cap.
 

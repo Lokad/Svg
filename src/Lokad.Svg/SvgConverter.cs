@@ -206,9 +206,11 @@ public static class SvgConverter
             double minimumY = double.PositiveInfinity;
             double maximumX = double.NegativeInfinity;
             double maximumY = double.NegativeInfinity;
+            int boundsSegments = 0;
             foreach (SvgGlyphQuadraticContour contour in glyph.Contours)
             foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
             {
+                if ((boundsSegments++ & 127) == 0) cancellationToken.ThrowIfCancellationRequested();
                 Include(segment.Start);
                 Include(segment.Control);
                 Include(segment.End);
@@ -222,7 +224,8 @@ public static class SvgConverter
             try
             {
                 long sampleWork = SvgGlyphCoverage.GetSampleWorkUnits(glyph.Contours);
-                glyphWork = checked(coverage * checked(sampleWork + 1));
+                long boundsWork = SvgGlyphCoverage.GetSegmentCount(glyph.Contours);
+                glyphWork = checked(boundsWork + checked(coverage * checked(sampleWork + 1)));
             }
             catch (OverflowException)
             {

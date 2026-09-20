@@ -31,9 +31,15 @@ internal static class SvgGlyphCoverage
     /// <summary>Returns the fixed subdivision operations needed for one coverage sample across these contours.</summary>
     internal static long GetSampleWorkUnits(ReadOnlySpan<SvgGlyphQuadraticContour> contours)
     {
+        return checked(GetSegmentCount(contours) * QuadraticSubdivisions);
+    }
+
+    /// <summary>Returns the bounded number of quadratic segments visited by one contour operation.</summary>
+    internal static long GetSegmentCount(ReadOnlySpan<SvgGlyphQuadraticContour> contours)
+    {
         long segments = 0;
         foreach (SvgGlyphQuadraticContour contour in contours) segments = checked(segments + contour.Segments.Length);
-        return checked(segments * QuadraticSubdivisions);
+        return segments;
     }
 
     private static bool ContainsNonZero(ReadOnlySpan<SvgGlyphQuadraticContour> contours, double x, double y, CancellationToken cancellationToken)
