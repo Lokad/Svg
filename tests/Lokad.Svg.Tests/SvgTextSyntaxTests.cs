@@ -152,6 +152,24 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    public void Resolves_inherited_text_properties_with_inline_precedence()
+    {
+        using XmlReader ancestorReader = XmlReader.Create(new StringReader("<g font-family='Ancestor' font-weight='700' font-style='italic' font-size='12'/>"));
+        ancestorReader.Read();
+        SvgInheritedTextStyle ancestor = SvgTextInheritance.Resolve(ancestorReader, SvgInheritedTextStyle.Default, default);
+        using XmlReader childReader = XmlReader.Create(new StringReader("<text font-family='Attribute' font-weight='400' style='font-family: Inline; font-size: 14'/>"));
+        childReader.Read();
+
+        SvgTextInlineFontProperties inline = SvgTextFontSyntax.ReadInlineProperties(childReader, new ParserWorkCounter(10), CancellationToken.None);
+        SvgInheritedTextStyle resolved = SvgTextInheritance.Resolve(childReader, ancestor, inline);
+
+        Assert.Equal("Inline", resolved.Family);
+        Assert.Equal(400, resolved.Weight);
+        Assert.True(resolved.Italic);
+        Assert.Equal(14, resolved.FontSize);
+    }
+
+    [Fact]
     public void Rejects_a_missing_or_list_font_family()
     {
         using XmlReader missing = XmlReader.Create(new StringReader("<text/>"));
