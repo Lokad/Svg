@@ -178,8 +178,15 @@ copied byte via `PngWorkCounter.ConsumeBufferedCopyBytes` before the copy,
 with cleanup preserved on denial. A calibrated 64x64 high-entropy vector pins
 exact total work (61,606 units), first-growth denial (20,484 units) and
 byte-identical output. The full suite (710 + 6 + 83) and all 21 probe scenarios
-pass. Remaining R04 work: catalog membership charges plus the raw
-contour-inspection contract.
+pass. The raw contour-inspection contract remains.
+
+**Repair (`acdafa8`):** binding and acquisition prove face provenance
+with an explicit bounded reference-identity scan that meters each candidate like
+the selection scans and observes cancellation; snapshot preparation threads its
+counter through `Bind` with public signatures unchanged. Four
+regressions pin per-face work counts, full-scan metering on foreign-face rejection,
+and cancellation precedence. The full suite (714 + 6 + 83) and all 21 probe
+scenarios pass. Remaining R04 work: the raw contour-inspection contract.
 - The raw `OpenTypeFont.GetSimpleGlyphContours(..., workCounter, token)` inspection
   route drops both arguments when calling the unbudgeted `BuildQuadraticContours`
   overload. The production budgeted decoder does propagate them. Do not use raw
