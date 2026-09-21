@@ -35,6 +35,14 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
+    public void Skips_whitespace_trimmed_by_a_nested_default_xml_space_span()
+    {
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused' xml:space='preserve'><tspan xml:space='default'> </tspan></text></svg>"u8.ToArray(), CancellationToken.None);
+
+        Assert.Empty(requests);
+    }
+
+    [Fact]
     public void Restores_the_active_direct_text_candidate_after_nested_attribute_free_spans()
     {
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='First'><tspan><tspan>one</tspan></tspan></text><text font-family='Second'>two</text></svg>"u8.ToArray(), CancellationToken.None);
