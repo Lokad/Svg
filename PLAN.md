@@ -450,6 +450,18 @@ bounded chunk-aggregation policy and its accounting before performance redesign.
 Preserve partial-write/backpressure behavior and establish the intended cross-sink
 encoded-size contract explicitly; equal decoded pixels alone miss this defect.
 
+**Repair (`955080a`):** both stream sinks now grow their aggregation buffer
+geometrically toward the 64 KiB cap instead of flushing whatever the first tiny write
+sized, with budgeted growth and work-charged copies in each sink. All four output forms
+emit byte-identical PNGs: a high-entropy vector pins cross-sink identity plus limit
+parity at the exact owned length, and calibrated growth-denial (20,484 units) and
+exact-total (69,728 units, sync/async identical) vectors pin the accounting. Stream and
+owned totals legitimately differ (fill-exact versus jump-over growth trajectories,
+both charged). The two 70,000-byte streaming budget tests move to 110,000 bytes,
+covering the 64 KiB cap plus one growth transient while still refusing full-payload
+retention. The full suite (725 + 6 + 83) and all 21 probe scenarios pass.
+Partial-write/backpressure behavior is preserved by the unchanged bounded-write tests.
+
 **Source inspection:** owned-memory and caller-memory encoding first grows
 `PngCompressionBuffer` geometrically, copying its previous array on each growth,
 then copies/CRCs the compressed payload again. Only owned-memory output allocates
