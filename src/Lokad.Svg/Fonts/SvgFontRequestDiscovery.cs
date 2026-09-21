@@ -36,6 +36,8 @@ internal static class SvgFontRequestDiscovery
         ArgumentNullException.ThrowIfNull(workCounter);
         ArgumentNullException.ThrowIfNull(budget);
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
+        // Reserve the same conservative reader workspace as root parsing before either XmlReader is created.
+        using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
         using var styleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var styleStrings = new BudgetedParserStringStore(budget);
         using var requestKeys = new BudgetedParserList<TextRequestKey>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);

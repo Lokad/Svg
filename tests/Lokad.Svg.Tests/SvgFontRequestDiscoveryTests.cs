@@ -10,11 +10,31 @@ public sealed class SvgFontRequestDiscoveryTests
     [Fact]
     public void Does_not_reserve_a_direct_text_chunk_without_eligible_text()
     {
-        SvgRenderLimits limits = new(1, 1_024, 16, 16, 1_024, 16, 16, 100);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 16, 1_024, 16, 16, 100, 16, 1);
+        long workspace = SvgRootParser.GetXmlReaderWorkspaceBytes(input.Length, limits.MaximumAttributesPerElement);
+        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
+        RenderBudget budget = new(workspace);
 
-        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), limits, CancellationToken.None);
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, limits, workCounter, budget, CancellationToken.None);
 
         Assert.Empty(requests);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Denied_reader_workspace_rejects_discovery_without_retention()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 16, 1_024, 16, 16, 100, 16, 1);
+        long workspace = SvgRootParser.GetXmlReaderWorkspaceBytes(input.Length, limits.MaximumAttributesPerElement);
+        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
+        RenderBudget budget = new(workspace - 1);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, limits, workCounter, budget, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

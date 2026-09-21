@@ -1458,6 +1458,24 @@ public sealed class OpenTypeFontTests
             Assert.Equal(0, source.RequestCount);
         }
     }
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'/></svg>")]
+    public async Task Discovery_and_lowering_agree_on_reader_workspace_denial(string svg)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        SvgRenderLimits limits = new(1, 1_024, 16, 256, 4_096, 16, 16, 100_000, 16, 16);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, limits, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None)).ErrorCode);
+        SvgException preparedFailure = await Assert.ThrowsAsync<SvgException>(async () => await SvgPreparedDocument.CreateAsync(input, catalog, provider, options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, preparedFailure.ErrorCode);
+        Assert.Equal(0, provider.RequestCount);
+        Assert.Equal(0, source.RequestCount);
+    }
     [Fact]
     public async Task Discovery_and_preparation_observe_cancellation_together()
     {
