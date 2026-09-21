@@ -1785,6 +1785,18 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Default_text_preserves_inter_word_whitespace_around_a_visible_nested_span()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleAAndSpaceFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        ReadOnlyMemory<byte> nested = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='300' height='5'><text font-family='Example' font-size='100' y='3'>A <tspan>A</tspan> A</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='300' height='5'><text font-family='Example' font-size='100' y='3'>A A A</text></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        Assert.Equal(expected.ToArray(), nested.ToArray());
+    }
+
+    [Fact]
     public async Task Converts_direct_text_and_its_immediate_shape_sibling_through_every_public_output_form()
     {
         byte[] font = CreateTriangleFont();
@@ -2661,6 +2673,36 @@ public sealed class OpenTypeFontTests
         WriteUInt16(font, subtable + 14, 32);
         WriteUInt16(font, subtable + 20, 32);
         WriteInt16(font, subtable + 24, -31);
+        return font;
+    }
+
+    private static byte[] CreateTriangleAAndSpaceFont()
+    {
+        byte[] font = CreateTriangleFont();
+        int cmapOffset = font.Length;
+        Array.Resize(ref font, cmapOffset + 52);
+        WriteTable(font, 4, 0x636D6170, cmapOffset, 52);
+        WriteUInt16(font, cmapOffset, 0);
+        WriteUInt16(font, cmapOffset + 2, 1);
+        WriteUInt16(font, cmapOffset + 4, 3);
+        WriteUInt16(font, cmapOffset + 6, 1);
+        WriteUInt32(font, cmapOffset + 8, 12);
+        int subtable = cmapOffset + 12;
+        WriteUInt16(font, subtable, 4);
+        WriteUInt16(font, subtable + 2, 40);
+        WriteUInt16(font, subtable + 6, 6);
+        WriteUInt16(font, subtable + 8, 4);
+        WriteUInt16(font, subtable + 10, 1);
+        WriteUInt16(font, subtable + 12, 2);
+        WriteUInt16(font, subtable + 14, 32);
+        WriteUInt16(font, subtable + 16, 65);
+        WriteUInt16(font, subtable + 18, 0xFFFF);
+        WriteUInt16(font, subtable + 22, 32);
+        WriteUInt16(font, subtable + 24, 65);
+        WriteUInt16(font, subtable + 26, 0xFFFF);
+        WriteInt16(font, subtable + 28, -31);
+        WriteInt16(font, subtable + 30, -64);
+        WriteInt16(font, subtable + 32, 1);
         return font;
     }
 
