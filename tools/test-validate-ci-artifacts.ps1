@@ -205,4 +205,40 @@ $chromeEdited = Get-Content -LiteralPath $chromeFingerprint.FullName -Raw | Conv
 $chromeEdited.schemaVersion = 99
 $chromeEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $schemaChrome $chromeFingerprint.Name) -NoNewline -Encoding utf8
 Assert-ValidatorRejects $schemaChrome $memoryDirectory '*schema version*' 'a bad chrome schema version'
+function Copy-MemorySummary([string] $Destination) {
+    Copy-Item -Recurse -LiteralPath $memoryDirectory -Destination $Destination
+    $summaries = @(Get-ChildItem -LiteralPath $Destination -File -Filter '*-summary.json')
+    if ($summaries.Count -ne 1) { throw "Memory case does not contain exactly one summary: $Destination" }
+    return $summaries[0]
+}
+
+function Assert-MemoryRejects([string] $Case, [string] $Reason, [string] $CaseName, [scriptblock] $Mutate) {
+    $caseDirectory = Join-Path $runDirectory $Case
+    $summaryFile = Copy-MemorySummary $caseDirectory
+    $edited = Get-Content -LiteralPath $summaryFile.FullName -Raw | ConvertFrom-Json
+    & $Mutate $edited
+    $edited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $summaryFile.FullName -NoNewline -Encoding utf8
+    Assert-ValidatorRejects $goodDirectory $caseDirectory $Reason $CaseName
+}
+
+Assert-MemoryRejects 'memory-unknown-child-runtime' '*not among the recorded dotnet runtimes*' 'an unlisted child runtime' {
+    param($summary)
+    $summary.runtimeFingerprint.runtimeFramework = '.NET 0.0.0'
+}
+Assert-MemoryRejects 'memory-missing-runtimes' '*is missing dotnetRuntimes*' 'missing dotnet runtimes' {
+    param($summary)
+    $summary.PSObject.Properties.Remove('dotnetRuntimes')
+}
+Assert-MemoryRejects 'memory-malformed-runtime' '*malformed runtime version*' 'a malformed runtime version' {
+    param($summary)
+    $summary.dotnetRuntimes = @('bogus')
+}
+Assert-MemoryRejects 'memory-missing-host' '*is missing hostRuntimeFramework*' 'a missing host runtime' {
+    param($summary)
+    $summary.PSObject.Properties.Remove('hostRuntimeFramework')
+}
+Assert-MemoryRejects 'memory-host-mismatch' '*host runtime framework*' 'a mismatched host runtime' {
+    param($summary)
+    $summary.hostRuntimeFramework = '.NET 0.0.0'
+}
 Write-Output "Validator artifact scenarios passed: $runDirectory"

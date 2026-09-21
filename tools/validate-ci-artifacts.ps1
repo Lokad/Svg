@@ -52,12 +52,17 @@ function Get-SingleFile([string] $Directory, [string] $Filter, [string] $Context
     return $files[0]
 }
 
-function Assert-PlatformFingerprint([object] $Fingerprint, [string] $Context)
+function Assert-PlatformOsArchitecture([object] $Fingerprint, [string] $Context)
 {
     $operatingSystem = [string](Get-RequiredProperty $Fingerprint 'operatingSystem' $Context)
     if ($Platform -eq 'Windows' -and -not $operatingSystem.StartsWith('Microsoft Windows', [StringComparison]::OrdinalIgnoreCase)) { Fail "$Context is not a Windows fingerprint: $operatingSystem" }
     if ($Platform -eq 'Linux' -and $operatingSystem -notmatch 'Linux') { Fail "$Context is not a Linux fingerprint: $operatingSystem" }
     Assert-Equal 'X64' (Get-RequiredProperty $Fingerprint 'processArchitecture' $Context) "$Context process architecture"
+}
+
+function Assert-PlatformFingerprint([object] $Fingerprint, [string] $Context)
+{
+    Assert-PlatformOsArchitecture $Fingerprint $Context
     Assert-Equal ([Runtime.InteropServices.RuntimeInformation]::FrameworkDescription) (Get-RequiredProperty $Fingerprint 'runtimeFramework' $Context) "$Context runtime framework"
 }
 
@@ -126,7 +131,7 @@ function Test-MemoryArtifact
 {
     $summaryFile = Get-SingleFile $MemoryDirectory '*-summary.json' 'Memory probe artifact'
     $summary = Get-Content -LiteralPath $summaryFile.FullName -Raw | ConvertFrom-Json
-    Assert-Equal 2 (Get-RequiredProperty $summary 'schemaVersion' 'Memory summary') 'Memory summary schema version'
+    Assert-Equal 3 (Get-RequiredProperty $summary 'schemaVersion' 'Memory summary') 'Memory summary schema version'
     $runId = [string](Get-RequiredProperty $summary 'runId' 'Memory summary')
     if ($runId -notmatch '^[0-9a-f]{32}$') { Fail 'Memory summary run id is not a lowercase GUID without separators.' }
     $scenarioScript = Join-Path $PSScriptRoot 'test-memory-probe.ps1'
@@ -139,7 +144,14 @@ function Test-MemoryArtifact
     $fixtureHash = Get-Hash $fixture
     Assert-Hash (Get-RequiredProperty $summary 'fixtureSha256' 'Memory summary') $fixtureHash 'Memory fixture hash'
     $runtimeFingerprint = Get-RequiredProperty $summary 'runtimeFingerprint' 'Memory summary'
-    Assert-PlatformFingerprint $runtimeFingerprint 'Memory summary'
+    Assert-PlatformOsArchitecture $runtimeFingerprint 'Memory summary'
+    Assert-Equal ([Runtime.InteropServices.RuntimeInformation]::FrameworkDescription) (Get-RequiredProperty $summary 'hostRuntimeFramework' 'Memory summary') 'Memory host runtime framework'
+    $dotnetRuntimes = @(Get-RequiredProperty $summary 'dotnetRuntimes' 'Memory summary')
+    if ($dotnetRuntimes.Count -eq 0) { Fail 'Memory summary lists no .NET runtimes.' }
+    foreach ($runtimeVersion in $dotnetRuntimes) { if ([string]$runtimeVersion -notmatch '^\d+\.\d+\.\d+$') { Fail "Memory summary lists a malformed runtime version: $runtimeVersion" } }
+    $childFramework = [string](Get-RequiredProperty $runtimeFingerprint 'runtimeFramework' 'Memory summary')
+    $childVersion = $childFramework -replace '^\.NET\s+', ''
+    if ($dotnetRuntimes -cnotcontains $childVersion) { Fail "Memory child runtime $childFramework is not among the recorded dotnet runtimes." }
 
     $expectedOutcomes = [ordered]@{
         success = 'success'; limit = 'svg-error'; 'xml-workspace' = 'svg-error'

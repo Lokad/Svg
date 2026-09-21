@@ -203,11 +203,14 @@ $discoveryCancelledOutput = Join-Path $ResultsDirectory "$runId-font-discovery-c
 $discoveryCancelled = Invoke-Probe -Name 'font-discovery-cancelled' -InputPath $discoveryCancelledInput -Output $discoveryCancelledOutput -ExpectedExitCode 3 -ExtraArguments @('--mode', 'font-discovery', '--cancel-after-ms', '1')
 if ($discoveryCancelled['outcome'] -ne 'cancelled' -or $discoveryCancelled.ContainsKey('discoveryRequestCount') -or $discoveryCancelled['providerCalls'] -ne '0' -or $discoveryCancelled['discoveryCurrentBytes'] -ne '0' -or (Test-Path -LiteralPath $discoveryCancelledOutput)) { throw 'The cancelled font-discovery probe completed, acquired a program, retained a reservation, or wrote output.' }
 
+$hostRuntimeFramework = [System.Runtime.InteropServices.RuntimeInformation]::FrameworkDescription
+$dotnetRuntimes = @(& dotnet --list-runtimes 2>$null | ForEach-Object { if ($_ -match '^Microsoft\.NETCore\.App (\d+\.\d+\.\d+) ') { $Matches[1] } } | Sort-Object -Unique)
+if ($dotnetRuntimes.Count -eq 0) { throw 'The dotnet host reported no .NETCore runtimes.' }
 $fingerprints = @($reports | ForEach-Object { $_.report.operatingSystem + '|' + $_.report.processArchitecture + '|' + $_.report.runtimeFramework } | Sort-Object -Unique)
 if ($fingerprints.Count -ne 1) { throw 'The child-process reports do not share one runtime/platform fingerprint.' }
 $runtime = $reports[0].report
 $summary = [ordered]@{
-    schemaVersion = 2
+    schemaVersion = 3
     runId = $runId
     scenarioScriptSha256 = Get-TextSha256 $PSCommandPath
     probeToolSha256 = (Get-FileHash -LiteralPath $probeTool -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -218,6 +221,8 @@ $summary = [ordered]@{
         processArchitecture = $runtime.processArchitecture
         runtimeFramework = $runtime.runtimeFramework
     }
+    hostRuntimeFramework = $hostRuntimeFramework
+    dotnetRuntimes = @($dotnetRuntimes)
     reports = @($reports)
 }
 $summaryPath = Join-Path $ResultsDirectory "$runId-summary.json"
