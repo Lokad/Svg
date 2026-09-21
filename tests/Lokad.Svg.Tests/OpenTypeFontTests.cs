@@ -193,6 +193,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Text_layout_reuses_the_cmap_lookup_for_repeated_scalars_within_one_run()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 0))], CancellationToken.None);
+        int lookupCount = 0;
+        using IDisposable probe = CmapLookupProbe.Arm(() => lookupCount++);
+
+        using SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAAA", 10, 0, 0, SvgTextAnchor.Start, new RenderBudget(1_024), new ParserWorkCounter(100), CancellationToken.None);
+
+        Assert.Equal(1, lookupCount);
+        Assert.All(glyphs.Glyphs, glyph => Assert.Equal((ushort)1, glyph.GlyphIndex));
+    }
+
+    [Fact]
     public void Maps_a_supplementary_scalar_through_a_format_12_cmap()
     {
         byte[] font = CreateFormat12Font();
