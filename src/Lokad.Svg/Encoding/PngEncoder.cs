@@ -622,7 +622,11 @@ internal static class PngEncoder
             catch { replacementReservation.Dispose(); throw; }
             try
             {
-                if (_buffer is not null) CopyWithCheckpoints(_buffer.AsSpan(0, _length), replacement);
+                if (_buffer is not null)
+                {
+                    _workCounter.ConsumeBufferedCopyBytes(_length, _cancellationToken);
+                    CopyWithCheckpoints(_buffer.AsSpan(0, _length), replacement);
+                }
             }
             catch
             {
@@ -669,6 +673,14 @@ internal static class PngEncoder
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (byteCount > _maximumWorkUnits - _usedWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG compression exceeds the configured work limit.");
+            _usedWorkUnits += byteCount;
+        }
+
+        /// <summary>Charges geometric-buffer growth copies of already-written compressed bytes.</summary>
+        internal void ConsumeBufferedCopyBytes(int byteCount, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (byteCount > _maximumWorkUnits - _usedWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG compression-buffer growth exceeds the configured work limit.");
             _usedWorkUnits += byteCount;
         }
 

@@ -69,6 +69,27 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    public void Compression_buffer_growth_charges_the_remaining_work_limit()
+    {
+        // Calibrated on .NET 10.0.12: 4,096 pixels plus 16,388 compressed bytes precede
+        // the first geometric-buffer growth copy, and the complete 64x64 high-entropy
+        // encoding costs exactly 61,606 work units including growth copies.
+        byte[] pixels = CreateGrowthPixels();
+        byte[] expected = PngEncoder.Encode(64, 64, pixels, CancellationToken.None);
+
+        byte[] exact = PngEncoder.Encode(64, 64, pixels, new RenderBudget(long.MaxValue), int.MaxValue, 0, 61_606, CancellationToken.None);
+
+        Assert.Equal(expected, exact);
+        SvgException growth = Assert.Throws<SvgException>(() => PngEncoder.Encode(64, 64, pixels, new RenderBudget(long.MaxValue), int.MaxValue, 0, 20_484, CancellationToken.None));
+
+        Assert.Contains("PNG compression-buffer growth", growth.Message);
+        SvgException total = Assert.Throws<SvgException>(() => PngEncoder.Encode(64, 64, pixels, new RenderBudget(long.MaxValue), int.MaxValue, 0, 61_605, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, total.ErrorCode);
+        Assert.Contains("PNG serialization", total.Message);
+    }
+
+    [Fact]
     public void Encodes_directly_into_caller_destination()
     {
         byte[] owned = PngEncoder.Encode(1, 1, [1, 2, 3, 4], CancellationToken.None);
@@ -204,6 +225,14 @@ public sealed class PngEncoderTests
         Assert.True(idatChunkCount > 1);
         Assert.Equal(png, exactCap);
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    private static byte[] CreateGrowthPixels()
+    {
+        byte[] pixels = new byte[64 * 64 * 4];
+        uint state = 0x12345678;
+        for (int index = 0; index < pixels.Length; index++) { state = state * 1664525 + 1013904223; pixels[index] = (byte)(state >> 24); }
+        return pixels;
     }
 
     private static byte[] CreateHighEntropyPixels()

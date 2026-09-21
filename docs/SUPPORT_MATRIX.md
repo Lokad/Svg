@@ -55,7 +55,7 @@ Opaque-background initialization and PNG's per-pixel transparent-RGB normalizati
 are also charged before those scans run. Opaque-background initialization checks
 cancellation every at most 4,096 pixels after allocation.
 Every compressed PNG byte produced by the owned/caller-memory buffer and both
-streaming IDAT sinks is charged before its copy, checksum, or output write.
+streaming IDAT sinks is charged before its copy, checksum, or output write; geometric growth copies of already-buffered bytes carry their own work charge.
 The isolated Windows probe directly traverses a 64 KiB text node, a full
 short-attribute root and 255 × 4 KiB attribute values below that allowance;
 those observations are platform/runtime-fingerprinted regression evidence, not a
