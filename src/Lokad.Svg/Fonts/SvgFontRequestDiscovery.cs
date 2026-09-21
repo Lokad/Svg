@@ -59,6 +59,8 @@ internal static class SvgFontRequestDiscovery
             bool hasUnsupportedContent = false;
             int nodeCount = 0;
             int inertDepth = -1;
+            int definitionsDepth = -1;
+            int symbolDepth = -1;
             int groupDepth = 0;
             int activeCandidateLevel = -1;
             while (reader.Read())
@@ -114,6 +116,10 @@ internal static class SvgFontRequestDiscovery
                         hasStyleSheet = true;
                     }
                     if (rootStyleElement) continue;
+                    if (isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && directChild && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
+                    if (isSvgElement && reader.LocalName == "symbol" && definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1 && !reader.IsEmptyElement) symbolDepth = reader.Depth;
+                    if (isSvgElement && definitionsDepth >= 0 && (reader.Depth == definitionsDepth + 1 || reader.Depth == symbolDepth + 1) && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)) sawStyleableNode = true;
+                    if (isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = parentAllowsText && textElement;
                     bool childAllowsText = parentAllowsText && isSvgElement && (reader.Depth == rootDepth || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName));
@@ -179,6 +185,8 @@ internal static class SvgFontRequestDiscovery
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
                     if (reader.Depth == inertDepth) inertDepth = -1;
+                    if (reader.Depth == definitionsDepth) definitionsDepth = -1;
+                    if (reader.Depth == symbolDepth) symbolDepth = -1;
                     if (inheritedLevels.Count != 0)
                     {
                         inheritedLevels.RemoveLast();

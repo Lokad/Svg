@@ -37,4 +37,28 @@ public sealed class SvgStructuralVocabularyTests
         Assert.Equal(inert, SvgStructuralVocabulary.IsInertContainer(localName));
         Assert.Equal(definitions, SvgStructuralVocabulary.IsDefinitionsContainer(localName));
     }
+
+    [Theory]
+    [InlineData("rect", true, false)]
+    [InlineData("line", true, false)]
+    [InlineData("text", false, false)]
+    [InlineData("g", false, false)]
+    [InlineData("use", false, false)]
+    [InlineData("symbol", false, false)]
+    [InlineData("style", false, true)]
+    [InlineData("script", false, true)]
+    [InlineData("animate", false, true)]
+    [InlineData("animateMotion", false, true)]
+    [InlineData("animateTransform", false, true)]
+    [InlineData("set", false, true)]
+    [InlineData("tspan", false, false)]
+    [InlineData("defs", false, false)]
+    [InlineData("RECT", false, false)]
+    [InlineData("STYLE", false, false)]
+    [InlineData("", false, false)]
+    public void Classifies_definition_and_dynamic_names(string localName, bool definitionLeaf, bool styleScriptOrAnimation)
+    {
+        Assert.Equal(definitionLeaf, SvgStructuralVocabulary.IsDefinitionLeaf(localName));
+        Assert.Equal(styleScriptOrAnimation, SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(localName));
+    }
 }

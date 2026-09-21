@@ -1307,6 +1307,7 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'> </text></svg>", "Example", 1, 1, true, true)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan letter-spacing='2'><tspan>A</tspan></tspan></text></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' x='0' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs/><style>g { font-family: Example; font-size: 100; }</style><g><text y='3'>A</text></g></svg>", "Example", 1, 1, true, false)]
     public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
@@ -1344,6 +1345,9 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><symbol id='s'><text font-family='Unused'>x</text></symbol></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'>A</text><circle cx='1' cy='1' r='1'/></svg>", false, SvgErrorCode.UnsupportedFeature, "Unused", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs xmlns='urn:x'/><text font-family='Unused'>A</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' width='1' height='1'/></defs><style>g { font-family: Example; }</style><g><text font-family='Example'>A</text></g></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s'><line x1='0' y1='0' x2='1' y2='0' stroke='red' stroke-width='2'/></symbol></defs><style>g { font-family: Example; }</style><g><text font-family='Example'>A</text></g></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><style>x</style></defs><text font-family='Unused'>A</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     public async Task Discovery_and_lowering_agree_on_rejected_text(string svg, bool failsDuringDiscovery, SvgErrorCode code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

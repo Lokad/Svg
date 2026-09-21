@@ -12,6 +12,12 @@ internal static class SvgStructuralVocabulary
     /// <summary>Identifies the metadata containers whose subtrees never render.</summary>
     internal static bool IsInertContainer(string localName) => localName is "defs" or "title" or "desc" or "metadata";
 
+    /// <summary>Identifies the definition leaves that count as styleable content.</summary>
+    internal static bool IsDefinitionLeaf(string localName) => localName is "rect" or "line";
+
+    /// <summary>Identifies style, script and animation elements that unconditionally invalidate the operation.</summary>
+    internal static bool IsStyleScriptOrAnimationElement(string localName) => localName is "style" or "script" or "animate" or "animateMotion" or "animateTransform" or "set";
+
     /// <summary>Identifies the definition container that admits local geometry references.</summary>
     internal static bool IsDefinitionsContainer(string localName) => localName == "defs";
 }
