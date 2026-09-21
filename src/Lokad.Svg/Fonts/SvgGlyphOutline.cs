@@ -76,11 +76,23 @@ internal static class SvgGlyphOutline
             first = 0;
             for (int contourIndex = 0; contourIndex < contours.Length; contourIndex++)
             {
-                cancellationToken.ThrowIfCancellationRequested();
                 SvgGlyphOutlinePoint start = segments[first].Start;
                 int last = first;
-                while (segments[last].End != start) last++;
-                contours[contourIndex] = new SvgGlyphQuadraticContour(segments[first..(last + 1)].ToArray());
+                while (true)
+                {
+                    Consume(workCounter, cancellationToken);
+                    if (segments[last].End == start) break;
+                    last++;
+                }
+                int length = last - first + 1;
+                var copied = new SvgGlyphQuadraticSegment[length];
+                for (int index = 0; index < copied.Length; index++)
+                {
+                    Consume(workCounter, cancellationToken);
+                    copied[index] = segments[first + index];
+                    GlyphOutlineProbe.SegmentCopied();
+                }
+                contours[contourIndex] = new SvgGlyphQuadraticContour(copied);
                 first = last + 1;
             }
             return new(contours, reservation);

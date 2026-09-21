@@ -423,7 +423,7 @@ internal static class OpenTypeFont
     /// <summary>Builds closed quadratic segments from decoded simple-glyph contours, including implied on-curve points.</summary>
     internal static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints)
     {
-        using var segments = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None);
+        using var segments = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, null, CancellationToken.None);
         BuildQuadraticContours(points, endpoints, segments, null, CancellationToken.None);
         return segments.ToArray();
     }
@@ -493,7 +493,7 @@ internal static class OpenTypeFont
         using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, budget, workCounter, cancellationToken);
         if (structure.Value.ContourEndpoints.Length == 0) return new([], null);
         using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, structure.Value, budget, workCounter, cancellationToken);
-        using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact);
+        using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, workCounter, cancellationToken);
         BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, workCounter, cancellationToken);
         return segments.Detach();
     }
@@ -509,7 +509,7 @@ internal static class OpenTypeFont
     /// <summary>Reads composite-glyph components while charging each component record to a conversion work counter.</summary>
     internal static OpenTypeCompositeGlyphComponent[] GetCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        using var components = new OpenTypeCompositeComponentAccumulator(null);
+        using var components = new OpenTypeCompositeComponentAccumulator(null, workCounter, cancellationToken);
         ReadCompositeGlyphComponents(bytes, glyphIndex, metrics, components, workCounter, cancellationToken);
         return components.ToArray();
     }
@@ -517,7 +517,7 @@ internal static class OpenTypeFont
     /// <summary>Reads composite components into a budgeted owner until recursive expansion has consumed them.</summary>
     private static OpenTypeCompositeGlyphComponentStorage GetBudgetedCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        using var components = new OpenTypeCompositeComponentAccumulator(budget);
+        using var components = new OpenTypeCompositeComponentAccumulator(budget, workCounter, cancellationToken);
         ReadCompositeGlyphComponents(bytes, glyphIndex, metrics, components, workCounter, cancellationToken);
         return components.Detach();
     }
@@ -576,7 +576,7 @@ internal static class OpenTypeFont
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return [];
         using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, null);
-        using var contours = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None);
+        using var contours = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, null, cancellationToken);
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, null, cancellationToken);
         return contours.ToArray();
     }
@@ -588,7 +588,7 @@ internal static class OpenTypeFont
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return new([], null);
         using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, budget);
-        using var contours = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact);
+        using var contours = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, workCounter, cancellationToken);
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, workCounter, cancellationToken);
         return contours.Detach();
     }
@@ -849,15 +849,19 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
     private readonly RenderBudget? _budget;
     private readonly GlyphDecoderBudgetPhase _capacityPhase;
     private readonly GlyphDecoderBudgetPhase _exactPhase;
+    private readonly ParserWorkCounter? _workCounter;
+    private readonly CancellationToken _cancellationToken;
     private OpenTypeQuadraticSegment[] _segments = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal OpenTypeSegmentAccumulator(RenderBudget? budget, GlyphDecoderBudgetPhase capacityPhase, GlyphDecoderBudgetPhase exactPhase)
+    internal OpenTypeSegmentAccumulator(RenderBudget? budget, GlyphDecoderBudgetPhase capacityPhase, GlyphDecoderBudgetPhase exactPhase, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         _budget = budget;
         _capacityPhase = capacityPhase;
         _exactPhase = exactPhase;
+        _workCounter = workCounter;
+        _cancellationToken = cancellationToken;
     }
 
     internal int Count => _count;
@@ -875,7 +879,7 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
     {
         if (_count == 0) return [];
         var copy = new OpenTypeQuadraticSegment[_count];
-        _segments.AsSpan(0, _count).CopyTo(copy);
+        CopySegments(copy);
         return copy;
     }
 
@@ -893,7 +897,7 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
         try { exact = new OpenTypeQuadraticSegment[_count]; }
         catch { reservation.Dispose(); throw; }
         GlyphDecoderBudgetProbe.Reserved(_exactPhase, _budget);
-        try { _segments.AsSpan(0, _count).CopyTo(exact); }
+        try { CopySegments(exact); }
         catch { reservation.Dispose(); throw; }
         Dispose();
         return new(exact, reservation);
@@ -914,7 +918,7 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
         try
         {
             var replacement = new OpenTypeQuadraticSegment[capacity];
-            _segments.AsSpan(0, _count).CopyTo(replacement);
+            CopySegments(replacement);
             GlyphDecoderBudgetProbe.Reserved(_capacityPhase, _budget);
             _reservation?.Dispose();
             _reservation = replacementReservation;
@@ -926,17 +930,39 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
             throw;
         }
     }
+
+    private void CopySegments(Span<OpenTypeQuadraticSegment> destination)
+    {
+        for (int index = 0; index < _count; index++)
+        {
+            Consume();
+            destination[index] = _segments[index];
+        }
+    }
+
+    private void Consume()
+    {
+        if (_workCounter is null) _cancellationToken.ThrowIfCancellationRequested();
+        else _workCounter.Consume(_cancellationToken);
+    }
 }
 
 /// <summary>Builds composite-component records with reservation-backed capacity and exact-copy ownership.</summary>
 internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
 {
     private readonly RenderBudget? _budget;
+    private readonly ParserWorkCounter? _workCounter;
+    private readonly CancellationToken _cancellationToken;
     private OpenTypeCompositeGlyphComponent[] _components = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal OpenTypeCompositeComponentAccumulator(RenderBudget? budget) => _budget = budget;
+    internal OpenTypeCompositeComponentAccumulator(RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        _budget = budget;
+        _workCounter = workCounter;
+        _cancellationToken = cancellationToken;
+    }
 
     internal int Count => _count;
 
@@ -950,7 +976,7 @@ internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
     {
         if (_count == 0) return [];
         var copy = new OpenTypeCompositeGlyphComponent[_count];
-        _components.AsSpan(0, _count).CopyTo(copy);
+        CopyComponents(copy);
         return copy;
     }
 
@@ -968,7 +994,7 @@ internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
         try { exact = new OpenTypeCompositeGlyphComponent[_count]; }
         catch { reservation.Dispose(); throw; }
         GlyphDecoderBudgetProbe.Reserved(GlyphDecoderBudgetPhase.CompositeComponentsExact, _budget);
-        try { _components.AsSpan(0, _count).CopyTo(exact); }
+        try { CopyComponents(exact); }
         catch { reservation.Dispose(); throw; }
         Dispose();
         return new(exact, reservation);
@@ -989,7 +1015,7 @@ internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
         try
         {
             var replacement = new OpenTypeCompositeGlyphComponent[capacity];
-            _components.AsSpan(0, _count).CopyTo(replacement);
+            CopyComponents(replacement);
             GlyphDecoderBudgetProbe.Reserved(GlyphDecoderBudgetPhase.CompositeComponentsCapacity, _budget);
             _reservation?.Dispose();
             _reservation = replacementReservation;
@@ -1000,6 +1026,21 @@ internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
             replacementReservation?.Dispose();
             throw;
         }
+    }
+
+    private void CopyComponents(Span<OpenTypeCompositeGlyphComponent> destination)
+    {
+        for (int index = 0; index < _count; index++)
+        {
+            Consume();
+            destination[index] = _components[index];
+        }
+    }
+
+    private void Consume()
+    {
+        if (_workCounter is null) _cancellationToken.ThrowIfCancellationRequested();
+        else _workCounter.Consume(_cancellationToken);
     }
 }
 
