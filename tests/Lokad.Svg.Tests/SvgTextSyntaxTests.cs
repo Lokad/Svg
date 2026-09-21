@@ -8,9 +8,10 @@ public sealed class SvgTextSyntaxTests
     [Fact]
     public void Inherited_text_style_requires_a_positive_weight_and_font_size()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 0, false, 16, SvgTextWhitespaceMode.Default));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 0, SvgTextWhitespaceMode.Default));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 16, (SvgTextWhitespaceMode)2));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 0, false, 16, SvgTextWhitespaceMode.Default, 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 0, SvgTextWhitespaceMode.Default, 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 16, (SvgTextWhitespaceMode)2, 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 16, SvgTextWhitespaceMode.Default, double.NaN));
     }
 
     [Fact]
@@ -145,6 +146,18 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    public void Parses_scalar_letter_spacing_from_attributes_and_inline_style()
+    {
+        using XmlReader attribute = XmlReader.Create(new StringReader("<text font-family='Example' letter-spacing='2.5'/>"));
+        attribute.Read();
+        using XmlReader inline = XmlReader.Create(new StringReader("<text font-family='Example' letter-spacing='2.5' style='letter-spacing: -1.5'/>"));
+        inline.Read();
+
+        Assert.Equal(2.5, SvgTextSyntax.Parse(attribute).LetterSpacing);
+        Assert.Equal(-1.5, SvgTextSyntax.Parse(inline).LetterSpacing);
+    }
+
+    [Fact]
     public void Parses_finite_text_coordinates_without_rectangle_quantization()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Example' font-size='12.3' x='0.1' y='2.2' dx='3.3' dy='4.4'/>"));
@@ -164,12 +177,12 @@ public sealed class SvgTextSyntaxTests
     {
         using XmlReader ancestorReader = XmlReader.Create(new StringReader("<g font-family='Ancestor' font-weight='700' font-style='italic' font-size='12'/>"));
         ancestorReader.Read();
-        SvgInheritedTextStyle ancestor = SvgTextInheritance.Resolve(ancestorReader, SvgInheritedTextStyle.Default, default, null);
+        SvgInheritedTextStyle ancestor = SvgTextInheritance.Resolve(ancestorReader, SvgInheritedTextStyle.Default, default, null, null);
         using XmlReader childReader = XmlReader.Create(new StringReader("<text font-family='Attribute' font-weight='400' style='font-family: Inline; font-size: 14'/>"));
         childReader.Read();
 
         SvgTextInlineFontProperties inline = SvgInlineStyleParser.Parse(childReader.GetAttribute("style"), new ParserWorkCounter(10), CancellationToken.None, true).TextFont;
-        SvgInheritedTextStyle resolved = SvgTextInheritance.Resolve(childReader, ancestor, inline, null);
+        SvgInheritedTextStyle resolved = SvgTextInheritance.Resolve(childReader, ancestor, inline, null, null);
 
         Assert.Equal("Inline", resolved.Family);
         Assert.Equal(400, resolved.Weight);

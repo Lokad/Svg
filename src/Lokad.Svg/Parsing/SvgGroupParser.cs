@@ -14,7 +14,7 @@ internal static class SvgGroupParser
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, namedColors);
         AxisTransform transform = context.ResolveTransform(reader);
         SvgGroupKind kind = reader.LocalName == "g" ? SvgGroupKind.Group : SvgGroupKind.Link;
-        SvgInheritedTextStyle inheritedTextStyle = SvgTextInheritance.Resolve(reader, context.InheritedTextStyle, inline.TextFont.Overlay(context.StyleSheet.TextFont), inline.WhiteSpace ?? context.StyleSheet.WhiteSpace);
+        SvgInheritedTextStyle inheritedTextStyle = SvgTextInheritance.Resolve(reader, context.InheritedTextStyle, inline.TextFont.Overlay(context.StyleSheet.TextFont), inline.WhiteSpace ?? context.StyleSheet.WhiteSpace, inline.LetterSpacing ?? context.StyleSheet.LetterSpacing);
         return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform), inheritedTextStyle, presentation.Opacity != 255), presentation.Opacity);
     }
 }

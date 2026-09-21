@@ -5,18 +5,20 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Represents the admitted single-font text properties inherited by a rendered text descendant.</summary>
 internal sealed class SvgInheritedTextStyle
 {
-    internal static SvgInheritedTextStyle Default { get; } = new(null, 400, false, 16, SvgTextWhitespaceMode.Default);
+    internal static SvgInheritedTextStyle Default { get; } = new(null, 400, false, 16, SvgTextWhitespaceMode.Default, 0);
 
-    internal SvgInheritedTextStyle(string? family, int weight, bool italic, double fontSize, SvgTextWhitespaceMode whitespaceMode)
+    internal SvgInheritedTextStyle(string? family, int weight, bool italic, double fontSize, SvgTextWhitespaceMode whitespaceMode, double letterSpacing)
     {
         if (weight <= 0) throw new ArgumentOutOfRangeException(nameof(weight));
         if (!double.IsFinite(fontSize) || fontSize <= 0) throw new ArgumentOutOfRangeException(nameof(fontSize));
         if (whitespaceMode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(whitespaceMode));
+        if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
         Family = family;
         Weight = weight;
         Italic = italic;
         FontSize = fontSize;
         WhitespaceMode = whitespaceMode;
+        LetterSpacing = letterSpacing;
     }
 
     internal string? Family { get; }
@@ -24,12 +26,13 @@ internal sealed class SvgInheritedTextStyle
     internal bool Italic { get; }
     internal double FontSize { get; }
     internal SvgTextWhitespaceMode WhitespaceMode { get; }
+    internal double LetterSpacing { get; }
 }
 
 /// <summary>Combines inline, presentation, and ancestor text properties using the direct-text precedence subset.</summary>
 internal static class SvgTextInheritance
 {
-    internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, SvgTextInlineFontProperties inline, string? whiteSpace)
+    internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, SvgTextInlineFontProperties inline, string? whiteSpace, string? letterSpacing)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string? family = inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family;
@@ -42,6 +45,8 @@ internal static class SvgTextInheritance
         double fontSize = sizeValue is null ? inherited.FontSize : SvgGeometrySyntax.ParseTextCoordinate(sizeValue);
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         SvgTextWhitespaceMode whitespaceMode = whiteSpace is null ? inherited.WhitespaceMode : SvgTextSyntax.ParseCssWhitespaceMode(whiteSpace);
-        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode);
+        string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
+        double resolvedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);
+        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing);
     }
 }

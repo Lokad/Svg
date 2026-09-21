@@ -81,7 +81,7 @@ single-face text/CDATA content. On a direct `text` element, `xml:space="default"
 accepts nested `tspan` elements as text concatenation. A span may be attribute-free, carry exactly `xml:space="default"` or `xml:space="preserve"`, or carry a `style` containing only `white-space: normal` or `pre`; it inherits its parent's mode otherwise. Other CSS whitespace values, stylesheet-driven span whitespace, span styling, positioning lists and general shaping remain unsupported. Its presentation,
 admitted root-stylesheet and inline `style` font subset is `font-family`,
 `font-weight`, `font-style` and `font-size`; admitted scalar positioning is `x`,
-`y`, `dx`, `dy` and `text-anchor` (`start`, `middle`, `end`), with a bounded `id`
+`y`, `dx`, `dy`, scalar `letter-spacing` (added only between glyphs), and `text-anchor` (`start`, `middle`, `end`), with a bounded `id`
 retained only for font diagnostics.
 Its direct text content is limited to 32,768 UTF-16 characters across one
 conversion before layout; subtree reader nodes and cmap/advance lookup traversal

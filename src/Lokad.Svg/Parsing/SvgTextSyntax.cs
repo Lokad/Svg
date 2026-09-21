@@ -160,15 +160,20 @@ internal static class SvgTextSyntax
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(workCounter);
-        return Parse(reader, SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true).TextFont, inherited);
+        InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+        return Parse(reader, inline.TextFont, inherited, inline.LetterSpacing);
     }
 
     /// <summary>Parses direct text font syntax from declarations already scanned by style resolution.</summary>
     internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline)
-        => Parse(reader, inline, SvgInheritedTextStyle.Default);
+        => Parse(reader, inline, SvgInheritedTextStyle.Default, null);
+
+    /// <summary>Parses direct text declarations when no resolved scalar letter spacing is present.</summary>
+    internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited)
+        => Parse(reader, inline, inherited, null);
 
     /// <summary>Parses direct text font syntax from declarations already scanned by style resolution and bounded ancestor inheritance.</summary>
-    internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited)
+    internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited, string? letterSpacing)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string family = SvgTextFontSyntax.ParseFamily(inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text requires an explicit font-family in the initial supported subset."));
@@ -179,8 +184,10 @@ internal static class SvgTextSyntax
         string? sizeValue = inline.Size ?? reader.GetAttribute("font-size");
         double fontSize = sizeValue is null ? inherited.FontSize : SvgGeometrySyntax.ParseTextCoordinate(sizeValue);
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
+        string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
+        double parsedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);
         SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor") ?? "start");
-        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dy") ?? "0"), anchor, reader.GetAttribute("id") ?? string.Empty);
+        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dy") ?? "0"), parsedLetterSpacing, anchor, reader.GetAttribute("id") ?? string.Empty);
     }
 
     /// <summary>Resolves CSS and XML direct-text whitespace declarations over the inherited CSS mode.</summary>
@@ -303,7 +310,7 @@ internal readonly record struct SvgTextInlineFontProperties(string? Family, stri
 }
 
 /// <summary>Represents the explicit single-font style and baseline origin of one initial text run.</summary>
-internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y, double Dx, double Dy, SvgTextAnchor Anchor, string SourceElementId);
+internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y, double Dx, double Dy, double LetterSpacing, SvgTextAnchor Anchor, string SourceElementId);
 
 /// <summary>Identifies the admitted horizontal anchor for one direct text run.</summary>
 internal enum SvgTextAnchor { Start, Middle, End }

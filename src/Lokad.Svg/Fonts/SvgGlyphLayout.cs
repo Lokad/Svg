@@ -30,13 +30,17 @@ internal static class SvgGlyphLayout
 
     /// <summary>Creates positioned glyph storage with bounded source-element context for glyph diagnostics.</summary>
     internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, SvgTextAnchor anchor, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => CreateStorage(font, text, fontSize, originX, originY, 0, anchor, budget, sourceElementId, workCounter, cancellationToken);
+
+    /// <summary>Creates positioned glyph storage with scalar inter-glyph spacing and bounded source-element context for diagnostics.</summary>
+    internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, SvgTextAnchor anchor, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(budget);
         ArgumentNullException.ThrowIfNull(sourceElementId);
         if (!double.IsFinite(fontSize) || fontSize <= 0) throw new ArgumentOutOfRangeException(nameof(fontSize));
-        if (!double.IsFinite(originX) || !double.IsFinite(originY)) throw new ArgumentOutOfRangeException(nameof(originX));
+        if (!double.IsFinite(originX) || !double.IsFinite(originY) || !double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(originX));
         double scale = fontSize / font.UnitsPerEm;
         if (!double.IsFinite(scale)) throw new ArgumentOutOfRangeException(nameof(fontSize));
         int glyphCount = 0;
@@ -80,9 +84,10 @@ internal static class SvgGlyphLayout
                     if (cachedLookupCount < cachedLookups.Length) cachedLookups[cachedLookupCount++] = new GlyphLookup(scalarValue, glyphIndex, advance);
                 }
                 double scaledAdvance = advance * scale;
-                if (!double.IsFinite(scaledAdvance) || !double.IsFinite(x + scaledAdvance)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
+                double nextX = glyphPosition + 1 == glyphCount ? x + scaledAdvance : x + scaledAdvance + letterSpacing;
+                if (!double.IsFinite(scaledAdvance) || !double.IsFinite(nextX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
                 glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, x, originY, scaledAdvance);
-                x += scaledAdvance;
+                x = nextX;
             }
             double anchorOffset = anchor switch
             {

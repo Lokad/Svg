@@ -236,7 +236,7 @@ internal static class SvgFontRequestDiscovery
         InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inlineStyle, styleSheet);
         specifiedWhiteSpace = inlineStyle.WhiteSpace ?? styleSheet.WhiteSpace;
-        SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, inlineStyle.TextFont.Overlay(styleSheet.TextFont), specifiedWhiteSpace);
+        SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, inlineStyle.TextFont.Overlay(styleSheet.TextFont), specifiedWhiteSpace, inlineStyle.LetterSpacing ?? styleSheet.LetterSpacing);
         AxisTransform transform = inherited.Transform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
         if (reader.LocalName is "g" or "a")
         {

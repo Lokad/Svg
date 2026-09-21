@@ -16,6 +16,7 @@ internal struct SvgStyleCascade
     private string? _fontStyle;
     private string? _fontSize;
     private string? _whiteSpace;
+    private string? _letterSpacing;
     private int _colorSpecificity;
     private int _fillSpecificity;
     private int _fillOpacitySpecificity;
@@ -29,12 +30,13 @@ internal struct SvgStyleCascade
     private int _fontStyleSpecificity;
     private int _fontSizeSpecificity;
     private int _whiteSpaceSpecificity;
+    private int _letterSpacingSpecificity;
 
     public SvgStyleCascade()
     {
         _colorSpecificity = _fillSpecificity = _fillOpacitySpecificity = _strokeSpecificity = -1;
         _displaySpecificity = _visibilitySpecificity = _opacitySpecificity = _fillRuleSpecificity = -1;
-        _familySpecificity = _weightSpecificity = _fontStyleSpecificity = _fontSizeSpecificity = _whiteSpaceSpecificity = -1;
+        _familySpecificity = _weightSpecificity = _fontStyleSpecificity = _fontSizeSpecificity = _whiteSpaceSpecificity = _letterSpacingSpecificity = -1;
     }
 
     internal void Apply(InlineStyle style, int specificity)
@@ -52,9 +54,10 @@ internal struct SvgStyleCascade
         Apply(ref _fontStyle, ref _fontStyleSpecificity, style.TextFont.Style, specificity);
         Apply(ref _fontSize, ref _fontSizeSpecificity, style.TextFont.Size, specificity);
         Apply(ref _whiteSpace, ref _whiteSpaceSpecificity, style.WhiteSpace, specificity);
+        Apply(ref _letterSpacing, ref _letterSpacingSpecificity, style.LetterSpacing, specificity);
     }
 
-    internal InlineStyle ToInlineStyle() => new(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace };
+    internal InlineStyle ToInlineStyle() => new(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing };
 
     private static void Apply(ref string? value, ref int currentSpecificity, string? candidate, int specificity)
     {

@@ -7,6 +7,9 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
 
     /// <summary>Gets the specified CSS whitespace declaration when direct text admits it.</summary>
     internal string? WhiteSpace { get; init; }
+
+    /// <summary>Gets the specified scalar CSS letter-spacing declaration when direct text admits it.</summary>
+    internal string? LetterSpacing { get; init; }
 }
 
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
@@ -39,7 +42,7 @@ internal static class SvgInlineStyleParser
     private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings, bool allowsDirectTextFontProperties)
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
-        string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null;
+        string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null;
         SvgInlineDeclarationReader declarations = new(value, workCounter, cancellationToken);
         while (declarations.TryRead(out ReadOnlySpan<char> declaration))
         {
@@ -62,9 +65,10 @@ internal static class SvgInlineStyleParser
             else if (allowsDirectTextFontProperties && property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) fontStyle = Copy(propertyValue, strings);
             else if (allowsDirectTextFontProperties && property.Equals("font-size", StringComparison.OrdinalIgnoreCase)) size = Copy(propertyValue, strings);
             else if (allowsDirectTextFontProperties && property.Equals("white-space", StringComparison.OrdinalIgnoreCase)) whiteSpace = Copy(propertyValue, strings);
+            else if (allowsDirectTextFontProperties && property.Equals("letter-spacing", StringComparison.OrdinalIgnoreCase)) letterSpacing = Copy(propertyValue, strings);
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace };
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing };
     }
 
     private static string Copy(ReadOnlySpan<char> value, BudgetedParserStringStore? strings) => strings is null ? value.ToString() : strings.Copy(value);

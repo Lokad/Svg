@@ -1635,7 +1635,7 @@ public sealed class OpenTypeFontTests
     public async Task Text_run_glyph_diagnostics_retain_the_bounded_source_element_id()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
-        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 0, 0, 0, 0, SvgTextAnchor.Start, "caption");
+        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 0, 0, 0, 0, 0, SvgTextAnchor.Start, "caption");
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgTextRunBuilder.Create(style, "B", snapshot, new RenderBudget(1_024), CancellationToken.None));
 
@@ -1844,6 +1844,22 @@ public sealed class OpenTypeFontTests
         Assert.Equal(1, expansionCount);
         Assert.True(DecodeAlpha(png, 1, 1) > 0);
         Assert.True(DecodeAlpha(png, 61, 1) > 0);
+    }
+
+    [Fact]
+    public async Task Direct_text_applies_scalar_letter_spacing_between_glyphs()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        ReadOnlyMemory<byte> direct = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3' style='letter-spacing: 50'>AA</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> inherited = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><g style='letter-spacing: 50'><text font-family='Example' font-size='100' y='3'>AA</text></g></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> stylesheet = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><style>#label { letter-spacing: 50; }</style><text id='label' font-family='Example' font-size='100' y='3'>AA</text></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        Assert.True(DecodeAlpha(direct, 1, 1) > 0);
+        Assert.True(DecodeAlpha(direct, 111, 1) > 0);
+        Assert.Equal(direct.ToArray(), inherited.ToArray());
+        Assert.Equal(direct.ToArray(), stylesheet.ToArray());
     }
 
     [Fact]
@@ -2632,7 +2648,7 @@ public sealed class OpenTypeFontTests
     public async Task Builds_a_simple_text_run_from_one_prepared_face()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
-        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 2, 3, 4, 5, SvgTextAnchor.Start, string.Empty);
+        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 10, 2, 3, 4, 5, 0, SvgTextAnchor.Start, string.Empty);
 
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
         RenderBudget budget = new(64);
@@ -2653,7 +2669,7 @@ public sealed class OpenTypeFontTests
     public async Task Text_run_releases_the_cached_outline_when_its_enumerator_stops_early()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
-        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 100, 0, 3, 0, 0, SvgTextAnchor.Start, string.Empty);
+        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 100, 0, 3, 0, 0, 0, SvgTextAnchor.Start, string.Empty);
         RenderBudget budget = new(10_000);
 
         using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AA", snapshot, budget, CancellationToken.None))
