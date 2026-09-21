@@ -56,7 +56,6 @@ internal static class SvgDocumentTraversal
                 else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
                 {
                     SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-                    if (parsedGroup.Scope.IsolatesOpacity && (root.Opacity != 255 || state.HasOpacityScope)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
                     if (!reader.IsEmptyElement)
                     {
                         state.Groups.Add(parsedGroup.Scope);

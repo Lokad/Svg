@@ -11,11 +11,9 @@ internal static class SvgGroupParser
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet);
-        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, namedColors);
-        AxisTransform transform = context.ResolveTransform(reader);
-        SvgGroupKind kind = reader.LocalName == "g" ? SvgGroupKind.Group : SvgGroupKind.Link;
-        SvgInheritedTextStyle inheritedTextStyle = SvgTextInheritance.Resolve(reader, context.InheritedTextStyle, inline.TextFont.Overlay(context.StyleSheet.TextFont), inline.WhiteSpace ?? context.StyleSheet.WhiteSpace, inline.LetterSpacing ?? context.StyleSheet.LetterSpacing);
-        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform), inheritedTextStyle, presentation.Opacity != 255), presentation.Opacity);
+        SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, context.StyleSheet, context.InheritedPresentation, context.InheritedTextStyle, root.Opacity != 255 || state.HasOpacityScope, namedColors);
+        SvgGroupKind kind = SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;
+        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, resolved.Opacity != 255), resolved.Opacity);
     }
 }
 
