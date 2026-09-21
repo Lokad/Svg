@@ -72,7 +72,7 @@ internal static class SvgFontRequestDiscovery
                     if (inherited.Count == 0)
                     {
                         SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, workCounter, cancellationToken);
-                        style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Paint.HasFill, root.InheritedPresentation.Transform, null);
+                        style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.Opacity != 255);
                     }
                     else style = inherited.Peek();
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
@@ -102,11 +102,10 @@ internal static class SvgFontRequestDiscovery
                     }
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
                     {
-                        if (reader.Depth == 0) SvgElementAttributePolicy.ValidateRoot(reader, workCounter, cancellationToken);
-                        else if (reader.LocalName is "g" or "a") SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
+                        if (!rootElement && reader.LocalName is "g" or "a") SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
                     }
                     InlineStyle styleSheet = isSvgElement && reader.LocalName is ("g" or "a" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
-                    if (isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "g" or "a" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken);
+                    if (isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("g" or "a" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken);
                     if (inertDepth < 0 && isSvgElement && reader.LocalName is ("defs" or "title" or "desc" or "metadata") && !reader.IsEmptyElement) inertDepth = reader.Depth;
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null) SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
@@ -161,16 +160,24 @@ internal static class SvgFontRequestDiscovery
     {
         InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inlineStyle, styleSheet);
-        if (reader.LocalName is "svg" or "g" or "a" && computedStyle.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill rules are only implemented on shapes.");
         SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, inlineStyle.TextFont.Overlay(styleSheet.TextFont));
+        AxisTransform transform = inherited.Transform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
+        if (reader.LocalName is "g" or "a")
+        {
+            SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(computedStyle, inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, SvgRootParser.CssNamedColors);
+            if (presentation.Opacity != 255 && inherited.HasOpacityScope) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
+            return new TextStyle(text, presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform, computedStyle.FillRule, inherited.HasOpacityScope || presentation.Opacity != 255);
+        }
+        SvgResolvedShapePresentation textPresentation = SvgShapePresentationResolver.Resolve(computedStyle, inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, false, SvgRootParser.CssNamedColors);
         bool isDisplayed = inherited.IsDisplayed && SvgPresentationResolver.ParseDisplay(computedStyle.Display);
         bool isVisible = SvgPresentationResolver.ParseVisibility(computedStyle.Visibility, inherited.IsVisible);
-        bool hasFill = computedStyle.Fill is null ? inherited.HasFill : !computedStyle.Fill.Equals("none", StringComparison.OrdinalIgnoreCase) && !computedStyle.Fill.Equals("transparent", StringComparison.OrdinalIgnoreCase);
-        AxisTransform transform = inherited.Transform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
-        return new TextStyle(text, isDisplayed, isVisible, hasFill, transform, computedStyle.FillRule);
+        return new TextStyle(text, textPresentation.Paint, isDisplayed, isVisible, transform, computedStyle.FillRule, inherited.HasOpacityScope);
     }
 
-    private readonly record struct TextStyle(SvgInheritedTextStyle Text, bool IsDisplayed, bool IsVisible, bool HasFill, AxisTransform Transform, string? FillRule);
+    private readonly record struct TextStyle(SvgInheritedTextStyle Text, SvgPaint Paint, bool IsDisplayed, bool IsVisible, AxisTransform Transform, string? FillRule, bool HasOpacityScope)
+    {
+        internal bool HasFill => Paint.HasFill;
+    }
 
     private readonly record struct TextRequestKey(string Family, int Weight, bool Italic);
 

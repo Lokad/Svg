@@ -72,9 +72,9 @@ properties, and inline-style properties (`font-family`, `font-weight`,
 `font-style`, `font-size`) within either default limits or caller-supplied input,
 XML depth, attribute, node and work limits through metric validation and program
 integrity verification before doing the same; CSS family lists and text-run
-retention remain unsupported. It validates root viewport and presentation syntax
-before provider access. A snapshot can already be supplied through render options.
-The renderer's experimental direct-text path accepts only direct
+retention remain unsupported. It validates root viewport plus inherited container
+and direct-text presentation/opacity syntax before provider access. A snapshot can
+already be supplied through render options. The renderer's experimental direct-text path accepts only direct
 single-face text/CDATA content; it does not make SVG text a supported feature and
 does not accept spans, positioning lists or general shaping. Its presentation,
 admitted root-stylesheet and inline `style` font subset is `font-family`,
