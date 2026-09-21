@@ -209,10 +209,13 @@ public sealed class SvgTextSyntaxTests
         accepted.Read();
         using XmlReader rejected = XmlReader.Create(new StringReader("<tspan style='font-size: 12'/>"));
         rejected.Read();
+        using XmlReader rejectedSpacing = XmlReader.Create(new StringReader("<tspan style='white-space: pre; letter-spacing: 2'/>"));
+        rejectedSpacing.Read();
 
-        Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(accepted, SvgTextWhitespaceMode.Preserve, new ParserWorkCounter(100), CancellationToken.None, out SvgTextWhitespaceMode mode));
+        Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(accepted, SvgTextWhitespaceMode.Preserve, default, new ParserWorkCounter(100), CancellationToken.None, out SvgTextWhitespaceMode mode));
         Assert.Equal(SvgTextWhitespaceMode.Default, mode);
-        Assert.False(SvgTextSyntax.TryParseTspanWhitespaceMode(rejected, SvgTextWhitespaceMode.Default, new ParserWorkCounter(100), CancellationToken.None, out _));
+        Assert.False(SvgTextSyntax.TryParseTspanWhitespaceMode(rejected, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
+        Assert.False(SvgTextSyntax.TryParseTspanWhitespaceMode(rejectedSpacing, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
     }
 
     [Fact]

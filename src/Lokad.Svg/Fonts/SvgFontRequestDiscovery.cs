@@ -71,9 +71,13 @@ internal static class SvgFontRequestDiscovery
                     nodeCount++;
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
                     bool insideDirectText = activeDirectTextCandidate is not null;
+                    bool directChild = reader.Depth == rootDepth + 1;
+                    bool hasGroupAncestor = groupDepth != 0;
+                    bool parentIsGroup = elementGroups.Count > 0 && elementGroups.Peek();
                     SvgTextWhitespaceMode inheritedWhitespaceMode = directTextWhitespaceModes.Count == 0 ? SvgTextWhitespaceMode.Default : directTextWhitespaceModes.Peek();
                     SvgTextWhitespaceMode childWhitespaceMode = inheritedWhitespaceMode;
-                    bool admittedTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanWhitespaceMode(reader, inheritedWhitespaceMode, workCounter, cancellationToken, out childWhitespaceMode);
+                    InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
+                    bool admittedTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanWhitespaceMode(reader, inheritedWhitespaceMode, tspanStyleSheet, workCounter, cancellationToken, out childWhitespaceMode);
                     if (!admittedTextSpan && activeDirectTextCandidate is not null) activeDirectTextCandidate.HasChildElement = true;
                     bool parentAllowsText = textEligibleChildren.Count == 0 || textEligibleChildren.Peek();
                     bool rootElement = reader.Depth == rootDepth;
@@ -84,9 +88,6 @@ internal static class SvgFontRequestDiscovery
                         style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.Opacity != 255);
                     }
                     else style = inherited.Peek();
-                    bool directChild = reader.Depth == rootDepth + 1;
-                    bool hasGroupAncestor = groupDepth != 0;
-                    bool parentIsGroup = elementGroups.Count > 0 && elementGroups.Peek();
                     bool rootStyleElement = isSvgElement && reader.LocalName == "style" && directChild;
                     if (rootStyleElement)
                     {

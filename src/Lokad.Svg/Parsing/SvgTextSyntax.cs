@@ -221,11 +221,12 @@ internal static class SvgTextSyntax
     }
 
     /// <summary>Recognizes nested whitespace-only tspan declarations and resolves them over the parent mode.</summary>
-    internal static bool TryParseTspanWhitespaceMode(XmlReader reader, SvgTextWhitespaceMode inherited, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgTextWhitespaceMode mode)
+    internal static bool TryParseTspanWhitespaceMode(XmlReader reader, SvgTextWhitespaceMode inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgTextWhitespaceMode mode)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(workCounter);
         mode = inherited;
+        if (HasUnsupportedProperties(styleSheet)) return false;
         string? xmlSpace = null;
         string? whiteSpace = null;
         if (!reader.HasAttributes) return true;
@@ -242,21 +243,22 @@ internal static class SvgTextSyntax
             {
                 if (whiteSpace is not null) { reader.MoveToElement(); mode = inherited; return false; }
                 InlineStyle style = SvgInlineStyleParser.Parse(reader.Value, workCounter, cancellationToken, true);
-                if (!IsWhitespaceOnly(style)) { reader.MoveToElement(); mode = inherited; return false; }
+                if (style.WhiteSpace is null || HasUnsupportedProperties(style)) { reader.MoveToElement(); mode = inherited; return false; }
                 whiteSpace = style.WhiteSpace;
                 continue;
             }
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class") continue;
             reader.MoveToElement();
             mode = inherited;
             return false;
         }
         reader.MoveToElement();
         mode = xmlSpace is null ? inherited : ParseXmlWhitespaceMode(xmlSpace);
-        if (whiteSpace is not null) mode = ParseCssWhitespaceMode(whiteSpace);
+        if ((whiteSpace ?? styleSheet.WhiteSpace) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
         return true;
 
-        static bool IsWhitespaceOnly(InlineStyle style)
-            => style.WhiteSpace is not null && style.Color is null && style.Fill is null && style.FillOpacity is null && style.Stroke is null && style.Display is null && style.Visibility is null && style.Opacity is null && style.FillRule is null && style.TextFont.Family is null && style.TextFont.Weight is null && style.TextFont.Style is null && style.TextFont.Size is null;
+        static bool HasUnsupportedProperties(InlineStyle style)
+            => style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.Display is not null || style.Visibility is not null || style.Opacity is not null || style.FillRule is not null || style.TextFont.Family is not null || style.TextFont.Weight is not null || style.TextFont.Style is not null || style.TextFont.Size is not null || style.LetterSpacing is not null;
     }
 
     private static SvgTextAnchor ParseAnchor(string value)

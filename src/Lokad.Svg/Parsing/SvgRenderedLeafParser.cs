@@ -62,7 +62,7 @@ internal static class SvgRenderedLeafParser
                 if (textElement.Style.FillRule is not null && !textElement.Style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
-                using BudgetedText text = ReadDirectTextContent(reader, whitespaceMode, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, out int sourceCharacterCount, out int childNodeCount);
+                using BudgetedText text = ReadDirectTextContent(reader, state, whitespaceMode, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, out int sourceCharacterCount, out int childNodeCount);
                 state.TextCharacterCount += sourceCharacterCount;
                 state.NodeCount += childNodeCount;
                 if (text.Value.Length == 0) return true;
@@ -83,7 +83,7 @@ internal static class SvgRenderedLeafParser
         }
         return false;
 
-        static BudgetedText ReadDirectTextContent(XmlReader element, SvgTextWhitespaceMode whitespaceMode, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount, out int childNodeCount)
+        static BudgetedText ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount, out int childNodeCount)
         {
             using var text = new BudgetedTextBuffer(budget);
             var normalizer = new SvgTextWhitespaceNormalizer(whitespaceMode);
@@ -138,7 +138,10 @@ internal static class SvgRenderedLeafParser
                     childNodeCount++;
                     if (subtree.AttributeCount > maximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
                     SvgTextWhitespaceMode inheritedWhitespaceMode = whitespaceNormalizers[^1].Mode;
-                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan" || !SvgTextSyntax.TryParseTspanWhitespaceMode(subtree, inheritedWhitespaceMode, workCounter, cancellationToken, out SvgTextWhitespaceMode childWhitespaceMode)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace-only tspan text children are implemented.");
+                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace-only tspan text children are implemented.");
+                    SvgElementAttributePolicy.ValidateTextSpan(subtree, workCounter, cancellationToken);
+                    InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
+                    if (!SvgTextSyntax.TryParseTspanWhitespaceMode(subtree, inheritedWhitespaceMode, styleSheet, workCounter, cancellationToken, out SvgTextWhitespaceMode childWhitespaceMode)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace-only tspan text children are implemented.");
                     if (!subtree.IsEmptyElement) whitespaceNormalizers.Add(new SvgTextWhitespaceNormalizer(childWhitespaceMode));
                     continue;
                 }

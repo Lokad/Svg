@@ -1790,6 +1790,8 @@ public sealed class OpenTypeFontTests
         ReadOnlyMemory<byte> stylesheet = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>g { white-space: pre; }</style><g><text font-family='Example' font-size='100' y='3'>\t</text></g></svg>"u8.ToArray(), options, CancellationToken.None);
         ReadOnlyMemory<byte> textStylesheet = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>#label { white-space: pre; }</style><text id='label' font-family='Example' font-size='100' y='3'>\t</text></svg>"u8.ToArray(), options, CancellationToken.None);
         ReadOnlyMemory<byte> span = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan style='white-space: pre'>\t</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> spanStylesheet = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>#space { white-space: pre; }</style><text font-family='Example' font-size='100' y='3'><tspan id='space'>\t</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> spanInlineOverride = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>#space { white-space: pre; }</style><text font-family='Example' font-size='100' y='3'><tspan id='space' style='white-space: normal'>\t</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None);
         ReadOnlyMemory<byte> cssOverride = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve' style='white-space: normal'>\t</text></svg>"u8.ToArray(), options, CancellationToken.None);
 
         Assert.Equal(expectedPreserved.ToArray(), inline.ToArray());
@@ -1797,6 +1799,8 @@ public sealed class OpenTypeFontTests
         Assert.Equal(expectedPreserved.ToArray(), stylesheet.ToArray());
         Assert.Equal(expectedPreserved.ToArray(), textStylesheet.ToArray());
         Assert.Equal(expectedPreserved.ToArray(), span.ToArray());
+        Assert.Equal(expectedPreserved.ToArray(), spanStylesheet.ToArray());
+        Assert.Equal(expectedDefault.ToArray(), spanInlineOverride.ToArray());
         Assert.Equal(expectedDefault.ToArray(), cssOverride.ToArray());
     }
 
