@@ -37,16 +37,27 @@ public sealed class SvgFontSnapshot : IDisposable
 
     /// <summary>Gets the prepared face selected for one previously prepared family/style request.</summary>
     internal SvgPreparedFont GetFont(SvgFontFaceRequest request)
-        => GetFont(request, string.Empty);
+        => GetFontCore(request, string.Empty, null, CancellationToken.None);
 
     /// <summary>Gets the prepared face selected for one previously prepared family/style request, retaining bounded rendering context on a missing face.</summary>
     internal SvgPreparedFont GetFont(SvgFontFaceRequest request, string sourceElementId)
+        => GetFontCore(request, sourceElementId, null, CancellationToken.None);
+
+    /// <summary>Gets the prepared face while charging each bounded face scan to the containing conversion.</summary>
+    internal SvgPreparedFont GetFont(SvgFontFaceRequest request, string sourceElementId, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(workCounter);
+        return GetFontCore(request, sourceElementId, workCounter, cancellationToken);
+    }
+
+    private SvgPreparedFont GetFontCore(SvgFontFaceRequest request, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(sourceElementId);
         ThrowIfDisposed();
         foreach (SvgPreparedFont font in _fonts)
         {
+            workCounter?.Consume(cancellationToken);
             SvgFontFaceRequest selected = font.Resolution.Resolution.Request;
             if (selected.Weight == request.Weight && selected.Italic == request.Italic && selected.Family.Equals(request.Family, StringComparison.OrdinalIgnoreCase)) return font;
         }

@@ -1650,6 +1650,21 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Snapshot_font_lookup_charges_each_scanned_prepared_face()
+    {
+        byte[] regular = CreateFont(1024, 3, 2, 1);
+        byte[] bold = CreateFont(1024, 3, 2, 1);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(regular), CreateResolution(bold, 700)], CancellationToken.None);
+
+        SvgException exception = Assert.Throws<SvgException>(() => snapshot.GetFont(new SvgFontFaceRequest("Example", 700, false), string.Empty, new ParserWorkCounter(1), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+        Assert.Throws<OperationCanceledException>(() => snapshot.GetFont(new SvgFontFaceRequest("Example", 700, false), string.Empty, new ParserWorkCounter(2), cancellation.Token));
+    }
+
+    [Fact]
     public async Task Render_options_retain_the_caller_owned_font_snapshot()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -2153,12 +2168,12 @@ public sealed class OpenTypeFontTests
 
         using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(limits.MaximumAccountedBytes), snapshot, CancellationToken.None);
 
-        Assert.Equal(60, root.ParserWorkUnits);
-        SvgRenderLimits exactLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 60);
+        Assert.Equal(61, root.ParserWorkUnits);
+        SvgRenderLimits exactLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 61);
         using SvgRoot exact = SvgRootParser.Parse(svg, exactLimits, new RenderBudget(exactLimits.MaximumAccountedBytes), snapshot, CancellationToken.None);
 
-        Assert.Equal(60, exact.ParserWorkUnits);
-        SvgRenderLimits deniedLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 59);
+        Assert.Equal(61, exact.ParserWorkUnits);
+        SvgRenderLimits deniedLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 60);
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, new RenderBudget(deniedLimits.MaximumAccountedBytes), snapshot, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
@@ -2567,11 +2582,14 @@ public sealed class OpenTypeFontTests
     }
 
     private static SvgFontProgramResolution CreateResolution(byte[] bytes)
+        => CreateResolution(bytes, 400);
+
+    private static SvgFontProgramResolution CreateResolution(byte[] bytes, int weight)
     {
         string hash = Convert.ToHexString(SHA256.HashData(bytes));
-        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\", \"weight\": " + weight + " }] }";
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
-        return catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new SvgMemoryFontProgramSource("caller-font", bytes));
+        return catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", weight, false)), new SvgMemoryFontProgramSource("caller-font", bytes));
     }
 
     private static byte[] CreateTriangleFont()

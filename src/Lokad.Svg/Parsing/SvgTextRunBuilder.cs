@@ -14,7 +14,7 @@ internal static class SvgTextRunBuilder
     {
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(snapshot);
-        SvgPreparedFont font = snapshot.GetFont(style.Font, style.SourceElementId);
+        SvgPreparedFont font = workCounter is null ? snapshot.GetFont(style.Font, style.SourceElementId) : snapshot.GetFont(style.Font, style.SourceElementId, workCounter, cancellationToken);
         double originX = style.X + style.Dx;
         double originY = style.Y + style.Dy;
         if (!double.IsFinite(originX) || !double.IsFinite(originY))
