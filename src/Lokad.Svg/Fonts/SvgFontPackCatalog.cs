@@ -119,7 +119,15 @@ public sealed class SvgFontPackCatalog
     {
         ArgumentNullException.ThrowIfNull(resolution);
         ArgumentNullException.ThrowIfNull(source);
-        if (!_faces.Contains(resolution.Face)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
+        return Bind(resolution, source, null, CancellationToken.None);
+    }
+
+    /// <summary>Binds a catalog resolution while metering the provenance scan against the calling preparation operation.</summary>
+    internal SvgFontProgramResolution Bind(SvgFontPackResolution resolution, ISvgFontProgramSource source, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(resolution);
+        ArgumentNullException.ThrowIfNull(source);
+        if (!ContainsFace(resolution.Face, workCounter, cancellationToken)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
         return new SvgFontProgramResolution(resolution, new VerifiedSvgFontProgramSource(PackId, resolution.Face, source));
     }
 
@@ -132,7 +140,7 @@ public sealed class SvgFontPackCatalog
     {
         ArgumentNullException.ThrowIfNull(resolution);
         ArgumentNullException.ThrowIfNull(provider);
-        if (!_faces.Contains(resolution.Face)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
+        if (!ContainsFace(resolution.Face, null, cancellationToken)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
         cancellationToken.ThrowIfCancellationRequested();
         ValueTask<ISvgFontProgramSource?> pending;
         try { pending = provider.GetSourceAsync(resolution.Face.File, cancellationToken); }
@@ -149,7 +157,7 @@ public sealed class SvgFontPackCatalog
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (source is null) throw SvgFontSourceFailures.Create(resolution, SvgErrorCode.UnresolvedResource);
-        SvgFontProgramResolution bound = Bind(resolution, source);
+        SvgFontProgramResolution bound = Bind(resolution, source, null, cancellationToken);
         ValueTask<ReadOnlyMemory<byte>> verification;
         try { verification = ((VerifiedSvgFontProgramSource)bound.Source).GetBytesAsync(null, cancellationToken); }
         catch (SvgFontProgramSourceFailure exception)
@@ -241,6 +249,18 @@ public sealed class SvgFontPackCatalog
             if (!fallbacks.Contains(family, StringComparer.OrdinalIgnoreCase)) fallbacks.Add(family);
         }
         return fallbacks.ToArray();
+    }
+
+    /// <summary>Proves face provenance with a bounded reference-identity scan, metering each candidate like the selection scans.</summary>
+    private bool ContainsFace(SvgFontPackFace face, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        foreach (SvgFontPackFace candidate in _faces)
+        {
+            Consume(workCounter, cancellationToken);
+            if (ReferenceEquals(candidate, face)) return true;
+        }
+
+        return false;
     }
 
     private SvgFontPackFace? SelectFamily(string family, SvgFontFaceRequest request, ParserWorkCounter? workCounter, CancellationToken cancellationToken)

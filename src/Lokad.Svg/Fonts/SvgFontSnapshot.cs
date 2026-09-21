@@ -176,7 +176,7 @@ public sealed class SvgFontSnapshot : IDisposable
                 if (source is null) throw SvgFontSourceFailures.Create(selection, SvgErrorCode.UnresolvedResource);
                 sources.Add(programKey, source);
             }
-            resolutions[index] = catalog.Bind(selection, source);
+            resolutions[index] = catalog.Bind(selection, source, workCounter, cancellationToken);
         }
         return await CreateAsync(resolutions, workCounter, cancellationToken).ConfigureAwait(false);
     }

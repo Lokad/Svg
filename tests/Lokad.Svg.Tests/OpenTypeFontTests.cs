@@ -1118,6 +1118,72 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Bind_meters_the_provenance_scan_per_face()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+                string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }, { \"requestedFamily\": \"Alias\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+        SvgFontPackResolution first = catalog.Resolve(new SvgFontFaceRequest("Example", 400, false));
+        SvgFontPackResolution second = catalog.Resolve(new SvgFontFaceRequest("Alias", 400, false));
+        ParserWorkCounter firstCounter = new(100);
+        ParserWorkCounter secondCounter = new(100);
+
+        catalog.Bind(first, source, firstCounter, CancellationToken.None);
+        catalog.Bind(second, source, secondCounter, CancellationToken.None);
+
+        Assert.Equal(1, firstCounter.Used);
+        Assert.Equal(2, secondCounter.Used);
+    }
+
+    [Fact]
+    public void Bind_rejects_a_foreign_face_after_metering_the_full_scan()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+                string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }, { \"requestedFamily\": \"Alias\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        byte[] manifestBytes = System.Text.Encoding.UTF8.GetBytes(manifest);
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(manifestBytes, "test-pack");
+        SvgFontPackCatalog other = SvgFontPackCatalog.Parse(manifestBytes, "test-pack");
+        SvgFontPackResolution foreign = other.Resolve(new SvgFontFaceRequest("Example", 400, false));
+        ParserWorkCounter workCounter = new(100);
+
+        Assert.Throws<ArgumentException>(() => catalog.Bind(foreign, new CountingFontSource(bytes), workCounter, CancellationToken.None));
+
+        Assert.Equal(2, workCounter.Used);
+    }
+
+    [Fact]
+    public void Bind_observes_cancellation_during_the_provenance_scan()
+    {
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        SvgFontPackResolution selection = catalog.Resolve(new SvgFontFaceRequest("Example", 400, false));
+        using CancellationTokenSource cancelled = new();
+        cancelled.Cancel();
+
+        Assert.Throws<OperationCanceledException>(() => catalog.Bind(selection, source, new ParserWorkCounter(100), cancelled.Token));
+    }
+
+    [Fact]
+    public async Task AcquireAsync_observes_cancellation_before_reporting_a_foreign_face()
+    {
+        byte[] bytes = CreateTriangleFont();
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+                string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        byte[] manifestBytes = System.Text.Encoding.UTF8.GetBytes(manifest);
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(manifestBytes, "test-pack");
+        SvgFontPackCatalog other = SvgFontPackCatalog.Parse(manifestBytes, "test-pack");
+        SvgFontPackResolution foreign = other.Resolve(new SvgFontFaceRequest("Example", 400, false));
+        var source = new CountingFontSource(bytes);
+        var provider = new CountingFontProvider(source);
+        using CancellationTokenSource cancelled = new();
+        cancelled.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await catalog.AcquireAsync(foreign, provider, cancelled.Token));
+    }
+
+    [Fact]
     public async Task Request_based_snapshot_reports_a_bounded_missing_source_diagnostic()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
