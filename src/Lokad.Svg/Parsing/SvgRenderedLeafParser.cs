@@ -94,8 +94,9 @@ internal static class SvgRenderedLeafParser
                 return text.Detach();
             }
             childNodeCount = 0;
-            using var whitespaceModes = new BudgetedParserList<SvgTextWhitespaceMode>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-            whitespaceModes.Add(whitespaceMode);
+            sourceCharacterCount = 0;
+            using var whitespaceNormalizers = new BudgetedParserList<SvgTextWhitespaceNormalizer>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+            whitespaceNormalizers.Add(new SvgTextWhitespaceNormalizer(whitespaceMode));
             using RenderBudget.BudgetReservation chunkReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount(4_096, sizeof(char)), SvgMemoryCategory.Parser);
             char[] chunk = new char[4_096];
             using XmlReader subtree = element.ReadSubtree();
@@ -108,7 +109,25 @@ internal static class SvgRenderedLeafParser
                     do
                     {
                         read = subtree.ReadValueChunk(chunk, 0, chunk.Length);
-                        if (read != 0) normalizer.Append(chunk.AsSpan(0, read), whitespaceModes[^1], text, maximumCharacters, workCounter, cancellationToken);
+                        if (read != 0)
+                        {
+                            if (read > maximumCharacters - sourceCharacterCount) throw new SvgException(SvgErrorCode.LimitExceeded, "The document direct text character count exceeds the admitted layout limit.");
+                            sourceCharacterCount += read;
+                            int currentScope = whitespaceNormalizers.Count - 1;
+                            SvgTextWhitespaceNormalizer current = whitespaceNormalizers[currentScope];
+                            bool introducesOutput = !current.HasOutput && (current.Mode == SvgTextWhitespaceMode.Preserve ? SvgTextWhitespaceNormalizer.HasText(chunk.AsSpan(0, read), workCounter, cancellationToken) : SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken));
+                            if (introducesOutput)
+                            {
+                                for (int ancestorScope = 0; ancestorScope < currentScope; ancestorScope++)
+                                {
+                                    SvgTextWhitespaceNormalizer ancestor = whitespaceNormalizers[ancestorScope];
+                                    ancestor.ObserveChildContent(text, maximumCharacters, workCounter, cancellationToken);
+                                    whitespaceNormalizers[ancestorScope] = ancestor;
+                                }
+                            }
+                            current.Append(chunk.AsSpan(0, read), text, maximumCharacters, workCounter, cancellationToken);
+                            whitespaceNormalizers[currentScope] = current;
+                        }
                     } while (read != 0);
                     continue;
                 }
@@ -118,13 +137,18 @@ internal static class SvgRenderedLeafParser
                     if (childNodeCount >= remainingNodeCount) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     childNodeCount++;
                     if (subtree.AttributeCount > maximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
-                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan" || !SvgTextSyntax.TryParseTspanWhitespaceMode(subtree, whitespaceModes[^1], out SvgTextWhitespaceMode childWhitespaceMode)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only attribute-free or xml:space=\"preserve\" tspan text children are implemented.");
-                    if (!subtree.IsEmptyElement) whitespaceModes.Add(childWhitespaceMode);
+                    SvgTextWhitespaceMode inheritedWhitespaceMode = whitespaceNormalizers[^1].Mode;
+                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan" || !SvgTextSyntax.TryParseTspanWhitespaceMode(subtree, inheritedWhitespaceMode, out SvgTextWhitespaceMode childWhitespaceMode)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only attribute-free or xml:space tspan text children are implemented.");
+                    if (!subtree.IsEmptyElement) whitespaceNormalizers.Add(new SvgTextWhitespaceNormalizer(childWhitespaceMode));
                     continue;
                 }
-                if (subtree.NodeType == XmlNodeType.EndElement && subtree.Depth != 0) whitespaceModes.RemoveLast();
+                if (subtree.NodeType == XmlNodeType.EndElement && subtree.Depth != 0)
+                {
+                    SvgTextWhitespaceNormalizer current = whitespaceNormalizers[^1];
+                    current.CompleteElement();
+                    whitespaceNormalizers.RemoveLast();
+                }
             }
-            sourceCharacterCount = normalizer.SourceCharacterCount;
             return text.Detach();
         }
     }

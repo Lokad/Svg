@@ -1762,12 +1762,13 @@ public sealed class OpenTypeFontTests
 
         ReadOnlyMemory<byte> nestedInherited = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'><tspan>\t\t</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None);
         ReadOnlyMemory<byte> nestedPreserve = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'><tspan xml:space='preserve'>\t\t</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None);
-        SvgException defaultOverride = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'><tspan xml:space='default'> </tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
+        ReadOnlyMemory<byte> defaultOverride = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'><tspan xml:space='default'> </tspan></text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> expectedDefault = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'/></svg>"u8.ToArray(), options, CancellationToken.None);
         SvgException invalid = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'><tspan xml:space='collapse'>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
 
         Assert.Equal(expectedPreserved.ToArray(), nestedInherited.ToArray());
         Assert.Equal(expectedPreserved.ToArray(), nestedPreserve.ToArray());
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, defaultOverride.ErrorCode);
+        Assert.Equal(expectedDefault.ToArray(), defaultOverride.ToArray());
         Assert.Equal(SvgErrorCode.MalformedInput, invalid.ErrorCode);
     }
 
@@ -2201,12 +2202,12 @@ public sealed class OpenTypeFontTests
 
         using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(limits.MaximumAccountedBytes), snapshot, CancellationToken.None);
 
-        Assert.Equal(66, root.ParserWorkUnits);
-        SvgRenderLimits exactLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 66);
+        Assert.Equal(67, root.ParserWorkUnits);
+        SvgRenderLimits exactLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 67);
         using SvgRoot exact = SvgRootParser.Parse(svg, exactLimits, new RenderBudget(exactLimits.MaximumAccountedBytes), snapshot, CancellationToken.None);
 
-        Assert.Equal(66, exact.ParserWorkUnits);
-        SvgRenderLimits deniedLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 65);
+        Assert.Equal(67, exact.ParserWorkUnits);
+        SvgRenderLimits deniedLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 66);
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, new RenderBudget(deniedLimits.MaximumAccountedBytes), snapshot, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);

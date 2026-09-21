@@ -24,6 +24,12 @@ internal struct SvgTextWhitespaceNormalizer
     /// <summary>Gets the number of source UTF-16 characters consumed before normalization.</summary>
     internal int SourceCharacterCount => _sourceCharacterCount;
 
+    /// <summary>Gets whether this element has emitted normalized text content.</summary>
+    internal bool HasOutput => _hasOutput;
+
+    /// <summary>Gets this element's inherited XML whitespace mode.</summary>
+    internal SvgTextWhitespaceMode Mode => _mode;
+
     /// <summary>Initializes a normalizer for one direct text element's admitted XML whitespace mode.</summary>
     internal SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode mode) => _mode = mode;
 
@@ -81,6 +87,16 @@ internal struct SvgTextWhitespaceNormalizer
         _hasPendingWhitespace = false;
         _hasOutput = true;
     }
+
+    /// <summary>Commits whitespace before a child element that has emitted visible text.</summary>
+    internal void ObserveChildContent(BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        FlushPendingWhitespace(output, maximumSourceCharacters, workCounter, cancellationToken, true);
+        _hasOutput = true;
+    }
+
+    /// <summary>Discards default-mode whitespace trailing this element's own character data.</summary>
+    internal void CompleteElement() => _hasPendingWhitespace = false;
 
     private static void AppendPreservedChunk(ReadOnlySpan<char> value, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -177,7 +193,7 @@ internal static class SvgTextSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only default and preserve xml:space values are supported for direct text.");
     }
 
-    /// <summary>Recognizes the sole nested direct-text override currently admitted: xml:space="preserve".</summary>
+    /// <summary>Recognizes the nested direct-text xml:space overrides currently admitted.</summary>
     internal static bool TryParseTspanWhitespaceMode(XmlReader reader, SvgTextWhitespaceMode inherited, out SvgTextWhitespaceMode mode)
     {
         ArgumentNullException.ThrowIfNull(reader);
@@ -185,6 +201,11 @@ internal static class SvgTextSyntax
         if (!reader.HasAttributes) return true;
         if (reader.AttributeCount != 1) return false;
         string? value = reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace");
+        if (value == "default")
+        {
+            mode = SvgTextWhitespaceMode.Default;
+            return true;
+        }
         if (value == "preserve")
         {
             mode = SvgTextWhitespaceMode.Preserve;
