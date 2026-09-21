@@ -155,7 +155,7 @@ public sealed class SvgFontSnapshot : IDisposable
         {
             Consume(workCounter, cancellationToken);
             SvgFontFaceRequest request = requests[index] ?? throw new ArgumentException("The font request list contains a null request.", nameof(requests));
-            selections[index] = workCounter is null ? catalog.Resolve(request) : catalog.Resolve(request, workCounter, cancellationToken);
+            selections[index] = workCounter is null ? catalog.Resolve(request, cancellationToken) : catalog.Resolve(request, workCounter, cancellationToken);
         }
         ValidateSelections(selections, workCounter, cancellationToken);
         var sources = new Dictionary<string, ISvgFontProgramSource>(StringComparer.Ordinal);

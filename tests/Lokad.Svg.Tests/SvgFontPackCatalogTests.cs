@@ -100,6 +100,7 @@ public sealed class SvgFontPackCatalogTests
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
         Assert.Throws<OperationCanceledException>(() => catalog.Resolve(new SvgFontFaceRequest("Alias", 700, false), new ParserWorkCounter(10), cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => catalog.Resolve(new SvgFontFaceRequest("Alias", 700, false), cancellation.Token));
     }
 
     [Theory]

@@ -89,13 +89,20 @@ public sealed class SvgFontPackCatalog
         return ResolveCore(request, workCounter, cancellationToken);
     }
 
+    /// <summary>Resolves one request while observing cancellation at every bounded candidate scan.</summary>
+    internal SvgFontPackResolution Resolve(SvgFontFaceRequest request, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        return ResolveCore(request, null, cancellationToken);
+    }
+
     private SvgFontPackResolution ResolveCore(SvgFontFaceRequest request, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         SvgFontPackFace? exact = SelectFamily(request.Family, request, workCounter, cancellationToken);
         if (exact is not null) return new SvgFontPackResolution(request, exact, false);
         foreach (string fallback in _fallbackFamilies)
         {
-            workCounter?.Consume(cancellationToken);
+            Consume(workCounter, cancellationToken);
             SvgFontPackFace? candidate = SelectFamily(fallback, request, workCounter, cancellationToken);
             if (candidate is not null) return new SvgFontPackResolution(request, candidate, true);
         }
@@ -241,7 +248,7 @@ public sealed class SvgFontPackCatalog
         SvgFontPackFace? selected = null;
         foreach (SvgFontPackFace candidate in _faces)
         {
-            workCounter?.Consume(cancellationToken);
+            Consume(workCounter, cancellationToken);
             if (!MatchesFamily(candidate, family)) continue;
             if (selected is null || IsBetter(candidate, selected, request)) selected = candidate;
         }
@@ -253,7 +260,7 @@ public sealed class SvgFontPackCatalog
         SvgFontPackFace? selected = null;
         foreach (SvgFontPackFace candidate in _faces)
         {
-            workCounter?.Consume(cancellationToken);
+            Consume(workCounter, cancellationToken);
             if (excludesMath && candidate.HasMathTable) continue;
             if (selected is null || IsBetter(candidate, selected, request)) selected = candidate;
         }
@@ -273,6 +280,12 @@ public sealed class SvgFontPackCatalog
         comparison = StringComparer.Ordinal.Compare(candidate.File.RelativePath, selected.File.RelativePath);
         if (comparison != 0) return comparison < 0;
         return candidate.FaceIndex < selected.FaceIndex;
+    }
+
+    private static void Consume(ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        if (workCounter is null) cancellationToken.ThrowIfCancellationRequested();
+        else workCounter.Consume(cancellationToken);
     }
 
     private static bool MatchesFamily(SvgFontPackFace face, string family)
