@@ -2627,6 +2627,28 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Text_run_releases_the_cached_outline_when_its_enumerator_stops_early()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var style = new SvgTextStyle(new SvgFontFaceRequest("Example", 400, false), 100, 0, 3, 0, 0, SvgTextAnchor.Start, string.Empty);
+        RenderBudget budget = new(10_000);
+
+        using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AA", snapshot, budget, CancellationToken.None))
+        {
+            long glyphStorageBytes = budget.Snapshot().CurrentBytes;
+            using (IEnumerator<SvgGlyphContourStorage> contours = SvgTextRunBuilder.GetGlyphContours(run, budget, new ParserWorkCounter(long.MaxValue), CancellationToken.None).GetEnumerator())
+            {
+                Assert.True(contours.MoveNext());
+                using SvgGlyphContourStorage first = contours.Current;
+                Assert.NotEmpty(first.Contours);
+            }
+            Assert.Equal(glyphStorageBytes, budget.Snapshot().CurrentBytes);
+        }
+
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Converts_glyph_outlines_from_font_units_to_svg_coordinates()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
