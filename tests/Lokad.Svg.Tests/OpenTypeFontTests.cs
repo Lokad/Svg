@@ -1016,7 +1016,37 @@ public sealed class OpenTypeFontTests
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None));
 
         Assert.Equal(errorCode, exception.ErrorCode);
-        Assert.Equal(SvgFontFailureStage.Source, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+        Assert.DoesNotContain("private-source-detail", exception.Message, StringComparison.Ordinal);
+        SvgFontDiagnostic diagnostic = Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic);
+        Assert.Equal(SvgFontFailureStage.Source, diagnostic.Stage);
+        Assert.Equal("Example", diagnostic.RequestedFamily);
+        Assert.Equal("Example", diagnostic.ResolvedFamily);
+        Assert.Equal("files/example.ttf:0", diagnostic.FaceIdentity);
+        Assert.Empty(diagnostic.SourceElementId);
+    }
+
+    [Theory]
+    [InlineData(SvgErrorCode.UnresolvedResource, false)]
+    [InlineData(SvgErrorCode.UnresolvedResource, true)]
+    [InlineData(SvgErrorCode.LimitExceeded, false)]
+    [InlineData(SvgErrorCode.LimitExceeded, true)]
+    public async Task Snapshot_classifies_provider_failures_by_origin(SvgErrorCode errorCode, bool throwsSynchronously)
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(catalog, [new SvgFontFaceRequest("Example", 400, false)], new FailingFontProvider(errorCode, throwsSynchronously), CancellationToken.None));
+
+        Assert.Equal(errorCode, exception.ErrorCode);
+        Assert.DoesNotContain("private-provider-detail", exception.Message, StringComparison.Ordinal);
+        SvgFontDiagnostic diagnostic = Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic);
+        Assert.Equal(SvgFontFailureStage.Source, diagnostic.Stage);
+        Assert.Equal("Example", diagnostic.RequestedFamily);
+        Assert.Equal("Example", diagnostic.ResolvedFamily);
+        Assert.Equal("files/example.ttf:0", diagnostic.FaceIdentity);
+        Assert.Empty(diagnostic.SourceElementId);
     }
 
     [Fact]
@@ -2417,8 +2447,17 @@ public sealed class OpenTypeFontTests
 
         public ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken)
         {
-            if (throwsSynchronously) throw new SvgException(errorCode, "The caller-provided font source failed.");
-            return ValueTask.FromException<ReadOnlyMemory<byte>>(new SvgException(errorCode, "The caller-provided font source failed."));
+            if (throwsSynchronously) throw new SvgException(errorCode, "private-source-detail");
+            return ValueTask.FromException<ReadOnlyMemory<byte>>(new SvgException(errorCode, "private-source-detail"));
+        }
+    }
+
+    private sealed class FailingFontProvider(SvgErrorCode errorCode, bool throwsSynchronously) : ISvgFontProgramSourceProvider
+    {
+        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
+        {
+            if (throwsSynchronously) throw new SvgException(errorCode, "private-provider-detail");
+            return ValueTask.FromException<ISvgFontProgramSource?>(new SvgException(errorCode, "private-provider-detail"));
         }
     }
 

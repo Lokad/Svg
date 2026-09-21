@@ -100,6 +100,52 @@ public sealed class SvgFontProgramSourceTests
         Assert.Empty(diagnostic.SourceElementId);
     }
 
+    [Theory]
+    [InlineData(SvgErrorCode.UnresolvedResource, false)]
+    [InlineData(SvgErrorCode.UnresolvedResource, true)]
+    [InlineData(SvgErrorCode.LimitExceeded, false)]
+    [InlineData(SvgErrorCode.LimitExceeded, true)]
+    public async Task Acquisition_classifies_provider_failures_by_origin(SvgErrorCode errorCode, bool throwsSynchronously)
+    {
+        SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await catalog.AcquireAsync(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new FailingProvider(errorCode, throwsSynchronously), CancellationToken.None));
+
+        Assert.Equal(errorCode, exception.ErrorCode);
+        Assert.DoesNotContain("private-provider-detail", exception.Message, StringComparison.Ordinal);
+        SvgFontDiagnostic diagnostic = Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic);
+        Assert.Equal(SvgFontFailureStage.Source, diagnostic.Stage);
+        Assert.Equal("Example", diagnostic.RequestedFamily);
+        Assert.Equal("Example", diagnostic.ResolvedFamily);
+        Assert.Equal("files/example.ttf:0", diagnostic.FaceIdentity);
+        Assert.Empty(diagnostic.SourceElementId);
+    }
+
+    [Theory]
+    [InlineData(SvgErrorCode.UnresolvedResource, false)]
+    [InlineData(SvgErrorCode.UnresolvedResource, true)]
+    [InlineData(SvgErrorCode.LimitExceeded, false)]
+    [InlineData(SvgErrorCode.LimitExceeded, true)]
+    public async Task Acquisition_classifies_bound_source_failures_by_origin(SvgErrorCode errorCode, bool throwsSynchronously)
+    {
+        SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
+        var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>
+        {
+            ["files/example.ttf"] = new FailingSource(errorCode, throwsSynchronously),
+        });
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await catalog.AcquireAsync(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), provider, CancellationToken.None));
+
+        Assert.Equal(errorCode, exception.ErrorCode);
+        Assert.DoesNotContain("private-source-detail", exception.Message, StringComparison.Ordinal);
+        SvgFontDiagnostic diagnostic = Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic);
+        Assert.Equal(SvgFontFailureStage.Source, diagnostic.Stage);
+        Assert.Equal("Example", diagnostic.RequestedFamily);
+        Assert.Equal("Example", diagnostic.ResolvedFamily);
+        Assert.Equal("files/example.ttf:0", diagnostic.FaceIdentity);
+        Assert.Empty(diagnostic.SourceElementId);
+    }
+
     [Fact]
     public async Task Acquisition_preserves_cancellation_when_provider_ignores_it()
     {
@@ -144,5 +190,25 @@ public sealed class SvgFontProgramSourceTests
     {
         public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
             => ValueTask.FromResult<ISvgFontProgramSource?>(new IgnoringCancellationSource(bytes));
+    }
+
+    private sealed class FailingProvider(SvgErrorCode errorCode, bool throwsSynchronously) : ISvgFontProgramSourceProvider
+    {
+        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
+        {
+            if (throwsSynchronously) throw new SvgException(errorCode, "private-provider-detail");
+            return ValueTask.FromException<ISvgFontProgramSource?>(new SvgException(errorCode, "private-provider-detail"));
+        }
+    }
+
+    private sealed class FailingSource(SvgErrorCode errorCode, bool throwsSynchronously) : ISvgFontProgramSource
+    {
+        public string StableId => "failing-source";
+
+        public ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken)
+        {
+            if (throwsSynchronously) throw new SvgException(errorCode, "private-source-detail");
+            return ValueTask.FromException<ReadOnlyMemory<byte>>(new SvgException(errorCode, "private-source-detail"));
+        }
     }
 }

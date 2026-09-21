@@ -113,7 +113,12 @@ public sealed class SvgFontPackCatalog
         ArgumentNullException.ThrowIfNull(provider);
         if (!_faces.Contains(resolution.Face)) throw new ArgumentException("The font-pack resolution does not belong to this catalog.", nameof(resolution));
         cancellationToken.ThrowIfCancellationRequested();
-        ValueTask<ISvgFontProgramSource?> pending = provider.GetSourceAsync(resolution.Face.File, cancellationToken);
+        ValueTask<ISvgFontProgramSource?> pending;
+        try { pending = provider.GetSourceAsync(resolution.Face.File, cancellationToken); }
+        catch (SvgException exception)
+        {
+            throw SvgFontSourceFailures.Create(resolution, exception.ErrorCode);
+        }
         return pending.IsCompletedSuccessfully
             ? AcquireResolved(resolution, pending.Result, cancellationToken)
             : AwaitAcquireAsync(resolution, pending, cancellationToken);
@@ -122,25 +127,50 @@ public sealed class SvgFontPackCatalog
     private ValueTask<SvgFontProgramResolution> AcquireResolved(SvgFontPackResolution resolution, ISvgFontProgramSource? source, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        if (source is null) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program is unavailable from the supplied provider.", new SvgFontDiagnostic(SvgFontFailureStage.Source, resolution.Request.Family, resolution.Face.ResolvedFamily, resolution.Face.File.RelativePath + ":" + resolution.Face.FaceIndex, string.Empty));
+        if (source is null) throw SvgFontSourceFailures.Create(resolution, SvgErrorCode.UnresolvedResource);
         SvgFontProgramResolution bound = Bind(resolution, source);
-        ValueTask<ReadOnlyMemory<byte>> verification = bound.Source.GetBytesAsync(cancellationToken);
+        ValueTask<ReadOnlyMemory<byte>> verification;
+        try { verification = ((VerifiedSvgFontProgramSource)bound.Source).GetBytesAsync(null, cancellationToken); }
+        catch (SvgFontProgramSourceFailure exception)
+        {
+            throw SvgFontSourceFailures.Create(resolution, exception.SourceException.ErrorCode);
+        }
+        catch (SvgException exception)
+        {
+            throw CreateIntegrityFailure(resolution, exception);
+        }
         return verification.IsCompletedSuccessfully
             ? ValueTask.FromResult(bound)
-            : AwaitVerificationAsync(bound, verification);
+            : AwaitVerificationAsync(resolution, bound, verification);
     }
 
     private async ValueTask<SvgFontProgramResolution> AwaitAcquireAsync(SvgFontPackResolution resolution, ValueTask<ISvgFontProgramSource?> pending, CancellationToken cancellationToken)
     {
-        ISvgFontProgramSource? source = await pending.ConfigureAwait(false);
+        ISvgFontProgramSource? source;
+        try { source = await pending.ConfigureAwait(false); }
+        catch (SvgException exception)
+        {
+            throw SvgFontSourceFailures.Create(resolution, exception.ErrorCode);
+        }
         return await AcquireResolved(resolution, source, cancellationToken).ConfigureAwait(false);
     }
 
-    private static async ValueTask<SvgFontProgramResolution> AwaitVerificationAsync(SvgFontProgramResolution bound, ValueTask<ReadOnlyMemory<byte>> verification)
+    private static async ValueTask<SvgFontProgramResolution> AwaitVerificationAsync(SvgFontPackResolution resolution, SvgFontProgramResolution bound, ValueTask<ReadOnlyMemory<byte>> verification)
     {
-        await verification.ConfigureAwait(false);
+        try { await verification.ConfigureAwait(false); }
+        catch (SvgFontProgramSourceFailure exception)
+        {
+            throw SvgFontSourceFailures.Create(resolution, exception.SourceException.ErrorCode);
+        }
+        catch (SvgException exception)
+        {
+            throw CreateIntegrityFailure(resolution, exception);
+        }
         return bound;
     }
+
+    private static SvgException CreateIntegrityFailure(SvgFontPackResolution resolution, SvgException exception)
+        => new(exception.ErrorCode, exception.Message, new SvgFontDiagnostic(SvgFontFailureStage.Integrity, resolution.Request.Family, resolution.Face.ResolvedFamily, resolution.Face.File.RelativePath + ":" + resolution.Face.FaceIndex, string.Empty));
 
     private static SvgFontPackFile[] ParseFiles(WireFile[]? entries)
     {

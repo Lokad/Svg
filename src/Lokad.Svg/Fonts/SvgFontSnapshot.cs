@@ -82,8 +82,7 @@ public sealed class SvgFontSnapshot : IDisposable
                 try { loadedBytes = await GetVerifiedBytesAsync(resolution.Source, workCounter, cancellationToken).ConfigureAwait(false); }
                 catch (SvgFontProgramSourceFailure exception)
                 {
-                    SvgException sourceException = exception.SourceException;
-                    throw new SvgException(sourceException.ErrorCode, sourceException.Message, CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Source));
+                    throw SvgFontSourceFailures.Create(resolution.Resolution, exception.SourceException.ErrorCode);
                 }
                 catch (SvgException exception) when (exception.FontDiagnostic is null)
                 {
@@ -157,9 +156,13 @@ public sealed class SvgFontSnapshot : IDisposable
             string programKey = selection.Face.File.Sha256;
             if (!sources.TryGetValue(programKey, out ISvgFontProgramSource? source))
             {
-                source = await provider.GetSourceAsync(selection.Face.File, cancellationToken).ConfigureAwait(false);
+                try { source = await provider.GetSourceAsync(selection.Face.File, cancellationToken).ConfigureAwait(false); }
+                catch (SvgException exception)
+                {
+                    throw SvgFontSourceFailures.Create(selection, exception.ErrorCode);
+                }
                 cancellationToken.ThrowIfCancellationRequested();
-                if (source is null) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program is unavailable from the supplied provider.", new SvgFontDiagnostic(SvgFontFailureStage.Source, selection.Request.Family, selection.Face.ResolvedFamily, selection.Face.File.RelativePath + ":" + selection.Face.FaceIndex, string.Empty));
+                if (source is null) throw SvgFontSourceFailures.Create(selection, SvgErrorCode.UnresolvedResource);
                 sources.Add(programKey, source);
             }
             resolutions[index] = catalog.Bind(selection, source);

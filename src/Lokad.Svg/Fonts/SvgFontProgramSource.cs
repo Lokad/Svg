@@ -89,7 +89,7 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
         {
             pending = source.GetBytesAsync(cancellationToken);
         }
-        catch (SvgException exception) when (classifySourceFailure && exception.FontDiagnostic is null)
+        catch (SvgException exception) when (classifySourceFailure)
         {
             throw new SvgFontProgramSourceFailure(exception);
         }
@@ -105,7 +105,7 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
     {
         ReadOnlyMemory<byte> bytes;
         try { bytes = await pending.ConfigureAwait(false); }
-        catch (SvgException exception) when (classifySourceFailure && exception.FontDiagnostic is null)
+        catch (SvgException exception) when (classifySourceFailure)
         {
             throw new SvgFontProgramSourceFailure(exception);
         }
@@ -126,6 +126,13 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
 internal sealed class SvgFontProgramSourceFailure(SvgException sourceException) : Exception(sourceException.Message, sourceException)
 {
     internal SvgException SourceException { get; } = sourceException;
+}
+
+/// <summary>Creates bounded diagnostics for categorized failures returned by caller-owned acquisition boundaries.</summary>
+internal static class SvgFontSourceFailures
+{
+    internal static SvgException Create(SvgFontPackResolution resolution, SvgErrorCode errorCode)
+        => new(errorCode, "The selected font program could not be acquired from the caller-provided source.", new SvgFontDiagnostic(SvgFontFailureStage.Source, resolution.Request.Family, resolution.Face.ResolvedFamily, resolution.Face.File.RelativePath + ":" + resolution.Face.FaceIndex, string.Empty));
 }
 
 /// <summary>Hashes caller-owned font bytes in bounded, cancellable checkpoints shared by source and snapshot integrity validation.</summary>
