@@ -1,0 +1,3 @@
+# SVG fixtures are byte-sensitive manifest inputs: their hashes must survive
+# checkout and archive materialization on any core.autocrlf setting.
+*.svg text eol=lf
