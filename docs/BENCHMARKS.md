@@ -127,3 +127,18 @@ Full ShortRun columns: `CreateSnapshotAsync` Gen0 7.5684 / Gen1 none;
 managed traffic per operation, not retained memory or `RenderBudget` peak.
 Timings are local ShortRun evidence with broad confidence intervals, not
 cross-platform guarantees or proof of any single allocation site share.
+
+### Remeasurement after the style-read short-circuit (`f6ad5e4`)
+
+Same environment and ShortRun job, measuring the first R19 optimization. No
+resolved delta: confidence intervals overlap throughout and allocation traffic
+is byte-identical, so no speedup is claimed. The change is retained as
+strictly-less-work with identical semantics (full suite green).
+
+| Method | Before | After |
+| --- | ---: | ---: |
+| `ConvertAttributeHeavyShapes` | 317.16 μs / 92.1 KB | 296.60 μs / 92.1 KB |
+| `DiscoverStyledTextRequests` | 25.61 μs / 30.51 KB | 23.70 μs / 30.55 KB |
+| `CreateSnapshotAsync` | 30.40 μs / 32.04 KB | 30.24 μs / 32.04 KB |
+| `LowerStyledText` | 55.30 μs / 140.88 KB | 54.44 μs / 140.88 KB |
+| `ConvertPreparedStyledTextAsync` | 300.14 μs / 190.34 KB | 267.31 μs / 190.34 KB |
