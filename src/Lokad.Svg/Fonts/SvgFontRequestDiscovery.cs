@@ -70,13 +70,12 @@ internal static class SvgFontRequestDiscovery
                 {
                     if (!hasRoot)
                     {
-                        if (reader.LocalName != "svg" || reader.NamespaceURI != SvgNamespace) throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
+                        SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
                         hasRoot = true;
                         rootDepth = reader.Depth;
                         rootId = reader.GetAttribute("id");
                     }
-                    if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
-                    if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
+                    SvgStructuralAdmission.ValidateElementStructure(reader, limits);
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;

@@ -17,8 +17,8 @@ internal static class SvgDocumentTraversal
         {
             workCounter.Consume(cancellationToken);
             if (reader.NodeType != XmlNodeType.Element) continue;
-            ValidateElementStructure(reader, limits);
-            if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
+            SvgStructuralAdmission.ValidateElementStructure(reader, limits);
+            SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
             SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, workCounter, cancellationToken);
             return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root);
         }
@@ -40,7 +40,7 @@ internal static class SvgDocumentTraversal
             workCounter.Consume(cancellationToken);
             if (reader.NodeType == XmlNodeType.Element)
             {
-                ValidateElementStructure(reader, limits);
+                SvgStructuralAdmission.ValidateElementStructure(reader, limits);
                 if (state.NodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                 state.NodeCount++;
                 bool directChild = reader.Depth == rootDepth + 1;
@@ -118,9 +118,4 @@ internal static class SvgDocumentTraversal
         }
     }
 
-    private static void ValidateElementStructure(XmlReader reader, SvgRenderLimits limits)
-    {
-        if (reader.Depth >= limits.MaximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
-        if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
-    }
 }
