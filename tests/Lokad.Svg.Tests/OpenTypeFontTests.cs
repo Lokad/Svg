@@ -1343,6 +1343,7 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><circle cx='1' cy='1' r='1'/><text font-family='Unused'>x</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><symbol id='s'><text font-family='Unused'>x</text></symbol></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'>A</text><circle cx='1' cy='1' r='1'/></svg>", false, SvgErrorCode.UnsupportedFeature, "Unused", 1, 1)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs xmlns='urn:x'/><text font-family='Unused'>A</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     public async Task Discovery_and_lowering_agree_on_rejected_text(string svg, bool failsDuringDiscovery, SvgErrorCode code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

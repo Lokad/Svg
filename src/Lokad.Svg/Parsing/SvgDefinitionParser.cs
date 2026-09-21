@@ -33,7 +33,7 @@ internal static class SvgDefinitionParser
             if (!reader.IsEmptyElement) state.SymbolDepth = reader.Depth;
             return true;
         }
-        if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "defs")
+        if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
             if (!reader.IsEmptyElement) state.DefinitionsDepth = reader.Depth;

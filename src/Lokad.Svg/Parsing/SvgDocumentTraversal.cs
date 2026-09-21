@@ -53,7 +53,7 @@ internal static class SvgDocumentTraversal
                     state.HasUnsupportedContent |= !textElement && !reader.IsEmptyElement;
                     state.SawStyleableNode = true;
                 }
-                else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
+                else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
                 {
                     SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
                     if (parsedGroup.Scope.IsolatesOpacity && (root.Opacity != 255 || state.HasOpacityScope)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
@@ -73,7 +73,7 @@ internal static class SvgDocumentTraversal
                     SvgRootStyleSheetParser.Parse(reader, root, state, limits.MaximumNodes, budget, workCounter, cancellationToken);
                 }
                 else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is "style" or "script" or "animate" or "animateMotion" or "animateTransform" or "set") state.HasUnsupportedContent = true;
-                else if (directChild && (reader.LocalName is "title" or "desc" or "metadata" or "defs")) { }
+                else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsInertContainer(reader.LocalName)) { }
                 else if (directChild || nestedInGroup) state.HasUnsupportedContent = true;
             }
             if (reader.NodeType == XmlNodeType.EndElement)

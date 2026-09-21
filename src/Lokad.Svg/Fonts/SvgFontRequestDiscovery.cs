@@ -116,7 +116,7 @@ internal static class SvgFontRequestDiscovery
                     if (rootStyleElement) continue;
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = parentAllowsText && textElement;
-                    bool childAllowsText = parentAllowsText && isSvgElement && (reader.Depth == rootDepth || reader.LocalName is "g" or "a");
+                    bool childAllowsText = parentAllowsText && isSvgElement && (reader.Depth == rootDepth || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName));
                     bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol");
                     bool unsupportedContainer = (!rootElement && reader.LocalName is ("svg" or "style" or "symbol")) || (!directChild && reader.LocalName is ("defs" or "title" or "desc" or "metadata"));
                     bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline");
@@ -128,8 +128,8 @@ internal static class SvgFontRequestDiscovery
                     }
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
                     {
-                        if (!rootElement && reader.LocalName is "g" or "a") SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
-                        else if (directChild && reader.LocalName == "defs") SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
+                        if (!rootElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
+                        else if (directChild && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
                     }
                     if (inertDepth >= 0 && reader.Depth == inertDepth + 1 && isSvgElement)
                     {
@@ -141,7 +141,7 @@ internal static class SvgFontRequestDiscovery
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
                     string? specifiedWhiteSpace = null;
                     if (isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("g" or "a" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken, out specifiedWhiteSpace);
-                    if (inertDepth < 0 && isSvgElement && reader.LocalName is ("defs" or "title" or "desc" or "metadata") && !reader.IsEmptyElement) inertDepth = reader.Depth;
+                    if (inertDepth < 0 && isSvgElement && SvgStructuralVocabulary.IsInertContainer(reader.LocalName) && !reader.IsEmptyElement) inertDepth = reader.Depth;
                     SvgTextWhitespaceMode whitespaceMode = SvgTextWhitespaceMode.Default;
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null)
                     {
@@ -169,7 +169,7 @@ internal static class SvgFontRequestDiscovery
                         directTextLevels.Add(candidateState);
                         whitespaceLevels.Add(childWhitespaceMode);
                         eligibleLevels.Add(childAllowsText);
-                        bool group = isSvgElement && reader.LocalName == "g";
+                        bool group = isSvgElement && SvgStructuralVocabulary.IsGroupContainer(reader.LocalName);
                         groupLevels.Add(group);
                         if (group) groupDepth++;
                         if (candidateState.HasRequest) activeCandidateLevel = directTextLevels.Count - 1;
@@ -301,7 +301,7 @@ internal static class SvgFontRequestDiscovery
         specifiedWhiteSpace = inlineStyle.WhiteSpace ?? styleSheet.WhiteSpace;
         SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, inlineStyle.TextFont.Overlay(styleSheet.TextFont), specifiedWhiteSpace, inlineStyle.LetterSpacing ?? styleSheet.LetterSpacing);
         AxisTransform transform = inherited.Transform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
-        if (reader.LocalName is "g" or "a")
+        if (SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
         {
             SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(computedStyle, inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, SvgRootParser.CssNamedColors);
             if (presentation.Opacity != 255 && inherited.HasOpacityScope) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
