@@ -33,7 +33,9 @@ internal sealed class ChromeProcess : IAsyncDisposable
         startInfo.ArgumentList.Add("--no-first-run");
         startInfo.ArgumentList.Add("--no-default-browser-check");
         startInfo.ArgumentList.Add("--user-data-dir=" + profile);
-        Process process = Process.Start(startInfo) ?? throw new InvalidOperationException("Chrome process could not be started.");
+        Process process;
+        try { process = Process.Start(startInfo) ?? throw new InvalidOperationException("Chrome process could not be started."); }
+        catch { Directory.Delete(profile, true); throw; }
         try { return new ChromeProcess(process, profile, await WaitForDebuggerAddressAsync(profile, process, cancellationToken)); }
         catch { if (!process.HasExited) process.Kill(true); process.Dispose(); Directory.Delete(profile, true); throw; }
     }

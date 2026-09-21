@@ -8,11 +8,13 @@ namespace Lokad.Svg.Chrome;
 internal sealed class DevToolsConnection : IAsyncDisposable
 {
     internal const int MaximumMessageBytes = 16 * 1024 * 1024;
-    private readonly ClientWebSocket _socket;
+    internal const int MaximumRetainedEvents = 64;
+    internal static readonly TimeSpan CloseHandshakeTimeout = TimeSpan.FromSeconds(5);
+    private readonly WebSocket _socket;
     private readonly Queue<string> _events = new();
     private int _nextCommandId;
 
-    private DevToolsConnection(ClientWebSocket socket) { _socket = socket; }
+    internal DevToolsConnection(WebSocket socket) { _socket = socket; }
 
     internal static async Task<DevToolsConnection> ConnectAsync(string debuggerAddress, CancellationToken cancellationToken)
     {
@@ -69,7 +71,7 @@ internal sealed class DevToolsConnection : IAsyncDisposable
             using JsonDocument response = JsonDocument.Parse(message);
             if (!response.RootElement.TryGetProperty("id", out JsonElement responseId) || !responseId.TryGetInt32(out int responseCommandId) || responseCommandId != id)
             {
-                if (response.RootElement.TryGetProperty("method", out JsonElement methodName) && methodName.ValueKind == JsonValueKind.String) _events.Enqueue(message);
+                if (response.RootElement.TryGetProperty("method", out JsonElement methodName) && methodName.ValueKind == JsonValueKind.String) RetainEvent(message);
                 continue;
             }
             ValidateSuccessfulResponse(method, response.RootElement);
@@ -93,7 +95,7 @@ internal sealed class DevToolsConnection : IAsyncDisposable
             string message = await ReceiveTextMessageAsync(cancellationToken);
             if (HasMethod(message, method)) return;
             using JsonDocument response = JsonDocument.Parse(message);
-            if (response.RootElement.TryGetProperty("method", out JsonElement methodName) && methodName.ValueKind == JsonValueKind.String) _events.Enqueue(message);
+            if (response.RootElement.TryGetProperty("method", out JsonElement methodName) && methodName.ValueKind == JsonValueKind.String) RetainEvent(message);
         }
     }
 
@@ -175,7 +177,19 @@ internal sealed class DevToolsConnection : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (_socket.State == WebSocketState.Open) await _socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", CancellationToken.None);
+        if (_socket.State == WebSocketState.Open)
+        {
+            using CancellationTokenSource handshake = new(CloseHandshakeTimeout);
+            try { await _socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "done", handshake.Token); }
+            catch (OperationCanceledException) { _socket.Abort(); }
+            catch (WebSocketException) { _socket.Abort(); }
+        }
         _socket.Dispose();
+    }
+
+    private void RetainEvent(string message)
+    {
+        if (_events.Count >= MaximumRetainedEvents) throw new InvalidDataException("DevTools event retention exceeds its configured limit.");
+        _events.Enqueue(message);
     }
 }

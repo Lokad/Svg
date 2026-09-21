@@ -112,6 +112,45 @@ public sealed class DevToolsConnectionTests
         await Assert.ThrowsAsync<InvalidDataException>(async () => await ChromeSvgCapture.ReadSvgAsync(input, CancellationToken.None));
     }
 
+    [Fact]
+    public async Task Event_flood_fails_fast()
+    {
+        List<Frame> frames = new();
+        for (int index = 0; index <= DevToolsConnection.MaximumRetainedEvents; index++)
+            frames.Add(new Frame(WebSocketMessageType.Text, true, "{\"method\":\"Flood.event\",\"params\":{}}"u8.ToArray()));
+        frames.Add(new Frame(WebSocketMessageType.Text, true, "{\"id\":1,\"result\":{}}"u8.ToArray()));
+        FakeWebSocket socket = new(frames.ToArray());
+        DevToolsConnection connection = new(socket);
+
+        InvalidDataException exception = await Assert.ThrowsAsync<InvalidDataException>(async () => await connection.SendAsync("Test.flood", "{}", CancellationToken.None));
+
+        Assert.Contains("event retention", exception.Message);
+    }
+
+    [Fact]
+    public async Task Silent_peer_does_not_hang_disposal()
+    {
+        FakeWebSocket socket = new() { HangOnClose = true };
+        DevToolsConnection connection = new(socket);
+
+        Task dispose = Task.Run(async () => { await connection.DisposeAsync(); });
+        Task winner = await Task.WhenAny(dispose, Task.Delay(TimeSpan.FromSeconds(60)));
+
+        Assert.Same(dispose, winner);
+        await dispose;
+        Assert.True(socket.Aborted);
+    }
+
+    [Fact]
+    public async Task Cancelled_send_throws_without_completing()
+    {
+        FakeWebSocket socket = new(new Frame(WebSocketMessageType.Text, true, "{}"u8.ToArray()));
+        DevToolsConnection connection = new(socket);
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => await connection.SendAsync("Test.cmd", "{}", cancellation.Token));
+    }
     private readonly record struct Frame(WebSocketMessageType MessageType, bool EndOfMessage, byte[] Data);
 
     private sealed class FakeWebSocket : WebSocket
@@ -125,9 +164,14 @@ public sealed class DevToolsConnectionTests
         public override WebSocketState State => WebSocketState.Open;
         public override string? SubProtocol => null;
 
-        public override void Abort() { }
+        internal bool HangOnClose { get; set; }
 
-        public override Task CloseAsync(WebSocketCloseStatus closeStatus, string? statusDescription, CancellationToken cancellationToken) => Task.CompletedTask;
+        internal bool Aborted { get; private set; }
+
+        public override void Abort() => Aborted = true;
+
+        public override Task CloseAsync(WebSocketCloseStatus closeStatus, string? statusDescription, CancellationToken cancellationToken)
+            => HangOnClose ? Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken) : Task.CompletedTask;
 
         public override Task CloseOutputAsync(WebSocketCloseStatus closeStatus, string? statusDescription, CancellationToken cancellationToken) => Task.CompletedTask;
 
@@ -141,7 +185,11 @@ public sealed class DevToolsConnectionTests
             return Task.FromResult(new WebSocketReceiveResult(frame.Data.Length, frame.MessageType, frame.EndOfMessage));
         }
 
-        public override Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => Task.CompletedTask;
+        public override Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return Task.CompletedTask;
+        }
     }
 
     private sealed class RepeatingTextWebSocket : WebSocket
