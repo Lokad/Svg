@@ -61,8 +61,9 @@ internal static class SvgRenderedLeafParser
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
                 if (textElement.Style.FillRule is not null && !textElement.Style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle);
-                using BudgetedText text = ReadDirectTextContent(reader, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, budget, workCounter, cancellationToken, out int sourceCharacterCount);
+                using BudgetedText text = ReadDirectTextContent(reader, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, budget, workCounter, cancellationToken, out int sourceCharacterCount, out int childNodeCount);
                 state.TextCharacterCount += sourceCharacterCount;
+                state.NodeCount += childNodeCount;
                 if (text.Value.Length == 0) return true;
                 if (!textElement.Presentation.IsPainted || !textElement.Presentation.HasFill) return true;
                 if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
@@ -81,15 +82,17 @@ internal static class SvgRenderedLeafParser
         }
         return false;
 
-        static BudgetedText ReadDirectTextContent(XmlReader element, int maximumCharacters, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount)
+        static BudgetedText ReadDirectTextContent(XmlReader element, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount, out int childNodeCount)
         {
             using var text = new BudgetedTextBuffer(budget);
             var normalizer = new SvgTextWhitespaceNormalizer();
             if (element.IsEmptyElement)
             {
                 sourceCharacterCount = normalizer.SourceCharacterCount;
+                childNodeCount = 0;
                 return text.Detach();
             }
+            childNodeCount = 0;
             using RenderBudget.BudgetReservation chunkReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount(4_096, sizeof(char)), SvgMemoryCategory.Parser);
             char[] chunk = new char[4_096];
             using XmlReader subtree = element.ReadSubtree();
@@ -108,7 +111,10 @@ internal static class SvgRenderedLeafParser
                 }
                 if (subtree.NodeType == XmlNodeType.Element && subtree.Depth != 0)
                 {
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text child elements are not implemented.");
+                    if (subtree.Depth + element.Depth >= maximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
+                    if (childNodeCount >= remainingNodeCount) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                    childNodeCount++;
+                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan" || subtree.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only attribute-free tspan text children are implemented.");
                 }
             }
             sourceCharacterCount = normalizer.SourceCharacterCount;

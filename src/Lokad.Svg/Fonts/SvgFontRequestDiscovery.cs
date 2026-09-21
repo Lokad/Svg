@@ -30,6 +30,7 @@ internal static class SvgFontRequestDiscovery
         var seen = new HashSet<TextRequestKey>(TextRequestKeyComparer.Instance);
         var inherited = new Stack<TextStyle>();
         var directText = new Stack<TextRequestCandidate?>();
+        var directTextCandidateOwners = new Stack<bool>();
         var textEligibleChildren = new Stack<bool>();
         var elementGroups = new Stack<bool>();
         RenderBudget styleBudget = new(limits.MaximumAccountedBytes);
@@ -66,8 +67,20 @@ internal static class SvgFontRequestDiscovery
                     if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
-                    bool insideDirectText = directText.Any(ancestorCandidate => ancestorCandidate is not null);
-                    foreach (TextRequestCandidate? ancestorCandidate in directText) if (ancestorCandidate is not null) ancestorCandidate.HasChildElement = true;
+                    bool isSvgElement = reader.NamespaceURI == SvgNamespace;
+                    TextRequestCandidate? activeDirectTextCandidate = null;
+                    foreach (TextRequestCandidate? ancestorCandidate in directText)
+                    {
+                        if (ancestorCandidate is null) continue;
+                        activeDirectTextCandidate = ancestorCandidate;
+                        break;
+                    }
+                    bool insideDirectText = activeDirectTextCandidate is not null;
+                    bool attributeFreeDirectTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && !reader.HasAttributes;
+                    if (!attributeFreeDirectTextSpan)
+                    {
+                        foreach (TextRequestCandidate? ancestorCandidate in directText) if (ancestorCandidate is not null) ancestorCandidate.HasChildElement = true;
+                    }
                     bool parentAllowsText = textEligibleChildren.Count == 0 || textEligibleChildren.Peek();
                     bool rootElement = reader.Depth == rootDepth;
                     TextStyle style;
@@ -77,7 +90,6 @@ internal static class SvgFontRequestDiscovery
                         style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.Opacity != 255);
                     }
                     else style = inherited.Peek();
-                    bool isSvgElement = reader.NamespaceURI == SvgNamespace;
                     bool directChild = reader.Depth == rootDepth + 1;
                     bool hasGroupAncestor = elementGroups.Any(static group => group);
                     bool parentIsGroup = elementGroups.Count > 0 && elementGroups.Peek();
@@ -121,14 +133,21 @@ internal static class SvgFontRequestDiscovery
                     if (inertDepth < 0 && isSvgElement && reader.LocalName is ("defs" or "title" or "desc" or "metadata") && !reader.IsEmptyElement) inertDepth = reader.Depth;
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null) SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
-                    TextRequestCandidate? candidate = !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.HasFill && style.Text.Family is string family
-                        ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic))
-                        : null;
-                    if (reader.IsEmptyElement) AddCandidate(candidate, requests, seen);
+                    TextRequestCandidate? candidate = attributeFreeDirectTextSpan
+                        ? activeDirectTextCandidate
+                        : !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.HasFill && style.Text.Family is string family
+                            ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic))
+                            : null;
+                    bool ownsDirectTextCandidate = !attributeFreeDirectTextSpan;
+                    if (reader.IsEmptyElement)
+                    {
+                        if (ownsDirectTextCandidate) AddCandidate(candidate, requests, seen);
+                    }
                     else
                     {
                         inherited.Push(style);
                         directText.Push(candidate);
+                        directTextCandidateOwners.Push(ownsDirectTextCandidate);
                         textEligibleChildren.Push(childAllowsText);
                         elementGroups.Push(isSvgElement && reader.LocalName == "g");
                     }
@@ -140,7 +159,8 @@ internal static class SvgFontRequestDiscovery
                     if (inherited.Count != 0)
                     {
                         inherited.Pop();
-                        AddCandidate(directText.Pop(), requests, seen);
+                        TextRequestCandidate? candidate = directText.Pop();
+                        if (directTextCandidateOwners.Pop()) AddCandidate(candidate, requests, seen);
                         textEligibleChildren.Pop();
                         elementGroups.Pop();
                     }

@@ -78,7 +78,7 @@ rendered content outside the admitted path, it suppresses later text-font
 acquisition. A snapshot can already be supplied through render options. The
 renderer's experimental direct-text path accepts only direct
 single-face text/CDATA content with default XML whitespace normalization (space, tab, carriage return and line feed collapse to one inter-word space and leading/trailing runs are trimmed); it does not make SVG text a supported feature and
-does not accept spans, positioning lists or general shaping. Its presentation,
+accepts nested attribute-free `tspan` elements only as text concatenation; span styling, positioning lists and general shaping remain unsupported. Its presentation,
 admitted root-stylesheet and inline `style` font subset is `font-family`,
 `font-weight`, `font-style` and `font-size`; admitted scalar positioning is `x`,
 `y`, `dx`, `dy` and `text-anchor` (`start`, `middle`, `end`), with a bounded `id`

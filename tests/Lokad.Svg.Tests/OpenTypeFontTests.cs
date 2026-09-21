@@ -1150,7 +1150,7 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Svg_based_snapshot_does_not_acquire_fonts_for_text_with_child_elements()
+    public async Task Svg_based_snapshot_acquires_the_font_for_text_with_an_attribute_free_span()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
         string hash = Convert.ToHexString(SHA256.HashData(bytes));
@@ -1160,8 +1160,8 @@ public sealed class OpenTypeFontTests
 
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'><tspan>x</tspan></text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None);
 
-        Assert.Empty(snapshot.Fonts);
-        Assert.Equal(0, source.RequestCount);
+        Assert.Single(snapshot.Fonts);
+        Assert.Equal(1, source.RequestCount);
     }
 
     [Fact]
@@ -2355,14 +2355,45 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Rejects_direct_text_child_elements_until_span_semantics_are_implemented()
+    public async Task Concatenates_nested_attribute_free_direct_text_spans()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
+        ReadOnlyMemory<byte> spans = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'> \t<tspan><![CDATA[A]]></tspan>\r\n</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        Assert.Equal(expected.ToArray(), spans.ToArray());
+    }
+
+    [Fact]
+    public async Task Rejects_attributed_direct_text_spans()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan dx='1'>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public async Task Attribute_free_direct_text_spans_respect_the_remaining_node_and_depth_limits()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 1, 16, 100_000);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, limits, snapshot);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        SvgRenderLimits depthLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 100_000, 2);
+        var depthOptions = new SvgRenderOptions(null, 1, SvgColor.Transparent, depthLimits, snapshot);
+
+        SvgException depthException = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan>A</tspan></text></svg>"u8.ToArray(), depthOptions, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, depthException.ErrorCode);
+        Assert.Contains("nesting", depthException.Message);
     }
 
     [Fact]

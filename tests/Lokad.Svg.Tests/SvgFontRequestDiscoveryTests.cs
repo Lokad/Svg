@@ -15,10 +15,10 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
-    public void Skips_font_requests_for_whitespace_only_text_and_discovers_normalized_content()
+    public void Skips_font_requests_for_whitespace_only_text_and_discovers_normalized_attribute_free_span_content()
     {
         SvgFontFaceRequest[] empty = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'> \t\r\n </text></svg>"u8.ToArray(), CancellationToken.None);
-        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'> \tA\r\n </text></svg>"u8.ToArray(), CancellationToken.None));
+        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'> \t<tspan>A</tspan>\r\n </text></svg>"u8.ToArray(), CancellationToken.None));
 
         Assert.Empty(empty);
         Assert.Equal("Example", request.Family);
