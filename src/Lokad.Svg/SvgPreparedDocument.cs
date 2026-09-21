@@ -9,7 +9,7 @@ public sealed class SvgPreparedDocument : IDisposable
 {
     private readonly SvgRenderOptions _options;
     private readonly SvgFontSnapshot _snapshot;
-    private readonly SvgRoot _root;
+    private SvgRoot _root;
     private readonly RenderBudget _budget;
     private int _state;
 
@@ -123,9 +123,14 @@ public sealed class SvgPreparedDocument : IDisposable
         finally { Release(); }
     }
 
+    /// <summary>Gets the retained scene geometries for lifetime characterization tests; null once the operation is released.</summary>
+    internal SvgGeometry[]? RetainedSceneGeometries => _root.Geometries;
+
     private void Release()
     {
         _root.Dispose();
+        // Detach the owned scene so a retained completed operation no longer keeps geometry on the heap.
+        _root = default;
         _snapshot.Dispose();
     }
 }

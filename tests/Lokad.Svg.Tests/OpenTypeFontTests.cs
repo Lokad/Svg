@@ -3,6 +3,7 @@ using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 using System.Buffers.Binary;
 using System.IO.Compression;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Lokad.Svg.Tests;
@@ -2082,6 +2083,129 @@ public sealed class OpenTypeFontTests
         Assert.True(DecodeAlpha(png, 1, 1) > 0);
     }
 
+    [Fact]
+    public async Task Disposed_document_detaches_its_retained_scene()
+    {
+        using SvgPreparedDocument document = await CreateSceneDocumentAsync(CreateSceneSvg());
+
+        Assert.NotNull(document.RetainedSceneGeometries);
+        document.Dispose();
+
+        Assert.Null(document.RetainedSceneGeometries);
+        document.Dispose();
+
+        Assert.Null(document.RetainedSceneGeometries);
+        Assert.Throws<ObjectDisposedException>(() => document.ConvertToPng(CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Successful_outputs_detach_the_retained_scene()
+    {
+        byte[] svg = CreateSceneSvg();
+        using SvgPreparedDocument owned = await CreateSceneDocumentAsync(svg);
+        ReadOnlyMemory<byte> ownedPng = owned.ConvertToPng(CancellationToken.None);
+
+        Assert.True(ownedPng.Length > 0);
+        Assert.Null(owned.RetainedSceneGeometries);
+        using SvgPreparedDocument callerMemory = await CreateSceneDocumentAsync(svg);
+        byte[] destination = new byte[1_000_000];
+        int written = callerMemory.ConvertToPng(destination, CancellationToken.None);
+
+        Assert.True(written > 0);
+        Assert.Null(callerMemory.RetainedSceneGeometries);
+        using SvgPreparedDocument stream = await CreateSceneDocumentAsync(svg);
+        using MemoryStream streamDestination = new();
+        int streamed = stream.ConvertToPng(streamDestination, CancellationToken.None);
+
+        Assert.True(streamed > 0);
+        Assert.Null(stream.RetainedSceneGeometries);
+        using SvgPreparedDocument ownedAsync = await CreateSceneDocumentAsync(svg);
+        ReadOnlyMemory<byte> ownedAsyncPng = await ownedAsync.ConvertToPngAsync(CancellationToken.None);
+
+        Assert.True(ownedAsyncPng.Length > 0);
+        Assert.Null(ownedAsync.RetainedSceneGeometries);
+        using SvgPreparedDocument callerMemoryAsync = await CreateSceneDocumentAsync(svg);
+        byte[] asyncDestination = new byte[1_000_000];
+        int asyncWritten = await callerMemoryAsync.ConvertToPngAsync(asyncDestination, CancellationToken.None);
+
+        Assert.True(asyncWritten > 0);
+        Assert.Null(callerMemoryAsync.RetainedSceneGeometries);
+        using SvgPreparedDocument streamAsync = await CreateSceneDocumentAsync(svg);
+        using MemoryStream asyncStreamDestination = new();
+        int asyncStreamed = await streamAsync.ConvertToPngAsync(asyncStreamDestination, CancellationToken.None);
+
+        Assert.True(asyncStreamed > 0);
+        Assert.Null(streamAsync.RetainedSceneGeometries);
+    }
+
+    [Fact]
+    public async Task Failed_outputs_detach_the_retained_scene()
+    {
+        byte[] svg = CreateSceneSvg();
+        using SvgPreparedDocument callerMemory = await CreateSceneDocumentAsync(svg);
+
+        Assert.Throws<SvgException>(() => callerMemory.ConvertToPng(new byte[1], CancellationToken.None));
+        Assert.Null(callerMemory.RetainedSceneGeometries);
+        using SvgPreparedDocument cancelled = await CreateSceneDocumentAsync(svg);
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+
+        Assert.Throws<OperationCanceledException>(() => cancelled.ConvertToPng(cancellation.Token));
+        Assert.Null(cancelled.RetainedSceneGeometries);
+    }
+
+    [Fact]
+    public async Task Converted_document_releases_its_geometry_arrays_for_collection()
+    {
+        using SvgPreparedDocument document = await CreateSceneDocumentAsync(CreateSceneSvg());
+        WeakReference geometries = TrackSceneArrays(document);
+        ReadOnlyMemory<byte> png = document.ConvertToPng(CancellationToken.None);
+
+        Assert.True(png.Length > 0);
+        CollectAggressively();
+
+        Assert.False(geometries.IsAlive);
+    }
+
+    [Fact]
+    public async Task Disposed_document_releases_its_geometry_arrays_for_collection()
+    {
+        using SvgPreparedDocument document = await CreateSceneDocumentAsync(CreateSceneSvg());
+        WeakReference geometries = TrackSceneArrays(document);
+        document.Dispose();
+        CollectAggressively();
+
+        Assert.False(geometries.IsAlive);
+    }
+
+    private static byte[] CreateSceneSvg()
+    {
+        System.Text.StringBuilder scene = new("<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150'>");
+        for (int index = 0; index < 1000; index++)
+        {
+            scene.Append("<rect x='").Append(index % 300).Append("' y='").Append(index % 150).Append("' width='1' height='1' fill='red'/>");
+        }
+
+        scene.Append("</svg>");
+        return System.Text.Encoding.UTF8.GetBytes(scene.ToString());
+    }
+
+    private static async Task<SvgPreparedDocument> CreateSceneDocumentAsync(byte[] svg)
+    {
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        return await SvgPreparedDocument.CreateAsync(svg, catalog, provider, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None);
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static WeakReference TrackSceneArrays(SvgPreparedDocument document) => new(document.RetainedSceneGeometries);
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void CollectAggressively()
+    {
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+    }
     [Fact]
     public async Task Svg_based_snapshot_skips_whitespace_only_direct_text_before_acquisition()
     {
