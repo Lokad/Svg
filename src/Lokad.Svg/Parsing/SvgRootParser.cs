@@ -168,18 +168,25 @@ internal static class SvgRootParser
 
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken)
     {
-        try { return ParseCore(svg, limits, budget, fontSnapshot, cancellationToken); }
+        return Parse(svg, limits, budget, fontSnapshot, new ParserWorkCounter(limits.MaximumWorkUnits), cancellationToken);
+    }
+
+    /// <summary>Parses one SVG document while carrying caller-owned preparation work into rendering.</summary>
+    internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(workCounter);
+        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
-    private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken)
+    private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, settings);
-        return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, cancellationToken);
+        return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, workCounter, cancellationToken);
     }
 
     internal static long GetXmlReaderWorkspaceBytes(int inputBytes, int maximumAttributes)

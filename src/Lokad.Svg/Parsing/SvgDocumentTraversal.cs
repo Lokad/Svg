@@ -7,8 +7,12 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgDocumentTraversal
 {
     internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken)
+        => Parse(reader, limits, budget, namedColors, fontSnapshot, new ParserWorkCounter(limits.MaximumWorkUnits), cancellationToken);
+
+    /// <summary>Traverses one document under a caller-owned operation work counter.</summary>
+    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        ParserWorkCounter workCounter = new(limits.MaximumWorkUnits);
+        ArgumentNullException.ThrowIfNull(workCounter);
         while (reader.Read())
         {
             workCounter.Consume(cancellationToken);

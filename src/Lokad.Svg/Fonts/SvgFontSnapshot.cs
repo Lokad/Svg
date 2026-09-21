@@ -183,6 +183,14 @@ public sealed class SvgFontSnapshot : IDisposable
     {
         ArgumentNullException.ThrowIfNull(limits);
         var workCounter = new ParserWorkCounter(limits.MaximumWorkUnits);
+        return CreateAsync(svg, catalog, provider, limits, workCounter, cancellationToken);
+    }
+
+    /// <summary>Discovers and prepares selected programs under a work counter shared with a caller-owned prepared operation.</summary>
+    internal static ValueTask<SvgFontSnapshot> CreateAsync(ReadOnlyMemory<byte> svg, SvgFontPackCatalog catalog, ISvgFontProgramSourceProvider provider, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(limits);
+        ArgumentNullException.ThrowIfNull(workCounter);
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(svg, limits, workCounter, cancellationToken);
         return CreateAsync(catalog, requests, provider, workCounter, cancellationToken);
     }

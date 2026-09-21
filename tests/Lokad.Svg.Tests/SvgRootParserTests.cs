@@ -7,6 +7,16 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgRootParserTests
 {
     [Fact]
+    public void Root_parser_uses_a_caller_owned_work_counter()
+    {
+        var budget = new RenderBudget(1_024 * 1_024);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), SvgRenderLimits.Default, budget, null, new ParserWorkCounter(0), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Container_presentation_resolves_inherited_paint_display_visibility_and_opacity()
     {
         IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase) { ["red"] = new SvgColor(255, 0, 0, 255) };
