@@ -1391,6 +1391,25 @@ public sealed class OpenTypeFontTests
         Assert.Equal(0, source.RequestCount);
     }
 
+    [Theory]
+    [InlineData("<rect><animate/></rect>")]
+    [InlineData("<g><style>rect { fill: red; }</style></g>")]
+    [InlineData("<svg/>")]
+    public async Task Svg_based_snapshot_does_not_acquire_fonts_after_known_render_unsupported_content(string content)
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Unused\", \"resolvedFamily\": \"Unused\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + content + "<text font-family='Unused'>x</text></svg>");
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, new CountingFontProvider(source), CancellationToken.None);
+
+        Assert.Empty(snapshot.Fonts);
+        Assert.Equal(0, source.RequestCount);
+    }
+
     [Fact]
     public async Task Svg_based_snapshot_rejects_unsupported_text_attributes_before_font_acquisition()
     {

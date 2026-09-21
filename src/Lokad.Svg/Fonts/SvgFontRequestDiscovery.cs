@@ -94,7 +94,10 @@ internal static class SvgFontRequestDiscovery
                     bool isTextEligible = parentAllowsText && textElement;
                     bool childAllowsText = parentAllowsText && isSvgElement && (reader.Depth == rootDepth || reader.LocalName is "g" or "a");
                     bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol");
-                    if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && !isKnownContent)
+                    bool unsupportedContainer = !rootElement && reader.LocalName is ("svg" or "style" or "symbol");
+                    bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline");
+                    bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyRenderedLeaf);
+                    if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && (!isKnownContent || rendererRejectsKnownContent))
                     {
                         hasUnsupportedContent = true;
                         requests.Clear();
