@@ -8,14 +8,18 @@ and raises R20's reproduced stream-buffering defect above speculative optimizati
 Preserve the completed R17 collection repair and the R18 sharing through `7f9d136`.
 The other agent's R19 baseline commit `c7225d1` landed during this review; its
 documented measurements are acknowledged below, not presented as our rerun.
+Logo-roadmap extension: 2026-09-21, against `f0f879f`. Section 8 adds planned
+S8–S17 without renumbering findings, reopening repairs or weakening pixel-exact
+acceptance. It records future work, not newly implemented SVG support.
 
 ## 1. Current assessment and verification
 
 Lokad.Svg is a pure-managed, dependency-free .NET 10 SVG-to-PNG renderer with a
 narrow, regression-tested shape subset and an experimental supplied-font text
 pipeline. It is not yet a general SVG renderer or a validated ordinary-font label
-renderer. The next milestone remains useful supplied-font labels before gradients,
-images and filters.
+renderer. The near-term supplied-font milestone remains; section 8 now gives the
+explicit follow-on roadmap for pixel-exact corporate-logo rendering, including
+outlined wordmarks, general geometry and common export features.
 
 No missing authorization or private dependency blocks local progress. The user has
 authorized private testing with the existing OoxPdf font pack and unchanged
@@ -571,7 +575,9 @@ start it.
 
 Milestones: M0 experimental vertical slice exists; M1 bounded trustworthy inputs
 is incomplete; M2 coherent prepared/style state is incomplete; M3 useful ordinary
-labels is unvalidated; M4 wider SVG features remains later work. Remote CI,
+labels is unvalidated; M4 pixel-exact logo coverage is planned through S8–S17
+in section 8, not implemented. Corpus selection and raster calibration can begin
+without waiting for unrelated advanced text features. Remote CI,
 canonical Linux oracle and publication remain deferred, not blockers to these
 local repairs. Public asset redistribution is a separate permission gate.
 
@@ -772,12 +778,12 @@ same allowance (R04). This is a conservative BCL policy, not exact allocation
 accounting. Distinguish owned, borrowed, live-accounted, allocated and working-set
 measurements. Choose measured aggregate font/text/graph defaults during M1.
 
-Retain wider scope after useful labels: nested viewports/units/cascade/references;
-general paths/arcs/circles/ellipses/transforms/strokes; gradients/patterns/clipping/
-masks/nested opacity/markers; mapped PNG/profiles/resampling/nested SVG, later JPEG;
-bounded filters and separately admitted advanced text. Scripts/events, animation,
-mutable DOM, foreignObject HTML and general interactive web content remain out of
-scope.
+Section 8 makes the wider logo scope actionable: viewports/units/cascade/references;
+general paths/arcs/shapes/transforms/strokes; gradients/clipping/masks/nested
+opacity; supplied-font wordmarks and corpus-driven patterns/images/markers/effects.
+Scripts/events, animation, mutable DOM, foreignObject HTML and general interactive
+web content remain out of scope. This is not a commitment to implement all SVG/CSS
+before admitting the first additional exact feature.
 
 Commands executed against the isolated `86fb21c` review copy:
 
@@ -807,3 +813,302 @@ When CI resumes, retain run URL/revision/conclusions and matching artifacts;
 Follow [C# guidelines](docs/GUIDELINES_CSHARP.md). Release requires honest
 limitations, representative exact cases, platform/package evidence and no hidden
 font/runtime dependencies.
+
+## 8. Pixel-exact corporate-logo roadmap
+
+The target is static, self-contained SVG logos and wordmarks, including ordinary
+design-tool and minified exports, rendered exactly against the pinned browser
+oracle. "Most" describes the proportion of documents supported, never a tolerance
+for pixel differences. No visually-similar tier, error-threshold admission,
+automatic font substitution or silent reference regeneration is introduced.
+The renderer remains pure managed and dependency-free under section 7.
+
+All stages below are **planned**. Existing shape fast paths, text mechanics and
+research captures are foundations, not completion of these stages. Preserve
+S1–S7 and the other agent's repair work. Resolve the relevant ownership, budgeting
+and validation defects before building on affected components; in particular,
+retain R20/R21 cleanup/output-limit gates and R22/R23 trustworthy oracle tooling.
+S8 inventory and non-admitting calibration may start now. Live-text admission
+depends on S7; a path-only logo must not require a font provider or wait for complex
+shaping. Implementation remains a sequence of small tested changes, not one
+general-renderer rewrite.
+
+### Sequence and deliverables
+
+| Stage | Deliverable | Dependencies and decisive exit evidence |
+| --- | --- | --- |
+| S8 — representative logo inventory and oracle | Frozen document/variant inventory, feature census and exact-coverage report. | Starts now; licensed/public fixtures or authorized private evidence, three stable fresh-process captures and explicit target platform/recipe. |
+| S9 — static export structure, styles and references | Typed computed paint/style and bounded local definition/instance graph. | S8 examples; independent cascade, inheritance, reference and error-boundary vectors, including discovery/lowering agreement. |
+| S10 — general geometry and coordinate systems | Complete planned path grammar, basic-shape normalization, compound contours and affine mapping. | S9 context; independently checked geometry/bounds and malformed/limit tests. Parsing a shape does not admit its pixels. |
+| S11 — calibrated filled-path coverage | Exact antialiased fills and source-over for arbitrary admitted contours. | S10; retained research probes plus new cross-phase/scale/alpha vectors must match exactly. This is the central rendering gate. |
+| S12 — general strokes | Stroke outlines, caps/joins/dashes, transformed strokes and non-scaling strokes. | S10–S11; exact boundary, intersection and fill/stroke interaction vectors. |
+| S13 — paint servers | Linear/radial gradients and reusable paint resolution. | S9/S11, with S12 stroke-paint integration; exact stop/interpolation/coordinate/alpha probes. |
+| S14 — clipping, masks and group composition | Nested clips, masks, viewport clipping and isolated opacity layers. | S9–S11 and S13 where mask content uses gradients; exact operation-order and overlap probes with bounded temporary surfaces. |
+| S15 — live-text logo integration | Supplied-font wordmarks using the shared geometry/paint pipeline. | S7 plus S9–S14 features actually used; intended-font, metrics and exact-pixel evidence. Outlined wordmarks already use S10–S14. |
+| S16 — corpus-driven extensions | Images, patterns, markers, selected effects and export-specific gaps. | Relevant earlier stages; select independent slices from measured blockers, each with its own exact and resource gates. |
+| S17 — logo milestone validation | Reproducible exact document coverage, package/platform evidence and resource envelope. | Claimed feature stages plus the agreed S8 coverage target; no unclassified failures or tolerance relaxation. |
+
+### S8 — Define what "most logos" means and retain the evidence
+
+Create a versioned inventory initially targeting 50–100 distinct logo documents,
+not recolors counted as independent successes. Include flat marks, outlined
+wordmarks with counters, thin strokes, compound/self-intersecting shapes,
+transformed groups, gradients, clipped marks, translucent overlaps and live text.
+Include both source-style and minified exports; record generator provenance only
+when actually known. Inventory patterns, masks, embedded images and effects even
+if their implementation is deferred. Do not select only already-supported files.
+
+Record original/materialized SVG hashes, asset permissions, feature combinations,
+expected dimensions, required supplied resources and independently pinned oracle
+metadata. Real brand assets are not assumed redistributable: keep restricted
+inputs/captures private and promote small original or properly licensed public
+reproductions. Do not modify third-party logos into a simplified accepted subset.
+
+Capture each document at its intended size and representative small/large sizes
+(for example 24, 64 and 256 pixels on the chosen reference axis, preserving aspect
+ratio), plus selected non-integral output scales. Compare transparent output and
+white/dark-background composition where applicable. Keep full-size references;
+thumbnail approval, blur/downsampling or scaled diffs are not admission tests.
+
+Agree and record a numeric document-coverage target on the frozen inventory before
+calling the result "most". A document counts as exact only when every declared
+variant passes; duplicates and extra easy variants cannot inflate that count.
+Report exact, unsupported, known-difference and oracle-failure totals against the
+whole inventory, with causes and feature intersections. No coverage percentage or
+completion date is justified by the existing unit-test total.
+
+### S9 — Accept ordinary static export structure without guessing semantics
+
+- Extend a shared style resolver to every admitted graphics/container element:
+  presentation attributes, inline declarations, ordered embedded stylesheets,
+  generic type/ID/class/compound selectors and necessary combinators. Pin source
+  order, specificity, `!important`, `inherit`/`initial`/`unset`, `currentColor`,
+  paint/visibility inheritance and non-inherited group opacity. Root rules and
+  stylesheets after geometry need deliberate support, not the present timing
+  restriction. Introduce bounded document analysis before lowering if required;
+  discovery must consume the same resolved policy. Semantics references:
+  [SVG styling](https://www.w3.org/TR/SVG2/styling.html).
+- Resolve local `url(#id)` paint/clip/mask references, quoted forms, `href` and
+  legacy `xlink:href`, forward definitions, reusable paths/groups and `symbol`/`use`
+  instances with correct instance styles. Pin duplicate/missing/wrong-kind IDs,
+  reference cycles and depth/expansion limits. Reuse geometry without mutating a
+  definition's inherited state. Define nested SVG/symbol viewport behavior with
+  S10. Reference: [document structure](https://www.w3.org/TR/SVG2/struct.html).
+- Handle XML declarations, whitespace/comments/CDATA, namespace prefixes, multiple
+  class tokens, bounded CSS comments/escapes and compact syntax seen in exports.
+  Safely accept demonstrated non-rendering metadata, accessibility/data attributes
+  and editor namespaces without discarding unknown rendering behavior. Bound long
+  legitimate path/style data by their real storage/work limits, not scalar-value
+  limits. DTD/entity expansion, executable content and implicit external loads
+  remain prohibited. Pin conditional `switch`/language behavior before admission.
+- Keep stylesheets/imports, CSS variables, CSS geometry and CSS transforms on the
+  census; give encountered output-affecting forms an explicit implementation or
+  unsupported outcome. Do not present the bounded static cascade as a browser CSS
+  engine or ignore a declaration whose omission changes the mark.
+
+Exit: paired equivalent exports (attribute/inline/stylesheet paint, direct/local
+instance geometry, prefixed/default namespace) plus non-equivalent precedence
+controls; cancellation and invalid-reference tests prove bounded work and cleanup.
+
+### S10 — General filled-path geometry, shapes and transforms
+
+- Parse absolute and relative `M/L/H/V/C/S/Q/T/A/Z`, repeated parameter groups,
+  implicit line segments after moveto, reflected curve controls, compact signed
+  decimal/exponent syntax and strict arc flags. Normalize quadratic/cubic Bézier
+  curves and elliptical arcs while preserving contour starts and closure. Handle
+  radii correction, rotated arcs, degenerate segments and malformed tails under an
+  explicit categorized policy. Reference: [paths](https://www.w3.org/TR/SVG2/paths.html).
+- Support multiple subpaths, holes, either contour orientation, touching and
+  self-intersecting contours under `nonzero` and `evenodd`. Preserve the distinction
+  between implicit fill closure and explicit stroke closure. Normalize circles,
+  ellipses, rounded rectangles, lines, polygons and polylines into shared geometry;
+  retain equivalent-shape cross-tests rather than independent rasterizers.
+- Resolve decimal coordinates, applicable units/percentages, nested viewports,
+  `viewBox` and every `preserveAspectRatio` alignment without a quarter-pixel gate.
+  Implement ordered `matrix`, translate, nonuniform/negative scale, rotation about
+  an optional center and skew, composed through groups/instances and output scale.
+  Test singular transforms, reflections, extreme finite coordinates and overflow.
+  Distinguish object, user, viewport and device coordinates, and geometric versus
+  stroked/clipped bounds. Reference: [coordinates and units](https://www.w3.org/TR/SVG2/coords.html).
+
+Exit: independent endpoint/tangent/extrema/bounds expectations, compound-contour
+and transform-order vectors, generated malformed/truncated commands and exact
+resource-limit boundaries. Any subdivision/curve approximation needs a bounded
+device-space error/work policy and S11's exact oracle gate; mathematical closeness
+alone is not Chrome fidelity.
+
+### S11 — Pixel-exact antialiasing and filled-path composition
+
+Build one bounded device-space coverage subsystem for path and basic-shape fills,
+with a reusable boundary for glyph contours. Do not extend the rectangle loop with
+an uncalibrated sample-count approximation or assume the experimental glyph
+sampler is already suitable. Preserve rectangle fast paths only where equivalence
+is proven. Geometry normalization and raster coverage must remain separately
+testable.
+
+Use the retained circle, diagonal/fractional/half-grid triangle, cubic arch,
+evenodd-hole, overlap and disjoint-opacity probes in
+[raster research](docs/RASTERIZATION_DESIGN.md). Record the tested hypothesis,
+backend/source pin and discriminating input before another calibration attempt.
+The existing near-fit, quantization and supersampling experiments are negative
+evidence; passing one phase cannot override failure on another.
+
+Calibrate edge inclusion, curve subdivision, scan conversion, subpixel phase,
+coverage quantization and alpha math together, while isolating their effects in
+tests. Cover cusps/tangencies, coincident/shared edges, winding cancellation,
+subpixel slivers, tiny/large scales, reflected paths and off-canvas bounds. Verify
+fill opacity, overlapping paints, premultiplied intermediates and final straight
+RGBA conversion; transparent RGB is ignored only under the existing contract.
+Investigate declared `shape-rendering` modes explicitly when present. The
+[rendering model](https://www.w3.org/TR/SVG2/render.html) defines semantics, not an
+implementation-independent recipe for the browser's exact edge pixels.
+
+Exit: zero decoded-pixel differences across the complete admitted probe family,
+three stable oracle captures per new reference, six-output equivalence and
+deterministic work/cancellation/cleanup tests. Failed research remains unsupported
+or classified known-difference; never silently render it as admitted support.
+
+### S12 — Strokes that survive real exports
+
+Implement arbitrary positive fractional stroke widths, butt/round/square caps,
+miter/round/bevel joins and miter limits, closed joins, zero-length segments and
+curve offsets. Add dash arrays/offsets, odd-length repetition, degenerate dash
+handling and `pathLength` normalization. Support fill plus stroke, their separate
+paint/opacity, `paint-order`, affine/nonuniform stroke transforms and
+`vector-effect="non-scaling-stroke"`; do not replace the latter with a scalar-width
+guess. Reference: [painting and strokes](https://www.w3.org/TR/SVG2/painting.html).
+
+Use a bounded stroke-outline representation and the shared coverage/compositor.
+Exit: the retained round-join probe plus acute miters, tangent joins, dash seams,
+fractional hairlines, open/closed caps, self-overlap and transformed fill/stroke
+combinations at several scales. Stroke bounds and expansion/work denial must be
+tested independently of successful pixels. Additional SVG join modes and markers
+require their own admission; markers are tracked in S16.
+
+### S13 — Gradient paint and reusable paint servers
+
+Implement linear and radial gradients with focal geometry, inherited local
+gradient definitions, percentage/absolute coordinates, `objectBoundingBox` and
+`userSpaceOnUse`, `gradientTransform`, stops with color/opacity, and pad/repeat/
+reflect spread. Pin equal/out-of-order stops, hard transitions, empty/single-stop
+gradients, degenerate bounds and fallback paint. Treat `color-interpolation` and
+alpha interpolation/rounding as explicit policies. Reuse paint evaluation for
+fills and strokes. Reference: [paint servers](https://www.w3.org/TR/SVG2/pservers.html).
+
+Exit: the retained four-pixel gradient and longer-size counterexample, followed by
+fractional, transformed, transparent and radial-stop vectors, gradient strokes and
+gradient inheritance/cycle tests. No new paint server is admitted on a one-size
+near fit; color-space/default behavior must agree with the pinned capture policy.
+
+### S14 — Clipping, masks, nested opacity and operation order
+
+- Support `clipPath` with paths/shapes/groups/local instances, `clip-rule`, clip
+  transforms, both clip unit systems and nested clip intersections. Pin empty or
+  degenerate clips, viewport overflow clipping and antialiased boundaries. Preserve
+  the difference between geometry clipping and multiplying an arbitrary alpha mask.
+- Support masks with explicit region/content units, bounds, alpha versus luminance
+  interpretation and transformed colored/gradient content. Pin defaults and color
+  space; a mask is not interchangeable with group opacity or a clip.
+  References: [CSS masking](https://www.w3.org/TR/css-masking-1/).
+- Generalize isolated opacity to nested groups and elements with both fill and
+  stroke. Establish filter/clip/mask/group-opacity/source-over ordering before S16
+  effects; distinguish inherited paint alpha from post-composition opacity. Keep
+  nested layer storage bounded, preserve offscreen origins, and test any tiled
+  implementation against untiled references for seams and exact rounding.
+
+Exit: overlapping children under group opacity (not per-child opacity), nested
+clipped/gradient instances, masks on strokes, intersecting clips, negative/fractional
+layer bounds and clip/mask/opacity combinations. Deny excessive depth/surface area
+before allocation, and prove cleanup on cancellation or destination failure.
+
+### S15 — Wordmarks with live text, without duplicating the renderer
+
+Outlined wordmarks need no font loading and must already pass through S10–S14.
+For actual `text`/`tspan`, reuse section 6's unchanged font-pack/source contract,
+S7 intended-font controls and verified program lifetime. Integrate inherited
+per-span paint/font state, declared spacing and positioning, transformed text,
+text fill/stroke and clipping through the shared scene rather than a second paint
+engine. Preserve metrics/layout tests separately from outline/coverage tests;
+browser text raster behavior is not assumed identical to an unhinted path outline.
+
+Inventory `textLength`/`lengthAdjust`, position/rotation lists, text paths, CFF/WOFF,
+ligatures and non-Latin shaping as distinct blockers. Add only independently gated
+slices; advanced text remains explicitly unsupported until verified with the same
+intended font in the oracle. Missing glyphs/resources cannot become blank output,
+machine-font fallback or synthetic styles. This stage does not change private
+asset handling or authorize embedded-font redistribution.
+
+### S16 — Corpus-driven extensions, not an unbounded SVG implementation
+
+These belong in the inventory and implementation backlog, but do not delay an
+otherwise independent filled-path repair. Select and record a bounded slice when
+it blocks the agreed logo coverage target; unimplemented effects remain visible
+in that denominator.
+
+| Slice | Planned scope and independent admission gate |
+| --- | --- |
+| Embedded images | Bounded data-URI PNG and explicitly supplied image resources, image viewport/aspect-ratio mapping, transforms, resampling, alpha and color-profile policy. Test decode limits and decompression bombs as well as exact resized pixels. Assess JPEG separately; nested SVG needs recursion/cycle/resource limits. No implicit network/filesystem reads. See [embedded content](https://www.w3.org/TR/SVG2/embedded.html). |
+| Patterns | Local vector/raster pattern content, pattern/content units, transforms, viewBox, overflow, definition inheritance and tile boundaries. Reuse S9/S13/S14 infrastructure; exact phase/seam tests and bounded tile/cache storage. |
+| Markers | Start/mid/end placement, tangent/orientation, marker units, local viewports and context paint where required; bounded expansion and exact open/closed/degenerate-path tests. |
+| Effects and blending | Begin with corpus-required shadows: bounded Gaussian blur/offset/flood/composite/merge or `feDropShadow`; add color transforms, named filter inputs and blend/isolation modes only as separate slices. Pin filter regions/units, color-interpolation space, edge extension and operation order; bound graph/surface/kernel work and keep unsupported primitives explicit. See [filter effects](https://www.w3.org/TR/filter-effects-1/). |
+| Remaining static export syntax | CSS variables, needed selector/at-rule forms, conditional content and geometry/transform declarations identified by S8. Add a semantic test before accepting any formerly rejected spelling or attribute; retain unsupported dynamic/external behavior. |
+
+No animation, scripting, HTML layout, arbitrary external document retrieval,
+installed-font discovery or process-wide unbounded resource cache is introduced.
+Preserve package/runtime independence; difficult decoding or filtering is not
+permission to silently add a native backend or another renderer dependency.
+
+### Cross-cutting design and resource obligations
+
+Use typed path commands, validated contour boundaries, affine maps, paint-server
+identities and owner-bound scene/reference handles. Preserve the distinction
+between unspecified source values and resolved finite values, and between
+geometric/stroke/device bounds. Size owned arrays from their actual element type.
+Share normalized geometry and paint semantics across fills, strokes, clips, masks,
+instances and glyphs; do not create one eligibility walker or raster backend per
+feature. Avoid per-edge heap objects and repeated transformed/exact copies where
+measurement supports a simpler explicitly owned layout.
+
+Bound and charge parsed commands, resolved reference expansions, curve subdivision,
+stroke/dash expansion, edge intersections/active-edge work, pixel coverage,
+gradient evaluation, clip/mask/layer storage and any filter/image work. Clip work
+to validated output bounds without losing joins, filter extents or mask semantics.
+Check nonfinite/overflowing calculations before integer casts or allocation.
+Sparse/off-canvas geometry, tiny dash periods, reference cycles, near-degenerate
+curves and huge transformed bounds need adversarial tests, not only normal logos.
+
+Every new owner must clean up on success, failure, cancellation and disposal.
+Preserve operation-wide accounting, bounded caches, caller-owned resources,
+non-array input/output memory, destination overlap rejection, asynchronous stream
+backpressure and partial-output semantics. Benchmark cold/warm repeated and
+distinct logos with allocation traffic, live accounted peaks and process working
+set separately. Optimization may not change admitted pixels or conceal storage
+in a global pool; exact six-output equivalence remains mandatory.
+
+### S17 — Completion evidence for the logo milestone
+
+Maintain a stage/feature matrix with implemented, oracle-validated and unsupported
+states separately. For each slice, land the discriminating synthetic regression,
+relevant exact references, cancellation/denial tests, support documentation and
+measured resource consequences together. Run corpus tests continuously rather than
+waiting until all stages are nominally implemented; test intersections such as a
+dashed gradient stroke in a transformed clipped translucent group.
+
+Before declaring M4 usable for most corporate logos, satisfy the agreed S8 exact
+document-coverage target and publish the remaining categorized gaps. Retain stable
+input/asset hashes and three fresh captures, exact decoded RGBA results at every
+declared size/background, and explicit browser/platform/recipe identity. Pin
+any environmental CSS/media/font assumptions; a changed browser or oracle recipe
+requires reviewed migration, not regenerated references presented as unchanged.
+
+Retain fresh Windows and Linux build/test/package/installed-consumer and resource
+evidence for the claimed platforms. Validate platform-specific oracle provenance;
+neither cross-platform raster equality nor platform-specific differences may be
+assumed from the Windows exploratory corpus. Unsupported variants cannot silently
+fall back to approximate rendering. The core library needs no browser, private
+font pack, sibling checkout or network connection at runtime.
+
+The SVG/CSS references above guide semantics, not feature-priority claims or proof
+of Chrome's raster arithmetic. The logo census sets the coverage priorities;
+the pinned oracle and exact regressions decide pixel admission. Keep the earlier
+negative research findings and narrow successful fast paths throughout this work.
