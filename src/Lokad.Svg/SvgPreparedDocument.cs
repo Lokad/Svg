@@ -41,6 +41,13 @@ public sealed class SvgPreparedDocument : IDisposable
         finally { _snapshot.Dispose(); }
     }
 
+    /// <summary>Schedules this prepared document's one conversion and releases its retained font lease when the task completes.</summary>
+    public Task<ReadOnlyMemory<byte>> ConvertToPngAsync(CancellationToken cancellationToken)
+    {
+        BeginConversion();
+        return ConvertAsync(cancellationToken);
+    }
+
     /// <summary>Releases the retained snapshot when no conversion will occur.</summary>
     public void Dispose()
     {
@@ -50,5 +57,11 @@ public sealed class SvgPreparedDocument : IDisposable
     private void BeginConversion()
     {
         if (Interlocked.CompareExchange(ref _state, 1, 0) != 0) throw new ObjectDisposedException(nameof(SvgPreparedDocument));
+    }
+
+    private async Task<ReadOnlyMemory<byte>> ConvertAsync(CancellationToken cancellationToken)
+    {
+        try { return await Task.Run(() => SvgConverter.ConvertToPng(_svg, _options, _workCounter, cancellationToken), cancellationToken).ConfigureAwait(false); }
+        finally { _snapshot.Dispose(); }
     }
 }

@@ -91,7 +91,8 @@ before allocation and released after each direct text run is lowered.
 `SvgPreparedDocument.CreateAsync` is the single-conversion preparation owner. It
 discovers selected supplied fonts under the supplied render limits, retains the
 caller-owned SVG bytes and verified snapshot, and carries one parser-work counter
-through preparation and conversion. Its `ConvertToPng` method may be called once;
+through preparation and conversion. Its `ConvertToPng` or `ConvertToPngAsync`
+method may be called once;
 conversion completion, failure, cancellation, or `Dispose` releases its snapshot
 lease. The caller keeps SVG/font bytes valid and unchanged for that lifetime.
 
