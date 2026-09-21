@@ -55,7 +55,7 @@ internal sealed class BudgetedParserStringStore : IDisposable
 }
 
 /// <summary>Builds one transient direct-text value with parser-budgeted backing storage and transfers its exact string reservation to the caller.</summary>
-internal sealed class BudgetedTextBuffer : IDisposable
+internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
 {
     private const long StringHeaderBytes = 32;
     private const int CopyCheckpointCharacters = 4_096;
@@ -93,6 +93,9 @@ internal sealed class BudgetedTextBuffer : IDisposable
         }
         _length += value.Length;
     }
+
+    void ISvgTextOutput.Append(ReadOnlySpan<char> value, double letterSpacing, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => Append(value, maximumLength, workCounter, cancellationToken);
 
     /// <summary>Transfers ownership of the exact final string reservation; the caller must dispose the returned value after layout.</summary>
     internal BudgetedText Detach()
@@ -163,6 +166,92 @@ internal sealed class BudgetedTextBuffer : IDisposable
 internal readonly record struct BudgetedText(string Value, RenderBudget.BudgetReservation? Reservation) : IDisposable
 {
     public void Dispose() => Reservation?.Dispose();
+}
+
+/// <summary>Builds normalized direct text and lazily retains only letter-spacing intervals that differ from the enclosing text value.</summary>
+internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
+{
+    private readonly BudgetedTextBuffer _text;
+    private readonly RenderBudget _budget;
+    private readonly ParserWorkCounter _workCounter;
+    private readonly CancellationToken _cancellationToken;
+    private readonly double _defaultLetterSpacing;
+    private BudgetedParserList<SvgTextLetterSpacingSpan>? _letterSpacingSpans;
+
+    internal SvgTextLayoutBuffer(RenderBudget budget, double defaultLetterSpacing, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (!double.IsFinite(defaultLetterSpacing)) throw new ArgumentOutOfRangeException(nameof(defaultLetterSpacing));
+        _text = new BudgetedTextBuffer(budget);
+        _budget = budget;
+        _workCounter = workCounter;
+        _cancellationToken = cancellationToken;
+        _defaultLetterSpacing = defaultLetterSpacing;
+    }
+
+    /// <summary>Appends one normalized interval and preserves its spacing only when it differs from the enclosing text value.</summary>
+    public void Append(ReadOnlySpan<char> value, double letterSpacing, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
+        if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction work context.");
+        int start = _text.Length;
+        _text.Append(value, maximumLength, workCounter, cancellationToken);
+        if (value.Length == 0 || _letterSpacingSpans is null && letterSpacing.Equals(_defaultLetterSpacing)) return;
+        BudgetedParserList<SvgTextLetterSpacingSpan> spans = _letterSpacingSpans ??= CreateLetterSpacingSpans(start);
+        int end = checked(start + value.Length);
+        if (spans.Count != 0)
+        {
+            SvgTextLetterSpacingSpan previous = spans[^1];
+            if (previous.End == start && previous.LetterSpacing.Equals(letterSpacing))
+            {
+                spans[^1] = previous with { End = end };
+                return;
+            }
+        }
+        spans.Add(new SvgTextLetterSpacingSpan(start, end, letterSpacing));
+    }
+
+    /// <summary>Transfers normalized text and any exact spacing-span storage to the layout consumer.</summary>
+    internal BudgetedTextLayout Detach()
+    {
+        BudgetedText text = _text.Detach();
+        try
+        {
+            OwnedParserArray<SvgTextLetterSpacingSpan> spans = _letterSpacingSpans is null ? new OwnedParserArray<SvgTextLetterSpacingSpan>([], null) : _letterSpacingSpans.Detach();
+            _letterSpacingSpans = null;
+            return new BudgetedTextLayout(text.Value, spans.Items, text.Reservation, spans.Reservation);
+        }
+        catch
+        {
+            text.Dispose();
+            throw;
+        }
+    }
+
+    public void Dispose()
+    {
+        _text.Dispose();
+        _letterSpacingSpans?.Dispose();
+        _letterSpacingSpans = null;
+    }
+
+    private BudgetedParserList<SvgTextLetterSpacingSpan> CreateLetterSpacingSpans(int start)
+    {
+        var spans = new BudgetedParserList<SvgTextLetterSpacingSpan>(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+        if (start != 0) spans.Add(new SvgTextLetterSpacingSpan(0, start, _defaultLetterSpacing));
+        return spans;
+    }
+}
+
+/// <summary>Owns normalized text and optional exact letter-spacing span storage until text layout completes.</summary>
+internal readonly record struct BudgetedTextLayout(string Value, SvgTextLetterSpacingSpan[] LetterSpacingSpans, RenderBudget.BudgetReservation? TextReservation, RenderBudget.BudgetReservation? LetterSpacingReservation) : IDisposable
+{
+    public void Dispose()
+    {
+        TextReservation?.Dispose();
+        LetterSpacingReservation?.Dispose();
+    }
 }
 
 /// <summary>Owns a growable parser array whose backing storage is reserved before allocation.</summary>

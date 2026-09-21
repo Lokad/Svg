@@ -61,4 +61,25 @@ public sealed class BudgetedTextBufferTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Retains_only_normalized_letter_spacing_intervals_that_differ_from_the_parent_text()
+    {
+        RenderBudget budget = new(2_000);
+        var workCounter = new ParserWorkCounter(100);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        var parent = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0);
+        var spaced = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 5);
+
+        parent.Append("A", buffer, 10, workCounter, CancellationToken.None);
+        spaced.Append("A", buffer, 10, workCounter, CancellationToken.None);
+        parent.Append("A", buffer, 10, workCounter, CancellationToken.None);
+        using BudgetedTextLayout text = buffer.Detach();
+
+        Assert.Equal("AAA", text.Value);
+        Assert.Equal([new SvgTextLetterSpacingSpan(0, 1, 0), new SvgTextLetterSpacingSpan(1, 2, 5), new SvgTextLetterSpacingSpan(2, 3, 0)], text.LetterSpacingSpans);
+        Assert.True(budget.Snapshot().CurrentBytes > 0);
+        text.Dispose();
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
 }

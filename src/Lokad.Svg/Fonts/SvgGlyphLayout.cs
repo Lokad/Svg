@@ -34,6 +34,10 @@ internal static class SvgGlyphLayout
 
     /// <summary>Creates positioned glyph storage with scalar inter-glyph spacing and bounded source-element context for diagnostics.</summary>
     internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, SvgTextAnchor anchor, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => CreateStorage(font, text, fontSize, originX, originY, letterSpacing, [], anchor, budget, sourceElementId, workCounter, cancellationToken);
+
+    /// <summary>Creates positioned glyph storage with normalized UTF-16 letter-spacing intervals from nested direct-text spans.</summary>
+    internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, SvgTextAnchor anchor, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(text);
@@ -41,6 +45,7 @@ internal static class SvgGlyphLayout
         ArgumentNullException.ThrowIfNull(sourceElementId);
         if (!double.IsFinite(fontSize) || fontSize <= 0) throw new ArgumentOutOfRangeException(nameof(fontSize));
         if (!double.IsFinite(originX) || !double.IsFinite(originY) || !double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(originX));
+        ValidateLetterSpacingSpans(text, letterSpacingSpans);
         double scale = fontSize / font.UnitsPerEm;
         if (!double.IsFinite(scale)) throw new ArgumentOutOfRangeException(nameof(fontSize));
         int glyphCount = 0;
@@ -87,12 +92,19 @@ internal static class SvgGlyphLayout
                 glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, 0, originY, scaledAdvance);
             }
             double x = originX;
+            int spacingSpanIndex = 0;
+            int sourceOffset = 0;
+            var positionedScalars = text.EnumerateRunes();
             for (int index = 0; index < glyphs.Length; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgPositionedGlyph glyph = glyphs[index];
                 double kerning = index + 1 == glyphs.Length ? 0 : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken) * scale;
-                double nextX = index + 1 == glyphs.Length ? x + glyph.Advance : x + glyph.Advance + kerning + letterSpacing;
+                if (!positionedScalars.MoveNext()) throw new InvalidOperationException("The normalized text glyph count is invalid.");
+                Rune scalar = positionedScalars.Current;
+                double currentLetterSpacing = GetLetterSpacing(sourceOffset, letterSpacing, letterSpacingSpans, ref spacingSpanIndex);
+                sourceOffset += scalar.Utf16SequenceLength;
+                double nextX = index + 1 == glyphs.Length ? x + glyph.Advance : x + glyph.Advance + kerning + currentLetterSpacing;
                 if (!double.IsFinite(kerning) || !double.IsFinite(nextX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
                 glyphs[index] = glyph with { X = x };
                 x = nextX;
@@ -118,6 +130,26 @@ internal static class SvgGlyphLayout
         {
             reservation.Dispose();
             throw;
+        }
+
+        static double GetLetterSpacing(int sourceOffset, double defaultLetterSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ref int spanIndex)
+        {
+            if (letterSpacingSpans.IsEmpty) return defaultLetterSpacing;
+            while (sourceOffset >= letterSpacingSpans[spanIndex].End) spanIndex++;
+            return letterSpacingSpans[spanIndex].LetterSpacing;
+        }
+
+        static void ValidateLetterSpacingSpans(string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans)
+        {
+            int expectedStart = 0;
+            for (int index = 0; index < letterSpacingSpans.Length; index++)
+            {
+                SvgTextLetterSpacingSpan span = letterSpacingSpans[index];
+                if (!double.IsFinite(span.LetterSpacing) || span.Start != expectedStart || span.End <= span.Start || span.End > text.Length) throw new ArgumentException("The text letter-spacing spans are invalid.", nameof(letterSpacingSpans));
+                if (span.Start != 0 && char.IsLowSurrogate(text[span.Start]) || span.End != text.Length && char.IsLowSurrogate(text[span.End])) throw new ArgumentException("The text letter-spacing spans split a Unicode scalar.", nameof(letterSpacingSpans));
+                expectedStart = span.End;
+            }
+            if (!letterSpacingSpans.IsEmpty && expectedStart != text.Length) throw new ArgumentException("The text letter-spacing spans do not cover the normalized text.", nameof(letterSpacingSpans));
         }
     }
 

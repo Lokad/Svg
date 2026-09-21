@@ -1281,7 +1281,7 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Svg_based_snapshot_acquires_the_font_for_text_with_an_attribute_free_span()
+    public async Task Svg_based_snapshot_acquires_the_font_for_text_with_a_stylesheet_spaced_span()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
         string hash = Convert.ToHexString(SHA256.HashData(bytes));
@@ -1289,7 +1289,7 @@ public sealed class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
 
-        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'><tspan>x</tspan></text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><style>.wide { letter-spacing: 2; }</style><text font-family='Unused'><tspan class='wide'>x</tspan></text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None);
 
         Assert.Single(snapshot.Fonts);
         Assert.Equal(1, source.RequestCount);
@@ -1918,6 +1918,24 @@ public sealed class OpenTypeFontTests
         Assert.Equal(direct.ToArray(), inherited.ToArray());
         Assert.Equal(direct.ToArray(), stylesheet.ToArray());
         Assert.Equal(direct.ToArray(), classStylesheet.ToArray());
+    }
+
+    [Fact]
+    public async Task Nested_tspan_applies_scalar_letter_spacing_without_changing_the_parent_text_chunk_anchor()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        ReadOnlyMemory<byte> presentation = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='400' height='5'><text font-family='Example' font-size='100' x='200' y='3' text-anchor='middle'>A<tspan letter-spacing='50'>AA</tspan>A</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> inline = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='400' height='5'><text font-family='Example' font-size='100' x='200' y='3' text-anchor='middle'>A<tspan style='letter-spacing: 50'>AA</tspan>A</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> stylesheet = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='400' height='5'><style>.wide { letter-spacing: 50; }</style><text font-family='Example' font-size='100' x='200' y='3' text-anchor='middle'>A<tspan class='wide'>AA</tspan>A</text></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        Assert.True(DecodeAlpha(presentation, 31, 1) > 0);
+        Assert.True(DecodeAlpha(presentation, 91, 1) > 0);
+        Assert.True(DecodeAlpha(presentation, 201, 1) > 0);
+        Assert.True(DecodeAlpha(presentation, 311, 1) > 0);
+        Assert.Equal(presentation.ToArray(), inline.ToArray());
+        Assert.Equal(presentation.ToArray(), stylesheet.ToArray());
     }
 
     [Fact]

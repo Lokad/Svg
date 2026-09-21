@@ -22,7 +22,7 @@ internal static class SvgElementAttributePolicy
     /// <summary>Validates the initial direct-text attribute subset before text extraction and layout.</summary>
     internal static void ValidateText(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Text, "Text", workCounter, cancellationToken);
 
-    /// <summary>Validates the whitespace-only nested span subset before direct-text extraction.</summary>
+    /// <summary>Validates the whitespace-and-letter-spacing nested span subset before direct-text extraction.</summary>
     internal static void ValidateTextSpan(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.TextSpan, "Text span", workCounter, cancellationToken);
 
     internal static void ValidateDefinitionContainer(XmlReader reader)
@@ -60,7 +60,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.Path => reader.LocalName is "id" or "class" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform",
             SvgElementKind.PointList => reader.LocalName is "id" or "class" or "points" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform",
             SvgElementKind.Text => reader.LocalName is "id" or "class" or "x" or "y" or "dx" or "dy" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style",
-            SvgElementKind.TextSpan => reader.LocalName is "id" or "class" or "style",
+            SvgElementKind.TextSpan => reader.LocalName is "id" or "class" or "letter-spacing" or "style",
             SvgElementKind.Symbol => reader.LocalName == "id",
             _ => false
         };

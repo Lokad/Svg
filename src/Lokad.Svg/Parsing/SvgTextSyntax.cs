@@ -13,10 +13,36 @@ internal static class SvgTextLimits
 /// <summary>Specifies the admitted XML whitespace treatment for one direct text run.</summary>
 internal enum SvgTextWhitespaceMode { Default, Preserve }
 
+/// <summary>Receives normalized text with the active inherited letter spacing for each emitted source interval.</summary>
+internal interface ISvgTextOutput
+{
+    void Append(ReadOnlySpan<char> value, double letterSpacing, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken);
+}
+
+/// <summary>Pairs the inherited whitespace and scalar letter-spacing values active in one direct-text span.</summary>
+internal readonly record struct SvgTextSpanStyle
+{
+    internal SvgTextSpanStyle(SvgTextWhitespaceMode whitespaceMode, double letterSpacing)
+    {
+        if (whitespaceMode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(whitespaceMode));
+        if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
+        WhitespaceMode = whitespaceMode;
+        LetterSpacing = letterSpacing;
+    }
+
+    internal SvgTextWhitespaceMode WhitespaceMode { get; }
+
+    internal double LetterSpacing { get; }
+}
+
+/// <summary>Identifies one contiguous UTF-16 interval emitted with a non-default scalar letter spacing.</summary>
+internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, double LetterSpacing);
+
 /// <summary>Normalizes direct-text whitespace while preserving the source character limit across reader chunks.</summary>
 internal struct SvgTextWhitespaceNormalizer
 {
     private readonly SvgTextWhitespaceMode _mode;
+    private readonly double _letterSpacing;
     private bool _hasOutput;
     private bool _hasPendingWhitespace;
     private int _sourceCharacterCount;
@@ -30,15 +56,27 @@ internal struct SvgTextWhitespaceNormalizer
     /// <summary>Gets this element's inherited XML whitespace mode.</summary>
     internal SvgTextWhitespaceMode Mode => _mode;
 
+    /// <summary>Gets the scalar letter spacing inherited by text emitted from this element.</summary>
+    internal double LetterSpacing => _letterSpacing;
+
     /// <summary>Initializes a normalizer for one direct text element's admitted XML whitespace mode.</summary>
-    internal SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode mode) => _mode = mode;
+    internal SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode mode) : this(mode, 0) { }
+
+    /// <summary>Initializes a normalizer for one direct-text span's whitespace mode and scalar letter spacing.</summary>
+    internal SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode mode, double letterSpacing)
+    {
+        if (mode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(mode));
+        if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
+        _mode = mode;
+        _letterSpacing = letterSpacing;
+    }
 
     /// <summary>Appends direct text according to the configured XML whitespace mode without materializing an unbounded intermediate value.</summary>
-    internal void Append(ReadOnlySpan<char> value, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal void Append(ReadOnlySpan<char> value, ISvgTextOutput output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => Append(value, _mode, output, maximumSourceCharacters, workCounter, cancellationToken);
 
     /// <summary>Appends one inherited direct-text whitespace region without materializing an unbounded intermediate value.</summary>
-    internal void Append(ReadOnlySpan<char> value, SvgTextWhitespaceMode mode, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal void Append(ReadOnlySpan<char> value, SvgTextWhitespaceMode mode, ISvgTextOutput output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(output);
         ArgumentNullException.ThrowIfNull(workCounter);
@@ -60,7 +98,7 @@ internal struct SvgTextWhitespaceNormalizer
         }
     }
 
-    private void AppendChunk(ReadOnlySpan<char> value, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private void AppendChunk(ReadOnlySpan<char> value, ISvgTextOutput output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         int index = 0;
         while (index < value.Length)
@@ -74,22 +112,22 @@ internal struct SvgTextWhitespaceNormalizer
             FlushPendingWhitespace(output, maximumSourceCharacters, workCounter, cancellationToken, true);
             int end = index + 1;
             while (end < value.Length && !IsCollapsible(value[end])) end++;
-            output.Append(value.Slice(index, end - index), maximumSourceCharacters, workCounter, cancellationToken);
+            output.Append(value.Slice(index, end - index), _letterSpacing, maximumSourceCharacters, workCounter, cancellationToken);
             _hasOutput = true;
             index = end;
         }
     }
 
-    private void FlushPendingWhitespace(BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool hasNextContent)
+    private void FlushPendingWhitespace(ISvgTextOutput output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool hasNextContent)
     {
         if (!_hasPendingWhitespace || !hasNextContent) return;
-        output.Append(" ", maximumSourceCharacters, workCounter, cancellationToken);
+        output.Append(" ", _letterSpacing, maximumSourceCharacters, workCounter, cancellationToken);
         _hasPendingWhitespace = false;
         _hasOutput = true;
     }
 
     /// <summary>Commits whitespace before a child element that has emitted visible text.</summary>
-    internal void ObserveChildContent(BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal void ObserveChildContent(ISvgTextOutput output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         FlushPendingWhitespace(output, maximumSourceCharacters, workCounter, cancellationToken, true);
         _hasOutput = true;
@@ -98,12 +136,12 @@ internal struct SvgTextWhitespaceNormalizer
     /// <summary>Discards default-mode whitespace trailing this element's own character data.</summary>
     internal void CompleteElement() => _hasPendingWhitespace = false;
 
-    private static void AppendPreservedChunk(ReadOnlySpan<char> value, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private void AppendPreservedChunk(ReadOnlySpan<char> value, ISvgTextOutput output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         int replacement = value.IndexOfAny('\t', '\r', '\n');
         if (replacement < 0)
         {
-            output.Append(value, maximumSourceCharacters, workCounter, cancellationToken);
+            output.Append(value, _letterSpacing, maximumSourceCharacters, workCounter, cancellationToken);
             return;
         }
         Span<char> normalized = stackalloc char[value.Length];
@@ -115,7 +153,7 @@ internal struct SvgTextWhitespaceNormalizer
             int next = normalized[searchStart..].IndexOfAny('\t', '\r', '\n');
             replacement = next < 0 ? -1 : searchStart + next;
         } while (replacement >= 0);
-        output.Append(normalized, maximumSourceCharacters, workCounter, cancellationToken);
+        output.Append(normalized, _letterSpacing, maximumSourceCharacters, workCounter, cancellationToken);
     }
 
     /// <summary>Observes one discovery text chunk and reports whether normalization can produce a glyph.</summary>
@@ -220,45 +258,68 @@ internal static class SvgTextSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only default and preserve xml:space values are supported for direct text.");
     }
 
-    /// <summary>Recognizes nested whitespace-only tspan declarations and resolves them over the parent mode.</summary>
-    internal static bool TryParseTspanWhitespaceMode(XmlReader reader, SvgTextWhitespaceMode inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgTextWhitespaceMode mode)
+    /// <summary>Recognizes nested whitespace-and-spacing tspan declarations and resolves them over the parent values.</summary>
+    internal static bool TryParseTspanStyle(XmlReader reader, SvgTextSpanStyle inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgTextSpanStyle style)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(workCounter);
-        mode = inherited;
+        style = inherited;
         if (HasUnsupportedProperties(styleSheet)) return false;
         string? xmlSpace = null;
         string? whiteSpace = null;
-        if (!reader.HasAttributes) return true;
+        string? inlineLetterSpacing = null;
+        string? presentationLetterSpacing = null;
+        if (!reader.HasAttributes)
+        {
+            style = new SvgTextSpanStyle(styleSheet.WhiteSpace is string styleSheetWhiteSpace ? ParseCssWhitespaceMode(styleSheetWhiteSpace) : inherited.WhitespaceMode, styleSheet.LetterSpacing is string styleSheetLetterSpacing ? SvgGeometrySyntax.ParseTextCoordinate(styleSheetLetterSpacing) : inherited.LetterSpacing);
+            return true;
+        }
         while (reader.MoveToNextAttribute())
         {
             workCounter.Consume(cancellationToken);
             if (reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space")
             {
-                if (xmlSpace is not null) { reader.MoveToElement(); mode = inherited; return false; }
+                if (xmlSpace is not null) { reader.MoveToElement(); style = inherited; return false; }
                 xmlSpace = reader.Value;
                 continue;
             }
             if (reader.NamespaceURI.Length == 0 && reader.LocalName == "style")
             {
-                if (whiteSpace is not null) { reader.MoveToElement(); mode = inherited; return false; }
-                InlineStyle style = SvgInlineStyleParser.Parse(reader.Value, workCounter, cancellationToken, true);
-                if (style.WhiteSpace is null || HasUnsupportedProperties(style)) { reader.MoveToElement(); mode = inherited; return false; }
-                whiteSpace = style.WhiteSpace;
+                if (whiteSpace is not null || inlineLetterSpacing is not null) { reader.MoveToElement(); style = inherited; return false; }
+                InlineStyle inline = SvgInlineStyleParser.Parse(reader.Value, workCounter, cancellationToken, true);
+                if ((inline.WhiteSpace is null && inline.LetterSpacing is null) || HasUnsupportedProperties(inline)) { reader.MoveToElement(); style = inherited; return false; }
+                whiteSpace = inline.WhiteSpace;
+                inlineLetterSpacing = inline.LetterSpacing;
+                continue;
+            }
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "letter-spacing")
+            {
+                if (presentationLetterSpacing is not null) { reader.MoveToElement(); style = inherited; return false; }
+                presentationLetterSpacing = reader.Value;
                 continue;
             }
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class") continue;
             reader.MoveToElement();
-            mode = inherited;
+            style = inherited;
             return false;
         }
         reader.MoveToElement();
-        mode = xmlSpace is null ? inherited : ParseXmlWhitespaceMode(xmlSpace);
+        SvgTextWhitespaceMode mode = xmlSpace is null ? inherited.WhitespaceMode : ParseXmlWhitespaceMode(xmlSpace);
         if ((whiteSpace ?? styleSheet.WhiteSpace) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
+        string? letterSpacing = inlineLetterSpacing ?? styleSheet.LetterSpacing ?? presentationLetterSpacing;
+        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing));
         return true;
 
         static bool HasUnsupportedProperties(InlineStyle style)
-            => style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.Display is not null || style.Visibility is not null || style.Opacity is not null || style.FillRule is not null || style.TextFont.Family is not null || style.TextFont.Weight is not null || style.TextFont.Style is not null || style.TextFont.Size is not null || style.LetterSpacing is not null;
+            => style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.Display is not null || style.Visibility is not null || style.Opacity is not null || style.FillRule is not null || style.TextFont.Family is not null || style.TextFont.Weight is not null || style.TextFont.Style is not null || style.TextFont.Size is not null;
+    }
+
+    /// <summary>Recognizes nested whitespace-and-spacing spans while returning only the inherited whitespace mode needed by font discovery.</summary>
+    internal static bool TryParseTspanWhitespaceMode(XmlReader reader, SvgTextWhitespaceMode inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgTextWhitespaceMode mode)
+    {
+        bool parsed = TryParseTspanStyle(reader, new SvgTextSpanStyle(inherited, 0), styleSheet, workCounter, cancellationToken, out SvgTextSpanStyle style);
+        mode = style.WhitespaceMode;
+        return parsed;
     }
 
     private static SvgTextAnchor ParseAnchor(string value)

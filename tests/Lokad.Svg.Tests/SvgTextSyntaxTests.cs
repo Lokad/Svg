@@ -203,19 +203,20 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
-    public void Admits_only_whitespace_tspan_styles()
+    public void Admits_only_whitespace_and_letter_spacing_tspan_styles()
     {
-        using XmlReader accepted = XmlReader.Create(new StringReader("<tspan xml:space='preserve' style='white-space: normal'/>"));
+        using XmlReader accepted = XmlReader.Create(new StringReader("<tspan xml:space='preserve' letter-spacing='2' style='white-space: normal; letter-spacing: 3'/>"));
         accepted.Read();
         using XmlReader rejected = XmlReader.Create(new StringReader("<tspan style='font-size: 12'/>"));
         rejected.Read();
         using XmlReader rejectedSpacing = XmlReader.Create(new StringReader("<tspan style='white-space: pre; letter-spacing: 2'/>"));
         rejectedSpacing.Read();
 
-        Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(accepted, SvgTextWhitespaceMode.Preserve, default, new ParserWorkCounter(100), CancellationToken.None, out SvgTextWhitespaceMode mode));
-        Assert.Equal(SvgTextWhitespaceMode.Default, mode);
+        Assert.True(SvgTextSyntax.TryParseTspanStyle(accepted, new SvgTextSpanStyle(SvgTextWhitespaceMode.Preserve, 1), default, new ParserWorkCounter(100), CancellationToken.None, out SvgTextSpanStyle style));
+        Assert.Equal(SvgTextWhitespaceMode.Default, style.WhitespaceMode);
+        Assert.Equal(3, style.LetterSpacing);
         Assert.False(SvgTextSyntax.TryParseTspanWhitespaceMode(rejected, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
-        Assert.False(SvgTextSyntax.TryParseTspanWhitespaceMode(rejectedSpacing, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
+        Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(rejectedSpacing, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
     }
 
     [Fact]
