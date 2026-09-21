@@ -330,8 +330,9 @@ as entirely unimplemented work.
   on x64 these are 120-byte versus 12-byte values, so capacity four reserves 80
   bytes instead of 512 (including its 32-byte header). Current builder call sites
   select the correct kind, so this is not a demonstrated public undercharge.
-  Derive sizing from `Unsafe.SizeOf<T>()`, keeping memory category separate from
-  physical type. The repaired parser-list generic already follows that approach.
+  Sizing now derives from `Unsafe.SizeOf<T>()` like the parser lists (`3f124f3`):
+  the independently supplied scene-kind parameter is gone, so the mismatch is
+  unrepresentable; per-type ledger-peak regressions pin both element sizes.
 - Request, selected face, verified program and lease are blurred by hash strings,
   path:index strings and `Resolution.Resolution`; introduce precise identity/
   lifetime boundaries where they prevent actual errors.
