@@ -54,6 +54,7 @@ Reproduction:
 ```powershell
 dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks -- -j Short -f "*SvgParseBenchmarks*"
 dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks -- -j Short -f "*FontIntegrityBenchmarks*"
+dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks -- -j Short -f "*SvgTextBenchmarks*"
 ```
 
 ### Style-heavy admission (`SvgParseBenchmarks`)
@@ -96,3 +97,33 @@ Allocation is the fresh hex identity per verification plus hashing traffic;
 elapsed time scales with program length. This does not measure acquisition,
 snapshot field validation, cancellation latency or repeated/distinct program
 behavior.
+
+### Supplied-font text phases (`SvgTextBenchmarks`)
+
+- The input is one 64x64 SVG with eight styled `text` elements (inherited family
+  and size, scalar `letter-spacing`, XML whitespace modes, stylesheet-selected
+  span class, nested `tspan` spans), all rendering the admitted scalar `A`.
+  Font bytes are an embedded 342-byte synthetic triangle font, so the benchmarks
+  share the admitted test font without duplicating its builders or touching
+  private assets. The catalog, provider, options and reusable snapshot are built
+  once outside the timed methods.
+- `CreateSnapshotAsync` runs font-request discovery, resolution, acquisition and
+  verification per iteration, disposing the snapshot each time. The async state
+  machine is included in the measurement.
+- `LowerStyledText` lowers the admitted scene from a reused snapshot without
+  raster or PNG encoding.
+- `ConvertPreparedStyledTextAsync` runs the end-to-end supplied-font path:
+  prepared-document creation plus conversion through raster and encoding.
+
+| Method | Mean | Allocated |
+| --- | ---: | ---: |
+| `CreateSnapshotAsync` | 30.40 μs | 32.04 KB |
+| `LowerStyledText` | 55.30 μs | 140.88 KB |
+| `ConvertPreparedStyledTextAsync` | 300.14 μs | 190.34 KB |
+
+Full ShortRun columns: `CreateSnapshotAsync` Gen0 7.5684 / Gen1 none;
+`LowerStyledText` Gen0 33.3862 / Gen1 0.1221;
+`ConvertPreparedStyledTextAsync` Gen0 44.9219 / Gen1 none. Allocation is
+managed traffic per operation, not retained memory or `RenderBudget` peak.
+Timings are local ShortRun evidence with broad confidence intervals, not
+cross-platform guarantees or proof of any single allocation site share.
