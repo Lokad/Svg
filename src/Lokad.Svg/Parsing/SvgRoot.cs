@@ -36,20 +36,70 @@ internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double 
     }
 }
 
-internal enum SvgGeometryKind { Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours }
+internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours }
 
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
-internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle Rectangle, SvgAxisAlignedLine AxisAlignedLine, SvgGlyphGeometry Glyph)
+internal readonly struct SvgGeometry
 {
-    internal static SvgGeometry FromRectangle(SvgRectangle rectangle) => new(SvgGeometryKind.Rectangle, rectangle, default, SvgGlyphGeometry.Empty);
+    private readonly SvgGeometryKind _kind;
+    private readonly SvgRectangle _rectangle;
+    private readonly SvgAxisAlignedLine _axisAlignedLine;
+    private readonly SvgGlyphGeometry? _glyph;
 
-    internal static SvgGeometry FromAxisAlignedLine(SvgAxisAlignedLine line) => new(SvgGeometryKind.AxisAlignedLine, default, line, SvgGlyphGeometry.Empty);
+    private SvgGeometry(SvgGeometryKind kind, SvgRectangle rectangle)
+    {
+        _kind = kind;
+        _rectangle = rectangle;
+        _axisAlignedLine = default;
+        _glyph = null;
+    }
 
-    internal static SvgGeometry FromOrthogonalBand(SvgRectangle band) => new(SvgGeometryKind.OrthogonalBand, band, default, SvgGlyphGeometry.Empty);
+    private SvgGeometry(SvgAxisAlignedLine axisAlignedLine)
+    {
+        _kind = SvgGeometryKind.AxisAlignedLine;
+        _rectangle = default;
+        _axisAlignedLine = axisAlignedLine;
+        _glyph = null;
+    }
 
-    internal static SvgGeometry FromGlyphContours(SvgGlyphGeometry glyph) => new(SvgGeometryKind.GlyphContours, default, default, glyph);
+    private SvgGeometry(SvgGlyphGeometry glyph)
+    {
+        ArgumentNullException.ThrowIfNull(glyph);
+        _kind = SvgGeometryKind.GlyphContours;
+        _rectangle = default;
+        _axisAlignedLine = default;
+        _glyph = glyph;
+    }
 
-    internal void Dispose() => Glyph?.Dispose();
+    internal SvgGeometryKind Kind => _kind;
+
+    internal SvgRectangle Rectangle
+        => _kind is SvgGeometryKind.Rectangle or SvgGeometryKind.OrthogonalBand
+            ? _rectangle
+            : throw new InvalidOperationException("This SVG geometry does not contain a rectangle.");
+
+    internal SvgAxisAlignedLine AxisAlignedLine
+        => _kind == SvgGeometryKind.AxisAlignedLine
+            ? _axisAlignedLine
+            : throw new InvalidOperationException("This SVG geometry does not contain an axis-aligned line.");
+
+    internal SvgGlyphGeometry Glyph
+        => _kind == SvgGeometryKind.GlyphContours
+            ? _glyph ?? throw new InvalidOperationException("This SVG geometry does not contain glyph contours.")
+            : throw new InvalidOperationException("This SVG geometry does not contain glyph contours.");
+
+    internal static SvgGeometry FromRectangle(SvgRectangle rectangle) => new(SvgGeometryKind.Rectangle, rectangle);
+
+    internal static SvgGeometry FromAxisAlignedLine(SvgAxisAlignedLine line) => new(line);
+
+    internal static SvgGeometry FromOrthogonalBand(SvgRectangle band) => new(SvgGeometryKind.OrthogonalBand, band);
+
+    internal static SvgGeometry FromGlyphContours(SvgGlyphGeometry glyph) => new(glyph);
+
+    internal void Dispose()
+    {
+        if (_kind == SvgGeometryKind.GlyphContours) _glyph?.Dispose();
+    }
 
     internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
     {
@@ -72,8 +122,6 @@ internal readonly record struct SvgGeometry(SvgGeometryKind Kind, SvgRectangle R
 internal sealed class SvgGlyphGeometry : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
-
-    internal static SvgGlyphGeometry Empty { get; } = new([], default, null);
 
     internal SvgGlyphGeometry(SvgGlyphQuadraticContour[] contours, SvgColor color) : this(contours, color, null)
     {
@@ -157,11 +205,9 @@ internal readonly record struct SvgPoint(int X, int Y);
 internal static class SvgSceneMemory
 {
     private const int ArrayHeaderBytes = 32;
-    private const int GeometryBytes = 128;
-    private const int DrawCommandBytes = 16;
 
     internal static long GetArrayByteCount(SvgSceneArrayKind kind, int count)
-        => count == 0 ? 0 : checked(ArrayHeaderBytes + (long)count * (kind == SvgSceneArrayKind.Geometry ? GeometryBytes : DrawCommandBytes));
+        => count == 0 ? 0 : checked(ArrayHeaderBytes + (long)count * (kind == SvgSceneArrayKind.Geometry ? Unsafe.SizeOf<SvgGeometry>() : Unsafe.SizeOf<SvgDrawCommand>()));
 }
 
 internal enum SvgSceneArrayKind { Geometry, DrawCommand }

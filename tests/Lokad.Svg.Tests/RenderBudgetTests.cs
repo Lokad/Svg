@@ -54,6 +54,19 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Rasterization_rejects_an_unresolved_default_geometry_placeholder()
+    {
+        RenderBudget budget = new(8);
+        SvgRoot root = new(1, 1, null, [default], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255)], false, 0, null);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, Limits());
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, options, budget, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
     public void Glyph_rasterization_charges_bounds_all_samples_and_pixel_dispatch()
     {
         RenderBudget budget = new(8);

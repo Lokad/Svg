@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Buffers;
 using System.Runtime.InteropServices;
 using Lokad.Svg.Fonts;
+using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Tests;
 
@@ -540,9 +541,10 @@ public sealed class PublicContractTests
     [Fact]
     public void Retained_scene_arrays_stay_within_the_conversion_budget()
     {
-        SvgRenderLimits insufficient = new(131_871, 1024, 2, 4, 1024, 16, 16, 32);
+        long retainedScenePeak = SvgSceneMemory.GetArrayByteCount(SvgSceneArrayKind.Geometry, 4) + SvgSceneMemory.GetArrayByteCount(SvgSceneArrayKind.Geometry, 1) + SvgSceneMemory.GetArrayByteCount(SvgSceneArrayKind.DrawCommand, 4);
+        SvgRenderLimits insufficient = new(131_072 + retainedScenePeak - 1, 1024, 2, 4, 1024, 16, 16, 32);
         SvgRenderOptions insufficientOptions = new(null, 1, SvgColor.Transparent, insufficient);
-        SvgRenderLimits sufficient = new(131_872, 1024, 2, 4, 1024, 16, 16, 32);
+        SvgRenderLimits sufficient = new(131_072 + retainedScenePeak, 1024, 2, 4, 1024, 16, 16, 32);
         SvgRenderOptions sufficientOptions = new(null, 1, SvgColor.Transparent, sufficient);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1'/></svg>"u8.ToArray();
 
