@@ -1773,6 +1773,18 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Nested_default_xml_space_trims_its_own_visible_text_edges()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        ReadOnlyMemory<byte> nested = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'>A<tspan xml:space='default'> A </tspan>A</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'>AAA</text></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        Assert.Equal(expected.ToArray(), nested.ToArray());
+    }
+
+    [Fact]
     public async Task Converts_direct_text_and_its_immediate_shape_sibling_through_every_public_output_form()
     {
         byte[] font = CreateTriangleFont();
