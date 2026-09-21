@@ -135,6 +135,8 @@ public sealed class SvgFontPackCatalog
     /// Selectively locates and integrity-verifies the program selected by this
     /// catalog. No other manifest file is requested. The provider retains source
     /// ownership and cache policy; the result retains neither bytes nor a cache.
+    /// Verification applies at acquisition: snapshot creation verifies size and hash again
+    /// before use, so callers must not assume caller-owned bytes stay unchanged in between.
     /// </summary>
     public ValueTask<SvgFontProgramResolution> AcquireAsync(SvgFontPackResolution resolution, ISvgFontProgramSourceProvider provider, CancellationToken cancellationToken)
     {

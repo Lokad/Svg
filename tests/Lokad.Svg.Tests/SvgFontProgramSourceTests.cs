@@ -263,6 +263,23 @@ public sealed class SvgFontProgramSourceTests
     }
 
     [Fact]
+    public async Task Snapshot_reverifies_bytes_mutated_after_acquisition()
+    {
+        byte[] program = [1, 2, 3, 4];
+        SvgFontPackCatalog catalog = CreateCatalog(program);
+        var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>
+        {
+            ["files/example.ttf"] = new SvgMemoryFontProgramSource("mutating", program),
+        });
+
+        SvgFontProgramResolution acquired = await catalog.AcquireAsync(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), provider, CancellationToken.None);
+        program[0] = 9;
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([acquired], CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnresolvedResource, exception.ErrorCode);
+    }
+    [Fact]
     public async Task Acquisition_reports_a_missing_selected_program_without_probing_other_files()
     {
         byte[] first = [1, 2, 3];
