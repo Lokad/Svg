@@ -54,7 +54,8 @@ retains it) element ID; it never contains font bytes, source text or caller
 transport details.
 `SvgFontSnapshot.CreateAsync` is the explicit preparation building block for
 already-selected programs. It re-verifies caller-owned bytes, validates the
-standalone-TrueType core metrics, and retains at most 256 face records and 32 MiB
+standalone-TrueType core metrics and any present `name`/`OS/2` metadata table
+structure, and retains at most 256 face records and 32 MiB
 of borrowed bytes for its disposable lifetime. Snapshot access after disposal
 throws `ObjectDisposedException`; callers must not dispose a snapshot while a read
 or conversion using it is in progress. Disposal invalidates snapshot and
@@ -83,6 +84,9 @@ admitted root-stylesheet and inline `style` font subset is `font-family`,
 `font-weight`, `font-style` and `font-size`; admitted scalar positioning is `x`,
 `y`, `dx`, `dy`, scalar `letter-spacing` (added only between glyphs), and `text-anchor` (`start`, `middle`, `end`), with a bounded `id`
 retained only for font diagnostics and a bounded `class` token for admitted generic stylesheet selectors.
+Embedded `name` data is structurally validated but does not override manifest family
+selection; `OS/2` version-specific table bounds are likewise checked without
+applying its style or line metrics.
 Its direct text content is limited to 32,768 UTF-16 characters across one
 conversion before layout; subtree reader nodes and cmap/advance lookup traversal
 consume the conversion's parser-work limit. Positioned glyph storage is reserved from the conversion's geometry budget

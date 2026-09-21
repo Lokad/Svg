@@ -47,6 +47,58 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Validates_optional_name_metadata_and_all_supported_OS2_versions()
+    {
+        foreach (ushort version in new ushort[] { 0, 1, 2, 3, 4, 5 })
+        {
+            OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(CreateFontWithMetadata(version), CancellationToken.None);
+
+            Assert.Equal((ushort)3, metrics.GlyphCount);
+        }
+    }
+
+    [Fact]
+    public void Rejects_invalid_optional_name_and_OS2_metadata()
+    {
+        byte[] unsortedNames = CreateFontWithMetadata(5);
+        int nameOffset = FindTableOffset(unsortedNames, 0x6E616D65);
+        WriteUInt16(unsortedNames, nameOffset + 24, 0);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(unsortedNames, CancellationToken.None)).ErrorCode);
+
+        byte[] invalidStorage = CreateFontWithMetadata(5);
+        nameOffset = FindTableOffset(invalidStorage, 0x6E616D65);
+        WriteUInt16(invalidStorage, nameOffset + 4, 35);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(invalidStorage, CancellationToken.None)).ErrorCode);
+
+        byte[] missingLanguageTag = CreateFontWithMetadata(5);
+        nameOffset = FindTableOffset(missingLanguageTag, 0x6E616D65);
+        WriteUInt16(missingLanguageTag, nameOffset + 10, 0x8001);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(missingLanguageTag, CancellationToken.None)).ErrorCode);
+
+        byte[] unsupportedOs2 = CreateFontWithMetadata(5);
+        int os2Offset = FindTableOffset(unsupportedOs2, 0x4F532F32);
+        WriteUInt16(unsupportedOs2, os2Offset, 6);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(unsupportedOs2, CancellationToken.None)).ErrorCode);
+
+        byte[] truncatedOs2 = CreateFontWithMetadata(5);
+        os2Offset = FindTableOffset(truncatedOs2, 0x4F532F32);
+        WriteTable(truncatedOs2, 8, 0x4F532F32, os2Offset, 99);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(truncatedOs2, CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
+    public void Charges_name_records_language_tags_and_OS2_metadata_to_the_shared_work_limit()
+    {
+        byte[] font = CreateFontWithMetadata(5);
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(font, new ParserWorkCounter(13), CancellationToken.None)).ErrorCode);
+        ParserWorkCounter successfulWork = new(14);
+        OpenTypeFont.ParseMetrics(font, successfulWork, CancellationToken.None);
+
+        Assert.Equal(14, successfulWork.Used);
+    }
+
+    [Fact]
     public void Checks_cancellation_before_font_parsing()
     {
         using CancellationTokenSource cancellation = new();
@@ -2911,6 +2963,57 @@ public sealed class OpenTypeFontTests
         return font;
     }
 
+    private static byte[] CreateFontWithMetadata(ushort os2Version)
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        const int originalTableCount = 7;
+        const int directoryExpansion = 32;
+        const int nameLength = 68;
+        int os2Length = os2Version switch
+        {
+            0 => 68,
+            1 => 86,
+            2 or 3 or 4 => 96,
+            5 => 100,
+            _ => throw new ArgumentOutOfRangeException(nameof(os2Version))
+        };
+        const int originalDirectoryLength = 12 + originalTableCount * 16;
+        int originalLength = font.Length;
+        Array.Resize(ref font, originalLength + directoryExpansion + nameLength + os2Length);
+        Array.Copy(font, originalDirectoryLength, font, originalDirectoryLength + directoryExpansion, originalLength - originalDirectoryLength);
+        for (int index = 0; index < originalTableCount; index++)
+        {
+            int entry = 12 + index * 16;
+            uint offset = ((uint)font[entry + 8] << 24) | ((uint)font[entry + 9] << 16) | ((uint)font[entry + 10] << 8) | font[entry + 11];
+            WriteUInt32(font, entry + 8, offset + directoryExpansion);
+        }
+        WriteUInt16(font, 4, originalTableCount + 2);
+        int nameOffset = originalLength + directoryExpansion;
+        int os2Offset = nameOffset + nameLength;
+        WriteTable(font, 7, 0x6E616D65, nameOffset, nameLength);
+        WriteTable(font, 8, 0x4F532F32, os2Offset, os2Length);
+        WriteUInt16(font, nameOffset, 1);
+        WriteUInt16(font, nameOffset + 2, 2);
+        WriteUInt16(font, nameOffset + 4, 36);
+        WriteUInt16(font, nameOffset + 6, 3);
+        WriteUInt16(font, nameOffset + 8, 1);
+        WriteUInt16(font, nameOffset + 10, 0x8000);
+        WriteUInt16(font, nameOffset + 12, 1);
+        WriteUInt16(font, nameOffset + 14, 14);
+        WriteUInt16(font, nameOffset + 16, 0);
+        WriteUInt16(font, nameOffset + 18, 3);
+        WriteUInt16(font, nameOffset + 20, 1);
+        WriteUInt16(font, nameOffset + 22, 0x8000);
+        WriteUInt16(font, nameOffset + 24, 2);
+        WriteUInt16(font, nameOffset + 26, 14);
+        WriteUInt16(font, nameOffset + 28, 14);
+        WriteUInt16(font, nameOffset + 30, 1);
+        WriteUInt16(font, nameOffset + 32, 4);
+        WriteUInt16(font, nameOffset + 34, 28);
+        WriteUInt16(font, os2Offset, os2Version);
+        return font;
+    }
+
     private static byte[] CreateTriangleAAndSpaceFont()
     {
         byte[] font = CreateTriangleFont();
@@ -3113,6 +3216,18 @@ public sealed class OpenTypeFontTests
         WriteUInt32(destination, entry, tag);
         WriteUInt32(destination, entry + 8, (uint)offset);
         WriteUInt32(destination, entry + 12, (uint)length);
+    }
+
+    private static int FindTableOffset(ReadOnlySpan<byte> font, uint tag)
+    {
+        int tableCount = (font[4] << 8) | font[5];
+        for (int index = 0; index < tableCount; index++)
+        {
+            int entry = 12 + index * 16;
+            uint currentTag = ((uint)font[entry] << 24) | ((uint)font[entry + 1] << 16) | ((uint)font[entry + 2] << 8) | font[entry + 3];
+            if (currentTag == tag) return checked((int)(((uint)font[entry + 8] << 24) | ((uint)font[entry + 9] << 16) | ((uint)font[entry + 10] << 8) | font[entry + 11]));
+        }
+        throw new InvalidOperationException("The requested table is missing from the synthetic font.");
     }
 
     private static void WriteUInt16(byte[] destination, int offset, int value)

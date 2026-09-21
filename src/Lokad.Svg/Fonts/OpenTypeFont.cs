@@ -23,6 +23,8 @@ internal static class OpenTypeFont
     private const uint HheaTag = 0x68686561;
     private const uint HmtxTag = 0x686D7478;
     private const uint CmapTag = 0x636D6170;
+    private const uint NameTag = 0x6E616D65;
+    private const uint Os2Tag = 0x4F532F32;
     private const uint KernTag = 0x6B65726E;
     private const uint GposTag = 0x47504F53;
     private const uint KernFeatureTag = 0x6B65726E;
@@ -78,6 +80,8 @@ internal static class OpenTypeFont
         if (numberOfHMetrics == 0 || numberOfHMetrics > glyphCount) throw InvalidFont("The hhea numberOfHMetrics value is invalid.");
         int hmtxBytes = checked(numberOfHMetrics * 4 + (glyphCount - numberOfHMetrics) * 2);
         RequireTableLength(hmtx, hmtxBytes, "hmtx");
+        if (tables.TryGetValue(NameTag, out OpenTypeTableRange name)) ValidateNameTable(data, name, workCounter, cancellationToken);
+        if (tables.TryGetValue(Os2Tag, out OpenTypeTableRange os2)) ValidateOs2Table(data, os2, workCounter, cancellationToken);
         OpenTypeKernTable? kern = tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, workCounter, cancellationToken) : null;
         OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, glyphCount, workCounter, cancellationToken) : null;
         return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null);
@@ -780,6 +784,79 @@ internal static class OpenTypeFont
         return (int)location;
     }
 
+    /// <summary>Validates optional name-table records and their borrowed string-storage bounds without selecting a face from embedded names.</summary>
+    private static void ValidateNameTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        RequireTableLength(table, 6, "name");
+        ushort version = ReadUInt16(data, table.Offset);
+        if (version is not 0 and not 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only version-zero and version-one name tables are supported.");
+        int nameCount = ReadUInt16(data, table.Offset + 2);
+        int recordOffset = table.Offset + 6;
+        int recordsEnd = checked(recordOffset + nameCount * 12);
+        RequireTableRange(table, recordOffset, checked(nameCount * 12), "name records");
+        int languageTagOffset = recordsEnd;
+        int languageTagCount = 0;
+        if (version == 1)
+        {
+            RequireTableRange(table, languageTagOffset, 2, "name language-tag count");
+            languageTagCount = ReadUInt16(data, languageTagOffset);
+            languageTagOffset += 2;
+            RequireTableRange(table, languageTagOffset, checked(languageTagCount * 4), "name language-tag records");
+        }
+        int metadataEnd = checked(languageTagOffset + languageTagCount * 4);
+        int storageOffset = ReadUInt16(data, table.Offset + 4);
+        int storageStart = checked(table.Offset + storageOffset);
+        int tableEnd = checked(table.Offset + table.Length);
+        if (storageStart < metadataEnd || storageStart > tableEnd) throw InvalidFont("The name string-storage offset is invalid.");
+
+        ulong previousKey = 0;
+        for (int index = 0; index < nameCount; index++)
+        {
+            Consume(workCounter, cancellationToken);
+            int record = recordOffset + index * 12;
+            ushort platform = ReadUInt16(data, record);
+            ushort encoding = ReadUInt16(data, record + 2);
+            ushort language = ReadUInt16(data, record + 4);
+            ushort name = ReadUInt16(data, record + 6);
+            if (version == 1 && language >= 0x8000 && language - 0x8000 >= languageTagCount) throw InvalidFont("A name record references a missing language-tag record.");
+            ulong key = ((ulong)platform << 48) | ((ulong)encoding << 32) | ((ulong)language << 16) | name;
+            if (index != 0 && key < previousKey) throw InvalidFont("The name records are not sorted.");
+            previousKey = key;
+            ValidateNameStorageRange(storageStart, tableEnd, ReadUInt16(data, record + 8), ReadUInt16(data, record + 10), "name string");
+        }
+        for (int index = 0; index < languageTagCount; index++)
+        {
+            Consume(workCounter, cancellationToken);
+            int record = languageTagOffset + index * 4;
+            int length = ReadUInt16(data, record);
+            if ((length & 1) != 0) throw InvalidFont("A name language-tag string has an invalid UTF-16BE length.");
+            ValidateNameStorageRange(storageStart, tableEnd, length, ReadUInt16(data, record + 2), "name language-tag string");
+        }
+    }
+
+    private static void ValidateNameStorageRange(int storageStart, int tableEnd, int length, int relativeOffset, string name)
+    {
+        int offset = checked(storageStart + relativeOffset);
+        if (offset < storageStart || offset > tableEnd - length) throw InvalidFont("The " + name + " range is outside name string storage.");
+    }
+
+    /// <summary>Validates the version-specific minimum length of optional OS/2 metadata without applying its style metrics.</summary>
+    private static void ValidateOs2Table(ReadOnlySpan<byte> data, OpenTypeTableRange table, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        Consume(workCounter, cancellationToken);
+        RequireTableLength(table, 2, "OS/2");
+        ushort version = ReadUInt16(data, table.Offset);
+        int minimumLength = version switch
+        {
+            0 => 68,
+            1 => 86,
+            2 or 3 or 4 => 96,
+            5 => 100,
+            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only OS/2 versions zero through five are supported.")
+        };
+        RequireTableLength(table, minimumLength, "OS/2");
+    }
+
     /// <summary>Validates the direct Latin kern feature's sole PairPos format-1 X-advance lookup without retaining pair storage.</summary>
     private static OpenTypeGposPairTable? ParseGposPairTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, ushort glyphCount, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
@@ -884,7 +961,7 @@ internal static class OpenTypeFont
 
     private static void RequireTableRange(OpenTypeTableRange table, int offset, int length, string name)
     {
-        if (length < 0 || offset < table.Offset || offset > table.Offset + table.Length - length) throw InvalidFont("The " + name + " range is outside the GPOS table.");
+        if (length < 0 || offset < table.Offset || offset > table.Offset + table.Length - length) throw InvalidFont("The " + name + " range is outside its containing table.");
     }
 
     /// <summary>Validates one horizontal legacy format-0 kerning subtable without retaining or allocating pair storage.</summary>
