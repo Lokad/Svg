@@ -2,11 +2,20 @@ using System.Reflection;
 using System.Buffers;
 using System.Runtime.InteropServices;
 using Lokad.Svg.Fonts;
+using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Tests;
 
 public sealed class PublicContractTests
 {
+    [Fact]
+    public void Prepared_conversion_uses_the_caller_owned_work_counter()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), SvgRenderOptions.Default, new ParserWorkCounter(0), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
     [Fact]
     public void Font_pack_public_contract_requires_explicit_selection_and_cancellation_parameters()
     {

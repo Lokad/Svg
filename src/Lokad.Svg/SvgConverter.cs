@@ -18,6 +18,15 @@ public static class SvgConverter
         return PngEncoder.Encode(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
+    /// <summary>Converts one prepared operation while continuing its preparation work counter through parsing and output.</summary>
+    internal static ReadOnlyMemory<byte> ConvertToPng(ReadOnlyMemory<byte> svg, SvgRenderOptions options, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(workCounter);
+        ValidateInvocation(svg, options, cancellationToken);
+        using RasterizedConversion conversion = PrepareRasterizationCore(svg, options, workCounter, cancellationToken);
+        return PngEncoder.Encode(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+    }
+
     /// <summary>Schedules one conversion on the thread pool.</summary>
     public static Task<ReadOnlyMemory<byte>> ConvertToPngAsync(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
@@ -78,9 +87,12 @@ public static class SvgConverter
     }
 
     private static RasterizedConversion PrepareRasterizationCore(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
+        => PrepareRasterizationCore(svg, options, null, cancellationToken);
+
+    private static RasterizedConversion PrepareRasterizationCore(ReadOnlyMemory<byte> svg, SvgRenderOptions options, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
-        SvgRoot root = ParseRoot(svg, options, budget, cancellationToken);
+        SvgRoot root = ParseRoot(svg, options, budget, workCounter, cancellationToken);
         try
         {
             if (root.HasUnsupportedChild) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
@@ -376,9 +388,9 @@ public static class SvgConverter
         }
     }
 
-    private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+    private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        try { return SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, cancellationToken); }
+        try { return workCounter is null ? SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, cancellationToken) : SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, workCounter, cancellationToken); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
