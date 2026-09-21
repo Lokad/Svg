@@ -65,6 +65,22 @@ child report, the newline-normalized scenario-script source hash, byte-exact
 probe/renderer/fixture hashes, and their shared
 runtime/platform fingerprint.
 
+Run an explicit local manifest/directory font probe with:
+
+```powershell
+dotnet run -c Release --project tools/Lokad.Svg.FontProbe -- --manifest <manifest.json> --pack-id <pack-id> --font-root <font-directory> --svg <input.svg> --output <output.png>
+```
+
+The probe has no built-in font source, pack identifier, credentials or network
+configuration. Its [tool documentation](tools/Lokad.Svg.FontProbe/README.md)
+describes its bounded local byte source and private-artifact handling. Its public
+synthetic smoke check needs only a Release build and writes caller-selected
+results (use the ignored `artifacts/` tree):
+
+```powershell
+tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe-smoke
+```
+
 Run the child-process success, budget-denial, XML-workspace-denial, direct
 XML-reader workspace measurements (a 64 KiB text node, 256 short attributes and
 255 × 4 KiB values), raster-cancellation and post-input parser-cancellation

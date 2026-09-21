@@ -11,6 +11,7 @@
   </Folder>
   <Folder Name="/tools/">
     <Project Path="tools/Lokad.Svg.Chrome/Lokad.Svg.Chrome.csproj" />
+    <Project Path="tools/Lokad.Svg.FontProbe/Lokad.Svg.FontProbe.csproj" />
     <Project Path="tools/Lokad.Svg.MemoryProbe/Lokad.Svg.MemoryProbe.csproj" />
     <Project Path="tools/Lokad.Svg.VisualDiff/Lokad.Svg.VisualDiff.csproj" />
   </Folder>
