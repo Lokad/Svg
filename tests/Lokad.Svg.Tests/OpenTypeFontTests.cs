@@ -1947,15 +1947,15 @@ public sealed class OpenTypeFontTests
         ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='400' height='8'><text font-family='Example' font-size='100' x='200' y='3' text-anchor='middle'>A<tspan dx='50' dy='1'><tspan>A</tspan></tspan>A</text></svg>"u8.ToArray(), options, CancellationToken.None);
         using SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAA", 100, 200, 3, 0, [], [new SvgTextPositionAdjustment(1, 50, 1)], SvgTextAnchor.Middle, new RenderBudget(1_024), string.Empty, null, CancellationToken.None);
 
-        Assert.Equal(85, glyphs.Glyphs[0].X);
-        Assert.Equal(195, glyphs.Glyphs[1].X);
-        Assert.Equal(255, glyphs.Glyphs[2].X);
+        Assert.Equal(110, glyphs.Glyphs[0].X);
+        Assert.Equal(220, glyphs.Glyphs[1].X);
+        Assert.Equal(280, glyphs.Glyphs[2].X);
         Assert.Equal(3, glyphs.Glyphs[0].Y);
         Assert.Equal(4, glyphs.Glyphs[1].Y);
         Assert.Equal(4, glyphs.Glyphs[2].Y);
-        Assert.True(DecodeAlpha(png, 86, 1) > 0);
-        Assert.True(DecodeAlpha(png, 196, 2) > 0);
-        Assert.True(DecodeAlpha(png, 256, 2) > 0);
+        Assert.True(DecodeAlpha(png, 111, 1) > 0);
+        Assert.True(DecodeAlpha(png, 221, 2) > 0);
+        Assert.True(DecodeAlpha(png, 281, 2) > 0);
     }
 
     [Fact]

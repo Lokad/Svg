@@ -97,9 +97,7 @@ internal static class SvgGlyphLayout
                 glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, 0, originY, scaledAdvance);
             }
             double x = originX;
-            double y = originY;
             int spacingSpanIndex = 0;
-            int positionAdjustmentIndex = 0;
             int sourceOffset = 0;
             var positionedScalars = text.EnumerateRunes();
             for (int index = 0; index < glyphs.Length; index++)
@@ -110,11 +108,10 @@ internal static class SvgGlyphLayout
                 if (!positionedScalars.MoveNext()) throw new InvalidOperationException("The normalized text glyph count is invalid.");
                 Rune scalar = positionedScalars.Current;
                 double currentLetterSpacing = GetLetterSpacing(sourceOffset, letterSpacing, letterSpacingSpans, ref spacingSpanIndex);
-                ApplyPositionAdjustment(ref x, ref y, sourceOffset, positionAdjustments, ref positionAdjustmentIndex);
                 sourceOffset += scalar.Utf16SequenceLength;
                 double nextX = index + 1 == glyphs.Length ? x + glyph.Advance : x + glyph.Advance + kerning + currentLetterSpacing;
-                if (!double.IsFinite(x) || !double.IsFinite(y) || !double.IsFinite(kerning) || !double.IsFinite(nextX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
-                glyphs[index] = glyph with { X = x, Y = y };
+                if (!double.IsFinite(kerning) || !double.IsFinite(nextX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
+                glyphs[index] = glyph with { X = x };
                 x = nextX;
             }
             double anchorOffset = anchor switch
@@ -125,12 +122,22 @@ internal static class SvgGlyphLayout
                 _ => throw new ArgumentOutOfRangeException(nameof(anchor))
             };
             if (!double.IsFinite(anchorOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+            double relativeX = 0;
+            double relativeY = 0;
+            int positionAdjustmentIndex = 0;
+            sourceOffset = 0;
+            var adjustedScalars = text.EnumerateRunes();
             for (int index = 0; index < glyphs.Length; index++)
             {
                 workCounter?.Consume(cancellationToken);
-                double anchoredX = glyphs[index].X + anchorOffset;
-                if (!double.IsFinite(anchoredX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
-                glyphs[index] = glyphs[index] with { X = anchoredX };
+                if (!adjustedScalars.MoveNext()) throw new InvalidOperationException("The normalized text glyph count is invalid.");
+                Rune scalar = adjustedScalars.Current;
+                ApplyPositionAdjustment(ref relativeX, ref relativeY, sourceOffset, positionAdjustments, ref positionAdjustmentIndex);
+                sourceOffset += scalar.Utf16SequenceLength;
+                double anchoredX = glyphs[index].X + anchorOffset + relativeX;
+                double adjustedY = glyphs[index].Y + relativeY;
+                if (!double.IsFinite(anchoredX) || !double.IsFinite(adjustedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+                glyphs[index] = glyphs[index] with { X = anchoredX, Y = adjustedY };
             }
             return new SvgPositionedGlyphStorage(glyphs, reservation);
         }
