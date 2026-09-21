@@ -23,9 +23,9 @@ Keep `external/` optional, ignored and unreferenced.
 
 | Fresh verification | Result and boundary |
 | --- | --- |
-| Environment | Windows x64; SDK 10.0.401, .NET 10.0.12; Release build (zero warnings/errors) plus full suite and probe script re-verified at `827b930` (locked restore was last exercised at `7b92422`). |
+| Environment | Windows x64; SDK 10.0.401, .NET 10.0.12; Release build (zero warnings/errors) plus full suite and probe script re-verified at `6a0f962` (locked restore was last exercised at `7b92422`). |
 | Release solution build | Pass, zero warnings and errors. |
-| Tests | 676 `Lokad.Svg.Tests` + 6 `Lokad.Svg.FontProbe.Tests` (= 682 unit) and 83 visual-project cases pass, zero skipped. These are runner counts, not feature or independent fixture counts. |
+| Tests | 682 `Lokad.Svg.Tests` + 6 `Lokad.Svg.FontProbe.Tests` (= 688 unit) and 83 visual-project cases pass, zero skipped. These are runner counts, not feature or independent fixture counts. |
 | Retained pixels | All 43 admitted references pass exact comparison. The corpus remains shape-only and mostly tiny: 41 fixtures have at most 64 pixels; the others are 20×10 and 300×150. No fresh browser captures. |
 | Resource probes | All 21 child-process scenarios pass: 16 conversion/XML-reader scenarios including three fresh-process measurements per XML shape, plus five fresh-process font-discovery ledger scenarios (deep groups, denied budget, empty texts, distinct requests, cancellation) with provider-call and no-retained-reservation assertions. Pack programs stay synthetic non-font bytes; no ordinary-font scenario is present. |
 | Targeted S3/S4 tests | Synthetic tracked tests observe reservation after each simple/composite decoder phase, deny one byte before each observed temporary-array boundary, and prove cleanup. Repeated or post-disposal contour transfer now fails. Huge finite text, viewBox/device, coverage sample and winding-cross-product calculations fail as `LimitExceeded` at their owning boundary. |
@@ -305,7 +305,7 @@ font that lowering requires.
 Closure: preserve the required pre-acquisition XML scan, but factor its shared
 admission decisions into a pure state transition or analysis result consumed by
 both passes. A compact input matrix (`c60390b`: discovered requests, provider/source calls, lowering outcome and paint) already covers opacity/visibility, root and group inheritance, definitions/symbols, foreign-namespace containers, unsupported siblings in both orders, empty/whitespace-only content, direct and nested spans, stylesheet precedence, transforms, malformed tails and cancellation; extend it as the factoring lands. It caught an unsupported-sibling incoherence (lowering surfaced `UnresolvedResource` for painted text the cleared discovery had omitted); discovery now retains earlier requests and lowering fails fast with the conversion-level `UnsupportedFeature`. Container names (group/link, group, inert, definitions) are single-sourced in `SvgStructuralVocabulary` with a truth-table regression consumed by both passes (`e1a709b`), which also gated the lowering inert branch on the SVG namespace to close a foreign-namespace divergence caught while extending the matrix. `827b930` extended the vocabulary with definition leaves and style/script/animation elements, aligned discovery stylesheet timing (definition-leaf styleable marking plus unconditional style/script invalidation) with four more matrix rows, and repaired a style-after-definitions wasted acquisition the matrix caught.
-Finish the shared factoring before broadening text semantics.
+The root stylesheet timing gate (late/attributed rejection) is now one shared definition consumed by both passes (`6a0f962`) with direct gate regressions. Finish the shared factoring before broadening text semantics.
 
 ### R19 / P2 — Avoidable parse and identity transients need a measured baseline
 
