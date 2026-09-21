@@ -1000,6 +1000,25 @@ public sealed class OpenTypeFontTests
         Assert.Equal("Example", diagnostic.RequestedFamily);
     }
 
+    [Theory]
+    [InlineData(SvgErrorCode.UnresolvedResource, false)]
+    [InlineData(SvgErrorCode.UnresolvedResource, true)]
+    [InlineData(SvgErrorCode.LimitExceeded, false)]
+    [InlineData(SvgErrorCode.LimitExceeded, true)]
+    public async Task Snapshot_classifies_bound_source_failures_by_origin(SvgErrorCode errorCode, bool throwsSynchronously)
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new FailingFontSource(errorCode, throwsSynchronously));
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None));
+
+        Assert.Equal(errorCode, exception.ErrorCode);
+        Assert.Equal(SvgFontFailureStage.Source, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+    }
+
     [Fact]
     public async Task Svg_based_snapshot_discovers_and_prepares_a_selected_font()
     {
@@ -2389,6 +2408,17 @@ public sealed class OpenTypeFontTests
         {
             RequestCount++;
             return ValueTask.FromResult<ReadOnlyMemory<byte>>(bytes);
+        }
+    }
+
+    private sealed class FailingFontSource(SvgErrorCode errorCode, bool throwsSynchronously) : ISvgFontProgramSource
+    {
+        public string StableId => "failing-font";
+
+        public ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken)
+        {
+            if (throwsSynchronously) throw new SvgException(errorCode, "The caller-provided font source failed.");
+            return ValueTask.FromException<ReadOnlyMemory<byte>>(new SvgException(errorCode, "The caller-provided font source failed."));
         }
     }
 

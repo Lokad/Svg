@@ -46,10 +46,10 @@ pipeline; catalog acquisition is not implicitly invoked by rendering.
 catalog resolution wraps that source with declared byte-count/SHA-256 validation;
 it neither copies nor caches the returned program. Source storage must therefore
 remain valid and unchanged for its consumer lifetime.
-When a selected provider has no source, the `UnresolvedResource` exception carries
-a bounded `SvgFontDiagnostic`: failure stage, requested/resolved family, face
-identity and (when future text parsing retains it) element ID. It never contains
-font bytes or source text.
+When a selected provider has no source, or its selected source returns a
+categorized failure, the exception carries a bounded `SvgFontDiagnostic` with the
+`Source` stage, requested/resolved family, face identity and (when future text
+parsing retains it) element ID. It never contains font bytes or source text.
 `SvgFontSnapshot.CreateAsync` is the explicit preparation building block for
 already-selected programs. It re-verifies caller-owned bytes, validates the
 standalone-TrueType core metrics, and retains at most 256 face records and 32 MiB

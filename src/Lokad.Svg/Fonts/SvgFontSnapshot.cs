@@ -80,6 +80,11 @@ public sealed class SvgFontSnapshot : IDisposable
             {
                 ReadOnlyMemory<byte> loadedBytes;
                 try { loadedBytes = await GetVerifiedBytesAsync(resolution.Source, workCounter, cancellationToken).ConfigureAwait(false); }
+                catch (SvgFontProgramSourceFailure exception)
+                {
+                    SvgException sourceException = exception.SourceException;
+                    throw new SvgException(sourceException.ErrorCode, sourceException.Message, CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Source));
+                }
                 catch (SvgException exception) when (exception.FontDiagnostic is null)
                 {
                     SvgFontFailureStage stage = exception.ErrorCode == SvgErrorCode.UnresolvedResource ? SvgFontFailureStage.Integrity : SvgFontFailureStage.Format;
