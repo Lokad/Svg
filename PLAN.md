@@ -562,6 +562,11 @@ manifest tests now reproduce from archived bytes. No content or reference hashes
 changed. The full suite (725 + 6 + 83) and all 21 probe scenarios pass.
 Validator byte/pixel, fingerprint and report-contract fixtures remain open.
 
+**Gate (`7e25ab8`):** the synthetic font-probe smoke (local, stdin,
+loopback HTTP with ephemeral ports, lazy acquisition, retry) now runs in CI on both
+operating systems with result upload; it passes locally with no private assets.
+Remote Linux behavior is retained as CI evidence, not claimed here.
+
 ### R23 / P2 — Oracle transport cleanup is not fully bounded
 
 **Source inspection:** [DevToolsConnection](tools/Lokad.Svg.Chrome/DevToolsConnection.cs)
