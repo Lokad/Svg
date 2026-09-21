@@ -5,6 +5,16 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFontRequestDiscoveryTests
 {
     [Fact]
+    public void Does_not_reserve_a_direct_text_chunk_without_eligible_text()
+    {
+        SvgRenderLimits limits = new(1, 1_024, 16, 16, 1_024, 16, 16, 100);
+
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray(), limits, CancellationToken.None);
+
+        Assert.Empty(requests);
+    }
+
+    [Fact]
     public void Does_not_discover_fonts_from_text_with_unrenderable_span_children()
     {
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("""

@@ -35,8 +35,8 @@ internal static class SvgFontRequestDiscovery
         RenderBudget styleBudget = new(limits.MaximumAccountedBytes);
         using var styleRules = new BudgetedParserList<CssRule>(styleBudget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var styleStrings = new BudgetedParserStringStore(styleBudget);
-        using RenderBudget.BudgetReservation textChunkReservation = styleBudget.Reserve(ParserCollectionMemory.GetArrayByteCount(ParserWorkCounter.ByteCheckpointSize, sizeof(char)), SvgMemoryCategory.Parser);
-        char[] textChunk = new char[ParserWorkCounter.ByteCheckpointSize];
+        char[]? textChunk = null;
+        RenderBudget.BudgetReservation? textChunkReservation = null;
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         try
         {
@@ -150,7 +150,7 @@ internal static class SvgFontRequestDiscovery
                     if (directText.TryPeek(out TextRequestCandidate? candidate) && candidate is not null)
                     {
                         candidate.HasTextContent = true;
-                        candidate.HasUnsupportedWhitespace |= ContainsWhitespace(reader, textChunk, workCounter, cancellationToken);
+                        candidate.HasUnsupportedWhitespace |= ContainsWhitespace(reader, GetTextChunk(), workCounter, cancellationToken);
                     }
                 }
             }
@@ -160,6 +160,25 @@ internal static class SvgFontRequestDiscovery
         {
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message);
         }
+        finally
+        {
+            textChunkReservation?.Dispose();
+        }
+
+        char[] GetTextChunk()
+        {
+            if (textChunk is not null) return textChunk;
+            RenderBudget.BudgetReservation reservation = styleBudget.Reserve(ParserCollectionMemory.GetArrayByteCount(ParserWorkCounter.ByteCheckpointSize, sizeof(char)), SvgMemoryCategory.Parser);
+            try { textChunk = new char[ParserWorkCounter.ByteCheckpointSize]; }
+            catch
+            {
+                reservation.Dispose();
+                throw;
+            }
+            textChunkReservation = reservation;
+            return textChunk;
+        }
+
         return requests.ToArray();
     }
 
