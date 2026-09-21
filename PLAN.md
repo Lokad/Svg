@@ -477,6 +477,12 @@ the final PNG; caller-memory output writes the caller's buffer. Large,
 incompressible output can create several temporary large arrays. Growth copies
 are also the concrete work-accounting omission recorded in R04.
 
+**Measurement (`bfe74fd`):** twelve ShortRun benchmarks plus ledger-peak
+probes compare time, allocation traffic and accounted peaks across sinks and entropies:
+high-entropy owned traffic (5,119.77 KB, 3.0 MB peak with Gen2 pressure) versus streams
+(132 KB traffic, 100 KB peak) at equal speed; low-entropy floor near 1.3 ms. Cancellation
+stays owned by unit tests. Results are recorded in `docs/BENCHMARKS.md`.
+
 Closure: benchmark low- and high-entropy images near the encoded-output limit for
 owned memory, caller memory and both stream forms, reporting allocation traffic,
 peak accounted storage, time and cancellation latency separately. If it is a real
