@@ -94,7 +94,13 @@ internal sealed class SvgGlyphGeometry : IDisposable
     internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color)
     {
         ArgumentNullException.ThrowIfNull(contours);
-        return new SvgGlyphGeometry(contours.Contours, color, contours.DetachReservation());
+        SvgGlyphContourTransfer transfer = contours.TransferOwnership();
+        try { return new SvgGlyphGeometry(transfer.Contours, color, transfer.Reservation); }
+        catch
+        {
+            transfer.Reservation?.Dispose();
+            throw;
+        }
     }
 
     /// <summary>Reserves scene ownership for contours supplied by a non-rendering caller.</summary>

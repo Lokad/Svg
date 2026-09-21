@@ -12,13 +12,6 @@ internal static class SvgGlyphOutline
         return storage.Contours;
     }
 
-    /// <summary>Converts one glyph while reserving its temporary transformed segment buffer until contour splitting completes.</summary>
-    internal static SvgGlyphQuadraticContour[] GetContours(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-    {
-        using SvgGlyphContourStorage storage = GetContourStorage(font, glyph, fontSize, budget, workCounter, cancellationToken);
-        return storage.Contours;
-    }
-
     /// <summary>Converts one glyph and transfers the final contour-array scene reservation to the retained glyph geometry.</summary>
     internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
@@ -112,27 +105,48 @@ internal readonly record struct SvgGlyphQuadraticContour(SvgGlyphQuadraticSegmen
 /// <summary>Owns final glyph contour arrays and their scene reservation until ownership transfers to retained geometry.</summary>
 internal sealed class SvgGlyphContourStorage : IDisposable
 {
+    private SvgGlyphQuadraticContour[] _contours;
     private RenderBudget.BudgetReservation? _reservation;
+    private SvgGlyphContourStorageState _state;
 
     internal SvgGlyphContourStorage(SvgGlyphQuadraticContour[] contours, RenderBudget.BudgetReservation? reservation)
     {
-        Contours = contours;
+        ArgumentNullException.ThrowIfNull(contours);
+        _contours = contours;
         _reservation = reservation;
+        _state = SvgGlyphContourStorageState.Live;
     }
 
-    internal SvgGlyphQuadraticContour[] Contours { get; }
+    /// <summary>Gets arrays while this storage remains live; a transferred or disposed owner cannot expose them again.</summary>
+    internal SvgGlyphQuadraticContour[] Contours
+        => _state == SvgGlyphContourStorageState.Live
+            ? _contours
+            : throw new InvalidOperationException("Glyph contour storage no longer owns live contour arrays.");
 
-    /// <summary>Transfers the scene reservation exactly once to the retained geometry that owns these arrays.</summary>
-    internal RenderBudget.BudgetReservation? DetachReservation()
+    /// <summary>Transfers arrays and their reservation exactly once to the retained geometry that will own both.</summary>
+    internal SvgGlyphContourTransfer TransferOwnership()
     {
+        if (_state != SvgGlyphContourStorageState.Live) throw new InvalidOperationException("Glyph contour storage can transfer ownership only while live.");
+        SvgGlyphQuadraticContour[] contours = _contours;
         RenderBudget.BudgetReservation? reservation = _reservation;
+        _contours = [];
         _reservation = null;
-        return reservation;
+        _state = SvgGlyphContourStorageState.Transferred;
+        return new SvgGlyphContourTransfer(contours, reservation);
     }
 
     public void Dispose()
     {
+        if (_state != SvgGlyphContourStorageState.Live) return;
+        _contours = [];
+        _state = SvgGlyphContourStorageState.Disposed;
         _reservation?.Dispose();
         _reservation = null;
     }
 }
+
+/// <summary>Represents the one-way lifetime of glyph contour arrays before they become retained scene geometry.</summary>
+internal enum SvgGlyphContourStorageState { Live, Transferred, Disposed }
+
+/// <summary>Pairs transferred contour arrays with the reservation that must remain live until retained geometry is disposed.</summary>
+internal readonly record struct SvgGlyphContourTransfer(SvgGlyphQuadraticContour[] Contours, RenderBudget.BudgetReservation? Reservation);

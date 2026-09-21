@@ -258,8 +258,15 @@ internal static class OpenTypeFont
     /// <summary>Reads simple-glyph structure while charging its contour records to a conversion work counter.</summary>
     internal static OpenTypeSimpleGlyphStructure GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
+        using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, null, workCounter, cancellationToken);
+        return structure.Value;
+    }
+
+    /// <summary>Reads simple-glyph structure and owns its endpoint array until point decoding completes.</summary>
+    private static OpenTypeSimpleGlyphStructureStorage GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
         OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
-        if (glyph.Length == 0) return new OpenTypeSimpleGlyphStructure([], 0);
+        if (glyph.Length == 0) return new(new OpenTypeSimpleGlyphStructure([], 0), null);
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is not OpenTypeGlyphHeader value) throw new InvalidOperationException("A nonempty glyph did not return a header.");
         if (value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph decoding is not implemented yet.");
@@ -271,17 +278,29 @@ internal static class OpenTypeFont
         ushort instructionLength = ReadUInt16(data, instructionLengthOffset);
         int pointDataOffset = checked(instructionLengthOffset + 2 + instructionLength);
         if (pointDataOffset > glyph.Offset + glyph.Length) throw InvalidFont("The simple glyf instructions are truncated.");
-        var endpoints = new ushort[value.ContourCount];
+        RenderBudget.BudgetReservation? reservation = budget?.Reserve(ParserCollectionMemory.GetArrayByteCount<ushort>(value.ContourCount), SvgMemoryCategory.Geometry);
+        ushort[] endpoints;
+        try { endpoints = new ushort[value.ContourCount]; }
+        catch { reservation?.Dispose(); throw; }
+        GlyphDecoderBudgetProbe.Reserved(GlyphDecoderBudgetPhase.SimpleEndpoints, budget);
         ushort previous = 0;
-        for (int index = 0; index < endpoints.Length; index++)
+        try
         {
-            Consume(workCounter, cancellationToken);
-            ushort endpoint = ReadUInt16(data, glyph.Offset + 10 + index * 2);
-            if (index != 0 && endpoint <= previous) throw InvalidFont("The simple glyf contour endpoints are not strictly increasing.");
-            endpoints[index] = endpoint;
-            previous = endpoint;
+            for (int index = 0; index < endpoints.Length; index++)
+            {
+                Consume(workCounter, cancellationToken);
+                ushort endpoint = ReadUInt16(data, glyph.Offset + 10 + index * 2);
+                if (index != 0 && endpoint <= previous) throw InvalidFont("The simple glyf contour endpoints are not strictly increasing.");
+                endpoints[index] = endpoint;
+                previous = endpoint;
+            }
+            return new(new OpenTypeSimpleGlyphStructure(endpoints, pointDataOffset - glyph.Offset), reservation);
         }
-        return new OpenTypeSimpleGlyphStructure(endpoints, pointDataOffset - glyph.Offset);
+        catch
+        {
+            reservation?.Dispose();
+            throw;
+        }
     }
 
     /// <summary>Decodes bounded simple-glyph flags and delta coordinates into borrowed-font outline points.</summary>
@@ -343,15 +362,76 @@ internal static class OpenTypeFont
         return points;
     }
 
+    /// <summary>Decodes points while retaining their reservation until quadratic lowering has completed.</summary>
+    private static OpenTypeGlyphPointStorage GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeSimpleGlyphStructure structure, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        if (structure.ContourEndpoints.Length == 0) return new([], null);
+        int pointCount = checked(structure.ContourEndpoints[^1] + 1);
+        if (pointCount > MaximumSimpleGlyphPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph point count exceeds the supported limit.");
+        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
+        ReadOnlySpan<byte> data = bytes.Span;
+        int cursor = checked(glyph.Offset + structure.PointDataOffset);
+        int end = checked(glyph.Offset + glyph.Length);
+        using RenderBudget.BudgetReservation flagsReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount(pointCount, sizeof(byte)), SvgMemoryCategory.Geometry);
+        byte[] flags = new byte[pointCount];
+        GlyphDecoderBudgetProbe.Reserved(GlyphDecoderBudgetPhase.SimpleFlags, budget);
+        for (int index = 0; index < flags.Length;)
+        {
+            Consume(workCounter, cancellationToken);
+            if (cursor >= end) throw InvalidFont("The simple glyf flags are truncated.");
+            byte flag = data[cursor++];
+            int repeats = 1;
+            if ((flag & 8) != 0)
+            {
+                if (cursor >= end) throw InvalidFont("The simple glyf flag repetition is truncated.");
+                repeats += data[cursor++];
+            }
+            if (repeats > flags.Length - index) throw InvalidFont("The simple glyf flag repetition exceeds its point count.");
+            flags.AsSpan(index, repeats).Fill(flag);
+            index += repeats;
+        }
+        RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<OpenTypeGlyphPoint>(pointCount), SvgMemoryCategory.Geometry);
+        OpenTypeGlyphPoint[] points;
+        try { points = new OpenTypeGlyphPoint[pointCount]; }
+        catch { reservation.Dispose(); throw; }
+        GlyphDecoderBudgetProbe.Reserved(GlyphDecoderBudgetPhase.SimplePoints, budget);
+        try
+        {
+            int x = 0;
+            for (int index = 0; index < points.Length; index++)
+            {
+                Consume(workCounter, cancellationToken);
+                x = checked(x + ReadCoordinate(data, ref cursor, end, flags[index], 2, 16, "horizontal"));
+                points[index] = new OpenTypeGlyphPoint(x, 0, (flags[index] & 1) != 0);
+            }
+            int y = 0;
+            for (int index = 0; index < points.Length; index++)
+            {
+                Consume(workCounter, cancellationToken);
+                y = checked(y + ReadCoordinate(data, ref cursor, end, flags[index], 4, 32, "vertical"));
+                points[index] = points[index] with { Y = y };
+            }
+            return new(points, reservation);
+        }
+        catch
+        {
+            reservation.Dispose();
+            throw;
+        }
+    }
+
     /// <summary>Builds closed quadratic segments from decoded simple-glyph contours, including implied on-curve points.</summary>
     internal static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints)
-        => BuildQuadraticContours(points, endpoints, null, CancellationToken.None);
-
-    private static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        if (endpoints.Length == 0) return [];
+        using var segments = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None);
+        BuildQuadraticContours(points, endpoints, segments, null, CancellationToken.None);
+        return segments.ToArray();
+    }
+
+    private static void BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, OpenTypeSegmentAccumulator segments, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        if (endpoints.Length == 0) return;
         if (points.Length == 0 || endpoints[^1] != points.Length - 1) throw new ArgumentException("Contour endpoints must cover the supplied points.", nameof(endpoints));
-        var segments = new List<OpenTypeQuadraticSegment>(points.Length * 2);
         int first = 0;
         foreach (ushort lastValue in endpoints)
         {
@@ -388,7 +468,6 @@ internal static class OpenTypeFont
             else if (current != start) segments.Add(new OpenTypeQuadraticSegment(current, start, start));
             first = last + 1;
         }
-        return segments.ToArray();
     }
 
     /// <summary>Decodes a bounded simple glyph into closed quadratic outline segments.</summary>
@@ -401,15 +480,22 @@ internal static class OpenTypeFont
 
     /// <summary>Decodes simple-glyph contours while charging decoded records to a conversion work counter.</summary>
     internal static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-        => GetSimpleGlyphContours(bytes, glyphIndex, metrics, null, workCounter, cancellationToken);
-
-    /// <summary>Decodes simple contours while reserving temporary decoder buffers when invoked from a budgeted expansion.</summary>
-    private static OpenTypeQuadraticSegment[] GetSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
         if (structure.ContourEndpoints.Length == 0) return [];
         OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, structure, workCounter, cancellationToken);
-        return BuildQuadraticContours(points, structure.ContourEndpoints, workCounter, cancellationToken);
+        return BuildQuadraticContours(points, structure.ContourEndpoints);
+    }
+
+    /// <summary>Decodes simple-glyph arrays and retains every temporary reservation through exact decoded-segment materialization.</summary>
+    private static OpenTypeGlyphContourStorage GetBudgetedSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, budget, workCounter, cancellationToken);
+        if (structure.Value.ContourEndpoints.Length == 0) return new([], null);
+        using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, structure.Value, budget, workCounter, cancellationToken);
+        using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact);
+        BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, workCounter, cancellationToken);
+        return segments.Detach();
     }
 
     /// <summary>Reads bounded composite-glyph component metadata without recursively expanding outlines.</summary>
@@ -423,13 +509,28 @@ internal static class OpenTypeFont
     /// <summary>Reads composite-glyph components while charging each component record to a conversion work counter.</summary>
     internal static OpenTypeCompositeGlyphComponent[] GetCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
+        using var components = new OpenTypeCompositeComponentAccumulator(null);
+        ReadCompositeGlyphComponents(bytes, glyphIndex, metrics, components, workCounter, cancellationToken);
+        return components.ToArray();
+    }
+
+    /// <summary>Reads composite components into a budgeted owner until recursive expansion has consumed them.</summary>
+    private static OpenTypeCompositeGlyphComponentStorage GetBudgetedCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        using var components = new OpenTypeCompositeComponentAccumulator(budget);
+        ReadCompositeGlyphComponents(bytes, glyphIndex, metrics, components, workCounter, cancellationToken);
+        return components.Detach();
+    }
+
+    /// <summary>Validates and appends the component records of one composite glyph.</summary>
+    private static void ReadCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeCompositeComponentAccumulator components, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
         OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, cancellationToken);
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is not OpenTypeGlyphHeader value || !value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The requested glyph is not a composite TrueType glyph.");
         ReadOnlySpan<byte> data = bytes.Span;
         int cursor = glyph.Offset + 10;
         int end = glyph.Offset + glyph.Length;
-        var components = new List<OpenTypeCompositeGlyphComponent>();
         bool hasInstructions = false;
         ushort flags;
         do
@@ -463,7 +564,6 @@ internal static class OpenTypeFont
             if (cursor > end - instructionLength) throw InvalidFont("The composite glyf instructions are truncated.");
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph instructions are not implemented.");
         }
-        return components.ToArray();
     }
 
     /// <summary>Expands bounded simple and composite glyphs into transformed quadratic segments.</summary>
@@ -473,8 +573,10 @@ internal static class OpenTypeFont
     /// <summary>Expands glyph contours using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeQuadraticSegment[] GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
-        var active = new HashSet<ushort>();
-        using var contours = new OpenTypeSegmentAccumulator(null);
+        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
+        if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return [];
+        using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, null);
+        using var contours = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None);
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, null, cancellationToken);
         return contours.ToArray();
     }
@@ -483,42 +585,56 @@ internal static class OpenTypeFont
     internal static OpenTypeGlyphContourStorage GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        var active = new HashSet<ushort>();
-        using var contours = new OpenTypeSegmentAccumulator(budget);
+        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
+        if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return new([], null);
+        using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, budget);
+        using var contours = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact);
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, workCounter, cancellationToken);
-        if (contours.Count == 0) return new([], null);
-        RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + (long)contours.Count * 48L), SvgMemoryCategory.Geometry);
-        try { return new(contours.ToArray(), reservation); }
-        catch { reservation.Dispose(); throw; }
+        return contours.Detach();
     }
 
-    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, HashSet<ushort> active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeGlyphRecursionTracker active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         GlyphExpansionProbe.Started();
         workCounter?.Consume(cancellationToken);
         if (glyphIndex >= metrics.GlyphCount) throw InvalidFont("A composite glyf component references a glyph outside maxp.");
         if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph nesting depth exceeds the supported limit.");
-        if (!active.Add(glyphIndex)) throw InvalidFont("The composite glyph graph contains a cycle.");
+        if (!active.TryEnter(glyphIndex)) throw InvalidFont("The composite glyph graph contains a cycle.");
         try
         {
             OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
             if (header is null) return;
             if (!header.Value.IsComposite)
             {
-                foreach (OpenTypeQuadraticSegment segment in GetSimpleGlyphContours(bytes, glyphIndex, metrics, contours.Budget, workCounter, cancellationToken))
+                if (contours.Budget is RenderBudget budget)
                 {
-                    Consume(workCounter, cancellationToken);
-                    if (contours.Count == MaximumExpandedGlyphSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded glyph segment count exceeds the supported limit.");
-                    contours.Add(Transform(segment, transform));
+                    using OpenTypeGlyphContourStorage decoded = GetBudgetedSimpleGlyphContours(bytes, glyphIndex, metrics, budget, workCounter, cancellationToken);
+                    AppendDecodedSegments(decoded.Segments, transform, contours, workCounter, cancellationToken);
                 }
+                else AppendDecodedSegments(GetSimpleGlyphContours(bytes, glyphIndex, metrics, workCounter, cancellationToken), transform, contours, workCounter, cancellationToken);
                 return;
             }
-            foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, metrics, workCounter, cancellationToken))
+            if (contours.Budget is RenderBudget componentBudget)
             {
-                ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, workCounter, cancellationToken);
+                using OpenTypeCompositeGlyphComponentStorage components = GetBudgetedCompositeGlyphComponents(bytes, glyphIndex, metrics, componentBudget, workCounter, cancellationToken);
+                foreach (OpenTypeCompositeGlyphComponent component in components.Components)
+                {
+                    ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, workCounter, cancellationToken);
+                }
+            }
+            else foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, metrics, workCounter, cancellationToken)) ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, workCounter, cancellationToken);
+        }
+        finally { active.Exit(glyphIndex); }
+
+        static void AppendDecodedSegments(ReadOnlySpan<OpenTypeQuadraticSegment> segments, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        {
+            foreach (OpenTypeQuadraticSegment segment in segments)
+            {
+                Consume(workCounter, cancellationToken);
+                if (contours.Count == MaximumExpandedGlyphSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded glyph segment count exceeds the supported limit.");
+                contours.Add(Transform(segment, transform));
             }
         }
-        finally { active.Remove(glyphIndex); }
     }
 
     private static OpenTypeQuadraticSegment Transform(OpenTypeQuadraticSegment segment, OpenTypeOutlineTransform transform)
@@ -647,6 +763,46 @@ internal readonly record struct OpenTypeOutlinePoint(double X, double Y);
 /// <summary>Represents one quadratic segment; a line has its control equal to its end.</summary>
 internal readonly record struct OpenTypeQuadraticSegment(OpenTypeOutlinePoint Start, OpenTypeOutlinePoint Control, OpenTypeOutlinePoint End);
 
+/// <summary>Owns simple-glyph endpoint storage until point decoding no longer needs it.</summary>
+internal sealed class OpenTypeSimpleGlyphStructureStorage : IDisposable
+{
+    private RenderBudget.BudgetReservation? _reservation;
+
+    internal OpenTypeSimpleGlyphStructureStorage(OpenTypeSimpleGlyphStructure value, RenderBudget.BudgetReservation? reservation)
+    {
+        Value = value;
+        _reservation = reservation;
+    }
+
+    internal OpenTypeSimpleGlyphStructure Value { get; }
+
+    public void Dispose()
+    {
+        _reservation?.Dispose();
+        _reservation = null;
+    }
+}
+
+/// <summary>Owns simple-glyph point storage until quadratic lowering no longer needs it.</summary>
+internal sealed class OpenTypeGlyphPointStorage : IDisposable
+{
+    private RenderBudget.BudgetReservation? _reservation;
+
+    internal OpenTypeGlyphPointStorage(OpenTypeGlyphPoint[] points, RenderBudget.BudgetReservation? reservation)
+    {
+        Points = points;
+        _reservation = reservation;
+    }
+
+    internal OpenTypeGlyphPoint[] Points { get; }
+
+    public void Dispose()
+    {
+        _reservation?.Dispose();
+        _reservation = null;
+    }
+}
+
 /// <summary>Owns decoded glyph segments and their temporary geometry reservation until SVG-coordinate transformation completes.</summary>
 internal sealed class OpenTypeGlyphContourStorage : IDisposable
 {
@@ -667,15 +823,42 @@ internal sealed class OpenTypeGlyphContourStorage : IDisposable
     }
 }
 
+/// <summary>Owns exact composite-component records until recursive expansion has consumed them.</summary>
+internal sealed class OpenTypeCompositeGlyphComponentStorage : IDisposable
+{
+    private RenderBudget.BudgetReservation? _reservation;
+
+    internal OpenTypeCompositeGlyphComponentStorage(OpenTypeCompositeGlyphComponent[] components, RenderBudget.BudgetReservation? reservation)
+    {
+        Components = components;
+        _reservation = reservation;
+    }
+
+    internal OpenTypeCompositeGlyphComponent[] Components { get; }
+
+    public void Dispose()
+    {
+        _reservation?.Dispose();
+        _reservation = null;
+    }
+}
+
 /// <summary>Builds decoded segments with reservation-backed capacity growth when glyph expansion belongs to a conversion budget.</summary>
 internal sealed class OpenTypeSegmentAccumulator : IDisposable
 {
     private readonly RenderBudget? _budget;
+    private readonly GlyphDecoderBudgetPhase _capacityPhase;
+    private readonly GlyphDecoderBudgetPhase _exactPhase;
     private OpenTypeQuadraticSegment[] _segments = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal OpenTypeSegmentAccumulator(RenderBudget? budget) => _budget = budget;
+    internal OpenTypeSegmentAccumulator(RenderBudget? budget, GlyphDecoderBudgetPhase capacityPhase, GlyphDecoderBudgetPhase exactPhase)
+    {
+        _budget = budget;
+        _capacityPhase = capacityPhase;
+        _exactPhase = exactPhase;
+    }
 
     internal int Count => _count;
 
@@ -696,6 +879,26 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
         return copy;
     }
 
+    /// <summary>Materializes exact decoded-segment storage while both the grown and exact arrays remain reserved.</summary>
+    internal OpenTypeGlyphContourStorage Detach()
+    {
+        if (_count == 0)
+        {
+            Dispose();
+            return new([], null);
+        }
+        if (_budget is null) return new(ToArray(), null);
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<OpenTypeQuadraticSegment>(_count), SvgMemoryCategory.Geometry);
+        OpenTypeQuadraticSegment[] exact;
+        try { exact = new OpenTypeQuadraticSegment[_count]; }
+        catch { reservation.Dispose(); throw; }
+        GlyphDecoderBudgetProbe.Reserved(_exactPhase, _budget);
+        try { _segments.AsSpan(0, _count).CopyTo(exact); }
+        catch { reservation.Dispose(); throw; }
+        Dispose();
+        return new(exact, reservation);
+    }
+
     public void Dispose()
     {
         _reservation?.Dispose();
@@ -707,11 +910,12 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
     private void Grow()
     {
         int capacity = _segments.Length == 0 ? 4 : checked(_segments.Length * 2);
-        RenderBudget.BudgetReservation? replacementReservation = _budget?.Reserve(checked(32L + (long)capacity * 48L), SvgMemoryCategory.Geometry);
+        RenderBudget.BudgetReservation? replacementReservation = _budget?.Reserve(ParserCollectionMemory.GetArrayByteCount<OpenTypeQuadraticSegment>(capacity), SvgMemoryCategory.Geometry);
         try
         {
             var replacement = new OpenTypeQuadraticSegment[capacity];
             _segments.AsSpan(0, _count).CopyTo(replacement);
+            GlyphDecoderBudgetProbe.Reserved(_capacityPhase, _budget);
             _reservation?.Dispose();
             _reservation = replacementReservation;
             _segments = replacement;
@@ -721,6 +925,124 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
             replacementReservation?.Dispose();
             throw;
         }
+    }
+}
+
+/// <summary>Builds composite-component records with reservation-backed capacity and exact-copy ownership.</summary>
+internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
+{
+    private readonly RenderBudget? _budget;
+    private OpenTypeCompositeGlyphComponent[] _components = [];
+    private RenderBudget.BudgetReservation? _reservation;
+    private int _count;
+
+    internal OpenTypeCompositeComponentAccumulator(RenderBudget? budget) => _budget = budget;
+
+    internal int Count => _count;
+
+    internal void Add(OpenTypeCompositeGlyphComponent component)
+    {
+        if (_count == _components.Length) Grow();
+        _components[_count++] = component;
+    }
+
+    internal OpenTypeCompositeGlyphComponent[] ToArray()
+    {
+        if (_count == 0) return [];
+        var copy = new OpenTypeCompositeGlyphComponent[_count];
+        _components.AsSpan(0, _count).CopyTo(copy);
+        return copy;
+    }
+
+    /// <summary>Materializes exact component storage while preserving the temporary capacity reservation through the copy.</summary>
+    internal OpenTypeCompositeGlyphComponentStorage Detach()
+    {
+        if (_count == 0)
+        {
+            Dispose();
+            return new([], null);
+        }
+        if (_budget is null) return new(ToArray(), null);
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<OpenTypeCompositeGlyphComponent>(_count), SvgMemoryCategory.Geometry);
+        OpenTypeCompositeGlyphComponent[] exact;
+        try { exact = new OpenTypeCompositeGlyphComponent[_count]; }
+        catch { reservation.Dispose(); throw; }
+        GlyphDecoderBudgetProbe.Reserved(GlyphDecoderBudgetPhase.CompositeComponentsExact, _budget);
+        try { _components.AsSpan(0, _count).CopyTo(exact); }
+        catch { reservation.Dispose(); throw; }
+        Dispose();
+        return new(exact, reservation);
+    }
+
+    public void Dispose()
+    {
+        _reservation?.Dispose();
+        _reservation = null;
+        _components = [];
+        _count = 0;
+    }
+
+    private void Grow()
+    {
+        int capacity = _components.Length == 0 ? 4 : checked(_components.Length * 2);
+        RenderBudget.BudgetReservation? replacementReservation = _budget?.Reserve(ParserCollectionMemory.GetArrayByteCount<OpenTypeCompositeGlyphComponent>(capacity), SvgMemoryCategory.Geometry);
+        try
+        {
+            var replacement = new OpenTypeCompositeGlyphComponent[capacity];
+            _components.AsSpan(0, _count).CopyTo(replacement);
+            GlyphDecoderBudgetProbe.Reserved(GlyphDecoderBudgetPhase.CompositeComponentsCapacity, _budget);
+            _reservation?.Dispose();
+            _reservation = replacementReservation;
+            _components = replacement;
+        }
+        catch
+        {
+            replacementReservation?.Dispose();
+            throw;
+        }
+    }
+}
+
+/// <summary>Owns the bounded active composite-glyph stack used for cycle detection during one expansion.</summary>
+internal sealed class OpenTypeGlyphRecursionTracker : IDisposable
+{
+    private ushort[] _glyphs;
+    private RenderBudget.BudgetReservation? _reservation;
+    private int _count;
+
+    internal OpenTypeGlyphRecursionTracker(int capacity, RenderBudget? budget)
+    {
+        if (capacity <= 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+        _reservation = budget?.Reserve(ParserCollectionMemory.GetArrayByteCount<ushort>(capacity), SvgMemoryCategory.Geometry);
+        try { _glyphs = new ushort[capacity]; }
+        catch { _reservation?.Dispose(); throw; }
+        GlyphDecoderBudgetProbe.Reserved(GlyphDecoderBudgetPhase.ActiveGlyphs, budget);
+    }
+
+    /// <summary>Returns false when the glyph is already active; entries must exit in last-in-first-out order.</summary>
+    internal bool TryEnter(ushort glyph)
+    {
+        for (int index = 0; index < _count; index++)
+        {
+            if (_glyphs[index] == glyph) return false;
+        }
+        if (_count == _glyphs.Length) throw new InvalidOperationException("The composite glyph recursion tracker is smaller than its validated depth limit.");
+        _glyphs[_count++] = glyph;
+        return true;
+    }
+
+    internal void Exit(ushort glyph)
+    {
+        if (_count == 0 || _glyphs[_count - 1] != glyph) throw new InvalidOperationException("Composite glyph recursion did not exit in stack order.");
+        _count--;
+    }
+
+    public void Dispose()
+    {
+        _glyphs = [];
+        _count = 0;
+        _reservation?.Dispose();
+        _reservation = null;
     }
 }
 
