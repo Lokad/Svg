@@ -40,7 +40,7 @@ internal struct SvgTextWhitespaceNormalizer
             int count = Math.Min(ParserWorkCounter.ByteCheckpointSize, value.Length - offset);
             if (_mode == SvgTextWhitespaceMode.Preserve)
             {
-                output.Append(value.Slice(offset, count), maximumSourceCharacters, workCounter, cancellationToken);
+                AppendPreservedChunk(value.Slice(offset, count), output, maximumSourceCharacters, workCounter, cancellationToken);
                 continue;
             }
             AppendChunk(value.Slice(offset, count), output, maximumSourceCharacters, workCounter, cancellationToken);
@@ -69,6 +69,26 @@ internal struct SvgTextWhitespaceNormalizer
             _hasText = true;
             index = end;
         }
+    }
+
+    private static void AppendPreservedChunk(ReadOnlySpan<char> value, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        int replacement = value.IndexOfAny('\t', '\r', '\n');
+        if (replacement < 0)
+        {
+            output.Append(value, maximumSourceCharacters, workCounter, cancellationToken);
+            return;
+        }
+        Span<char> normalized = stackalloc char[value.Length];
+        value.CopyTo(normalized);
+        do
+        {
+            normalized[replacement] = ' ';
+            int searchStart = replacement + 1;
+            int next = normalized[searchStart..].IndexOfAny('\t', '\r', '\n');
+            replacement = next < 0 ? -1 : searchStart + next;
+        } while (replacement >= 0);
+        output.Append(normalized, maximumSourceCharacters, workCounter, cancellationToken);
     }
 
     /// <summary>Observes one discovery text chunk and reports whether normalization can produce a glyph.</summary>

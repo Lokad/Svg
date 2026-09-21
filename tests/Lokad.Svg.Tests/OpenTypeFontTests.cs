@@ -1677,7 +1677,7 @@ public sealed class OpenTypeFontTests
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
 
         ReadOnlyMemory<byte> collapsed = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='default'> </text></svg>"u8.ToArray(), options, CancellationToken.None);
-        ReadOnlyMemory<byte> preserved = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'> </text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> preserved = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'>\t</text></svg>"u8.ToArray(), options, CancellationToken.None);
 
         Assert.Equal(0, DecodeAlpha(collapsed, 1, 1));
         Assert.True(DecodeAlpha(preserved, 1, 1) > 0);

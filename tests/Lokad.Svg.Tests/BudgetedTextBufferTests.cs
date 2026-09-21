@@ -47,6 +47,14 @@ public sealed class BudgetedTextBufferTests
 
         Assert.Equal("A A", text.Value);
         Assert.Equal(9, normalizer.SourceCharacterCount);
+        using var preservedBuffer = new BudgetedTextBuffer(new RenderBudget(1_000));
+        var preserved = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Preserve);
+        preserved.Append(" \tA\r", preservedBuffer, 16, new ParserWorkCounter(20), CancellationToken.None);
+        preserved.Append("\n A  ", preservedBuffer, 16, new ParserWorkCounter(20), CancellationToken.None);
+        using BudgetedText preservedText = preservedBuffer.Detach();
+
+        Assert.Equal("  A   A  ", preservedText.Value);
+        Assert.Equal(9, preserved.SourceCharacterCount);
         var denied = new SvgTextWhitespaceNormalizer();
         using var deniedBuffer = new BudgetedTextBuffer(new RenderBudget(1_000));
         SvgException exception = Assert.Throws<SvgException>(() => denied.Append("     ", deniedBuffer, 4, new ParserWorkCounter(20), CancellationToken.None));
