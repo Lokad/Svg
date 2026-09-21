@@ -44,7 +44,7 @@ growing character storage and a charged temporary string, checking work and
 cancellation before each read or copy; it releases that temporary string once
 stylesheet parsing completes. Reader-provided transient attribute and inline-style
 strings remain within the documented conservative reader allowance; this is not
-exact BCL-allocation accounting.
+exact BCL-allocation accounting. Font-request discovery reserves ancestor, whitespace, eligibility, group and distinct-request storage from its own preparation budget before allocation and releases it deterministically.
 Supported element attributes are validated before stylesheet matching, while the
 selector matcher independently enforces the identifier cap; class-selector scans
 also observe the shared parser-work limit. Each attribute walked by that policy

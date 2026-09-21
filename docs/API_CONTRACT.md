@@ -74,7 +74,7 @@ properties, and inline-style properties (`font-family`, `font-weight`,
 XML depth, attribute, node and work limits through metric validation and program
 integrity verification before doing the same; CSS family lists and text-run
 retention remain unsupported. It validates root viewport plus inherited container
-and direct-text presentation/opacity syntax before provider access. Once it sees
+and direct-text presentation/opacity syntax before provider access. Font-request discovery reserves ancestor, whitespace, eligibility, group and distinct-request storage from its own preparation budget before allocation and releases it deterministically; BCL XML workspace remains under the separate conservative allowance. Once it sees
 rendered content outside the admitted path, it suppresses later text-font
 acquisition. A snapshot can already be supplied through render options. The
 renderer's experimental direct-text path accepts only direct

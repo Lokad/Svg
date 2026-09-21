@@ -25,17 +25,25 @@ internal static class SvgFontRequestDiscovery
     {
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(workCounter);
+        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        return Discover(svg, limits, workCounter, budget, cancellationToken);
+    }
+
+    /// <summary>Discovers admitted text requests while reserving all discovery control storage from the supplied preparation budget.</summary>
+    internal static SvgFontFaceRequest[] Discover(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, ParserWorkCounter workCounter, RenderBudget budget, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(limits);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        ArgumentNullException.ThrowIfNull(budget);
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
-        var requests = new List<SvgFontFaceRequest>();
-        var seen = new HashSet<TextRequestKey>(TextRequestKeyComparer.Instance);
-        var inherited = new Stack<TextStyle>();
-        var directText = new Stack<TextRequestCandidate?>();
-        var directTextWhitespaceModes = new Stack<SvgTextWhitespaceMode>();
-        var textEligibleChildren = new Stack<bool>();
-        var elementGroups = new Stack<bool>();
-        RenderBudget styleBudget = new(limits.MaximumAccountedBytes);
-        using var styleRules = new BudgetedParserList<CssRule>(styleBudget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var styleStrings = new BudgetedParserStringStore(styleBudget);
+        using var styleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var styleStrings = new BudgetedParserStringStore(budget);
+        using var requestKeys = new BudgetedParserList<TextRequestKey>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var inheritedLevels = new BudgetedParserList<TextStyle>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var directTextLevels = new BudgetedParserList<DiscoveryCandidate>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var whitespaceLevels = new BudgetedParserList<SvgTextWhitespaceMode>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var eligibleLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var groupLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         char[]? textChunk = null;
         RenderBudget.BudgetReservation? textChunkReservation = null;
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
@@ -52,7 +60,7 @@ internal static class SvgFontRequestDiscovery
             int nodeCount = 0;
             int inertDepth = -1;
             int groupDepth = 0;
-            TextRequestCandidate? activeDirectTextCandidate = null;
+            int activeCandidateLevel = -1;
             while (reader.Read())
             {
                 workCounter.Consume(cancellationToken);
@@ -70,31 +78,38 @@ internal static class SvgFontRequestDiscovery
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
-                    bool insideDirectText = activeDirectTextCandidate is not null;
+                    bool insideDirectText = activeCandidateLevel >= 0;
                     bool directChild = reader.Depth == rootDepth + 1;
                     bool hasGroupAncestor = groupDepth != 0;
-                    bool parentIsGroup = elementGroups.Count > 0 && elementGroups.Peek();
-                    SvgTextWhitespaceMode inheritedWhitespaceMode = directTextWhitespaceModes.Count == 0 ? SvgTextWhitespaceMode.Default : directTextWhitespaceModes.Peek();
+                    bool parentIsGroup = groupLevels.Count > 0 && groupLevels[groupLevels.Count - 1];
+                    SvgTextWhitespaceMode inheritedWhitespaceMode = whitespaceLevels.Count == 0 ? SvgTextWhitespaceMode.Default : whitespaceLevels[whitespaceLevels.Count - 1];
                     SvgTextWhitespaceMode childWhitespaceMode = inheritedWhitespaceMode;
                     InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
                     bool admittedTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanWhitespaceMode(reader, inheritedWhitespaceMode, tspanStyleSheet, workCounter, cancellationToken, out childWhitespaceMode);
-                    if (!admittedTextSpan && activeDirectTextCandidate is not null) activeDirectTextCandidate.HasChildElement = true;
-                    bool parentAllowsText = textEligibleChildren.Count == 0 || textEligibleChildren.Peek();
+                    if (!admittedTextSpan && activeCandidateLevel >= 0)
+                    {
+                        DiscoveryCandidate active = directTextLevels[activeCandidateLevel];
+                        if (active.HasRequest)
+                        {
+                            directTextLevels[activeCandidateLevel] = active with { HasChildElement = true };
+                        }
+                    }
+                    bool parentAllowsText = eligibleLevels.Count == 0 || eligibleLevels[eligibleLevels.Count - 1];
                     bool rootElement = reader.Depth == rootDepth;
                     TextStyle style;
-                    if (inherited.Count == 0)
+                    if (inheritedLevels.Count == 0)
                     {
                         SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, workCounter, cancellationToken);
                         style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.Opacity != 255);
                     }
-                    else style = inherited.Peek();
+                    else style = inheritedLevels[inheritedLevels.Count - 1];
                     bool rootStyleElement = isSvgElement && reader.LocalName == "style" && directChild;
                     if (rootStyleElement)
                     {
                         if (sawStyleableNode || hasStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede supported definitions and rendered content.");
                         if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
-                        using OwnedStyleSheetText styleText = SvgStyleSheet.ReadElementText(reader, styleBudget, workCounter, cancellationToken);
-                        SvgStyleSheet.Parse(styleText.Value, limits.MaximumNodes, styleRules, styleStrings, styleBudget, workCounter, cancellationToken);
+                        using OwnedStyleSheetText styleText = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken);
+                        SvgStyleSheet.Parse(styleText.Value, limits.MaximumNodes, styleRules, styleStrings, budget, workCounter, cancellationToken);
                         if (SvgStyleSheet.TargetsRootId(rootId, styleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
                         hasStyleSheet = true;
                     }
@@ -109,8 +124,7 @@ internal static class SvgFontRequestDiscovery
                     if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && (!isKnownContent || rendererRejectsKnownContent))
                     {
                         hasUnsupportedContent = true;
-                        requests.Clear();
-                        seen.Clear();
+                        requestKeys.Clear();
                     }
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
                     {
@@ -135,53 +149,83 @@ internal static class SvgFontRequestDiscovery
                         whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, specifiedWhiteSpace, inheritedTextWhitespaceMode);
                     }
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
-                    TextRequestCandidate? candidate = !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.HasFill && style.Text.Family is string family
-                        ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic), whitespaceMode)
-                        : null;
-                    if (candidate is not null) childWhitespaceMode = candidate.WhitespaceMode;
-                    if (reader.IsEmptyElement)
+                    DiscoveryCandidate candidateState;
+                    if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.HasFill && style.Text.Family is string family)
                     {
-                        if (candidate is not null) AddCandidate(candidate, requests, seen);
+                        candidateState = new DiscoveryCandidate(true, family, style.Text.Weight, style.Text.Italic, whitespaceMode, false, false);
                     }
                     else
                     {
-                        inherited.Push(style);
-                        directText.Push(candidate);
-                        directTextWhitespaceModes.Push(childWhitespaceMode);
-                        textEligibleChildren.Push(childAllowsText);
+                        candidateState = new DiscoveryCandidate(false, null, 400, false, SvgTextWhitespaceMode.Default, false, false);
+                    }
+                    if (candidateState.HasRequest) childWhitespaceMode = candidateState.WhitespaceMode;
+                    if (reader.IsEmptyElement)
+                    {
+                        if (candidateState.HasRequest) AddCandidate(candidateState, requestKeys, workCounter, cancellationToken);
+                    }
+                    else
+                    {
+                        inheritedLevels.Add(style);
+                        directTextLevels.Add(candidateState);
+                        whitespaceLevels.Add(childWhitespaceMode);
+                        eligibleLevels.Add(childAllowsText);
                         bool group = isSvgElement && reader.LocalName == "g";
-                        elementGroups.Push(group);
+                        groupLevels.Add(group);
                         if (group) groupDepth++;
-                        if (candidate is not null) activeDirectTextCandidate = candidate;
+                        if (candidateState.HasRequest) activeCandidateLevel = directTextLevels.Count - 1;
                     }
                     if (isSvgElement && parentAllowsText && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "text")) sawStyleableNode = true;
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
                     if (reader.Depth == inertDepth) inertDepth = -1;
-                    if (inherited.Count != 0)
+                    if (inheritedLevels.Count != 0)
                     {
-                        inherited.Pop();
-                        TextRequestCandidate? candidate = directText.Pop();
-                        directTextWhitespaceModes.Pop();
-                        if (candidate is not null)
+                        inheritedLevels.RemoveLast();
+                        DiscoveryCandidate candidateState = directTextLevels[directTextLevels.Count - 1];
+                        directTextLevels.RemoveLast();
+                        whitespaceLevels.RemoveLast();
+                        eligibleLevels.RemoveLast();
+                        bool wasGroup = groupLevels[groupLevels.Count - 1];
+                        groupLevels.RemoveLast();
+                        if (wasGroup) groupDepth--;
+                        if (candidateState.HasRequest)
                         {
-                            AddCandidate(candidate, requests, seen);
-                            activeDirectTextCandidate = null;
+                            AddCandidate(candidateState, requestKeys, workCounter, cancellationToken);
+                            activeCandidateLevel = -1;
                         }
-                        textEligibleChildren.Pop();
-                        if (elementGroups.Pop()) groupDepth--;
                     }
                 }
                 else if (reader.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
                 {
-                    if (activeDirectTextCandidate is not null)
+                    if (activeCandidateLevel >= 0)
                     {
-                        activeDirectTextCandidate.HasRenderableTextContent |= HasRenderableText(reader, GetTextChunk(), directTextWhitespaceModes.Peek(), workCounter, cancellationToken);
+                        SvgTextWhitespaceMode activeWhitespace = whitespaceLevels[whitespaceLevels.Count - 1];
+                        bool hasRenderable = HasRenderableText(reader, GetTextChunk(), activeWhitespace, workCounter, cancellationToken);
+                        if (hasRenderable)
+                        {
+                            DiscoveryCandidate active = directTextLevels[activeCandidateLevel];
+                            if (active.HasRequest && !active.HasRenderableTextContent)
+                            {
+                                directTextLevels[activeCandidateLevel] = active with { HasRenderableTextContent = true };
+                            }
+                        }
                     }
                 }
             }
             if (!hasRoot) throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
+            var result = new SvgFontFaceRequest[requestKeys.Count];
+            for (int index = 0; index < result.Length; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                TextRequestKey key = requestKeys[index];
+                if (key.Family is not string family)
+                {
+                    throw new SvgException(SvgErrorCode.MalformedInput, "The discovered font request is missing its family.");
+                }
+                result[index] = new SvgFontFaceRequest(family, key.Weight, key.Italic);
+            }
+            return result;
         }
         catch (XmlException exception)
         {
@@ -195,7 +239,7 @@ internal static class SvgFontRequestDiscovery
         char[] GetTextChunk()
         {
             if (textChunk is not null) return textChunk;
-            RenderBudget.BudgetReservation reservation = styleBudget.Reserve(ParserCollectionMemory.GetArrayByteCount(ParserWorkCounter.ByteCheckpointSize, sizeof(char)), SvgMemoryCategory.Parser);
+            RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount(ParserWorkCounter.ByteCheckpointSize, sizeof(char)), SvgMemoryCategory.Parser);
             try { textChunk = new char[ParserWorkCounter.ByteCheckpointSize]; }
             catch
             {
@@ -205,17 +249,35 @@ internal static class SvgFontRequestDiscovery
             textChunkReservation = reservation;
             return textChunk;
         }
-
-        return requests.ToArray();
     }
 
-    private static void AddCandidate(TextRequestCandidate? candidate, List<SvgFontFaceRequest> requests, HashSet<TextRequestKey> seen)
+    private static void AddCandidate(DiscoveryCandidate candidate, BudgetedParserList<TextRequestKey> requests, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (candidate is null || candidate.HasChildElement || !candidate.HasRenderableTextContent) return;
-        SvgFontFaceRequest request = candidate.Request;
-        if (!seen.Add(new TextRequestKey(request.Family, request.Weight, request.Italic))) return;
+        ArgumentNullException.ThrowIfNull(requests);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (!candidate.HasRequest || candidate.HasChildElement || !candidate.HasRenderableTextContent)
+        {
+            return;
+        }
+        if (candidate.Family is not string family)
+        {
+            return;
+        }
+        for (int index = 0; index < requests.Count; index++)
+        {
+            workCounter.Consume(cancellationToken);
+            TextRequestKey existing = requests[index];
+            if (existing.Family is not string existingFamily)
+            {
+                continue;
+            }
+            if (existing.Weight == candidate.Weight && existing.Italic == candidate.Italic && existingFamily.Equals(family, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+        }
         if (requests.Count == MaximumRequests) throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG text font request count exceeds the preparation limit.");
-        requests.Add(request);
+        requests.Add(new TextRequestKey(family, candidate.Weight, candidate.Italic));
     }
 
     private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -258,25 +320,5 @@ internal static class SvgFontRequestDiscovery
 
     private readonly record struct TextRequestKey(string Family, int Weight, bool Italic);
 
-    private sealed class TextRequestCandidate(SvgFontFaceRequest request, SvgTextWhitespaceMode whitespaceMode)
-    {
-        internal SvgFontFaceRequest Request { get; } = request;
-
-        internal SvgTextWhitespaceMode WhitespaceMode { get; } = whitespaceMode;
-
-        internal bool HasChildElement { get; set; }
-
-        internal bool HasRenderableTextContent { get; set; }
-    }
-
-    private sealed class TextRequestKeyComparer : IEqualityComparer<TextRequestKey>
-    {
-        internal static TextRequestKeyComparer Instance { get; } = new();
-
-        public bool Equals(TextRequestKey left, TextRequestKey right)
-            => left.Weight == right.Weight && left.Italic == right.Italic && left.Family.Equals(right.Family, StringComparison.OrdinalIgnoreCase);
-
-        public int GetHashCode(TextRequestKey value)
-            => HashCode.Combine(StringComparer.OrdinalIgnoreCase.GetHashCode(value.Family), value.Weight, value.Italic);
-    }
+    private readonly record struct DiscoveryCandidate(bool HasRequest, string? Family, int Weight, bool Italic, SvgTextWhitespaceMode WhitespaceMode, bool HasChildElement, bool HasRenderableTextContent);
 }
