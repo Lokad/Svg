@@ -565,7 +565,10 @@ integrity but compare decoded pixels against the reference, with fresh-process b
 stability asserted separately; a generated-fixture harness pins the positive case plus
 pixel-mismatch, byte-drift and tampered-hash rejections, each for its own reason.
 The old validator demonstrably rejects the pixel-identical positive fixture on bytes.
-Fingerprint and report-contract fixtures remain open.
+Report and schema mismatches are covered (`9a65827`): eight generated
+negatives pin memory schema, missing, duplicated, unexpected, tampered-hash,
+missing-transcript and flipped-outcome rejections plus chrome schema rejection.
+Fingerprint host/child provenance remains open.
 
 **Gate (`7e25ab8`):** the synthetic font-probe smoke (local, stdin,
 loopback HTTP with ephemeral ports, lazy acquisition, retry) now runs in CI on both
