@@ -142,3 +142,28 @@ strictly-less-work with identical semantics (full suite green).
 | `CreateSnapshotAsync` | 30.40 μs / 32.04 KB | 30.24 μs / 32.04 KB |
 | `LowerStyledText` | 55.30 μs / 140.88 KB | 54.44 μs / 140.88 KB |
 | `ConvertPreparedStyledTextAsync` | 300.14 μs / 190.34 KB | 267.31 μs / 190.34 KB |
+
+### PNG buffering across sinks and entropies (`PngBufferBenchmarks`)
+
+- Encodes 512x512 low-entropy (solid opaque red) and high-entropy (deterministic
+  LCG bytes) pixels through all four output forms at the exact encoded length,
+  reporting BenchmarkDotNet time plus managed allocation traffic per conversion.
+  Companion peak methods run the same encodes against an owned ledger and return
+  its accounted peak (current returns to zero in every case). Cancellation paths
+  are owned by unit tests and the probe, not timed here.
+- High entropy shows the buffering contrast: owned traffic (5,119.77 KB) is
+  about five times the ~1 MB payload from geometric growth copies plus the final
+  copy, with Gen2 collections from large-object pressure; streams avoid it
+  entirely (about 132 KB) at equal speed. Caller memory saves the final result
+  allocation only.
+
+| Method | Mean | Allocated | Accounted peak |
+| --- | ---: | ---: | ---: |
+| `EncodeHighEntropyOwned` | 61.21 ms | 5,119.77 KB | 3,148,602 B |
+| `EncodeHighEntropyCallerMemory` | 62.16 ms | 4,093.72 KB | 3,148,545 B |
+| `EncodeHighEntropyStream` | 58.46 ms | 132.15 KB | 100,353 B |
+| `EncodeHighEntropyStreamAsync` | 66.58 ms | 132.48 KB | 100,417 B |
+| `EncodeLowEntropyOwned` | 1.27 ms | 15.07 KB | 12,451 B |
+| `EncodeLowEntropyCallerMemory` | 1.31 ms | 8.85 KB | 8,310 B |
+| `EncodeLowEntropyStream` | 1.36 ms | 18.88 KB | 14,337 B |
+| `EncodeLowEntropyStreamAsync` | 1.31 ms | 19.25 KB | 14,401 B |
