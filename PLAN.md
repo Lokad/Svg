@@ -424,7 +424,12 @@ measure supplied-font text lowering or acquisition. Treat timings as local
 ShortRun evidence, not cross-platform guarantees or proof of a particular
 allocation's share.
 
-Closure: extend the baseline to styled-text lowering/acquisition, then short-circuit
+**Extension (`209e76a`):** `SvgTextBenchmarks` now separates
+acquisition (30.40 us / 32.04 KB), lowering from a reused snapshot (55.30 us / 140.88 KB)
+and end-to-end preparation (300.14 us / 190.34 KB) over styled text with an embedded
+synthetic triangle font. ShortRun results are recorded in `docs/BENCHMARKS.md`.
+
+Closure: short-circuit
 lower-precedence attribute reads, parse immediate-only inline values into typed
 ephemeral fields where lifetime permits, cache stable diagnostics, and represent a
 validated SHA-256 as a domain value rather than repeatedly formatting text. Any
