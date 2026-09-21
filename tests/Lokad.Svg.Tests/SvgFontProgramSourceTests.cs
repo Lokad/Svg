@@ -127,6 +127,53 @@ public sealed class SvgFontProgramSourceTests
     }
 
     [Fact]
+    public async Task Prepared_document_charges_preparation_against_every_conversion_output_form()
+    {
+        SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
+        var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>());
+        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 16);
+        SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, limits);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+        byte[] destination = new byte[1_024];
+
+        using (SvgPreparedDocument document = await CreateDocument(catalog, provider, options, svg))
+        {
+            AssertPngWorkLimit(Assert.Throws<SvgException>(() => document.ConvertToPng(CancellationToken.None)));
+        }
+        using (SvgPreparedDocument document = await CreateDocument(catalog, provider, options, svg))
+        {
+            AssertPngWorkLimit(Assert.Throws<SvgException>(() => document.ConvertToPng(destination, CancellationToken.None)));
+        }
+        using (SvgPreparedDocument document = await CreateDocument(catalog, provider, options, svg))
+        using (var stream = new MemoryStream())
+        {
+            AssertPngWorkLimit(Assert.Throws<SvgException>(() => document.ConvertToPng(stream, CancellationToken.None)));
+        }
+        using (SvgPreparedDocument document = await CreateDocument(catalog, provider, options, svg))
+        {
+            AssertPngWorkLimit(await Assert.ThrowsAsync<SvgException>(async () => await document.ConvertToPngAsync(CancellationToken.None)));
+        }
+        using (SvgPreparedDocument document = await CreateDocument(catalog, provider, options, svg))
+        {
+            AssertPngWorkLimit(await Assert.ThrowsAsync<SvgException>(async () => await document.ConvertToPngAsync(destination, CancellationToken.None)));
+        }
+        using (SvgPreparedDocument document = await CreateDocument(catalog, provider, options, svg))
+        using (var stream = new MemoryStream())
+        {
+            AssertPngWorkLimit(await Assert.ThrowsAsync<SvgException>(async () => await document.ConvertToPngAsync(stream, CancellationToken.None)));
+        }
+
+        static ValueTask<SvgPreparedDocument> CreateDocument(SvgFontPackCatalog catalog, RecordingProvider provider, SvgRenderOptions options, byte[] svg)
+            => SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None);
+
+        static void AssertPngWorkLimit(SvgException exception)
+        {
+            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+            Assert.Contains("PNG compression", exception.Message);
+        }
+    }
+
+    [Fact]
     public async Task Prepared_document_lowers_its_scene_during_creation()
     {
         SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
