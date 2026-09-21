@@ -1377,6 +1377,87 @@ public sealed class OpenTypeFontTests
         Assert.Equal(code, lowering.ErrorCode);
     }
 
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>", 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect width='5' height='5' fill='red'/></svg>", 2, true, true)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect width='5' height='5' fill='red'/></svg>", 1, false, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><title>t</title><rect width='5' height='5' fill='red'/></svg>", 3, true, true)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><title>t</title><rect width='5' height='5' fill='red'/></svg>", 2, false, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>rect { fill: red; }</style><rect width='5' height='5'/></svg>", 3, true, true)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>rect { fill: red; }</style><rect width='5' height='5'/></svg>", 2, false, false)]
+    public async Task Discovery_and_lowering_agree_on_root_node_boundaries(string svg, int maximumNodes, bool succeeds, bool painted)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 256, 4_096, maximumNodes, 16, 100_000, 16, 16);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        if (succeeds)
+        {
+            SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, limits, CancellationToken.None);
+
+            Assert.Empty(requests);
+            ReadOnlyMemory<byte> raw = SvgConverter.ConvertToPng(input, options, CancellationToken.None);
+
+            Assert.True(raw.Length > 0);
+            using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider, options, CancellationToken.None);
+            ReadOnlyMemory<byte> prepared = document.ConvertToPng(CancellationToken.None);
+
+            Assert.True(prepared.Length > 0);
+            Assert.Equal(0, provider.RequestCount);
+            Assert.Equal(0, source.RequestCount);
+            if (painted)
+            {
+                Assert.True(DecodeAlpha(prepared, 1, 1) > 0);
+            }
+        }
+        else
+        {
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, limits, CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None)).ErrorCode);
+            SvgException preparedFailure = await Assert.ThrowsAsync<SvgException>(async () => await SvgPreparedDocument.CreateAsync(input, catalog, provider, options, CancellationToken.None));
+
+            Assert.Equal(SvgErrorCode.LimitExceeded, preparedFailure.ErrorCode);
+            Assert.Equal(0, provider.RequestCount);
+            Assert.Equal(0, source.RequestCount);
+        }
+    }
+
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan>A</tspan></text></svg>", 3, true)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan>A</tspan></text></svg>", 2, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><text font-family='Example' font-size='100' y='3'>A</text></g></svg>", 3, true)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><text font-family='Example' font-size='100' y='3'>A</text></g></svg>", 2, false)]
+    public async Task Discovery_and_lowering_agree_on_text_node_boundaries(string svg, int maximumNodes, bool succeeds)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        SvgRenderLimits limits = new(1_048_576, 1_024, 16, 256, 4_096, maximumNodes, 16, 100_000, 16, 16);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        if (succeeds)
+        {
+            SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, limits, CancellationToken.None);
+
+            Assert.Single(requests);
+            // Raw conversion has no font snapshot: node admission passes and only the missing font rejects the text.
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None)).ErrorCode);
+            using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider, options, CancellationToken.None);
+            ReadOnlyMemory<byte> prepared = document.ConvertToPng(CancellationToken.None);
+
+            Assert.True(DecodeAlpha(prepared, 1, 1) > 0);
+            Assert.Equal(1, provider.RequestCount);
+            Assert.Equal(1, source.RequestCount);
+        }
+        else
+        {
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, limits, CancellationToken.None)).ErrorCode);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None)).ErrorCode);
+            SvgException preparedFailure = await Assert.ThrowsAsync<SvgException>(async () => await SvgPreparedDocument.CreateAsync(input, catalog, provider, options, CancellationToken.None));
+
+            Assert.Equal(SvgErrorCode.LimitExceeded, preparedFailure.ErrorCode);
+            Assert.Equal(0, provider.RequestCount);
+            Assert.Equal(0, source.RequestCount);
+        }
+    }
     [Fact]
     public async Task Discovery_and_preparation_observe_cancellation_together()
     {

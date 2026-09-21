@@ -34,6 +34,8 @@ internal static class SvgDocumentTraversal
         }
         int rootDepth = reader.Depth;
         using SvgDocumentState state = new(budget, workCounter, cancellationToken);
+        // The root element consumes one node, matching font-request discovery's uniform per-element count.
+        state.NodeCount = 1;
         if (root.Opacity != 255) state.Scene.BeginOpacityScope(root.Opacity);
         while (reader.Read())
         {
