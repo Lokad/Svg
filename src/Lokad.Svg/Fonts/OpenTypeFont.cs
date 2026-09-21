@@ -589,7 +589,7 @@ internal static class OpenTypeFont
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return [];
         using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, null, null, cancellationToken);
         using var contours = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, null, cancellationToken);
-        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, null, cancellationToken);
+        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, header, null, cancellationToken);
         return contours.ToArray();
     }
 
@@ -602,11 +602,11 @@ internal static class OpenTypeFont
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return new([], [], null, null);
         using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, budget, workCounter, cancellationToken);
         using var contours = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, workCounter, cancellationToken);
-        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, workCounter, cancellationToken);
+        ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, header, workCounter, cancellationToken);
         return contours.Detach();
     }
 
-    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeGlyphRecursionTracker active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeGlyphRecursionTracker active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, OpenTypeGlyphHeader? knownHeader, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         GlyphExpansionProbe.Started();
         Consume(workCounter, cancellationToken);
@@ -615,7 +615,7 @@ internal static class OpenTypeFont
         if (!active.TryEnter(glyphIndex)) throw InvalidFont("The composite glyph graph contains a cycle.");
         try
         {
-            OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+            OpenTypeGlyphHeader? header = knownHeader ?? GetGlyphHeader(bytes, glyphIndex, metrics, workCounter, cancellationToken);
             if (header is null) return;
             if (!header.Value.IsComposite)
             {
@@ -632,10 +632,10 @@ internal static class OpenTypeFont
                 using OpenTypeCompositeGlyphComponentStorage components = GetBudgetedCompositeGlyphComponents(bytes, glyphIndex, metrics, componentBudget, workCounter, cancellationToken);
                 foreach (OpenTypeCompositeGlyphComponent component in components.Components)
                 {
-                    ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, workCounter, cancellationToken);
+                    ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, null, workCounter, cancellationToken);
                 }
             }
-            else foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, metrics, workCounter, cancellationToken)) ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, workCounter, cancellationToken);
+            else foreach (OpenTypeCompositeGlyphComponent component in GetCompositeGlyphComponents(bytes, glyphIndex, metrics, workCounter, cancellationToken)) ExpandGlyph(bytes, component.GlyphIndex, metrics, active, depth + 1, transform.Compose(component), contours, null, workCounter, cancellationToken);
         }
         finally { active.Exit(glyphIndex); }
 
