@@ -504,11 +504,11 @@ internal static class OpenTypeFont
         }
     }
 
-    /// <summary>Builds closed quadratic segments from decoded simple-glyph contours, including implied on-curve points.</summary>
-    internal static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints)
+    /// <summary>Builds closed quadratic segments from decoded simple-glyph contours, charging contour and point records like the budgeted decoder.</summary>
+    internal static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        using var segments = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, null, CancellationToken.None);
-        BuildQuadraticContours(points, endpoints, segments, false, null, CancellationToken.None);
+        using var segments = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, workCounter, cancellationToken);
+        BuildQuadraticContours(points, endpoints, segments, false, workCounter, cancellationToken);
         return segments.ToArray();
     }
 
@@ -570,7 +570,7 @@ internal static class OpenTypeFont
         OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
         if (structure.ContourEndpoints.Length == 0) return [];
         OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, structure, workCounter, cancellationToken);
-        return BuildQuadraticContours(points, structure.ContourEndpoints);
+        return BuildQuadraticContours(points, structure.ContourEndpoints, workCounter, cancellationToken);
     }
 
     /// <summary>Decodes simple-glyph arrays and retains every temporary reservation through exact decoded-segment materialization.</summary>

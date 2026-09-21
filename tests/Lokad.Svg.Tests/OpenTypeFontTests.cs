@@ -514,11 +514,39 @@ public sealed class OpenTypeFontTests
     {
         OpenTypeGlyphPoint[] points = [new(0, 0, true), new(4, 4, false), new(8, 0, false), new(12, 0, true)];
 
-        OpenTypeQuadraticSegment[] segments = OpenTypeFont.BuildQuadraticContours(points, [3]);
+        OpenTypeQuadraticSegment[] segments = OpenTypeFont.BuildQuadraticContours(points, [3], null, CancellationToken.None);
 
         Assert.Equal(new OpenTypeQuadraticSegment(new(0, 0), new(4, 4), new(6, 2)), segments[0]);
         Assert.Equal(new OpenTypeQuadraticSegment(new(6, 2), new(8, 0), new(12, 0)), segments[1]);
         Assert.Equal(new OpenTypeQuadraticSegment(new(12, 0), new(0, 0), new(0, 0)), segments[2]);
+    }
+
+    [Fact]
+    public void Segment_building_charges_contour_and_point_records()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 1, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, 1);
+        WriteUInt16(font, glyph.Offset + 10, 1);
+        WriteUInt16(font, glyph.Offset + 12, 0);
+        font[glyph.Offset + 14] = 0x37;
+        font[glyph.Offset + 15] = 0x37;
+        font[glyph.Offset + 16] = 10;
+        font[glyph.Offset + 17] = 5;
+        font[glyph.Offset + 18] = 3;
+        font[glyph.Offset + 19] = 0;
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+        ParserWorkCounter prefix = new(long.MaxValue);
+        OpenTypeFont.GetSimpleGlyphPoints(font, 1, metrics, prefix, CancellationToken.None);
+        ParserWorkCounter total = new(long.MaxValue);
+        OpenTypeQuadraticSegment[] segments = OpenTypeFont.GetSimpleGlyphContours(font, 1, metrics, total, CancellationToken.None);
+
+        Assert.True(total.Used > prefix.Used);
+        ParserWorkCounter denied = new(prefix.Used);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetSimpleGlyphContours(font, 1, metrics, denied, CancellationToken.None)).ErrorCode);
+        ParserWorkCounter exact = new(total.Used);
+        Assert.Equal(segments, OpenTypeFont.GetSimpleGlyphContours(font, 1, metrics, exact, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => OpenTypeFont.GetSimpleGlyphContours(font, 1, metrics, new ParserWorkCounter(total.Used - 1), CancellationToken.None)).ErrorCode);
     }
 
     [Fact]
