@@ -1,6 +1,5 @@
 namespace Lokad.Svg.Fonts;
 
-using System.Security.Cryptography;
 using Lokad.Svg.Parsing;
 
 /// <summary>
@@ -110,17 +109,7 @@ public sealed class SvgFontSnapshot : IDisposable
         {
             SvgFontPackFile file = resolution.Resolution.Face.File;
             if (bytes.Length != file.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.", CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
-            using IncrementalHash hashing = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
-            ReadOnlySpan<byte> programBytes = bytes.Span;
-            for (int offset = 0; offset < programBytes.Length; offset += ParserWorkCounter.ByteCheckpointSize)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                int length = Math.Min(ParserWorkCounter.ByteCheckpointSize, programBytes.Length - offset);
-                workCounter?.Consume(cancellationToken);
-                hashing.AppendData(programBytes.Slice(offset, length));
-                FontIntegrityProbe.HashChunkCompleted();
-            }
-            string hash = Convert.ToHexString(hashing.GetHashAndReset());
+            string hash = SvgFontProgramIntegrity.ComputeSha256(bytes, workCounter, cancellationToken);
             if (!hash.Equals(file.Sha256, StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.", CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
         }
     }

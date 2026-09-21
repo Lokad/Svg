@@ -1,6 +1,7 @@
 namespace Lokad.Svg.Fonts;
 
 using System.Security.Cryptography;
+using Lokad.Svg.Parsing;
 
 /// <summary>
 /// Supplies one immutable font program. The caller owns source lifetime, storage,
@@ -95,8 +96,27 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (bytes.Length != face.File.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.");
-        string hash = Convert.ToHexString(SHA256.HashData(bytes.Span));
+        string hash = SvgFontProgramIntegrity.ComputeSha256(bytes, null, cancellationToken);
         if (!hash.Equals(face.File.Sha256, StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.");
         return bytes;
+    }
+}
+
+/// <summary>Hashes caller-owned font bytes in bounded, cancellable checkpoints shared by source and snapshot integrity validation.</summary>
+internal static class SvgFontProgramIntegrity
+{
+    internal static string ComputeSha256(ReadOnlyMemory<byte> bytes, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        using IncrementalHash hashing = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        ReadOnlySpan<byte> programBytes = bytes.Span;
+        for (int offset = 0; offset < programBytes.Length; offset += ParserWorkCounter.ByteCheckpointSize)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            int length = Math.Min(ParserWorkCounter.ByteCheckpointSize, programBytes.Length - offset);
+            workCounter?.Consume(cancellationToken);
+            hashing.AppendData(programBytes.Slice(offset, length));
+            FontIntegrityProbe.HashChunkCompleted();
+        }
+        return Convert.ToHexString(hashing.GetHashAndReset());
     }
 }
