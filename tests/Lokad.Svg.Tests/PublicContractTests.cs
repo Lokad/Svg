@@ -541,7 +541,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Retained_scene_arrays_stay_within_the_conversion_budget()
     {
-        long retainedScenePeak = SvgSceneMemory.GetArrayByteCount(SvgSceneArrayKind.Geometry, 4) + SvgSceneMemory.GetArrayByteCount(SvgSceneArrayKind.Geometry, 1) + SvgSceneMemory.GetArrayByteCount(SvgSceneArrayKind.DrawCommand, 4);
+        long retainedScenePeak = ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4);
         SvgRenderLimits insufficient = new(131_072 + retainedScenePeak - 1, 1024, 2, 4, 1024, 16, 16, 32);
         SvgRenderOptions insufficientOptions = new(null, 1, SvgColor.Transparent, insufficient);
         SvgRenderLimits sufficient = new(131_072 + retainedScenePeak, 1024, 2, 4, 1024, 16, 16, 64);

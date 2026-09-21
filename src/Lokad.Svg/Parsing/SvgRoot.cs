@@ -202,16 +202,6 @@ internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int Geom
 
 internal readonly record struct SvgPoint(int X, int Y);
 
-internal static class SvgSceneMemory
-{
-    private const int ArrayHeaderBytes = 32;
-
-    internal static long GetArrayByteCount(SvgSceneArrayKind kind, int count)
-        => count == 0 ? 0 : checked(ArrayHeaderBytes + (long)count * (kind == SvgSceneArrayKind.Geometry ? Unsafe.SizeOf<SvgGeometry>() : Unsafe.SizeOf<SvgDrawCommand>()));
-}
-
-internal enum SvgSceneArrayKind { Geometry, DrawCommand }
-
 internal sealed class SvgSceneStorage : IDisposable
 {
     private readonly RenderBudget.BudgetReservation? _geometryReservation;
@@ -265,8 +255,8 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal SvgSceneBuilder(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        _geometries = new(budget, SvgSceneArrayKind.Geometry, workCounter, cancellationToken);
-        _commands = new(budget, SvgSceneArrayKind.DrawCommand, workCounter, cancellationToken);
+        _geometries = new(budget, workCounter, cancellationToken);
+        _commands = new(budget, workCounter, cancellationToken);
     }
 
     internal void AddGeometry(SvgGeometry geometry)
@@ -323,17 +313,15 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
 {
     private const int CopyCheckpointItems = 4_096;
     private readonly RenderBudget _budget;
-    private readonly SvgSceneArrayKind _kind;
     private readonly ParserWorkCounter _workCounter;
     private readonly CancellationToken _cancellationToken;
     private T[] _items = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal BudgetedSceneList(RenderBudget budget, SvgSceneArrayKind kind, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal BudgetedSceneList(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         _budget = budget;
-        _kind = kind;
         _workCounter = workCounter;
         _cancellationToken = cancellationToken;
     }
@@ -368,7 +356,7 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
             Dispose();
             return new([], null);
         }
-        long bytes = SvgSceneMemory.GetArrayByteCount(_kind, _count);
+        long bytes = ParserCollectionMemory.GetArrayByteCount<T>(_count);
         RenderBudget.BudgetReservation reservation = _budget.Reserve(bytes, SvgMemoryCategory.Scene);
         T[] exact;
         try { exact = new T[_count]; }
@@ -395,7 +383,7 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG scene exceeds the supported array capacity."); }
         if (requiredCount <= _items.Length) return;
         int capacity = _items.Length == 0 ? Math.Max(4, requiredCount) : _items.Length > int.MaxValue / 2 ? requiredCount : Math.Max(_items.Length * 2, requiredCount);
-        long bytes = SvgSceneMemory.GetArrayByteCount(_kind, capacity);
+        long bytes = ParserCollectionMemory.GetArrayByteCount<T>(capacity);
         RenderBudget.BudgetReservation replacementReservation = _budget.Reserve(bytes, SvgMemoryCategory.Scene);
         T[] replacement;
         try { replacement = new T[capacity]; }

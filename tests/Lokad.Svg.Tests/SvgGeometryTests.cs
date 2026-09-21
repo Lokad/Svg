@@ -1,5 +1,6 @@
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
@@ -33,9 +34,19 @@ public sealed class SvgGeometryTests
     }
 
     [Fact]
-    public void Charges_scene_arrays_using_their_runtime_value_sizes()
+    public void Sizes_scene_lists_from_their_element_type()
     {
-        Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4), SvgSceneMemory.GetArrayByteCount(SvgSceneArrayKind.Geometry, 4));
-        Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), SvgSceneMemory.GetArrayByteCount(SvgSceneArrayKind.DrawCommand, 4));
+        RenderBudget geometryBudget = new(long.MaxValue);
+        using (BudgetedSceneList<SvgGeometry> geometries = new(geometryBudget, new ParserWorkCounter(long.MaxValue), CancellationToken.None))
+        {
+            for (int index = 0; index < 4; index++) geometries.Add(SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null)));
+            Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4), geometryBudget.Snapshot().PeakBytes);
+        }
+        RenderBudget commandBudget = new(long.MaxValue);
+        using (BudgetedSceneList<SvgDrawCommand> commands = new(commandBudget, new ParserWorkCounter(long.MaxValue), CancellationToken.None))
+        {
+            for (int index = 0; index < 4; index++) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, index, 255));
+            Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), commandBudget.Snapshot().PeakBytes);
+        }
     }
 }

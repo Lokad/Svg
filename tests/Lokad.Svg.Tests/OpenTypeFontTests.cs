@@ -3048,7 +3048,7 @@ public sealed class OpenTypeFontTests
         }
         Assert.Equal(0, measurementBudget.Snapshot().CurrentBytes);
 
-        long geometryCapacity = SvgSceneMemory.GetArrayByteCount(SvgSceneArrayKind.Geometry, 4);
+        long geometryCapacity = ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4);
         RenderBudget budget = new(Math.Max(outlinePeak, retainedBytes + geometryCapacity));
         using (SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(snapshot.Fonts[0], glyph, 1, budget, new ParserWorkCounter(long.MaxValue), CancellationToken.None))
         using (var scene = new SvgSceneBuilder(budget, new ParserWorkCounter(1), CancellationToken.None))
