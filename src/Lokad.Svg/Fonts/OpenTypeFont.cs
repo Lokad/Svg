@@ -249,6 +249,12 @@ internal static class OpenTypeFont
     internal static OpenTypeGlyphHeader? GetGlyphHeader(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        return ParseGlyphHeader(bytes, glyph);
+    }
+
+    /// <summary>Reads one glyph header from a range already validated and charged by its caller.</summary>
+    private static OpenTypeGlyphHeader? ParseGlyphHeader(ReadOnlyMemory<byte> bytes, OpenTypeTableRange glyph)
+    {
         if (glyph.Length == 0) return null;
         if (glyph.Length < 10) throw InvalidFont("A nonempty glyf record is shorter than its header.");
         ReadOnlySpan<byte> data = bytes.Span;
@@ -276,7 +282,7 @@ internal static class OpenTypeFont
     {
         OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
         if (glyph.Length == 0) return new(new OpenTypeSimpleGlyphStructure([], 0), null);
-        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        OpenTypeGlyphHeader? header = ParseGlyphHeader(bytes, glyph);
         if (header is not OpenTypeGlyphHeader value) throw new InvalidOperationException("A nonempty glyph did not return a header.");
         if (value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph decoding is not implemented yet.");
         if (value.ContourCount > MaximumSimpleGlyphContours) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph contour count exceeds the supported limit.");
@@ -537,7 +543,7 @@ internal static class OpenTypeFont
     private static void ReadCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeCompositeComponentAccumulator components, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
-        OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        OpenTypeGlyphHeader? header = ParseGlyphHeader(bytes, glyph);
         if (header is not OpenTypeGlyphHeader value || !value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The requested glyph is not a composite TrueType glyph.");
         ReadOnlySpan<byte> data = bytes.Span;
         int cursor = glyph.Offset + 10;
