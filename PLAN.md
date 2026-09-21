@@ -560,7 +560,12 @@ SVGs to LF materialization. Replayed both environments live under
 post-fix archive carries none and matches the worktree byte-for-byte, so the passing
 manifest tests now reproduce from archived bytes. No content or reference hashes
 changed. The full suite (725 + 6 + 83) and all 21 probe scenarios pass.
-Validator byte/pixel, fingerprint and report-contract fixtures remain open.
+Validator byte/pixel is repaired (`8cf913c`): candidates keep file-hash
+integrity but compare decoded pixels against the reference, with fresh-process byte
+stability asserted separately; a generated-fixture harness pins the positive case plus
+pixel-mismatch, byte-drift and tampered-hash rejections, each for its own reason.
+The old validator demonstrably rejects the pixel-identical positive fixture on bytes.
+Fingerprint and report-contract fixtures remain open.
 
 **Gate (`7e25ab8`):** the synthetic font-probe smoke (local, stdin,
 loopback HTTP with ephemeral ports, lazy acquisition, retry) now runs in CI on both
