@@ -491,6 +491,16 @@ high-entropy owned traffic (5,119.77 KB, 3.0 MB peak with Gen2 pressure) versus 
 (132 KB traffic, 100 KB peak) at equal speed; low-entropy floor near 1.3 ms. Cancellation
 stays owned by unit tests. Results are recorded in `docs/BENCHMARKS.md`.
 
+**Decision (`2dcc8ed`):** the hotspot was real, so memory-form encoding now
+accumulates budgeted write-tracked segments instead of a geometrically grown buffer: no
+growth copies anywhere on the owned path, with a cumulative 64 KiB slicer keeping
+byte-identical chunking, limits, work accounting and cancellation behavior. High-entropy
+owned traffic falls 5,119.77 to 2,077.48 KB (peak 3.0 to 2.1 MB) and caller memory to
+1,052.41 KB traffic (1.05 MB peak); streams are untouched. A write-tracking refinement
+during the change also fixed small-output over-allocation. Exact-total accounting (
+pixels plus twice the payload, no growth term) and cross-sink identity are retained as
+regressions; the owned growth-charge test was superseded along with its buffer.
+
 Closure: benchmark low- and high-entropy images near the encoded-output limit for
 owned memory, caller memory and both stream forms, reporting allocation traffic,
 peak accounted storage, time and cancellation latency separately. If it is a real
