@@ -31,7 +31,8 @@ function Invoke-FontProbe {
     param(
         [Parameter(Mandatory = $true)] [string] $SvgPath,
         [Parameter(Mandatory = $true)] [string] $OutputPath,
-        [Parameter(Mandatory = $true)] [int] $ExpectedExitCode
+        [Parameter(Mandatory = $true)] [int] $ExpectedExitCode,
+        [byte[]] $StandardInput = [byte[]] @()
     )
 
     $start = [System.Diagnostics.ProcessStartInfo]::new('dotnet')
@@ -39,6 +40,7 @@ function Invoke-FontProbe {
     $start.CreateNoWindow = $true
     $start.RedirectStandardOutput = $true
     $start.RedirectStandardError = $true
+    $start.RedirectStandardInput = $StandardInput.Length -ne 0
     foreach ($argument in @($probeTool, '--manifest', $manifestPath, '--pack-id', 'synthetic-font-probe', '--font-root', $fontRoot, '--svg', $SvgPath, '--output', $OutputPath)) { $start.ArgumentList.Add($argument) }
 
     $process = [System.Diagnostics.Process]::Start($start)
@@ -46,6 +48,11 @@ function Invoke-FontProbe {
     try {
         $standardOutputTask = $process.StandardOutput.ReadToEndAsync()
         $standardErrorTask = $process.StandardError.ReadToEndAsync()
+        if ($StandardInput.Length -ne 0)
+        {
+            $process.StandardInput.BaseStream.Write($StandardInput, 0, $StandardInput.Length)
+            $process.StandardInput.Close()
+        }
         if (-not $process.WaitForExit($TimeoutMilliseconds))
         {
             $process.Kill($true)
@@ -70,6 +77,15 @@ $successReport = Invoke-FontProbe -SvgPath $emptySvgPath -OutputPath $successOut
 if ($successReport -notmatch '^outcome=success\npngBytes=\d+\nrequestedFontPrograms=0$' -or -not (Test-Path -LiteralPath $successOutput))
 {
     throw 'The font probe did not preserve lazy program acquisition for an empty SVG.'
+}
+
+$stdinOutput = Join-Path $runDirectory 'stdin-success.png'
+$stdinPayload = [Text.UTF8Encoding]::new($false).GetBytes('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"/>')
+$stdinBytes = [byte[]](([byte[]] @(0xEF, 0xBB, 0xBF)) + $stdinPayload)
+$stdinReport = Invoke-FontProbe -SvgPath '-' -OutputPath $stdinOutput -ExpectedExitCode 0 -StandardInput $stdinBytes
+if ($stdinReport -notmatch '^outcome=success\npngBytes=\d+\nrequestedFontPrograms=0$' -or -not (Test-Path -LiteralPath $stdinOutput))
+{
+    throw 'The font probe did not preserve standard-input SVG bytes through conversion.'
 }
 
 $httpManifest = [Text.UTF8Encoding]::new($false).GetBytes('{"packId":"synthetic-http-pack","files":[{"relativePath":"synthetic.ttf","byteSize":1,"sha256":"0000000000000000000000000000000000000000000000000000000000000000"}],"families":[{"requestedFamily":"Synthetic","resolvedFamily":"Synthetic","relativeFontFile":"synthetic.ttf"}]}')

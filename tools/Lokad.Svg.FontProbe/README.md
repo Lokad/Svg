@@ -23,6 +23,10 @@ The source URI must be absolute HTTP(S), end at a directory, and have no query o
 fragment. The host has no credential, endpoint or platform discovery; configure
 authentication outside the tracked command and source code.
 
+For either source, use `--svg -` to read raw SVG bytes from standard input. This
+path does not seek, decode, strip a BOM or pre-read a length; it stops before
+retaining data above the normal SVG input limit.
+
 The manifest is read under 1 MiB. A selected program is read only when SVG
 preparation requests it, and is capped at the smaller of its declared byte size
 and 64 MiB before the library's separate 32 MiB selected-program cap applies.
@@ -32,7 +36,7 @@ HTTP programs coalesce concurrent reads and remain in a shared cache capped at
 is not retained by that cache.
 The focused `Lokad.Svg.FontProbe.Tests` project covers concurrent coalescing/cache
 reuse, cache-cap bypass, transient retry and cancellation recovery with synthetic
-transport.
+transport, plus exact nonseekable-stream copies and growth-time input denial.
 The host writes PNG output through `SvgPreparedDocument`, so discovery,
 verification, scene preparation, rasterization and encoding share its limits.
 The supplied output path is created or truncated; the local caller owns cleanup

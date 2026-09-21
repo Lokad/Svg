@@ -77,14 +77,17 @@ An explicit HTTP(S) source root can replace the local manifest/directory pair:
 dotnet run -c Release --project tools/Lokad.Svg.FontProbe -- --source-uri <https://source-root/> --pack-id <pack-id> --svg <input.svg> --output <output.png>
 ```
 
+Pass `--svg -` to read an SVG byte stream from standard input. The probe preserves
+the supplied bytes, including a BOM, and bounds reads as data arrives.
+
 The probe has no built-in font source, pack identifier, credentials or network
 configuration. Its [tool documentation](tools/Lokad.Svg.FontProbe/README.md)
 describes its bounded local byte source and private-artifact handling. Its public
 synthetic smoke check needs only a Release build; it covers local source laziness,
-loopback HTTP manifest acquisition and one transient program-read retry, and writes
-caller-selected results (use the ignored `artifacts/` tree). The focused test
-project also verifies HTTP-source concurrent coalescing/cache reuse and recovery
-after cancellation:
+BOM-preserving standard input, loopback HTTP manifest acquisition and one transient
+program-read retry, and writes caller-selected results (use the ignored `artifacts/`
+tree). The focused test project also verifies HTTP-source concurrent
+coalescing/cache reuse and recovery after cancellation:
 
 ```powershell
 tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe-smoke

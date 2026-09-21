@@ -7,6 +7,25 @@ namespace Lokad.Svg.FontProbe.Tests;
 public sealed class HttpFontProgramSourceProviderTests
 {
     [Fact]
+    public async Task Copies_nonseekable_svg_input_byte_for_byte()
+    {
+        byte[] expected = [0xEF, 0xBB, 0xBF, (byte)'<', (byte)'s', (byte)'v', (byte)'g', (byte)'/', (byte)'>'];
+        await using var source = new ChunkedReadStream(expected, 2);
+
+        byte[] actual = await Program.ReadBoundedStreamAsync(source, expected.Length, CancellationToken.None);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public async Task Rejects_nonseekable_svg_input_that_grows_past_its_limit()
+    {
+        await using var source = new ChunkedReadStream([1, 2, 3], 1);
+
+        await Assert.ThrowsAsync<Program.HostSourceException>(async () => await Program.ReadBoundedStreamAsync(source, 2, CancellationToken.None));
+    }
+
+    [Fact]
     public async Task Coalesces_concurrent_reads_and_reuses_the_bounded_cache()
     {
         var handler = new BlockingSuccessHandler([1, 2, 3]);
@@ -153,4 +172,37 @@ public sealed class HttpFontProgramSourceProviderTests
 
     private static HttpResponseMessage CreateSuccess(byte[] bytes)
         => new(HttpStatusCode.OK) { Content = new ByteArrayContent(bytes) };
+
+    private sealed class ChunkedReadStream(byte[] bytes, int maximumChunkBytes) : Stream
+    {
+        private readonly byte[] _bytes = bytes;
+        private readonly int _maximumChunkBytes = maximumChunkBytes;
+        private int _offset;
+
+        public override bool CanRead => true;
+        public override bool CanSeek => false;
+        public override bool CanWrite => false;
+        public override long Length => throw new NotSupportedException();
+        public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+
+        public override void Flush() => throw new NotSupportedException();
+
+        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+        public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (_offset == _bytes.Length) return ValueTask.FromResult(0);
+            int count = Math.Min(Math.Min(buffer.Length, _maximumChunkBytes), _bytes.Length - _offset);
+            _bytes.AsSpan(_offset, count).CopyTo(buffer.Span);
+            _offset += count;
+            return ValueTask.FromResult(count);
+        }
+
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
+        public override void SetLength(long value) => throw new NotSupportedException();
+
+        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+    }
 }

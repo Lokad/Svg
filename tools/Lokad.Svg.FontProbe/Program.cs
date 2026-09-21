@@ -14,13 +14,13 @@ internal static class Program
     {
         if (!TryParseArguments(arguments, out ProbeOptions? options) || options is null)
         {
-            Console.Error.WriteLine("Usage: Lokad.Svg.FontProbe (--manifest <manifest.json> --font-root <directory> | --source-uri <https://source-root/>) --pack-id <pack-id> --svg <input.svg> --output <output.png>");
+            Console.Error.WriteLine("Usage: Lokad.Svg.FontProbe (--manifest <manifest.json> --font-root <directory> | --source-uri <https://source-root/>) --pack-id <pack-id> --svg <input.svg|-> --output <output.png>");
             return 2;
         }
 
         try
         {
-            byte[] svg = await ReadLocalFileAsync(options.SvgPath, SvgRenderLimits.Default.MaximumInputBytes, CancellationToken.None).ConfigureAwait(false);
+            byte[] svg = await ReadSvgInputAsync(options.SvgPath, SvgRenderLimits.Default.MaximumInputBytes, CancellationToken.None).ConfigureAwait(false);
             byte[] manifest;
             IProbeFontProgramSourceProvider provider;
             using HttpClient? httpClient = options.SourceUri is null ? null : new HttpClient();
@@ -126,21 +126,7 @@ internal static class Program
         try
         {
             await using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 64 * 1024, FileOptions.Asynchronous | FileOptions.SequentialScan);
-            long length = stream.Length;
-            if (length < 0 || length > maximumBytes || length > int.MaxValue) throw new HostSourceException();
-
-            var bytes = new byte[checked((int)length)];
-            int offset = 0;
-            while (offset < bytes.Length)
-            {
-                int read = await stream.ReadAsync(bytes.AsMemory(offset), cancellationToken).ConfigureAwait(false);
-                if (read == 0) throw new HostSourceException();
-                offset += read;
-            }
-
-            var extra = new byte[1];
-            if (await stream.ReadAsync(extra, cancellationToken).ConfigureAwait(false) != 0) throw new HostSourceException();
-            return bytes;
+            return await ReadBoundedStreamAsync(stream, maximumBytes, cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
@@ -165,6 +151,26 @@ internal static class Program
         catch (NotSupportedException)
         {
             throw new HostSourceException();
+        }
+    }
+
+    private static ValueTask<byte[]> ReadSvgInputAsync(string path, long maximumBytes, CancellationToken cancellationToken)
+        => path == "-" ? ReadBoundedStreamAsync(Console.OpenStandardInput(), maximumBytes, cancellationToken) : ReadLocalFileAsync(path, maximumBytes, cancellationToken);
+
+    /// <summary>Copies one caller-selected SVG byte stream without seeking, decoding or retaining bytes beyond its configured limit.</summary>
+    internal static async ValueTask<byte[]> ReadBoundedStreamAsync(Stream source, long maximumBytes, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        if (!source.CanRead) throw new ArgumentException("SVG input must be readable.", nameof(source));
+        if (maximumBytes <= 0 || maximumBytes > int.MaxValue) throw new ArgumentOutOfRangeException(nameof(maximumBytes));
+        using var destination = new MemoryStream();
+        var chunk = new byte[64 * 1024];
+        while (true)
+        {
+            int read = await source.ReadAsync(chunk, cancellationToken).ConfigureAwait(false);
+            if (read == 0) return destination.ToArray();
+            if (read > maximumBytes - destination.Length) throw new HostSourceException();
+            destination.Write(chunk, 0, read);
         }
     }
 
@@ -388,5 +394,5 @@ internal static class Program
         }
     }
 
-    private sealed class HostSourceException : Exception;
+    internal sealed class HostSourceException : Exception;
 }
