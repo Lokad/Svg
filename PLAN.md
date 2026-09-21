@@ -164,6 +164,15 @@ of every phase in the complete prepared operation.
   not this BCL workspace policy. Reserve the same conservative allowance before
   either reader, or explicitly specify and instrument a justified different
   preparation contract. Keep discovery and later scene peaks distinguishable.
+
+**Repair (`3fcb287`):** discovery reserves the same conservative allowance via
+`SvgRootParser.GetXmlReaderWorkspaceBytes` before either reader is created. A
+budget of one byte now rejects a self-closing 1x1 SVG identically through
+discovery, raw and prepared paths with zero provider calls or retained ledger
+bytes; the direct-text-chunk test is recalibrated to the exact workspace
+boundary with a denied-workspace companion. The full suite (709 + 6 + 83) and
+all 21 probe scenarios pass. Remaining R04 work: PNG growth-copy and catalog
+membership charges plus the raw contour-inspection contract.
 - The raw `OpenTypeFont.GetSimpleGlyphContours(..., workCounter, token)` inspection
   route drops both arguments when calling the unbudgeted `BuildQuadraticContours`
   overload. The production budgeted decoder does propagate them. Do not use raw
