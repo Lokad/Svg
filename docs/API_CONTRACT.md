@@ -63,17 +63,19 @@ storage I/O. Its request-based overload resolves all explicit family/style reque
 preflights distinct declared byte sizes and same-hash consistency, then selectively
 asks a provider for each distinct program. Its
 SVG-driven overload accepts only an SVG-namespaced root and discovers inherited
-single-family direct-`text` attributes and inline-style properties (`font-family`,
-`font-weight`, `font-style`) within either default limits or caller-supplied input,
-XML depth, attribute, node and work limits through metric validation and program integrity verification before doing the same; CSS family lists, stylesheet font properties and
-text-run retention remain unsupported. A snapshot can already be supplied through render
+single-family direct-`text` presentation attributes, admitted root-stylesheet
+properties, and inline-style properties (`font-family`, `font-weight`,
+`font-style`, `font-size`) within either default limits or caller-supplied input,
+XML depth, attribute, node and work limits through metric validation and program
+integrity verification before doing the same; CSS family lists and text-run
+retention remain unsupported. A snapshot can already be supplied through render
 options. The renderer's experimental direct-text path accepts only direct
-single-face attributes and text/CDATA content; it does not make SVG text a
-supported feature and does not accept spans, stylesheet font declarations,
-positioning lists or general shaping. Its direct or inline `style` font subset is
-`font-family`, `font-weight`, `font-style` and `font-size`; admitted scalar
-positioning is `x`, `y`, `dx`, `dy` and `text-anchor` (`start`, `middle`, `end`),
-with a bounded `id` retained only for font diagnostics.
+single-face text/CDATA content; it does not make SVG text a supported feature and
+does not accept spans, positioning lists or general shaping. Its presentation,
+admitted root-stylesheet and inline `style` font subset is `font-family`,
+`font-weight`, `font-style` and `font-size`; admitted scalar positioning is `x`,
+`y`, `dx`, `dy` and `text-anchor` (`start`, `middle`, `end`), with a bounded `id`
+retained only for font diagnostics.
 Its direct text content is limited to 32,768 UTF-16 characters across one
 conversion before layout; subtree reader nodes and cmap/advance lookup traversal
 consume the conversion's parser-work limit. Positioned glyph storage is reserved from the conversion's geometry budget
