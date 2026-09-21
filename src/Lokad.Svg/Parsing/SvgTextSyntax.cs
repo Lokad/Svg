@@ -183,35 +183,73 @@ internal static class SvgTextSyntax
         return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dy") ?? "0"), anchor, reader.GetAttribute("id") ?? string.Empty);
     }
 
-    /// <summary>Parses the direct-text-only XML whitespace mode after the attribute policy admits the XML attribute.</summary>
-    internal static SvgTextWhitespaceMode ParseWhitespaceMode(XmlReader reader)
+    /// <summary>Resolves CSS and XML direct-text whitespace declarations over the inherited CSS mode.</summary>
+    internal static SvgTextWhitespaceMode ParseWhitespaceMode(XmlReader reader, string? whiteSpace, SvgTextWhitespaceMode inherited)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string? value = reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace");
-        if (value is null || value == "default") return SvgTextWhitespaceMode.Default;
+        SvgTextWhitespaceMode xmlMode = value is null ? inherited : ParseXmlWhitespaceMode(value);
+        return whiteSpace is null ? xmlMode : ParseCssWhitespaceMode(whiteSpace);
+    }
+
+    /// <summary>Parses the direct-text-only XML whitespace mode with default CSS inheritance.</summary>
+    internal static SvgTextWhitespaceMode ParseWhitespaceMode(XmlReader reader)
+        => ParseWhitespaceMode(reader, null, SvgTextWhitespaceMode.Default);
+
+    /// <summary>Parses the bounded CSS whitespace values shared by direct text and its inheriting containers.</summary>
+    internal static SvgTextWhitespaceMode ParseCssWhitespaceMode(string value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        string token = value.Trim();
+        if (token.Equals("normal", StringComparison.OrdinalIgnoreCase)) return SvgTextWhitespaceMode.Default;
+        if (token.Equals("pre", StringComparison.OrdinalIgnoreCase)) return SvgTextWhitespaceMode.Preserve;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal and pre CSS white-space values are supported for direct text.");
+    }
+
+    private static SvgTextWhitespaceMode ParseXmlWhitespaceMode(string value)
+    {
+        if (value == "default") return SvgTextWhitespaceMode.Default;
         if (value == "preserve") return SvgTextWhitespaceMode.Preserve;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only default and preserve xml:space values are supported for direct text.");
     }
 
-    /// <summary>Recognizes the nested direct-text xml:space overrides currently admitted.</summary>
-    internal static bool TryParseTspanWhitespaceMode(XmlReader reader, SvgTextWhitespaceMode inherited, out SvgTextWhitespaceMode mode)
+    /// <summary>Recognizes nested whitespace-only tspan declarations and resolves them over the parent mode.</summary>
+    internal static bool TryParseTspanWhitespaceMode(XmlReader reader, SvgTextWhitespaceMode inherited, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgTextWhitespaceMode mode)
     {
         ArgumentNullException.ThrowIfNull(reader);
+        ArgumentNullException.ThrowIfNull(workCounter);
         mode = inherited;
+        string? xmlSpace = null;
+        string? whiteSpace = null;
         if (!reader.HasAttributes) return true;
-        if (reader.AttributeCount != 1) return false;
-        string? value = reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace");
-        if (value == "default")
+        while (reader.MoveToNextAttribute())
         {
-            mode = SvgTextWhitespaceMode.Default;
-            return true;
+            workCounter.Consume(cancellationToken);
+            if (reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space")
+            {
+                if (xmlSpace is not null) { reader.MoveToElement(); mode = inherited; return false; }
+                xmlSpace = reader.Value;
+                continue;
+            }
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "style")
+            {
+                if (whiteSpace is not null) { reader.MoveToElement(); mode = inherited; return false; }
+                InlineStyle style = SvgInlineStyleParser.Parse(reader.Value, workCounter, cancellationToken, true);
+                if (!IsWhitespaceOnly(style)) { reader.MoveToElement(); mode = inherited; return false; }
+                whiteSpace = style.WhiteSpace;
+                continue;
+            }
+            reader.MoveToElement();
+            mode = inherited;
+            return false;
         }
-        if (value == "preserve")
-        {
-            mode = SvgTextWhitespaceMode.Preserve;
-            return true;
-        }
-        return false;
+        reader.MoveToElement();
+        mode = xmlSpace is null ? inherited : ParseXmlWhitespaceMode(xmlSpace);
+        if (whiteSpace is not null) mode = ParseCssWhitespaceMode(whiteSpace);
+        return true;
+
+        static bool IsWhitespaceOnly(InlineStyle style)
+            => style.WhiteSpace is not null && style.Color is null && style.Fill is null && style.FillOpacity is null && style.Stroke is null && style.Display is null && style.Visibility is null && style.Opacity is null && style.FillRule is null && style.TextFont.Family is null && style.TextFont.Weight is null && style.TextFont.Style is null && style.TextFont.Size is null;
     }
 
     private static SvgTextAnchor ParseAnchor(string value)

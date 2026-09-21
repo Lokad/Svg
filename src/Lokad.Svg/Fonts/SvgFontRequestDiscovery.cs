@@ -73,7 +73,7 @@ internal static class SvgFontRequestDiscovery
                     bool insideDirectText = activeDirectTextCandidate is not null;
                     SvgTextWhitespaceMode inheritedWhitespaceMode = directTextWhitespaceModes.Count == 0 ? SvgTextWhitespaceMode.Default : directTextWhitespaceModes.Peek();
                     SvgTextWhitespaceMode childWhitespaceMode = inheritedWhitespaceMode;
-                    bool admittedTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanWhitespaceMode(reader, inheritedWhitespaceMode, out childWhitespaceMode);
+                    bool admittedTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanWhitespaceMode(reader, inheritedWhitespaceMode, workCounter, cancellationToken, out childWhitespaceMode);
                     if (!admittedTextSpan && activeDirectTextCandidate is not null) activeDirectTextCandidate.HasChildElement = true;
                     bool parentAllowsText = textEligibleChildren.Count == 0 || textEligibleChildren.Peek();
                     bool rootElement = reader.Depth == rootDepth;
@@ -123,13 +123,15 @@ internal static class SvgFontRequestDiscovery
                         else if (reader.LocalName == "symbol") SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
                     }
                     InlineStyle styleSheet = isSvgElement && reader.LocalName is ("g" or "a" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
-                    if (isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("g" or "a" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken);
+                    SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
+                    string? specifiedWhiteSpace = null;
+                    if (isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("g" or "a" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken, out specifiedWhiteSpace);
                     if (inertDepth < 0 && isSvgElement && reader.LocalName is ("defs" or "title" or "desc" or "metadata") && !reader.IsEmptyElement) inertDepth = reader.Depth;
                     SvgTextWhitespaceMode whitespaceMode = SvgTextWhitespaceMode.Default;
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null)
                     {
                         SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
-                        whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader);
+                        whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, specifiedWhiteSpace, inheritedTextWhitespaceMode);
                     }
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
                     TextRequestCandidate? candidate = !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.HasFill && style.Text.Family is string family
@@ -229,11 +231,12 @@ internal static class SvgFontRequestDiscovery
         return hasRenderableText;
     }
 
-    private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken, out string? specifiedWhiteSpace)
     {
         InlineStyle inlineStyle = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inlineStyle, styleSheet);
-        SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, inlineStyle.TextFont.Overlay(styleSheet.TextFont));
+        specifiedWhiteSpace = inlineStyle.WhiteSpace ?? styleSheet.WhiteSpace;
+        SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, inlineStyle.TextFont.Overlay(styleSheet.TextFont), specifiedWhiteSpace);
         AxisTransform transform = inherited.Transform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
         if (reader.LocalName is "g" or "a")
         {

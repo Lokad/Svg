@@ -39,12 +39,12 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     {
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), WorkCounter, CancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, StyleSheet);
-        return new SvgResolvedDirectTextElement(new SvgResolvedPaintableElement(style, ResolveTransform(reader), ResolvePresentation(style, false)), inline.TextFont.Overlay(StyleSheet.TextFont));
+        return new SvgResolvedDirectTextElement(new SvgResolvedPaintableElement(style, ResolveTransform(reader), ResolvePresentation(style, false)), inline.TextFont.Overlay(StyleSheet.TextFont), inline.WhiteSpace ?? StyleSheet.WhiteSpace);
     }
 }
 
 /// <summary>Pairs one computed style with the inherited transform and resolved presentation used by a shape lowerer.</summary>
 internal readonly record struct SvgResolvedPaintableElement(SvgComputedStyle Style, AxisTransform Transform, SvgResolvedShapePresentation Presentation);
 
-/// <summary>Pairs direct-text paint resolution with inline font declarations from its single style scan.</summary>
-internal readonly record struct SvgResolvedDirectTextElement(SvgResolvedPaintableElement PaintableElement, SvgTextInlineFontProperties InlineFont);
+/// <summary>Pairs direct-text paint resolution with text declarations from its single style scan.</summary>
+internal readonly record struct SvgResolvedDirectTextElement(SvgResolvedPaintableElement PaintableElement, SvgTextInlineFontProperties InlineFont, string? WhiteSpace);

@@ -1778,6 +1778,27 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Direct_text_honors_bounded_css_whitespace_declarations()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        ReadOnlyMemory<byte> expectedPreserved = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'>\t</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> expectedDefault = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'/></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        ReadOnlyMemory<byte> inline = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' style='white-space: pre'>\t</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> inherited = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g style='white-space: pre'><text font-family='Example' font-size='100' y='3'>\t</text></g></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> stylesheet = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>g { white-space: pre; }</style><g><text font-family='Example' font-size='100' y='3'>\t</text></g></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> span = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan style='white-space: pre'>\t</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> cssOverride = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve' style='white-space: normal'>\t</text></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        Assert.Equal(expectedPreserved.ToArray(), inline.ToArray());
+        Assert.Equal(expectedPreserved.ToArray(), inherited.ToArray());
+        Assert.Equal(expectedPreserved.ToArray(), stylesheet.ToArray());
+        Assert.Equal(expectedPreserved.ToArray(), span.ToArray());
+        Assert.Equal(expectedDefault.ToArray(), cssOverride.ToArray());
+    }
+
+    [Fact]
     public async Task Direct_text_spans_inherit_and_override_admitted_xml_space_modes()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);

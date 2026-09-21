@@ -13,6 +13,6 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
         SvgRootSyntax syntax = SvgRootSyntax.Parse(reader);
-        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, AxisTransform.Identity), SvgTextInheritance.Resolve(reader, SvgInheritedTextStyle.Default, inline.TextFont), reader.GetAttribute("id"), presentation.Opacity, syntax.Width, syntax.Height, syntax.ViewBox);
+        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, AxisTransform.Identity), SvgTextInheritance.Resolve(reader, SvgInheritedTextStyle.Default, inline.TextFont, inline.WhiteSpace), reader.GetAttribute("id"), presentation.Opacity, syntax.Width, syntax.Height, syntax.ViewBox);
     }
 }

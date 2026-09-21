@@ -28,6 +28,17 @@ public sealed class SvgStyleSheetTests
     }
 
     [Fact]
+    public void Cascades_css_whitespace_by_specificity_then_source_order()
+    {
+        SvgStyleCascade cascade = new();
+        cascade.Apply(new InlineStyle(null, null, null, null, null, null, null, null) { WhiteSpace = "pre" }, 1);
+        cascade.Apply(new InlineStyle(null, null, null, null, null, null, null, null) { WhiteSpace = "normal" }, 0);
+        cascade.Apply(new InlineStyle(null, null, null, null, null, null, null, null) { WhiteSpace = "normal" }, 1);
+
+        Assert.Equal("normal", cascade.ToInlineStyle().WhiteSpace);
+    }
+
+    [Fact]
     public void Checks_stylesheet_read_work_before_allocating_text_storage()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<style>x</style>"));

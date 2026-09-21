@@ -8,8 +8,9 @@ public sealed class SvgTextSyntaxTests
     [Fact]
     public void Inherited_text_style_requires_a_positive_weight_and_font_size()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 0, false, 16));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 0, false, 16, SvgTextWhitespaceMode.Default));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 0, SvgTextWhitespaceMode.Default));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 16, (SvgTextWhitespaceMode)2));
     }
 
     [Fact]
@@ -163,17 +164,42 @@ public sealed class SvgTextSyntaxTests
     {
         using XmlReader ancestorReader = XmlReader.Create(new StringReader("<g font-family='Ancestor' font-weight='700' font-style='italic' font-size='12'/>"));
         ancestorReader.Read();
-        SvgInheritedTextStyle ancestor = SvgTextInheritance.Resolve(ancestorReader, SvgInheritedTextStyle.Default, default);
+        SvgInheritedTextStyle ancestor = SvgTextInheritance.Resolve(ancestorReader, SvgInheritedTextStyle.Default, default, null);
         using XmlReader childReader = XmlReader.Create(new StringReader("<text font-family='Attribute' font-weight='400' style='font-family: Inline; font-size: 14'/>"));
         childReader.Read();
 
         SvgTextInlineFontProperties inline = SvgInlineStyleParser.Parse(childReader.GetAttribute("style"), new ParserWorkCounter(10), CancellationToken.None, true).TextFont;
-        SvgInheritedTextStyle resolved = SvgTextInheritance.Resolve(childReader, ancestor, inline);
+        SvgInheritedTextStyle resolved = SvgTextInheritance.Resolve(childReader, ancestor, inline, null);
 
         Assert.Equal("Inline", resolved.Family);
         Assert.Equal(400, resolved.Weight);
         Assert.True(resolved.Italic);
         Assert.Equal(14, resolved.FontSize);
+    }
+
+    [Fact]
+    public void Resolves_bounded_css_whitespace_over_xml_and_inherited_modes()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<text xml:space='preserve'/>"));
+        reader.Read();
+
+        Assert.Equal(SvgTextWhitespaceMode.Default, SvgTextSyntax.ParseWhitespaceMode(reader, "normal", SvgTextWhitespaceMode.Preserve));
+        Assert.Equal(SvgTextWhitespaceMode.Preserve, SvgTextSyntax.ParseWhitespaceMode(reader, "pre", SvgTextWhitespaceMode.Default));
+        Assert.Equal(SvgTextWhitespaceMode.Preserve, SvgTextSyntax.ParseWhitespaceMode(reader, null, SvgTextWhitespaceMode.Default));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgTextSyntax.ParseWhitespaceMode(reader, "pre-wrap", SvgTextWhitespaceMode.Default)).ErrorCode);
+    }
+
+    [Fact]
+    public void Admits_only_whitespace_tspan_styles()
+    {
+        using XmlReader accepted = XmlReader.Create(new StringReader("<tspan xml:space='preserve' style='white-space: normal'/>"));
+        accepted.Read();
+        using XmlReader rejected = XmlReader.Create(new StringReader("<tspan style='font-size: 12'/>"));
+        rejected.Read();
+
+        Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(accepted, SvgTextWhitespaceMode.Preserve, new ParserWorkCounter(100), CancellationToken.None, out SvgTextWhitespaceMode mode));
+        Assert.Equal(SvgTextWhitespaceMode.Default, mode);
+        Assert.False(SvgTextSyntax.TryParseTspanWhitespaceMode(rejected, SvgTextWhitespaceMode.Default, new ParserWorkCounter(100), CancellationToken.None, out _));
     }
 
     [Fact]

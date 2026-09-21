@@ -61,7 +61,7 @@ internal static class SvgRenderedLeafParser
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
                 if (textElement.Style.FillRule is not null && !textElement.Style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle);
-                SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader);
+                SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
                 using BudgetedText text = ReadDirectTextContent(reader, whitespaceMode, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, out int sourceCharacterCount, out int childNodeCount);
                 state.TextCharacterCount += sourceCharacterCount;
                 state.NodeCount += childNodeCount;
@@ -138,7 +138,7 @@ internal static class SvgRenderedLeafParser
                     childNodeCount++;
                     if (subtree.AttributeCount > maximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
                     SvgTextWhitespaceMode inheritedWhitespaceMode = whitespaceNormalizers[^1].Mode;
-                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan" || !SvgTextSyntax.TryParseTspanWhitespaceMode(subtree, inheritedWhitespaceMode, out SvgTextWhitespaceMode childWhitespaceMode)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only attribute-free or xml:space tspan text children are implemented.");
+                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan" || !SvgTextSyntax.TryParseTspanWhitespaceMode(subtree, inheritedWhitespaceMode, workCounter, cancellationToken, out SvgTextWhitespaceMode childWhitespaceMode)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace-only tspan text children are implemented.");
                     if (!subtree.IsEmptyElement) whitespaceNormalizers.Add(new SvgTextWhitespaceNormalizer(childWhitespaceMode));
                     continue;
                 }
