@@ -5,3 +5,5 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Lokad.Svg.Tests")]
 [assembly: InternalsVisibleTo("Lokad.Svg.VisualTests")]
 [assembly: InternalsVisibleTo("Lokad.Svg.MemoryProbe")]
+// Lets benchmarks measure internal discovery and integrity phases without duplicating synthetic font fixtures.
+[assembly: InternalsVisibleTo("Lokad.Svg.Benchmarks")]
