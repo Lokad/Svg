@@ -436,10 +436,13 @@ traffic, so no speedup is claimed. Digest bytes (`46b3943`): integrity hashing r
 instead of a fresh hex string per verification, with manifest bytes parsed once at
 catalog load; comparisons, validation, cancellation and diagnostics unchanged. Full
 suite green including mismatch cases; micro-benchmarks show about 150 bytes saved per
-verification with hashing time within noise. Remaining:
-parse immediate-only inline values into typed
-ephemeral fields where lifetime permits, cache stable diagnostics, and represent a
-validated SHA-256 as a domain value rather than repeatedly formatting text. Any
+verification with hashing time within noise. Measured dispositions closing R19:
+a scratch variant dropping the inline
+style attribute from all 64 benchmark rects attributes 5.53 KB and 18 us to the whole
+inline-style path, so ephemeral typed fields cannot resolve more than that at high
+churn across the cascade; not pursued. StableId and path:index diagnostics are cold
+(only tests and tools read them), so caching them is churn without evidence; not pursued.
+R19 closes on measured baselines plus the short-circuit and digest-bytes repairs. Any
 hash comparison must retain the present validation, cancellation checkpoints and
 diagnostic redaction. Do not introduce an intern table or process-wide pool merely
 to hide allocation traffic.
