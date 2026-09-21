@@ -10,9 +10,13 @@ internal static class SvgTextLimits
     internal const int MaximumCharacters = 32_768;
 }
 
-/// <summary>Normalizes default direct-text whitespace while preserving the source character limit across reader chunks.</summary>
+/// <summary>Specifies the admitted XML whitespace treatment for one direct text run.</summary>
+internal enum SvgTextWhitespaceMode { Default, Preserve }
+
+/// <summary>Normalizes direct-text whitespace while preserving the source character limit across reader chunks.</summary>
 internal struct SvgTextWhitespaceNormalizer
 {
+    private readonly SvgTextWhitespaceMode _mode;
     private bool _hasText;
     private bool _hasPendingWhitespace;
     private int _sourceCharacterCount;
@@ -20,7 +24,10 @@ internal struct SvgTextWhitespaceNormalizer
     /// <summary>Gets the number of source UTF-16 characters consumed before normalization.</summary>
     internal int SourceCharacterCount => _sourceCharacterCount;
 
-    /// <summary>Appends whitespace-normalized text without materializing an unbounded intermediate value.</summary>
+    /// <summary>Initializes a normalizer for one direct text element's admitted XML whitespace mode.</summary>
+    internal SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode mode) => _mode = mode;
+
+    /// <summary>Appends direct text according to the configured XML whitespace mode without materializing an unbounded intermediate value.</summary>
     internal void Append(ReadOnlySpan<char> value, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(output);
@@ -31,6 +38,11 @@ internal struct SvgTextWhitespaceNormalizer
         {
             workCounter.Consume(cancellationToken);
             int count = Math.Min(ParserWorkCounter.ByteCheckpointSize, value.Length - offset);
+            if (_mode == SvgTextWhitespaceMode.Preserve)
+            {
+                output.Append(value.Slice(offset, count), maximumSourceCharacters, workCounter, cancellationToken);
+                continue;
+            }
             AppendChunk(value.Slice(offset, count), output, maximumSourceCharacters, workCounter, cancellationToken);
         }
     }
@@ -68,6 +80,18 @@ internal struct SvgTextWhitespaceNormalizer
             workCounter.Consume(cancellationToken);
             int count = Math.Min(ParserWorkCounter.ByteCheckpointSize, value.Length - offset);
             foreach (char character in value.Slice(offset, count)) if (!IsCollapsible(character)) return true;
+        }
+        return false;
+    }
+
+    /// <summary>Observes one preserve-mode discovery chunk and reports whether it has text to lay out.</summary>
+    internal static bool HasText(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(workCounter);
+        for (int offset = 0; offset < value.Length; offset += ParserWorkCounter.ByteCheckpointSize)
+        {
+            workCounter.Consume(cancellationToken);
+            if (Math.Min(ParserWorkCounter.ByteCheckpointSize, value.Length - offset) != 0) return true;
         }
         return false;
     }
@@ -110,6 +134,16 @@ internal static class SvgTextSyntax
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor") ?? "start");
         return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dy") ?? "0"), anchor, reader.GetAttribute("id") ?? string.Empty);
+    }
+
+    /// <summary>Parses the direct-text-only XML whitespace mode after the attribute policy admits the XML attribute.</summary>
+    internal static SvgTextWhitespaceMode ParseWhitespaceMode(XmlReader reader)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        string? value = reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace");
+        if (value is null || value == "default") return SvgTextWhitespaceMode.Default;
+        if (value == "preserve") return SvgTextWhitespaceMode.Preserve;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only default and preserve xml:space values are supported for direct text.");
     }
 
     private static SvgTextAnchor ParseAnchor(string value)

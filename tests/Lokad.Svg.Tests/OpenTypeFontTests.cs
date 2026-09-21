@@ -1671,6 +1671,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Direct_text_honors_admitted_xml_space_modes()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        ReadOnlyMemory<byte> collapsed = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='default'> </text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> preserved = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'> </text></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        Assert.Equal(0, DecodeAlpha(collapsed, 1, 1));
+        Assert.True(DecodeAlpha(preserved, 1, 1) > 0);
+    }
+
+    [Fact]
     public async Task Converts_direct_text_and_its_immediate_shape_sibling_through_every_public_output_form()
     {
         byte[] font = CreateTriangleFont();
@@ -2355,6 +2368,17 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Rejects_invalid_xml_space_before_direct_text_layout()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='collapse'>A</text></svg>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
     public async Task Concatenates_nested_attribute_free_direct_text_spans()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
@@ -2521,6 +2545,18 @@ public sealed class OpenTypeFontTests
         font[glyph.Offset + 15] = 0x33;
         font[glyph.Offset + 16] = 0x27;
         for (int offset = glyph.Offset + 17; offset <= glyph.Offset + 21; offset++) font[offset] = 10;
+        return font;
+    }
+
+    private static byte[] CreateTriangleSpaceFont()
+    {
+        byte[] font = CreateTriangleFont();
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+        OpenTypeTableRange cmap = Assert.IsType<OpenTypeTableRange>(metrics.Cmap);
+        int subtable = cmap.Offset + 12;
+        WriteUInt16(font, subtable + 14, 32);
+        WriteUInt16(font, subtable + 20, 32);
+        WriteInt16(font, subtable + 24, -31);
         return font;
     }
 

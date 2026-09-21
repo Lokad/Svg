@@ -131,12 +131,17 @@ internal static class SvgFontRequestDiscovery
                     InlineStyle styleSheet = isSvgElement && reader.LocalName is ("g" or "a" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
                     if (isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("g" or "a" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken);
                     if (inertDepth < 0 && isSvgElement && reader.LocalName is ("defs" or "title" or "desc" or "metadata") && !reader.IsEmptyElement) inertDepth = reader.Depth;
-                    if (inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null) SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
+                    SvgTextWhitespaceMode whitespaceMode = SvgTextWhitespaceMode.Default;
+                    if (inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null)
+                    {
+                        SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
+                        whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader);
+                    }
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
                     TextRequestCandidate? candidate = attributeFreeDirectTextSpan
                         ? activeDirectTextCandidate
                         : !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.HasFill && style.Text.Family is string family
-                            ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic))
+                            ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic), whitespaceMode)
                             : null;
                     bool ownsDirectTextCandidate = !attributeFreeDirectTextSpan;
                     if (reader.IsEmptyElement)
@@ -169,7 +174,7 @@ internal static class SvgFontRequestDiscovery
                 {
                     if (directText.TryPeek(out TextRequestCandidate? candidate) && candidate is not null)
                     {
-                        candidate.HasNormalizedTextContent |= HasNonWhitespaceText(reader, GetTextChunk(), workCounter, cancellationToken);
+                        candidate.HasRenderableTextContent |= HasRenderableText(reader, GetTextChunk(), candidate.WhitespaceMode, workCounter, cancellationToken);
                     }
                 }
             }
@@ -203,23 +208,25 @@ internal static class SvgFontRequestDiscovery
 
     private static void AddCandidate(TextRequestCandidate? candidate, List<SvgFontFaceRequest> requests, HashSet<TextRequestKey> seen)
     {
-        if (candidate is null || candidate.HasChildElement || !candidate.HasNormalizedTextContent) return;
+        if (candidate is null || candidate.HasChildElement || !candidate.HasRenderableTextContent) return;
         SvgFontFaceRequest request = candidate.Request;
         if (!seen.Add(new TextRequestKey(request.Family, request.Weight, request.Italic))) return;
         if (requests.Count == MaximumRequests) throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG text font request count exceeds the preparation limit.");
         requests.Add(request);
     }
 
-    private static bool HasNonWhitespaceText(XmlReader reader, char[] chunk, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        bool hasNonWhitespaceText = false;
+        bool hasRenderableText = false;
         int read;
         do
         {
             read = reader.ReadValueChunk(chunk, 0, chunk.Length);
-            if (read != 0) hasNonWhitespaceText |= SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken);
+            if (read != 0) hasRenderableText |= whitespaceMode == SvgTextWhitespaceMode.Preserve
+                ? SvgTextWhitespaceNormalizer.HasText(chunk.AsSpan(0, read), workCounter, cancellationToken)
+                : SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken);
         } while (read != 0);
-        return hasNonWhitespaceText;
+        return hasRenderableText;
     }
 
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -247,13 +254,15 @@ internal static class SvgFontRequestDiscovery
 
     private readonly record struct TextRequestKey(string Family, int Weight, bool Italic);
 
-    private sealed class TextRequestCandidate(SvgFontFaceRequest request)
+    private sealed class TextRequestCandidate(SvgFontFaceRequest request, SvgTextWhitespaceMode whitespaceMode)
     {
         internal SvgFontFaceRequest Request { get; } = request;
 
+        internal SvgTextWhitespaceMode WhitespaceMode { get; } = whitespaceMode;
+
         internal bool HasChildElement { get; set; }
 
-        internal bool HasNormalizedTextContent { get; set; }
+        internal bool HasRenderableTextContent { get; set; }
     }
 
     private sealed class TextRequestKeyComparer : IEqualityComparer<TextRequestKey>

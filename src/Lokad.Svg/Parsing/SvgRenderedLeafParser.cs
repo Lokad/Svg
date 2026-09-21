@@ -61,7 +61,8 @@ internal static class SvgRenderedLeafParser
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
                 if (textElement.Style.FillRule is not null && !textElement.Style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle);
-                using BudgetedText text = ReadDirectTextContent(reader, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, out int sourceCharacterCount, out int childNodeCount);
+                SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader);
+                using BudgetedText text = ReadDirectTextContent(reader, whitespaceMode, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, out int sourceCharacterCount, out int childNodeCount);
                 state.TextCharacterCount += sourceCharacterCount;
                 state.NodeCount += childNodeCount;
                 if (text.Value.Length == 0) return true;
@@ -82,10 +83,10 @@ internal static class SvgRenderedLeafParser
         }
         return false;
 
-        static BudgetedText ReadDirectTextContent(XmlReader element, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount, out int childNodeCount)
+        static BudgetedText ReadDirectTextContent(XmlReader element, SvgTextWhitespaceMode whitespaceMode, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount, out int childNodeCount)
         {
             using var text = new BudgetedTextBuffer(budget);
-            var normalizer = new SvgTextWhitespaceNormalizer();
+            var normalizer = new SvgTextWhitespaceNormalizer(whitespaceMode);
             if (element.IsEmptyElement)
             {
                 sourceCharacterCount = normalizer.SourceCharacterCount;

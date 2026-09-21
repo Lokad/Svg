@@ -19,9 +19,11 @@ public sealed class SvgFontRequestDiscoveryTests
     {
         SvgFontFaceRequest[] empty = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'> \t\r\n </text></svg>"u8.ToArray(), CancellationToken.None);
         SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'> \t<tspan>A</tspan>\r\n </text></svg>"u8.ToArray(), CancellationToken.None));
+        SvgFontFaceRequest preserved = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Preserved' xml:space='preserve'> </text></svg>"u8.ToArray(), CancellationToken.None));
 
         Assert.Empty(empty);
         Assert.Equal("Example", request.Family);
+        Assert.Equal("Preserved", preserved.Family);
     }
 
     [Fact]
