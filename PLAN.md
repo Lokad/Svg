@@ -549,6 +549,14 @@ hash semantics), test clean LF/CRLF environments without silently regenerating
 references, and add validator negative/positive fixtures for each independent
 contract. Retain actual CI run/revision evidence before claiming platform parity.
 
+**Repair (`42d9f9e`):** a tracked `.gitattributes` pins all 56
+SVGs to LF materialization. Replayed both environments live under
+`core.autocrlf=true`: the pre-fix archive carries 621 CRLF sequences, the
+post-fix archive carries none and matches the worktree byte-for-byte, so the passing
+manifest tests now reproduce from archived bytes. No content or reference hashes
+changed. The full suite (725 + 6 + 83) and all 21 probe scenarios pass.
+Validator byte/pixel, fingerprint and report-contract fixtures remain open.
+
 ### R23 / P2 — Oracle transport cleanup is not fully bounded
 
 **Source inspection:** [DevToolsConnection](tools/Lokad.Svg.Chrome/DevToolsConnection.cs)
