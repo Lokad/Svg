@@ -54,18 +54,22 @@ internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, dou
 /// <summary>Represents one explicit scalar relative offset before the first retained character in a text span.</summary>
 internal readonly record struct SvgTextPositionOffset
 {
-    internal SvgTextPositionOffset(double dx, double dy)
+    internal SvgTextPositionOffset(double? dx, double? dy)
     {
-        if (!double.IsFinite(dx) || !double.IsFinite(dy)) throw new ArgumentOutOfRangeException(nameof(dx));
+        if (dx is null && dy is null) throw new ArgumentException("A text position offset requires at least one axis.", nameof(dx));
+        if (dx is double resolvedDx && !double.IsFinite(resolvedDx)) throw new ArgumentOutOfRangeException(nameof(dx));
+        if (dy is double resolvedDy && !double.IsFinite(resolvedDy)) throw new ArgumentOutOfRangeException(nameof(dy));
         Dx = dx;
         Dy = dy;
     }
 
-    internal double Dx { get; }
+    /// <summary>Gets the explicitly specified horizontal relative offset, if present.</summary>
+    internal double? Dx { get; }
 
-    internal double Dy { get; }
+    /// <summary>Gets the explicitly specified vertical relative offset, if present.</summary>
+    internal double? Dy { get; }
 
-    internal bool IsZero => Dx == 0 && Dy == 0;
+    internal bool IsZero => Dx is null or 0 && Dy is null or 0;
 }
 
 /// <summary>Identifies the normalized UTF-16 boundary and relative offset applied before one positioned glyph.</summary>
@@ -368,7 +372,7 @@ internal static class SvgTextSyntax
         SvgTextWhitespaceMode mode = xmlSpace is null ? inherited.WhitespaceMode : ParseXmlWhitespaceMode(xmlSpace);
         if ((whiteSpace ?? styleSheet.WhiteSpace) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
         string? letterSpacing = inlineLetterSpacing ?? styleSheet.LetterSpacing ?? presentationLetterSpacing;
-        SvgTextPositionOffset? positionOffset = dx is null && dy is null ? null : new SvgTextPositionOffset(SvgGeometrySyntax.ParseTextCoordinate(dx ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(dy ?? "0"));
+        SvgTextPositionOffset? positionOffset = dx is null && dy is null ? null : new SvgTextPositionOffset(dx is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dx), dy is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dy));
         style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing), positionOffset);
         return true;
 

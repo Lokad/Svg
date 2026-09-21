@@ -121,4 +121,23 @@ public sealed class BudgetedTextBufferTests
         Assert.Equal("A", text.Value);
         Assert.Empty(text.PositionAdjustments);
     }
+
+    [Fact]
+    public void Resolves_each_position_offset_axis_from_its_nearest_span()
+    {
+        RenderBudget budget = new(2_000);
+        var workCounter = new ParserWorkCounter(100);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, true);
+
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(5, null), 1, workCounter, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(null, -2), 2, workCounter, CancellationToken.None);
+        descendant.Append("A", buffer, 10, workCounter, CancellationToken.None);
+        buffer.ExitPositioningSpan(2);
+        buffer.ExitPositioningSpan(1);
+        using BudgetedTextLayout text = buffer.Detach();
+
+        Assert.Equal("A", text.Value);
+        Assert.Equal([new SvgTextPositionAdjustment(0, 5, -2)], text.PositionAdjustments);
+    }
 }

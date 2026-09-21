@@ -289,22 +289,22 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
     private SvgTextPositionAdjustment? ResolvePositionAdjustment(int scopeDepth, int start)
     {
         if (_positioningScopes is null) return null;
-        int adjustmentIndex = -1;
+        double? dx = null;
+        double? dy = null;
         for (int index = _positioningScopes.Count - 1; index >= 0; index--)
         {
             SvgTextPositionScope scope = _positioningScopes[index];
-            if (scope.ScopeDepth > scopeDepth) continue;
-            if (!scope.HasApplied) adjustmentIndex = index;
-            break;
+            if (scope.ScopeDepth > scopeDepth || scope.HasApplied) continue;
+            if (dx is null) dx = scope.Offset.Dx;
+            if (dy is null) dy = scope.Offset.Dy;
+            if (dx is not null && dy is not null) break;
         }
         for (int index = 0; index < _positioningScopes.Count; index++)
         {
             SvgTextPositionScope scope = _positioningScopes[index];
             if (scope.ScopeDepth <= scopeDepth && !scope.HasApplied) _positioningScopes[index] = scope with { HasApplied = true };
         }
-        if (adjustmentIndex < 0) return null;
-        SvgTextPositionOffset offset = _positioningScopes[adjustmentIndex].Offset;
-        return new SvgTextPositionAdjustment(start, offset.Dx, offset.Dy);
+        return dx is null && dy is null ? null : new SvgTextPositionAdjustment(start, dx ?? 0, dy ?? 0);
     }
 }
 
