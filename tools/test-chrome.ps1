@@ -32,6 +32,11 @@ $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
 $reference = Join-Path $PSScriptRoot '../tests/References/original-solid-red.png'
 if (-not (Test-Path -LiteralPath $chromeTool)) { throw "Chrome tool is not built: $chromeTool" }
 if (-not (Test-Path -LiteralPath $diffTool)) { throw "Visual-diff tool is not built: $diffTool" }
+$captureToolRuntimeLines = @( & dotnet $chromeTool --runtime )
+if ($LASTEXITCODE -ne 0 -or $captureToolRuntimeLines.Count -ne 1 -or [string]::IsNullOrWhiteSpace($captureToolRuntimeLines[0])) { throw 'The capture tool did not report its runtime.' }
+$captureToolRuntime = [string]$captureToolRuntimeLines[0]
+$dotnetRuntimes = @(& dotnet --list-runtimes 2>$null | ForEach-Object { if ($_ -match '^Microsoft\.NETCore\.App (\d+\.\d+\.\d+) ') { $Matches[1] } } | Sort-Object -Unique)
+if ($dotnetRuntimes.Count -eq 0) { throw 'The dotnet host reported no .NETCore runtimes.' }
 New-Item -ItemType Directory -Force -Path $ResultsDirectory | Out-Null
 
 function Invoke-ChromeCapture {
@@ -93,7 +98,7 @@ for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
 }
 
 $fingerprint = [ordered]@{
-    schemaVersion = 2
+    schemaVersion = 3
     pinSha256 = (Get-FileHash -LiteralPath $PinPath -Algorithm SHA256).Hash.ToLowerInvariant()
     pinVersion = $pin.version
     chromiumRevision = $pin.chromiumRevision
@@ -110,7 +115,9 @@ $fingerprint = [ordered]@{
     referenceSha256 = (Get-FileHash -LiteralPath $reference -Algorithm SHA256).Hash.ToLowerInvariant()
     operatingSystem = [System.Runtime.InteropServices.RuntimeInformation]::OSDescription
     processArchitecture = [System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()
-    runtimeFramework = [System.Runtime.InteropServices.RuntimeInformation]::FrameworkDescription
+    hostRuntimeFramework = [System.Runtime.InteropServices.RuntimeInformation]::FrameworkDescription
+    captureToolRuntimeFramework = $captureToolRuntime
+    dotnetRuntimes = @($dotnetRuntimes)
     locale = [Globalization.CultureInfo]::CurrentCulture.Name
     timeZone = [TimeZoneInfo]::Local.Id
     headlessMode = 'new'

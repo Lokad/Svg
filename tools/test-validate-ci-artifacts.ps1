@@ -34,10 +34,15 @@ function Invoke-Tool([string] $Tool, [string[]] $ToolArguments, [string] $Contex
     return $output
 }
 
+$chromeToolRuntime = @( & dotnet $chromeTool --runtime )
+if ($LASTEXITCODE -ne 0 -or $chromeToolRuntime.Count -ne 1 -or [string]::IsNullOrWhiteSpace($chromeToolRuntime[0])) { throw 'The capture tool did not report its runtime.' }
+$hostDotnetRuntimes = @(& dotnet --list-runtimes 2>$null | ForEach-Object { if ($_ -match '^Microsoft\.NETCore\.App (\d+\.\d+\.\d+) ') { $Matches[1] } } | Sort-Object -Unique)
+if ($hostDotnetRuntimes.Count -eq 0) { throw 'The dotnet host reported no .NETCore runtimes.' }
+
 function Write-Fingerprint([string] $Directory, [string] $RunId, [string[]] $CandidateNames, [string[]] $CandidateHashes) {
     $pin = Get-Content -LiteralPath $pinPath -Raw | ConvertFrom-Json
     $fingerprint = [ordered]@{
-        schemaVersion = 2
+        schemaVersion = 3
         pinSha256 = (Get-FileHash -LiteralPath $pinPath -Algorithm SHA256).Hash.ToLowerInvariant()
         pinVersion = $pin.version
         chromiumRevision = $pin.chromiumRevision
@@ -53,7 +58,9 @@ function Write-Fingerprint([string] $Directory, [string] $RunId, [string[]] $Can
         referenceSha256 = (Get-FileHash -LiteralPath $reference -Algorithm SHA256).Hash.ToLowerInvariant()
         operatingSystem = [System.Runtime.InteropServices.RuntimeInformation]::OSDescription
         processArchitecture = [System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()
-        runtimeFramework = [System.Runtime.InteropServices.RuntimeInformation]::FrameworkDescription
+        hostRuntimeFramework = [System.Runtime.InteropServices.RuntimeInformation]::FrameworkDescription
+        captureToolRuntimeFramework = [string]$chromeToolRuntime[0]
+        dotnetRuntimes = @($hostDotnetRuntimes)
         locale = [Globalization.CultureInfo]::CurrentCulture.Name
         timeZone = [TimeZoneInfo]::Local.Id
         headlessMode = 'new'
@@ -205,6 +212,35 @@ $chromeEdited = Get-Content -LiteralPath $chromeFingerprint.FullName -Raw | Conv
 $chromeEdited.schemaVersion = 99
 $chromeEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $schemaChrome $chromeFingerprint.Name) -NoNewline -Encoding utf8
 Assert-ValidatorRejects $schemaChrome $memoryDirectory '*schema version*' 'a bad chrome schema version'
+function Copy-ChromeFingerprint([string] $Destination) {
+    New-Item -ItemType Directory -Force -Path $Destination | Out-Null
+    foreach ($name in $goodNames) { Copy-Item -LiteralPath (Join-Path $goodDirectory $name) -Destination (Join-Path $Destination $name) }
+    $fingerprints = @(Get-ChildItem -LiteralPath $goodDirectory -File -Filter '*.json')
+    if ($fingerprints.Count -ne 1) { throw "Good chrome directory does not contain exactly one fingerprint: $goodDirectory" }
+    Copy-Item -LiteralPath $fingerprints[0].FullName -Destination (Join-Path $Destination $fingerprints[0].Name)
+    return (Join-Path $Destination $fingerprints[0].Name)
+}
+
+$toolRuntimeChrome = Join-Path $runDirectory 'chrome-unknown-tool-runtime'
+$toolRuntimeFingerprint = Copy-ChromeFingerprint $toolRuntimeChrome
+$toolRuntimeEdited = Get-Content -LiteralPath $toolRuntimeFingerprint -Raw | ConvertFrom-Json
+$toolRuntimeEdited.captureToolRuntimeFramework = '.NET 0.0.0'
+$toolRuntimeEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $toolRuntimeFingerprint -NoNewline -Encoding utf8
+Assert-ValidatorRejects $toolRuntimeChrome $memoryDirectory '*not among the recorded dotnet runtimes*' 'an unlisted capture-tool runtime'
+
+$chromeRuntimes = Join-Path $runDirectory 'chrome-missing-runtimes'
+$chromeRuntimesFingerprint = Copy-ChromeFingerprint $chromeRuntimes
+$chromeRuntimesEdited = Get-Content -LiteralPath $chromeRuntimesFingerprint -Raw | ConvertFrom-Json
+$chromeRuntimesEdited.PSObject.Properties.Remove('dotnetRuntimes')
+$chromeRuntimesEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $chromeRuntimesFingerprint -NoNewline -Encoding utf8
+Assert-ValidatorRejects $chromeRuntimes $memoryDirectory '*is missing dotnetRuntimes*' 'missing chrome dotnet runtimes'
+
+$chromeHost = Join-Path $runDirectory 'chrome-host-mismatch'
+$chromeHostFingerprint = Copy-ChromeFingerprint $chromeHost
+$chromeHostEdited = Get-Content -LiteralPath $chromeHostFingerprint -Raw | ConvertFrom-Json
+$chromeHostEdited.hostRuntimeFramework = '.NET 0.0.0'
+$chromeHostEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $chromeHostFingerprint -NoNewline -Encoding utf8
+Assert-ValidatorRejects $chromeHost $memoryDirectory '*host runtime framework*' 'a mismatched chrome host runtime'
 function Copy-MemorySummary([string] $Destination) {
     Copy-Item -Recurse -LiteralPath $memoryDirectory -Destination $Destination
     $summaries = @(Get-ChildItem -LiteralPath $Destination -File -Filter '*-summary.json')

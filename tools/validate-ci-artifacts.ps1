@@ -72,7 +72,7 @@ function Test-ChromeArtifact
     $pin = Get-Content -LiteralPath $pinPath -Raw | ConvertFrom-Json
     $fingerprintFile = Get-SingleFile $ChromeDirectory 'pinned-chrome-smoke-*.json' 'Chrome smoke artifact'
     $fingerprint = Get-Content -LiteralPath $fingerprintFile.FullName -Raw | ConvertFrom-Json
-    Assert-Equal 2 (Get-RequiredProperty $fingerprint 'schemaVersion' 'Chrome fingerprint') 'Chrome fingerprint schema version'
+    Assert-Equal 3 (Get-RequiredProperty $fingerprint 'schemaVersion' 'Chrome fingerprint') 'Chrome fingerprint schema version'
     Assert-Hash (Get-RequiredProperty $fingerprint 'pinSha256' 'Chrome fingerprint') (Get-Hash $pinPath) 'Chrome pin hash'
     foreach ($name in @('version', 'chromiumRevision', 'platform', 'archiveSha256', 'executableSha256', 'captureRecipeRevision'))
     {
@@ -93,7 +93,14 @@ function Test-ChromeArtifact
     Assert-Hash (Get-RequiredProperty $fingerprint 'fixtureSha256' 'Chrome fingerprint') (Get-Hash $fixture) 'Chrome fixture hash'
     $referenceHash = Get-Hash $reference
     Assert-Hash (Get-RequiredProperty $fingerprint 'referenceSha256' 'Chrome fingerprint') $referenceHash 'Chrome reference hash'
-    Assert-PlatformFingerprint $fingerprint 'Chrome fingerprint'
+    Assert-PlatformOsArchitecture $fingerprint 'Chrome fingerprint'
+    Assert-Equal ([Runtime.InteropServices.RuntimeInformation]::FrameworkDescription) (Get-RequiredProperty $fingerprint 'hostRuntimeFramework' 'Chrome fingerprint') 'Chrome host runtime framework'
+    $chromeRuntimes = @(Get-RequiredProperty $fingerprint 'dotnetRuntimes' 'Chrome fingerprint')
+    if ($chromeRuntimes.Count -eq 0) { Fail 'Chrome fingerprint lists no .NET runtimes.' }
+    foreach ($runtimeVersion in $chromeRuntimes) { if ([string]$runtimeVersion -notmatch '^\d+\.\d+\.\d+$') { Fail "Chrome fingerprint lists a malformed runtime version: $runtimeVersion" } }
+    $captureToolFramework = [string](Get-RequiredProperty $fingerprint 'captureToolRuntimeFramework' 'Chrome fingerprint')
+    $captureToolVersion = $captureToolFramework -replace '^\.NET\s+', ''
+    if ($chromeRuntimes -cnotcontains $captureToolVersion) { Fail "Chrome capture-tool runtime $captureToolFramework is not among the recorded dotnet runtimes." }
     Assert-Equal 3 (Get-RequiredProperty $fingerprint 'freshProcessCaptures' 'Chrome fingerprint') 'Chrome fresh-process capture count'
     Assert-Equal 120000 (Get-RequiredProperty $fingerprint 'captureTimeoutMilliseconds' 'Chrome fingerprint') 'Chrome capture timeout'
     foreach ($name in @('locale', 'timeZone', 'headlessMode', 'gpuPolicy', 'sandbox', 'resourcePolicy', 'colorSpacePolicy', 'fontPolicy', 'background')) { [void](Get-RequiredProperty $fingerprint $name 'Chrome fingerprint') }
