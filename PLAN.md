@@ -429,8 +429,11 @@ acquisition (30.40 us / 32.04 KB), lowering from a reused snapshot (55.30 us / 1
 and end-to-end preparation (300.14 us / 190.34 KB) over styled text with an embedded
 synthetic triangle font. ShortRun results are recorded in `docs/BENCHMARKS.md`.
 
-Closure: short-circuit
-lower-precedence attribute reads, parse immediate-only inline values into typed
+**Optimization (`f6ad5e4`):** computed-style resolution short-circuits
+lower-precedence attribute reads at the shared choke point; full suite green proves identical
+semantics. Before/after ShortRun shows no resolved delta with byte-identical allocation
+traffic, so no speedup is claimed. Remaining:
+parse immediate-only inline values into typed
 ephemeral fields where lifetime permits, cache stable diagnostics, and represent a
 validated SHA-256 as a domain value rather than repeatedly formatting text. Any
 hash comparison must retain the present validation, cancellation checkpoints and
