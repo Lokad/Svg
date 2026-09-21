@@ -1,461 +1,394 @@
 # Lokad.Svg review and implementation plan
 
-Reviewed 2026-09-20 against `ebe9fa4586a0d619ccfd93ea037c562586f19275`.
-This plan records the source/test/instrumentation review and subsequent execution.
-It supersedes the earlier `a6b6827` baseline and appended progress notes.
-Finding IDs R01–R16 are retained for continuity; a repaired reproduction does not
-close its broader feature or resource gate.
+Reviewed 2026-09-21 against `a4ad68b391aee5696d2335dfbf98745b9a644ed6`.
+This refresh separates current defects from repaired reproductions and historical
+measurements. Finding IDs R01–R16 and execution stages S1–S7 remain stable; the
+source audit below adds R17–R20 without reopening a repaired reproduction. The
+settled revision includes the axis-specific `tspan` offset repair in `a4ad68b`. `7b92422` subsequently budgeted discovery control storage (R17 partial; child-process probe pending).
 
-Font-source reassessment 2026-09-20: the user authorizes local testing with the
-existing OoxPdf deployment's font pack and unchanged manifest. Read access and one
-selected program's integrity were verified in memory. S7 no longer awaits font
-asset permission; private testing, renderer acceptance and public redistribution
-are separate gates. See sections 5–6 for evidence and confidentiality constraints.
+## 1. Current assessment and verification
 
-The next product milestone remains useful supplied-font SVG labels, before
-gradients, images and filters. The public experimental direct-text path exists
-and has positive regressions. It is not yet a bounded, semantically validated,
-browser-calibrated text renderer. Some new findings also affect established shapes.
+Lokad.Svg is a pure-managed, dependency-free .NET 10 SVG-to-PNG renderer with a
+narrow, regression-tested shape subset and an experimental supplied-font text
+pipeline. It is not yet a general SVG renderer or a validated ordinary-font label
+renderer. The next milestone remains useful supplied-font labels before gradients,
+images and filters.
 
-No missing permission, private dependency or remote service currently blocks local
-work. Keep `external/` optional, ignored and unreferenced. Remote CI remains
-deferred at the user's request; Linux oracle admission and publication are separate
-gates, not prerequisites for the local repairs below.
+No missing authorization or private dependency blocks local progress. The user has
+authorized private testing with the existing OoxPdf font pack and unchanged
+manifest. Initial access was verified on 2026-09-20; that is not Svg rendering or
+browser-fidelity evidence. Keep all source addresses, assets and platform content
+out of this repository; section 6 preserves the complete confidentiality contract.
+Keep `external/` optional, ignored and unreferenced.
 
-## 1. Fresh verification and evidence boundaries
-
-| Area | Result at the reviewed revision |
+| Fresh verification | Result and boundary |
 | --- | --- |
-| Environment | Windows x64, SDK 10.0.401, .NET 10.0.12. Clean tracked worktree before this documentation edit. |
-| Build | Locked restore and Release solution build pass: zero warnings/errors. |
-| Tests | 387 unit cases plus 83 visual-project cases pass; zero skipped. Counts are not independent feature/corpus counts. |
-| Pixels | The manifest test renders and exactly compares all 43 retained references. 41 fixtures contain at most 64 pixels; the others are 20×10 and 300×150. No fresh browser capture was performed. |
-| Resources | All 16 child-process memory scenarios pass, including three repetitions per XML measurement shape and cancellation observed inside background initialization. These probes do not establish text-pipeline accounting or failure-time ledger release. |
-| Packaging | Runtime/symbol package checks and an isolated installed-package consumer pass conversion, overlap, dimension-limit and font-catalog checks. No publication performed. |
-| Fonts/research | No tracked TTF/OTF/TTC/WOFF assets; 13 separately inventoried research probes remain outside admitted support. |
-| Not rerun | Live Chrome, Linux execution and remote CI. Historical results are not fresh verification. A fresh Windows BenchmarkDotNet `ShortRun` completed for the four rectangle output APIs at 1/64/512 pixels; its ignored raw reports are shape-only and do not measure fonts, repeated/distinct glyphs, or phase attribution. |
+| Environment | Windows x64; SDK 10.0.401, .NET 10.0.12; locked restore + Release build (zero warnings/errors) and full suite re-verified at `7b92422`. |
+| Release solution build | Pass, zero warnings and errors. |
+| Tests | 608 `Lokad.Svg.Tests` + 6 `Lokad.Svg.FontProbe.Tests` (= 614 unit) and 83 visual-project cases pass, zero skipped. These are runner counts, not feature or independent fixture counts. |
+| Retained pixels | All 43 admitted references pass exact comparison. The corpus remains shape-only and mostly tiny: 41 fixtures have at most 64 pixels; the others are 20×10 and 300×150. No fresh browser captures. |
+| Resource probes | All 16 child-process scenarios pass, including three fresh-process measurements per XML shape. No supplied-font scenario or full text-pipeline ledger is present. |
+| Targeted S3/S4 tests | Synthetic tracked tests observe reservation after each simple/composite decoder phase, deny one byte before each observed temporary-array boundary, and prove cleanup. Repeated or post-disposal contour transfer now fails. Huge finite text, viewBox/device, coverage sample and winding-cross-product calculations fail as `LimitExceeded` at their owning boundary. |
+| Package/installed-consumer check | Fresh Release package and symbols pass archive checks plus an isolated restore/build/run of conversion, overlap, dimension-limit and font-pack catalog scenarios. |
+| Fresh shape benchmark | BenchmarkDotNet ShortRun (three measurements) reran the four rectangle output forms at 1/64/512 pixels; the new reports remain ignored. This does not measure font acquisition, hashing, layout, outlines or repeated/distinct glyphs. |
+| Fresh Chrome smoke | The cached pinned Chrome executable passed offline verification and three fresh-process exact captures of the fixed non-text smoke fixture; this establishes only the smoke/oracle toolchain, not font rendering fidelity. |
+| Not rerun | Private font acquisition, OoxPdf tests, Linux and remote CI. Earlier successes are historical, not fresh evidence. |
 
-Fresh local diagnostics are in ignored `artifacts/review-20260920-refresh/`:
-`Review.csproj`, `Program.cs`, `results.jsonl`, `memory/`, `package/` and
-`package-smoke/`. The memory summary run ID is
-`caa808ce2d2849b9a18b810e5333f489`; it retains runtime and source/binary/input hashes.
-The review harness uses public APIs and, where explicitly identified, existing
-internal access plus reflection into the private rasterizer. It does not alter
-production code. These artifacts are local investigation aids, not portable tests:
-the fresh benchmark raw CSV/HTML/Markdown reports are in ignored
-`BenchmarkDotNet.Artifacts/results/` (Windows x64, .NET 10.0.12, ShortRun with
-three warmups and three measurement iterations).
-promote the decisive vectors/assertions into tracked tests with each repair.
+The settled-revision test row is fresh at `a4ad68b`. The other 2026-09-21 probe,
+package, benchmark and Chrome rows were produced before that final text commit and
+are retained as historical evidence until rerun; do not combine them into a claim
+that every measurement is fresh at the current revision.
 
-Evidence labels below mean: **reproduced** in this review, **inspection** from
-current code, or **retained regression** executed by the fresh suite. Allocation
-traffic is not live memory; a ledger leak is not proof of permanent heap retention.
+Ignored local investigation files are under `artifacts/review-20260921/`.
+The memory summary run ID is `1fe470829cf94b049c68d125effa36eb`; it retains
+runtime, source, binary and input fingerprints. `Review.csproj` / `Program.cs`
+use the existing internal diagnostic access and a synthetic triangle font, not
+private assets. These are review aids, not portable regression tests; promote
+decisive vectors with each implementation repair.
 
-## 2. Reconcile completed work before extending the plan
+Evidence labels below distinguish **fresh reproduction**, **source inspection** and
+**retained regression**. Allocation traffic, live accounted storage and process
+working set are different quantities; zero ledger bytes do not prove heap release.
 
-| Finding | Current status and remaining boundary |
-| --- | --- |
-| R01: transparent triangle / missing positive text path | Original blocker closed. The corrected synthetic flag is `0x33`, not `0x13`. Tests retain decoded points, closed contours, scene presence, visible PNG pixels and equivalent results through all six APIs. A separate off-curve quadratic smoke test exists. Neither is an ordinary-font oracle. |
-| R02: text skips its next sibling | Original cursor defect repaired with subtree consumption. Immediate rectangle adjacency through six APIs, CDATA/comment text, empty text, group closure, malformed tails and unsupported siblings all have independent regressions. Empty direct text also does not require a font. Do not describe the old bug as still reproduced. |
-| R03: silent text attributes | Attribute policy now gates direct text; scalar dx/dy and start/middle/end anchors are implemented. Child elements, clipping, strokes, nonidentity transforms and evenodd text fill are rejected. Whitespace/chunk semantics and broader admission remain open. |
-| R04: text/resource bypasses | Partial. Text extraction and exact positioned-glyph storage are reserved; 32,768 UTF-16 characters are capped across the document; inline scans are checkpointed. Nested contours, font work, stale record sizes and raster cleanup remain open below. |
-| R05: malformed cmap | Format-12 short-length, selected-glyph overflow and full-group validation cases are repaired; format-4 segment and glyph-index payload checks are added. Broader validation and repeated-lookup work remain below. |
-| R06: dedup/integrity/face index | Demonstrated defects repaired: conflicting same-hash sizes and selected nonzero standalone faces fail before provider access; legitimate face-0 aliases share acquisition; unused unsupported faces do not poison selection. Repeated hashing remains R14, not a reason to undo these checks. |
-| R07: mutable public arrays / disposal | Read-only views, escaped-handle access checks and eight concurrent direct-text conversions are repaired and regression-tested. The public contract now states that disposal must not overlap a read/conversion; escaped prepared-font values fail after disposal. Borrowed bytes are intentionally not copied. |
-| R08: discovery/painting disagreement | Quoting, case-insensitive requests, last inline declaration and root/group/link font inheritance have improved. Eligibility, caller limits and retained preparation state still differ. |
-| R09: fractional text / fidelity | Finite fractional text syntax and finite coordinate-sum closure are admitted. Shapes retain their mapped quarter-pixel gate; independent curved-glyph fidelity remains open. |
-| R10: font semantics | Format 12 handles BMP/supplementary scalars; Unicode-platform records are accepted and symbol records are not misclassified. Composite matrix semantics and broader font validation remain open. |
-| R11: diagnostic failure masking | Long fields truncate instead of replacing the primary error; snapshot integrity/format stages are retained. Source location and consistent identity/stage coverage remain open. |
-| R12–R16 | Instrumentation, meaningful corpus, repeated work, weak invariants and companion-document drift remain active work, detailed below. |
+## 2. What the current implementation can and cannot do
 
-Preserve the overlap/dimension fixes, stream/backpressure behavior, offline shape
-path and 43 exact fixtures. Do not replace independent assertions with current
-implementation output or weaken positive assertions merely to restore green tests.
-
-## 3. Active correctness and blocking findings
-
-P0 means repair before extending/relying on the affected public path. P1 means
-required for useful, supportable labels. P2 means targeted maintainability or
-measured performance work. Each repair needs its own regression and exit evidence.
-
-### R04a / P0 — Storage accounting is incomplete, including established shapes
-
-**Reproduced sizes; inspected allocation sites.** On this x64 runtime:
-
-| Storage | Charged element size | Measured value size | Consequence |
-| --- | --- | --- | --- |
-| Orthogonal lowering's `BudgetedParserList<SvgGeometry>` | 64 bytes | 128 bytes | Temporary bands for admitted paths/point lists are undercharged. |
-| Document `BudgetedParserList<CssRule>` | 96 bytes | 120 bytes | The expanded inline-style payload outgrew its independent size constant. |
-| Retained scene `SvgGeometry` | 128 bytes | 128 bytes | Outer record sizing is correct; referenced glyph arrays remain uncharged. |
-| Group scope | 96 bytes | 72 bytes | Conservative today; do not replace every allowance with an unjustified estimate. |
-
-Sources: [lowering](src/Lokad.Svg/Parsing/SvgOrthogonalGeometryLowerer.cs),
-[document state](src/Lokad.Svg/Parsing/SvgDocumentState.cs),
-[scene ownership](src/Lokad.Svg/Parsing/SvgRoot.cs),
-[outline conversion](src/Lokad.Svg/Fonts/SvgGlyphOutline.cs).
-
-OpenType point/flag/endpoint/component lists, flattened segment arrays, transformed
-copies, contour arrays and per-contour copies are not reserved. Yielding one glyph
-at a time removed whole-run temporary accumulation, but every glyph's contours
-remain retained by the scene. Its disposal accounts only for outer arrays.
-
-**Reproduced parser probe:** 1,000 triangle glyphs retain 3,000 segments while the
-post-parse ledger reports 144,064 bytes, all Scene: exactly the outer geometry and
-command arrays. Segment payload alone needs another 144,000 bytes before nested
-array overhead. Allocation traffic was 2,970,160 bytes; ledger peak 406,624 bytes.
-Those two figures measure different things and must not be subtracted as a leak.
-
-Closure: couple value-array sizing to its element type and retain conservative
-array/tracker allowances. Reserve every owned capacity before allocating, including
-simultaneously live source/replacement/transformed/nested arrays. Introduce explicit
-contour ownership with transfer through lowering → builder → retained scene, and
-release on insertion/detach failure, cancellation and disposal. Test denial exactly
-at growth/transfer boundaries, not only success under the default budget.
-
-**Resolved 2026-09-20:** `SvgGlyphOutline.SplitClosedContours` first identifies
-the closed-contour count, reserves the exact final scene storage before allocating
-the contour or segment arrays, and returns `SvgGlyphContourStorage`. The latter
-transfers its reservation exactly once into `SvgGlyphGeometry`; the temporary
-decoded/transformed buffers remain charged until this handoff is complete. A
-focused ownership regression proves the scene charge survives the transfer, is
-released with retained geometry, and denies one byte below the observed
-decoded/transformed/final-array allocation peak.
-
-**Reopened by execution audit 2026-09-20:** simple-glyph decoding still allocates
-its endpoint, flag and point arrays plus the `List<OpenTypeQuadraticSegment>`
-contour-builder storage without `RenderBudget` ownership. Those arrays overlap the
-eventual decoded and transformed arrays, so the S3 evidence above does not cover
-their allocation or denial boundary. Reserve each capacity before allocation and
-carry ownership across contour lowering before restoring S3.
-
-### R04b / P0 — Work limits miss sampling and expensive font traversal
-
-**Reproduced through the internal rasterizer.**
-[Coverage](src/Lokad.Svg/Rendering/SvgGlyphCoverage.cs) reports
-segments × 8 operations **per sample**, but
-[the caller](src/Lokad.Svg/SvgConverter.cs) charges
-`bounds + pixels × (sampleWork + 1)` and requests 4×4 samples.
-A one-pixel, four-segment square is charged 37 units instead of
-`4 + 1 × (4 × 8 × 16 + 1) = 517` under this operation model.
-It therefore passes a 40-unit raster limit. Bounds are charged only after their
-traversal, and the counting passes themselves have no shared work accounting.
-
-**Reproduced/inspection:** parsing 1 versus 1,000 triangle glyphs consumes 15 versus
-31 parser units. Rune/layout/cmap/advance/outline work has no common work counter.
-Format-12 group traversal has no cancellation token. Per-glyph depth/component/
-segment caps do not bound aggregate composite visits: a branching graph ending in
-empty glyphs can consume substantial work without growing the segment count.
-Discovery uses default limits and unreserved collections, independently of render
-options. Text extraction still materializes `subtree.Value` before its bounded
-copy; the stylesheet reader already demonstrates chunked reading.
-
-Closure: define units and checkpoint ownership for one operation context across
-preparation, parse, layout, graph/table traversal, bounds, samples and encoding.
-Charge before work, count samples in both axes, and reject arithmetic overflow as
-`LimitExceeded`. Bound aggregate graph visits even when no geometry is produced.
-Use incremental text reads and deterministic during-phase cancellation tests;
-per-run caps, timer tests and cancellation checks alone are not work accounting.
-
-**Repaired 2026-09-20:** SVG-coordinate glyph transformation and contour splitting
-now consume the same counter as decode/expansion. The three-segment triangle path
-uses exactly 24 units through decode, transformed insertion, SVG mapping and
-closure scanning; 23 denies and releases all temporary reservations. Simple-glyph
-contour lowering reuses its already-decoded structure rather than reparsing
-endpoints before point decoding.
-
-### R04c / P0 — Raster failures bypass surface-reservation cleanup
-
-**Reproduced through the internal rasterizer.** `Rasterize` reserves its main
-surface, then allocates/fills/renders before returning the disposable owner. There
-is no failure cleanup around that interval. The one-pixel case leaves 4 bytes
-charged after either a glyph-work denial or cancellation triggered at the
-background-start callback. The latter observes the actual background checkpoint.
-Successful disposal returns the same ledger to zero.
-
-The conversion-local ledger becomes unreachable after a public failure; this is
-an accounting/ownership contract defect, not a demonstrated persistent 4-byte heap
-leak. Closure: reserve/allocate under an exception-safe owner, transfer only on
-success, and assert category/current bytes return to baseline for allocation,
-raster, cancellation and downstream output failures. Existing reservation-unit
-tests and RSS probes do not exercise this transfer boundary.
-
-### R05 / P0 — cmap validation still depends on the requested scalar
-
-**Repaired 2026-09-20:** [OpenTypeFont](src/Lokad.Svg/Fonts/OpenTypeFont.cs)
-now validates every selected format-12 group before returning a lookup result,
-and constrains nonzero format-4 offsets to the aligned `glyphIdArray` payload.
-The two decisive malformed-reader vectors are tracked as unit regressions.
-
-- Format 12: a valid first group maps U+0041 to glyph 1, followed by a reversed
-  second range 100–99. Querying U+0041 succeeds; querying U+0042 produces
-  `MalformedInput`. Early return skips validation of later groups.
-- Format 4: a nonzero `idRangeOffset` pointing into the `idRangeOffset` array
-  rather than `glyphIdArray` is accepted and returns glyph 0. The range check uses
-  the start of the subtable, not the start of the glyph-index payload.
-
-The [OpenType cmap definition](https://learn.microsoft.com/en-us/typography/opentype/spec/cmap)
-places nonzero format-4 offsets in the glyph-index array and defines ordered
-format-12 ranges. Validation must not become weaker when a lookup hits early.
-
-All format-4 declared lengths 0–15, a segment-array truncation and a range offset
-starting after the declared payload now have independent categorized vectors, as do
-both format-4 segment and format-12 group boundary scalars. Require categorized
-failures and bounded work/cancellation. Avoid reparsing and revalidating the whole
-table for every repeated character.
-
-### R10 / P0 — Composite transforms can produce wrong geometry
-
-**Reproduced internal-reader vector.** A component with file matrix values
-`(1, 0.5, 0, 1)` maps point (10,10) to (15,10); it should map to (10,15).
-`ReadCompositeTransform` places file-order off-diagonal values directly into
-`XY/YX`, but `OpenTypeOutlineTransform.Apply` uses the opposite convention.
-The current translation/uniform-scale regression cannot detect this transpose.
-The independent convention is in the
-[OpenType glyf definition](https://learn.microsoft.com/en-us/typography/opentype/spec/glyf).
-
-**Repaired 2026-09-20:** component flags outside the admitted XY-placement,
-component-chaining and scale-matrix subset are rejected before component geometry
-is used. This explicitly excludes grid rounding, instructions, component metrics,
-overlap and scaled/unscaled offset semantics rather than silently discarding them.
-Conflicting scale encodings are also rejected. Composite instruction extents are
-validated before their unsupported semantics are rejected.
-The complementary asymmetric scale10 vector maps (10,3) to (11.5,3), while
-the existing scale01 vector maps it to (10,8), fixing both file-order coefficients.
-A nested translated-child/scaled-root vector maps the leaf start to (10,8),
-proving parent-order composition rather than independent component transforms.
-A full two-by-two rotation maps (10,3) to (-3,10), covering both off-diagonal
-coefficients together.
-`name`/`OS/2` metadata and required pair positioning are not validated; scalar
-mapping plus advances is not universal text shaping.
-
-Closure: add asymmetric shear/rotation and nested-composition vectors with
-hand-computed points; preserve relevant flags in a validated component type.
-Implement or reject output-affecting semantics, validate instruction extents even
-when hinting is not executed, and explicitly state the static TrueType face-0
-subset. Aggregate expansion limits belong to R04b. Ordinary-font acceptance
-requires separate metrics and pixels, not just synthetic decode success.
-
-### R09 / P0 for numeric/admission regressions; P1 for fidelity
-
-**Repaired 2026-09-20:** finite attributes `x='1e308' dx='1e308'` now fail
-at the text-run boundary with categorized `LimitExceeded`, rather than reaching
-layout as an infinite sum and throwing raw `ArgumentOutOfRangeException`.
-`checked` does not make floating-point addition overflow-safe; the finite result
-of each admitted coordinate sum must be checked explicitly.
-[Layout](src/Lokad.Svg/Fonts/SvgGlyphLayout.cs) checks some advances, but text-origin,
-anchor, outline-transform and device-mapping arithmetic need one finite-result
-policy and categorized failure at the SVG boundary.
-
-**Repaired 2026-09-20:** a 1×1 viewport with `viewBox='0 0 3 3'` and a 1×1
-rectangle now returns `UnsupportedFeature`: rectangle edges are checked after
-mapping and must remain on the documented quarter-pixel grid. General finite
-glyph mapping stays separate from this shape gate.
-
-Remaining closure: preserve all 43 exact cases and check nonfinite intermediate
-results before bounds/raster loops. Additional shape admission requires fresh
-independent references and matching docs.
-
-Fixed 4×4 sampling and eight subdivisions per quadratic still have no
-scale-dependent error bound or same-font curved-glyph oracle. Keep fidelity open
-for curves, counters, composites, fractional origins/sizes, viewBox/scale, alpha
-and backgrounds; do not declare ordinary text supported from nonzero alpha.
-
-### R08 / P1 — Preparation is not the same document model as rendering
-
-**Repaired 2026-09-20:** `<defs><text font-family='Unused'>A</text></defs>`
-does not contribute an `Unused` request when only a rectangle is rendered outside
-the definitions. Discovery no longer treats standalone `tspan` as eligible and
-inherits direct/inline `display` and `visibility`, matching those renderer boundaries.
-Empty direct text now validates structurally without requesting or requiring a font;
-its immediate rectangle sibling still renders from an empty snapshot. Other eligibility
-rules can still request resources not needed for painting. Its default input/depth/node/attribute/work
-limits formerly could not express caller render limits; the new preparation overload
-now accepts and applies caller limits. It still discards the parse and style state.
-
-**Repaired 2026-09-20:** discovery now uses `SvgTextInheritance.Resolve`, the
-same direct/inline family, weight, style and size precedence path as rendering.
-The declaration scanner and token normalization are shared, while direct text
-still parses its final scalar positioning. Stylesheet font properties now share
-per-property selector specificity and direct-inline precedence with both discovery
-and rendering; ordered family/generic mapping and coverage fallback remain absent.
-Direct text/CDATA is concatenated without SVG whitespace/chunk normalization.
-
-Closure: cross-test preparation and painting for root/g/a inheritance, precedence,
-quotes/case, namespaces, defs/metadata, hidden/inert text and unsupported
-children. Specify eligibility before acquisition. Share bounded computed semantics
-and retain admitted parse/style/resource state in a disposable prepared document.
-Keep preparation async, rendering memory-only, and shape-only input offline.
-
-### R07, R11, R16 / P1 — Lifetime, diagnostics and documentation closure
-
-Read-only collection views and lease access guards now work. Escaped
-`SvgPreparedFont` objects still hold readonly byte/source references after lease
-invalidation; already-returned `ReadOnlyMemory<byte>` cannot be revoked. Define
-what disposal releases versus what caller-retained handles keep alive, and whether
-disposal may overlap a read. Test supported parallel reads/conversions and repeated
-lifetime/retention; do not add unconditional byte copies or promise GC timing.
-
-Keep bounded primary errors plus phase, content/face identity and source location.
-Snapshot and provider diagnostics now both use bounded manifest `path:index` face
-identity. Direct text retains its bounded `id` into glyph-stage and render-time
-missing-prepared-face diagnostics; source and integrity/format failures during
-preparation occur before a direct-text run is materialized, so they intentionally
-retain no element ID. Do not include whole
-SVG/text/font payloads.
-Test long names and each failure
-stage, not only source/format/integrity examples.
-
-Companion docs had remained inconsistent: the support matrix's text row required direct
-font declarations while its added note described inheritance, and its viewport/
-fractional rows disagreed. The inheritance and quarter-pixel viewport wording now
-match `MapEdge`. The API contract and snapshot comments now describe the implemented
-direct-text discovery subset and caller-limit overload rather than calling discovery a
-future phase. Blanket deterministic-reservation claims exceed R04's evidence. Keep
-the documentation aligned with the corresponding repairs, distinguishing
-implemented experiment, admitted subset, known defect and future requirement.
-
-## 4. Instrumentation, tests, duplication and types
-
-### R12 / P1 — Extend observation to the work now being developed
-
-| Instrument | Preserve | Missing evidence / action |
+| Area | Implemented today | Boundary |
 | --- | --- | --- |
-| RenderBudget | Current/peak/category/denial arithmetic and idempotent reservations. | Observe a full conversion at phase boundaries and after cleanup on success/failure; include work consumed/denied and owned vs borrowed storage. Snapshot arrays are mutable copies, not deeply immutable observations. |
-| Fresh-process memory tool | Input/hash and runtime fingerprints, timeout, actual background-loop cancellation. | It accepts no supplied-font setup and emits no full-conversion budget ledger. Add repeated/distinct glyphs, cold/warm/repeated/concurrent retention and font-phase cancellation. Distinguish allocated bytes, live accounted bytes and working set. |
-| XML-reader probes | Three fresh measurements per text/attribute shape, separate setup/traversal/property-access deltas. | Text nodes are counted without reading their values; this does not measure direct extraction, layout or preparation. Keep the conservative allowance and probe the actual consumption path. |
-| Cancellation seams | Background callback observes actual loop entry and cancellation. | Font tests mostly establish pre-cancellation, not interruption during cmap/expansion/layout/coverage. Add deterministic phase/checkpoint evidence and bounded remaining work; no timing SLA. |
-| Benchmarks | Four output paths at rectangle sizes 1/64/512, setup excluded, allocation reporting. | No fonts, repeated-vs-distinct text or phase attribution. Measure lookup, hash, parse, layout, outline, raster and encode before optimizing. Retain host/runtime/raw reports. |
-| Chrome/diff | Bounded transport, resource blocking, image decode wait, exact RGBA, retained metadata. | Authorized private font bytes can now supply same-font experiments. Add font embedding inside the SVG image plus missing/corrupt/substitution controls; retain private inputs/captures outside the public corpus. Outer-page font readiness is insufficient. |
+| Output/API | PNG to owned memory, caller memory or a caller stream, each sync/async; overlap checks, non-array input memory, cancellation, output limits and stream backpressure/failure behavior. | Input is SVG bytes in memory; no public stream-input or reusable prepared-document API. Async memory conversion schedules CPU work; it is not a separate rendering engine. |
+| Shapes | Rectangles with integral/quarter-pixel mapped edges; restricted even-width rectangular strokes and axis-aligned lines; closed orthogonal paths/polygons and filled orthogonal polylines. | No general curves/arcs, circles/ellipses, diagonal paths, arbitrary affine transforms or general stroke caps/joins/dashes. Shape admission remains deliberately narrow. |
+| Structure/layout | Root viewport/dimensions, admitted absolute units, viewBox alignment/meet/slice/none, root/group/link inheritance, restricted integer transforms, local rectangle/line definitions and forward use references. | No general nested viewports, symbol styling/viewports or reference graphs. viewBox support does not bypass geometry admission after mapping. |
+| Paint/style | Solid colors, alpha/source-over, background, fill/display/visibility inheritance, limited isolated opacity, inline styles and one ordered root stylesheet with restricted selectors and per-property precedence. | Not a browser CSS cascade. No gradients, patterns, images, clipping/masks, filters, general nested opacity or animation. |
+| Fonts | OoxPdf-compatible manifest catalog, explicit host-provided sources, async selected-program preparation, length/hash checks, deduplication and immutable snapshot access contracts. | No bundled fonts, automatic installed-font lookup or implicit network/filesystem access. Snapshot caps are separate from renderer-owned accounting. Only the selected standalone TrueType face-0 subset is admitted. |
+| Experimental text | Direct text/CDATA with XML whitespace modes, bounded CSS `white-space: normal`/`pre`, scalar `letter-spacing`, one validated version-zero horizontal format-zero legacy `kern` subtable, and one validated DFLT-script `kern` feature using an unfiltered GPOS PairPos format-1 first-glyph X-advance lookup: CSS properties can be supplied on direct text or inherited through `svg`/`g`/`a` from inline style or an admitted stylesheet rule, and direct CSS whitespace takes precedence over `xml:space`. Letter spacing and pair adjustments are added only between glyphs and participate in anchor width; GPOS takes precedence over legacy `kern`. Nested `tspan` concatenation inherits its parent whitespace mode and letter spacing, carries exact `xml:space="default"` or `xml:space="preserve"`, scalar `letter-spacing` and/or scalar presentation `dx`/`dy`, a style containing only the admitted whitespace and/or spacing properties, or an `id`/`class` selected through an admitted generic stylesheet rule containing only those style properties; inline span values win. Span `dx`/`dy` shifts the current position before the first retained glyph in that span or a descendant, with the nearest span that specifies each axis taking precedence; the shift persists for following glyphs after the enclosing text chunk is anchored. Span spacing applies after each span glyph, including at the following parent boundary, and contributes to the enclosing text anchor. Direct text itself admits a bounded `class` token for the same generic stylesheet selectors. Scalar x/y/dx/dy, start/middle/end anchors, inherited family/weight/style/size and paint, simple quadratic outlines and restricted composites remain admitted. Shared stylesheet font properties work through admitted selectors, including group inheritance. | Other CSS whitespace values, span paint/font styling, span x/y, positioning lists, transformed/stroked/clipped text, glyph-coverage fallback, other GPOS shaping, bidi/complex scripts, variable/color fonts, CFF or collection-face rendering. Ordinary-font metrics and browser pixels are not validated. |
 
-The fresh background probe allocated 67,153,672 managed bytes and observed
-cancellation with no output in 33 ms. This is one fingerprinted run, not a latency
-guarantee, memory-budget proof or font-pipeline result. Keep diagnostics bounded
-and operation-local; no global logs or per-pixel events.
+The [support matrix](docs/SUPPORT_MATRIX.md) now records stylesheet font
+inheritance/precedence through the admitted selector subset, matching retained
+group-inheritance, inline-override, specificity and weight/style tests. Do not
+describe experimental text as admitted browser-fidelity support, or infer that
+every unsupported input is already rejected consistently.
 
-### R13 / P1 — Test behavior and failure boundaries, not scaffolding counts
+### Repairs to preserve
 
-Preserve non-array memory, overlap/dimensions, all six outputs, stream backpressure/
-write failure/partial output, PNG and shape tests. Positive text and true-quadratic
-smokes now exist; the old “no positive public regression” statement is obsolete.
-The run-builder empty-outline fixture still tests an empty glyph, not painting.
-Coverage-unit tests remain a per-sample work check and straight square/hole cases.
-
-Prioritize tracked independent regressions for:
-
-1. R04: real record sizes, nested ownership, exact work boundaries (including
-   all 16 samples), empty composite expansion, and zero ledger after phase failures.
-2. R05/R10: malformed cmap independent of query order; asymmetric and nested
-   transforms, off-curve/implied points, contour boundaries, flags and truncation.
-3. R02/R03/R08/R09: empty/nonempty text, adjacent shapes/text/groups/unsupported
-   nodes, comments/CDATA, group closure and malformed tails; failure category,
-   scene/draw order, whitespace, finite arithmetic and shape mapping admission.
-4. Public supplied-font conversion: curves/holes/composites, inheritance/styles,
-   missing resources/glyphs, backgrounds, anchors, six outputs and concurrent reads.
-5. An ordinary-font corpus using the authorized private pack, with independent
-   metrics and a labeled diagram; then representative sizes, origins, spans,
-   styles and fallback boundaries. Public asset/reference admission requires
-   separate redistribution rights and must not hold up private investigation.
-
-Share binary fixture builders, not expected values derived from production
-decoding. Add deterministic mutation/truncation cases. Keep negative research and
-known differences separate from admitted fixtures; no tolerance or silent reference
-regeneration. More helpers or passing runner cases do not close a feature gate.
-
-### R14 / P2 — Duplicated logic and repeated work
-
-| Current duplication / repeated work | Bounded direction and evidence needed |
+| Findings | Current evidence |
 | --- | --- |
-| Three font-inheritance paths; paint and font readers repeat declaration validation/dispatch even after sharing the scanner. | Share precedence/admission with table-driven cross-tests; retain the distinction between raw declarations and computed values. The standalone direct-text parser now uses the same inline declaration scanner as discovery and rendering, rather than maintaining a second grammar. |
-| Discovery reparses SVG during conversion and throws away style/structure. | Prepared-document ownership under shared limits (R08); avoid a second incompatible language. |
-| `AcquireAsync` verifies bytes then returns a resolution; snapshot can fetch again. The bound source hashes on fetch, then snapshot hashes again for every alias. | One verified byte/program lease and validated declaration binding per operation; count provider calls and hash bytes, preserve R06 checks and caller-owned caching. |
-| Core metrics now retain validated cmap/hmtx/loca/glyf table ranges, so direct layout and glyph expansion no longer rescan the SFNT directory; cmap validation and glyph decoding still repeat per character. | Extend bounded needed-glyph reuse where evidence warrants it; benchmark repeated versus distinct glyphs, never an unbounded global cache. |
-| Flatten → transform → split-by-endpoint-equality → copy per contour. | Carry explicit contour ranges/topology through decoding and transfer bounded storage; avoid reconstructing lost boundaries from coordinate equality. |
-| `BudgetedSceneList<T>` / `BudgetedParserList<T>` repeat reserve/grow/copy/detach/release. | Centralize tested backing-storage lifecycle once ownership is explicit; retain distinct work/category policies. Type sizing must not be a separately guessed integer. |
-| Four converter bodies repeated parse/check/raster lifetime; alpha multiplication remains repeated across parsing/rendering. | `RasterizedConversion` now owns the shared budget, parsed scene and surface lifetime for all output paths, while preserving each API's validation order and awaited stream encoding. Keep composition branches calibrated before extracting them. |
+| R01/R02 | Corrected triangle points/contours, visible public output through all six APIs, quadratic smoke, immediate siblings, CDATA/comments, empty text, group closure and malformed tails are regression-tested. |
+| R03/R08 | Direct-text attributes/children are gated. Discovery shares root/container/text presentation, inherited text style, stylesheet precedence and caller limits; hidden, inert, empty, nonpainting or known render-unsupported paths do not acquire unnecessary fonts in the retained vectors. |
+| R04 / S1–S2 | Generic parser storage uses type-coupled sizing; raster surface reservations clean up on failure; 4×4 glyph sampling is charged in both axes and preflighted. The one-pixel/four-segment vector costs 517 units, not the historical 37. |
+| R04 / S3, partial S5 | Decoder endpoints, flags, points, simple-segment and contour-boundary growth/exact copies, composite component growth/exact copies, active recursion and retained contours now reserve before allocation. Focused tests observe every decoder phase, deny one byte below its observed boundary and verify cleanup; transfer rejects repeat/post-disposal use and releases after a failed scene build. Font metrics, cmap/layout, prepared-face lookup scans, catalog face-selection scans (including no-counter cancellation), snapshot metadata passes before provider acquisition, graph records, simple-glyph decoding, active-recursion cycle scans and contour copying consume shared work. Font discovery and stylesheet/opacity state track active ancestors without repeated scans; text extraction is chunked and bounded. Repeated copy work and broader traversal accounting remain S5 work. |
+| R05/R10 / S4 | Full selected format-12 group validation, format-4 payload offsets, asymmetric matrix coefficients, nested composition and unsupported composite flags/instruction extents have independent regressions. The old transpose/cmap reproductions are repaired. |
+| R06/R07/R11 | Conflicting same-hash sizes and selected nonzero standalone faces fail before provider access; valid aliases share acquisition. Read-only views, disposed-handle guards, eight concurrent conversions, bounded diagnostics and retained direct-text IDs are tested. Disposal must not race a read/conversion. |
+| R09/R14 / S4 | Overflowing x+dx, transformed glyph coordinates, anchor adjustment and nonfinite viewBox/device/coverage coordinates are categorized as limits at their owning boundaries; rectangle mapped edges retain the quarter-pixel gate. Validated decoder contour ends now flow through simple and composite expansion into scene copying, so repeated coordinates cannot invent structural boundaries. All six output APIs share one owned parse/check/raster lifetime. |
 
-Repeated tests at API, renderer and installed-package boundaries are not redundant.
-Keep independent assertions; share only setup/invocation where it improves clarity.
-Do not repeat rejected raster experiments without a discriminating hypothesis.
+Do not reopen these original defects merely because their broader workstream is
+unfinished. Conversely, passing synthetic regressions do not close resource,
+ordinary-font or fidelity gates.
 
-### R15 / P2 — Strengthen types where invariants already fail
+## 3. Open correctness and blocking findings
 
-- `SvgGeometry` is an enum plus every payload, with unrestricted construction and
-  default/null array states. Prefer validated variants or compact typed handles
-  when changing scene ownership; measure record/storage cost.
-- Contours/runs expose mutable arrays and reconstruct closure by point equality.
-  Carry explicit validated ranges and ownership. Validate continuity and finite
-  transformed points before admitting a glyph.
-- `SvgInheritedTextStyle` is now a validated reference type, and root, group and
-  paintable-element contexts require it in their constructors; zero weight or size
-  cannot enter inherited text state. Continue replacing other init-only context
-  properties where they conceal required state.
-- Font hash strings, path:index diagnostic strings and
-  `Resolution.Resolution` blur request, selected face, verified program and lease.
-  Use validated identities/comparers at those boundaries; avoid wrapping every
-  scalar or forcing an unrelated public-API rewrite.
-- Separate computed text style from positioning, and state font/user/device matrix
-  conventions explicitly. Bare doubles plus `checked` did not enforce numeric or
-  matrix semantics (R09/R10).
-- Replace unsupported-content booleans with bounded cause/location when introducing
-  diagnostic context. Couple budget categories/sizes to typed owned storage.
-- `SvgInlineStyleParser.ParseCore` now requires explicit parser-context arguments;
-  audit remaining internal optional parameters and budgeted collections, because the
-  public reflection test does not check internal code. Fix touched APIs/callers
-  together.
+P0 blocks reliance on the affected resource/safety contract. P1 blocks useful,
+supportable labels or coherent documented behavior. P2 is targeted maintainability
+or measured performance work, not a reason for a broad rewrite.
 
-These changes belong with the behavior/ownership repairs that justify them.
-They are not a prerequisite for every small regression or an excuse for a broad
-wrapper rewrite.
+### R04b/R12 / P0 — Work accounting and cancellation still have holes
+
+**Source inspection / retained regressions:** [outline construction](src/Lokad.Svg/Fonts/SvgGlyphOutline.cs)
+copies validated decoder contour boundaries and every segment, with deterministic
+cancellation after a contour-copy element. Decoder segment/component/boundary
+accumulator growth and exact copies likewise charge every copied element and
+release their reservations when cancellation follows exact allocation. The retained
+triangle outline regression now uses 37 units. Active-recursion cycle scans now consume
+the shared counter or check cancellation when no counter is present. Remaining
+metadata work needs an explicit accounting policy.
+
+[VerifiedSvgFontProgramSource](src/Lokad.Svg/Fonts/SvgFontProgramSource.cs) now
+uses the same 4 KiB chunked SHA-256 helper as snapshot validation, including
+deterministic cancellation between source-level hash chunks. SVG-driven snapshot
+preparation passes its shared counter to that verification and reuses the resulting
+verified bytes without a second hash for aliases; an 8 KiB regression observes two
+hash chunks rather than four. Direct source calls remain unmetered because their
+public contract has no work-counter argument. Metrics-backed cmap, advance,
+glyph-range and empty-glyph paths now invoke their cancellation checkpoint even
+when the nullable work counter is absent; retain this no-counter overload contract.
+
+SVG-driven preparation shares caller work limits across discovery and its
+instrumented font phases. The lowered root carries the completed preparation
+total into rasterization, and the resulting surface carries that cumulative total
+into PNG encoding. PNG compression now separately charges the repeated CRC and
+copy pass for each compressed IDAT payload. A one-pixel remaining-work regression
+allows preprocessing and compression then denies serialization through owned,
+caller-memory, synchronous-stream and asynchronous-stream encoder forms. A
+retained public-contract test also proves that all six prepared output forms
+enforce the same numeric operation limit even though they do not retain the
+parser-counter object itself.
+
+The tracked one-glyph direct-text lowerer now has a 64-unit exact parser vector,
+63-unit denial, and deterministic contour-copy cancellation with zero retained
+parser/scene budget. This covers XML traversal through layout, decoding, contour
+ownership and scene construction; it does not make snapshot preparation and
+raster/output one operation ledger.
+
+Closure: define and charge the remaining actual phase work, including repeated
+copies and integrity passes; use deterministic during-phase cancellation and
+bounded remaining-work assertions. Prefer one verified program lease to repeated
+unaccounted hashing. Keep host I/O/cache budgets distinct from library work.
+
+### R03/R08/R10 / P1 — Useful text semantics are not closed
+
+**Source inspection / retained regressions:** discovery and rendering now share
+much more admission/style logic, and prepared documents now retain the admitted
+scene. Default XML direct-text whitespace now collapses to an inter-word space; direct
+`text` also admits `xml:space="preserve"`, converting tabs/line breaks while
+retaining space runs. CSS `white-space: normal` and `white-space: pre` work on
+direct text and inherit through admitted `svg`/`g`/`a` inline or stylesheet
+styles; a direct CSS declaration wins over `xml:space`. Nested spans concatenate
+into the same run, inherit their parent mode, carry exact `xml:space="default"`
+or `xml:space="preserve"`, carry a `style` containing only one of those CSS
+whitespace declarations, scalar `letter-spacing` and/or scalar presentation `dx`/`dy`, or carry an `id`/`class` selected
+by an admitted generic stylesheet rule containing only those style properties; inline span
+values win. Scalar `letter-spacing` works on direct text and inherits through admitted
+`svg`/`g`/`a` styles, contributing only between glyphs to anchor width. A scalar span `dx`/`dy`
+shifts the current position before its first retained glyph or that of a descendant; the nearest span that specifies each axis takes precedence, and the shift persists for following glyphs after anchoring. One validated legacy format-zero `kern` subtable or one DFLT-script `kern`
+feature using an unfiltered GPOS PairPos format-1 first-glyph X-advance lookup adjusts
+adjacent direct-run glyphs; GPOS takes precedence.
+Other CSS whitespace values, span paint/font styling, span x/y and positioning lists,
+glyph-coverage fallback and other GPOS pair positioning are absent. Catalog-level family fallback is not
+per-glyph coverage fallback.
+
+Selected cmap 4/12, metrics, loca/glyf and restricted simple/composite outlines exist.
+Optional `name` table record/storage structures and version-specific `OS/2` table
+bounds are validated, but their family/style data is not applied over manifest selection;
+general GPOS semantics are not validated or applied. One
+version-zero horizontal format-zero legacy `kern` subtable and one DFLT-script
+`kern` feature using an unfiltered GPOS PairPos format-1 first-glyph X-advance lookup
+are strictly validated and applied. Those limited pair adjustments do not establish faithful ordinary labels.
+Many composite flags and instructions explicitly reject, which may exclude glyphs
+in otherwise compatible fonts. Do not expand admission from table presence alone.
+
+Closure: keep discovery/painting cross-tests, explicitly gate output-affecting
+semantics, validate real selected programs privately and promote synthetic
+regressions. Define a disposable prepared-document owner before retaining parse,
+style, font leases and shared accounting through conversion.
+
+### R09/R13 / P1 — Ordinary-font fidelity remains unproven
+
+The glyph rasterizer uses fixed 4×4 samples and eight subdivisions per quadratic,
+with no scale-dependent error bound or same-font browser oracle. A visible
+triangle, quadratic smoke and square/hole coverage tests are not that oracle.
+No ordinary-font SVG/browser comparison was performed in this review or the
+2026-09-20 private source-access assessment.
+
+Closure: section 6's intended-font controls, independent metrics and three stable
+fresh-process captures; cover curves/counters/composites, real styles, pair
+positioning, fractional size/origin, scale/viewBox, alpha/background and useful
+labeled diagrams. Preserve exact references; record known differences without
+tolerance inflation or silent regeneration.
+
+### R07/R11/R16 / P1 — Lifetime, diagnostics and docs need final agreement
+
+Prepared handles fail after disposal, but already-returned borrowed memory cannot
+be revoked; repeated preparation/disposal/retention now has a regression without
+claiming GC timing or allowing disposal to race conversion. Broaden diagnostic stage/identity/
+location vectors. Snapshot preparation now identifies synchronous and asynchronous
+caller provider/source failures by origin as `Source`, instead of inferring them
+from an error code; retain distinct declared-size/hash `Integrity` diagnostics.
+Keep primary failures bounded and do not log font/SVG payloads or private source
+identities. SVG-driven preparation now validates root viewport and presentation
+state, plus inherited container and direct-text paint/opacity admission, before it
+acquires a selected program.
+
+Correct the support matrix's stylesheet-font exclusion and any blanket
+deterministic-memory claims. Document the implemented experiment, admitted subset,
+known defects and future requirements separately. This plan no longer presents
+repaired raster leaks, stale element-size constants or composite transposition as
+current blockers.
+
+## 4. Instrumentation, tests, duplicated work and weak types
+
+The 2026-09-21 source audit at `a4ad68b` adds R17–R20. They are **source
+inspection** findings, not allocation measurements: each needs a discriminating
+benchmark or allocation/limit probe before a performance claim or a pooling change.
+They are recorded here because they affect the bounded-preparation contract and
+because further text work otherwise makes their duplicated state harder to remove.
+
+### R12/R13 — Evidence that is present, and what is missing
+
+| Instrument/evidence | Current strength | Next requirement |
+| --- | --- | --- |
+| RenderBudget + focused tests | Current/peak/category/denial snapshots; real cleanup and transfer assertions. | Full-conversion phase observations; owned versus borrowed storage; denial-stage assertions covering upstream allocations. |
+| Deterministic seams | Background, coverage, expansion, cmap, SFNT metric-record and hash-chunk cancellation tests exist. The expansion seam also has a separate every-entry observer for bounded repeated-work measurements. The old claim that font tests are only pre-cancellation is stale. | Close uninstrumented hash/copy paths and prove interruption inside remaining layout/contour phases. Entry callbacks alone do not prove every loop is interruptible. |
+| Fresh-process tool | 16 passing shape/XML scenarios with fingerprints; setup/traversal/property-access allocation attribution and background cancellation. | Supplied-font setup, repeated/distinct glyphs, cold/warm/repeated/concurrent lifetimes and font-phase denial/cancellation. XML text counting without reading values is not text extraction/layout measurement. |
+| Benchmarks | Four rectangle output paths at sizes 1/64/512; allocation reporting; historical Windows ShortRun results. | Font acquisition/hash/parse/layout/outline/raster/encode attribution; repeated versus distinct glyphs before optimization. |
+| Visual/reference tests | 43 exact admitted shape fixtures, 83 visual-project cases including tooling checks; 13 separate research probes. | Ordinary fonts and representative diagrams; font-aware browser input and substitution controls. Test totals must not be reported as visual corpus size. |
+
+Prioritize independent failure-boundary vectors with exact category, phase,
+draw-order and cleanup assertions. Extend malformed/truncated cmap/glyf,
+off-curve/implied-point and contour-boundary coverage. Preserve six-output,
+non-array memory, stream failure/backpressure, concurrency and package-boundary
+tests; these layers are not redundant. Share fixture builders, not expected
+answers derived from production decoding.
+
+### R14 — Duplicated logic and repeated work
+
+| Remaining duplication | Direction |
+| --- | --- |
+| Raw conversion independently parses after font discovery. A prepared document now lowers and retains the admitted scene during creation. | Retain only state with an explicit ownership/lifetime contract, and preserve discovery/scene eligibility cross-tests. |
+| `SvgFontRequestDiscovery` independently reimplements root validation, active group/link state, inert/unsupported content, stylesheet timing, text eligibility and `tspan` handling that `SvgDocumentTraversal`, `SvgGroupParser` and `SvgRenderedLeafParser` also implement. Two XML reads are intentional because program acquisition precedes text lowering; two independently evolving eligibility walkers are not. | Extract a shared, allocation-aware eligibility/state transition component rather than trying to merge the two passes. Exhaustively cross-test candidate requests and provider calls against the lowering result for hidden, unsupported, inert, styled, nested-span and malformed inputs. |
+| A manifest-bound source still verifies its caller-owned bytes for each snapshot, but SVG preparation now charges that one hash and avoids a second snapshot/alias hash. | Retain a verified content/face lease across preparation and rendering; assert provider call counts, actual hashed bytes, cancellation and integrity. Preserve existing dedup/mismatched-size protections. |
+| Public `SvgFontPackCatalog.AcquireAsync` fetches and verifies bytes, then returns only a resolution whose source fetches and verifies again when it is passed to snapshot creation. Its current contract says verification occurs, but it has no verified-byte handoff. | Either return a single-use verified program lease that snapshot creation can consume, or keep acquisition metadata-only under an explicitly revised contract. Do not add a global cache. Test provider calls, hash chunks and cancellation for the `AcquireAsync` → snapshot path. |
+| cmap validation/lookup and glyph decoding repeat per character. | A fixed 16-entry stack-resident cache now reuses cmap and advance results within one layout operation; retained tests prove four repeated scalars enter cmap once, use exactly 18 work units and clean up on the 17-unit denial. A top-level decode carries its already-read header into expansion, while simple/composite metadata parsing reuses its already-charged glyph range and simple point decoding carries that range from its parsed structure. The text-run iterator retains and disposes one decoded outline for consecutive equal glyph indices; a four-glyph output regression observes one expansion and both first/second glyph pixels, while a separate early-iterator-disposal regression proves cache cleanup. Nonconsecutive and cross-run decoding still repeats; no global cache. |
+| Flat segments → transformed copy → per-contour copies. | Complete: validated exclusive segment ends flow from the decoder through simple/composite expansion, and scene copying uses them directly. Preserve boundary-array accounting and the repeated-origin regression. |
+| Parser and scene budgeted lists repeat reserve/grow/copy/detach/release. | Consolidate only after ownership is explicit; preserve category/work policies and type-coupled sizes. |
+| PNG sync/async compression, IDAT buffering and chunk serialization have three near-parallel implementations. They currently differ in sink type, buffer representation and async writes, while duplicating limits, cancellation and completion state. | Split common IDAT state/validation from the synchronous and asynchronous write adaptors. First pin identical bytes, limit category, cancellation point and partial-stream behavior across all output APIs. |
+| Paint/font declaration consumers still have separate dispatch; alpha arithmetic is repeated. | The inline scanner, inherited text resolver and per-property cascade are already shared. Cross-test remaining semantics before further extraction. |
+
+Completed simplifications: one parse/check/raster scope for six outputs, cached
+SFNT table ranges, and reuse of decoded simple-glyph structure. Do not list those
+as entirely unimplemented work.
+
+### R15 — Weak invariants to strengthen alongside repairs
+
+- Preserve validated contour boundaries through decoder expansion and scene
+  copying. The repeated-origin regression prevents coordinate equality from
+  reconstructing discarded topology.
+- `SvgGeometry` now uses private typed constructors, inaccessible cross-variant
+  payloads and an explicit invalid default. Scene-array accounting is coupled to
+  runtime value sizes, and the unresolved-placeholder raster regression preserves
+  the failure boundary.
+- Request, selected face, verified program and lease are blurred by hash strings,
+  path:index strings and `Resolution.Resolution`; introduce precise identity/
+  lifetime boundaries where they prevent actual errors.
+- `SvgDrawCommand` carries a geometry index, opacity and an enum in every variant;
+  `-1` is a sentinel for group commands, and `SvgSceneSlot` exposes two unrelated
+  raw `int` indexes. Use command-variant factories and non-negative scene-index
+  value types before adding another retained command kind. This makes an unresolved
+  placeholder or a slot from the wrong scene unrepresentable rather than a late
+  raster failure.
+- The committed `a4ad68b` change correctly distinguishes an omitted `tspan` axis
+  from an explicit zero with nullable `SvgTextPositionOffset` axes, then resolves
+  nearest specified axes into a concrete layout adjustment. Preserve that boundary:
+  optional source syntax belongs only before resolution; positioned glyphs should
+  retain finite concrete coordinates.
+- Preserve the now-validated inherited-text reference type and required context
+  constructor state. Audit remaining internal optional parameters when touching
+  APIs; public reflection tests do not cover internal signatures.
+
+### R17 / P0 — Font discovery control storage is budgeted in-process (child-process probe pending)
+
+**Source inspection (at `a4ad68b`):** `SvgFontRequestDiscovery` created ordinary `List`,
+`HashSet` and five growing `Stack` instances plus one heap
+`TextRequestCandidate` per eligible direct-text candidate. Only its stylesheet text,
+rules and lazy character chunk use `RenderBudget`; those collections and candidate
+objects do not. They are bounded indirectly by node/depth/request limits, but the
+advertised renderer-owned preparation budget neither reserves their capacity nor
+observes their growth. The discovery pass also had its own temporary budget, so its
+peak is not visible in the prepared document's later scene budget.
+
+**Repair (`7b92422`):** discovery now reserves ancestor, whitespace, eligibility, group and distinct-request storage from its own preparation budget with type-coupled capacity accounting, value-type stacks and a value candidate, plus in-process denial/cleanup/cancellation regressions. The child-process probe in the closure below is still pending, so R17 stays open.
+
+Closure (remaining): keep the BCL XML
+workspace allowance distinct; do not pretend it is exact allocation accounting.
+Add a child-process probe for deep groups, many empty text elements, many distinct
+requests and cancelled discovery, asserting provider calls, current/peak ledger
+values and no retained reservation. This is a correctness-of-limits issue, not a
+claim about GC collection timing.
+
+### R18 / P1 — Discovery and lowering need one eligibility contract
+
+**Source inspection:** the discovery walker and the lowering walker both decide
+whether text is rendered, whether style rules are active and whether an unsupported
+subtree invalidates the operation. The former now uses budgeted value stacks and a value candidate (`7b92422`); the latter owns `SvgDocumentState`, typed group scopes and scene
+commands. Existing examples cover selected cases, but there is no exhaustive
+equivalence contract. Every new `text`/`tspan`/stylesheet feature therefore has two
+places to update and can either acquire a font that will not be painted or omit a
+font that lowering requires.
+
+Closure: preserve the required pre-acquisition XML scan, but factor its shared
+admission decisions into a pure state transition or analysis result consumed by
+both passes. Add a compact input matrix that asserts the exact discovered request
+set, provider/source call count, later parse outcome and error category. Include
+opacity/visibility, root and group inheritance, definitions/symbols, unsupported
+siblings, empty/whitespace-only content, direct and nested spans, stylesheet
+precedence, malformed tails and cancellation. Do this before broadening text
+semantics.
+
+### R19 / P2 — Avoidable parse and identity transients need a measured baseline
+
+**Source inspection:** `SvgComputedStyle.Resolve` evaluates all eight
+`reader.GetAttribute` calls before `Select` can choose an inline or stylesheet
+value. `SvgInlineStyleParser` then materializes a separate string for every
+recognized inline declaration even when it is immediately parsed and discarded.
+At the font boundary, SHA-256 is converted to a fresh 64-character string for each
+verification, diagnostic program identities are rebuilt as `path:index`, and
+`VerifiedSvgFontProgramSource.StableId` concatenates a fresh string on every read.
+These are small individually but occur in the style-heavy and repeated-acquisition
+paths; source inspection alone does not establish their aggregate cost.
+
+Closure: first add allocation and elapsed-time baselines for attribute-heavy
+shapes, styled text and repeated integrity verification. Then short-circuit
+lower-precedence attribute reads, parse immediate-only inline values into typed
+ephemeral fields where lifetime permits, cache stable diagnostics, and represent a
+validated SHA-256 as a domain value rather than repeatedly formatting text. Any
+hash comparison must retain the present validation, cancellation checkpoints and
+diagnostic redaction. Do not introduce an intern table or process-wide pool merely
+to hide allocation traffic.
+
+### R20 / P2 — PNG buffering has avoidable large-object allocation and drift risk
+
+**Source inspection:** owned-memory and caller-memory encoding first grows
+`PngCompressionBuffer` geometrically, copying its previous array on each growth,
+then allocates the final PNG and copies/CRCs the compressed payload again. Large,
+incompressible output can therefore create several temporary large arrays before
+the final result. Stream output avoids that compression buffer but maintains a
+separate synchronous and asynchronous IDAT state machine.
+
+Closure: benchmark low- and high-entropy images near the encoded-output limit for
+owned memory, caller memory and both stream forms, reporting allocation traffic,
+peak accounted storage, time and cancellation latency separately. If it is a real
+hotspot, use a budgeted segmented accumulator or another explicitly owned staging
+strategy that removes geometric copies while retaining exact byte output and limit
+semantics. `ArrayPool.Shared` is not a free fix: its retained global memory must
+not bypass the renderer budget or introduce an undocumented cache. Keep byte-exact
+PNG, CRC, output-limit, partial-write and one-byte work-limit regressions for every
+sink.
+
+Execution consequence: close R17 and R18 before adding direct-text semantics.
+Schedule R19 and R20 after their requested measurements; neither authorizes a
+speculative pooling rewrite.
 
 ## 5. Execution order and actual blockers
 
-The row statuses distinguish completed repairs from remaining work. Resume with
-the reopened S3 ownership repair and unfinished S5/S6 work. Private S7 corpus
-preparation and characterization can proceed now; broader text admission still
-requires closing the relevant P0 resource and geometry defects. Each row is a work
-package to split into small buildable commits with tests and documentation.
-
-| Order / dependency | Work package | Required exit evidence |
+| Stage | Status | Next concrete deliverable / exit evidence |
 | --- | --- | --- |
-| S1 — complete 2026-09-20 | Correct type-coupled storage sizing and main-surface failure ownership (R04a/c). `BudgetedParserList<T>` now derives each value-array charge from `Unsafe.SizeOf<T>()`, removing stale point/geometry/group/rule/pending-use constants; dictionary allowances remain separately conservative. `Rasterize` transfers its surface reservation only on success and releases it on any intervening exception. | 390 unit plus 83 visual tests pass. New tracked checks cover geometry and CSS-rule array charges and verify zero surface/current ledger bytes after actual background-loop cancellation and malformed-scene failure. The general path and point-list lowerers use the same generic list. Nested glyph contours remain S3. |
-| S2 — complete 2026-09-20 | Make current glyph bounds/sample charging exact and preflighted (R04b). Bounds segment work is preflighted and charged before traversal; coverage charges segments × eight subdivisions × 4×4 samples plus one pixel-dispatch unit. `GlyphCoverageProbe` is an execution-context-local entry seam used only for deterministic tests. | 393 unit plus 83 visual tests pass. A one-pixel/four-segment contour charges exactly 517 work units; limits 3 and 516 deny before bounds and coverage respectively; coverage-entry cancellation is observed and returns the surface ledger to zero. Aggregate font/table/graph work remains S5. |
-| S3 — in progress, reopened 2026-09-20 | Budget decoded/transformed/nested contours and define transfer ownership (R04a). Composite expansion grows its decoded-segment accumulator under reservation, before materializing the exact decoded array; decoded and transformed segment arrays overlap through contour splitting and retained scene ownership. `SvgGlyphOutline` preflights closed contours, reserves exact final outer/segment scene arrays before allocation, and transfers that reservation with `SvgGlyphContourStorage` into retained geometry. An execution audit found that simple-glyph endpoint, flag, point and contour-builder storage remains unreserved before this chain begins. | 499 unit plus 83 visual tests pass. The 350-byte regression crosses accumulator growth and decoded materialization before transformed-buffer denial, then proves ledger cleanup; a focused transfer regression proves final contour arrays remain charged through retained-geometry disposal and deny one byte below the full allocation peak. Next: reserve the simple-glyph temporary arrays and add their overlap/denial regression. |
-| S4 — complete 2026-09-20 | Correct cmap validation, asymmetric composite matrices and numeric/shape admission (R05/R10/R09). Selected format-12 groups are fully validated before lookup returns; nonzero format-4 offsets must be aligned and point into `glyphIdArray`. The OpenType scale01/scale10 file-order mismatch is repaired: an asymmetric scale01 vector maps (10,3) to (10,8), rather than transposing it to (11.5,3). Finite text-coordinate sums report `LimitExceeded` rather than a CLR range exception, while mapped rectangle edges retain the documented quarter-pixel gate. | 398 unit plus 83 visual tests pass. Tracked vectors cover malformed cmap, matrix order, overflowing coordinates and non-quarter shape mapping. All 43 shape references pass. |
-| S5 — in progress | Aggregate font/table/graph work and phase observations (R04b/R12). Every visited glyph in decoded expansion consumes the shared conversion counter before header/empty/composite handling; simple-glyph contour endpoints, flag runs, coordinates, contour lowering and transformed-segment insertion plus composite component records now consume that counter too. Both a direct empty child and the second empty leaf of a branching composite graph are denied at their actual visits. The branching vector records exactly seven visits/records and zero retained geometry bytes after both success and denial. Direct-text layout charges rune enumeration, positioned-glyph construction and anchor adjustment as well as cmap encoding records and format-4/12 groups or segments, lookup scans and advance reads to the shared counter; snapshot metrics retain validated cmap/hmtx/loca/glyf table ranges, removing repeated SFNT directory scans from layout and glyph expansion. The one-glyph format-4 path now needs exactly 9 units and releases positioned-glyph storage when denied at 8. SVG-driven preparation shares its caller work limit from discovery through SFNT metric parsing and chunked integrity hashing. Metric parsing now exposes its one-shot execution-context-local `FontMetricsProbe` after an actual validated directory record, proving cancellation before the next record is charged. Hashing runs in the same 4 KiB checkpoint size as byte work, making cancellation observable between actual appended hash chunks through the execution-context-local `FontIntegrityProbe`; a padded valid-font regression cancels after its first chunk and before the second. `GlyphExpansionProbe` and `CmapLookupProbe` likewise prove cancellation at actual expansion and lookup checkpoints. Direct text is consumed through a budgeted 4 KiB `ReadValueChunk` buffer and span append, rather than materializing a whole XML node value. | 496 unit plus 83 visual tests pass. Next: remaining font/table phase observations. |
-| S6 — in progress | Coherent discovery/style/preparation and verified program lifetime (R07/R08/R11/R14). SVG-driven preparation has a caller-limits overload; discovery applies those structural/work limits and follows renderer eligibility: only direct-root or `g`/`a`-descendant text can be considered. It therefore excludes nested `svg`, inert `defs`/`title`/`desc`/`metadata` (retaining an outer inert boundary through nested inert elements), standalone `tspan`, `symbol` and arbitrary unsupported containers, text subtrees with unsupported child elements, text under nonidentity transforms, and text hidden by inherited direct/inline `display` or `visibility`. Empty text validates structurally but cannot acquire or require a font. Hidden and direct/inherited nonpainting text now complete text syntax/size validation and bounded extraction but exit before snapshot lookup/layout, so their empty preparation result can be converted. Unsupported render-path siblings clear and suppress requests, so they cannot trigger a provider before their eventual conversion failure. Discovery now retains and resolves the renderer's bounded root stylesheet rules using the same parser, selector cascade and leaf-ordering gate, so stylesheet-hidden/nonpainting text is skipped and late stylesheets reject before acquisition; it also performs root/group/link attribute validation and rejects their inline or stylesheet fill-rule presentation before acquisition. Direct untransformed text reuses the renderer's attribute and default-fill-rule policies before provider acquisition, and shares renderer font inheritance including invalid ancestor font-size handling. Root, group and paintable contexts now require validated inherited text state rather than an init-only default-prone struct. A bounded text `id` now reaches glyph-stage and render-time missing-prepared-face diagnostics. The full preparation path proves empty/inert definitions, unsupported text children, transformed text, stylesheet-hidden/direct-or-root/group/stylesheet-inherited-nonpainting text and unsupported sibling content trigger zero provider acquisition, while unsupported text attributes, nondefault fill rules and inline or stylesheet unsupported group presentation are rejected before acquisition; renderer regressions also retain direct-text siblings across CDATA/comments and group closure and reject malformed tails or unsupported siblings. One immutable supplied snapshot is proven safe across eight concurrent direct-text conversions. All six output APIs now use one owned parse/check/raster scope, eliminating duplicated lifetime paths without changing their validation order or stream-await behavior. | 456 unit plus 83 visual tests pass. Next: remaining eligibility, preparation/painting agreement and bounded diagnostic context. |
-| S7 — private asset access verified; acceptance pending | Ordinary fonts, explicit font semantics and font-aware oracle (R09/R10/R12/R13). Local use of the existing OoxPdf pack and unchanged manifest is authorized; a bounded read verified the manifest identifier and one regular face-0 program's size/hash and TrueType table presence. No Svg parse/render or browser comparison was performed in this assessment. | Implement the opt-in private workflow in section 6, without private repository content or default network tests. Inventory actual selected faces and semantics, then create three fresh-process intended-font captures and compare independent metrics and pixels for curves/holes/composites/fractional origins. Exercise real styles, pair positioning, spans/fallback and a useful labeled diagram via public APIs. Admission depends on the relevant S3–S6 repairs; publication additionally needs redistributable assets. |
-| Each slice | Synchronize API/support docs and update this plan (R16). The direct-text inheritance and caller-limit wording is synchronized with the implemented subset. | Record revision, command/result and regression/artifact; replace stale status instead of appending contradictory history. |
+| S1 — typed sizing and surface failure cleanup | Complete, retained tests pass. | Preserve type-coupled parser/scene-array sizing and zero surface ledger after failure/cancellation. |
+| S2 — glyph sampling preflight | Complete for the current sampling model. | Preserve exact 517-unit vector and denial before bounds/coverage. This is not fidelity acceptance. |
+| S3 — complete decoder/storage ownership | Complete; focused phase observations, one-byte denial boundaries and cleanup tests pass. | Preserve reservations for simple/composite temporary and exact arrays, active recursion and retained contour transfer. Keep raw inspection helpers off budgeted rendering paths. |
+| S4 — malformed reader, matrices and numeric admission | Complete; malformed readers, matrices and numeric outline/device/coverage arithmetic have categorized regressions. | Preserve asymmetric/nested and malformed-cmap vectors, finite coordinate checks and exact admitted pixels. |
+| S5 — aggregate work and phase observations | Direct-text lowerer vectors complete; retained boundaries prove preparation stays charged through PNG compression and the repeated compressed-IDAT serialization pass. Discovery control collections are now budgeted in their own preparation budget with in-process ledger/cancellation regressions (`7b92422`); the child-process discovery probe is still pending. | Preserve 64/63 parser evidence, one-hash preparation and no-counter cancellation. Add the child-process discovery probe (deep groups / empty texts / distinct requests / cancellation) with provider-call and ledger assertions before claiming an end-to-end prepared-operation bound. |
+| S6 — coherent preparation, lifetime and documentation | Stylesheet support, repeated snapshot retention, bounded acquisition diagnostics and root/container/text eligibility now have regressions. A single-use prepared document owns its verified snapshot, retained admitted scene and shared preparation/render work through all six output forms; direct XML whitespace normalizes under the raw character cap, CSS `white-space: normal`/`pre` and scalar `letter-spacing` resolve through the direct-text cascade and inherited containers, a strictly validated version-zero horizontal format-zero legacy `kern` subtable or one DFLT-script `kern` feature using an unfiltered GPOS PairPos format-1 first-glyph X-advance lookup adjusts adjacent direct-run glyphs, and nested spans concatenate under the remaining node/depth/attribute limits while inheriting whitespace and letter spacing, carrying XML whitespace, scalar spacing, scalar presentation `dx`/`dy` before their first retained span-descendant glyph, an inline style containing only admitted style values, or an `id`/`class` selected by an admitted stylesheet rule containing only those style values. Other CSS values, other GPOS, span paint/font styling and span x/y or positioning lists remain incomplete. | Establish the shared discovery/lowering eligibility contract from R18 before adding more text syntax; then retain only useful admitted style state without weakening raw snapshot concurrency. |
+| S7 — ordinary fonts and intended-font oracle | Asset permission/access resolved; an opt-in local manifest/directory or explicit HTTP source host has public synthetic local/stdin/HTTP/lazy/retry smoke and focused nonseekable-byte/growth-limit/concurrent-cache/cache-cap/cancellation-recovery tests, while inventory and oracle acceptance remain pending. | Inventory selected faces and semantics, then compare the same verified programs with browser metrics/pixels and promote reproducible defects into public synthetic regressions. Follow section 6 exactly. |
 
-Status update 2026-09-20: the contour-array reservation-transfer boundary is
-resolved and covered by the focused retained-geometry ownership test. S3 remains
-reopened for the separate simple-glyph temporary-array ownership gap recorded in
-R04a.
+R17 is partially repaired (`7b92422` budgets containers with in-process regressions; child-process probe pending); close the probe, then do R18 before adding text semantics. Private
+inventory/oracle investigation can start now, but text admission requires the
+relevant S5–S6 repairs and S7 evidence. No new source permission is needed to
+start it.
 
-Milestone interpretation:
+Milestones: M0 experimental vertical slice exists; M1 bounded trustworthy inputs
+is incomplete; M2 coherent prepared/style state is incomplete; M3 useful ordinary
+labels is unvalidated; M4 wider SVG features remains later work. Remote CI,
+canonical Linux oracle and publication remain deferred, not blockers to these
+local repairs. Public asset redistribution is a separate permission gate.
 
-- M0, experimental vertical slice: original triangle/cursor/attribute defects have
-  concrete repairs. This is not closure of all parser semantics or documentation.
-- M1, bounded trustworthy inputs: S1–S5, plus explicit lifetime/failure contracts.
-- M2, coherent supplied-font preparation/style: S6 and the admitted semantic subset.
-- M3, useful ordinary labels: S7's metric, pixel, resource and public-host gates.
-- M4, wider useful SVGs: general geometry/transforms/strokes, paints/composition,
-  then mapped PNG images; JPEG, filters and advanced shaping follow separate gates.
-- Deferred: remote CI, canonical Linux oracle and publication. No current private
-  dependency or external permission prevents S1–S6 or local S7 investigation.
-
-Font-source permission and initial access are resolved. Remaining local blockers
-are implementation and evidence gaps: S3 buffer ownership, S5 phase accounting,
-S6 preparation/lifetime agreement, and S7 font semantics and intended-font oracle.
-Private asset availability does not establish rendering fidelity or authorize
-redistribution. Keep each failing input privately when necessary and promote only
-independent, synthetic regressions and sanitized findings to the repository.
+Each implementation step must include its discriminating regression, relevant
+docs and actual verification in a small buildable change. Update this status
+rather than append contradictory progress paragraphs or repeatedly mark the same
+partial step complete.
 
 ## 6. Font, text and host requirements retained
 
 ### Shared public font-pack contract
 
-Preserve the public Lokad.OoxPdf 0.1.4 manifest contract; a focused source review of
-the local OoxPdf checkout at `8e4b0333` (declared version 0.1.5, not a verified
+Preserve the public Lokad.OoxPdf 0.1.4 manifest contract; the 2026-09-20 source review
+of the local OoxPdf checkout at `8e4b0333` (declared version 0.1.5, not a verified
 published release) confirms the same fields and resolution order. The reviewed
 public files are `Fonts/OoxPdfFontPackResolver.cs`, `Fonts/FontProgramLoader.cs`,
 `FontTests.cs`, `README.md` and `docs/PrivateValidation.md`. Both renderers must use
@@ -504,15 +437,17 @@ before use. Follow OoxPdf's private-validation approach with Svg's existing igno
 layout. Ordinary builds/tests and public CI must remain offline and independent of
 the private source and sibling checkouts; do not upload private test artifacts.
 
-Evidence from this assessment: read the configured source without printing its
-location; streamed the unchanged manifest under 1 MiB and checked the requested
+Historical assessment (2026-09-20; not repeated in this review): read the
+configured source without printing its location; streamed the unchanged manifest
+under 1 MiB and checked the requested
 identifier; fetched one selected regular face-0 program under its declared size
 and Svg's aggregate limit; verified exact length and SHA-256. It has the standalone
 TrueType signature and `head/maxp/hhea/hmtx/cmap/loca/glyf` table entries, plus
 `kern` and `GPOS`, and no `fvar` entry. These are initial format observations, not
 table validation, shaping support or a whole-pack inventory. All downloaded bytes
 stayed in memory. No Svg catalog/snapshot conversion, OoxPdf test run, browser
-capture or pixel comparison was performed in this assessment.
+capture or pixel comparison was performed in that assessment. No new private source access was needed for the 2026-09-21
+review.
 
 Execute S7 through the following concrete steps:
 
@@ -538,6 +473,9 @@ Execute S7 through the following concrete steps:
    success may support local investigation, but public corpus/package admission
    needs independently redistributable fixtures and reproducible public evidence.
 
+The ownership and text requirements below are targets, not a claim that retained
+prepared documents, family/coverage fallback or shaping are already implemented.
+
 Hosts own locations, credentials, I/O/retry/concurrency and bounded shared caches;
 the library owns SVG analysis, ordered family/generic mapping, face selection,
 coverage fallback, layout and painting. Prefer real styles; no implicit synthetic
@@ -561,7 +499,8 @@ redistributable public test fonts separately, retaining their asset licenses.
 
 Horizontal LTR Latin labels, initially ASCII/tested precomposed Latin, using supplied
 static standalone TrueType face 0. Validate SFNT/ranges, `head`, `maxp`,
-`hhea`/`hmtx`, `cmap` 4/12, `loca`/`glyf`, `name`/`OS/2` metadata.
+`hhea`/`hmtx`, `cmap` 4/12, `loca`/`glyf`, plus optional `name`/`OS/2` metadata
+structures.
 Include simple curves, implied points and bounded composite placement; gate
 unsupported formats/flags.
 
@@ -570,7 +509,7 @@ inherited font/paint/visibility, scalar x/y/dx/dy, alphabetic baseline,
 start/middle/end anchors, advances and required pair positioning (`kern` and
 explicit bounded GPOS pairs). Test AV, spaces/punctuation, accents/composites,
 supplementary scalars, mixed faces/sizes/colors and fallback boundaries.
-Implement or reject features affecting output. Add nested `tspan`, spacing and
+Implement or reject features affecting output. Add styled/positioned `tspan`, spacing and
 explicit line positioning for labels.
 
 Position/rotate lists, `textLength`/`lengthAdjust`, more baselines, transformed/
@@ -605,69 +544,69 @@ oracle results are not canonical Linux evidence. Work toward 200 targeted cases 
 
 ## 7. Core contract, wider scope and validation
 
-One MIT pure-managed C# `net10.0` library for Windows/Linux: no third-party runtime
-packages, native assets/PInvoke, System.Drawing/platform font engine, browser service
-or other Lokad runtime dependency. Rendering uses explicit memory resources/options,
-no implicit filesystem/network/installed-font access. Asset rights are distinct
-from code licenses; third-party implementations are research references, not code
-to copy/translate/vendor through `external/`.
+Keep one MIT pure-managed C# `net10.0` library for Windows/Linux, with no third-party
+runtime packages, native assets/PInvoke, System.Drawing, platform font engine,
+browser service or other Lokad runtime dependency. Windows was tested here;
+Linux support still needs fresh platform evidence. Rendering uses explicit
+resources/options, never implicit filesystem/network/installed-font access.
+Third-party research is not permission to copy/vendor implementations.
 
-Preserve owned-result/caller-memory lifetime, detectable overlap rejection,
-non-array memory and all six APIs. Keep categorized malformed/unsupported/
-unresolved/limit/insufficient-destination failures and token-preserving cancellation.
-Async memory schedules once; async streams await writes, no per-glyph tasks.
-Preserve nonseekable streams, output limits and partial-failure behavior.
+Preserve owned-result/caller-memory lifetimes, overlap rejection, non-array
+memory and six output APIs; categorized malformed/unsupported/unresolved/limit/
+insufficient-destination errors and token-preserving cancellation. Async memory
+schedules once; async streams await writes, propagate failures and remain open.
+Hosts own partial-output cleanup and transactional publication.
 
 | Existing default | Value |
 | --- | --- |
-| Accounted renderer storage | 256 MiB, not process/host memory |
+| Accounted renderer storage | 256 MiB, not process/host memory; R04 gaps remain. |
 | SVG input / encoded PNG | 16 MiB / 128 MiB |
 | Output | 16,384 per axis; 16,777,216 pixels |
 | Nodes / cumulative path commands | 100,000 / 1,000,000 |
-| Shared work | 100,000,000 units |
+| Shared conversion work | 100,000,000 units; a prepared document carries its preparation work through parsing, rasterization and PNG compression |
 | XML depth / attributes per element | 128 / 256 |
-| Current snapshot caps, not shared accounting | 256 faces / 32 MiB borrowed distinct programs |
+| Text | 32,768 UTF-16 characters cumulatively in direct-text extraction |
+| Snapshot caps, separate accounting | 256 faces / 32 MiB borrowed distinct programs |
 
-XML allowance remains max(16 KiB, four times input bytes, 512 bytes per configured
-attribute limit): conservative BCL allowance, not exact accounting. Distinguish live
-owned storage, borrowed bytes, allocation traffic and working set; release is not
-GC. Choose measured aggregate font/text/graph/subdivision defaults during M1.
+XML workspace uses max(16 KiB, four times input bytes, 512 bytes per configured
+attribute limit), a conservative BCL allowance rather than exact allocation
+accounting. Distinguish owned, borrowed, live-accounted, allocated and working-set
+measurements. Choose measured aggregate font/text/graph defaults during M1.
 
-Retain wider scope: nested viewports/units/cascade/reference graphs; general paths/
-arcs/circles/ellipses/affine transforms and stroke caps/joins/dashes; gradients/
-patterns/clipping/masks/nested opacity/markers; mapped PNG/profiles/resampling/nested
-SVG, later JPEG; bounded blur/offset/flood/color-matrix/component-transfer/composite/
-blend/merge/shadow filters; advanced text as separately admitted families.
-Scripts/events, animation, mutable DOM, foreignObject HTML and general interactive
-web content remain outside scope.
+Retain wider scope after useful labels: nested viewports/units/cascade/references;
+general paths/arcs/circles/ellipses/transforms/strokes; gradients/patterns/clipping/
+masks/nested opacity/markers; mapped PNG/profiles/resampling/nested SVG, later JPEG;
+bounded filters and separately admitted advanced text. Scripts/events, animation,
+mutable DOM, foreignObject HTML and general interactive web content remain out of
+scope.
 
-Commands executed for this review (results in section 1):
+Historical commands executed for the earlier 2026-09-21 review:
 
 ```powershell
-dotnet restore --locked-mode
-dotnet build Lokad.Svg.slnx -c Release --no-restore -m:1
-dotnet test Lokad.Svg.slnx -c Release --no-build --no-restore -m:1 --logger "console;verbosity=minimal"
-./tools/test-memory-probe.ps1 -ResultsDirectory artifacts/review-20260920-refresh/memory
-dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build --no-restore -o artifacts/review-20260920-refresh/package
-./tools/test-package.ps1 -PackageDirectory artifacts/review-20260920-refresh/package -ResultsDirectory artifacts/review-20260920-refresh/package-smoke
+dotnet test Lokad.Svg.slnx -c Release --nologo
+dotnet build Lokad.Svg.slnx -c Release --no-restore --nologo -m:1
+./tools/test-memory-probe.ps1 -ResultsDirectory artifacts/review-20260921/memory
+dotnet run --project artifacts/review-20260921/Review.csproj -c Release
 ```
 
-The ignored diagnostic harness was also executed with
-`dotnet run --project artifacts/review-20260920-refresh/Review.csproj -c Release`;
-its final repeat used `--no-restore`, with output retained in `results.jsonl`.
-This harness is not required for a clean checkout: S1–S4 must promote its decisive
-vectors into tracked regressions. Markdown local links and `git diff --check`
-were checked after the plan rewrite.
+The final settled-revision validation was:
 
-Use fresh output/package directories for subsequent evidence runs. Run oracle checks for pixels,
-phase/resource probes for limits/cancellation and package consumers for public API
-changes. Preserve [benchmarks](docs/BENCHMARKS.md),
+```powershell
+dotnet test Lokad.Svg.slnx -c Release --nologo
+```
+
+The ignored harness is not required by a clean checkout. This plan-only source
+audit itself made no production or test-code change; `7b92422` then budgeted discovery control storage with its tests/docs and the suite was re-verified there (locked restore, zero warnings/errors); `a4ad68b` landed before the settled
+test run. Markdown local links and `git diff --check` pass after the plan rewrite.
+
+For implementation changes, also use locked restore; run package/isolated-consumer
+checks for public API changes, phase/resource probes for limits/cancellation, and
+fresh independent oracle checks for admitted pixels. Use new result directories;
+do not label earlier reports as fresh. Preserve [benchmarks](docs/BENCHMARKS.md),
 [oracle procedures](docs/ORACLE.md) and [raster research](docs/RASTERIZATION_DESIGN.md).
 When CI resumes, retain run URL/revision/conclusions and matching artifacts;
 `validate-ci-artifacts.ps1` checks consistency, not remote authenticity.
-Release requires honest limitations, representative exact cases and platform/package
-evidence without hidden font/runtime dependencies.
 
-Follow [C# guidelines](docs/GUIDELINES_CSHARP.md). Retain each failing input/regression,
-update relevant API/support documentation and record actual verification on closure.
-Prefer complete small behavior changes over more scaffolding without observed output.
+Follow [C# guidelines](docs/GUIDELINES_CSHARP.md). Release requires honest
+limitations, representative exact cases, platform/package evidence and no hidden
+font/runtime dependencies.
