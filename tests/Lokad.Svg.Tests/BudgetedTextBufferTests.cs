@@ -82,4 +82,43 @@ public sealed class BudgetedTextBufferTests
         text.Dispose();
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
+
+    [Fact]
+    public void Retains_a_positioned_span_offset_for_its_first_descendant_character()
+    {
+        RenderBudget budget = new(2_000);
+        var workCounter = new ParserWorkCounter(100);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, false);
+
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(5, -2), 1, workCounter, CancellationToken.None);
+        descendant.Append("AA", buffer, 10, workCounter, CancellationToken.None);
+        buffer.ExitPositioningSpan(1);
+        using BudgetedTextLayout text = buffer.Detach();
+
+        Assert.Equal("AA", text.Value);
+        Assert.Equal([new SvgTextPositionAdjustment(0, 5, -2)], text.PositionAdjustments);
+        Assert.True(budget.Snapshot().CurrentBytes > 0);
+        text.Dispose();
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Lets_a_nearer_zero_position_offset_override_an_outer_span()
+    {
+        RenderBudget budget = new(2_000);
+        var workCounter = new ParserWorkCounter(100);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, true);
+
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(5, -2), 1, workCounter, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(0, 0), 2, workCounter, CancellationToken.None);
+        descendant.Append("A", buffer, 10, workCounter, CancellationToken.None);
+        buffer.ExitPositioningSpan(2);
+        buffer.ExitPositioningSpan(1);
+        using BudgetedTextLayout text = buffer.Detach();
+
+        Assert.Equal("A", text.Value);
+        Assert.Empty(text.PositionAdjustments);
+    }
 }

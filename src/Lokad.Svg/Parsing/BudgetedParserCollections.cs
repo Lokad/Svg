@@ -94,8 +94,12 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
         _length += value.Length;
     }
 
-    void ISvgTextOutput.Append(ReadOnlySpan<char> value, double letterSpacing, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    void ISvgTextOutput.Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => Append(value, maximumLength, workCounter, cancellationToken);
+
+    void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken) { }
+
+    void ISvgTextOutput.ExitPositioningSpan(int scopeDepth) { }
 
     /// <summary>Transfers ownership of the exact final string reservation; the caller must dispose the returned value after layout.</summary>
     internal BudgetedText Detach()
@@ -168,7 +172,7 @@ internal readonly record struct BudgetedText(string Value, RenderBudget.BudgetRe
     public void Dispose() => Reservation?.Dispose();
 }
 
-/// <summary>Builds normalized direct text and lazily retains only letter-spacing intervals that differ from the enclosing text value.</summary>
+/// <summary>Builds normalized direct text and lazily retains only letter-spacing intervals and resolved scalar span offsets that affect layout.</summary>
 internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
 {
     private readonly BudgetedTextBuffer _text;
@@ -177,6 +181,8 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
     private readonly CancellationToken _cancellationToken;
     private readonly double _defaultLetterSpacing;
     private BudgetedParserList<SvgTextLetterSpacingSpan>? _letterSpacingSpans;
+    private BudgetedParserList<SvgTextPositionScope>? _positioningScopes;
+    private BudgetedParserList<SvgTextPositionAdjustment>? _positionAdjustments;
 
     internal SvgTextLayoutBuffer(RenderBudget budget, double defaultLetterSpacing, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -190,13 +196,15 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         _defaultLetterSpacing = defaultLetterSpacing;
     }
 
-    /// <summary>Appends one normalized interval and preserves its spacing only when it differs from the enclosing text value.</summary>
-    public void Append(ReadOnlySpan<char> value, double letterSpacing, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <summary>Appends one normalized interval, resolving any active scalar span adjustment at the interval's first retained character.</summary>
+    public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
+        if (scopeDepth < 0) throw new ArgumentOutOfRangeException(nameof(scopeDepth));
         if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction work context.");
         int start = _text.Length;
         _text.Append(value, maximumLength, workCounter, cancellationToken);
+        if (value.Length != 0 && ResolvePositionAdjustment(scopeDepth, start) is SvgTextPositionAdjustment adjustment && (adjustment.Dx != 0 || adjustment.Dy != 0)) (_positionAdjustments ??= new BudgetedParserList<SvgTextPositionAdjustment>(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken)).Add(adjustment);
         if (value.Length == 0 || _letterSpacingSpans is null && letterSpacing.Equals(_defaultLetterSpacing)) return;
         BudgetedParserList<SvgTextLetterSpacingSpan> spans = _letterSpacingSpans ??= CreateLetterSpacingSpans(start);
         int end = checked(start + value.Length);
@@ -212,15 +220,46 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         spans.Add(new SvgTextLetterSpacingSpan(start, end, letterSpacing));
     }
 
+    /// <summary>Begins a nested explicit scalar positioning scope that remains active until its matching exit.</summary>
+    public void EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (scopeDepth <= 0) throw new ArgumentOutOfRangeException(nameof(scopeDepth));
+        if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction work context.");
+        BudgetedParserList<SvgTextPositionScope> scopes = _positioningScopes ??= new BudgetedParserList<SvgTextPositionScope>(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+        if (scopes.Count != 0 && scopes[^1].ScopeDepth >= scopeDepth) throw new InvalidOperationException("Text positioning scopes must be entered in increasing span depth.");
+        scopes.Add(new SvgTextPositionScope(scopeDepth, offset, false));
+    }
+
+    /// <summary>Ends the current nested explicit scalar positioning scope.</summary>
+    public void ExitPositioningSpan(int scopeDepth)
+    {
+        if (scopeDepth <= 0) throw new ArgumentOutOfRangeException(nameof(scopeDepth));
+        if (_positioningScopes is null || _positioningScopes.Count == 0 || _positioningScopes[^1].ScopeDepth != scopeDepth) throw new InvalidOperationException("Text positioning scopes must exit in nesting order.");
+        _positioningScopes.RemoveLast();
+    }
+
     /// <summary>Transfers normalized text and any exact spacing-span storage to the layout consumer.</summary>
     internal BudgetedTextLayout Detach()
     {
+        if (_positioningScopes is { Count: not 0 }) throw new InvalidOperationException("Text positioning scopes must be closed before layout transfer.");
+        _positioningScopes?.Dispose();
+        _positioningScopes = null;
         BudgetedText text = _text.Detach();
         try
         {
             OwnedParserArray<SvgTextLetterSpacingSpan> spans = _letterSpacingSpans is null ? new OwnedParserArray<SvgTextLetterSpacingSpan>([], null) : _letterSpacingSpans.Detach();
             _letterSpacingSpans = null;
-            return new BudgetedTextLayout(text.Value, spans.Items, text.Reservation, spans.Reservation);
+            try
+            {
+                OwnedParserArray<SvgTextPositionAdjustment> adjustments = _positionAdjustments is null ? new OwnedParserArray<SvgTextPositionAdjustment>([], null) : _positionAdjustments.Detach();
+                _positionAdjustments = null;
+                return new BudgetedTextLayout(text.Value, spans.Items, adjustments.Items, text.Reservation, spans.Reservation, adjustments.Reservation);
+            }
+            catch
+            {
+                spans.Dispose();
+                throw;
+            }
         }
         catch
         {
@@ -234,6 +273,10 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         _text.Dispose();
         _letterSpacingSpans?.Dispose();
         _letterSpacingSpans = null;
+        _positioningScopes?.Dispose();
+        _positioningScopes = null;
+        _positionAdjustments?.Dispose();
+        _positionAdjustments = null;
     }
 
     private BudgetedParserList<SvgTextLetterSpacingSpan> CreateLetterSpacingSpans(int start)
@@ -242,15 +285,40 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         if (start != 0) spans.Add(new SvgTextLetterSpacingSpan(0, start, _defaultLetterSpacing));
         return spans;
     }
+
+    private SvgTextPositionAdjustment? ResolvePositionAdjustment(int scopeDepth, int start)
+    {
+        if (_positioningScopes is null) return null;
+        int adjustmentIndex = -1;
+        for (int index = _positioningScopes.Count - 1; index >= 0; index--)
+        {
+            SvgTextPositionScope scope = _positioningScopes[index];
+            if (scope.ScopeDepth > scopeDepth) continue;
+            if (!scope.HasApplied) adjustmentIndex = index;
+            break;
+        }
+        for (int index = 0; index < _positioningScopes.Count; index++)
+        {
+            SvgTextPositionScope scope = _positioningScopes[index];
+            if (scope.ScopeDepth <= scopeDepth && !scope.HasApplied) _positioningScopes[index] = scope with { HasApplied = true };
+        }
+        if (adjustmentIndex < 0) return null;
+        SvgTextPositionOffset offset = _positioningScopes[adjustmentIndex].Offset;
+        return new SvgTextPositionAdjustment(start, offset.Dx, offset.Dy);
+    }
 }
 
-/// <summary>Owns normalized text and optional exact letter-spacing span storage until text layout completes.</summary>
-internal readonly record struct BudgetedTextLayout(string Value, SvgTextLetterSpacingSpan[] LetterSpacingSpans, RenderBudget.BudgetReservation? TextReservation, RenderBudget.BudgetReservation? LetterSpacingReservation) : IDisposable
+/// <summary>Tracks one active scalar position declaration until the first retained character in its span subtree consumes it.</summary>
+internal readonly record struct SvgTextPositionScope(int ScopeDepth, SvgTextPositionOffset Offset, bool HasApplied);
+
+/// <summary>Owns normalized text and optional exact letter-spacing and scalar position storage until text layout completes.</summary>
+internal readonly record struct BudgetedTextLayout(string Value, SvgTextLetterSpacingSpan[] LetterSpacingSpans, SvgTextPositionAdjustment[] PositionAdjustments, RenderBudget.BudgetReservation? TextReservation, RenderBudget.BudgetReservation? LetterSpacingReservation, RenderBudget.BudgetReservation? PositionAdjustmentReservation) : IDisposable
 {
     public void Dispose()
     {
         TextReservation?.Dispose();
         LetterSpacingReservation?.Dispose();
+        PositionAdjustmentReservation?.Dispose();
     }
 }
 

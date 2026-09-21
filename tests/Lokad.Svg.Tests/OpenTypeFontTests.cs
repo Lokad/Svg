@@ -1289,7 +1289,7 @@ public sealed class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
 
-        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><style>.wide { letter-spacing: 2; }</style><text font-family='Unused'><tspan class='wide'>x</tspan></text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><style>.wide { letter-spacing: 2; }</style><text font-family='Unused'><tspan class='wide' dx='2'>x</tspan></text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None);
 
         Assert.Single(snapshot.Fonts);
         Assert.Equal(1, source.RequestCount);
@@ -1936,6 +1936,26 @@ public sealed class OpenTypeFontTests
         Assert.True(DecodeAlpha(presentation, 311, 1) > 0);
         Assert.Equal(presentation.ToArray(), inline.ToArray());
         Assert.Equal(presentation.ToArray(), stylesheet.ToArray());
+    }
+
+    [Fact]
+    public async Task Nested_tspan_applies_scalar_dx_and_dy_to_its_first_descendant_glyph()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='400' height='8'><text font-family='Example' font-size='100' x='200' y='3' text-anchor='middle'>A<tspan dx='50' dy='1'><tspan>A</tspan></tspan>A</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        using SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAA", 100, 200, 3, 0, [], [new SvgTextPositionAdjustment(1, 50, 1)], SvgTextAnchor.Middle, new RenderBudget(1_024), string.Empty, null, CancellationToken.None);
+
+        Assert.Equal(85, glyphs.Glyphs[0].X);
+        Assert.Equal(195, glyphs.Glyphs[1].X);
+        Assert.Equal(255, glyphs.Glyphs[2].X);
+        Assert.Equal(3, glyphs.Glyphs[0].Y);
+        Assert.Equal(4, glyphs.Glyphs[1].Y);
+        Assert.Equal(4, glyphs.Glyphs[2].Y);
+        Assert.True(DecodeAlpha(png, 86, 1) > 0);
+        Assert.True(DecodeAlpha(png, 196, 2) > 0);
+        Assert.True(DecodeAlpha(png, 256, 2) > 0);
     }
 
     [Fact]
@@ -2701,13 +2721,13 @@ public sealed class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan dx='1'>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan x='1'>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         SvgRenderLimits attributeLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 100_000, 128, 1);
         var attributeOptions = new SvgRenderOptions(null, 1, SvgColor.Transparent, attributeLimits, snapshot);
 
-        SvgException attributeException = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan dx='1' dy='1'>A</tspan></text></svg>"u8.ToArray(), attributeOptions, CancellationToken.None));
+        SvgException attributeException = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan x='1' y='1'>A</tspan></text></svg>"u8.ToArray(), attributeOptions, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, attributeException.ErrorCode);
         Assert.Contains("attributes", attributeException.Message);

@@ -13,36 +13,71 @@ internal static class SvgTextLimits
 /// <summary>Specifies the admitted XML whitespace treatment for one direct text run.</summary>
 internal enum SvgTextWhitespaceMode { Default, Preserve }
 
-/// <summary>Receives normalized text with the active inherited letter spacing for each emitted source interval.</summary>
+/// <summary>Receives normalized direct text with its owning span depth, active letter spacing, and explicit positioning scope lifecycle.</summary>
 internal interface ISvgTextOutput
 {
-    void Append(ReadOnlySpan<char> value, double letterSpacing, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken);
+    /// <summary>Appends an emitted interval; <paramref name="scopeDepth"/> identifies the owning open text span, and the caller retains the value and work context.</summary>
+    void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken);
+
+    /// <summary>Begins an explicitly positioned text span; a matching exit at the same depth is required, and implementations retain no caller-owned data.</summary>
+    void EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken);
+
+    /// <summary>Ends the most recently entered explicitly positioned text span at <paramref name="scopeDepth"/>.</summary>
+    void ExitPositioningSpan(int scopeDepth);
 }
 
-/// <summary>Pairs the inherited whitespace and scalar letter-spacing values active in one direct-text span.</summary>
+/// <summary>Pairs the inherited whitespace and scalar letter-spacing values active in one direct-text span with its optional explicit position offset.</summary>
 internal readonly record struct SvgTextSpanStyle
 {
-    internal SvgTextSpanStyle(SvgTextWhitespaceMode whitespaceMode, double letterSpacing)
+    internal SvgTextSpanStyle(SvgTextWhitespaceMode whitespaceMode, double letterSpacing) : this(whitespaceMode, letterSpacing, null) { }
+
+    internal SvgTextSpanStyle(SvgTextWhitespaceMode whitespaceMode, double letterSpacing, SvgTextPositionOffset? positionOffset)
     {
         if (whitespaceMode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(whitespaceMode));
         if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
         WhitespaceMode = whitespaceMode;
         LetterSpacing = letterSpacing;
+        PositionOffset = positionOffset;
     }
 
     internal SvgTextWhitespaceMode WhitespaceMode { get; }
 
     internal double LetterSpacing { get; }
+
+    /// <summary>Gets the scalar relative adjustment explicitly declared by this span, if any; it is not inherited as a style value.</summary>
+    internal SvgTextPositionOffset? PositionOffset { get; }
 }
 
 /// <summary>Identifies one contiguous UTF-16 interval emitted with a non-default scalar letter spacing.</summary>
 internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, double LetterSpacing);
+
+/// <summary>Represents one explicit scalar relative offset before the first retained character in a text span.</summary>
+internal readonly record struct SvgTextPositionOffset
+{
+    internal SvgTextPositionOffset(double dx, double dy)
+    {
+        if (!double.IsFinite(dx) || !double.IsFinite(dy)) throw new ArgumentOutOfRangeException(nameof(dx));
+        Dx = dx;
+        Dy = dy;
+    }
+
+    internal double Dx { get; }
+
+    internal double Dy { get; }
+
+    internal bool IsZero => Dx == 0 && Dy == 0;
+}
+
+/// <summary>Identifies the normalized UTF-16 boundary and relative offset applied before one positioned glyph.</summary>
+internal readonly record struct SvgTextPositionAdjustment(int Start, double Dx, double Dy);
 
 /// <summary>Normalizes direct-text whitespace while preserving the source character limit across reader chunks.</summary>
 internal struct SvgTextWhitespaceNormalizer
 {
     private readonly SvgTextWhitespaceMode _mode;
     private readonly double _letterSpacing;
+    private readonly int _scopeDepth;
+    private readonly bool _ownsPositioningSpan;
     private bool _hasOutput;
     private bool _hasPendingWhitespace;
     private int _sourceCharacterCount;
@@ -59,16 +94,28 @@ internal struct SvgTextWhitespaceNormalizer
     /// <summary>Gets the scalar letter spacing inherited by text emitted from this element.</summary>
     internal double LetterSpacing => _letterSpacing;
 
+    /// <summary>Gets this normalizer's owning direct-text span depth.</summary>
+    internal int ScopeDepth => _scopeDepth;
+
+    /// <summary>Gets whether this normalizer owns an open explicit positioning scope.</summary>
+    internal bool OwnsPositioningSpan => _ownsPositioningSpan;
+
     /// <summary>Initializes a normalizer for one direct text element's admitted XML whitespace mode.</summary>
-    internal SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode mode) : this(mode, 0) { }
+    internal SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode mode) : this(mode, 0, 0, false) { }
 
     /// <summary>Initializes a normalizer for one direct-text span's whitespace mode and scalar letter spacing.</summary>
-    internal SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode mode, double letterSpacing)
+    internal SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode mode, double letterSpacing) : this(mode, letterSpacing, 0, false) { }
+
+    /// <summary>Initializes a normalizer for one direct-text span with its element depth and explicit positioning ownership.</summary>
+    internal SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode mode, double letterSpacing, int scopeDepth, bool ownsPositioningSpan)
     {
         if (mode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(mode));
         if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
+        if (scopeDepth < 0) throw new ArgumentOutOfRangeException(nameof(scopeDepth));
         _mode = mode;
         _letterSpacing = letterSpacing;
+        _scopeDepth = scopeDepth;
+        _ownsPositioningSpan = ownsPositioningSpan;
     }
 
     /// <summary>Appends direct text according to the configured XML whitespace mode without materializing an unbounded intermediate value.</summary>
@@ -112,7 +159,7 @@ internal struct SvgTextWhitespaceNormalizer
             FlushPendingWhitespace(output, maximumSourceCharacters, workCounter, cancellationToken, true);
             int end = index + 1;
             while (end < value.Length && !IsCollapsible(value[end])) end++;
-            output.Append(value.Slice(index, end - index), _letterSpacing, maximumSourceCharacters, workCounter, cancellationToken);
+            output.Append(value.Slice(index, end - index), _letterSpacing, _scopeDepth, maximumSourceCharacters, workCounter, cancellationToken);
             _hasOutput = true;
             index = end;
         }
@@ -121,7 +168,7 @@ internal struct SvgTextWhitespaceNormalizer
     private void FlushPendingWhitespace(ISvgTextOutput output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool hasNextContent)
     {
         if (!_hasPendingWhitespace || !hasNextContent) return;
-        output.Append(" ", _letterSpacing, maximumSourceCharacters, workCounter, cancellationToken);
+        output.Append(" ", _letterSpacing, _scopeDepth, maximumSourceCharacters, workCounter, cancellationToken);
         _hasPendingWhitespace = false;
         _hasOutput = true;
     }
@@ -141,7 +188,7 @@ internal struct SvgTextWhitespaceNormalizer
         int replacement = value.IndexOfAny('\t', '\r', '\n');
         if (replacement < 0)
         {
-            output.Append(value, _letterSpacing, maximumSourceCharacters, workCounter, cancellationToken);
+            output.Append(value, _letterSpacing, _scopeDepth, maximumSourceCharacters, workCounter, cancellationToken);
             return;
         }
         Span<char> normalized = stackalloc char[value.Length];
@@ -153,7 +200,7 @@ internal struct SvgTextWhitespaceNormalizer
             int next = normalized[searchStart..].IndexOfAny('\t', '\r', '\n');
             replacement = next < 0 ? -1 : searchStart + next;
         } while (replacement >= 0);
-        output.Append(normalized, _letterSpacing, maximumSourceCharacters, workCounter, cancellationToken);
+        output.Append(normalized, _letterSpacing, _scopeDepth, maximumSourceCharacters, workCounter, cancellationToken);
     }
 
     /// <summary>Observes one discovery text chunk and reports whether normalization can produce a glyph.</summary>
@@ -258,7 +305,7 @@ internal static class SvgTextSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only default and preserve xml:space values are supported for direct text.");
     }
 
-    /// <summary>Recognizes nested whitespace-and-spacing tspan declarations and resolves them over the parent values.</summary>
+    /// <summary>Recognizes nested whitespace, spacing, and scalar relative-position tspan declarations and resolves them over the parent values.</summary>
     internal static bool TryParseTspanStyle(XmlReader reader, SvgTextSpanStyle inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgTextSpanStyle style)
     {
         ArgumentNullException.ThrowIfNull(reader);
@@ -269,9 +316,11 @@ internal static class SvgTextSyntax
         string? whiteSpace = null;
         string? inlineLetterSpacing = null;
         string? presentationLetterSpacing = null;
+        string? dx = null;
+        string? dy = null;
         if (!reader.HasAttributes)
         {
-            style = new SvgTextSpanStyle(styleSheet.WhiteSpace is string styleSheetWhiteSpace ? ParseCssWhitespaceMode(styleSheetWhiteSpace) : inherited.WhitespaceMode, styleSheet.LetterSpacing is string styleSheetLetterSpacing ? SvgGeometrySyntax.ParseTextCoordinate(styleSheetLetterSpacing) : inherited.LetterSpacing);
+            style = new SvgTextSpanStyle(styleSheet.WhiteSpace is string styleSheetWhiteSpace ? ParseCssWhitespaceMode(styleSheetWhiteSpace) : inherited.WhitespaceMode, styleSheet.LetterSpacing is string styleSheetLetterSpacing ? SvgGeometrySyntax.ParseTextCoordinate(styleSheetLetterSpacing) : inherited.LetterSpacing, null);
             return true;
         }
         while (reader.MoveToNextAttribute())
@@ -298,6 +347,18 @@ internal static class SvgTextSyntax
                 presentationLetterSpacing = reader.Value;
                 continue;
             }
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "dx")
+            {
+                if (dx is not null) { reader.MoveToElement(); style = inherited; return false; }
+                dx = reader.Value;
+                continue;
+            }
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "dy")
+            {
+                if (dy is not null) { reader.MoveToElement(); style = inherited; return false; }
+                dy = reader.Value;
+                continue;
+            }
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class") continue;
             reader.MoveToElement();
             style = inherited;
@@ -307,14 +368,15 @@ internal static class SvgTextSyntax
         SvgTextWhitespaceMode mode = xmlSpace is null ? inherited.WhitespaceMode : ParseXmlWhitespaceMode(xmlSpace);
         if ((whiteSpace ?? styleSheet.WhiteSpace) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
         string? letterSpacing = inlineLetterSpacing ?? styleSheet.LetterSpacing ?? presentationLetterSpacing;
-        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing));
+        SvgTextPositionOffset? positionOffset = dx is null && dy is null ? null : new SvgTextPositionOffset(SvgGeometrySyntax.ParseTextCoordinate(dx ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(dy ?? "0"));
+        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing), positionOffset);
         return true;
 
         static bool HasUnsupportedProperties(InlineStyle style)
             => style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.Display is not null || style.Visibility is not null || style.Opacity is not null || style.FillRule is not null || style.TextFont.Family is not null || style.TextFont.Weight is not null || style.TextFont.Style is not null || style.TextFont.Size is not null;
     }
 
-    /// <summary>Recognizes nested whitespace-and-spacing spans while returning only the inherited whitespace mode needed by font discovery.</summary>
+    /// <summary>Recognizes admitted nested text spans while returning only the inherited whitespace mode needed by font discovery.</summary>
     internal static bool TryParseTspanWhitespaceMode(XmlReader reader, SvgTextWhitespaceMode inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgTextWhitespaceMode mode)
     {
         bool parsed = TryParseTspanStyle(reader, new SvgTextSpanStyle(inherited, 0), styleSheet, workCounter, cancellationToken, out SvgTextSpanStyle style);

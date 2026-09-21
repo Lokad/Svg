@@ -60,7 +60,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.Path => reader.LocalName is "id" or "class" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform",
             SvgElementKind.PointList => reader.LocalName is "id" or "class" or "points" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform",
             SvgElementKind.Text => reader.LocalName is "id" or "class" or "x" or "y" or "dx" or "dy" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style",
-            SvgElementKind.TextSpan => reader.LocalName is "id" or "class" or "letter-spacing" or "style",
+            SvgElementKind.TextSpan => reader.LocalName is "id" or "class" or "dx" or "dy" or "letter-spacing" or "style",
             SvgElementKind.Symbol => reader.LocalName == "id",
             _ => false
         };

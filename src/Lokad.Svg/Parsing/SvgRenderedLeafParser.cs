@@ -68,7 +68,7 @@ internal static class SvgRenderedLeafParser
                 if (text.Value.Length == 0) return true;
                 if (!textElement.Presentation.IsPainted || !textElement.Presentation.HasFill) return true;
                 if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
-                using SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text.Value, text.LetterSpacingSpans, fontSnapshot, budget, workCounter, cancellationToken);
+                using SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, fontSnapshot, budget, workCounter, cancellationToken);
                 if (textElement.Presentation.HasFill)
                 {
                     foreach (SvgGlyphContourStorage contours in SvgTextRunBuilder.GetGlyphContours(run, budget, workCounter, cancellationToken))
@@ -86,7 +86,7 @@ internal static class SvgRenderedLeafParser
         static BudgetedTextLayout ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount, out int childNodeCount)
         {
             using var text = new SvgTextLayoutBuffer(budget, letterSpacing, workCounter, cancellationToken);
-            var normalizer = new SvgTextWhitespaceNormalizer(whitespaceMode, letterSpacing);
+            var normalizer = new SvgTextWhitespaceNormalizer(whitespaceMode, letterSpacing, 0, false);
             if (element.IsEmptyElement)
             {
                 sourceCharacterCount = normalizer.SourceCharacterCount;
@@ -139,17 +139,25 @@ internal static class SvgRenderedLeafParser
                     if (subtree.AttributeCount > maximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
                     SvgTextWhitespaceNormalizer inheritedNormalizer = whitespaceNormalizers[^1];
                     SvgTextSpanStyle inheritedStyle = new(inheritedNormalizer.Mode, inheritedNormalizer.LetterSpacing);
-                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace-only tspan text children are implemented.");
+                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded text span children are implemented.");
                     SvgElementAttributePolicy.ValidateTextSpan(subtree, workCounter, cancellationToken);
                     InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
-                    if (!SvgTextSyntax.TryParseTspanStyle(subtree, inheritedStyle, styleSheet, workCounter, cancellationToken, out SvgTextSpanStyle childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace-and-letter-spacing tspan text children are implemented.");
-                    if (!subtree.IsEmptyElement) whitespaceNormalizers.Add(new SvgTextWhitespaceNormalizer(childStyle.WhitespaceMode, childStyle.LetterSpacing));
+                    if (!SvgTextSyntax.TryParseTspanStyle(subtree, inheritedStyle, styleSheet, workCounter, cancellationToken, out SvgTextSpanStyle childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace, letter-spacing, and scalar dx/dy tspan text children are implemented.");
+                    if (!subtree.IsEmptyElement)
+                    {
+                        int childScopeDepth = whitespaceNormalizers.Count;
+                        SvgTextPositionOffset? positionOffset = childStyle.PositionOffset;
+                        bool ownsPositioningSpan = positionOffset.HasValue;
+                        if (positionOffset is SvgTextPositionOffset offset) text.EnterPositioningSpan(offset, childScopeDepth, workCounter, cancellationToken);
+                        whitespaceNormalizers.Add(new SvgTextWhitespaceNormalizer(childStyle.WhitespaceMode, childStyle.LetterSpacing, childScopeDepth, ownsPositioningSpan));
+                    }
                     continue;
                 }
                 if (subtree.NodeType == XmlNodeType.EndElement && subtree.Depth != 0)
                 {
                     SvgTextWhitespaceNormalizer current = whitespaceNormalizers[^1];
                     current.CompleteElement();
+                    if (current.OwnsPositioningSpan) text.ExitPositioningSpan(current.ScopeDepth);
                     whitespaceNormalizers.RemoveLast();
                 }
             }
