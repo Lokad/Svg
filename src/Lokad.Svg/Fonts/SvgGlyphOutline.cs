@@ -36,7 +36,7 @@ internal static class SvgGlyphOutline
                 OpenTypeQuadraticSegment segment = source[index];
                 transformed[index] = new SvgGlyphQuadraticSegment(Transform(segment.Start), Transform(segment.Control), Transform(segment.End));
             }
-            return SplitClosedContours(transformed, budget, workCounter, cancellationToken);
+            return CopyContours(transformed, decoded.ContourEnds, budget, workCounter, cancellationToken);
         }
         finally { reservation.Dispose(); }
 
@@ -49,42 +49,21 @@ internal static class SvgGlyphOutline
         }
     }
 
-    private static SvgGlyphContourStorage SplitClosedContours(ReadOnlySpan<SvgGlyphQuadraticSegment> segments, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static SvgGlyphContourStorage CopyContours(ReadOnlySpan<SvgGlyphQuadraticSegment> segments, ReadOnlySpan<int> contourEnds, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (segments.Length == 0) return new([], null);
-        int contourCount = 0;
-        int first = 0;
-        while (first < segments.Length)
-        {
-            Consume(workCounter, cancellationToken);
-            SvgGlyphOutlinePoint start = segments[first].Start;
-            int last = first;
-            while (last < segments.Length && segments[last].End != start)
-            {
-                Consume(workCounter, cancellationToken);
-                last++;
-            }
-            if (last == segments.Length) throw new SvgException(SvgErrorCode.MalformedInput, "A decoded glyph contour is not closed.");
-            contourCount++;
-            first = last + 1;
-        }
-
-        RenderBudget.BudgetReservation reservation = budget.Reserve(SvgGlyphGeometry.GetStorageByteCount(contourCount, segments.Length), SvgMemoryCategory.Scene);
+        if (contourEnds.Length == 0 || contourEnds[^1] != segments.Length) throw new InvalidOperationException("Decoded glyph contour boundaries do not cover their segments.");
+        RenderBudget.BudgetReservation reservation = budget.Reserve(SvgGlyphGeometry.GetStorageByteCount(contourEnds.Length, segments.Length), SvgMemoryCategory.Scene);
         try
         {
-            var contours = new SvgGlyphQuadraticContour[contourCount];
-            first = 0;
+            var contours = new SvgGlyphQuadraticContour[contourEnds.Length];
+            int first = 0;
             for (int contourIndex = 0; contourIndex < contours.Length; contourIndex++)
             {
-                SvgGlyphOutlinePoint start = segments[first].Start;
-                int last = first;
-                while (true)
-                {
-                    Consume(workCounter, cancellationToken);
-                    if (segments[last].End == start) break;
-                    last++;
-                }
-                int length = last - first + 1;
+                Consume(workCounter, cancellationToken);
+                int end = contourEnds[contourIndex];
+                if (end <= first || end > segments.Length) throw new InvalidOperationException("Decoded glyph contour boundaries are invalid.");
+                int length = end - first;
                 var copied = new SvgGlyphQuadraticSegment[length];
                 for (int index = 0; index < copied.Length; index++)
                 {
@@ -93,7 +72,7 @@ internal static class SvgGlyphOutline
                     GlyphOutlineProbe.SegmentCopied();
                 }
                 contours[contourIndex] = new SvgGlyphQuadraticContour(copied);
-                first = last + 1;
+                first = end;
             }
             return new(contours, reservation);
         }

@@ -12,10 +12,14 @@ internal enum GlyphDecoderBudgetPhase
     SimplePoints,
     SimpleSegmentCapacity,
     SimpleSegmentExact,
+    SimpleContourBoundaryCapacity,
+    SimpleContourBoundaryExact,
     CompositeComponentsCapacity,
     CompositeComponentsExact,
     ExpandedSegmentCapacity,
-    ExpandedSegmentExact
+    ExpandedSegmentExact,
+    ExpandedContourBoundaryCapacity,
+    ExpandedContourBoundaryExact
 }
 
 /// <summary>Provides an execution-context-local observation seam after a budgeted glyph-decoder array has been allocated.</summary>

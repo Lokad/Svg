@@ -424,12 +424,12 @@ internal static class OpenTypeFont
     /// <summary>Builds closed quadratic segments from decoded simple-glyph contours, including implied on-curve points.</summary>
     internal static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints)
     {
-        using var segments = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, null, CancellationToken.None);
-        BuildQuadraticContours(points, endpoints, segments, null, CancellationToken.None);
+        using var segments = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, null, CancellationToken.None);
+        BuildQuadraticContours(points, endpoints, segments, false, null, CancellationToken.None);
         return segments.ToArray();
     }
 
-    private static void BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, OpenTypeSegmentAccumulator segments, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static void BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, OpenTypeSegmentAccumulator segments, bool retainContourBoundaries, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (endpoints.Length == 0) return;
         if (points.Length == 0 || endpoints[^1] != points.Length - 1) throw new ArgumentException("Contour endpoints must cover the supplied points.", nameof(endpoints));
@@ -437,6 +437,7 @@ internal static class OpenTypeFont
         foreach (ushort lastValue in endpoints)
         {
             Consume(workCounter, cancellationToken);
+            int firstSegment = segments.Count;
             int last = lastValue;
             if (last < first) throw new ArgumentException("Contour endpoints must be strictly increasing.", nameof(endpoints));
             OpenTypeGlyphPoint initial = points[first];
@@ -467,6 +468,7 @@ internal static class OpenTypeFont
             }
             if (control is OpenTypeOutlinePoint closingControl) segments.Add(new OpenTypeQuadraticSegment(current, closingControl, start));
             else if (current != start) segments.Add(new OpenTypeQuadraticSegment(current, start, start));
+            if (retainContourBoundaries && segments.Count != firstSegment) segments.CompleteContour();
             first = last + 1;
         }
     }
@@ -492,10 +494,10 @@ internal static class OpenTypeFont
     private static OpenTypeGlyphContourStorage GetBudgetedSimpleGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, budget, workCounter, cancellationToken);
-        if (structure.Value.ContourEndpoints.Length == 0) return new([], null);
+        if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
         using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, structure.Value, budget, workCounter, cancellationToken);
-        using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, workCounter, cancellationToken);
-        BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, workCounter, cancellationToken);
+        using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, workCounter, cancellationToken);
+        BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, workCounter, cancellationToken);
         return segments.Detach();
     }
 
@@ -578,7 +580,7 @@ internal static class OpenTypeFont
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return [];
         using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, null);
-        using var contours = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, null, cancellationToken);
+        using var contours = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, null, cancellationToken);
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, null, cancellationToken);
         return contours.ToArray();
     }
@@ -589,9 +591,9 @@ internal static class OpenTypeFont
         ArgumentNullException.ThrowIfNull(budget);
         cancellationToken.ThrowIfCancellationRequested();
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
-        if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return new([], null);
+        if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return new([], [], null, null);
         using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, budget);
-        using var contours = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, workCounter, cancellationToken);
+        using var contours = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, workCounter, cancellationToken);
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, workCounter, cancellationToken);
         return contours.Detach();
     }
@@ -612,7 +614,7 @@ internal static class OpenTypeFont
                 if (contours.Budget is RenderBudget budget)
                 {
                     using OpenTypeGlyphContourStorage decoded = GetBudgetedSimpleGlyphContours(bytes, glyphIndex, metrics, budget, workCounter, cancellationToken);
-                    AppendDecodedSegments(decoded.Segments, transform, contours, workCounter, cancellationToken);
+                    AppendDecodedContours(decoded, transform, contours, workCounter, cancellationToken);
                 }
                 else AppendDecodedSegments(GetSimpleGlyphContours(bytes, glyphIndex, metrics, workCounter, cancellationToken), transform, contours, workCounter, cancellationToken);
                 return;
@@ -637,6 +639,19 @@ internal static class OpenTypeFont
                 if (contours.Count == MaximumExpandedGlyphSegments) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded glyph segment count exceeds the supported limit.");
                 contours.Add(Transform(segment, transform));
             }
+        }
+
+        static void AppendDecodedContours(OpenTypeGlyphContourStorage decoded, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        {
+            int first = 0;
+            foreach (int end in decoded.ContourEnds)
+            {
+                if (end <= first || end > decoded.Segments.Length) throw new InvalidOperationException("Decoded glyph contour boundaries are invalid.");
+                AppendDecodedSegments(decoded.Segments.AsSpan(first, end - first), transform, contours, workCounter, cancellationToken);
+                contours.CompleteContour();
+                first = end;
+            }
+            if (first != decoded.Segments.Length) throw new InvalidOperationException("Decoded glyph contour boundaries do not cover their segments.");
         }
     }
 
@@ -806,23 +821,40 @@ internal sealed class OpenTypeGlyphPointStorage : IDisposable
     }
 }
 
-/// <summary>Owns decoded glyph segments and their temporary geometry reservation until SVG-coordinate transformation completes.</summary>
+/// <summary>Owns decoded glyph segments, structural contour boundaries and their temporary geometry reservations until SVG-coordinate transformation completes.</summary>
 internal sealed class OpenTypeGlyphContourStorage : IDisposable
 {
-    private RenderBudget.BudgetReservation? _reservation;
+    private RenderBudget.BudgetReservation? _segmentReservation;
+    private RenderBudget.BudgetReservation? _contourReservation;
 
-    internal OpenTypeGlyphContourStorage(OpenTypeQuadraticSegment[] segments, RenderBudget.BudgetReservation? reservation)
+    internal OpenTypeGlyphContourStorage(OpenTypeQuadraticSegment[] segments, int[] contourEnds, RenderBudget.BudgetReservation? segmentReservation, RenderBudget.BudgetReservation? contourReservation)
     {
+        ArgumentNullException.ThrowIfNull(segments);
+        ArgumentNullException.ThrowIfNull(contourEnds);
+        int previous = 0;
+        foreach (int end in contourEnds)
+        {
+            if (end <= previous || end > segments.Length) throw new ArgumentException("Contour boundaries must be strictly increasing segment ends.", nameof(contourEnds));
+            previous = end;
+        }
+        if ((segments.Length == 0) != (contourEnds.Length == 0) || previous != segments.Length) throw new ArgumentException("Contour boundaries must cover every decoded segment.", nameof(contourEnds));
         Segments = segments;
-        _reservation = reservation;
+        ContourEnds = contourEnds;
+        _segmentReservation = segmentReservation;
+        _contourReservation = contourReservation;
     }
 
     internal OpenTypeQuadraticSegment[] Segments { get; }
 
+    /// <summary>Gets validated exclusive segment ends for each nonempty glyph contour in decoder order.</summary>
+    internal int[] ContourEnds { get; }
+
     public void Dispose()
     {
-        _reservation?.Dispose();
-        _reservation = null;
+        _segmentReservation?.Dispose();
+        _segmentReservation = null;
+        _contourReservation?.Dispose();
+        _contourReservation = null;
     }
 }
 
@@ -846,23 +878,30 @@ internal sealed class OpenTypeCompositeGlyphComponentStorage : IDisposable
     }
 }
 
-/// <summary>Builds decoded segments with reservation-backed capacity growth when glyph expansion belongs to a conversion budget.</summary>
+/// <summary>Builds decoded segments and structural contour boundaries with reservation-backed capacity growth when glyph expansion belongs to a conversion budget.</summary>
 internal sealed class OpenTypeSegmentAccumulator : IDisposable
 {
     private readonly RenderBudget? _budget;
     private readonly GlyphDecoderBudgetPhase _capacityPhase;
     private readonly GlyphDecoderBudgetPhase _exactPhase;
+    private readonly GlyphDecoderBudgetPhase _contourCapacityPhase;
+    private readonly GlyphDecoderBudgetPhase _contourExactPhase;
     private readonly ParserWorkCounter? _workCounter;
     private readonly CancellationToken _cancellationToken;
     private OpenTypeQuadraticSegment[] _segments = [];
+    private int[] _contourEnds = [];
     private RenderBudget.BudgetReservation? _reservation;
+    private RenderBudget.BudgetReservation? _contourReservation;
     private int _count;
+    private int _contourCount;
 
-    internal OpenTypeSegmentAccumulator(RenderBudget? budget, GlyphDecoderBudgetPhase capacityPhase, GlyphDecoderBudgetPhase exactPhase, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal OpenTypeSegmentAccumulator(RenderBudget? budget, GlyphDecoderBudgetPhase capacityPhase, GlyphDecoderBudgetPhase exactPhase, GlyphDecoderBudgetPhase contourCapacityPhase, GlyphDecoderBudgetPhase contourExactPhase, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         _budget = budget;
         _capacityPhase = capacityPhase;
         _exactPhase = exactPhase;
+        _contourCapacityPhase = contourCapacityPhase;
+        _contourExactPhase = contourExactPhase;
         _workCounter = workCounter;
         _cancellationToken = cancellationToken;
     }
@@ -878,6 +917,15 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
         _segments[_count++] = segment;
     }
 
+    /// <summary>Records the exclusive end of one nonempty structural contour after all of its segments have been appended.</summary>
+    internal void CompleteContour()
+    {
+        if (_count == 0 || (_contourCount != 0 && _contourEnds[_contourCount - 1] == _count)) return;
+        if (_contourCount == _contourEnds.Length) GrowContourEnds();
+        Consume();
+        _contourEnds[_contourCount++] = _count;
+    }
+
     internal OpenTypeQuadraticSegment[] ToArray()
     {
         if (_count == 0) return [];
@@ -886,32 +934,57 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
         return copy;
     }
 
-    /// <summary>Materializes exact decoded-segment storage while both the grown and exact arrays remain reserved.</summary>
+    /// <summary>Materializes exact decoded segment and contour-boundary storage while both grown and exact arrays remain reserved.</summary>
     internal OpenTypeGlyphContourStorage Detach()
     {
         if (_count == 0)
         {
             Dispose();
-            return new([], null);
+            return new([], [], null, null);
         }
-        if (_budget is null) return new(ToArray(), null);
-        RenderBudget.BudgetReservation reservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<OpenTypeQuadraticSegment>(_count), SvgMemoryCategory.Geometry);
-        OpenTypeQuadraticSegment[] exact;
-        try { exact = new OpenTypeQuadraticSegment[_count]; }
-        catch { reservation.Dispose(); throw; }
-        GlyphDecoderBudgetProbe.Reserved(_exactPhase, _budget);
-        try { CopySegments(exact); }
-        catch { reservation.Dispose(); throw; }
-        Dispose();
-        return new(exact, reservation);
+        if (_contourCount == 0 || _contourEnds[_contourCount - 1] != _count) throw new InvalidOperationException("Every decoded segment must belong to one structural contour.");
+        if (_budget is null) return new(ToArray(), ToContourEndArray(), null, null);
+        RenderBudget.BudgetReservation segmentReservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<OpenTypeQuadraticSegment>(_count), SvgMemoryCategory.Geometry);
+        OpenTypeQuadraticSegment[] exactSegments;
+        try
+        {
+            exactSegments = new OpenTypeQuadraticSegment[_count];
+            GlyphDecoderBudgetProbe.Reserved(_exactPhase, _budget);
+            CopySegments(exactSegments);
+        }
+        catch
+        {
+            segmentReservation.Dispose();
+            throw;
+        }
+        RenderBudget.BudgetReservation? contourReservation = null;
+        try
+        {
+            contourReservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(_contourCount), SvgMemoryCategory.Geometry);
+            var exactContourEnds = new int[_contourCount];
+            GlyphDecoderBudgetProbe.Reserved(_contourExactPhase, _budget);
+            CopyContourEnds(exactContourEnds);
+            Dispose();
+            return new(exactSegments, exactContourEnds, segmentReservation, contourReservation);
+        }
+        catch
+        {
+            contourReservation?.Dispose();
+            segmentReservation.Dispose();
+            throw;
+        }
     }
 
     public void Dispose()
     {
         _reservation?.Dispose();
         _reservation = null;
+        _contourReservation?.Dispose();
+        _contourReservation = null;
         _segments = [];
+        _contourEnds = [];
         _count = 0;
+        _contourCount = 0;
     }
 
     private void Grow()
@@ -940,6 +1013,43 @@ internal sealed class OpenTypeSegmentAccumulator : IDisposable
         {
             Consume();
             destination[index] = _segments[index];
+        }
+    }
+
+    private int[] ToContourEndArray()
+    {
+        if (_contourCount == 0) return [];
+        var copy = new int[_contourCount];
+        CopyContourEnds(copy);
+        return copy;
+    }
+
+    private void GrowContourEnds()
+    {
+        int capacity = _contourEnds.Length == 0 ? 4 : checked(_contourEnds.Length * 2);
+        RenderBudget.BudgetReservation? replacementReservation = _budget?.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(capacity), SvgMemoryCategory.Geometry);
+        try
+        {
+            var replacement = new int[capacity];
+            CopyContourEnds(replacement);
+            GlyphDecoderBudgetProbe.Reserved(_contourCapacityPhase, _budget);
+            _contourReservation?.Dispose();
+            _contourReservation = replacementReservation;
+            _contourEnds = replacement;
+        }
+        catch
+        {
+            replacementReservation?.Dispose();
+            throw;
+        }
+    }
+
+    private void CopyContourEnds(Span<int> destination)
+    {
+        for (int index = 0; index < _contourCount; index++)
+        {
+            Consume();
+            destination[index] = _contourEnds[index];
         }
     }
 
