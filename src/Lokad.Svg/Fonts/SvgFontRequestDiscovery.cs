@@ -94,7 +94,7 @@ internal static class SvgFontRequestDiscovery
                     bool isTextEligible = parentAllowsText && textElement;
                     bool childAllowsText = parentAllowsText && isSvgElement && (reader.Depth == rootDepth || reader.LocalName is "g" or "a");
                     bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol");
-                    bool unsupportedContainer = !rootElement && reader.LocalName is ("svg" or "style" or "symbol");
+                    bool unsupportedContainer = (!rootElement && reader.LocalName is ("svg" or "style" or "symbol")) || (!directChild && reader.LocalName is ("defs" or "title" or "desc" or "metadata"));
                     bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline");
                     bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyRenderedLeaf);
                     if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && (!isKnownContent || rendererRejectsKnownContent))
@@ -106,6 +106,7 @@ internal static class SvgFontRequestDiscovery
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
                     {
                         if (!rootElement && reader.LocalName is "g" or "a") SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
+                        else if (directChild && reader.LocalName == "defs") SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
                     }
                     InlineStyle styleSheet = isSvgElement && reader.LocalName is ("g" or "a" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
                     if (isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("g" or "a" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken);
