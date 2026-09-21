@@ -579,7 +579,7 @@ internal static class OpenTypeFont
         cancellationToken.ThrowIfCancellationRequested();
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return [];
-        using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, null);
+        using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, null, null, cancellationToken);
         using var contours = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, null, cancellationToken);
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, null, cancellationToken);
         return contours.ToArray();
@@ -592,7 +592,7 @@ internal static class OpenTypeFont
         cancellationToken.ThrowIfCancellationRequested();
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return new([], [], null, null);
-        using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, budget);
+        using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, budget, workCounter, cancellationToken);
         using var contours = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, workCounter, cancellationToken);
         ExpandGlyph(bytes, glyphIndex, metrics, active, 0, OpenTypeOutlineTransform.Identity, contours, workCounter, cancellationToken);
         return contours.Detach();
@@ -1160,13 +1160,17 @@ internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
 /// <summary>Owns the bounded active composite-glyph stack used for cycle detection during one expansion.</summary>
 internal sealed class OpenTypeGlyphRecursionTracker : IDisposable
 {
+    private readonly ParserWorkCounter? _workCounter;
+    private readonly CancellationToken _cancellationToken;
     private ushort[] _glyphs;
     private RenderBudget.BudgetReservation? _reservation;
     private int _count;
 
-    internal OpenTypeGlyphRecursionTracker(int capacity, RenderBudget? budget)
+    internal OpenTypeGlyphRecursionTracker(int capacity, RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (capacity <= 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+        _workCounter = workCounter;
+        _cancellationToken = cancellationToken;
         _reservation = budget?.Reserve(ParserCollectionMemory.GetArrayByteCount<ushort>(capacity), SvgMemoryCategory.Geometry);
         try { _glyphs = new ushort[capacity]; }
         catch { _reservation?.Dispose(); throw; }
@@ -1178,6 +1182,7 @@ internal sealed class OpenTypeGlyphRecursionTracker : IDisposable
     {
         for (int index = 0; index < _count; index++)
         {
+            Consume();
             if (_glyphs[index] == glyph) return false;
         }
         if (_count == _glyphs.Length) throw new InvalidOperationException("The composite glyph recursion tracker is smaller than its validated depth limit.");
@@ -1197,6 +1202,12 @@ internal sealed class OpenTypeGlyphRecursionTracker : IDisposable
         _count = 0;
         _reservation?.Dispose();
         _reservation = null;
+    }
+
+    private void Consume()
+    {
+        if (_workCounter is null) _cancellationToken.ThrowIfCancellationRequested();
+        else _workCounter.Consume(_cancellationToken);
     }
 }
 
