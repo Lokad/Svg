@@ -75,7 +75,9 @@ internal static class SvgGlyphLayout
             for (int index = 0; index < glyphs.Length; index++)
             {
                 workCounter?.Consume(cancellationToken);
-                glyphs[index] = glyphs[index] with { X = glyphs[index].X + anchorOffset };
+                double anchoredX = glyphs[index].X + anchorOffset;
+                if (!double.IsFinite(anchoredX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+                glyphs[index] = glyphs[index] with { X = anchoredX };
             }
             return new SvgPositionedGlyphStorage(glyphs, reservation);
         }

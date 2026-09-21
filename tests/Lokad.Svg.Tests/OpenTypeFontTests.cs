@@ -1594,6 +1594,18 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Rejects_nonfinite_transformed_glyph_coordinates_before_rasterization()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='1e308' y='-1.79e308'>A</text></svg>"u8.ToArray();
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Retained_glyph_contours_hold_and_release_scene_budget_ownership()
     {
         SvgGlyphQuadraticContour[] contours = [new SvgGlyphQuadraticContour([new SvgGlyphQuadraticSegment(new(0, 0), new(1, 0), new(1, 0))])];

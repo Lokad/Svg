@@ -40,7 +40,13 @@ internal static class SvgGlyphOutline
         }
         finally { reservation.Dispose(); }
 
-        SvgGlyphOutlinePoint Transform(OpenTypeOutlinePoint point) => new(glyph.X + point.X * scale, glyph.Y - point.Y * scale);
+        SvgGlyphOutlinePoint Transform(OpenTypeOutlinePoint point)
+        {
+            double x = glyph.X + point.X * scale;
+            double y = glyph.Y - point.Y * scale;
+            if (!double.IsFinite(x) || !double.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "The transformed glyph outline exceeds the admitted numeric range.");
+            return new SvgGlyphOutlinePoint(x, y);
+        }
     }
 
     private static SvgGlyphContourStorage SplitClosedContours(ReadOnlySpan<SvgGlyphQuadraticSegment> segments, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)

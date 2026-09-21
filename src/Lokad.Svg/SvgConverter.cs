@@ -121,6 +121,10 @@ public static class SvgConverter
             workUnits += pixelCount;
         }
         (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
+        if (!double.IsFinite(horizontalScale) || !double.IsFinite(horizontalOffset) || !double.IsFinite(verticalScale) || !double.IsFinite(verticalOffset) || horizontalScale <= 0 || verticalScale <= 0)
+        {
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Output scaling and viewBox mapping exceed the admitted numeric range.");
+        }
         RenderBudget.BudgetReservation surface = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
         try
         {
@@ -264,10 +268,21 @@ public static class SvgConverter
             }
             if (coverageWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph raster work exceeds the configured work limit.");
             workUnits += coverageWork;
+            if (startX == endX || startY == endY) return;
+            double sourceLeft = (startX - horizontalOffset) / horizontalScale;
+            double sourceRight = (endX - horizontalOffset) / horizontalScale;
+            double sourceTop = (startY - verticalOffset) / verticalScale;
+            double sourceBottom = (endY - verticalOffset) / verticalScale;
+            double sourcePixelWidth = 1 / horizontalScale;
+            double sourcePixelHeight = 1 / verticalScale;
+            if (!double.IsFinite(sourceLeft) || !double.IsFinite(sourceRight) || !double.IsFinite(sourceTop) || !double.IsFinite(sourceBottom) || !double.IsFinite(sourcePixelWidth) || !double.IsFinite(sourcePixelHeight) || sourcePixelWidth <= 0 || sourcePixelHeight <= 0)
+            {
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph coverage coordinates exceed the admitted numeric range.");
+            }
             for (int y = startY; y < endY; y++)
             for (int x = startX; x < endX; x++)
             {
-                byte alpha = SvgGlyphCoverage.GetCoverage(glyph.Contours, (x - horizontalOffset) / horizontalScale, (y - verticalOffset) / verticalScale, 1 / horizontalScale, 1 / verticalScale, GlyphSamplesPerAxis, cancellationToken);
+                byte alpha = SvgGlyphCoverage.GetCoverage(glyph.Contours, sourceLeft + (x - startX) * sourcePixelWidth, sourceTop + (y - startY) * sourcePixelHeight, sourcePixelWidth, sourcePixelHeight, GlyphSamplesPerAxis, cancellationToken);
                 if (alpha == 0) continue;
                 BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(glyph.Color.Red, glyph.Color.Green, glyph.Color.Blue, MultiplyAlpha(glyph.Color.Alpha, alpha)), true);
             }
@@ -323,7 +338,7 @@ public static class SvgConverter
         static double MapEdge(double value, double scale, double offset)
         {
             double scaled = value * scale + offset;
-            if (!double.IsFinite(scaled)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Output scaling and viewBox mapping must preserve finite edges.");
+            if (!double.IsFinite(scaled)) throw new SvgException(SvgErrorCode.LimitExceeded, "Output scaling and viewBox mapping exceed the admitted numeric range.");
             return scaled;
         }
 

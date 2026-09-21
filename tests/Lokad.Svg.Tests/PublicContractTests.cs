@@ -444,6 +444,14 @@ public sealed class PublicContractTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
+    [Fact]
+    public void Rejects_a_nonfinite_view_box_device_transform_as_a_limit()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1e-320 1' preserveAspectRatio='none'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><rect/><rect/></svg>", 1, 16, 16)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><g><rect/></g></svg>", 16, 2, 16)]
