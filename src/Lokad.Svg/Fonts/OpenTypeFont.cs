@@ -90,7 +90,7 @@ internal static class OpenTypeFont
     {
         if (scalar > 0x10FFFF || scalar is >= 0xD800 and <= 0xDFFF) throw new ArgumentOutOfRangeException(nameof(scalar));
         CmapLookupProbe.Started();
-        workCounter?.Consume(cancellationToken);
+        Consume(workCounter, cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange cmap = metrics.Cmap ?? throw InvalidFont("The SFNT font is missing its cmap table.");
         RequireTableLength(cmap, 4, "cmap");
@@ -206,7 +206,7 @@ internal static class OpenTypeFont
     internal static ushort GetAdvanceWidth(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
-        workCounter?.Consume(cancellationToken);
+        Consume(workCounter, cancellationToken);
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange hmtx = metrics.Hmtx;
         int metricIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
@@ -220,6 +220,7 @@ internal static class OpenTypeFont
     /// <summary>Gets one borrowed glyph range using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeTableRange GetGlyphDataRange(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         if (glyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyphIndex));
         ReadOnlySpan<byte> data = bytes.Span;
         OpenTypeTableRange loca = metrics.Loca ?? throw InvalidFont("The SFNT font is missing its loca table.");
@@ -573,6 +574,7 @@ internal static class OpenTypeFont
     /// <summary>Expands glyph contours using metrics already validated for these unchanged caller-owned bytes.</summary>
     internal static OpenTypeQuadraticSegment[] GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return [];
         using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, null);
@@ -585,6 +587,7 @@ internal static class OpenTypeFont
     internal static OpenTypeGlyphContourStorage GetGlyphContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
+        cancellationToken.ThrowIfCancellationRequested();
         OpenTypeGlyphHeader? header = GetGlyphHeader(bytes, glyphIndex, metrics, cancellationToken);
         if (header is null || (!header.Value.IsComposite && header.Value.ContourCount == 0)) return new([], null);
         using var active = new OpenTypeGlyphRecursionTracker(MaximumCompositeGlyphDepth + 1, budget);
@@ -596,7 +599,7 @@ internal static class OpenTypeFont
     private static void ExpandGlyph(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeGlyphRecursionTracker active, int depth, OpenTypeOutlineTransform transform, OpenTypeSegmentAccumulator contours, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         GlyphExpansionProbe.Started();
-        workCounter?.Consume(cancellationToken);
+        Consume(workCounter, cancellationToken);
         if (glyphIndex >= metrics.GlyphCount) throw InvalidFont("A composite glyf component references a glyph outside maxp.");
         if (depth > MaximumCompositeGlyphDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "The composite glyph nesting depth exceeds the supported limit.");
         if (!active.TryEnter(glyphIndex)) throw InvalidFont("The composite glyph graph contains a cycle.");

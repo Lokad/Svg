@@ -67,6 +67,30 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Metrics_backed_font_readers_observe_cancellation_without_a_work_counter()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 0);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+
+        Assert.Throws<OperationCanceledException>(() => OpenTypeFont.GetAdvanceWidth(font, 1, metrics, cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => OpenTypeFont.GetGlyphDataRange(font, 1, metrics, cancellation.Token));
+        Assert.Throws<OperationCanceledException>(() => OpenTypeFont.GetGlyphContours(font, 1, metrics, cancellation.Token));
+    }
+
+    [Fact]
+    public void Cmap_lookup_observes_cancellation_after_its_no_counter_entry_probe()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 0);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+        using CancellationTokenSource cancellation = new();
+        using IDisposable probe = CmapLookupProbe.Arm(cancellation.Cancel);
+
+        Assert.ThrowsAny<OperationCanceledException>(() => OpenTypeFont.GetGlyphIndex(font, 'A', metrics, cancellation.Token));
+    }
+
+    [Fact]
     public void Maps_a_BMP_scalar_through_a_format_4_cmap()
     {
         byte[] font = CreateFont(1024, 3, 2, 0);
