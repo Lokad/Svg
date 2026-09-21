@@ -1869,6 +1869,47 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Direct_text_lowering_has_an_exact_parser_work_budget()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 100_000);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
+
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(limits.MaximumAccountedBytes), snapshot, CancellationToken.None);
+
+        Assert.Equal(60, root.ParserWorkUnits);
+        SvgRenderLimits exactLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 60);
+        using SvgRoot exact = SvgRootParser.Parse(svg, exactLimits, new RenderBudget(exactLimits.MaximumAccountedBytes), snapshot, CancellationToken.None);
+
+        Assert.Equal(60, exact.ParserWorkUnits);
+        SvgRenderLimits deniedLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 59);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, new RenderBudget(deniedLimits.MaximumAccountedBytes), snapshot, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
+    public async Task Direct_text_lowering_releases_scene_and_parser_reservations_when_contour_copying_is_cancelled()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 100_000);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
+        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        using CancellationTokenSource cancellation = new();
+        bool copiedSegment = false;
+        using IDisposable probe = GlyphOutlineProbe.Arm(() =>
+        {
+            copiedSegment = true;
+            cancellation.Cancel();
+        });
+
+        Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(svg, limits, budget, snapshot, cancellation.Token));
+
+        Assert.True(copiedSegment);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Glyph_outline_transfers_final_contour_scene_ownership_to_retained_geometry()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
