@@ -69,24 +69,20 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
-    public void Compression_buffer_growth_charges_the_remaining_work_limit()
+    public void Owned_encoding_accounts_exactly_without_geometric_copies()
     {
-        // Calibrated on .NET 10.0.12: 4,096 pixels plus 16,388 compressed bytes precede
-        // the first geometric-buffer growth copy, and the complete 64x64 high-entropy
-        // encoding costs exactly 61,606 work units including growth copies.
+        // 4,096 pixels plus 16,464 compressed bytes charged on write and again on serialization;
+        // the segmented buffer performs no growth copies.
         byte[] pixels = CreateGrowthPixels();
         byte[] expected = PngEncoder.Encode(64, 64, pixels, CancellationToken.None);
 
-        byte[] exact = PngEncoder.Encode(64, 64, pixels, new RenderBudget(long.MaxValue), int.MaxValue, 0, 61_606, CancellationToken.None);
+        byte[] exact = PngEncoder.Encode(64, 64, pixels, new RenderBudget(long.MaxValue), int.MaxValue, 0, 37_024, CancellationToken.None);
 
         Assert.Equal(expected, exact);
-        SvgException growth = Assert.Throws<SvgException>(() => PngEncoder.Encode(64, 64, pixels, new RenderBudget(long.MaxValue), int.MaxValue, 0, 20_484, CancellationToken.None));
+        SvgException denied = Assert.Throws<SvgException>(() => PngEncoder.Encode(64, 64, pixels, new RenderBudget(long.MaxValue), int.MaxValue, 0, 37_023, CancellationToken.None));
 
-        Assert.Contains("PNG compression-buffer growth", growth.Message);
-        SvgException total = Assert.Throws<SvgException>(() => PngEncoder.Encode(64, 64, pixels, new RenderBudget(long.MaxValue), int.MaxValue, 0, 61_605, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.LimitExceeded, total.ErrorCode);
-        Assert.Contains("PNG serialization", total.Message);
+        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        Assert.Contains("PNG serialization", denied.Message);
     }
 
     [Fact]
