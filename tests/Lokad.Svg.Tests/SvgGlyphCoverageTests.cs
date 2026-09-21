@@ -38,5 +38,23 @@ public sealed class SvgGlyphCoverageTests
         Assert.Equal(0, SvgGlyphCoverage.GetCoverage([outer, inner], 1, 1, 4, CancellationToken.None));
     }
 
+    [Fact]
+    public void Rejects_finite_extreme_quadratic_coverage_when_winding_arithmetic_overflows()
+    {
+        SvgGlyphQuadraticContour contour = new([Line(-double.MaxValue, -double.MaxValue, double.MaxValue, double.MaxValue)]);
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphCoverage.GetCoverage([contour], 0, 0, 1, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_finite_extreme_coverage_samples_that_overflow()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphCoverage.GetCoverage([], double.MaxValue, 0, double.MaxValue, 1, 1, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
     private static SvgGlyphQuadraticSegment Line(double x1, double y1, double x2, double y2) => new(new(x1, y1), new(x2, y2), new(x2, y2));
 }

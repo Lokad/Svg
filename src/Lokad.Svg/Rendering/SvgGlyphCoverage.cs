@@ -21,9 +21,12 @@ internal static class SvgGlyphCoverage
         {
             cancellationToken.ThrowIfCancellationRequested();
             double sampleY = top + height * (y + 0.5) / samplesPerAxis;
+            if (!double.IsFinite(sampleY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Quadratic glyph coverage exceeds the admitted numeric range.");
             for (int x = 0; x < samplesPerAxis; x++)
             {
-                if (ContainsNonZero(contours, left + width * (x + 0.5) / samplesPerAxis, sampleY, cancellationToken)) covered++;
+                double sampleX = left + width * (x + 0.5) / samplesPerAxis;
+                if (!double.IsFinite(sampleX)) throw new SvgException(SvgErrorCode.LimitExceeded, "Quadratic glyph coverage exceeds the admitted numeric range.");
+                if (ContainsNonZero(contours, sampleX, sampleY, cancellationToken)) covered++;
             }
         }
         return (byte)((covered * 255 + total / 2) / total);
@@ -57,7 +60,10 @@ internal static class SvgGlyphCoverage
                 {
                     double t = step / (double)QuadraticSubdivisions;
                     double inverse = 1 - t;
-                    var current = new SvgGlyphOutlinePoint(inverse * inverse * segment.Start.X + 2 * inverse * t * segment.Control.X + t * t * segment.End.X, inverse * inverse * segment.Start.Y + 2 * inverse * t * segment.Control.Y + t * t * segment.End.Y);
+                    double currentX = inverse * inverse * segment.Start.X + 2 * inverse * t * segment.Control.X + t * t * segment.End.X;
+                    double currentY = inverse * inverse * segment.Start.Y + 2 * inverse * t * segment.Control.Y + t * t * segment.End.Y;
+                    if (!double.IsFinite(currentX) || !double.IsFinite(currentY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Quadratic glyph coverage exceeds the admitted numeric range.");
+                    var current = new SvgGlyphOutlinePoint(currentX, currentY);
                     if (previous.Y <= y)
                     {
                         if (current.Y > y && IsLeft(previous, current, x, y) > 0) winding++;
@@ -70,5 +76,10 @@ internal static class SvgGlyphCoverage
         return winding != 0;
     }
 
-    private static double IsLeft(SvgGlyphOutlinePoint start, SvgGlyphOutlinePoint end, double x, double y) => (end.X - start.X) * (y - start.Y) - (x - start.X) * (end.Y - start.Y);
+    private static double IsLeft(SvgGlyphOutlinePoint start, SvgGlyphOutlinePoint end, double x, double y)
+    {
+        double result = (end.X - start.X) * (y - start.Y) - (x - start.X) * (end.Y - start.Y);
+        if (!double.IsFinite(result)) throw new SvgException(SvgErrorCode.LimitExceeded, "Quadratic glyph coverage exceeds the admitted numeric range.");
+        return result;
+    }
 }
