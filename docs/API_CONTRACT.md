@@ -77,7 +77,7 @@ and direct-text presentation/opacity syntax before provider access. Once it sees
 rendered content outside the admitted path, it suppresses later text-font
 acquisition. A snapshot can already be supplied through render options. The
 renderer's experimental direct-text path accepts only direct
-single-face text/CDATA content; it does not make SVG text a supported feature and
+single-face text/CDATA content with no whitespace; it does not make SVG text a supported feature and
 does not accept spans, positioning lists or general shaping. Its presentation,
 admitted root-stylesheet and inline `style` font subset is `font-family`,
 `font-weight`, `font-style` and `font-size`; admitted scalar positioning is `x`,

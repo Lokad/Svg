@@ -65,6 +65,7 @@ internal static class SvgRenderedLeafParser
                 state.TextCharacterCount += text.Value.Length;
                 if (text.Value.Length == 0) return true;
                 if (!textElement.Presentation.IsPainted || !textElement.Presentation.HasFill) return true;
+                SvgTextWhitespace.Validate(text.Value, cancellationToken);
                 if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
                 using SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text.Value, fontSnapshot, budget, workCounter, cancellationToken);
                 if (textElement.Presentation.HasFill)

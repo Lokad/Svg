@@ -1640,6 +1640,37 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Svg_based_snapshot_rejects_painted_direct_text_whitespace_before_acquisition()
+    {
+        byte[] font = CreateTriangleFont();
+        string hash = Convert.ToHexString(SHA256.HashData(font));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + font.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var provider = new CountingFontProvider(new CountingFontSource(font));
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A B</text></svg>"u8.ToArray();
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(svg, catalog, provider, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(0, provider.RequestCount);
+    }
+
+    [Theory]
+    [InlineData("A B")]
+    [InlineData("<![CDATA[A B]]>")]
+    public async Task Direct_text_whitespace_is_rejected_before_layout(string content)
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>" + content + "</text></svg>");
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Contains("Whitespace normalization", exception.Message);
+    }
+
+    [Fact]
     public async Task Converts_direct_text_and_its_immediate_shape_sibling_through_every_public_output_form()
     {
         byte[] font = CreateTriangleFont();

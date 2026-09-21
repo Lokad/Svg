@@ -35,6 +35,8 @@ internal static class SvgFontRequestDiscovery
         RenderBudget styleBudget = new(limits.MaximumAccountedBytes);
         using var styleRules = new BudgetedParserList<CssRule>(styleBudget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var styleStrings = new BudgetedParserStringStore(styleBudget);
+        using RenderBudget.BudgetReservation textChunkReservation = styleBudget.Reserve(ParserCollectionMemory.GetArrayByteCount(ParserWorkCounter.ByteCheckpointSize, sizeof(char)), SvgMemoryCategory.Parser);
+        char[] textChunk = new char[ParserWorkCounter.ByteCheckpointSize];
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         try
         {
@@ -145,7 +147,11 @@ internal static class SvgFontRequestDiscovery
                 }
                 else if (reader.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
                 {
-                    if (directText.TryPeek(out TextRequestCandidate? candidate) && candidate is not null) candidate.HasTextContent = true;
+                    if (directText.TryPeek(out TextRequestCandidate? candidate) && candidate is not null)
+                    {
+                        candidate.HasTextContent = true;
+                        candidate.HasUnsupportedWhitespace |= ContainsWhitespace(reader, textChunk, workCounter, cancellationToken);
+                    }
                 }
             }
             if (!hasRoot) throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
@@ -160,10 +166,23 @@ internal static class SvgFontRequestDiscovery
     private static void AddCandidate(TextRequestCandidate? candidate, List<SvgFontFaceRequest> requests, HashSet<TextRequestKey> seen)
     {
         if (candidate is null || candidate.HasChildElement || !candidate.HasTextContent) return;
+        if (candidate.HasUnsupportedWhitespace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Whitespace normalization is not implemented for direct text.");
         SvgFontFaceRequest request = candidate.Request;
         if (!seen.Add(new TextRequestKey(request.Family, request.Weight, request.Italic))) return;
         if (requests.Count == MaximumRequests) throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG text font request count exceeds the preparation limit.");
         requests.Add(request);
+    }
+
+    private static bool ContainsWhitespace(XmlReader reader, char[] chunk, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        bool containsWhitespace = false;
+        int read;
+        do
+        {
+            read = reader.ReadValueChunk(chunk, 0, chunk.Length);
+            if (read != 0) containsWhitespace |= SvgTextWhitespace.Contains(chunk.AsSpan(0, read), workCounter, cancellationToken);
+        } while (read != 0);
+        return containsWhitespace;
     }
 
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -198,6 +217,8 @@ internal static class SvgFontRequestDiscovery
         internal bool HasChildElement { get; set; }
 
         internal bool HasTextContent { get; set; }
+
+        internal bool HasUnsupportedWhitespace { get; set; }
     }
 
     private sealed class TextRequestKeyComparer : IEqualityComparer<TextRequestKey>

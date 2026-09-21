@@ -10,6 +10,35 @@ internal static class SvgTextLimits
     internal const int MaximumCharacters = 32_768;
 }
 
+/// <summary>Validates the direct-text content subset before glyph layout gives whitespace an uncalibrated advance.</summary>
+internal static class SvgTextWhitespace
+{
+    internal static void Validate(ReadOnlySpan<char> value, CancellationToken cancellationToken)
+    {
+        for (int offset = 0; offset < value.Length; offset += ParserWorkCounter.ByteCheckpointSize)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            int count = Math.Min(ParserWorkCounter.ByteCheckpointSize, value.Length - offset);
+            foreach (char character in value.Slice(offset, count))
+            {
+                if (char.IsWhiteSpace(character)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Whitespace normalization is not implemented for direct text.");
+            }
+        }
+    }
+
+    internal static bool Contains(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(workCounter);
+        for (int offset = 0; offset < value.Length; offset += ParserWorkCounter.ByteCheckpointSize)
+        {
+            workCounter.Consume(cancellationToken);
+            int count = Math.Min(ParserWorkCounter.ByteCheckpointSize, value.Length - offset);
+            foreach (char character in value.Slice(offset, count)) if (char.IsWhiteSpace(character)) return true;
+        }
+        return false;
+    }
+}
+
 /// <summary>Parses the initial explicit single-font SVG text attribute subset.</summary>
 internal static class SvgTextSyntax
 {
