@@ -88,6 +88,13 @@ conversion before layout; subtree reader nodes and cmap/advance lookup traversal
 consume the conversion's parser-work limit. Positioned glyph storage is reserved from the conversion's geometry budget
 before allocation and released after each direct text run is lowered.
 
+`SvgPreparedDocument.CreateAsync` is the single-conversion preparation owner. It
+discovers selected supplied fonts under the supplied render limits, retains the
+caller-owned SVG bytes and verified snapshot, and carries one parser-work counter
+through preparation and conversion. Its `ConvertToPng` method may be called once;
+conversion completion, failure, cancellation, or `Dispose` releases its snapshot
+lease. The caller keeps SVG/font bytes valid and unchanged for that lifetime.
+
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does
 not create per-shape or per-pixel tasks. Asynchronous stream conversion likewise
