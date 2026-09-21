@@ -82,7 +82,7 @@ accepts nested `tspan` elements as text concatenation. A span may be attribute-f
 admitted root-stylesheet and inline `style` font subset is `font-family`,
 `font-weight`, `font-style` and `font-size`; admitted scalar positioning is `x`,
 `y`, `dx`, `dy`, scalar `letter-spacing` (added only between glyphs), and `text-anchor` (`start`, `middle`, `end`), with a bounded `id`
-retained only for font diagnostics.
+retained only for font diagnostics and a bounded `class` token for admitted generic stylesheet selectors.
 Its direct text content is limited to 32,768 UTF-16 characters across one
 conversion before layout; subtree reader nodes and cmap/advance lookup traversal
 consume the conversion's parser-work limit. Positioned glyph storage is reserved from the conversion's geometry budget

@@ -1859,11 +1859,13 @@ public sealed class OpenTypeFontTests
         ReadOnlyMemory<byte> direct = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3' style='letter-spacing: 50'>AA</text></svg>"u8.ToArray(), options, CancellationToken.None);
         ReadOnlyMemory<byte> inherited = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><g style='letter-spacing: 50'><text font-family='Example' font-size='100' y='3'>AA</text></g></svg>"u8.ToArray(), options, CancellationToken.None);
         ReadOnlyMemory<byte> stylesheet = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><style>#label { letter-spacing: 50; }</style><text id='label' font-family='Example' font-size='100' y='3'>AA</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> classStylesheet = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><style>.label { letter-spacing: 50; }</style><text class='label' font-family='Example' font-size='100' y='3'>AA</text></svg>"u8.ToArray(), options, CancellationToken.None);
 
         Assert.True(DecodeAlpha(direct, 1, 1) > 0);
         Assert.True(DecodeAlpha(direct, 111, 1) > 0);
         Assert.Equal(direct.ToArray(), inherited.ToArray());
         Assert.Equal(direct.ToArray(), stylesheet.ToArray());
+        Assert.Equal(direct.ToArray(), classStylesheet.ToArray());
     }
 
     [Fact]
