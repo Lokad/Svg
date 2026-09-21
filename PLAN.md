@@ -366,6 +366,17 @@ prepared APIs, including `tspan`, inert and stylesheet content. Keep remaining
 known-content lists and unsupported-state transitions under the same matrix;
 do not reopen already-shared root/style/container rules.
 
+**Repair (7ca3e79):** the lowering traversal now counts the root element against
+MaximumNodes, matching discovery's uniform per-element count. Eleven boundary
+rows (Discovery_and_lowering_agree_on_root_node_boundaries and
+Discovery_and_lowering_agree_on_text_node_boundaries) pin identical below/at/above
+boundaries through discovery, raw and prepared APIs across rect, inert title,
+stylesheet and nested-span/group text content, with zero provider/source calls on
+rejection. Raw text without a snapshot still rejects as UnsupportedFeature once
+node admission passes. The full suite (706 + 6 + 83) and all 21 probe scenarios
+pass. Remaining factoring (known-content lists, unsupported-state transitions)
+stays under the same matrix.
+
 ### R19 / P2 — Parse and identity transients have an initial allocation baseline
 
 **Source inspection:** `SvgComputedStyle.Resolve` evaluates all eight
