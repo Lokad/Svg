@@ -80,6 +80,21 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Charges_glyph_location_lookups_to_the_shared_work_limit()
+    {
+        byte[] font = CreateTriangleFont();
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+
+        SvgException rangeException = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphDataRange(font, 1, metrics, new ParserWorkCounter(0), CancellationToken.None));
+        SvgException headerException = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphHeader(font, 1, metrics, new ParserWorkCounter(0), CancellationToken.None));
+        OpenTypeGlyphHeader? header = OpenTypeFont.GetGlyphHeader(font, 1, metrics, new ParserWorkCounter(1), CancellationToken.None);
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, rangeException.ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, headerException.ErrorCode);
+        Assert.True(header.HasValue);
+    }
+
+    [Fact]
     public void Active_composite_glyph_cycle_scans_consume_work_and_check_cancellation()
     {
         var workCounter = new ParserWorkCounter(1);
@@ -2040,18 +2055,18 @@ public sealed class OpenTypeFontTests
         WriteInt16(font, rootComposite.Offset + 16, 0);
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
         RenderBudget successfulBudget = new(10_000);
-        var successfulWork = new ParserWorkCounter(15);
+        var successfulWork = new ParserWorkCounter(24);
 
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetGlyphContours(font, 2, metrics, successfulBudget, successfulWork, CancellationToken.None))
         {
             Assert.Empty(contours.Segments);
         }
 
-        Assert.Equal(15, successfulWork.Used);
+        Assert.Equal(24, successfulWork.Used);
         Assert.Equal(0, successfulBudget.Snapshot().CurrentBytes);
         RenderBudget deniedBudget = new(10_000);
 
-        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, deniedBudget, new ParserWorkCounter(14), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, deniedBudget, new ParserWorkCounter(23), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
@@ -2074,18 +2089,18 @@ public sealed class OpenTypeFontTests
         byte[] font = CreateTriangleFont();
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
         RenderBudget successfulBudget = new(10_000);
-        var successfulWork = new ParserWorkCounter(28);
+        var successfulWork = new ParserWorkCounter(33);
 
         using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetGlyphContours(font, 1, metrics, successfulBudget, successfulWork, CancellationToken.None))
         {
             Assert.Equal(3, contours.Segments.Length);
         }
 
-        Assert.Equal(28, successfulWork.Used);
+        Assert.Equal(33, successfulWork.Used);
         Assert.Equal(0, successfulBudget.Snapshot().CurrentBytes);
         RenderBudget deniedBudget = new(10_000);
 
-        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 1, metrics, deniedBudget, new ParserWorkCounter(27), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 1, metrics, deniedBudget, new ParserWorkCounter(32), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
@@ -2140,18 +2155,18 @@ public sealed class OpenTypeFontTests
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         var glyph = new SvgPositionedGlyph(1, 0, 0, 1);
         RenderBudget successfulBudget = new(10_000);
-        var successfulWork = new ParserWorkCounter(35);
+        var successfulWork = new ParserWorkCounter(40);
 
         using (SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font, glyph, 1, successfulBudget, successfulWork, CancellationToken.None))
         {
             SvgGlyphQuadraticContour contour = Assert.Single(contours.Contours);
             Assert.Equal(3, contour.Segments.Length);
         }
-        Assert.Equal(35, successfulWork.Used);
+        Assert.Equal(40, successfulWork.Used);
         Assert.Equal(0, successfulBudget.Snapshot().CurrentBytes);
         RenderBudget deniedBudget = new(10_000);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphOutline.GetContourStorage(font, glyph, 1, deniedBudget, new ParserWorkCounter(34), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphOutline.GetContourStorage(font, glyph, 1, deniedBudget, new ParserWorkCounter(39), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
@@ -2186,12 +2201,12 @@ public sealed class OpenTypeFontTests
 
         using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(limits.MaximumAccountedBytes), snapshot, CancellationToken.None);
 
-        Assert.Equal(61, root.ParserWorkUnits);
-        SvgRenderLimits exactLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 61);
+        Assert.Equal(66, root.ParserWorkUnits);
+        SvgRenderLimits exactLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 66);
         using SvgRoot exact = SvgRootParser.Parse(svg, exactLimits, new RenderBudget(exactLimits.MaximumAccountedBytes), snapshot, CancellationToken.None);
 
-        Assert.Equal(61, exact.ParserWorkUnits);
-        SvgRenderLimits deniedLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 60);
+        Assert.Equal(66, exact.ParserWorkUnits);
+        SvgRenderLimits deniedLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 65);
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, new RenderBudget(deniedLimits.MaximumAccountedBytes), snapshot, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
