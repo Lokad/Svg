@@ -127,8 +127,8 @@ public sealed class SvgFontSnapshot : IDisposable
         {
             SvgFontPackFile file = resolution.Resolution.Face.File;
             if (bytes.Length != file.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.", CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
-            string hash = SvgFontProgramIntegrity.ComputeSha256(bytes, workCounter, cancellationToken);
-            if (!hash.Equals(file.Sha256, StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.", CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
+            byte[] hash = SvgFontProgramIntegrity.ComputeSha256(bytes, workCounter, cancellationToken);
+            if (!hash.SequenceEqual(file.Sha256Bytes)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.", CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
         }
 
         static ValueTask<ReadOnlyMemory<byte>> GetVerifiedBytesAsync(ISvgFontProgramSource source, ParserWorkCounter? workCounter, CancellationToken cancellationToken)

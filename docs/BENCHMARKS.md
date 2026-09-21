@@ -84,7 +84,7 @@ followed by BenchmarkDotNet managed allocation traffic, not retained memory or
 
 - `VerifyProgramHash` hashes one synthetic caller-owned program (`byte(i * 31)`)
   at 4,096 and 1,048,576 bytes via the shared `SvgFontProgramIntegrity` path,
-  returning the 64-character hex identity length so the hash is retained. Input
+  returning the 32-byte digest length so the hash is retained. Input
   setup occurs outside the timed method; no provider or snapshot work is
   included.
 
@@ -93,7 +93,18 @@ followed by BenchmarkDotNet managed allocation traffic, not retained memory or
 | 4096 | 19.93 μs | 344 B |
 | 1048576 | 5,086.66 μs | 347 B |
 
-Allocation is the fresh hex identity per verification plus hashing traffic;
+After returning the digest bytes instead of a fresh hex string per verification
+(manifest bytes are parsed once at catalog load):
+
+| Program bytes | Mean | Allocated |
+| --- | ---: | ---: |
+| 4096 | 18.52 μs | 192 B |
+| 1048576 | 4,534.44 μs | 197 B |
+
+The per-verification saving is the discarded hex string (about 150 bytes); hashing
+time is unchanged within noise. Manifest comparison semantics are unchanged.
+
+Allocation was the fresh hex identity per verification plus hashing traffic;
 elapsed time scales with program length. This does not measure acquisition,
 snapshot field validation, cancellation latency or repeated/distinct program
 behavior.

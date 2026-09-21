@@ -403,12 +403,16 @@ public sealed class SvgFontPackFile
         RelativePath = relativePath;
         ByteSize = byteSize;
         Sha256 = sha256;
+        Sha256Bytes = Convert.FromHexString(sha256);
     }
 
     /// <summary>Gets the safe pack-relative font path.</summary>
     public string RelativePath { get; }
     /// <summary>Gets the declared program byte count.</summary>
     public long ByteSize { get; }
+    /// <summary>Gets the declared digest bytes parsed once from validated manifest hex.</summary>
+    internal byte[] Sha256Bytes { get; }
+
     /// <summary>Gets the normalized uppercase SHA-256 hash.</summary>
     public string Sha256 { get; }
 }

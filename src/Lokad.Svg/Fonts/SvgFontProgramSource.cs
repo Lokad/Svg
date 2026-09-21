@@ -116,8 +116,8 @@ internal sealed class VerifiedSvgFontProgramSource(string packId, SvgFontPackFac
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (bytes.Length != face.File.ByteSize) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program has an unexpected byte size.");
-        string hash = SvgFontProgramIntegrity.ComputeSha256(bytes, workCounter, cancellationToken);
-        if (!hash.Equals(face.File.Sha256, StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.");
+        byte[] hash = SvgFontProgramIntegrity.ComputeSha256(bytes, workCounter, cancellationToken);
+        if (!hash.SequenceEqual(face.File.Sha256Bytes)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.");
         return bytes;
     }
 }
@@ -138,7 +138,7 @@ internal static class SvgFontSourceFailures
 /// <summary>Hashes caller-owned font bytes in bounded, cancellable checkpoints shared by source and snapshot integrity validation.</summary>
 internal static class SvgFontProgramIntegrity
 {
-    internal static string ComputeSha256(ReadOnlyMemory<byte> bytes, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal static byte[] ComputeSha256(ReadOnlyMemory<byte> bytes, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         using IncrementalHash hashing = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
         ReadOnlySpan<byte> programBytes = bytes.Span;
@@ -150,6 +150,6 @@ internal static class SvgFontProgramIntegrity
             hashing.AppendData(programBytes.Slice(offset, length));
             FontIntegrityProbe.HashChunkCompleted();
         }
-        return Convert.ToHexString(hashing.GetHashAndReset());
+        return hashing.GetHashAndReset();
     }
 }
