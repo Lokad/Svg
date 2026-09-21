@@ -37,6 +37,78 @@ public sealed class SvgFontProgramSourceTests
     }
 
     [Fact]
+    public async Task Prepared_document_writes_caller_memory_once()
+    {
+        SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
+        var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>());
+        SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng(svg, options, CancellationToken.None);
+        byte[] destination = new byte[expected.Length];
+
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None);
+        int written = document.ConvertToPng(destination, CancellationToken.None);
+
+        Assert.Equal(expected.Length, written);
+        Assert.Equal(expected.ToArray(), destination);
+        Assert.Throws<ObjectDisposedException>(() => document.ConvertToPng(destination, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Prepared_document_writes_stream_once()
+    {
+        SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
+        var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>());
+        SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng(svg, options, CancellationToken.None);
+        using MemoryStream destination = new(expected.Length);
+
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None);
+        int written = document.ConvertToPng(destination, CancellationToken.None);
+
+        Assert.Equal(expected.Length, written);
+        Assert.Equal(expected.ToArray(), destination.ToArray());
+        Assert.Throws<ObjectDisposedException>(() => document.ConvertToPng(destination, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Prepared_document_asynchronously_writes_caller_memory_once()
+    {
+        SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
+        var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>());
+        SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng(svg, options, CancellationToken.None);
+        byte[] destination = new byte[expected.Length];
+
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None);
+        int written = await document.ConvertToPngAsync(destination, CancellationToken.None);
+
+        Assert.Equal(expected.Length, written);
+        Assert.Equal(expected.ToArray(), destination);
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => document.ConvertToPngAsync(destination, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Prepared_document_asynchronously_writes_stream_once()
+    {
+        SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
+        var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>());
+        SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng(svg, options, CancellationToken.None);
+        using MemoryStream destination = new(expected.Length);
+
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None);
+        int written = await document.ConvertToPngAsync(destination, CancellationToken.None);
+
+        Assert.Equal(expected.Length, written);
+        Assert.Equal(expected.ToArray(), destination.ToArray());
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => document.ConvertToPngAsync(destination, CancellationToken.None));
+    }
+
+    [Fact]
     public async Task Prepared_document_charges_preparation_against_conversion_work()
     {
         SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);

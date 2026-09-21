@@ -48,6 +48,36 @@ public sealed class SvgPreparedDocument : IDisposable
         return ConvertAsync(cancellationToken);
     }
 
+    /// <summary>Converts this prepared document once into caller-owned destination memory and releases its retained font lease.</summary>
+    public int ConvertToPng(Memory<byte> destination, CancellationToken cancellationToken)
+    {
+        BeginConversion();
+        try { return SvgConverter.ConvertToPng(_svg, destination, _options, _workCounter, cancellationToken); }
+        finally { _snapshot.Dispose(); }
+    }
+
+    /// <summary>Converts this prepared document once to a caller-owned writable stream and releases its retained font lease.</summary>
+    public int ConvertToPng(Stream destination, CancellationToken cancellationToken)
+    {
+        BeginConversion();
+        try { return SvgConverter.ConvertToPng(_svg, destination, _options, _workCounter, cancellationToken); }
+        finally { _snapshot.Dispose(); }
+    }
+
+    /// <summary>Schedules this prepared document's one destination-memory conversion and releases its retained font lease when the task completes.</summary>
+    public Task<int> ConvertToPngAsync(Memory<byte> destination, CancellationToken cancellationToken)
+    {
+        BeginConversion();
+        return ConvertAsync(destination, cancellationToken);
+    }
+
+    /// <summary>Schedules this prepared document's one stream conversion and releases its retained font lease when the task completes.</summary>
+    public Task<int> ConvertToPngAsync(Stream destination, CancellationToken cancellationToken)
+    {
+        BeginConversion();
+        return ConvertAsync(destination, cancellationToken);
+    }
+
     /// <summary>Releases the retained snapshot when no conversion will occur.</summary>
     public void Dispose()
     {
@@ -62,6 +92,18 @@ public sealed class SvgPreparedDocument : IDisposable
     private async Task<ReadOnlyMemory<byte>> ConvertAsync(CancellationToken cancellationToken)
     {
         try { return await Task.Run(() => SvgConverter.ConvertToPng(_svg, _options, _workCounter, cancellationToken), cancellationToken).ConfigureAwait(false); }
+        finally { _snapshot.Dispose(); }
+    }
+
+    private async Task<int> ConvertAsync(Memory<byte> destination, CancellationToken cancellationToken)
+    {
+        try { return await SvgConverter.ConvertToPngAsync(_svg, destination, _options, _workCounter, cancellationToken).ConfigureAwait(false); }
+        finally { _snapshot.Dispose(); }
+    }
+
+    private async Task<int> ConvertAsync(Stream destination, CancellationToken cancellationToken)
+    {
+        try { return await SvgConverter.ConvertToPngAsync(_svg, destination, _options, _workCounter, cancellationToken).ConfigureAwait(false); }
         finally { _snapshot.Dispose(); }
     }
 }

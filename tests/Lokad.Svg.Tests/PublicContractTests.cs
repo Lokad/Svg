@@ -164,6 +164,17 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Prepared_document_conversion_methods_require_all_parameters()
+    {
+        MethodInfo[] methods = typeof(SvgPreparedDocument).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(method => method.Name is nameof(SvgPreparedDocument.ConvertToPng) or nameof(SvgPreparedDocument.ConvertToPngAsync)).ToArray();
+
+        Assert.Equal(6, methods.Length);
+        Assert.All(methods.SelectMany(method => method.GetParameters()), parameter => Assert.False(parameter.HasDefaultValue));
+        Assert.Equal(3, methods.Count(method => method.Name == nameof(SvgPreparedDocument.ConvertToPng)));
+        Assert.Equal(3, methods.Count(method => method.Name == nameof(SvgPreparedDocument.ConvertToPngAsync)));
+    }
+
+    [Fact]
     public void Default_options_match_the_provisional_plan_limits()
     {
         SvgRenderLimits limits = SvgRenderOptions.Default.Limits;
