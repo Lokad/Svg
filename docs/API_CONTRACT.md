@@ -78,7 +78,7 @@ rendered content outside the admitted path, it suppresses later text-font
 acquisition. A snapshot can already be supplied through render options. The
 renderer's experimental direct-text path accepts only direct
 single-face text/CDATA content. On a direct `text` element, `xml:space="default"` (or its absence) collapses spaces, tabs, carriage returns and line feeds to one inter-word space and trims leading/trailing runs; `xml:space="preserve"` converts tabs and line breaks to spaces while retaining leading, trailing and repeated spaces. It does not make SVG text a supported feature and
-accepts nested attribute-free `tspan` elements only as text concatenation; spans cannot override the direct element's whitespace mode, and span styling, positioning lists and general shaping remain unsupported. Its presentation,
+accepts nested `tspan` elements as text concatenation. A span may be attribute-free or carry exactly `xml:space="preserve"`, inheriting its parent's mode otherwise; nested `xml:space="default"`, span styling, positioning lists and general shaping remain unsupported. Its presentation,
 admitted root-stylesheet and inline `style` font subset is `font-family`,
 `font-weight`, `font-style` and `font-size`; admitted scalar positioning is `x`,
 `y`, `dx`, `dy` and `text-anchor` (`start`, `middle`, `end`), with a bounded `id`

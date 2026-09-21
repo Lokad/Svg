@@ -94,6 +94,8 @@ internal static class SvgRenderedLeafParser
                 return text.Detach();
             }
             childNodeCount = 0;
+            using var whitespaceModes = new BudgetedParserList<SvgTextWhitespaceMode>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+            whitespaceModes.Add(whitespaceMode);
             using RenderBudget.BudgetReservation chunkReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount(4_096, sizeof(char)), SvgMemoryCategory.Parser);
             char[] chunk = new char[4_096];
             using XmlReader subtree = element.ReadSubtree();
@@ -106,7 +108,7 @@ internal static class SvgRenderedLeafParser
                     do
                     {
                         read = subtree.ReadValueChunk(chunk, 0, chunk.Length);
-                        if (read != 0) normalizer.Append(chunk.AsSpan(0, read), text, maximumCharacters, workCounter, cancellationToken);
+                        if (read != 0) normalizer.Append(chunk.AsSpan(0, read), whitespaceModes[^1], text, maximumCharacters, workCounter, cancellationToken);
                     } while (read != 0);
                     continue;
                 }
@@ -116,8 +118,11 @@ internal static class SvgRenderedLeafParser
                     if (childNodeCount >= remainingNodeCount) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     childNodeCount++;
                     if (subtree.AttributeCount > maximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
-                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan" || subtree.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only attribute-free tspan text children are implemented.");
+                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan" || !SvgTextSyntax.TryParseTspanWhitespaceMode(subtree, whitespaceModes[^1], out SvgTextWhitespaceMode childWhitespaceMode)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only attribute-free or xml:space=\"preserve\" tspan text children are implemented.");
+                    if (!subtree.IsEmptyElement) whitespaceModes.Add(childWhitespaceMode);
+                    continue;
                 }
+                if (subtree.NodeType == XmlNodeType.EndElement && subtree.Depth != 0) whitespaceModes.RemoveLast();
             }
             sourceCharacterCount = normalizer.SourceCharacterCount;
             return text.Detach();

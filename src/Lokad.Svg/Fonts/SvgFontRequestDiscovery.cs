@@ -30,6 +30,7 @@ internal static class SvgFontRequestDiscovery
         var seen = new HashSet<TextRequestKey>(TextRequestKeyComparer.Instance);
         var inherited = new Stack<TextStyle>();
         var directText = new Stack<TextRequestCandidate?>();
+        var directTextWhitespaceModes = new Stack<SvgTextWhitespaceMode>();
         var textEligibleChildren = new Stack<bool>();
         var elementGroups = new Stack<bool>();
         RenderBudget styleBudget = new(limits.MaximumAccountedBytes);
@@ -70,8 +71,10 @@ internal static class SvgFontRequestDiscovery
                     nodeCount++;
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
                     bool insideDirectText = activeDirectTextCandidate is not null;
-                    bool attributeFreeDirectTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && !reader.HasAttributes;
-                    if (!attributeFreeDirectTextSpan && activeDirectTextCandidate is not null) activeDirectTextCandidate.HasChildElement = true;
+                    SvgTextWhitespaceMode inheritedWhitespaceMode = directTextWhitespaceModes.Count == 0 ? SvgTextWhitespaceMode.Default : directTextWhitespaceModes.Peek();
+                    SvgTextWhitespaceMode childWhitespaceMode = inheritedWhitespaceMode;
+                    bool admittedTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanWhitespaceMode(reader, inheritedWhitespaceMode, out childWhitespaceMode);
+                    if (!admittedTextSpan && activeDirectTextCandidate is not null) activeDirectTextCandidate.HasChildElement = true;
                     bool parentAllowsText = textEligibleChildren.Count == 0 || textEligibleChildren.Peek();
                     bool rootElement = reader.Depth == rootDepth;
                     TextStyle style;
@@ -130,8 +133,9 @@ internal static class SvgFontRequestDiscovery
                     }
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
                     TextRequestCandidate? candidate = !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.HasFill && style.Text.Family is string family
-                            ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic), whitespaceMode)
-                            : null;
+                        ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic), whitespaceMode)
+                        : null;
+                    if (candidate is not null) childWhitespaceMode = candidate.WhitespaceMode;
                     if (reader.IsEmptyElement)
                     {
                         if (candidate is not null) AddCandidate(candidate, requests, seen);
@@ -140,6 +144,7 @@ internal static class SvgFontRequestDiscovery
                     {
                         inherited.Push(style);
                         directText.Push(candidate);
+                        directTextWhitespaceModes.Push(childWhitespaceMode);
                         textEligibleChildren.Push(childAllowsText);
                         bool group = isSvgElement && reader.LocalName == "g";
                         elementGroups.Push(group);
@@ -155,6 +160,7 @@ internal static class SvgFontRequestDiscovery
                     {
                         inherited.Pop();
                         TextRequestCandidate? candidate = directText.Pop();
+                        directTextWhitespaceModes.Pop();
                         if (candidate is not null)
                         {
                             AddCandidate(candidate, requests, seen);
@@ -168,7 +174,7 @@ internal static class SvgFontRequestDiscovery
                 {
                     if (activeDirectTextCandidate is not null)
                     {
-                        activeDirectTextCandidate.HasRenderableTextContent |= HasRenderableText(reader, GetTextChunk(), activeDirectTextCandidate.WhitespaceMode, workCounter, cancellationToken);
+                        activeDirectTextCandidate.HasRenderableTextContent |= HasRenderableText(reader, GetTextChunk(), directTextWhitespaceModes.Peek(), workCounter, cancellationToken);
                     }
                 }
             }

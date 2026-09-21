@@ -17,7 +17,7 @@ internal enum SvgTextWhitespaceMode { Default, Preserve }
 internal struct SvgTextWhitespaceNormalizer
 {
     private readonly SvgTextWhitespaceMode _mode;
-    private bool _hasText;
+    private bool _hasOutput;
     private bool _hasPendingWhitespace;
     private int _sourceCharacterCount;
 
@@ -29,6 +29,10 @@ internal struct SvgTextWhitespaceNormalizer
 
     /// <summary>Appends direct text according to the configured XML whitespace mode without materializing an unbounded intermediate value.</summary>
     internal void Append(ReadOnlySpan<char> value, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => Append(value, _mode, output, maximumSourceCharacters, workCounter, cancellationToken);
+
+    /// <summary>Appends one inherited direct-text whitespace region without materializing an unbounded intermediate value.</summary>
+    internal void Append(ReadOnlySpan<char> value, SvgTextWhitespaceMode mode, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(output);
         ArgumentNullException.ThrowIfNull(workCounter);
@@ -38,11 +42,14 @@ internal struct SvgTextWhitespaceNormalizer
         {
             workCounter.Consume(cancellationToken);
             int count = Math.Min(ParserWorkCounter.ByteCheckpointSize, value.Length - offset);
-            if (_mode == SvgTextWhitespaceMode.Preserve)
+            if (mode == SvgTextWhitespaceMode.Preserve)
             {
+                FlushPendingWhitespace(output, maximumSourceCharacters, workCounter, cancellationToken, count != 0);
                 AppendPreservedChunk(value.Slice(offset, count), output, maximumSourceCharacters, workCounter, cancellationToken);
+                _hasOutput |= count != 0;
                 continue;
             }
+            if (mode != SvgTextWhitespaceMode.Default) throw new ArgumentOutOfRangeException(nameof(mode));
             AppendChunk(value.Slice(offset, count), output, maximumSourceCharacters, workCounter, cancellationToken);
         }
     }
@@ -54,21 +61,25 @@ internal struct SvgTextWhitespaceNormalizer
         {
             if (IsCollapsible(value[index]))
             {
-                _hasPendingWhitespace |= _hasText;
+                _hasPendingWhitespace |= _hasOutput;
                 index++;
                 continue;
             }
-            if (_hasPendingWhitespace)
-            {
-                output.Append(" ", maximumSourceCharacters, workCounter, cancellationToken);
-                _hasPendingWhitespace = false;
-            }
+            FlushPendingWhitespace(output, maximumSourceCharacters, workCounter, cancellationToken, true);
             int end = index + 1;
             while (end < value.Length && !IsCollapsible(value[end])) end++;
             output.Append(value.Slice(index, end - index), maximumSourceCharacters, workCounter, cancellationToken);
-            _hasText = true;
+            _hasOutput = true;
             index = end;
         }
+    }
+
+    private void FlushPendingWhitespace(BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool hasNextContent)
+    {
+        if (!_hasPendingWhitespace || !hasNextContent) return;
+        output.Append(" ", maximumSourceCharacters, workCounter, cancellationToken);
+        _hasPendingWhitespace = false;
+        _hasOutput = true;
     }
 
     private static void AppendPreservedChunk(ReadOnlySpan<char> value, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -164,6 +175,22 @@ internal static class SvgTextSyntax
         if (value is null || value == "default") return SvgTextWhitespaceMode.Default;
         if (value == "preserve") return SvgTextWhitespaceMode.Preserve;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only default and preserve xml:space values are supported for direct text.");
+    }
+
+    /// <summary>Recognizes the sole nested direct-text override currently admitted: xml:space="preserve".</summary>
+    internal static bool TryParseTspanWhitespaceMode(XmlReader reader, SvgTextWhitespaceMode inherited, out SvgTextWhitespaceMode mode)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        mode = inherited;
+        if (!reader.HasAttributes) return true;
+        if (reader.AttributeCount != 1) return false;
+        string? value = reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace");
+        if (value == "preserve")
+        {
+            mode = SvgTextWhitespaceMode.Preserve;
+            return true;
+        }
+        return false;
     }
 
     private static SvgTextAnchor ParseAnchor(string value)

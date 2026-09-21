@@ -1739,6 +1739,24 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Direct_text_spans_inherit_and_override_admitted_xml_space_modes()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        ReadOnlyMemory<byte> expectedPreserved = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'>  </text></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        ReadOnlyMemory<byte> nestedInherited = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'><tspan>\t\t</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> nestedPreserve = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'><tspan xml:space='preserve'>\t\t</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None);
+        SvgException defaultOverride = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'><tspan xml:space='default'> </tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
+        SvgException invalid = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'><tspan xml:space='collapse'>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
+
+        Assert.Equal(expectedPreserved.ToArray(), nestedInherited.ToArray());
+        Assert.Equal(expectedPreserved.ToArray(), nestedPreserve.ToArray());
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, defaultOverride.ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, invalid.ErrorCode);
+    }
+
+    [Fact]
     public async Task Converts_direct_text_and_its_immediate_shape_sibling_through_every_public_output_form()
     {
         byte[] font = CreateTriangleFont();
