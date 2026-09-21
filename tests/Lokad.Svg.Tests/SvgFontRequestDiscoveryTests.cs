@@ -47,11 +47,13 @@ public sealed class SvgFontRequestDiscoveryTests
     {
         SvgFontFaceRequest inline = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Inline' style='white-space: pre'> </text></svg>"u8.ToArray(), CancellationToken.None));
         SvgFontFaceRequest inherited = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><style>g { white-space: pre; }</style><g><text font-family='Inherited'> </text></g></svg>"u8.ToArray(), CancellationToken.None));
+        SvgFontFaceRequest textStylesheet = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><style>#label { white-space: pre; }</style><text id='label' font-family='TextStylesheet'> </text></svg>"u8.ToArray(), CancellationToken.None));
         SvgFontFaceRequest span = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Span'><tspan style='white-space: pre'> </tspan></text></svg>"u8.ToArray(), CancellationToken.None));
         SvgFontFaceRequest[] cssOverride = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused' xml:space='preserve' style='white-space: normal'> </text></svg>"u8.ToArray(), CancellationToken.None);
 
         Assert.Equal("Inline", inline.Family);
         Assert.Equal("Inherited", inherited.Family);
+        Assert.Equal("TextStylesheet", textStylesheet.Family);
         Assert.Equal("Span", span.Family);
         Assert.Empty(cssOverride);
     }
