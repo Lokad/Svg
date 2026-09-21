@@ -281,7 +281,7 @@ internal static class OpenTypeFont
     private static OpenTypeSimpleGlyphStructureStorage GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
-        if (glyph.Length == 0) return new(new OpenTypeSimpleGlyphStructure([], 0), null);
+        if (glyph.Length == 0) return new(new OpenTypeSimpleGlyphStructure([], 0, glyph), null);
         OpenTypeGlyphHeader? header = ParseGlyphHeader(bytes, glyph);
         if (header is not OpenTypeGlyphHeader value) throw new InvalidOperationException("A nonempty glyph did not return a header.");
         if (value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph decoding is not implemented yet.");
@@ -309,7 +309,7 @@ internal static class OpenTypeFont
                 endpoints[index] = endpoint;
                 previous = endpoint;
             }
-            return new(new OpenTypeSimpleGlyphStructure(endpoints, pointDataOffset - glyph.Offset), reservation);
+            return new(new OpenTypeSimpleGlyphStructure(endpoints, pointDataOffset - glyph.Offset, glyph), reservation);
         }
         catch
         {
@@ -330,16 +330,16 @@ internal static class OpenTypeFont
     internal static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
-        return GetSimpleGlyphPoints(bytes, glyphIndex, metrics, structure, workCounter, cancellationToken);
+        return GetSimpleGlyphPoints(bytes, structure, workCounter, cancellationToken);
     }
 
     /// <summary>Decodes point flags and coordinates from already-validated simple-glyph structure.</summary>
-    private static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeSimpleGlyphStructure structure, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static OpenTypeGlyphPoint[] GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, OpenTypeSimpleGlyphStructure structure, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (structure.ContourEndpoints.Length == 0) return [];
         int pointCount = checked(structure.ContourEndpoints[^1] + 1);
         if (pointCount > MaximumSimpleGlyphPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph point count exceeds the supported limit.");
-        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        OpenTypeTableRange glyph = structure.GlyphRange;
         ReadOnlySpan<byte> data = bytes.Span;
         int cursor = checked(glyph.Offset + structure.PointDataOffset);
         int end = checked(glyph.Offset + glyph.Length);
@@ -378,12 +378,12 @@ internal static class OpenTypeFont
     }
 
     /// <summary>Decodes points while retaining their reservation until quadratic lowering has completed.</summary>
-    private static OpenTypeGlyphPointStorage GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeSimpleGlyphStructure structure, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static OpenTypeGlyphPointStorage GetSimpleGlyphPoints(ReadOnlyMemory<byte> bytes, OpenTypeSimpleGlyphStructure structure, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (structure.ContourEndpoints.Length == 0) return new([], null);
         int pointCount = checked(structure.ContourEndpoints[^1] + 1);
         if (pointCount > MaximumSimpleGlyphPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph point count exceeds the supported limit.");
-        OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
+        OpenTypeTableRange glyph = structure.GlyphRange;
         ReadOnlySpan<byte> data = bytes.Span;
         int cursor = checked(glyph.Offset + structure.PointDataOffset);
         int end = checked(glyph.Offset + glyph.Length);
@@ -500,7 +500,7 @@ internal static class OpenTypeFont
     {
         OpenTypeSimpleGlyphStructure structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, workCounter, cancellationToken);
         if (structure.ContourEndpoints.Length == 0) return [];
-        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, structure, workCounter, cancellationToken);
+        OpenTypeGlyphPoint[] points = GetSimpleGlyphPoints(bytes, structure, workCounter, cancellationToken);
         return BuildQuadraticContours(points, structure.ContourEndpoints);
     }
 
@@ -509,7 +509,7 @@ internal static class OpenTypeFont
     {
         using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, budget, workCounter, cancellationToken);
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
-        using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, glyphIndex, metrics, structure.Value, budget, workCounter, cancellationToken);
+        using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, structure.Value, budget, workCounter, cancellationToken);
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, workCounter, cancellationToken);
         BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, workCounter, cancellationToken);
         return segments.Detach();
@@ -783,8 +783,8 @@ internal readonly record struct OpenTypeGlyphHeader(short ContourCount, short XM
     internal bool IsComposite => ContourCount < 0;
 }
 
-/// <summary>Represents bounded simple-glyph contour metadata before flag and coordinate decoding.</summary>
-internal readonly record struct OpenTypeSimpleGlyphStructure(ushort[] ContourEndpoints, int PointDataOffset);
+/// <summary>Represents bounded simple-glyph contour metadata and its validated range before flag and coordinate decoding.</summary>
+internal readonly record struct OpenTypeSimpleGlyphStructure(ushort[] ContourEndpoints, int PointDataOffset, OpenTypeTableRange GlyphRange);
 
 /// <summary>Represents one decoded simple-glyph point in font units.</summary>
 internal readonly record struct OpenTypeGlyphPoint(int X, int Y, bool IsOnCurve);
