@@ -1888,6 +1888,25 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Direct_text_applies_validated_GPOS_pair_adjustments_between_adjacent_glyphs()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleGposFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'>AA</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        using SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AA", 100, 0, 3, SvgTextAnchor.Start, new RenderBudget(1_024), CancellationToken.None);
+
+        Assert.Equal(30, glyphs.Glyphs[1].X);
+        Assert.True(DecodeAlpha(png, 31, 1) > 0);
+        Assert.Equal(0, DecodeAlpha(png, 61, 1));
+
+        byte[] unsupported = CreateTriangleGposFont();
+        OpenTypeGposPairTable gpos = Assert.IsType<OpenTypeGposPairTable>(OpenTypeFont.ParseMetrics(unsupported, CancellationToken.None).Gpos);
+        WriteUInt16(unsupported, gpos.PairPosOffset + 4, 8);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(unsupported, CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
     public async Task Default_text_preserves_inter_word_whitespace_around_a_visible_nested_span()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleAAndSpaceFont())], CancellationToken.None);
@@ -2831,6 +2850,64 @@ public sealed class OpenTypeFontTests
         WriteUInt16(font, kernOffset + 18, 1);
         WriteUInt16(font, kernOffset + 20, 1);
         WriteInt16(font, kernOffset + 22, -300);
+        return font;
+    }
+
+    private static byte[] CreateTriangleGposFont()
+    {
+        byte[] font = CreateTriangleFont();
+        const int originalTableCount = 7;
+        const int originalDirectoryLength = 12 + originalTableCount * 16;
+        const int gposLength = 80;
+        int originalLength = font.Length;
+        Array.Resize(ref font, originalLength + 16 + gposLength);
+        Array.Copy(font, originalDirectoryLength, font, originalDirectoryLength + 16, originalLength - originalDirectoryLength);
+        for (int index = 0; index < originalTableCount; index++)
+        {
+            int entry = 12 + index * 16;
+            uint offset = ((uint)font[entry + 8] << 24) | ((uint)font[entry + 9] << 16) | ((uint)font[entry + 10] << 8) | font[entry + 11];
+            WriteUInt32(font, entry + 8, offset + 16);
+        }
+        WriteUInt16(font, 4, originalTableCount + 1);
+        int gposOffset = originalLength + 16;
+        WriteTable(font, originalTableCount, 0x47504F53, gposOffset, gposLength);
+        WriteUInt16(font, gposOffset, 1);
+        WriteUInt16(font, gposOffset + 2, 0);
+        WriteUInt16(font, gposOffset + 4, 10);
+        WriteUInt16(font, gposOffset + 6, 30);
+        WriteUInt16(font, gposOffset + 8, 44);
+        WriteUInt16(font, gposOffset + 10, 1);
+        WriteUInt32(font, gposOffset + 12, 0x44464C54);
+        WriteUInt16(font, gposOffset + 16, 8);
+        WriteUInt16(font, gposOffset + 18, 4);
+        WriteUInt16(font, gposOffset + 20, 0);
+        WriteUInt16(font, gposOffset + 22, 0);
+        WriteUInt16(font, gposOffset + 24, ushort.MaxValue);
+        WriteUInt16(font, gposOffset + 26, 1);
+        WriteUInt16(font, gposOffset + 30, 1);
+        WriteUInt32(font, gposOffset + 32, 0x6B65726E);
+        WriteUInt16(font, gposOffset + 36, 8);
+        WriteUInt16(font, gposOffset + 38, 0);
+        WriteUInt16(font, gposOffset + 40, 1);
+        WriteUInt16(font, gposOffset + 42, 0);
+        WriteUInt16(font, gposOffset + 44, 1);
+        WriteUInt16(font, gposOffset + 46, 4);
+        WriteUInt16(font, gposOffset + 48, 2);
+        WriteUInt16(font, gposOffset + 50, 0);
+        WriteUInt16(font, gposOffset + 52, 1);
+        WriteUInt16(font, gposOffset + 54, 8);
+        WriteUInt16(font, gposOffset + 56, 1);
+        WriteUInt16(font, gposOffset + 58, 18);
+        WriteUInt16(font, gposOffset + 60, 4);
+        WriteUInt16(font, gposOffset + 62, 0);
+        WriteUInt16(font, gposOffset + 64, 1);
+        WriteUInt16(font, gposOffset + 66, 12);
+        WriteUInt16(font, gposOffset + 68, 1);
+        WriteUInt16(font, gposOffset + 70, 1);
+        WriteInt16(font, gposOffset + 72, -300);
+        WriteUInt16(font, gposOffset + 74, 1);
+        WriteUInt16(font, gposOffset + 76, 1);
+        WriteUInt16(font, gposOffset + 78, 1);
         return font;
     }
 

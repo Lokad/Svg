@@ -91,7 +91,7 @@ internal static class SvgGlyphLayout
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgPositionedGlyph glyph = glyphs[index];
-                double kerning = index + 1 == glyphs.Length ? 0 : OpenTypeFont.GetKerningAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken) * scale;
+                double kerning = index + 1 == glyphs.Length ? 0 : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken) * scale;
                 double nextX = index + 1 == glyphs.Length ? x + glyph.Advance : x + glyph.Advance + kerning + letterSpacing;
                 if (!double.IsFinite(kerning) || !double.IsFinite(nextX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
                 glyphs[index] = glyph with { X = x };
