@@ -1,11 +1,11 @@
 # API contract
 
-Every conversion API requires explicit `SvgRenderOptions` and `CancellationToken`.
+Every `SvgConverter` conversion API requires explicit `SvgRenderOptions` and `CancellationToken`.
 The owned-memory result is independently owned and valid indefinitely. The
 corresponding synchronous and asynchronous overloads also write into caller-owned
 `Memory<byte>` or a writable `Stream`, returning the exact PNG byte count on
 success. Destination overloads may partially write on cancellation or failure.
-Input and destination memory must not overlap. Both memory-destination APIs reject
+`SvgConverter` input and destination memory must not overlap. Both memory-destination APIs reject
 overlap visible through their spans with `ArgumentException` (`destination`)
 before parsing or writing; disjoint slices of shared storage remain valid. Both
 may be non-array-backed `Memory` instances; conversion does not require an
@@ -89,12 +89,13 @@ consume the conversion's parser-work limit. Positioned glyph storage is reserved
 before allocation and released after each direct text run is lowered.
 
 `SvgPreparedDocument.CreateAsync` is the single-conversion preparation owner. It
-discovers selected supplied fonts under the supplied render limits, retains the
-caller-owned SVG bytes and verified snapshot, and carries one parser-work counter
-through preparation and conversion. It exposes the same six `ConvertToPng` and
+discovers selected supplied fonts and lowers the admitted scene under the supplied
+render limits, retaining its verified snapshot. It carries accumulated preparation
+work into rasterization and encoding. It exposes the same six `ConvertToPng` and
 `ConvertToPngAsync` output forms as `SvgConverter`, but exactly one may be called;
 conversion completion, failure, cancellation, or `Dispose` releases its snapshot
-lease. The caller keeps SVG/font bytes valid and unchanged for that lifetime.
+lease. The caller keeps SVG bytes valid and unchanged until `CreateAsync` completes
+and font bytes valid and unchanged for the prepared document's lifetime.
 
 Memory-to-memory asynchronous conversion schedules one synchronous conversion on
 the thread pool and observes cancellation throughout the implementation. It does

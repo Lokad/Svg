@@ -18,15 +18,6 @@ public static class SvgConverter
         return PngEncoder.Encode(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
-    /// <summary>Converts one prepared operation while continuing its preparation work counter through parsing and output.</summary>
-    internal static ReadOnlyMemory<byte> ConvertToPng(ReadOnlyMemory<byte> svg, SvgRenderOptions options, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(workCounter);
-        ValidateInvocation(svg, options, cancellationToken);
-        using RasterizedConversion conversion = PrepareRasterizationCore(svg, options, workCounter, cancellationToken);
-        return PngEncoder.Encode(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
-    }
-
     /// <summary>Schedules one conversion on the thread pool.</summary>
     public static Task<ReadOnlyMemory<byte>> ConvertToPngAsync(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
     {
@@ -42,16 +33,6 @@ public static class SvgConverter
         return PngEncoder.EncodeInto(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, destination, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
-    /// <summary>Converts one prepared operation into caller-owned destination memory under its retained work limit.</summary>
-    internal static int ConvertToPng(ReadOnlyMemory<byte> svg, Memory<byte> destination, SvgRenderOptions options, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(workCounter);
-        ValidateInvocation(svg, options, cancellationToken);
-        if (svg.Span.Overlaps(destination.Span)) throw new ArgumentException("PNG destination must not overlap SVG input memory.", nameof(destination));
-        using RasterizedConversion conversion = PrepareRasterizationCore(svg, options, workCounter, cancellationToken);
-        return PngEncoder.EncodeInto(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, destination, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
-    }
-
     /// <summary>Converts SVG bytes to caller-owned writable stream output.</summary>
     public static int ConvertToPng(ReadOnlyMemory<byte> svg, Stream destination, SvgRenderOptions options, CancellationToken cancellationToken)
     {
@@ -61,28 +42,10 @@ public static class SvgConverter
         return PngEncoder.EncodeTo(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, destination, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
     }
 
-    /// <summary>Converts one prepared operation to a caller-owned writable stream under its retained work limit.</summary>
-    internal static int ConvertToPng(ReadOnlyMemory<byte> svg, Stream destination, SvgRenderOptions options, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(workCounter);
-        ArgumentNullException.ThrowIfNull(destination);
-        if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
-        ValidateInvocation(svg, options, cancellationToken);
-        using RasterizedConversion conversion = PrepareRasterizationCore(svg, options, workCounter, cancellationToken);
-        return PngEncoder.EncodeTo(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, destination, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
-    }
-
     /// <summary>Schedules one destination conversion on the thread pool.</summary>
     public static Task<int> ConvertToPngAsync(ReadOnlyMemory<byte> svg, Memory<byte> destination, SvgRenderOptions options, CancellationToken cancellationToken)
     {
         return Task.Run(() => ConvertToPng(svg, destination, options, cancellationToken), cancellationToken);
-    }
-
-    /// <summary>Schedules one prepared destination conversion on the thread pool.</summary>
-    internal static Task<int> ConvertToPngAsync(ReadOnlyMemory<byte> svg, Memory<byte> destination, SvgRenderOptions options, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(workCounter);
-        return Task.Run(() => ConvertToPng(svg, destination, options, workCounter, cancellationToken), cancellationToken);
     }
 
     /// <summary>Schedules one conversion with asynchronous writes to a caller-owned writable stream.</summary>
@@ -97,17 +60,50 @@ public static class SvgConverter
         }, cancellationToken);
     }
 
-    /// <summary>Schedules one prepared conversion with asynchronous writes to a caller-owned writable stream.</summary>
-    internal static Task<int> ConvertToPngAsync(ReadOnlyMemory<byte> svg, Stream destination, SvgRenderOptions options, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <summary>Converts one retained prepared scene to an independently owned PNG result.</summary>
+    internal static ReadOnlyMemory<byte> ConvertToPng(SvgRoot root, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(workCounter);
+        ValidatePreparedInvocation(options, budget, cancellationToken);
+        using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
+        return PngEncoder.Encode(surface.Width, surface.Height, surface.Pixels, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+    }
+
+    /// <summary>Converts one retained prepared scene into caller-owned destination memory.</summary>
+    internal static int ConvertToPng(SvgRoot root, Memory<byte> destination, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+    {
+        ValidatePreparedInvocation(options, budget, cancellationToken);
+        using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
+        return PngEncoder.EncodeInto(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+    }
+
+    /// <summary>Converts one retained prepared scene to a caller-owned writable stream.</summary>
+    internal static int ConvertToPng(SvgRoot root, Stream destination, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
+        ValidatePreparedInvocation(options, budget, cancellationToken);
+        using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
+        return PngEncoder.EncodeTo(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken);
+    }
+
+    /// <summary>Schedules one retained prepared-scene conversion on the thread pool.</summary>
+    internal static Task<ReadOnlyMemory<byte>> ConvertToPngAsync(SvgRoot root, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+        => Task.Run(() => ConvertToPng(root, options, budget, cancellationToken), cancellationToken);
+
+    /// <summary>Schedules one retained prepared-scene destination conversion on the thread pool.</summary>
+    internal static Task<int> ConvertToPngAsync(SvgRoot root, Memory<byte> destination, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+        => Task.Run(() => ConvertToPng(root, destination, options, budget, cancellationToken), cancellationToken);
+
+    /// <summary>Schedules one retained prepared-scene conversion with asynchronous writes to a caller-owned writable stream.</summary>
+    internal static Task<int> ConvertToPngAsync(SvgRoot root, Stream destination, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+    {
         return Task.Run(async () =>
         {
             ArgumentNullException.ThrowIfNull(destination);
             if (!destination.CanWrite) throw new ArgumentException("PNG destination must be writable.", nameof(destination));
-            ValidateInvocation(svg, options, cancellationToken);
-            using RasterizedConversion conversion = PrepareRasterizationCore(svg, options, workCounter, cancellationToken);
-            return await PngEncoder.EncodeToAsync(conversion.Surface.Width, conversion.Surface.Height, conversion.Surface.Pixels, destination, conversion.Budget, options.Limits.MaximumEncodedPngBytes, conversion.Surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken).ConfigureAwait(false);
+            ValidatePreparedInvocation(options, budget, cancellationToken);
+            using RasterizedSurface surface = Rasterize(root, options, budget, cancellationToken);
+            return await PngEncoder.EncodeToAsync(surface.Width, surface.Height, surface.Pixels, destination, budget, options.Limits.MaximumEncodedPngBytes, surface.WorkUnits, options.Limits.MaximumWorkUnits, cancellationToken).ConfigureAwait(false);
         }, cancellationToken);
     }
 
@@ -119,6 +115,13 @@ public static class SvgConverter
         {
             throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         }
+    }
+
+    private static void ValidatePreparedInvocation(SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(budget);
+        cancellationToken.ThrowIfCancellationRequested();
     }
 
     /// <summary>Creates the one budgeted parse-and-raster lifetime shared by every output API.</summary>

@@ -1621,6 +1621,25 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Prepared_document_retains_a_lowered_direct_text_scene()
+    {
+        byte[] font = CreateTriangleFont();
+        string hash = Convert.ToHexString(SHA256.HashData(font));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + font.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var provider = new CountingFontProvider(new CountingFontSource(font));
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
+
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None);
+        Array.Fill(svg, (byte)'x');
+        ReadOnlyMemory<byte> png = document.ConvertToPng(CancellationToken.None);
+
+        Assert.Equal(1, provider.RequestCount);
+        Assert.True(DecodeAlpha(png, 1, 1) > 0);
+    }
+
+    [Fact]
     public async Task Converts_direct_text_and_its_immediate_shape_sibling_through_every_public_output_form()
     {
         byte[] font = CreateTriangleFont();

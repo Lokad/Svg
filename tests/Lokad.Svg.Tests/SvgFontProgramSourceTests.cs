@@ -127,6 +127,22 @@ public sealed class SvgFontProgramSourceTests
     }
 
     [Fact]
+    public async Task Prepared_document_lowers_its_scene_during_creation()
+    {
+        SvgFontPackCatalog catalog = CreateCatalog([1, 2, 3, 4]);
+        var provider = new RecordingProvider(new Dictionary<string, ISvgFontProgramSource>());
+        SvgRenderLimits limits = new(200_000, 1_024, 16, 16, 1_024, 16, 16, 3);
+        SvgRenderOptions options = new(new SvgViewport(1, 1), 1, SvgColor.Transparent, limits);
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'/>"u8.ToArray();
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(svg, catalog, provider, limits, CancellationToken.None);
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Contains("parsing work", exception.Message);
+    }
+
+    [Fact]
     public async Task Bound_source_preserves_caller_memory_and_verifies_declared_integrity()
     {
         byte[] bytes = [1, 2, 3, 4];
