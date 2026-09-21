@@ -2375,6 +2375,13 @@ public sealed class OpenTypeFontTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan dx='1'>A</tspan></text></svg>"u8.ToArray(), options, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgRenderLimits attributeLimits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 100_000, 128, 1);
+        var attributeOptions = new SvgRenderOptions(null, 1, SvgColor.Transparent, attributeLimits, snapshot);
+
+        SvgException attributeException = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><tspan dx='1' dy='1'>A</tspan></text></svg>"u8.ToArray(), attributeOptions, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, attributeException.ErrorCode);
+        Assert.Contains("attributes", attributeException.Message);
     }
 
     [Fact]
