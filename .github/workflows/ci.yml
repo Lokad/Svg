@@ -30,6 +30,8 @@ jobs:
         shell: pwsh
         run: tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json
       - shell: pwsh
+        run: tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe
+      - shell: pwsh
         run: tools/validate-ci-artifacts.ps1 -Platform ${{ runner.os }} -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe
       - if: always()
         uses: actions/upload-artifact@v4
@@ -42,6 +44,12 @@ jobs:
         with:
           name: memory-probe-${{ matrix.os }}
           path: artifacts/memory-probe
+          if-no-files-found: warn
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: font-probe-${{ matrix.os }}
+          path: artifacts/font-probe
           if-no-files-found: warn
       - run: dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build -o artifacts/packages
       - shell: pwsh
