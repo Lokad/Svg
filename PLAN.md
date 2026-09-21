@@ -491,6 +491,14 @@ Assert cleared owner references as well as zero ledger bytes; use a no-inline
 weak-reference probe as supplementary retained-heap evidence. Keep raw snapshot
 concurrency and caller-owned output lifetimes unchanged.
 
+**Repair (`f26fc6c`):** `Release` now drops the owned root after
+disposing it, so a retained completed operation no longer keeps geometry on the heap;
+the once-only state machine already excludes racing an in-flight async conversion.
+Five regressions pin cleared references across dispose-before-use, all six outputs,
+two failure paths, repeated disposal and attempted reuse, plus no-inline weak-reference
+heap probes for both end states (the detach-off variants fail as expected). The full
+suite (720 + 6 + 83) and all 21 probe scenarios pass.
+
 ### R22 / P1 — Validation tooling conflates bytes, pixels and runtime provenance
 
 **Fresh reproduction:** `git archive HEAD` under the local `core.autocrlf=true`
