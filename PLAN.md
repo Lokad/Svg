@@ -304,12 +304,8 @@ font that lowering requires.
 
 Closure: preserve the required pre-acquisition XML scan, but factor its shared
 admission decisions into a pure state transition or analysis result consumed by
-both passes. Add a compact input matrix that asserts the exact discovered request
-set, provider/source call count, later parse outcome and error category. Include
-opacity/visibility, root and group inheritance, definitions/symbols, unsupported
-siblings, empty/whitespace-only content, direct and nested spans, stylesheet
-precedence, malformed tails and cancellation. Do this before broadening text
-semantics.
+both passes. A compact input matrix (`c60390b`: discovered requests, provider/source calls, lowering outcome and paint) already covers opacity/visibility, root and group inheritance, definitions/symbols, unsupported siblings in both orders, empty/whitespace-only content, direct and nested spans, stylesheet precedence, transforms, malformed tails and cancellation; extend it as the factoring lands. It caught an unsupported-sibling incoherence (lowering surfaced `UnresolvedResource` for painted text the cleared discovery had omitted); discovery now retains earlier requests and lowering fails fast with the conversion-level `UnsupportedFeature`.
+Finish the shared factoring before broadening text semantics.
 
 ### R19 / P2 — Avoidable parse and identity transients need a measured baseline
 
