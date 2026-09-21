@@ -10,33 +10,69 @@ internal static class SvgTextLimits
     internal const int MaximumCharacters = 32_768;
 }
 
-/// <summary>Validates the direct-text content subset before glyph layout gives whitespace an uncalibrated advance.</summary>
-internal static class SvgTextWhitespace
+/// <summary>Normalizes default direct-text whitespace while preserving the source character limit across reader chunks.</summary>
+internal struct SvgTextWhitespaceNormalizer
 {
-    internal static void Validate(ReadOnlySpan<char> value, CancellationToken cancellationToken)
+    private bool _hasText;
+    private bool _hasPendingWhitespace;
+    private int _sourceCharacterCount;
+
+    /// <summary>Gets the number of source UTF-16 characters consumed before normalization.</summary>
+    internal int SourceCharacterCount => _sourceCharacterCount;
+
+    /// <summary>Appends whitespace-normalized text without materializing an unbounded intermediate value.</summary>
+    internal void Append(ReadOnlySpan<char> value, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(output);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (value.Length > maximumSourceCharacters - _sourceCharacterCount) throw new SvgException(SvgErrorCode.LimitExceeded, "The document direct text character count exceeds the admitted layout limit.");
+        _sourceCharacterCount += value.Length;
         for (int offset = 0; offset < value.Length; offset += ParserWorkCounter.ByteCheckpointSize)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            workCounter.Consume(cancellationToken);
             int count = Math.Min(ParserWorkCounter.ByteCheckpointSize, value.Length - offset);
-            foreach (char character in value.Slice(offset, count))
-            {
-                if (char.IsWhiteSpace(character)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Whitespace normalization is not implemented for direct text.");
-            }
+            AppendChunk(value.Slice(offset, count), output, maximumSourceCharacters, workCounter, cancellationToken);
         }
     }
 
-    internal static bool Contains(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private void AppendChunk(ReadOnlySpan<char> value, BudgetedTextBuffer output, int maximumSourceCharacters, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        int index = 0;
+        while (index < value.Length)
+        {
+            if (IsCollapsible(value[index]))
+            {
+                _hasPendingWhitespace |= _hasText;
+                index++;
+                continue;
+            }
+            if (_hasPendingWhitespace)
+            {
+                output.Append(" ", maximumSourceCharacters, workCounter, cancellationToken);
+                _hasPendingWhitespace = false;
+            }
+            int end = index + 1;
+            while (end < value.Length && !IsCollapsible(value[end])) end++;
+            output.Append(value.Slice(index, end - index), maximumSourceCharacters, workCounter, cancellationToken);
+            _hasText = true;
+            index = end;
+        }
+    }
+
+    /// <summary>Observes one discovery text chunk and reports whether normalization can produce a glyph.</summary>
+    internal static bool HasNonWhitespaceText(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
         for (int offset = 0; offset < value.Length; offset += ParserWorkCounter.ByteCheckpointSize)
         {
             workCounter.Consume(cancellationToken);
             int count = Math.Min(ParserWorkCounter.ByteCheckpointSize, value.Length - offset);
-            foreach (char character in value.Slice(offset, count)) if (char.IsWhiteSpace(character)) return true;
+            foreach (char character in value.Slice(offset, count)) if (!IsCollapsible(character)) return true;
         }
         return false;
     }
+
+    private static bool IsCollapsible(char value) => value is ' ' or '\t' or '\r' or '\n';
 }
 
 /// <summary>Parses the initial explicit single-font SVG text attribute subset.</summary>

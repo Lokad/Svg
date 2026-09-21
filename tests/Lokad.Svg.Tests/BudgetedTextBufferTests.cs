@@ -33,4 +33,24 @@ public sealed class BudgetedTextBufferTests
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(544, budget.Snapshot().CurrentBytes);
     }
+
+    [Fact]
+    public void Normalizes_direct_text_whitespace_across_reader_chunks_without_bypassing_the_source_limit()
+    {
+        RenderBudget budget = new(1_000);
+        using var buffer = new BudgetedTextBuffer(budget);
+        var normalizer = new SvgTextWhitespaceNormalizer();
+
+        normalizer.Append(" \tA\r", buffer, 16, new ParserWorkCounter(20), CancellationToken.None);
+        normalizer.Append("\n A  ", buffer, 16, new ParserWorkCounter(20), CancellationToken.None);
+        using BudgetedText text = buffer.Detach();
+
+        Assert.Equal("A A", text.Value);
+        Assert.Equal(9, normalizer.SourceCharacterCount);
+        var denied = new SvgTextWhitespaceNormalizer();
+        using var deniedBuffer = new BudgetedTextBuffer(new RenderBudget(1_000));
+        SvgException exception = Assert.Throws<SvgException>(() => denied.Append("     ", deniedBuffer, 4, new ParserWorkCounter(20), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
 }

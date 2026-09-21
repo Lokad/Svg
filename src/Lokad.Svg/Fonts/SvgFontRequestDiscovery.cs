@@ -149,8 +149,7 @@ internal static class SvgFontRequestDiscovery
                 {
                     if (directText.TryPeek(out TextRequestCandidate? candidate) && candidate is not null)
                     {
-                        candidate.HasTextContent = true;
-                        candidate.HasUnsupportedWhitespace |= ContainsWhitespace(reader, GetTextChunk(), workCounter, cancellationToken);
+                        candidate.HasNormalizedTextContent |= HasNonWhitespaceText(reader, GetTextChunk(), workCounter, cancellationToken);
                     }
                 }
             }
@@ -184,24 +183,23 @@ internal static class SvgFontRequestDiscovery
 
     private static void AddCandidate(TextRequestCandidate? candidate, List<SvgFontFaceRequest> requests, HashSet<TextRequestKey> seen)
     {
-        if (candidate is null || candidate.HasChildElement || !candidate.HasTextContent) return;
-        if (candidate.HasUnsupportedWhitespace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Whitespace normalization is not implemented for direct text.");
+        if (candidate is null || candidate.HasChildElement || !candidate.HasNormalizedTextContent) return;
         SvgFontFaceRequest request = candidate.Request;
         if (!seen.Add(new TextRequestKey(request.Family, request.Weight, request.Italic))) return;
         if (requests.Count == MaximumRequests) throw new SvgException(SvgErrorCode.LimitExceeded, "The SVG text font request count exceeds the preparation limit.");
         requests.Add(request);
     }
 
-    private static bool ContainsWhitespace(XmlReader reader, char[] chunk, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static bool HasNonWhitespaceText(XmlReader reader, char[] chunk, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        bool containsWhitespace = false;
+        bool hasNonWhitespaceText = false;
         int read;
         do
         {
             read = reader.ReadValueChunk(chunk, 0, chunk.Length);
-            if (read != 0) containsWhitespace |= SvgTextWhitespace.Contains(chunk.AsSpan(0, read), workCounter, cancellationToken);
+            if (read != 0) hasNonWhitespaceText |= SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken);
         } while (read != 0);
-        return containsWhitespace;
+        return hasNonWhitespaceText;
     }
 
     private static TextStyle ApplyAttributes(XmlReader reader, TextStyle inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -235,9 +233,7 @@ internal static class SvgFontRequestDiscovery
 
         internal bool HasChildElement { get; set; }
 
-        internal bool HasTextContent { get; set; }
-
-        internal bool HasUnsupportedWhitespace { get; set; }
+        internal bool HasNormalizedTextContent { get; set; }
     }
 
     private sealed class TextRequestKeyComparer : IEqualityComparer<TextRequestKey>
