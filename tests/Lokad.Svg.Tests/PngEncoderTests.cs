@@ -90,6 +90,51 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    public async Task Stream_sinks_emit_byte_identical_output_with_owned_memory()
+    {
+        byte[] pixels = CreateHighEntropyPixels();
+        byte[] owned = PngEncoder.Encode(512, 512, pixels, CancellationToken.None);
+        using MemoryStream synchronousDestination = new();
+        int synchronousWritten = PngEncoder.EncodeTo(512, 512, pixels, synchronousDestination, new RenderBudget(long.MaxValue), owned.Length, CancellationToken.None);
+        using MemoryStream asynchronousDestination = new();
+        int asynchronousWritten = await PngEncoder.EncodeToAsync(512, 512, pixels, asynchronousDestination, new RenderBudget(long.MaxValue), owned.Length, CancellationToken.None);
+
+        Assert.Equal(owned.Length, synchronousWritten);
+        Assert.Equal(owned, synchronousDestination.ToArray());
+        Assert.Equal(owned.Length, asynchronousWritten);
+        Assert.Equal(owned, asynchronousDestination.ToArray());
+    }
+
+    [Fact]
+    public async Task Stream_sinks_charge_buffer_growth_copies()
+    {
+        // Calibrated on .NET 10.0.12: the first aggregation growth denies at 20,484 units
+        // and both stream forms cost exactly 69,728 units for this input.
+        byte[] pixels = CreateGrowthPixels();
+        using MemoryStream growthDestination = new();
+        SvgException growth = Assert.Throws<SvgException>(() => PngEncoder.EncodeTo(64, 64, pixels, growthDestination, new RenderBudget(long.MaxValue), int.MaxValue, 0, 20_484, CancellationToken.None));
+        using MemoryStream asyncGrowthDestination = new();
+        SvgException asyncGrowth = await Assert.ThrowsAsync<SvgException>(async () => await PngEncoder.EncodeToAsync(64, 64, pixels, asyncGrowthDestination, new RenderBudget(long.MaxValue), int.MaxValue, 0, 20_484, CancellationToken.None));
+
+        Assert.Contains("PNG compression-buffer growth", growth.Message);
+        Assert.Contains("PNG compression-buffer growth", asyncGrowth.Message);
+        using MemoryStream exactDestination = new();
+        int exactWritten = PngEncoder.EncodeTo(64, 64, pixels, exactDestination, new RenderBudget(long.MaxValue), int.MaxValue, 0, 69_728, CancellationToken.None);
+        using MemoryStream asyncExactDestination = new();
+        int asyncExactWritten = await PngEncoder.EncodeToAsync(64, 64, pixels, asyncExactDestination, new RenderBudget(long.MaxValue), int.MaxValue, 0, 69_728, CancellationToken.None);
+
+        Assert.True(exactWritten > 0);
+        Assert.True(asyncExactWritten > 0);
+        using MemoryStream deniedDestination = new();
+        SvgException denied = Assert.Throws<SvgException>(() => PngEncoder.EncodeTo(64, 64, pixels, deniedDestination, new RenderBudget(long.MaxValue), int.MaxValue, 0, 69_727, CancellationToken.None));
+        using MemoryStream asyncDeniedDestination = new();
+        SvgException asyncDenied = await Assert.ThrowsAsync<SvgException>(async () => await PngEncoder.EncodeToAsync(64, 64, pixels, asyncDeniedDestination, new RenderBudget(long.MaxValue), int.MaxValue, 0, 69_727, CancellationToken.None));
+
+        Assert.Contains("PNG serialization", denied.Message);
+        Assert.Contains("PNG serialization", asyncDenied.Message);
+    }
+
+    [Fact]
     public void Encodes_directly_into_caller_destination()
     {
         byte[] owned = PngEncoder.Encode(1, 1, [1, 2, 3, 4], CancellationToken.None);
@@ -120,7 +165,9 @@ public sealed class PngEncoderTests
         byte[] pixels = CreateHighEntropyPixels();
         using BoundedWriteStream destination = new(65_536);
 
-        int written = PngEncoder.EncodeTo(512, 512, pixels, destination, new RenderBudget(70_000), int.MaxValue, CancellationToken.None);
+        // Covers the 64 KiB aggregation cap plus one growth transient (measured near 100 KiB),
+        // still far below the full compressed payload this test refuses to retain.
+        int written = PngEncoder.EncodeTo(512, 512, pixels, destination, new RenderBudget(110_000), int.MaxValue, CancellationToken.None);
 
         Assert.Equal(written, destination.Length);
         Assert.True(written > 65_536);
@@ -153,7 +200,8 @@ public sealed class PngEncoderTests
         byte[] pixels = CreateHighEntropyPixels();
         using BoundedAsyncWriteStream destination = new(65_536);
 
-        int written = await PngEncoder.EncodeToAsync(512, 512, pixels, destination, new RenderBudget(70_000), int.MaxValue, CancellationToken.None);
+        // Covers the 64 KiB aggregation cap plus one growth transient, like the synchronous form.
+        int written = await PngEncoder.EncodeToAsync(512, 512, pixels, destination, new RenderBudget(110_000), int.MaxValue, CancellationToken.None);
 
         Assert.Equal(written, destination.Length);
         Assert.True(written > 65_536);

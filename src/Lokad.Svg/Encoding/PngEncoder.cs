@@ -380,7 +380,7 @@ internal static class PngEncoder
                 _bufferedLength += count;
                 _compressedLength = bufferedCompressedLength;
                 buffer = buffer[count..];
-                if (_bufferedLength == destination.Length)
+                if (_bufferedLength == destination.Length && !TryGrowBuffer())
                 {
                     WriteChunk(_output, IdatChunkType, destination, _workCounter, _cancellationToken);
                     _bufferedLength = 0;
@@ -399,6 +399,28 @@ internal static class PngEncoder
                 _bufferedLength = 0;
             }
             base.Dispose(disposing);
+        }
+
+        /// <summary>Grows the aggregation buffer toward the 64 KiB chunk cap instead of flushing a tiny chunk.</summary>
+        private bool TryGrowBuffer()
+        {
+            byte[] current = _buffer ?? throw new InvalidOperationException("PNG IDAT buffer allocation did not complete.");
+            if (current.Length >= MaximumIdatPayloadBytes) return false;
+            int capacity = Math.Min(checked(current.Length * 2), MaximumIdatPayloadBytes);
+            RenderBudget.BudgetReservation replacementReservation = _budget.Reserve(capacity, SvgMemoryCategory.Png);
+            byte[] replacement;
+            try { replacement = new byte[capacity]; }
+            catch { replacementReservation.Dispose(); throw; }
+            try
+            {
+                _workCounter.ConsumeBufferedCopyBytes(_bufferedLength, _cancellationToken);
+                current.AsSpan(0, _bufferedLength).CopyTo(replacement);
+            }
+            catch { replacementReservation.Dispose(); throw; }
+            _reservation?.Dispose();
+            _reservation = replacementReservation;
+            _buffer = replacement;
+            return true;
         }
 
         private void EnsureBufferCapacity(int requiredLength)
@@ -512,7 +534,7 @@ internal static class PngEncoder
                 _bufferedLength += count;
                 _compressedLength = bufferedCompressedLength;
                 buffer = buffer[count..];
-                if (_bufferedLength == destination.Length)
+                if (_bufferedLength == destination.Length && !TryGrowBuffer())
                 {
                     await WriteChunkAsync(_output, IdatChunkType, destination, _scratch, _workCounter, _cancellationToken).ConfigureAwait(false);
                     _bufferedLength = 0;
@@ -531,6 +553,28 @@ internal static class PngEncoder
                 _bufferedLength = 0;
             }
             base.Dispose(disposing);
+        }
+
+        /// <summary>Grows the aggregation buffer toward the 64 KiB chunk cap instead of flushing a tiny chunk.</summary>
+        private bool TryGrowBuffer()
+        {
+            byte[] current = _buffer ?? throw new InvalidOperationException("PNG IDAT buffer allocation did not complete.");
+            if (current.Length >= MaximumIdatPayloadBytes) return false;
+            int capacity = Math.Min(checked(current.Length * 2), MaximumIdatPayloadBytes);
+            RenderBudget.BudgetReservation replacementReservation = _budget.Reserve(capacity, SvgMemoryCategory.Png);
+            byte[] replacement;
+            try { replacement = new byte[capacity]; }
+            catch { replacementReservation.Dispose(); throw; }
+            try
+            {
+                _workCounter.ConsumeBufferedCopyBytes(_bufferedLength, _cancellationToken);
+                current.AsSpan(0, _bufferedLength).CopyTo(replacement);
+            }
+            catch { replacementReservation.Dispose(); throw; }
+            _reservation?.Dispose();
+            _reservation = replacementReservation;
+            _buffer = replacement;
+            return true;
         }
 
         private void EnsureBufferCapacity(int requiredLength)
