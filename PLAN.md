@@ -568,7 +568,10 @@ The old validator demonstrably rejects the pixel-identical positive fixture on b
 Report and schema mismatches are covered (`9a65827`): eight generated
 negatives pin memory schema, missing, duplicated, unexpected, tampered-hash,
 missing-transcript and flipped-outcome rejections plus chrome schema rejection.
-Fingerprint host/child provenance remains open.
+Host/child provenance is separated for memory artifacts (`57aa033`):
+schema-3 summaries record the host framework plus the dotnet runtime list, and the
+child framework must belong to that list instead of equaling the host. Five negatives
+pin the new checks. The chrome fingerprint still describes the PowerShell host.
 
 **Gate (`7e25ab8`):** the synthetic font-probe smoke (local, stdin,
 loopback HTTP with ephemeral ports, lazy acquisition, retry) now runs in CI on both
