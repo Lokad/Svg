@@ -65,15 +65,15 @@ public sealed class SvgFontSnapshot : IDisposable
     {
         ArgumentNullException.ThrowIfNull(resolutions);
         cancellationToken.ThrowIfCancellationRequested();
-        SvgFontPackResolution[] selections = GetSelections(resolutions, nameof(resolutions));
-        ValidateSelections(selections);
+        SvgFontPackResolution[] selections = GetSelections(resolutions, nameof(resolutions), workCounter, cancellationToken);
+        ValidateSelections(selections, workCounter, cancellationToken);
         var programs = new Dictionary<string, (ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics)>(StringComparer.Ordinal);
         var prepared = new SvgPreparedFont[resolutions.Count];
         var lease = new SvgFontSnapshotLease();
         long totalBytes = 0;
         for (int index = 0; index < resolutions.Count; index++)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            Consume(workCounter, cancellationToken);
             SvgFontProgramResolution resolution = resolutions[index] ?? throw new ArgumentException("The selected font list contains a null resolution.", nameof(resolutions));
             string programKey = resolution.Resolution.Face.File.Sha256;
             if (!programs.TryGetValue(programKey, out (ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics) program))
@@ -142,16 +142,16 @@ public sealed class SvgFontSnapshot : IDisposable
         var selections = new SvgFontPackResolution[requests.Count];
         for (int index = 0; index < requests.Count; index++)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            Consume(workCounter, cancellationToken);
             SvgFontFaceRequest request = requests[index] ?? throw new ArgumentException("The font request list contains a null request.", nameof(requests));
-            selections[index] = catalog.Resolve(request);
+            selections[index] = workCounter is null ? catalog.Resolve(request) : catalog.Resolve(request, workCounter, cancellationToken);
         }
-        ValidateSelections(selections);
+        ValidateSelections(selections, workCounter, cancellationToken);
         var sources = new Dictionary<string, ISvgFontProgramSource>(StringComparer.Ordinal);
         var resolutions = new SvgFontProgramResolution[requests.Count];
         for (int index = 0; index < requests.Count; index++)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            Consume(workCounter, cancellationToken);
             SvgFontPackResolution selection = selections[index];
             string programKey = selection.Face.File.Sha256;
             if (!sources.TryGetValue(programKey, out ISvgFontProgramSource? source))
@@ -161,7 +161,7 @@ public sealed class SvgFontSnapshot : IDisposable
                 {
                     throw SvgFontSourceFailures.Create(selection, exception.ErrorCode);
                 }
-                cancellationToken.ThrowIfCancellationRequested();
+                Consume(workCounter, cancellationToken);
                 if (source is null) throw SvgFontSourceFailures.Create(selection, SvgErrorCode.UnresolvedResource);
                 sources.Add(programKey, source);
             }
@@ -210,24 +210,26 @@ public sealed class SvgFontSnapshot : IDisposable
         if (_disposed) throw new ObjectDisposedException(nameof(SvgFontSnapshot));
     }
 
-    private static SvgFontPackResolution[] GetSelections(IReadOnlyList<SvgFontProgramResolution> resolutions, string parameterName)
+    private static SvgFontPackResolution[] GetSelections(IReadOnlyList<SvgFontProgramResolution> resolutions, string parameterName, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (resolutions.Count > MaximumFaces) throw new SvgException(SvgErrorCode.LimitExceeded, "The selected font face count exceeds the snapshot limit.");
         var selections = new SvgFontPackResolution[resolutions.Count];
         for (int index = 0; index < resolutions.Count; index++)
         {
+            Consume(workCounter, cancellationToken);
             SvgFontProgramResolution resolution = resolutions[index] ?? throw new ArgumentException("The selected font list contains a null resolution.", parameterName);
             selections[index] = resolution.Resolution;
         }
         return selections;
     }
 
-    private static void ValidateSelections(IReadOnlyList<SvgFontPackResolution> selections)
+    private static void ValidateSelections(IReadOnlyList<SvgFontPackResolution> selections, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         var declaredSizes = new Dictionary<string, long>(StringComparer.Ordinal);
         long totalBytes = 0;
         foreach (SvgFontPackResolution selection in selections)
         {
+            Consume(workCounter, cancellationToken);
             if (selection.Face.FaceIndex != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Standalone TrueType font snapshots require face index zero.", CreateDiagnostic(selection, SvgFontFailureStage.Format));
             string programKey = selection.Face.File.Sha256;
             long declaredSize = selection.Face.File.ByteSize;
@@ -240,6 +242,12 @@ public sealed class SvgFontSnapshot : IDisposable
             declaredSizes.Add(programKey, declaredSize);
             totalBytes += declaredSize;
         }
+    }
+
+    private static void Consume(ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        if (workCounter is null) cancellationToken.ThrowIfCancellationRequested();
+        else workCounter.Consume(cancellationToken);
     }
 
     private static SvgFontDiagnostic CreateDiagnostic(SvgFontPackResolution selection, SvgFontFailureStage stage)

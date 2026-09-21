@@ -1,5 +1,6 @@
 using System.Text;
 using Lokad.Svg.Fonts;
+using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Tests;
 
@@ -84,6 +85,21 @@ public sealed class SvgFontPackCatalogTests
         Assert.Equal("files/fallback.ttf", configured.Face.File.RelativePath);
         Assert.True(final.IsFallback);
         Assert.Equal("files/text.ttf", final.Face.File.RelativePath);
+    }
+
+    [Fact]
+    public void Bounded_catalog_resolution_charges_candidate_scans_and_checks_cancellation()
+    {
+        SvgFontPackCatalog catalog = Parse(Manifest(
+            """{ "requestedFamily": "Alias", "resolvedFamily": "Family", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false }""",
+            """{ "requestedFamily": "Alias", "resolvedFamily": "Family", "relativeFontFile": "files/bold.ttf", "weight": 700, "italic": false }"""));
+
+        SvgException exception = Assert.Throws<SvgException>(() => catalog.Resolve(new SvgFontFaceRequest("Alias", 700, false), new ParserWorkCounter(1), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+        Assert.Throws<OperationCanceledException>(() => catalog.Resolve(new SvgFontFaceRequest("Alias", 700, false), new ParserWorkCounter(10), cancellation.Token));
     }
 
     [Theory]

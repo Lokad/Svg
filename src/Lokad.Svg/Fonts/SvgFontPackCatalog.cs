@@ -1,5 +1,6 @@
 namespace Lokad.Svg.Fonts;
 
+using Lokad.Svg.Parsing;
 using System.Text.Json;
 
 /// <summary>
@@ -77,17 +78,30 @@ public sealed class SvgFontPackCatalog
     public SvgFontPackResolution Resolve(SvgFontFaceRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
-        SvgFontPackFace[] exact = _faces.Where(face => MatchesFamily(face, request.Family)).ToArray();
-        if (exact.Length != 0) return new SvgFontPackResolution(request, SelectBest(exact, request), false);
+        return ResolveCore(request, null, CancellationToken.None);
+    }
 
+    /// <summary>Resolves one request while charging every bounded candidate scan to the calling preparation operation.</summary>
+    internal SvgFontPackResolution Resolve(SvgFontFaceRequest request, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        return ResolveCore(request, workCounter, cancellationToken);
+    }
+
+    private SvgFontPackResolution ResolveCore(SvgFontFaceRequest request, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        SvgFontPackFace? exact = SelectFamily(request.Family, request, workCounter, cancellationToken);
+        if (exact is not null) return new SvgFontPackResolution(request, exact, false);
         foreach (string fallback in _fallbackFamilies)
         {
-            SvgFontPackFace[] candidates = _faces.Where(face => MatchesFamily(face, fallback)).ToArray();
-            if (candidates.Length != 0) return new SvgFontPackResolution(request, SelectBest(candidates, request), true);
+            workCounter?.Consume(cancellationToken);
+            SvgFontPackFace? candidate = SelectFamily(fallback, request, workCounter, cancellationToken);
+            if (candidate is not null) return new SvgFontPackResolution(request, candidate, true);
         }
 
-        SvgFontPackFace[] textFaces = _faces.Where(static face => !face.HasMathTable).ToArray();
-        return new SvgFontPackResolution(request, SelectBest(textFaces.Length == 0 ? _faces : textFaces, request), true);
+        SvgFontPackFace? textFace = SelectBest(request, true, workCounter, cancellationToken);
+        return new SvgFontPackResolution(request, textFace ?? SelectBest(request, false, workCounter, cancellationToken) ?? throw new InvalidOperationException("A validated font catalog has no selectable faces."), true);
     }
 
     /// <summary>
@@ -222,15 +236,43 @@ public sealed class SvgFontPackCatalog
         return fallbacks.ToArray();
     }
 
-    private static SvgFontPackFace SelectBest(IReadOnlyList<SvgFontPackFace> candidates, SvgFontFaceRequest request)
+    private SvgFontPackFace? SelectFamily(string family, SvgFontFaceRequest request, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        return candidates
-            .OrderBy(candidate => candidate.Italic == request.Italic ? 0 : 1000)
-            .ThenBy(candidate => Math.Abs(candidate.Weight - request.Weight))
-            .ThenBy(candidate => candidate.ResolvedFamily, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(candidate => candidate.File.RelativePath, StringComparer.Ordinal)
-            .ThenBy(candidate => candidate.FaceIndex)
-            .First();
+        SvgFontPackFace? selected = null;
+        foreach (SvgFontPackFace candidate in _faces)
+        {
+            workCounter?.Consume(cancellationToken);
+            if (!MatchesFamily(candidate, family)) continue;
+            if (selected is null || IsBetter(candidate, selected, request)) selected = candidate;
+        }
+        return selected;
+    }
+
+    private SvgFontPackFace? SelectBest(SvgFontFaceRequest request, bool excludesMath, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        SvgFontPackFace? selected = null;
+        foreach (SvgFontPackFace candidate in _faces)
+        {
+            workCounter?.Consume(cancellationToken);
+            if (excludesMath && candidate.HasMathTable) continue;
+            if (selected is null || IsBetter(candidate, selected, request)) selected = candidate;
+        }
+        return selected;
+    }
+
+    private static bool IsBetter(SvgFontPackFace candidate, SvgFontPackFace selected, SvgFontFaceRequest request)
+    {
+        int candidateStyle = candidate.Italic == request.Italic ? 0 : 1000;
+        int selectedStyle = selected.Italic == request.Italic ? 0 : 1000;
+        int comparison = candidateStyle.CompareTo(selectedStyle);
+        if (comparison != 0) return comparison < 0;
+        comparison = Math.Abs(candidate.Weight - request.Weight).CompareTo(Math.Abs(selected.Weight - request.Weight));
+        if (comparison != 0) return comparison < 0;
+        comparison = StringComparer.OrdinalIgnoreCase.Compare(candidate.ResolvedFamily, selected.ResolvedFamily);
+        if (comparison != 0) return comparison < 0;
+        comparison = StringComparer.Ordinal.Compare(candidate.File.RelativePath, selected.File.RelativePath);
+        if (comparison != 0) return comparison < 0;
+        return candidate.FaceIndex < selected.FaceIndex;
     }
 
     private static bool MatchesFamily(SvgFontPackFace face, string family)

@@ -1107,6 +1107,23 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Svg_based_snapshot_charges_metadata_before_provider_acquisition()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var provider = new CountingFontProvider(new CountingFontSource(bytes));
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 11);
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), catalog, provider, limits, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Null(exception.FontDiagnostic);
+        Assert.Equal(0, provider.RequestCount);
+    }
+
+    [Fact]
     public async Task Svg_based_snapshot_rejects_an_invalid_root_before_font_acquisition()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -1129,7 +1146,7 @@ public sealed class OpenTypeFontTests
         string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
-        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 12);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 20);
 
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), limits, CancellationToken.None));
 
@@ -1148,7 +1165,7 @@ public sealed class OpenTypeFontTests
         string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
-        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 15);
+        SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 23);
 
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), limits, CancellationToken.None));
 
