@@ -198,11 +198,22 @@ public sealed class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 0))], CancellationToken.None);
         int lookupCount = 0;
         using IDisposable probe = CmapLookupProbe.Arm(() => lookupCount++);
+        RenderBudget exactBudget = new(1_024);
+        var exactWork = new ParserWorkCounter(18);
 
-        using SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAAA", 10, 0, 0, SvgTextAnchor.Start, new RenderBudget(1_024), new ParserWorkCounter(100), CancellationToken.None);
+        using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAAA", 10, 0, 0, SvgTextAnchor.Start, exactBudget, exactWork, CancellationToken.None))
+        {
+            Assert.Equal(1, lookupCount);
+            Assert.Equal(18, exactWork.Used);
+            Assert.All(glyphs.Glyphs, glyph => Assert.Equal((ushort)1, glyph.GlyphIndex));
+        }
+        Assert.Equal(0, exactBudget.Snapshot().CurrentBytes);
+        RenderBudget deniedBudget = new(1_024);
 
-        Assert.Equal(1, lookupCount);
-        Assert.All(glyphs.Glyphs, glyph => Assert.Equal((ushort)1, glyph.GlyphIndex));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAAA", 10, 0, 0, SvgTextAnchor.Start, deniedBudget, new ParserWorkCounter(17), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
     }
 
     [Fact]
