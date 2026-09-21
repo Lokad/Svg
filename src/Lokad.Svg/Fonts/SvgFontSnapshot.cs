@@ -79,7 +79,7 @@ public sealed class SvgFontSnapshot : IDisposable
             if (!programs.TryGetValue(programKey, out (ReadOnlyMemory<byte> Bytes, OpenTypeFontMetrics Metrics) program))
             {
                 ReadOnlyMemory<byte> loadedBytes;
-                try { loadedBytes = await resolution.Source.GetBytesAsync(cancellationToken).ConfigureAwait(false); }
+                try { loadedBytes = await GetVerifiedBytesAsync(resolution.Source, workCounter, cancellationToken).ConfigureAwait(false); }
                 catch (SvgException exception) when (exception.FontDiagnostic is null)
                 {
                     SvgFontFailureStage stage = exception.ErrorCode == SvgErrorCode.UnresolvedResource ? SvgFontFailureStage.Integrity : SvgFontFailureStage.Format;
@@ -95,10 +95,13 @@ public sealed class SvgFontSnapshot : IDisposable
                 programs.Add(programKey, program);
             }
             ReadOnlyMemory<byte> bytes = program.Bytes;
-            try { ValidateDeclaredProgram(resolution, bytes, workCounter, cancellationToken); }
-            catch (SvgException exception) when (exception.FontDiagnostic is null)
+            if (resolution.Source is not VerifiedSvgFontProgramSource)
             {
-                throw new SvgException(exception.ErrorCode, exception.Message, CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
+                try { ValidateDeclaredProgram(resolution, bytes, workCounter, cancellationToken); }
+                catch (SvgException exception) when (exception.FontDiagnostic is null)
+                {
+                    throw new SvgException(exception.ErrorCode, exception.Message, CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
+                }
             }
             OpenTypeFontMetrics metrics = program.Metrics;
             prepared[index] = new SvgPreparedFont(resolution, bytes, metrics, lease);
@@ -112,6 +115,9 @@ public sealed class SvgFontSnapshot : IDisposable
             string hash = SvgFontProgramIntegrity.ComputeSha256(bytes, workCounter, cancellationToken);
             if (!hash.Equals(file.Sha256, StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnresolvedResource, "The selected font program SHA-256 does not match its manifest.", CreateDiagnostic(resolution.Resolution, SvgFontFailureStage.Integrity));
         }
+
+        static ValueTask<ReadOnlyMemory<byte>> GetVerifiedBytesAsync(ISvgFontProgramSource source, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+            => source is VerifiedSvgFontProgramSource verified ? verified.GetBytesAsync(workCounter, cancellationToken) : source.GetBytesAsync(cancellationToken);
     }
 
     /// <summary>

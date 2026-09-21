@@ -735,6 +735,21 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Snapshot_hashes_a_manifest_bound_program_once()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        Array.Resize(ref bytes, 8_192);
+        SvgFontProgramResolution resolution = CreateResolution(bytes);
+        int hashChunks = 0;
+        using IDisposable probe = FontIntegrityProbe.Arm(() => hashChunks++);
+
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None);
+
+        Assert.Single(snapshot.Fonts);
+        Assert.Equal(2, hashChunks);
+    }
+
+    [Fact]
     public async Task Manifest_bound_source_observes_cancellation_between_integrity_hash_chunks()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
@@ -996,7 +1011,7 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Svg_based_snapshot_applies_caller_work_limits_to_program_integrity_verification()
+    public async Task Svg_based_snapshot_charges_manifest_bound_verification_before_metric_parsing()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
         string hash = Convert.ToHexString(SHA256.HashData(bytes));
@@ -1008,7 +1023,7 @@ public sealed class OpenTypeFontTests
         SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), limits, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Equal(SvgFontFailureStage.Integrity, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
+        Assert.Equal(SvgFontFailureStage.Format, Assert.IsType<SvgFontDiagnostic>(exception.FontDiagnostic).Stage);
         Assert.Equal(1, source.RequestCount);
     }
 
