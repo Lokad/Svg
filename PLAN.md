@@ -171,8 +171,15 @@ budget of one byte now rejects a self-closing 1x1 SVG identically through
 discovery, raw and prepared paths with zero provider calls or retained ledger
 bytes; the direct-text-chunk test is recalibrated to the exact workspace
 boundary with a denied-workspace companion. The full suite (709 + 6 + 83) and
-all 21 probe scenarios pass. Remaining R04 work: PNG growth-copy and catalog
-membership charges plus the raw contour-inspection contract.
+all 21 probe scenarios pass. Catalog membership charges plus the raw contour-inspection contract remain.
+
+**Repair (`c8cb9a0`):** geometric-buffer growth now charges each
+copied byte via `PngWorkCounter.ConsumeBufferedCopyBytes` before the copy,
+with cleanup preserved on denial. A calibrated 64x64 high-entropy vector pins
+exact total work (61,606 units), first-growth denial (20,484 units) and
+byte-identical output. The full suite (710 + 6 + 83) and all 21 probe scenarios
+pass. Remaining R04 work: catalog membership charges plus the raw
+contour-inspection contract.
 - The raw `OpenTypeFont.GetSimpleGlyphContours(..., workCounter, token)` inspection
   route drops both arguments when calling the unbudgeted `BuildQuadraticContours`
   overload. The production budgeted decoder does propagate them. Do not use raw
