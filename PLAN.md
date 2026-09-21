@@ -622,6 +622,11 @@ profile and calls `Process.Start` before entering the cleanup `try`; a launch
 exception can leave the profile. Discovery also assumes `DevToolsActivePort` is
 complete as soon as the file exists.
 
+**Repair (`e8bb621`):** events are capped with fail-fast retention, disposal
+bounds the close handshake with abort fallback, and failed launches clean their profile.
+Frame-injection tests pin flood, silent-peer, cancellation and launch failures without a
+browser; transport buffer pooling stays deferred by design. Full suite (728 + 88 + 6).
+
 Closure: bound the close handshake and always dispose/abort in `finally`, retain
 only needed events under an explicit cap, and make the profile owner cover launch
 and partial-port-file failures. Test a silent peer, event flood, cancelled capture
