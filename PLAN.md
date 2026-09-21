@@ -186,12 +186,12 @@ the selection scans and observes cancellation; snapshot preparation threads its
 counter through `Bind` with public signatures unchanged. Four
 regressions pin per-face work counts, full-scan metering on foreign-face rejection,
 and cancellation precedence. The full suite (714 + 6 + 83) and all 21 probe
-scenarios pass. Remaining R04 work: the raw contour-inspection contract.
-- The raw `OpenTypeFont.GetSimpleGlyphContours(..., workCounter, token)` inspection
-  route drops both arguments when calling the unbudgeted `BuildQuadraticContours`
-  overload. The production budgeted decoder does propagate them. Do not use raw
-  inspection tests as proof of production phase cancellation, or promote that raw
-  helper to rendering without repairing its contract.
+scenarios pass. The full suite (715 + 6 + 83) and all 21 probe scenarios pass
+after the contour repair. R04 is closed: workspace, growth-copy, provenance-scan
+and contour-segment charges are all retained by regressions above.
+- The raw contour builder now takes explicit work and cancellation arguments and meters
+  contour and point records like the budgeted decoder (`dc24dd1`); the unchargeable overload
+  is gone. A measured prefix/total vector pins segment-phase denial.
 
 Closure: define and charge the remaining actual phase work, including repeated
 copies and integrity passes; use deterministic during-phase cancellation and
