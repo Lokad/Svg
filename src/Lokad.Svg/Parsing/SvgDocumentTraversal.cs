@@ -56,8 +56,17 @@ internal static class SvgDocumentTraversal
                 else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && (reader.LocalName is "g" or "a"))
                 {
                     SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-                    if (parsedGroup.Scope.IsolatesOpacity && (root.Opacity != 255 || state.Groups.Any(static current => current.IsolatesOpacity))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
-                    if (!reader.IsEmptyElement) { if (parsedGroup.Scope.IsolatesOpacity) state.Scene.BeginOpacityScope(parsedGroup.Opacity); state.Groups.Add(parsedGroup.Scope); }
+                    if (parsedGroup.Scope.IsolatesOpacity && (root.Opacity != 255 || state.HasOpacityScope)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
+                    if (!reader.IsEmptyElement)
+                    {
+                        state.Groups.Add(parsedGroup.Scope);
+                        if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
+                        if (parsedGroup.Scope.IsolatesOpacity)
+                        {
+                            state.Scene.BeginOpacityScope(parsedGroup.Opacity);
+                            state.HasOpacityScope = true;
+                        }
+                    }
                 }
                 else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                 {
@@ -71,7 +80,17 @@ internal static class SvgDocumentTraversal
             {
                 if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
                 if (reader.Depth == state.SymbolDepth) { state.SymbolDepth = -1; state.SymbolId = null; }
-                if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth) { SvgGroupScope group = state.Groups[^1]; state.Groups.RemoveLast(); if (group.IsolatesOpacity) state.Scene.EndOpacityScope(); }
+                if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth)
+                {
+                    SvgGroupScope group = state.Groups[^1];
+                    state.Groups.RemoveLast();
+                    if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;
+                    if (group.IsolatesOpacity)
+                    {
+                        state.Scene.EndOpacityScope();
+                        state.HasOpacityScope = false;
+                    }
+                }
                 if (reader.Depth == rootDepth)
                 {
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, workCounter, cancellationToken);

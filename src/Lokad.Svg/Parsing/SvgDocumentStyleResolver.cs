@@ -6,5 +6,5 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgDocumentStyleResolver
 {
     internal static InlineStyle Resolve(XmlReader reader, bool directChild, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => SvgStyleSheet.Resolve(reader, state.StyleRules, directChild, state.Groups.Any(static group => group.Kind == SvgGroupKind.Group), state.Groups.Count > 0 && state.Groups[^1].Kind == SvgGroupKind.Group, workCounter, cancellationToken);
+        => SvgStyleSheet.Resolve(reader, state.StyleRules, directChild, state.GroupDepth != 0, state.Groups.Count > 0 && state.Groups[^1].Kind == SvgGroupKind.Group, workCounter, cancellationToken);
 }

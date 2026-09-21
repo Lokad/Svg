@@ -35,6 +35,10 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal int TextCharacterCount { get; set; }
 
+    internal int GroupDepth { get; set; }
+
+    internal bool HasOpacityScope { get; set; }
+
     internal bool HasUnsupportedContent { get; set; }
 
     internal bool SawStyleableNode { get; set; }
