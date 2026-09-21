@@ -107,13 +107,18 @@ function Test-ChromeArtifact
     $candidateNames = @($fingerprint.candidatePngs)
     $candidateHashes = @($fingerprint.candidateSha256)
     if ($candidateNames.Count -ne 3 -or $candidateHashes.Count -ne 3) { Fail 'Chrome fingerprint must list exactly three candidates and hashes.' }
+    $stableHash = $null
     for ($index = 0; $index -lt 3; $index++)
     {
         $candidateName = [string]$candidateNames[$index]
         if ([IO.Path]::GetFileName($candidateName) -cne $candidateName) { Fail "Chrome candidate name is not a file name: $candidateName" }
+        $candidatePath = Join-Path $ChromeDirectory $candidateName
         $candidateHash = [string]$candidateHashes[$index]
-        Assert-Hash $candidateHash $referenceHash "Chrome candidate $candidateName hash"
-        Assert-Equal $candidateHash (Get-Hash (Join-Path $ChromeDirectory $candidateName)) "Chrome candidate $candidateName file hash"
+        Assert-Hash $candidateHash (Get-Hash $candidatePath) "Chrome candidate $candidateName file hash"
+        if ($null -eq $stableHash) { $stableHash = $candidateHash }
+        elseif ($candidateHash -cne $stableHash) { Fail "Chrome candidate $candidateName is not byte-identical to the first fresh-process capture." }
+        & dotnet $comparisonTool $reference $candidatePath
+        if ($LASTEXITCODE -ne 0) { Fail "Chrome candidate $candidateName differs from its reference pixels." }
     }
 }
 
