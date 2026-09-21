@@ -9,7 +9,7 @@ internal static class SvgRootParser
     private const int MinimumXmlReaderWorkspaceBytes = 16 * 1024;
     private const int XmlReaderAttributeWorkspaceBytes = 512;
 
-    private static readonly Dictionary<string, SvgColor> CssNamedColors = new(StringComparer.OrdinalIgnoreCase)
+    internal static readonly IReadOnlyDictionary<string, SvgColor> CssNamedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase)
     {
         ["aliceblue"] = new(240, 248, 255, 255),
         ["antiquewhite"] = new(250, 235, 215, 255),

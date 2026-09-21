@@ -67,7 +67,14 @@ internal static class SvgFontRequestDiscovery
                     bool insideDirectText = directText.Any(ancestorCandidate => ancestorCandidate is not null);
                     foreach (TextRequestCandidate? ancestorCandidate in directText) if (ancestorCandidate is not null) ancestorCandidate.HasChildElement = true;
                     bool parentAllowsText = textEligibleChildren.Count == 0 || textEligibleChildren.Peek();
-                    TextStyle style = inherited.Count == 0 ? new TextStyle(SvgInheritedTextStyle.Default, true, true, true, AxisTransform.Identity, null) : inherited.Peek();
+                    bool rootElement = reader.Depth == rootDepth;
+                    TextStyle style;
+                    if (inherited.Count == 0)
+                    {
+                        SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, workCounter, cancellationToken);
+                        style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Paint.HasFill, root.InheritedPresentation.Transform, null);
+                    }
+                    else style = inherited.Peek();
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
                     bool directChild = reader.Depth == rootDepth + 1;
                     bool hasGroupAncestor = elementGroups.Any(static group => group);
@@ -99,7 +106,7 @@ internal static class SvgFontRequestDiscovery
                         else if (reader.LocalName is "g" or "a") SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
                     }
                     InlineStyle styleSheet = isSvgElement && reader.LocalName is ("g" or "a" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
-                    if (isSvgElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "g" or "a" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken);
+                    if (isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "g" or "a" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken);
                     if (inertDepth < 0 && isSvgElement && reader.LocalName is ("defs" or "title" or "desc" or "metadata") && !reader.IsEmptyElement) inertDepth = reader.Depth;
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null) SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");

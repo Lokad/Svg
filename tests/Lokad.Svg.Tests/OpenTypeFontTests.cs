@@ -1084,6 +1084,21 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Svg_based_snapshot_rejects_an_invalid_root_before_font_acquisition()
+    {
+        byte[] bytes = CreateFont(1024, 3, 2, 1);
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg' width='0'><text font-family='Example'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+        Assert.Equal(0, source.RequestCount);
+    }
+
+    [Fact]
     public async Task Svg_based_snapshot_applies_caller_work_limits_to_metric_parsing()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
