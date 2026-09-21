@@ -59,7 +59,6 @@ internal static class SvgGlyphLayout
             Span<GlyphLookup> cachedLookups = stackalloc GlyphLookup[GlyphLookupCacheCapacity];
             int cachedLookupCount = 0;
             int glyphPosition = 0;
-            double x = originX;
             foreach (Rune scalar in text.EnumerateRunes())
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -84,9 +83,18 @@ internal static class SvgGlyphLayout
                     if (cachedLookupCount < cachedLookups.Length) cachedLookups[cachedLookupCount++] = new GlyphLookup(scalarValue, glyphIndex, advance);
                 }
                 double scaledAdvance = advance * scale;
-                double nextX = glyphPosition + 1 == glyphCount ? x + scaledAdvance : x + scaledAdvance + letterSpacing;
-                if (!double.IsFinite(scaledAdvance) || !double.IsFinite(nextX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
-                glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, x, originY, scaledAdvance);
+                if (!double.IsFinite(scaledAdvance)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
+                glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, 0, originY, scaledAdvance);
+            }
+            double x = originX;
+            for (int index = 0; index < glyphs.Length; index++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                SvgPositionedGlyph glyph = glyphs[index];
+                double kerning = index + 1 == glyphs.Length ? 0 : OpenTypeFont.GetKerningAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken) * scale;
+                double nextX = index + 1 == glyphs.Length ? x + glyph.Advance : x + glyph.Advance + kerning + letterSpacing;
+                if (!double.IsFinite(kerning) || !double.IsFinite(nextX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
+                glyphs[index] = glyph with { X = x };
                 x = nextX;
             }
             double anchorOffset = anchor switch

@@ -23,6 +23,7 @@ internal static class OpenTypeFont
     private const uint HheaTag = 0x68686561;
     private const uint HmtxTag = 0x686D7478;
     private const uint CmapTag = 0x636D6170;
+    private const uint KernTag = 0x6B65726E;
     private const uint LocaTag = 0x6C6F6361;
     private const uint GlyfTag = 0x676C7966;
 
@@ -74,7 +75,8 @@ internal static class OpenTypeFont
         if (numberOfHMetrics == 0 || numberOfHMetrics > glyphCount) throw InvalidFont("The hhea numberOfHMetrics value is invalid.");
         int hmtxBytes = checked(numberOfHMetrics * 4 + (glyphCount - numberOfHMetrics) * 2);
         RequireTableLength(hmtx, hmtxBytes, "hmtx");
-        return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null);
+        OpenTypeKernTable? kern = tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, workCounter, cancellationToken) : null;
+        return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null);
     }
 
     /// <summary>Maps one Unicode scalar through a validated Unicode format-4 or format-12 character map.</summary>
@@ -211,6 +213,29 @@ internal static class OpenTypeFont
         OpenTypeTableRange hmtx = metrics.Hmtx;
         int metricIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
         return ReadUInt16(data, hmtx.Offset + metricIndex * 4);
+    }
+
+    /// <summary>Gets the admitted legacy horizontal kerning adjustment for one adjacent glyph pair.</summary>
+    internal static short GetKerningAdjustment(ReadOnlyMemory<byte> bytes, ushort leftGlyphIndex, ushort rightGlyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        if (leftGlyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(leftGlyphIndex));
+        if (rightGlyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(rightGlyphIndex));
+        if (metrics.Kern is not OpenTypeKernTable kern) return 0;
+        ReadOnlySpan<byte> data = bytes.Span;
+        int low = 0;
+        int high = kern.PairCount;
+        while (low < high)
+        {
+            Consume(workCounter, cancellationToken);
+            int index = low + (high - low) / 2;
+            int offset = kern.PairOffset + index * 6;
+            ushort candidateLeft = ReadUInt16(data, offset);
+            ushort candidateRight = ReadUInt16(data, offset + 2);
+            if (candidateLeft < leftGlyphIndex || candidateLeft == leftGlyphIndex && candidateRight < rightGlyphIndex) low = index + 1;
+            else if (candidateLeft > leftGlyphIndex || candidateLeft == leftGlyphIndex && candidateRight > rightGlyphIndex) high = index;
+            else return ReadInt16(data, offset + 4);
+        }
+        return 0;
     }
 
     /// <summary>Gets the validated borrowed glyf-table range for one glyph, which may be empty.</summary>
@@ -715,6 +740,56 @@ internal static class OpenTypeFont
         return (int)location;
     }
 
+    /// <summary>Validates one horizontal legacy format-0 kerning subtable without retaining or allocating pair storage.</summary>
+    private static OpenTypeKernTable ParseKernTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, ushort glyphCount, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        RequireTableLength(table, 4, "kern");
+        if (ReadUInt16(data, table.Offset) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only version-zero legacy kern tables are supported.");
+        if (ReadUInt16(data, table.Offset + 2) != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one legacy kern subtable is supported.");
+        RequireTableLength(table, 18, "kern");
+        int subtableOffset = table.Offset + 4;
+        if (ReadUInt16(data, subtableOffset) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only version-zero legacy kern subtables are supported.");
+        int subtableLength = ReadUInt16(data, subtableOffset + 2);
+        if (subtableLength < 14 || subtableLength != table.Length - 4) throw InvalidFont("The legacy kern subtable length is invalid.");
+        if (ReadUInt16(data, subtableOffset + 4) != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only horizontal format-zero legacy kern subtables are supported.");
+        int pairCount = ReadUInt16(data, subtableOffset + 6);
+        int expectedLength = checked(14 + pairCount * 6);
+        if (subtableLength != expectedLength) throw InvalidFont("The legacy kern pair records are truncated.");
+        ValidateKernSearchFields(data, subtableOffset, pairCount);
+        int pairOffset = subtableOffset + 14;
+        ushort previousLeft = 0;
+        ushort previousRight = 0;
+        for (int index = 0; index < pairCount; index++)
+        {
+            Consume(workCounter, cancellationToken);
+            int offset = pairOffset + index * 6;
+            ushort left = ReadUInt16(data, offset);
+            ushort right = ReadUInt16(data, offset + 2);
+            if (left >= glyphCount || right >= glyphCount) throw InvalidFont("A legacy kern pair references a glyph outside maxp.");
+            if (index != 0 && (left < previousLeft || left == previousLeft && right <= previousRight)) throw InvalidFont("The legacy kern pairs are not strictly ordered.");
+            previousLeft = left;
+            previousRight = right;
+        }
+        return new OpenTypeKernTable(table, pairOffset, pairCount);
+    }
+
+    private static void ValidateKernSearchFields(ReadOnlySpan<byte> data, int subtableOffset, int pairCount)
+    {
+        int searchRange = ReadUInt16(data, subtableOffset + 8);
+        int entrySelector = ReadUInt16(data, subtableOffset + 10);
+        int rangeShift = ReadUInt16(data, subtableOffset + 12);
+        int largestPowerOfTwo = 1;
+        int expectedEntrySelector = 0;
+        while (largestPowerOfTwo * 2 <= pairCount)
+        {
+            largestPowerOfTwo *= 2;
+            expectedEntrySelector++;
+        }
+        int expectedSearchRange = pairCount == 0 ? 0 : largestPowerOfTwo * 6;
+        int expectedRangeShift = pairCount * 6 - expectedSearchRange;
+        if (searchRange != expectedSearchRange || entrySelector != expectedEntrySelector || rangeShift != expectedRangeShift) throw InvalidFont("The legacy kern search fields are invalid.");
+    }
+
     private static ushort ReadGlyphFromRange(ReadOnlySpan<byte> data, OpenTypeTableRange table, int length, int rangeOffsetLocation, ushort rangeOffset, uint relativeGlyphIndex)
     {
         int glyphOffset = checked(rangeOffsetLocation + rangeOffset + checked((int)relativeGlyphIndex * 2));
@@ -773,9 +848,12 @@ internal static class OpenTypeFont
 }
 
 /// <summary>Represents validated core metrics from borrowed standalone-TrueType data.</summary>
-internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap, OpenTypeTableRange? Loca, OpenTypeTableRange? Glyf);
+internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap, OpenTypeKernTable? Kern, OpenTypeTableRange? Loca, OpenTypeTableRange? Glyf);
 
 internal readonly record struct OpenTypeTableRange(int Offset, int Length);
+
+/// <summary>Identifies validated borrowed pair records from one admitted legacy kern table.</summary>
+internal readonly record struct OpenTypeKernTable(OpenTypeTableRange Range, int PairOffset, int PairCount);
 
 /// <summary>Represents the validated fixed header of one nonempty TrueType glyf record.</summary>
 internal readonly record struct OpenTypeGlyphHeader(short ContourCount, short XMinimum, short YMinimum, short XMaximum, short YMaximum)

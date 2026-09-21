@@ -1867,6 +1867,25 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Direct_text_applies_validated_legacy_kerning_between_adjacent_glyphs()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleKernFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'>AA</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        using SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AA", 100, 0, 3, SvgTextAnchor.Start, new RenderBudget(1_024), CancellationToken.None);
+
+        Assert.Equal(30, glyphs.Glyphs[1].X);
+        Assert.True(DecodeAlpha(png, 31, 1) > 0);
+        Assert.Equal(0, DecodeAlpha(png, 61, 1));
+
+        byte[] unsupported = CreateTriangleKernFont();
+        OpenTypeKernTable kern = Assert.IsType<OpenTypeKernTable>(OpenTypeFont.ParseMetrics(unsupported, CancellationToken.None).Kern);
+        WriteUInt16(unsupported, kern.Range.Offset + 4, 1);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.ParseMetrics(unsupported, CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
     public async Task Default_text_preserves_inter_word_whitespace_around_a_visible_nested_span()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleAAndSpaceFont())], CancellationToken.None);
@@ -2777,6 +2796,39 @@ public sealed class OpenTypeFontTests
         WriteUInt16(font, subtable + 14, 32);
         WriteUInt16(font, subtable + 20, 32);
         WriteInt16(font, subtable + 24, -31);
+        return font;
+    }
+
+    private static byte[] CreateTriangleKernFont()
+    {
+        byte[] font = CreateTriangleFont();
+        const int originalTableCount = 7;
+        const int originalDirectoryLength = 12 + originalTableCount * 16;
+        const int legacyKernLength = 24;
+        int originalLength = font.Length;
+        Array.Resize(ref font, originalLength + 16 + legacyKernLength);
+        Array.Copy(font, originalDirectoryLength, font, originalDirectoryLength + 16, originalLength - originalDirectoryLength);
+        for (int index = 0; index < originalTableCount; index++)
+        {
+            int entry = 12 + index * 16;
+            uint offset = ((uint)font[entry + 8] << 24) | ((uint)font[entry + 9] << 16) | ((uint)font[entry + 10] << 8) | font[entry + 11];
+            WriteUInt32(font, entry + 8, offset + 16);
+        }
+        WriteUInt16(font, 4, originalTableCount + 1);
+        int kernOffset = originalLength + 16;
+        WriteTable(font, originalTableCount, 0x6B65726E, kernOffset, legacyKernLength);
+        WriteUInt16(font, kernOffset, 0);
+        WriteUInt16(font, kernOffset + 2, 1);
+        WriteUInt16(font, kernOffset + 4, 0);
+        WriteUInt16(font, kernOffset + 6, 20);
+        WriteUInt16(font, kernOffset + 8, 1);
+        WriteUInt16(font, kernOffset + 10, 1);
+        WriteUInt16(font, kernOffset + 12, 6);
+        WriteUInt16(font, kernOffset + 14, 0);
+        WriteUInt16(font, kernOffset + 16, 0);
+        WriteUInt16(font, kernOffset + 18, 1);
+        WriteUInt16(font, kernOffset + 20, 1);
+        WriteInt16(font, kernOffset + 22, -300);
         return font;
     }
 
