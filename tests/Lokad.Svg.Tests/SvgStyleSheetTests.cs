@@ -61,4 +61,41 @@ public sealed class SvgStyleSheetTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
+    [Theory]
+    [InlineData(false, false, false)]
+    [InlineData(true, false, true)]
+    [InlineData(false, true, true)]
+    [InlineData(true, true, true)]
+    public void Rejects_a_late_root_stylesheet(bool sawStyleableNode, bool hasStyleSheet, bool throws)
+    {
+        if (throws)
+        {
+            SvgException exception = Assert.Throws<SvgException>(() => SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode, hasStyleSheet));
+
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        }
+        else
+        {
+            SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode, hasStyleSheet);
+        }
+    }
+
+    [Theory]
+    [InlineData("<style/>", false)]
+    [InlineData("<style media='screen'/>", true)]
+    public void Rejects_stylesheet_element_attributes(string element, bool throws)
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader(element));
+        Assert.True(reader.Read());
+        if (throws)
+        {
+            SvgException exception = Assert.Throws<SvgException>(() => SvgRootStyleSheetParser.ThrowIfAttributed(reader));
+
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        }
+        else
+        {
+            SvgRootStyleSheetParser.ThrowIfAttributed(reader);
+        }
+    }
 }

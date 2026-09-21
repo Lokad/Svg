@@ -108,8 +108,8 @@ internal static class SvgFontRequestDiscovery
                     bool rootStyleElement = isSvgElement && reader.LocalName == "style" && directChild;
                     if (rootStyleElement)
                     {
-                        if (sawStyleableNode || hasStyleSheet) throw new SvgException(SvgErrorCode.UnsupportedFeature, "A single root-level rectangle stylesheet rule must precede supported definitions and rendered content.");
-                        if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
+                        SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode, hasStyleSheet);
+                        SvgRootStyleSheetParser.ThrowIfAttributed(reader);
                         using OwnedStyleSheetText styleText = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken);
                         SvgStyleSheet.Parse(styleText.Value, limits.MaximumNodes, styleRules, styleStrings, budget, workCounter, cancellationToken);
                         if (SvgStyleSheet.TargetsRootId(rootId, styleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
