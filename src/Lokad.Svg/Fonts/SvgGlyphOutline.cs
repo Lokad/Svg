@@ -15,6 +15,22 @@ internal static class SvgGlyphOutline
     /// <summary>Converts one glyph and transfers the final contour-array scene reservation to the retained glyph geometry.</summary>
     internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
+        double scale = Validate(font, glyph, fontSize, budget);
+
+        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, budget, workCounter, cancellationToken);
+        return TransformDecodedContours(glyph, scale, decoded, budget, workCounter, cancellationToken);
+    }
+
+    /// <summary>Converts one glyph while borrowing decoded storage that remains owned and disposed by the caller.</summary>
+    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, OpenTypeGlyphContourStorage decoded, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(decoded);
+        double scale = Validate(font, glyph, fontSize, budget);
+        return TransformDecodedContours(glyph, scale, decoded, budget, workCounter, cancellationToken);
+    }
+
+    private static double Validate(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget)
+    {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(budget);
         if (glyph.GlyphIndex == 0 || glyph.GlyphIndex >= font.GlyphCount) throw new ArgumentOutOfRangeException(nameof(glyph));
@@ -22,8 +38,11 @@ internal static class SvgGlyphOutline
         if (!double.IsFinite(glyph.X) || !double.IsFinite(glyph.Y)) throw new ArgumentOutOfRangeException(nameof(glyph));
         double scale = fontSize / font.UnitsPerEm;
         if (!double.IsFinite(scale)) throw new ArgumentOutOfRangeException(nameof(fontSize));
+        return scale;
+    }
 
-        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, budget, workCounter, cancellationToken);
+    private static SvgGlyphContourStorage TransformDecodedContours(SvgPositionedGlyph glyph, double scale, OpenTypeGlyphContourStorage decoded, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    {
         OpenTypeQuadraticSegment[] source = decoded.Segments;
         if (source.Length == 0) return new([], null);
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + (long)source.Length * 48L), SvgMemoryCategory.Geometry);

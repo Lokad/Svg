@@ -1809,6 +1809,21 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Direct_text_reuses_a_contiguous_decoded_glyph_outline()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        int expansionCount = 0;
+        using IDisposable probe = GlyphExpansionProbe.Observe(() => expansionCount++);
+
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='300' height='5'><text font-family='Example' font-size='100' y='3'>AAAA</text></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        Assert.Equal(1, expansionCount);
+        Assert.True(DecodeAlpha(png, 1, 1) > 0);
+        Assert.True(DecodeAlpha(png, 61, 1) > 0);
+    }
+
+    [Fact]
     public async Task Default_text_preserves_inter_word_whitespace_around_a_visible_nested_span()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleAAndSpaceFont())], CancellationToken.None);

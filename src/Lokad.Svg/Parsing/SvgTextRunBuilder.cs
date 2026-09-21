@@ -26,14 +26,27 @@ internal static class SvgTextRunBuilder
         return new SvgTextRun(style, font, glyphs);
     }
 
-    /// <summary>Yields each positioned glyph's closed SVG-coordinate contours without retaining whole-run contour storage.</summary>
+    /// <summary>Yields each positioned glyph's closed SVG-coordinate contours while retaining at most one decoded consecutive glyph outline.</summary>
     internal static IEnumerable<SvgGlyphContourStorage> GetGlyphContours(SvgTextRun run, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        for (int index = 0; index < run.Glyphs.Length; index++)
+        OpenTypeGlyphContourStorage? decoded = null;
+        ushort decodedGlyphIndex = 0;
+        try
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            yield return SvgGlyphOutline.GetContourStorage(run.Font, run.Glyphs[index], run.Style.FontSize, budget, workCounter, cancellationToken);
+            for (int index = 0; index < run.Glyphs.Length; index++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                SvgPositionedGlyph glyph = run.Glyphs[index];
+                if (decoded is null || decodedGlyphIndex != glyph.GlyphIndex)
+                {
+                    decoded?.Dispose();
+                    decoded = OpenTypeFont.GetGlyphContours(run.Font.Bytes, glyph.GlyphIndex, run.Font.Metrics, budget, workCounter, cancellationToken);
+                    decodedGlyphIndex = glyph.GlyphIndex;
+                }
+                yield return SvgGlyphOutline.GetContourStorage(run.Font, glyph, run.Style.FontSize, decoded, budget, workCounter, cancellationToken);
+            }
         }
+        finally { decoded?.Dispose(); }
     }
 }
 
