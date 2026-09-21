@@ -56,6 +56,8 @@ internal static class SvgRenderedLeafParser
                 return true;
             case "text":
             {
+                // Fail fast with the conversion-level category: the operation is already rejected as unsupported, so a later font lookup must not surface UnresolvedResource instead.
+                if (state.HasUnsupportedContent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
                 SvgResolvedDirectTextElement resolvedText = context.ResolveTextShape(reader);
                 SvgResolvedPaintableElement textElement = resolvedText.PaintableElement;
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");

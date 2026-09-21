@@ -1295,6 +1295,101 @@ public sealed class OpenTypeFontTests
         Assert.Equal(1, source.RequestCount);
     }
 
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g font-family='Example' font-size='100'><text y='3'>A</text></g></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>g { font-family: Example; font-size: 100; }</style><g><text y='3'>A</text></g></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text display='none' font-family='Unused'>x</text></svg>", "", 0, 0, false, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g visibility='hidden'><text font-family='Unused'>x</text></g></svg>", "", 0, 0, false, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text fill='none' font-family='Unused'>x</text></svg>", "", 0, 0, false, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Unused'></text></svg>", "", 0, 0, false, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Unused'> \t\r\n </text></svg>", "", 0, 0, false, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'> </text></svg>", "Example", 1, 1, true, true)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan letter-spacing='2'><tspan>A</tspan></tspan></text></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' x='0' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+    public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        string[] expected = expectedRequests.Length == 0 ? [] : expectedRequests.Split(',');
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, CancellationToken.None);
+
+        Assert.Equal(expected, requests.Select(static request => request.Family).ToArray());
+        byte[] font = spaceFont ? CreateTriangleSpaceFont() : CreateTriangleFont();
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(font);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+
+        Assert.Equal(expected.Length, snapshot.Fonts.Count);
+        Assert.Equal(expectedProviderCalls, provider.RequestCount);
+        Assert.Equal(expectedSourceCalls, source.RequestCount);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None);
+
+        if (painted)
+        {
+            Assert.True(DecodeAlpha(png, 1, 1) > 0);
+        }
+        else
+        {
+            Assert.Equal(0, DecodeAlpha(png, 1, 1));
+        }
+    }
+
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' font-size='0'>A</text></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A</text></svg> trailing", true, SvgErrorCode.MalformedInput, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A<tspan font-style='italic'>A</tspan></text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A<text font-family='Example'>A</text></text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' transform='translate(0)'>A</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(1)'><text font-family='Unused'>x</text></g></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><circle cx='1' cy='1' r='1'/><text font-family='Unused'>x</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><symbol id='s'><text font-family='Unused'>x</text></symbol></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'>A</text><circle cx='1' cy='1' r='1'/></svg>", false, SvgErrorCode.UnsupportedFeature, "Unused", 1, 1)]
+    public async Task Discovery_and_lowering_agree_on_rejected_text(string svg, bool failsDuringDiscovery, SvgErrorCode code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        if (failsDuringDiscovery)
+        {
+            SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, CancellationToken.None));
+
+            Assert.Equal(code, exception.ErrorCode);
+            return;
+        }
+
+        string[] expected = expectedRequests.Length == 0 ? [] : expectedRequests.Split(',');
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, CancellationToken.None);
+
+        Assert.Equal(expected, requests.Select(static request => request.Family).ToArray());
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+
+        Assert.Equal(expectedProviderCalls, provider.RequestCount);
+        Assert.Equal(expectedSourceCalls, source.RequestCount);
+        SvgException lowering = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None));
+
+        Assert.Equal(code, lowering.ErrorCode);
+    }
+
+    [Fact]
+    public async Task Discovery_and_preparation_observe_cancellation_together()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>");
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using CancellationTokenSource cancelled = new();
+        cancelled.Cancel();
+
+        Assert.Throws<OperationCanceledException>(() => SvgFontRequestDiscovery.Discover(input, cancelled.Token));
+        await Assert.ThrowsAsync<OperationCanceledException>(async () => await SvgFontSnapshot.CreateAsync(input, catalog, provider, cancelled.Token));
+        Assert.Equal(0, provider.RequestCount);
+    }
+
+    private static (SvgFontPackCatalog Catalog, CountingFontProvider Provider, CountingFontSource Source) CreateExamplePack(byte[] font)
+    {
+        string hash = Convert.ToHexString(SHA256.HashData(font));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + font.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(font);
+        return (catalog, new CountingFontProvider(source), source);
+    }
+
     [Fact]
     public async Task Empty_direct_text_does_not_acquire_or_require_a_font()
     {

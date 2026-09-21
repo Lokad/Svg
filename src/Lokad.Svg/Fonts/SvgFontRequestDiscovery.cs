@@ -121,10 +121,10 @@ internal static class SvgFontRequestDiscovery
                     bool unsupportedContainer = (!rootElement && reader.LocalName is ("svg" or "style" or "symbol")) || (!directChild && reader.LocalName is ("defs" or "title" or "desc" or "metadata"));
                     bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline");
                     bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyRenderedLeaf);
+                    // Retain requests admitted before this point: lowering still paints them before conversion rejects the unsupported sibling, so clearing here would omit a font lowering requires.
                     if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && (!isKnownContent || rendererRejectsKnownContent))
                     {
                         hasUnsupportedContent = true;
-                        requestKeys.Clear();
                     }
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
                     {
