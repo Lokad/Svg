@@ -72,4 +72,137 @@ if ($successReport -notmatch '^outcome=success\npngBytes=\d+\nrequestedFontProgr
     throw 'The font probe did not preserve lazy program acquisition for an empty SVG.'
 }
 
+$httpManifest = [Text.UTF8Encoding]::new($false).GetBytes('{"packId":"synthetic-http-pack","files":[{"relativePath":"synthetic.ttf","byteSize":1,"sha256":"0000000000000000000000000000000000000000000000000000000000000000"}],"families":[{"requestedFamily":"Synthetic","resolvedFamily":"Synthetic","relativeFontFile":"synthetic.ttf"}]}')
+$portListener = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 0)
+$portListener.Start()
+$port = ([Net.IPEndPoint]$portListener.LocalEndpoint).Port
+$portListener.Stop()
+$sourceRoot = "http://127.0.0.1:$port/"
+$httpOutput = Join-Path $runDirectory 'http-success.png'
+$listener = [Net.HttpListener]::new()
+$listener.Prefixes.Add($sourceRoot)
+$listener.Start()
+try {
+    $start = [System.Diagnostics.ProcessStartInfo]::new('dotnet')
+    $start.UseShellExecute = $false
+    $start.CreateNoWindow = $true
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
+    foreach ($argument in @($probeTool, '--source-uri', $sourceRoot, '--pack-id', 'synthetic-http-pack', '--svg', $emptySvgPath, '--output', $httpOutput)) { $start.ArgumentList.Add($argument) }
+    $process = [System.Diagnostics.Process]::Start($start)
+    if ($null -eq $process) { throw 'Could not start the HTTP font probe.' }
+    try {
+        $standardOutputTask = $process.StandardOutput.ReadToEndAsync()
+        $standardErrorTask = $process.StandardError.ReadToEndAsync()
+        $contextTask = $listener.GetContextAsync()
+        if (-not $contextTask.Wait($TimeoutMilliseconds))
+        {
+            $process.Kill($true)
+            throw 'The HTTP font probe did not request its manifest before the timeout.'
+        }
+        $context = $contextTask.GetAwaiter().GetResult()
+        try {
+            if ($context.Request.RawUrl -ne '/synthetic-http-pack/manifest.json')
+            {
+                $context.Response.StatusCode = 404
+            }
+            else
+            {
+                $context.Response.StatusCode = 200
+                $context.Response.ContentLength64 = $httpManifest.Length
+                $context.Response.OutputStream.Write($httpManifest, 0, $httpManifest.Length)
+            }
+        }
+        finally { $context.Response.Close() }
+        if (-not $process.WaitForExit($TimeoutMilliseconds))
+        {
+            $process.Kill($true)
+            throw 'The HTTP font probe exceeded its timeout and was terminated.'
+        }
+        $standardOutput = $standardOutputTask.GetAwaiter().GetResult().Trim().Replace("`r`n", "`n")
+        $standardError = $standardErrorTask.GetAwaiter().GetResult().Trim()
+        if ($process.ExitCode -ne 0 -or $standardOutput -notmatch '^outcome=success\npngBytes=\d+\nrequestedFontPrograms=0$' -or -not [string]::IsNullOrEmpty($standardError) -or -not (Test-Path -LiteralPath $httpOutput))
+        {
+            throw 'The HTTP font probe did not complete the expected manifest-only conversion.'
+        }
+    }
+    finally { $process.Dispose() }
+}
+finally {
+    $listener.Stop()
+    $listener.Close()
+}
+
+$retryManifest = [Text.UTF8Encoding]::new($false).GetBytes("{ `"packId`": `"synthetic-http-retry-pack`", `"files`": [{ `"relativePath`": `"synthetic.ttf`", `"byteSize`": 1, `"sha256`": `"$hash`" }], `"families`": [{ `"requestedFamily`": `"Synthetic`", `"resolvedFamily`": `"Synthetic`", `"relativeFontFile`": `"synthetic.ttf`" }] }")
+$portListener = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 0)
+$portListener.Start()
+$port = ([Net.IPEndPoint]$portListener.LocalEndpoint).Port
+$portListener.Stop()
+$sourceRoot = "http://127.0.0.1:$port/"
+$retryOutput = Join-Path $runDirectory 'http-retry-invalid.png'
+$listener = [Net.HttpListener]::new()
+$listener.Prefixes.Add($sourceRoot)
+$listener.Start()
+try {
+    $start = [System.Diagnostics.ProcessStartInfo]::new('dotnet')
+    $start.UseShellExecute = $false
+    $start.CreateNoWindow = $true
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
+    foreach ($argument in @($probeTool, '--source-uri', $sourceRoot, '--pack-id', 'synthetic-http-retry-pack', '--svg', $textSvgPath, '--output', $retryOutput)) { $start.ArgumentList.Add($argument) }
+    $process = [System.Diagnostics.Process]::Start($start)
+    if ($null -eq $process) { throw 'Could not start the HTTP retry font probe.' }
+    try {
+        $standardOutputTask = $process.StandardOutput.ReadToEndAsync()
+        $standardErrorTask = $process.StandardError.ReadToEndAsync()
+        foreach ($request in 0..2)
+        {
+            $contextTask = $listener.GetContextAsync()
+            if (-not $contextTask.Wait($TimeoutMilliseconds))
+            {
+                $process.Kill($true)
+                throw 'The HTTP retry font probe did not complete its expected requests before the timeout.'
+            }
+            $context = $contextTask.GetAwaiter().GetResult()
+            if ($request -eq 0)
+            {
+                if ($context.Request.RawUrl -ne '/synthetic-http-retry-pack/manifest.json') { $context.Response.StatusCode = 404; $context.Response.Close(); throw 'The HTTP retry font probe requested an unexpected manifest path.' }
+                $context.Response.StatusCode = 200
+                $context.Response.ContentLength64 = $retryManifest.Length
+                $context.Response.OutputStream.Write($retryManifest, 0, $retryManifest.Length)
+                $context.Response.Close()
+            }
+            elseif ($request -eq 1)
+            {
+                if ($context.Request.RawUrl -ne '/synthetic-http-retry-pack/synthetic.ttf') { $context.Response.StatusCode = 404; $context.Response.Close(); throw 'The HTTP retry font probe requested an unexpected program path.' }
+                $context.Response.Abort()
+            }
+            else
+            {
+                if ($context.Request.RawUrl -ne '/synthetic-http-retry-pack/synthetic.ttf') { $context.Response.StatusCode = 404; $context.Response.Close(); throw 'The HTTP retry font probe did not retry the selected program path.' }
+                $context.Response.StatusCode = 200
+                $context.Response.ContentLength64 = 1
+                $context.Response.OutputStream.WriteByte(0)
+                $context.Response.Close()
+            }
+        }
+        if (-not $process.WaitForExit($TimeoutMilliseconds))
+        {
+            $process.Kill($true)
+            throw 'The HTTP retry font probe exceeded its timeout and was terminated.'
+        }
+        $standardOutput = $standardOutputTask.GetAwaiter().GetResult().Trim().Replace("`r`n", "`n")
+        $standardError = $standardErrorTask.GetAwaiter().GetResult().Trim()
+        if ($process.ExitCode -ne 1 -or $standardOutput -cne "outcome=svg-error`nsvgErrorCode=MalformedInput" -or -not [string]::IsNullOrEmpty($standardError) -or (Test-Path -LiteralPath $retryOutput))
+        {
+            throw 'The HTTP font probe did not retry and reject the selected malformed synthetic program.'
+        }
+    }
+    finally { $process.Dispose() }
+}
+finally {
+    $listener.Stop()
+    $listener.Close()
+}
+
 Write-Output "Font probe synthetic checks passed: $runDirectory"

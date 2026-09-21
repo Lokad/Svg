@@ -7,21 +7,37 @@ internal static class Program
 {
     private const int MaximumManifestBytes = 1024 * 1024;
     private const long MaximumProgramBytes = 64L * 1024 * 1024;
+    private const long MaximumCachedProgramBytes = 32L * 1024 * 1024;
+    private const int MaximumDownloadAttempts = 3;
 
     private static async Task<int> Main(string[] arguments)
     {
         if (!TryParseArguments(arguments, out ProbeOptions? options) || options is null)
         {
-            Console.Error.WriteLine("Usage: Lokad.Svg.FontProbe --manifest <manifest.json> --pack-id <pack-id> --font-root <directory> --svg <input.svg> --output <output.png>");
+            Console.Error.WriteLine("Usage: Lokad.Svg.FontProbe (--manifest <manifest.json> --font-root <directory> | --source-uri <https://source-root/>) --pack-id <pack-id> --svg <input.svg> --output <output.png>");
             return 2;
         }
 
         try
         {
-            byte[] manifest = await ReadFileAsync(options.ManifestPath, MaximumManifestBytes, CancellationToken.None).ConfigureAwait(false);
-            byte[] svg = await ReadFileAsync(options.SvgPath, SvgRenderLimits.Default.MaximumInputBytes, CancellationToken.None).ConfigureAwait(false);
+            byte[] svg = await ReadLocalFileAsync(options.SvgPath, SvgRenderLimits.Default.MaximumInputBytes, CancellationToken.None).ConfigureAwait(false);
+            byte[] manifest;
+            IProbeFontProgramSourceProvider provider;
+            using HttpClient? httpClient = options.SourceUri is null ? null : new HttpClient();
+            if (options.ManifestPath is not null && options.FontRoot is not null)
+            {
+                manifest = await ReadLocalFileAsync(options.ManifestPath, MaximumManifestBytes, CancellationToken.None).ConfigureAwait(false);
+                provider = new LocalFontProgramSourceProvider(options.FontRoot);
+            }
+            else
+            {
+                Uri sourceRoot = NormalizeSourceUri(options.SourceUri ?? throw new HostSourceException());
+                ValidatePackId(options.PackId);
+                Uri packRoot = new(sourceRoot, options.PackId + "/");
+                manifest = await DownloadHttpAsync(httpClient ?? throw new HostSourceException(), new Uri(packRoot, "manifest.json"), MaximumManifestBytes, CancellationToken.None).ConfigureAwait(false);
+                provider = new HttpFontProgramSourceProvider(httpClient, packRoot);
+            }
             SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(manifest, options.PackId);
-            var provider = new LocalFontProgramSourceProvider(options.FontRoot);
 
             using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(svg, catalog, provider, SvgRenderOptions.Default, CancellationToken.None).ConfigureAwait(false);
             await using var destination = new FileStream(options.OutputPath, FileMode.Create, FileAccess.Write, FileShare.None, 64 * 1024, FileOptions.Asynchronous | FileOptions.SequentialScan);
@@ -32,7 +48,7 @@ internal static class Program
             Console.WriteLine("requestedFontPrograms=" + provider.RequestedProgramCount);
             return 0;
         }
-        catch (LocalFileException)
+        catch (HostSourceException)
         {
             Console.WriteLine("outcome=host-error");
             return 4;
@@ -58,11 +74,12 @@ internal static class Program
     private static bool TryParseArguments(string[] arguments, out ProbeOptions? options)
     {
         options = null;
-        if (arguments.Length != 10) return false;
+        if (arguments.Length is not (8 or 10)) return false;
 
         string? manifestPath = null;
         string? packId = null;
         string? fontRoot = null;
+        string? sourceUri = null;
         string? svgPath = null;
         string? outputPath = null;
         for (int index = 0; index < arguments.Length; index += 2)
@@ -81,6 +98,9 @@ internal static class Program
                 case "--font-root" when fontRoot is null:
                     fontRoot = value;
                     break;
+                case "--source-uri" when sourceUri is null:
+                    sourceUri = value;
+                    break;
                 case "--svg" when svgPath is null:
                     svgPath = value;
                     break;
@@ -92,61 +112,120 @@ internal static class Program
             }
         }
 
-        if (manifestPath is null || packId is null || fontRoot is null || svgPath is null || outputPath is null) return false;
-        options = new ProbeOptions(manifestPath, packId, fontRoot, svgPath, outputPath);
+        bool localSource = manifestPath is not null && fontRoot is not null && sourceUri is null;
+        bool httpSource = manifestPath is null && fontRoot is null && sourceUri is not null;
+        if ((localSource || httpSource) && packId is not null && svgPath is not null && outputPath is not null)
+        {
+            options = new ProbeOptions(packId, svgPath, outputPath, manifestPath, fontRoot, sourceUri);
+        }
         return true;
     }
 
-    private static async ValueTask<byte[]> ReadFileAsync(string path, long maximumBytes, CancellationToken cancellationToken)
+    private static async ValueTask<byte[]> ReadLocalFileAsync(string path, long maximumBytes, CancellationToken cancellationToken)
     {
         try
         {
             await using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 64 * 1024, FileOptions.Asynchronous | FileOptions.SequentialScan);
             long length = stream.Length;
-            if (length < 0 || length > maximumBytes || length > int.MaxValue) throw new LocalFileException();
+            if (length < 0 || length > maximumBytes || length > int.MaxValue) throw new HostSourceException();
 
             var bytes = new byte[checked((int)length)];
             int offset = 0;
             while (offset < bytes.Length)
             {
                 int read = await stream.ReadAsync(bytes.AsMemory(offset), cancellationToken).ConfigureAwait(false);
-                if (read == 0) throw new LocalFileException();
+                if (read == 0) throw new HostSourceException();
                 offset += read;
             }
 
             var extra = new byte[1];
-            if (await stream.ReadAsync(extra, cancellationToken).ConfigureAwait(false) != 0) throw new LocalFileException();
+            if (await stream.ReadAsync(extra, cancellationToken).ConfigureAwait(false) != 0) throw new HostSourceException();
             return bytes;
         }
         catch (OperationCanceledException)
         {
             throw;
         }
-        catch (LocalFileException)
+        catch (HostSourceException)
         {
             throw;
         }
         catch (IOException)
         {
-            throw new LocalFileException();
+            throw new HostSourceException();
         }
         catch (UnauthorizedAccessException)
         {
-            throw new LocalFileException();
+            throw new HostSourceException();
         }
         catch (ArgumentException)
         {
-            throw new LocalFileException();
+            throw new HostSourceException();
         }
         catch (NotSupportedException)
         {
-            throw new LocalFileException();
+            throw new HostSourceException();
         }
     }
 
-    private sealed record ProbeOptions(string ManifestPath, string PackId, string FontRoot, string SvgPath, string OutputPath);
+    private static Uri NormalizeSourceUri(string source)
+    {
+        if (!Uri.TryCreate(source, UriKind.Absolute, out Uri? uri) || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps) || !string.IsNullOrEmpty(uri.Query) || !string.IsNullOrEmpty(uri.Fragment)) throw new HostSourceException();
+        return uri.AbsoluteUri.EndsWith("/", StringComparison.Ordinal) ? uri : new Uri(uri.AbsoluteUri + "/", UriKind.Absolute);
+    }
 
-    private sealed class LocalFontProgramSourceProvider : ISvgFontProgramSourceProvider
+    private static void ValidatePackId(string packId)
+    {
+        if (string.IsNullOrWhiteSpace(packId) || packId is "." or ".." || packId.IndexOfAny(['/', '\\', ':', '?', '#']) >= 0) throw new HostSourceException();
+    }
+
+    private static async ValueTask<byte[]> DownloadHttpAsync(HttpClient client, Uri uri, long maximumBytes, CancellationToken cancellationToken)
+    {
+        for (int attempt = 1; ; attempt++)
+        {
+            try
+            {
+                return await DownloadHttpSingleAttemptAsync(client, uri, maximumBytes, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (HostSourceException)
+            {
+                throw;
+            }
+            catch (Exception exception) when (exception is HttpRequestException or IOException or InvalidOperationException or TaskCanceledException)
+            {
+                if (attempt == MaximumDownloadAttempts) throw new HostSourceException();
+            }
+        }
+    }
+
+    private static async ValueTask<byte[]> DownloadHttpSingleAttemptAsync(HttpClient client, Uri uri, long maximumBytes, CancellationToken cancellationToken)
+    {
+        using HttpResponseMessage response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        if (!response.IsSuccessStatusCode || response.Content.Headers.ContentLength is long declared && declared > maximumBytes) throw new HostSourceException();
+        await using Stream content = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        using var destination = new MemoryStream();
+        var chunk = new byte[64 * 1024];
+        while (true)
+        {
+            int read = await content.ReadAsync(chunk, cancellationToken).ConfigureAwait(false);
+            if (read == 0) return destination.ToArray();
+            if (read > maximumBytes - destination.Length) throw new HostSourceException();
+            destination.Write(chunk, 0, read);
+        }
+    }
+
+    private sealed record ProbeOptions(string PackId, string SvgPath, string OutputPath, string? ManifestPath, string? FontRoot, string? SourceUri);
+
+    private interface IProbeFontProgramSourceProvider : ISvgFontProgramSourceProvider
+    {
+        int RequestedProgramCount { get; }
+    }
+
+    private sealed class LocalFontProgramSourceProvider : IProbeFontProgramSourceProvider
     {
         private readonly string _fontRoot;
         private readonly string _fontRootPrefix;
@@ -162,21 +241,21 @@ internal static class Program
             }
             catch (IOException)
             {
-                throw new LocalFileException();
+                throw new HostSourceException();
             }
             catch (ArgumentException)
             {
-                throw new LocalFileException();
+                throw new HostSourceException();
             }
             catch (NotSupportedException)
             {
-                throw new LocalFileException();
+                throw new HostSourceException();
             }
 
             _pathComparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         }
 
-        internal int RequestedProgramCount => Volatile.Read(ref _requestedProgramCount);
+        int IProbeFontProgramSourceProvider.RequestedProgramCount => Volatile.Read(ref _requestedProgramCount);
 
         public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
         {
@@ -187,11 +266,11 @@ internal static class Program
             {
                 string relativePath = file.RelativePath.Replace('/', Path.DirectorySeparatorChar);
                 string candidate = Path.GetFullPath(Path.Combine(_fontRoot, relativePath));
-                if (!candidate.StartsWith(_fontRootPrefix, _pathComparison)) throw new LocalFileException();
+                if (!candidate.StartsWith(_fontRootPrefix, _pathComparison)) throw new HostSourceException();
                 long maximumBytes = Math.Min(file.ByteSize, MaximumProgramBytes);
                 return ValueTask.FromResult<ISvgFontProgramSource?>(new LocalFontProgramSource(candidate, maximumBytes));
             }
-            catch (LocalFileException)
+            catch (HostSourceException)
             {
                 throw new SvgException(SvgErrorCode.UnresolvedResource, "The local font program could not be acquired.");
             }
@@ -218,14 +297,87 @@ internal static class Program
         {
             try
             {
-                return await ReadFileAsync(path, maximumBytes, cancellationToken).ConfigureAwait(false);
+                return await ReadLocalFileAsync(path, maximumBytes, cancellationToken).ConfigureAwait(false);
             }
-            catch (LocalFileException)
+            catch (HostSourceException)
             {
                 throw new SvgException(SvgErrorCode.UnresolvedResource, "The local font program could not be read.");
             }
         }
     }
 
-    private sealed class LocalFileException : Exception;
+    private sealed class HttpFontProgramSourceProvider : IProbeFontProgramSourceProvider
+    {
+        private readonly HttpClient _httpClient;
+        private readonly Uri _packRoot;
+        private readonly object _sync = new();
+        private readonly Dictionary<string, HttpFontProgramSource> _sources = new(StringComparer.Ordinal);
+        private long _cachedProgramBytes;
+        private int _requestedProgramCount;
+
+        internal HttpFontProgramSourceProvider(HttpClient httpClient, Uri packRoot)
+        {
+            ArgumentNullException.ThrowIfNull(httpClient);
+            ArgumentNullException.ThrowIfNull(packRoot);
+            _httpClient = httpClient;
+            _packRoot = packRoot;
+        }
+
+        public int RequestedProgramCount => Volatile.Read(ref _requestedProgramCount);
+
+        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
+        {
+            ArgumentNullException.ThrowIfNull(file);
+            cancellationToken.ThrowIfCancellationRequested();
+            Interlocked.Increment(ref _requestedProgramCount);
+            lock (_sync)
+            {
+                if (!_sources.TryGetValue(file.RelativePath, out HttpFontProgramSource? source))
+                {
+                    source = new HttpFontProgramSource(_httpClient, new Uri(_packRoot, file.RelativePath), Math.Min(file.ByteSize, MaximumProgramBytes), this);
+                    _sources.Add(file.RelativePath, source);
+                }
+                return ValueTask.FromResult<ISvgFontProgramSource?>(source);
+            }
+        }
+
+        internal bool TryReserveCache(int byteCount)
+        {
+            while (true)
+            {
+                long current = Volatile.Read(ref _cachedProgramBytes);
+                if (byteCount > MaximumCachedProgramBytes - current) return false;
+                if (Interlocked.CompareExchange(ref _cachedProgramBytes, current + byteCount, current) == current) return true;
+            }
+        }
+    }
+
+    private sealed class HttpFontProgramSource(HttpClient httpClient, Uri uri, long maximumBytes, HttpFontProgramSourceProvider provider) : ISvgFontProgramSource
+    {
+        private readonly SemaphoreSlim _gate = new(1, 1);
+        private ReadOnlyMemory<byte>? _cachedBytes;
+
+        public string StableId => "http-font-program";
+
+        public async ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken)
+        {
+            if (_cachedBytes is ReadOnlyMemory<byte> cached) return cached;
+            await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                if (_cachedBytes is ReadOnlyMemory<byte> rechecked) return rechecked;
+                byte[] bytes;
+                try { bytes = await DownloadHttpAsync(httpClient, uri, maximumBytes, cancellationToken).ConfigureAwait(false); }
+                catch (HostSourceException) { throw new SvgException(SvgErrorCode.UnresolvedResource, "The HTTP font program could not be read."); }
+                if (provider.TryReserveCache(bytes.Length)) _cachedBytes = bytes;
+                return bytes;
+            }
+            finally
+            {
+                _gate.Release();
+            }
+        }
+    }
+
+    private sealed class HostSourceException : Exception;
 }
