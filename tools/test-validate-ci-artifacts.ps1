@@ -134,4 +134,75 @@ Write-Fingerprint $tamperDirectory $runId $goodNames $tamperHashes
 try { Invoke-Validator $tamperDirectory $memoryDirectory | Out-Null; throw 'The validator accepted a tampered recorded hash.' }
 catch { if ($_.Exception.Message -like 'The validator accepted*') { throw }; if ("$_" -notlike '*file hash*') { throw "The validator rejected the tampered hash for the wrong reason: $_" } }
 
+function Copy-MemoryReports([string] $Destination) {
+    Copy-Item -Recurse -LiteralPath $memoryDirectory -Destination $Destination
+    $summary = @(Get-ChildItem -LiteralPath $Destination -File -Filter '*-summary.json')
+    if ($summary.Count -ne 1) { throw "Memory case does not contain exactly one summary: $Destination" }
+    return $summary[0]
+}
+
+function Assert-ValidatorRejects([string] $ChromeDirectory, [string] $MemoryCase, [string] $Reason, [string] $Case) {
+    try { Invoke-Validator $ChromeDirectory $MemoryCase | Out-Null; throw "The validator accepted $Case." }
+    catch { if ($_.Exception.Message -like 'The validator accepted*') { throw }; if ("$_" -notlike $Reason) { throw "The validator rejected $Case for the wrong reason: $_" } }
+}
+
+$schemaMemory = Join-Path $runDirectory 'memory-bad-schema'
+$schemaSummary = Copy-MemoryReports $schemaMemory
+$schemaEdited = Get-Content -LiteralPath $schemaSummary.FullName -Raw | ConvertFrom-Json
+$schemaEdited.schemaVersion = 99
+$schemaEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $schemaSummary.FullName -NoNewline -Encoding utf8
+Assert-ValidatorRejects $goodDirectory $schemaMemory '*schema version*' 'a bad memory schema version'
+
+$missingMemory = Join-Path $runDirectory 'memory-missing-report'
+$missingSummary = Copy-MemoryReports $missingMemory
+$missingEdited = Get-Content -LiteralPath $missingSummary.FullName -Raw | ConvertFrom-Json
+$missingEdited.reports = @($missingEdited.reports | Where-Object { $_.name -ne 'limit' })
+$missingEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $missingSummary.FullName -NoNewline -Encoding utf8
+Assert-ValidatorRejects $goodDirectory $missingMemory '*contains 20 reports*' 'a missing memory report'
+
+$duplicateMemory = Join-Path $runDirectory 'memory-duplicate-report'
+$duplicateSummary = Copy-MemoryReports $duplicateMemory
+$duplicateEdited = Get-Content -LiteralPath $duplicateSummary.FullName -Raw | ConvertFrom-Json
+$duplicateEdited.reports = @($duplicateEdited.reports) + @($duplicateEdited.reports[0])
+$duplicateEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $duplicateSummary.FullName -NoNewline -Encoding utf8
+Assert-ValidatorRejects $goodDirectory $duplicateMemory '*contains 22 reports*' 'a duplicated memory report'
+
+$unexpectedMemory = Join-Path $runDirectory 'memory-unexpected-report'
+$unexpectedSummary = Copy-MemoryReports $unexpectedMemory
+$unexpectedEdited = Get-Content -LiteralPath $unexpectedSummary.FullName -Raw | ConvertFrom-Json
+$unexpectedEdited.reports[0].name = 'nope'
+$unexpectedEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $unexpectedSummary.FullName -NoNewline -Encoding utf8
+Assert-ValidatorRejects $goodDirectory $unexpectedMemory '*unexpected or duplicate*' 'an unexpected memory report'
+
+$hashMemory = Join-Path $runDirectory 'memory-tampered-input-hash'
+$hashSummary = Copy-MemoryReports $hashMemory
+$hashEdited = Get-Content -LiteralPath $hashSummary.FullName -Raw | ConvertFrom-Json
+$successEntry = @($hashEdited.reports | Where-Object { $_.name -eq 'success' })[0]
+$flipped = $successEntry.report.inputSha256.Substring(0, 63) + '0'
+if ($flipped -ceq $successEntry.report.inputSha256) { $flipped = $successEntry.report.inputSha256.Substring(0, 63) + '1' }
+$successEntry.report.inputSha256 = $flipped
+$hashEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $hashSummary.FullName -NoNewline -Encoding utf8
+Assert-ValidatorRejects $goodDirectory $hashMemory '*input hash*' 'a tampered memory input hash'
+
+$stdoutMemory = Join-Path $runDirectory 'memory-missing-stdout'
+$stdoutSummary = Copy-MemoryReports $stdoutMemory
+$stdoutEdited = Get-Content -LiteralPath $stdoutSummary.FullName -Raw | ConvertFrom-Json
+Remove-Item -LiteralPath (Join-Path $stdoutMemory "$($stdoutEdited.runId)-success.stdout.txt")
+Assert-ValidatorRejects $goodDirectory $stdoutMemory '*did not retain*' 'a missing memory transcript'
+
+$outcomeMemory = Join-Path $runDirectory 'memory-flipped-outcome'
+$outcomeSummary = Copy-MemoryReports $outcomeMemory
+$outcomeEdited = Get-Content -LiteralPath $outcomeSummary.FullName -Raw | ConvertFrom-Json
+@($outcomeEdited.reports | Where-Object { $_.name -eq 'success' })[0].report.outcome = 'svg-error'
+$outcomeEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $outcomeSummary.FullName -NoNewline -Encoding utf8
+Assert-ValidatorRejects $goodDirectory $outcomeMemory '*outcome*' 'a flipped memory outcome'
+
+$schemaChrome = Join-Path $runDirectory 'chrome-bad-schema'
+New-Item -ItemType Directory -Force -Path $schemaChrome | Out-Null
+foreach ($name in $goodNames) { Copy-Item -LiteralPath (Join-Path $goodDirectory $name) -Destination (Join-Path $schemaChrome $name) }
+$chromeFingerprint = @(Get-ChildItem -LiteralPath $goodDirectory -File -Filter '*.json')[0]
+$chromeEdited = Get-Content -LiteralPath $chromeFingerprint.FullName -Raw | ConvertFrom-Json
+$chromeEdited.schemaVersion = 99
+$chromeEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $schemaChrome $chromeFingerprint.Name) -NoNewline -Encoding utf8
+Assert-ValidatorRejects $schemaChrome $memoryDirectory '*schema version*' 'a bad chrome schema version'
 Write-Output "Validator artifact scenarios passed: $runDirectory"
