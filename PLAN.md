@@ -432,7 +432,11 @@ synthetic triangle font. ShortRun results are recorded in `docs/BENCHMARKS.md`.
 **Optimization (`f6ad5e4`):** computed-style resolution short-circuits
 lower-precedence attribute reads at the shared choke point; full suite green proves identical
 semantics. Before/after ShortRun shows no resolved delta with byte-identical allocation
-traffic, so no speedup is claimed. Remaining:
+traffic, so no speedup is claimed. Digest bytes (`46b3943`): integrity hashing returns the 32-byte digest
+instead of a fresh hex string per verification, with manifest bytes parsed once at
+catalog load; comparisons, validation, cancellation and diagnostics unchanged. Full
+suite green including mismatch cases; micro-benchmarks show about 150 bytes saved per
+verification with hashing time within noise. Remaining:
 parse immediate-only inline values into typed
 ephemeral fields where lifetime permits, cache stable diagnostics, and represent a
 validated SHA-256 as a domain value rather than repeatedly formatting text. Any
