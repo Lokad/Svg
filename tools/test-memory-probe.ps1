@@ -171,6 +171,38 @@ $backgroundCancellationOutput = Join-Path $ResultsDirectory "$runId-background-c
 $backgroundCancelled = Invoke-Probe -Name 'background-cancellation' -InputPath $backgroundCancellationInput -Output $backgroundCancellationOutput -ExpectedExitCode 3 -ExtraArguments @('--background-color', '1,2,3,255', '--cancel-after-background-start-ms', '1')
 if ($backgroundCancelled['outcome'] -ne 'cancelled' -or $backgroundCancelled['cancellationMode'] -ne 'after-background-start' -or $backgroundCancelled['backgroundInitializationStarted'] -ne 'true' -or $backgroundCancelled['backgroundCancellationObserved'] -ne 'true' -or [long]$backgroundCancelled['conversionManagedAllocatedBytes'] -lt 64MB -or (Test-Path -LiteralPath $backgroundCancellationOutput)) { throw 'The opaque-background cancellation probe did not observe cancellation in the initialized background loop.' }
 
+$discoveryDeepGroupsInput = Join-Path $ResultsDirectory "$runId-font-discovery-deep-groups.svg"
+$deepGroupsInner = ("<g>" * 64) + '<rect width="1" height="1"/>' + ("</g>" * 64)
+[IO.File]::WriteAllText($discoveryDeepGroupsInput, '<svg xmlns="http://www.w3.org/2000/svg">' + $deepGroupsInner + "</svg>", [Text.UTF8Encoding]::new($false))
+$discoveryDeepGroupsOutput = Join-Path $ResultsDirectory "$runId-font-discovery-deep-groups.png"
+$deepGroups = Invoke-Probe -Name 'font-discovery-deep-groups' -InputPath $discoveryDeepGroupsInput -Output $discoveryDeepGroupsOutput -ExpectedExitCode 0 -ExtraArguments @('--mode', 'font-discovery')
+if ($deepGroups['outcome'] -ne 'success' -or $deepGroups['discoveryRequestCount'] -ne '0' -or $deepGroups['providerCalls'] -ne '0' -or $deepGroups['discoveryCurrentBytes'] -ne '0' -or [long]$deepGroups['discoveryPeakBytes'] -le 0 -or $deepGroups['discoveryDeniedReservations'] -ne '0' -or (Test-Path -LiteralPath $discoveryDeepGroupsOutput)) { throw 'The deep-group font-discovery probe did not report an empty request set with a released ledger and no output.' }
+
+$discoveryDeniedOutput = Join-Path $ResultsDirectory "$runId-font-discovery-deep-groups-denied.png"
+$deepGroupsDenied = Invoke-Probe -Name 'font-discovery-deep-groups-denied' -InputPath $discoveryDeepGroupsInput -Output $discoveryDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--mode', 'font-discovery', '--maximum-accounted-bytes', '600')
+if ($deepGroupsDenied['outcome'] -ne 'svg-error' -or $deepGroupsDenied['svgErrorCode'] -ne 'LimitExceeded' -or $deepGroupsDenied.ContainsKey('discoveryRequestCount') -or $deepGroupsDenied['providerCalls'] -ne '0' -or $deepGroupsDenied['discoveryCurrentBytes'] -ne '0' -or [long]$deepGroupsDenied['discoveryDeniedReservations'] -lt 1 -or (Test-Path -LiteralPath $discoveryDeniedOutput)) { throw 'The denied font-discovery probe did not fail with a ledger denial, no retained reservation, and no output.' }
+
+$discoveryEmptyTextsInput = Join-Path $ResultsDirectory "$runId-font-discovery-empty-texts.svg"
+$emptyTexts = (0..299 | ForEach-Object { "<text font-family=`"Empty$_`"/>" }) -join ''
+[IO.File]::WriteAllText($discoveryEmptyTextsInput, '<svg xmlns="http://www.w3.org/2000/svg">' + $emptyTexts + "</svg>", [Text.UTF8Encoding]::new($false))
+$discoveryEmptyTextsOutput = Join-Path $ResultsDirectory "$runId-font-discovery-empty-texts.png"
+$emptyTextsProbe = Invoke-Probe -Name 'font-discovery-empty-texts' -InputPath $discoveryEmptyTextsInput -Output $discoveryEmptyTextsOutput -ExpectedExitCode 0 -ExtraArguments @('--mode', 'font-discovery')
+if ($emptyTextsProbe['outcome'] -ne 'success' -or $emptyTextsProbe['discoveryRequestCount'] -ne '0' -or $emptyTextsProbe['providerCalls'] -ne '0' -or $emptyTextsProbe['discoveryCurrentBytes'] -ne '0' -or [long]$emptyTextsProbe['discoveryPeakBytes'] -le 0 -or $emptyTextsProbe['discoveryDeniedReservations'] -ne '0' -or (Test-Path -LiteralPath $discoveryEmptyTextsOutput)) { throw 'The empty-text font-discovery probe requested fonts, retained a reservation, or wrote output.' }
+
+$discoveryDistinctInput = Join-Path $ResultsDirectory "$runId-font-discovery-distinct-requests.svg"
+$distinctTexts = (0..9 | ForEach-Object { "<text font-family=`"Family$_`">x</text>" }) -join ''
+[IO.File]::WriteAllText($discoveryDistinctInput, '<svg xmlns="http://www.w3.org/2000/svg">' + $distinctTexts + "</svg>", [Text.UTF8Encoding]::new($false))
+$discoveryDistinctOutput = Join-Path $ResultsDirectory "$runId-font-discovery-distinct-requests.png"
+$distinctProbe = Invoke-Probe -Name 'font-discovery-distinct-requests' -InputPath $discoveryDistinctInput -Output $discoveryDistinctOutput -ExpectedExitCode 1 -ExtraArguments @('--mode', 'font-discovery')
+if ($distinctProbe['outcome'] -ne 'svg-error' -or $distinctProbe['svgErrorCode'] -ne 'UnsupportedFeature' -or $distinctProbe['discoveryRequestCount'] -ne '10' -or $distinctProbe['providerCalls'] -ne '10' -or $distinctProbe['discoveryCurrentBytes'] -ne '0' -or [long]$distinctProbe['discoveryPeakBytes'] -le 0 -or $distinctProbe['discoveryDeniedReservations'] -ne '0' -or (Test-Path -LiteralPath $discoveryDistinctOutput)) { throw 'The distinct-request font-discovery probe did not acquire each synthetic program, release its ledger, and reject the non-font bytes.' }
+
+$discoveryCancelledInput = Join-Path $ResultsDirectory "$runId-font-discovery-cancelled.svg"
+$cancelledStylesheet = New-Object string('x', 4MB)
+[IO.File]::WriteAllText($discoveryCancelledInput, '<svg xmlns="http://www.w3.org/2000/svg"><style>/*' + $cancelledStylesheet + '*/ rect { fill: red; }</style><rect width="1" height="1"/></svg>', [Text.UTF8Encoding]::new($false))
+$discoveryCancelledOutput = Join-Path $ResultsDirectory "$runId-font-discovery-cancelled.png"
+$discoveryCancelled = Invoke-Probe -Name 'font-discovery-cancelled' -InputPath $discoveryCancelledInput -Output $discoveryCancelledOutput -ExpectedExitCode 3 -ExtraArguments @('--mode', 'font-discovery', '--cancel-after-ms', '1')
+if ($discoveryCancelled['outcome'] -ne 'cancelled' -or $discoveryCancelled.ContainsKey('discoveryRequestCount') -or $discoveryCancelled['providerCalls'] -ne '0' -or $discoveryCancelled['discoveryCurrentBytes'] -ne '0' -or (Test-Path -LiteralPath $discoveryCancelledOutput)) { throw 'The cancelled font-discovery probe completed, acquired a program, retained a reservation, or wrote output.' }
+
 $fingerprints = @($reports | ForEach-Object { $_.report.operatingSystem + '|' + $_.report.processArchitecture + '|' + $_.report.runtimeFramework } | Sort-Object -Unique)
 if ($fingerprints.Count -ne 1) { throw 'The child-process reports do not share one runtime/platform fingerprint.' }
 $runtime = $reports[0].report
@@ -191,4 +223,4 @@ $summary = [ordered]@{
 $summaryPath = Join-Path $ResultsDirectory "$runId-summary.json"
 [IO.File]::WriteAllText($summaryPath, ($summary | ConvertTo-Json -Depth 6), [Text.UTF8Encoding]::new($false))
 
-Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text and attribute shapes. Summary retained at $summaryPath."
+Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text and attribute shapes and five fresh-process font-discovery ledger scenarios. Summary retained at $summaryPath."

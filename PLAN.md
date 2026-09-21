@@ -4,7 +4,7 @@ Reviewed 2026-09-21 against `a4ad68b391aee5696d2335dfbf98745b9a644ed6`.
 This refresh separates current defects from repaired reproductions and historical
 measurements. Finding IDs R01–R16 and execution stages S1–S7 remain stable; the
 source audit below adds R17–R20 without reopening a repaired reproduction. The
-settled revision includes the axis-specific `tspan` offset repair in `a4ad68b`. `7b92422` subsequently budgeted discovery control storage (R17 partial; child-process probe pending).
+settled revision includes the axis-specific `tspan` offset repair in `a4ad68b`. `7b92422` subsequently budgeted discovery control storage (R17 closed by the font-discovery probe below; R18 next).
 
 ## 1. Current assessment and verification
 
@@ -27,7 +27,7 @@ Keep `external/` optional, ignored and unreferenced.
 | Release solution build | Pass, zero warnings and errors. |
 | Tests | 608 `Lokad.Svg.Tests` + 6 `Lokad.Svg.FontProbe.Tests` (= 614 unit) and 83 visual-project cases pass, zero skipped. These are runner counts, not feature or independent fixture counts. |
 | Retained pixels | All 43 admitted references pass exact comparison. The corpus remains shape-only and mostly tiny: 41 fixtures have at most 64 pixels; the others are 20×10 and 300×150. No fresh browser captures. |
-| Resource probes | All 16 child-process scenarios pass, including three fresh-process measurements per XML shape. No supplied-font scenario or full text-pipeline ledger is present. |
+| Resource probes | All 21 child-process scenarios pass: 16 conversion/XML-reader scenarios including three fresh-process measurements per XML shape, plus five fresh-process font-discovery ledger scenarios (deep groups, denied budget, empty texts, distinct requests, cancellation) with provider-call and no-retained-reservation assertions. Pack programs stay synthetic non-font bytes; no ordinary-font scenario is present. |
 | Targeted S3/S4 tests | Synthetic tracked tests observe reservation after each simple/composite decoder phase, deny one byte before each observed temporary-array boundary, and prove cleanup. Repeated or post-disposal contour transfer now fails. Huge finite text, viewBox/device, coverage sample and winding-cross-product calculations fail as `LimitExceeded` at their owning boundary. |
 | Package/installed-consumer check | Fresh Release package and symbols pass archive checks plus an isolated restore/build/run of conversion, overlap, dimension-limit and font-pack catalog scenarios. |
 | Fresh shape benchmark | BenchmarkDotNet ShortRun (three measurements) reran the four rectangle output forms at 1/64/512 pixels; the new reports remain ignored. This does not measure font acquisition, hashing, layout, outlines or repeated/distinct glyphs. |
@@ -272,7 +272,7 @@ as entirely unimplemented work.
   constructor state. Audit remaining internal optional parameters when touching
   APIs; public reflection tests do not cover internal signatures.
 
-### R17 / P0 — Font discovery control storage is budgeted in-process (child-process probe pending)
+### R17 / P0 — Font discovery control storage is budgeted and probed fresh-process (closed)
 
 **Source inspection (at `a4ad68b`):** `SvgFontRequestDiscovery` created ordinary `List`,
 `HashSet` and five growing `Stack` instances plus one heap
@@ -283,9 +283,9 @@ advertised renderer-owned preparation budget neither reserves their capacity nor
 observes their growth. The discovery pass also had its own temporary budget, so its
 peak is not visible in the prepared document's later scene budget.
 
-**Repair (`7b92422`):** discovery now reserves ancestor, whitespace, eligibility, group and distinct-request storage from its own preparation budget with type-coupled capacity accounting, value-type stacks and a value candidate, plus in-process denial/cleanup/cancellation regressions. The child-process probe in the closure below is still pending, so R17 stays open.
+**Repair (`7b92422`):** discovery now reserves ancestor, whitespace, eligibility, group and distinct-request storage from its own preparation budget with type-coupled capacity accounting, value-type stacks and a value candidate, plus in-process denial/cleanup/cancellation regressions. The child-process probe below passes fresh-process across deep groups, denied budget, empty texts, distinct requests and cancellation with provider-call and no-retained-reservation assertions, closing R17.
 
-Closure (remaining): keep the BCL XML
+Closure: complete. Keep the BCL XML
 workspace allowance distinct; do not pretend it is exact allocation accounting.
 Add a child-process probe for deep groups, many empty text elements, many distinct
 requests and cancelled discovery, asserting provider calls, current/peak ledger
@@ -363,11 +363,11 @@ speculative pooling rewrite.
 | S2 — glyph sampling preflight | Complete for the current sampling model. | Preserve exact 517-unit vector and denial before bounds/coverage. This is not fidelity acceptance. |
 | S3 — complete decoder/storage ownership | Complete; focused phase observations, one-byte denial boundaries and cleanup tests pass. | Preserve reservations for simple/composite temporary and exact arrays, active recursion and retained contour transfer. Keep raw inspection helpers off budgeted rendering paths. |
 | S4 — malformed reader, matrices and numeric admission | Complete; malformed readers, matrices and numeric outline/device/coverage arithmetic have categorized regressions. | Preserve asymmetric/nested and malformed-cmap vectors, finite coordinate checks and exact admitted pixels. |
-| S5 — aggregate work and phase observations | Direct-text lowerer vectors complete; retained boundaries prove preparation stays charged through PNG compression and the repeated compressed-IDAT serialization pass. Discovery control collections are now budgeted in their own preparation budget with in-process ledger/cancellation regressions (`7b92422`); the child-process discovery probe is still pending. | Preserve 64/63 parser evidence, one-hash preparation and no-counter cancellation. Add the child-process discovery probe (deep groups / empty texts / distinct requests / cancellation) with provider-call and ledger assertions before claiming an end-to-end prepared-operation bound. |
+| S5 — aggregate work and phase observations | Direct-text lowerer vectors complete; retained boundaries prove preparation stays charged through PNG compression and the repeated compressed-IDAT serialization pass. Discovery control collections are now budgeted in their own preparation budget with in-process ledger/cancellation regressions (`7b92422`) plus a passing fresh-process font-discovery probe covering provider calls, ledger values and no retained reservation. | Preserve 64/63 parser evidence, one-hash preparation, no-counter cancellation and the font-discovery probe before claiming an end-to-end prepared-operation bound. |
 | S6 — coherent preparation, lifetime and documentation | Stylesheet support, repeated snapshot retention, bounded acquisition diagnostics and root/container/text eligibility now have regressions. A single-use prepared document owns its verified snapshot, retained admitted scene and shared preparation/render work through all six output forms; direct XML whitespace normalizes under the raw character cap, CSS `white-space: normal`/`pre` and scalar `letter-spacing` resolve through the direct-text cascade and inherited containers, a strictly validated version-zero horizontal format-zero legacy `kern` subtable or one DFLT-script `kern` feature using an unfiltered GPOS PairPos format-1 first-glyph X-advance lookup adjusts adjacent direct-run glyphs, and nested spans concatenate under the remaining node/depth/attribute limits while inheriting whitespace and letter spacing, carrying XML whitespace, scalar spacing, scalar presentation `dx`/`dy` before their first retained span-descendant glyph, an inline style containing only admitted style values, or an `id`/`class` selected by an admitted stylesheet rule containing only those style values. Other CSS values, other GPOS, span paint/font styling and span x/y or positioning lists remain incomplete. | Establish the shared discovery/lowering eligibility contract from R18 before adding more text syntax; then retain only useful admitted style state without weakening raw snapshot concurrency. |
 | S7 — ordinary fonts and intended-font oracle | Asset permission/access resolved; an opt-in local manifest/directory or explicit HTTP source host has public synthetic local/stdin/HTTP/lazy/retry smoke and focused nonseekable-byte/growth-limit/concurrent-cache/cache-cap/cancellation-recovery tests, while inventory and oracle acceptance remain pending. | Inventory selected faces and semantics, then compare the same verified programs with browser metrics/pixels and promote reproducible defects into public synthetic regressions. Follow section 6 exactly. |
 
-R17 is partially repaired (`7b92422` budgets containers with in-process regressions; child-process probe pending); close the probe, then do R18 before adding text semantics. Private
+R17 is closed (budgeted containers plus fresh-process probe); R18 is the next buildable repair before adding text semantics. Private
 inventory/oracle investigation can start now, but text admission requires the
 relevant S5–S6 repairs and S7 evidence. No new source permission is needed to
 start it.
