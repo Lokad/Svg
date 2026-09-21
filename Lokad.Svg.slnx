@@ -7,6 +7,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Lokad.Svg.Tests/Lokad.Svg.Tests.csproj" />
+    <Project Path="tests/Lokad.Svg.FontProbe.Tests/Lokad.Svg.FontProbe.Tests.csproj" />
     <Project Path="tests/Lokad.Svg.VisualTests/Lokad.Svg.VisualTests.csproj" />
   </Folder>
   <Folder Name="/tools/">

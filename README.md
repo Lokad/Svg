@@ -82,7 +82,9 @@ configuration. Its [tool documentation](tools/Lokad.Svg.FontProbe/README.md)
 describes its bounded local byte source and private-artifact handling. Its public
 synthetic smoke check needs only a Release build; it covers local source laziness,
 loopback HTTP manifest acquisition and one transient program-read retry, and writes
-caller-selected results (use the ignored `artifacts/` tree):
+caller-selected results (use the ignored `artifacts/` tree). The focused test
+project also verifies HTTP-source concurrent coalescing/cache reuse and recovery
+after cancellation:
 
 ```powershell
 tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe-smoke

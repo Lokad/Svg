@@ -34,8 +34,8 @@ internal static class Program
                 Uri sourceRoot = NormalizeSourceUri(options.SourceUri ?? throw new HostSourceException());
                 ValidatePackId(options.PackId);
                 Uri packRoot = new(sourceRoot, options.PackId + "/");
-                manifest = await DownloadHttpAsync(httpClient ?? throw new HostSourceException(), new Uri(packRoot, "manifest.json"), MaximumManifestBytes, CancellationToken.None).ConfigureAwait(false);
-                provider = new HttpFontProgramSourceProvider(httpClient, packRoot);
+                manifest = await DownloadHttpAsync(httpClient ?? throw new HostSourceException(), new Uri(packRoot, "manifest.json"), MaximumManifestBytes, MaximumDownloadAttempts, CancellationToken.None).ConfigureAwait(false);
+                provider = new HttpFontProgramSourceProvider(httpClient, packRoot, MaximumProgramBytes, MaximumCachedProgramBytes, MaximumDownloadAttempts);
             }
             SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(manifest, options.PackId);
 
@@ -179,7 +179,7 @@ internal static class Program
         if (string.IsNullOrWhiteSpace(packId) || packId is "." or ".." || packId.IndexOfAny(['/', '\\', ':', '?', '#']) >= 0) throw new HostSourceException();
     }
 
-    private static async ValueTask<byte[]> DownloadHttpAsync(HttpClient client, Uri uri, long maximumBytes, CancellationToken cancellationToken)
+    private static async ValueTask<byte[]> DownloadHttpAsync(HttpClient client, Uri uri, long maximumBytes, int maximumAttempts, CancellationToken cancellationToken)
     {
         for (int attempt = 1; ; attempt++)
         {
@@ -197,7 +197,7 @@ internal static class Program
             }
             catch (Exception exception) when (exception is HttpRequestException or IOException or InvalidOperationException or TaskCanceledException)
             {
-                if (attempt == MaximumDownloadAttempts) throw new HostSourceException();
+                if (attempt == maximumAttempts) throw new HostSourceException();
             }
         }
     }
@@ -306,21 +306,30 @@ internal static class Program
         }
     }
 
-    private sealed class HttpFontProgramSourceProvider : IProbeFontProgramSourceProvider
+    internal sealed class HttpFontProgramSourceProvider : IProbeFontProgramSourceProvider
     {
         private readonly HttpClient _httpClient;
         private readonly Uri _packRoot;
+        private readonly long _maximumProgramBytes;
+        private readonly long _maximumCachedProgramBytes;
+        private readonly int _maximumAttempts;
         private readonly object _sync = new();
         private readonly Dictionary<string, HttpFontProgramSource> _sources = new(StringComparer.Ordinal);
         private long _cachedProgramBytes;
         private int _requestedProgramCount;
 
-        internal HttpFontProgramSourceProvider(HttpClient httpClient, Uri packRoot)
+        internal HttpFontProgramSourceProvider(HttpClient httpClient, Uri packRoot, long maximumProgramBytes, long maximumCachedProgramBytes, int maximumAttempts)
         {
             ArgumentNullException.ThrowIfNull(httpClient);
             ArgumentNullException.ThrowIfNull(packRoot);
+            if (maximumProgramBytes <= 0) throw new ArgumentOutOfRangeException(nameof(maximumProgramBytes));
+            if (maximumCachedProgramBytes <= 0) throw new ArgumentOutOfRangeException(nameof(maximumCachedProgramBytes));
+            if (maximumAttempts <= 0) throw new ArgumentOutOfRangeException(nameof(maximumAttempts));
             _httpClient = httpClient;
             _packRoot = packRoot;
+            _maximumProgramBytes = maximumProgramBytes;
+            _maximumCachedProgramBytes = maximumCachedProgramBytes;
+            _maximumAttempts = maximumAttempts;
         }
 
         public int RequestedProgramCount => Volatile.Read(ref _requestedProgramCount);
@@ -334,7 +343,7 @@ internal static class Program
             {
                 if (!_sources.TryGetValue(file.RelativePath, out HttpFontProgramSource? source))
                 {
-                    source = new HttpFontProgramSource(_httpClient, new Uri(_packRoot, file.RelativePath), Math.Min(file.ByteSize, MaximumProgramBytes), this);
+                    source = new HttpFontProgramSource(_httpClient, new Uri(_packRoot, file.RelativePath), Math.Min(file.ByteSize, _maximumProgramBytes), _maximumAttempts, this);
                     _sources.Add(file.RelativePath, source);
                 }
                 return ValueTask.FromResult<ISvgFontProgramSource?>(source);
@@ -346,13 +355,13 @@ internal static class Program
             while (true)
             {
                 long current = Volatile.Read(ref _cachedProgramBytes);
-                if (byteCount > MaximumCachedProgramBytes - current) return false;
+                if (byteCount > _maximumCachedProgramBytes - current) return false;
                 if (Interlocked.CompareExchange(ref _cachedProgramBytes, current + byteCount, current) == current) return true;
             }
         }
     }
 
-    private sealed class HttpFontProgramSource(HttpClient httpClient, Uri uri, long maximumBytes, HttpFontProgramSourceProvider provider) : ISvgFontProgramSource
+    private sealed class HttpFontProgramSource(HttpClient httpClient, Uri uri, long maximumBytes, int maximumAttempts, HttpFontProgramSourceProvider provider) : ISvgFontProgramSource
     {
         private readonly SemaphoreSlim _gate = new(1, 1);
         private ReadOnlyMemory<byte>? _cachedBytes;
@@ -367,7 +376,7 @@ internal static class Program
             {
                 if (_cachedBytes is ReadOnlyMemory<byte> rechecked) return rechecked;
                 byte[] bytes;
-                try { bytes = await DownloadHttpAsync(httpClient, uri, maximumBytes, cancellationToken).ConfigureAwait(false); }
+                try { bytes = await DownloadHttpAsync(httpClient, uri, maximumBytes, maximumAttempts, cancellationToken).ConfigureAwait(false); }
                 catch (HostSourceException) { throw new SvgException(SvgErrorCode.UnresolvedResource, "The HTTP font program could not be read."); }
                 if (provider.TryReserveCache(bytes.Length)) _cachedBytes = bytes;
                 return bytes;

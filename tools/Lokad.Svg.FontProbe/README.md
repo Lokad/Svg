@@ -30,6 +30,9 @@ HTTP requests retry transient transport failures at most three times. Successful
 HTTP programs coalesce concurrent reads and remain in a shared cache capped at
 32 MiB; a program that cannot fit remains usable for its immediate consumer but
 is not retained by that cache.
+The focused `Lokad.Svg.FontProbe.Tests` project covers concurrent coalescing/cache
+reuse, cache-cap bypass, transient retry and cancellation recovery with synthetic
+transport.
 The host writes PNG output through `SvgPreparedDocument`, so discovery,
 verification, scene preparation, rasterization and encoding share its limits.
 The supplied output path is created or truncated; the local caller owns cleanup
