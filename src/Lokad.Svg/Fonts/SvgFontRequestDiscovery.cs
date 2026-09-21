@@ -30,7 +30,6 @@ internal static class SvgFontRequestDiscovery
         var seen = new HashSet<TextRequestKey>(TextRequestKeyComparer.Instance);
         var inherited = new Stack<TextStyle>();
         var directText = new Stack<TextRequestCandidate?>();
-        var directTextCandidateOwners = new Stack<bool>();
         var textEligibleChildren = new Stack<bool>();
         var elementGroups = new Stack<bool>();
         RenderBudget styleBudget = new(limits.MaximumAccountedBytes);
@@ -51,6 +50,8 @@ internal static class SvgFontRequestDiscovery
             bool hasUnsupportedContent = false;
             int nodeCount = 0;
             int inertDepth = -1;
+            int groupDepth = 0;
+            TextRequestCandidate? activeDirectTextCandidate = null;
             while (reader.Read())
             {
                 workCounter.Consume(cancellationToken);
@@ -68,19 +69,9 @@ internal static class SvgFontRequestDiscovery
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     nodeCount++;
                     bool isSvgElement = reader.NamespaceURI == SvgNamespace;
-                    TextRequestCandidate? activeDirectTextCandidate = null;
-                    foreach (TextRequestCandidate? ancestorCandidate in directText)
-                    {
-                        if (ancestorCandidate is null) continue;
-                        activeDirectTextCandidate = ancestorCandidate;
-                        break;
-                    }
                     bool insideDirectText = activeDirectTextCandidate is not null;
                     bool attributeFreeDirectTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && !reader.HasAttributes;
-                    if (!attributeFreeDirectTextSpan)
-                    {
-                        foreach (TextRequestCandidate? ancestorCandidate in directText) if (ancestorCandidate is not null) ancestorCandidate.HasChildElement = true;
-                    }
+                    if (!attributeFreeDirectTextSpan && activeDirectTextCandidate is not null) activeDirectTextCandidate.HasChildElement = true;
                     bool parentAllowsText = textEligibleChildren.Count == 0 || textEligibleChildren.Peek();
                     bool rootElement = reader.Depth == rootDepth;
                     TextStyle style;
@@ -91,7 +82,7 @@ internal static class SvgFontRequestDiscovery
                     }
                     else style = inherited.Peek();
                     bool directChild = reader.Depth == rootDepth + 1;
-                    bool hasGroupAncestor = elementGroups.Any(static group => group);
+                    bool hasGroupAncestor = groupDepth != 0;
                     bool parentIsGroup = elementGroups.Count > 0 && elementGroups.Peek();
                     bool rootStyleElement = isSvgElement && reader.LocalName == "style" && directChild;
                     if (rootStyleElement)
@@ -138,23 +129,22 @@ internal static class SvgFontRequestDiscovery
                         whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader);
                     }
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
-                    TextRequestCandidate? candidate = attributeFreeDirectTextSpan
-                        ? activeDirectTextCandidate
-                        : !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.HasFill && style.Text.Family is string family
+                    TextRequestCandidate? candidate = !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == AxisTransform.Identity && style.IsDisplayed && style.IsVisible && style.HasFill && style.Text.Family is string family
                             ? new TextRequestCandidate(new SvgFontFaceRequest(family, style.Text.Weight, style.Text.Italic), whitespaceMode)
                             : null;
-                    bool ownsDirectTextCandidate = !attributeFreeDirectTextSpan;
                     if (reader.IsEmptyElement)
                     {
-                        if (ownsDirectTextCandidate) AddCandidate(candidate, requests, seen);
+                        if (candidate is not null) AddCandidate(candidate, requests, seen);
                     }
                     else
                     {
                         inherited.Push(style);
                         directText.Push(candidate);
-                        directTextCandidateOwners.Push(ownsDirectTextCandidate);
                         textEligibleChildren.Push(childAllowsText);
-                        elementGroups.Push(isSvgElement && reader.LocalName == "g");
+                        bool group = isSvgElement && reader.LocalName == "g";
+                        elementGroups.Push(group);
+                        if (group) groupDepth++;
+                        if (candidate is not null) activeDirectTextCandidate = candidate;
                     }
                     if (isSvgElement && parentAllowsText && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "text")) sawStyleableNode = true;
                 }
@@ -165,16 +155,20 @@ internal static class SvgFontRequestDiscovery
                     {
                         inherited.Pop();
                         TextRequestCandidate? candidate = directText.Pop();
-                        if (directTextCandidateOwners.Pop()) AddCandidate(candidate, requests, seen);
+                        if (candidate is not null)
+                        {
+                            AddCandidate(candidate, requests, seen);
+                            activeDirectTextCandidate = null;
+                        }
                         textEligibleChildren.Pop();
-                        elementGroups.Pop();
+                        if (elementGroups.Pop()) groupDepth--;
                     }
                 }
                 else if (reader.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
                 {
-                    if (directText.TryPeek(out TextRequestCandidate? candidate) && candidate is not null)
+                    if (activeDirectTextCandidate is not null)
                     {
-                        candidate.HasRenderableTextContent |= HasRenderableText(reader, GetTextChunk(), candidate.WhitespaceMode, workCounter, cancellationToken);
+                        activeDirectTextCandidate.HasRenderableTextContent |= HasRenderableText(reader, GetTextChunk(), activeDirectTextCandidate.WhitespaceMode, workCounter, cancellationToken);
                     }
                 }
             }

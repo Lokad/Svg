@@ -27,6 +27,16 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
+    public void Restores_the_active_direct_text_candidate_after_nested_attribute_free_spans()
+    {
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='First'><tspan><tspan>one</tspan></tspan></text><text font-family='Second'>two</text></svg>"u8.ToArray(), CancellationToken.None);
+
+        Assert.Collection(requests,
+            first => Assert.Equal("First", first.Family),
+            second => Assert.Equal("Second", second.Family));
+    }
+
+    [Fact]
     public void Does_not_discover_fonts_from_text_with_unrenderable_span_children()
     {
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("""
