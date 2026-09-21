@@ -67,6 +67,51 @@ public sealed class SvgFontPackCatalogTests
     }
 
     [Fact]
+    public void Resolves_four_real_styles_to_their_faces()
+    {
+        SvgFontPackCatalog catalog = Parse("""
+            { "packId": "test-pack", "files": [
+              { "relativePath": "files/regular.ttf", "byteSize": 1, "sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" },
+              { "relativePath": "files/bold.ttf", "byteSize": 2, "sha256": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" },
+              { "relativePath": "files/italic.ttf", "byteSize": 3, "sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" },
+              { "relativePath": "files/bolditalic.ttf", "byteSize": 4, "sha256": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" }],
+              "families": [
+              { "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false },
+              { "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/bold.ttf", "weight": 700, "italic": false },
+              { "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/italic.ttf", "weight": 400, "italic": true },
+              { "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/bolditalic.ttf", "weight": 700, "italic": true }],
+              "fallbacks": [] }
+            """);
+
+        Assert.Equal("files/regular.ttf", catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)).Face.File.RelativePath);
+        Assert.Equal("files/bold.ttf", catalog.Resolve(new SvgFontFaceRequest("Example", 700, false)).Face.File.RelativePath);
+        Assert.Equal("files/italic.ttf", catalog.Resolve(new SvgFontFaceRequest("Example", 400, true)).Face.File.RelativePath);
+        Assert.Equal("files/bolditalic.ttf", catalog.Resolve(new SvgFontFaceRequest("Example", 700, true)).Face.File.RelativePath);
+    }
+
+    [Fact]
+    public void Admits_collection_faces_without_poisoning_selection()
+    {
+        SvgFontPackCatalog catalog = Parse("""
+            { "packId": "test-pack", "files": [
+              { "relativePath": "files/regular.ttf", "byteSize": 1, "sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" },
+              { "relativePath": "files/collection.ttc", "byteSize": 2, "sha256": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" }],
+              "families": [
+              { "requestedFamily": "Example", "resolvedFamily": "Example", "relativeFontFile": "files/regular.ttf", "weight": 400, "italic": false },
+              { "requestedFamily": "Example Collection", "resolvedFamily": "Example Collection", "relativeFontFile": "files/collection.ttc", "weight": 400, "italic": false, "faceIndex": 1 }],
+              "fallbacks": [] }
+            """);
+
+        SvgFontPackResolution standalone = catalog.Resolve(new SvgFontFaceRequest("Example", 400, false));
+        SvgFontPackResolution collection = catalog.Resolve(new SvgFontFaceRequest("Example Collection", 400, false));
+
+        Assert.Equal(2, catalog.Faces.Count);
+        Assert.Equal(0, standalone.Face.FaceIndex);
+        Assert.Equal("files/regular.ttf", standalone.Face.File.RelativePath);
+        Assert.Equal(1, collection.Face.FaceIndex);
+        Assert.Equal("files/collection.ttc", collection.Face.File.RelativePath);
+    }
+    [Fact]
     public void Resolves_configured_fallback_before_the_deterministic_final_face()
     {
         SvgFontPackCatalog catalog = Parse(Manifest(

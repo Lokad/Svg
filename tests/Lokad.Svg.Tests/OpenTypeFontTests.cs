@@ -1213,6 +1213,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Snapshot_rejects_a_selected_collection_face_before_acquisition()
+    {
+        byte[] font = CreateTriangleFont();
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/collection.ttc\", \"byteSize\": " + font.Length + ", \"sha256\": \"" + Convert.ToHexString(SHA256.HashData(font)) + "\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/collection.ttc\", \"weight\": 400, \"italic\": false, \"faceIndex\": 1 }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        SvgFontProgramResolution resolution = catalog.Bind(catalog.Resolve(new SvgFontFaceRequest("Example", 400, false)), new SvgMemoryFontProgramSource("caller-font", font));
+
+        Assert.Equal(1, resolution.Resolution.Face.FaceIndex);
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync([resolution], CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+    [Fact]
     public async Task Request_based_snapshot_reports_a_bounded_missing_source_diagnostic()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
