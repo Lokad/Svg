@@ -36,6 +36,26 @@ public sealed class PngEncoderTests
     }
 
     [Fact]
+    public async Task Serialization_charges_the_remaining_work_limit_for_every_output_form()
+    {
+        byte[] pixels = [1, 2, 3, 4];
+        byte[] expected = PngEncoder.Encode(1, 1, pixels, CancellationToken.None);
+        long workBeforeIdatSerialization = 1L + GetIdatPayloadLength(expected);
+
+        SvgException owned = Assert.Throws<SvgException>(() => PngEncoder.Encode(1, 1, pixels, new RenderBudget(long.MaxValue), 1_024, 0, workBeforeIdatSerialization, CancellationToken.None));
+        SvgException callerMemory = Assert.Throws<SvgException>(() => PngEncoder.EncodeInto(1, 1, pixels, new byte[expected.Length], new RenderBudget(long.MaxValue), 1_024, 0, workBeforeIdatSerialization, CancellationToken.None));
+        using MemoryStream synchronousDestination = new();
+        SvgException synchronousStream = Assert.Throws<SvgException>(() => PngEncoder.EncodeTo(1, 1, pixels, synchronousDestination, new RenderBudget(long.MaxValue), 1_024, 0, workBeforeIdatSerialization, CancellationToken.None));
+        using MemoryStream asynchronousDestination = new();
+        SvgException asynchronousStream = await Assert.ThrowsAsync<SvgException>(async () => await PngEncoder.EncodeToAsync(1, 1, pixels, asynchronousDestination, new RenderBudget(long.MaxValue), 1_024, 0, workBeforeIdatSerialization, CancellationToken.None));
+
+        Assert.Contains("PNG serialization", owned.Message);
+        Assert.Contains("PNG serialization", callerMemory.Message);
+        Assert.Contains("PNG serialization", synchronousStream.Message);
+        Assert.Contains("PNG serialization", asynchronousStream.Message);
+    }
+
+    [Fact]
     public async Task Streaming_compression_respects_the_remaining_conversion_work_limit()
     {
         using MemoryStream synchronousDestination = new();
@@ -210,6 +230,19 @@ public sealed class PngEncoderTests
         }
         Assert.Equal(png.Length, offset);
         return idatChunkCount;
+    }
+
+    private static int GetIdatPayloadLength(byte[] png)
+    {
+        int payloadLength = 0;
+        int offset = 8;
+        while (offset < png.Length)
+        {
+            int dataLength = checked((int)BinaryPrimitives.ReadUInt32BigEndian(png.AsSpan(offset)));
+            if (png.AsSpan(offset + 4, 4).SequenceEqual("IDAT"u8)) payloadLength += dataLength;
+            offset += checked(dataLength + 12);
+        }
+        return payloadLength;
     }
 
     private sealed class BoundedWriteStream : Stream
