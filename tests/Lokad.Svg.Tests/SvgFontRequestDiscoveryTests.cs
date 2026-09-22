@@ -54,6 +54,14 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
+    public void Discovers_text_with_ui_behavior_attributes()
+    {
+        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' pointer-events='none' cursor='pointer'>x</text></svg>"u8.ToArray(), CancellationToken.None));
+
+        Assert.Equal("Example", request.Family);
+    }
+
+    [Fact]
     public void Discovers_text_on_versioned_roots()
     {
         SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg' version='1.1' baseProfile='tiny'><text font-family='Example'>x</text></svg>"u8.ToArray(), CancellationToken.None));
