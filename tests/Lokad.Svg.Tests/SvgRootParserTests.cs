@@ -700,6 +700,47 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_evenodd_counter_path_to_bands_with_hole()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M8,8 H56 V56 H8 Z M20,20 V44 H44 V20 Z' fill-rule='evenodd' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgRectangle(8, 8, 48, 12, new SvgColor(255, 0, 0, 255), true, null), rectangle),
+            rectangle => Assert.Equal(new SvgRectangle(8, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
+            rectangle => Assert.Equal(new SvgRectangle(44, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
+            rectangle => Assert.Equal(new SvgRectangle(8, 44, 48, 12, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+    }
+
+    [Fact]
+    public void Lowers_same_winding_nonzero_counter_path_to_solid_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M8,8 H56 V56 H8 Z M20,20 H44 V44 H20 Z' fill-rule='nonzero' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            rectangle => Assert.Equal(new SvgRectangle(8, 8, 48, 12, new SvgColor(255, 0, 0, 255), true, null), rectangle),
+            rectangle => Assert.Equal(new SvgRectangle(8, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
+            rectangle => Assert.Equal(new SvgRectangle(20, 20, 24, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
+            rectangle => Assert.Equal(new SvgRectangle(44, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
+            rectangle => Assert.Equal(new SvgRectangle(8, 44, 48, 12, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+    }
+
+    [Fact]
+    public void Rejects_intersecting_path_contours()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M2,2 H6 V6 H2 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_unclosed_path_subpath()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Enforces_the_path_command_limit_before_expanding_polygon_storage()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 1, 1, 100);

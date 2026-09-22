@@ -2,36 +2,53 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
+/// <summary>Retains one vertical orthogonal edge crossing with its nonzero winding contribution.</summary>
+internal readonly record struct SvgOrthogonalEdgeIntersection(int X, int WindingDelta) : IComparable<SvgOrthogonalEdgeIntersection>
+{
+    public int CompareTo(SvgOrthogonalEdgeIntersection other)
+    {
+        int order = X.CompareTo(other.X);
+        return order != 0 ? order : WindingDelta.CompareTo(other.WindingDelta);
+    }
+}
+
 /// <summary>Owns temporary orthogonal-contour lowering storage until retained rectangle bands detach.</summary>
 internal ref struct SvgOrthogonalGeometryLowering
 {
     private readonly BudgetedParserList<SvgPoint> _points;
+    private readonly BudgetedParserList<int> _contourEnds;
     private readonly string _elementName;
     private readonly bool _isPath;
+    private readonly bool _isEvenOdd;
     private readonly int _maximumGeometryElements;
     private readonly ParserWorkCounter _workCounter;
     private readonly CancellationToken _cancellationToken;
     private readonly BudgetedParserList<int> _boundaries;
-    private readonly BudgetedParserList<int> _intersections;
+    private readonly BudgetedParserList<SvgOrthogonalEdgeIntersection> _intersections;
     private readonly BudgetedParserList<SvgGeometry> _geometries;
     private int _geometryElementCount;
 
-    internal SvgOrthogonalGeometryLowering(BudgetedParserList<SvgPoint> points, string elementName, bool isPath, bool validateContour, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal SvgOrthogonalGeometryLowering(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, bool isPath, bool isEvenOdd, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(contourEnds);
+        ArgumentNullException.ThrowIfNull(budget);
+        ArgumentNullException.ThrowIfNull(workCounter);
         _points = points;
+        _contourEnds = contourEnds;
         _elementName = elementName;
         _isPath = isPath;
+        _isEvenOdd = isEvenOdd;
         _maximumGeometryElements = maximumGeometryElements;
         _workCounter = workCounter;
         _cancellationToken = cancellationToken;
-        if (validateContour) ValidateSimpleContour(points, elementName, workCounter, cancellationToken);
         _geometryElementCount = points.Count;
         _boundaries = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
         try
         {
             for (int pointIndex = 0; pointIndex < points.Count; pointIndex++) _boundaries.Add(points[pointIndex].Y);
             _boundaries.Sort(_workCounter, _cancellationToken);
-            _intersections = new BudgetedParserList<int>(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+            _intersections = new BudgetedParserList<SvgOrthogonalEdgeIntersection>(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             try
             {
                 _geometries = new BudgetedParserList<SvgGeometry>(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
@@ -58,23 +75,61 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (boundaryIndex == _boundaries.Count) break;
             int bottom = _boundaries[boundaryIndex];
             _intersections.Clear();
-            for (int pointIndex = 0; pointIndex < _points.Count; pointIndex++)
+            int contourStart = 0;
+            for (int contourIndex = 0; contourIndex < _contourEnds.Count; contourIndex++)
             {
-                _workCounter.Consume(_cancellationToken);
-                SvgPoint start = _points[pointIndex]; SvgPoint end = _points[(pointIndex + 1) % _points.Count];
-                if (start.X == end.X && Math.Min(start.Y, end.Y) <= top && Math.Max(start.Y, end.Y) >= bottom) _intersections.Add(start.X);
+                int contourEnd = _contourEnds[contourIndex];
+                for (int pointIndex = contourStart; pointIndex < contourEnd; pointIndex++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    SvgPoint start = _points[pointIndex]; SvgPoint end = pointIndex + 1 < contourEnd ? _points[pointIndex + 1] : _points[contourStart];
+                    if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
+                    if (start.X != end.X) continue;
+                    if (Math.Min(start.Y, end.Y) <= top && Math.Max(start.Y, end.Y) >= bottom) _intersections.Add(new SvgOrthogonalEdgeIntersection(start.X, end.Y > start.Y ? 1 : -1));
+                }
+                contourStart = contourEnd;
             }
             _intersections.Sort(_workCounter, _cancellationToken);
-            if (!_isPath && _intersections.Count == 0) continue;
-            if (_intersections.Count % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
-            for (int intersectionIndex = 0; intersectionIndex < _intersections.Count; intersectionIndex += 2)
+            if (_intersections.Count == 0) continue;
+            if (_isEvenOdd)
             {
-                int left = _intersections[intersectionIndex]; int right = _intersections[intersectionIndex + 1];
-                if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
-                if (_geometryElementCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path rectangle-band count exceeds the configured path-command limit." : _elementName + " rectangle-band count exceeds the configured path-command limit.");
-                SvgRectangle band = transform.ApplyOrthogonalRectangle(left, top, (long)right - left, (long)bottom - top, color, hasFill);
-                _geometries.Add(SvgGeometry.FromOrthogonalBand(frame is null ? band : frame.Value.ClipShifted(band)));
-                _geometryElementCount++;
+                if (_intersections.Count % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
+                for (int intersectionIndex = 0; intersectionIndex < _intersections.Count; intersectionIndex += 2)
+                {
+                    int left = _intersections[intersectionIndex].X; int right = _intersections[intersectionIndex + 1].X;
+                    if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
+                    if (_geometryElementCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path rectangle-band count exceeds the configured path-command limit." : _elementName + " rectangle-band count exceeds the configured path-command limit.");
+                    SvgRectangle band = transform.ApplyOrthogonalRectangle(left, top, (long)right - left, (long)bottom - top, color, hasFill);
+                    _geometries.Add(SvgGeometry.FromOrthogonalBand(frame is null ? band : frame.Value.ClipShifted(band)));
+                    _geometryElementCount++;
+                }
+            }
+            else
+            {
+                int winding = 0;
+                int intersectionIndex = 0;
+                while (intersectionIndex < _intersections.Count)
+                {
+                    int left = _intersections[intersectionIndex].X;
+                    int groupDelta = 0;
+                    while (intersectionIndex < _intersections.Count && _intersections[intersectionIndex].X == left)
+                    {
+                        groupDelta += _intersections[intersectionIndex].WindingDelta;
+                        intersectionIndex++;
+                    }
+                    winding += groupDelta;
+                    if (intersectionIndex >= _intersections.Count) break;
+                    int right = _intersections[intersectionIndex].X;
+                    if (winding != 0)
+                    {
+                        if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
+                        if (_geometryElementCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path rectangle-band count exceeds the configured path-command limit." : _elementName + " rectangle-band count exceeds the configured path-command limit.");
+                        SvgRectangle band = transform.ApplyOrthogonalRectangle(left, top, (long)right - left, (long)bottom - top, color, hasFill);
+                        _geometries.Add(SvgGeometry.FromOrthogonalBand(frame is null ? band : frame.Value.ClipShifted(band)));
+                        _geometryElementCount++;
+                    }
+                }
+                if (winding != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
             }
         }
         return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
@@ -98,20 +153,87 @@ internal ref struct SvgOrthogonalGeometryLowering
                 workCounter.Consume(cancellationToken);
                 SvgPoint secondStart = points[secondIndex]; SvgPoint secondEnd = points[(secondIndex + 1) % points.Count];
                 bool secondHorizontal = secondStart.Y == secondEnd.Y;
-                bool intersects = firstHorizontal == secondHorizontal
-                    ? firstHorizontal
-                        ? firstStart.Y == secondStart.Y && Math.Max(Math.Min(firstStart.X, firstEnd.X), Math.Min(secondStart.X, secondEnd.X)) <= Math.Min(Math.Max(firstStart.X, firstEnd.X), Math.Max(secondStart.X, secondEnd.X))
-                        : firstStart.X == secondStart.X && Math.Max(Math.Min(firstStart.Y, firstEnd.Y), Math.Min(secondStart.Y, secondEnd.Y)) <= Math.Min(Math.Max(firstStart.Y, firstEnd.Y), Math.Max(secondStart.Y, secondEnd.Y))
-                    : firstHorizontal
-                        ? Math.Min(firstStart.X, firstEnd.X) <= secondStart.X && secondStart.X <= Math.Max(firstStart.X, firstEnd.X) && Math.Min(secondStart.Y, secondEnd.Y) <= firstStart.Y && firstStart.Y <= Math.Max(secondStart.Y, secondEnd.Y)
-                        : Math.Min(secondStart.X, secondEnd.X) <= firstStart.X && firstStart.X <= Math.Max(secondStart.X, secondEnd.X) && Math.Min(firstStart.Y, firstEnd.Y) <= secondStart.Y && secondStart.Y <= Math.Max(firstStart.Y, firstEnd.Y);
-                if (!intersects) continue;
+                if (!EdgesIntersect(firstStart, firstEnd, firstHorizontal, secondStart, secondEnd, secondHorizontal)) continue;
                 bool adjacent = secondIndex == firstIndex + 1 || (firstIndex == 0 && secondIndex == points.Count - 1);
                 SvgPoint shared = secondIndex == firstIndex + 1 ? firstEnd : firstStart;
                 if (!adjacent || firstHorizontal == secondHorizontal || (firstHorizontal ? new SvgPoint(secondStart.X, firstStart.Y) : new SvgPoint(firstStart.X, secondStart.Y)) != shared) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed axis-aligned integer " + elementName + " contours are implemented.");
             }
         }
     }
+
+    internal static void ValidateContours(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(contourEnds);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (contourEnds.Count == 0 || contourEnds[contourEnds.Count - 1] != points.Count) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint closed absolute axis-aligned integer path contours are implemented.");
+        int contourStart = 0;
+        for (int contourIndex = 0; contourIndex < contourEnds.Count; contourIndex++)
+        {
+            int contourEnd = contourEnds[contourIndex];
+            if (contourEnd <= contourStart || contourEnd - contourStart < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint closed absolute axis-aligned integer path contours are implemented.");
+            contourStart = contourEnd;
+        }
+        contourStart = 0;
+        for (int contourIndex = 0; contourIndex < contourEnds.Count; contourIndex++)
+        {
+            int contourEnd = contourEnds[contourIndex];
+            ValidateContourSlice(points, contourStart, contourEnd, elementName, workCounter, cancellationToken);
+            contourStart = contourEnd;
+        }
+        int firstStart = 0;
+        for (int firstContour = 0; firstContour < contourEnds.Count; firstContour++)
+        {
+            int firstEnd = contourEnds[firstContour];
+            int secondStart = firstEnd;
+            for (int secondContour = firstContour + 1; secondContour < contourEnds.Count; secondContour++)
+            {
+                int secondEnd = contourEnds[secondContour];
+                for (int firstIndex = firstStart; firstIndex < firstEnd; firstIndex++)
+                {
+                    SvgPoint firstEdgeStart = points[firstIndex]; SvgPoint firstEdgeEnd = firstIndex + 1 < firstEnd ? points[firstIndex + 1] : points[firstStart];
+                    bool firstHorizontal = firstEdgeStart.Y == firstEdgeEnd.Y;
+                    for (int secondIndex = secondStart; secondIndex < secondEnd; secondIndex++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        SvgPoint secondEdgeStart = points[secondIndex]; SvgPoint secondEdgeEnd = secondIndex + 1 < secondEnd ? points[secondIndex + 1] : points[secondStart];
+                        bool secondHorizontal = secondEdgeStart.Y == secondEdgeEnd.Y;
+                        if (EdgesIntersect(firstEdgeStart, firstEdgeEnd, firstHorizontal, secondEdgeStart, secondEdgeEnd, secondHorizontal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint closed absolute axis-aligned integer path contours are implemented.");
+                    }
+                }
+                secondStart = secondEnd;
+            }
+            firstStart = firstEnd;
+        }
+    }
+
+    private static void ValidateContourSlice(BudgetedParserList<SvgPoint> points, int contourStart, int contourEnd, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        for (int firstIndex = contourStart; firstIndex < contourEnd; firstIndex++)
+        {
+            SvgPoint firstStart = points[firstIndex]; SvgPoint firstEnd = firstIndex + 1 < contourEnd ? points[firstIndex + 1] : points[contourStart];
+            bool firstHorizontal = firstStart.Y == firstEnd.Y;
+            for (int secondIndex = firstIndex + 1; secondIndex < contourEnd; secondIndex++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgPoint secondStart = points[secondIndex]; SvgPoint secondEnd = secondIndex + 1 < contourEnd ? points[secondIndex + 1] : points[contourStart];
+                bool secondHorizontal = secondStart.Y == secondEnd.Y;
+                if (!EdgesIntersect(firstStart, firstEnd, firstHorizontal, secondStart, secondEnd, secondHorizontal)) continue;
+                bool adjacent = secondIndex == firstIndex + 1 || (firstIndex == contourStart && secondIndex == contourEnd - 1);
+                SvgPoint shared = secondIndex == firstIndex + 1 ? firstEnd : firstStart;
+                if (!adjacent || firstHorizontal == secondHorizontal || (firstHorizontal ? new SvgPoint(secondStart.X, firstStart.Y) : new SvgPoint(firstStart.X, secondStart.Y)) != shared) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple closed axis-aligned integer " + elementName + " contours are implemented.");
+            }
+        }
+    }
+
+    private static bool EdgesIntersect(SvgPoint firstStart, SvgPoint firstEnd, bool firstHorizontal, SvgPoint secondStart, SvgPoint secondEnd, bool secondHorizontal)
+        => firstHorizontal == secondHorizontal
+            ? firstHorizontal
+                ? firstStart.Y == secondStart.Y && Math.Max(Math.Min(firstStart.X, firstEnd.X), Math.Min(secondStart.X, secondEnd.X)) <= Math.Min(Math.Max(firstStart.X, firstEnd.X), Math.Max(secondStart.X, secondEnd.X))
+                : firstStart.X == secondStart.X && Math.Max(Math.Min(firstStart.Y, firstEnd.Y), Math.Min(secondStart.Y, secondEnd.Y)) <= Math.Min(Math.Max(firstStart.Y, firstEnd.Y), Math.Max(secondStart.Y, secondEnd.Y))
+            : firstHorizontal
+                ? Math.Min(firstStart.X, firstEnd.X) <= secondStart.X && secondStart.X <= Math.Max(firstStart.X, firstEnd.X) && Math.Min(secondStart.Y, secondEnd.Y) <= firstStart.Y && firstStart.Y <= Math.Max(secondStart.Y, secondEnd.Y)
+                : Math.Min(secondStart.X, secondEnd.X) <= firstStart.X && firstStart.X <= Math.Max(secondStart.X, secondEnd.X) && Math.Min(firstStart.Y, firstEnd.Y) <= secondStart.Y && secondStart.Y <= Math.Max(firstStart.Y, firstEnd.Y);
 
     private string SimpleShapeMessage() => _isPath ? "Only simple closed absolute axis-aligned integer paths are implemented." : "Only simple closed axis-aligned integer " + _elementName + " elements are implemented.";
 }

@@ -63,12 +63,13 @@ Windows-pinned-Chrome references for an
 [disjoint semi-opaque layer-opacity](../tests/Research/diagonal-layer-opacity-16x8.svg),
 [half-sixteenth-grid disjoint layer-opacity](../tests/Research/diagonal-layer-opacity-half-grid-16x8.svg),
 [cubic arch](../tests/Research/cubic-arch-8x8.svg),
-[even-odd hole](../tests/Research/evenodd-hole-8x8.svg), and
-[round stroke join](../tests/Research/round-join-8x8.svg). They supply the first
+and [round stroke join](../tests/Research/round-join-8x8.svg). They supply the first
 integer, grid-aligned fractional, half-grid-coordinate, two-phase semi-opaque overlap,
-and pre-compositing opacity coverage, subdivision, multi-subpath/winding, and outline
-targets for P1.3. The current converter asserts
-`UnsupportedFeature` for each; neither their stable browser captures nor this
+and pre-compositing opacity coverage, subdivision, and outline
+targets for P1.3. The orthogonal evenodd-hole probe graduated with disjoint
+orthogonal multi-subpath fill-rule support (exact against its retained oracle
+before removal); the remaining probes stay explicitly unsupported. The current converter asserts
+`UnsupportedFeature` for each remaining probe; neither their stable browser captures nor this
 inventory admits a general path or stroke feature.
 
 The first deliberately simple experiment uses an opaque red, pixel-centre

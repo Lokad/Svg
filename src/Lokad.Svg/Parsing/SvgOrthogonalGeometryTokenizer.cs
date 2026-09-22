@@ -5,35 +5,51 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses bounded absolute orthogonal path and point-list syntax into charged point storage.</summary>
 internal static class SvgOrthogonalGeometryTokenizer
 {
-    internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<int> contourEnds)
     {
+        ArgumentNullException.ThrowIfNull(contourEnds);
         ValidatePathCommandCount(value, maximumGeometryElements, workCounter, cancellationToken);
         PathTokenReader tokens = new(value, workCounter, cancellationToken);
         if (tokens.End || tokens.ReadCommand() != 'M') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
         BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
         try
         {
-            points.Add(new SvgPoint(tokens.ReadInteger(), tokens.ReadInteger()));
-            bool closed = false;
             int commandIndex = 0;
-            while (!tokens.End)
+            bool hasMore = true;
+            while (hasMore)
             {
-                if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                char command = tokens.ReadCommand();
-                SvgPoint current = points[^1];
-                if (command == 'H') points.Add(new SvgPoint(tokens.ReadInteger(), current.Y));
-                else if (command == 'V') points.Add(new SvgPoint(current.X, tokens.ReadInteger()));
-                else if (command == 'L') points.Add(new SvgPoint(tokens.ReadInteger(), tokens.ReadInteger()));
-                else if (command is 'Z' or 'z') { closed = tokens.End; break; }
-                else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+                points.Add(new SvgPoint(tokens.ReadInteger(), tokens.ReadInteger()));
+                int contourStart = points.Count - 1;
+                bool closed = false;
+                while (!tokens.End)
+                {
+                    if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    char command = tokens.ReadCommand();
+                    SvgPoint current = points[^1];
+                    if (command == 'H') points.Add(new SvgPoint(tokens.ReadInteger(), current.Y));
+                    else if (command == 'V') points.Add(new SvgPoint(current.X, tokens.ReadInteger()));
+                    else if (command == 'L') points.Add(new SvgPoint(tokens.ReadInteger(), tokens.ReadInteger()));
+                    else if (command is 'Z' or 'z') { closed = true; break; }
+                    else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+                }
+                if (!closed) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+                int contourEnd = points.Count;
+                if (contourEnd - contourStart < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+                if (points.Count > maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
+                for (int pointIndex = contourStart; pointIndex < contourEnd; pointIndex++)
+                {
+                    SvgPoint start = points[pointIndex]; SvgPoint end = pointIndex + 1 < contourEnd ? points[pointIndex + 1] : points[contourStart];
+                    if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+                }
+                contourEnds.Add(contourEnd);
+                if (tokens.End) hasMore = false;
+                else
+                {
+                    if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    if (tokens.ReadCommand() != 'M') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+                }
             }
-            if (!closed || points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
-            if (points.Count > maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
-            for (int pointIndex = 0; pointIndex < points.Count; pointIndex++)
-            {
-                SvgPoint start = points[pointIndex]; SvgPoint end = points[(pointIndex + 1) % points.Count];
-                if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
-            }
+            if (contourEnds.Count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
             return points;
         }
         catch
