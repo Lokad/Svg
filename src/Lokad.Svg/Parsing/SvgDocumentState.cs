@@ -82,7 +82,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal string? GradientId { get; set; }
 
-    internal SvgLinearGradient? Gradient { get; set; }
+    internal SvgGradientTemplate? Gradient { get; set; }
 
     internal BudgetedParserList<SvgGradientStop> GradientStops { get; }
 

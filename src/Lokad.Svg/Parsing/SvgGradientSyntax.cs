@@ -9,33 +9,37 @@ internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, 
 /// <summary>Retains one parsed gradient stop with its offset while streaming.</summary>
 internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);
 
+/// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
+internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, AxisTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, string? Href);
+
 /// <summary>Parses the bounded linear-gradient definition syntax and lowers gradient-filled rectangles.</summary>
 internal static class SvgGradientSyntax
 {
-    internal static (double X1, double Y1, double X2, double Y2, bool IsUserSpace) ParseLinearVector(XmlReader reader)
+    internal static SvgGradientTemplate ParseLinearVector(XmlReader reader)
     {
+        ArgumentNullException.ThrowIfNull(reader);
         string? units = reader.GetAttribute("gradientUnits");
         bool isUserSpace = units is not null && units.Equals("userSpaceOnUse", StringComparison.Ordinal);
         if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal) && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only objectBoundingBox and userSpaceOnUse gradient units are implemented.");
         string? spread = reader.GetAttribute("spreadMethod");
         if (spread is not null && !spread.Equals("pad", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad gradient spread is implemented.");
-        string rawX1 = reader.GetAttribute("x1") ?? "0";
-        string rawY1 = reader.GetAttribute("y1") ?? "0";
-        string rawX2 = reader.GetAttribute("x2") ?? (isUserSpace ? "0" : "1");
-        string rawY2 = reader.GetAttribute("y2") ?? "0";
+        string? rawX1 = reader.GetAttribute("x1");
+        string? rawY1 = reader.GetAttribute("y1");
+        string? rawX2 = reader.GetAttribute("x2");
+        string? rawY2 = reader.GetAttribute("y2");
+        int vectorCount = (rawX1 is null ? 0 : 1) + (rawY1 is null ? 0 : 1) + (rawX2 is null ? 0 : 1) + (rawY2 is null ? 0 : 1);
         if (isUserSpace && (ContainsPercentage(rawX1) || ContainsPercentage(rawY1) || ContainsPercentage(rawX2) || ContainsPercentage(rawY2))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates are not implemented.");
-        double x1 = ParseAxis(rawX1);
-        double y1 = ParseAxis(rawY1);
-        double x2 = ParseAxis(rawX2);
-        double y2 = ParseAxis(rawY2);
-        AxisTransform gradientTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("gradientTransform"));
-        (x1, y1) = gradientTransform.ApplyToUserPoint(x1, y1);
-        (x2, y2) = gradientTransform.ApplyToUserPoint(x2, y2);
-        if (x1 == x2 && y1 == y2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate linear gradients are not implemented.");
-        return (x1, y1, x2, y2, isUserSpace);
+        double x1 = ParseAxis(rawX1 ?? "0");
+        double y1 = ParseAxis(rawY1 ?? "0");
+        double x2 = ParseAxis(rawX2 ?? (isUserSpace ? "0" : "1"));
+        double y2 = ParseAxis(rawY2 ?? "0");
+        string? transformValue = reader.GetAttribute("gradientTransform");
+        AxisTransform gradientTransform = SvgGeometrySyntax.ParseTransform(transformValue);
+        string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
+        return new SvgGradientTemplate(x1, y1, x2, y2, isUserSpace, gradientTransform, transformValue is not null, vectorCount, units is not null, href);
     }
 
-    private static bool ContainsPercentage(string value) => value.AsSpan().Trim().EndsWith("%");
+    private static bool ContainsPercentage(string? value) => value is not null && value.AsSpan().Trim().EndsWith("%");
 
     internal static string ParsePaintId(string? value)
     {
@@ -52,6 +56,14 @@ internal static class SvgGradientSyntax
         if (value.Length < 7 || !value.StartsWith("url(#", StringComparison.Ordinal) || !value.EndsWith(")", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
         string id = value.Substring(5, value.Length - 6);
         if (id.Length == 0 || id.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
+        return id;
+    }
+
+    internal static string ParseGradientHrefId(string? value)
+    {
+        if (value is null || value.Length < 2 || !value.StartsWith("#", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
+        string id = value.Substring(1);
+        if (id.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
         return id;
     }
 

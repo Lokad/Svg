@@ -61,7 +61,7 @@ internal static class SvgElementAttributePolicy
     private static bool IsAllowed(XmlReader reader, SvgElementKind kind)
     {
         if ((kind is SvgElementKind.Root or SvgElementKind.Group) && (reader.Prefix == "xmlns" || reader.Name == "xmlns")) return true;
-        if ((kind is SvgElementKind.Group or SvgElementKind.Use or SvgElementKind.Image) && reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") return true;
+        if ((kind is SvgElementKind.Group or SvgElementKind.Use or SvgElementKind.Image or SvgElementKind.LinearGradient) && reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") return true;
         if ((kind is SvgElementKind.Text or SvgElementKind.TextSpan) && reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space") return true;
         if (reader.NamespaceURI.Length != 0) return false;
         bool allowed = kind switch
@@ -79,7 +79,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.ClipPath => reader.LocalName == "id",
             SvgElementKind.Mask => reader.LocalName is "id" or "mask-type",
             SvgElementKind.Pattern => reader.LocalName is "id" or "x" or "y" or "width" or "height" or "patternUnits" or "patternContentUnits",
-            SvgElementKind.LinearGradient => reader.LocalName is "id" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod" or "gradientTransform",
+            SvgElementKind.LinearGradient => reader.LocalName is "id" or "href" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod" or "gradientTransform",
             SvgElementKind.GradientStop => reader.LocalName is "offset" or "stop-color" or "stop-opacity",
             SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask",
             SvgElementKind.NestedViewport => reader.LocalName is "x" or "y" or "width" or "height",
