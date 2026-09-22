@@ -1730,6 +1730,60 @@ public sealed class OpenTypeFontTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, CancellationToken.None));
 
         Assert.Equal(code, exception.ErrorCode);
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        SvgException snapshot = await Assert.ThrowsAsync<SvgException>(() => SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None).AsTask());
+
+        Assert.Equal(code, snapshot.ErrorCode);
+        Assert.Equal(0, provider.RequestCount);
+        Assert.Equal(0, source.RequestCount);
+    }
+
+    [Theory]
+    [InlineData(0, 61)]
+    [InlineData(1, 62)]
+    [InlineData(2, 63)]
+    public async Task Letter_spacing_shifts_second_glyph_advance_by_exact_pixels(int spacing, int expectedRightmostX)
+    {
+        string spacingAttribute = spacing == 0 ? string.Empty : " letter-spacing='" + spacing + "'";
+        string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='8'><text font-family='Example' font-size='100' y='7'" + spacingAttribute + ">AA</text></svg>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None);
+
+        Assert.True(DecodeAlpha(png, 1, 5) > 0);
+        int rightmost = -1;
+        for (int x = 0; x < 64; x++)
+        {
+            for (int y = 0; y < 8; y++)
+            {
+                if (DecodeAlpha(png, x, y) > 0)
+                {
+                    rightmost = x;
+                }
+            }
+        }
+
+        Assert.Equal(expectedRightmostX, rightmost);
+    }
+
+    [Fact]
+    public async Task Text_opacity_halves_glyph_alpha_exactly()
+    {
+        async Task<byte> RenderAlphaAsync(string svg)
+        {
+            byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+            (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+            using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+            ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None);
+            return DecodeAlpha(png, 1, 1);
+        }
+
+        byte full = await RenderAlphaAsync("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>");
+        byte half = await RenderAlphaAsync("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' opacity='0.5'>A</text></svg>");
+
+        Assert.True(full > 0);
+        Assert.Equal(full / 2, (int)half);
     }
 
 
@@ -4272,4 +4326,5 @@ public sealed class OpenTypeFontTests
         public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
             => ValueTask.FromResult<ISvgFontProgramSource?>(null);
     }
+
 }
