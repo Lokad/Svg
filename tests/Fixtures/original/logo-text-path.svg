@@ -1,0 +1,7 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <path id="arc" d="M8,48 H56"/>
+  </defs>
+  <text font-family="Example" font-size="16" y="48"><textPath href="#arc">A</textPath></text>
+</svg>
