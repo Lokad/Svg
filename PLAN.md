@@ -507,6 +507,9 @@ owned traffic falls 5,119.77 to 2,077.48 KB (peak 3.0 to 2.1 MB) and caller memo
 during the change also fixed small-output over-allocation. Exact-total accounting (
 pixels plus twice the payload, no growth term) and cross-sink identity are retained as
 regressions; the owned growth-charge test was superseded along with its buffer.
+A follow-up (`0773b45`) sizes follow-on segments to the current write instead of
+a fixed floor after remeasurement caught small-output over-allocation; small outputs sit at
+their pre-segment traffic plus about 0.16 KB of segment bookkeeping.
 
 Closure: benchmark low- and high-entropy images near the encoded-output limit for
 owned memory, caller memory and both stream forms, reporting allocation traffic,
