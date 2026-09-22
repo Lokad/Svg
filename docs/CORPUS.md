@@ -39,7 +39,9 @@ origin, and integral viewBox mapping.
 candidate comparison. It pins the supported nonuniform `preserveAspectRatio="none"`
 mapping.
 
-`original-logo-link-use-mark` has an admitted stable pinned-Chrome reference and exact candidate comparison. It pins local `use` instantiation nested directly in a link (two bars) alongside a direct rectangle; group-nested instances and enclosing-transform composition are pinned by the converter matrix and unit tests.
+`original-logo-link-use-mark` has an admitted stable pinned-Chrome reference and exact candidate comparison.
+
+`original-logo-nested-svg` has an admitted stable pinned-Chrome reference and exact candidate comparison. It pins nested-viewport origin offset with exact box clipping (32-pixel red square at (8, 8)); viewport `viewBox`/percentage dimensions and viewport text stay explicitly unsupported. It pins local `use` instantiation nested directly in a link (two bars) alongside a direct rectangle; group-nested instances and enclosing-transform composition are pinned by the converter matrix and unit tests.
 
 When a Chrome reference is admitted, record the pinned browser/archive hash, platform,
 recipe revision, input/materialized hashes, resource hashes and capture options in the

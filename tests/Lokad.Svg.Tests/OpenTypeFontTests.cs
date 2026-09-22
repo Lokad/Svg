@@ -4357,15 +4357,6 @@ public sealed class OpenTypeFontTests
         }
     }
 
-    [Fact]
-    public void Scratch_render_nested_svg_candidate()
-    {
-        string root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".."));
-        byte[] svg = File.ReadAllBytes(Path.Combine(root, "tests", "Fixtures", "original", "logo-nested-svg.svg"));
-        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, null), CancellationToken.None);
-        File.WriteAllBytes(Path.Combine(root, "artifacts", "viewports", "candidate-nested.png"), png.ToArray());
-    }
-
     private sealed class MissingFontProvider : ISvgFontProgramSourceProvider
     {
         public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
