@@ -38,6 +38,8 @@ internal static class SvgElementAttributePolicy
 
     internal static void ValidateMask(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Mask, "Mask", workCounter, cancellationToken);
 
+    internal static void ValidateImage(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Image, "Image", workCounter, cancellationToken);
+
     private static void Validate(XmlReader reader, SvgElementKind kind, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!reader.HasAttributes) return;
@@ -53,7 +55,7 @@ internal static class SvgElementAttributePolicy
     private static bool IsAllowed(XmlReader reader, SvgElementKind kind)
     {
         if ((kind is SvgElementKind.Root or SvgElementKind.Group) && (reader.Prefix == "xmlns" || reader.Name == "xmlns")) return true;
-        if ((kind is SvgElementKind.Group or SvgElementKind.Use) && reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") return true;
+        if ((kind is SvgElementKind.Group or SvgElementKind.Use or SvgElementKind.Image) && reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") return true;
         if ((kind is SvgElementKind.Text or SvgElementKind.TextSpan) && reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space") return true;
         if (reader.NamespaceURI.Length != 0) return false;
         bool allowed = kind switch
@@ -70,6 +72,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.Symbol => reader.LocalName is "id" or "viewBox" or "preserveAspectRatio",
             SvgElementKind.ClipPath => reader.LocalName == "id",
             SvgElementKind.Mask => reader.LocalName is "id" or "mask-type",
+            SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask",
             SvgElementKind.NestedViewport => reader.LocalName is "x" or "y" or "width" or "height",
             _ => false
         };
@@ -80,5 +83,5 @@ internal static class SvgElementAttributePolicy
 
     private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "clip-path" or "mask" or "mask-type" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "space";
 
-    private enum SvgElementKind { Root, Group, Rectangle, Line, Use, Path, PointList, Text, TextSpan, Symbol, NestedViewport, ClipPath, Mask }
+    private enum SvgElementKind { Root, Group, Rectangle, Line, Use, Path, PointList, Text, TextSpan, Symbol, NestedViewport, ClipPath, Mask, Image }
 }

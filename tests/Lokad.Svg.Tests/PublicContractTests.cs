@@ -558,6 +558,7 @@ public sealed class PublicContractTests
     [InlineData("<polygon points='0,0 2,0 2,2 0,2' fill='red'/>")]
     [InlineData("<polyline points='0,0 2,0 2,2 0,2' fill='red'/>")]
     [InlineData("<defs><rect id='tile' width='2' height='2' fill='red'/></defs><use href='#tile'/>")]
+    [InlineData("<image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' width='1' height='1'/>")]
     public void Every_currently_supported_paintable_leaf_reaches_public_PNG_conversion(string content)
     {
         string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'>" + content + "</svg>";
@@ -571,7 +572,6 @@ public sealed class PublicContractTests
     [InlineData("<circle cx='1' cy='1' r='1' fill='red'/>")]
     [InlineData("<ellipse cx='1' cy='1' rx='1' ry='1' fill='red'/>")]
     [InlineData("<text x='0' y='1'>x</text>")]
-    [InlineData("<image width='1' height='1' href='data:image/png;base64,AA=='/>")]
     [InlineData("<foreignObject width='1' height='1'><body/></foreignObject>")]
     [InlineData("<linearGradient id='paint'><stop offset='0' stop-color='red'/></linearGradient>")]
     public void Unimplemented_visible_children_are_rejected_at_public_conversion(string content)

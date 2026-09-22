@@ -144,9 +144,9 @@ internal static class SvgFontRequestDiscovery
                     if (isSvgElement && !rootElement && reader.LocalName == "clipPath") sawStyleableNode = true;
                     if (isSvgElement && !rootElement && reader.LocalName == "mask") sawStyleableNode = true;
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName) && reader.GetAttribute("clip-path") is not null && !reader.IsEmptyElement) clipDepths.Add(reader.Depth);
-                    bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "clipPath" or "mask");
+                    bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "clipPath" or "mask" or "image");
                     bool unsupportedContainer = (!rootElement && reader.LocalName is ("style" or "symbol")) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && reader.LocalName is ("defs" or "title" or "desc" or "metadata"));
-                    bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline");
+                    bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "image");
                     bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyRenderedLeaf);
                     // Retain requests admitted before this point: lowering still paints them before conversion rejects the unsupported sibling, so clearing here would omit a font lowering requires.
                     if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && (!isKnownContent || rendererRejectsKnownContent))
@@ -201,7 +201,7 @@ internal static class SvgFontRequestDiscovery
                         if (group) groupDepth++;
                         if (candidateState.HasRequest) activeCandidateLevel = directTextLevels.Count - 1;
                     }
-                    if (isSvgElement && parentAllowsText && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "text")) sawStyleableNode = true;
+                    if (isSvgElement && parentAllowsText && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "text" or "image")) sawStyleableNode = true;
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {

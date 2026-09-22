@@ -27,6 +27,9 @@ internal static class SvgRenderedLeafParser
             case "text":
                 SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                 break;
+            case "image":
+                SvgElementAttributePolicy.ValidateImage(reader, workCounter, cancellationToken);
+                break;
             default:
                 return false;
         }
@@ -56,6 +59,13 @@ internal static class SvgRenderedLeafParser
                     state.Scene.AddGeometries(pointList.Geometries);
                 }
                 return true;
+            case "image":
+            {
+                SvgViewportFrame? imageFrame = SvgClipPathSyntax.ResolveLeafClip(reader, state);
+                SvgViewportFrame? imageParent = state.EffectiveFrame;
+                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, SvgLeafParser.ParseImage(reader, context, imageFrame, imageParent?.ViewportWidth ?? root.Width, imageParent?.ViewportHeight ?? root.Height, limits, budget)));
+                return true;
+            }
             case "text":
             {
                 // Fail fast with the conversion-level category: the operation is already rejected as unsupported, so a later font lookup must not surface UnresolvedResource instead.

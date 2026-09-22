@@ -1,4 +1,6 @@
 using System.Xml;
+using Lokad.Svg.Encoding;
+using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Parses and lowers the currently supported paintable SVG leaves independently of XML traversal.</summary>
@@ -13,6 +15,32 @@ internal static class SvgLeafParser
         if (frame is not null) rectangle = ClipStrokedRectangle(rectangle, stroke, frame.Value);
         return SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null });
     }
+
+    internal static SvgGeometry ParseImage(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget)
+    {
+        SvgImageSyntax syntax = SvgImageSyntax.Parse(reader);
+        SvgResolvedPaintableElement element = context.ResolveShape(reader, false);
+        double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+        double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+        SvgColor color = DecodeImage(syntax.Href, element, limits, budget, context.WorkCounter, context.CancellationToken);
+        SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, width, height, color, element.Presentation.HasFill, null));
+        if (frame is not null) rectangle = frame.Value.Clip.ClipRectangle(frame.Value.Shift(rectangle));
+        return SvgGeometry.FromRectangle(rectangle);
+    }
+
+    private static SvgColor DecodeImage(string href, SvgResolvedPaintableElement element, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        const string Prefix = "data:image/png;base64,";
+        if (!href.StartsWith(Prefix, StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only base64 PNG data-URI embedded images are implemented.");
+        byte[] bytes;
+        try { bytes = Convert.FromBase64String(href.Substring(Prefix.Length)); }
+        catch (FormatException) { throw new SvgException(SvgErrorCode.MalformedInput, "Embedded image data is not valid base64."); }
+        using RenderBudget.BudgetReservation reservation = budget.Reserve(bytes.Length, SvgMemoryCategory.Parser);
+        return StampOpacity(PngImageDecoder.DecodeSolidColor(bytes, limits, budget, workCounter, cancellationToken), element.Presentation.Opacity);
+    }
+
+    private static SvgColor StampOpacity(SvgColor color, byte opacity)
+        => new(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, opacity));
 
     internal static SvgParsedRectangle ParseRectangleWithStyle(XmlReader reader, SvgPaintableElementContext context)
     {
