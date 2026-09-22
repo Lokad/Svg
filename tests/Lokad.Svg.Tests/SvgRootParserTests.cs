@@ -1294,13 +1294,21 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Offsets_nested_viewport_content_by_the_viewport_origin()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><rect width='4' height='4' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(8, 8, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
     public void Clips_an_axis_aligned_line_to_its_nested_viewport_box()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><line x1='0' y1='10' x2='64' y2='10' stroke='red' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
-        Assert.Equal(new SvgAxisAlignedLine(8, 10, 40, 10, new SvgColor(255, 0, 0, 255), true, 2), geometry.AxisAlignedLine);
+        Assert.Equal(new SvgAxisAlignedLine(8, 18, 40, 18, new SvgColor(255, 0, 0, 255), true, 2), geometry.AxisAlignedLine);
     }
 
     [Fact]
@@ -1308,7 +1316,7 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><rect x='10' y='10' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(10, 10, 4, 4, new SvgColor(255, 0, 0, 255), true, new SvgStroke(new SvgColor(0, 0, 255, 255), 2)), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(18, 18, 4, 4, new SvgColor(255, 0, 0, 255), true, new SvgStroke(new SvgColor(0, 0, 255, 255), 2)), Assert.Single(root.Rectangles));
     }
 
     [Fact]

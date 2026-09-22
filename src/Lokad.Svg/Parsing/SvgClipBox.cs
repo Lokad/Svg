@@ -1,7 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents one nested viewport clip box with its XML depth while streaming.</summary>
-internal readonly record struct SvgClipBox(double X, double Y, double Width, double Height, int Depth)
+internal readonly record struct SvgClipBox(double X, double Y, double Width, double Height)
 {
     internal double Right => X + Width;
 
@@ -14,7 +14,7 @@ internal readonly record struct SvgClipBox(double X, double Y, double Width, dou
         double top = Math.Max(Y, other.Y);
         double right = Math.Min(Right, other.Right);
         double bottom = Math.Min(Bottom, other.Bottom);
-        return new SvgClipBox(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), Depth);
+        return new SvgClipBox(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top));
     }
 
     /// <summary>Clips one fill box to this viewport, preserving its paint.</summary>

@@ -56,9 +56,18 @@ internal static class SvgDocumentTraversal
                 {
                     SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
                     SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader);
-                    SvgClipBox box = new(viewport.X, viewport.Y, viewport.Width, viewport.Height, reader.Depth);
-                    if (inViewport) box = box.Intersect(state.Viewports[^1]);
-                    if (!reader.IsEmptyElement) state.Viewports.Add(box);
+                    double offsetX = viewport.X;
+                    double offsetY = viewport.Y;
+                    SvgClipBox? parentClip = null;
+                    if (inViewport)
+                    {
+                        offsetX += state.Viewports[^1].OffsetX;
+                        offsetY += state.Viewports[^1].OffsetY;
+                        parentClip = state.Viewports[^1].Clip;
+                    }
+                    SvgClipBox box = new(offsetX, offsetY, viewport.Width, viewport.Height);
+                    if (parentClip is not null) box = box.Intersect(parentClip.Value);
+                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(offsetX, offsetY, box, reader.Depth));
                     state.SawStyleableNode = true;
                 }
                 else if (inViewport && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside nested viewports is not implemented.");

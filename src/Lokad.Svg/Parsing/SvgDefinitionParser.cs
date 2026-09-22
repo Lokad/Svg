@@ -44,7 +44,7 @@ internal static class SvgDefinitionParser
             SvgElementAttributePolicy.ValidateUse(reader, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings);
-            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, state.EffectiveClip, workCounter, cancellationToken);
+            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, state.EffectiveFrame, workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
             return true;

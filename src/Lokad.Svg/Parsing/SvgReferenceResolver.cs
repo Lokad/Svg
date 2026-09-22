@@ -4,33 +4,33 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgUseReference(string Id, double X, double Y, AxisTransform Transform, byte Opacity, bool IsPainted, SvgPaint? FillOverride);
 
 /// <summary>Records the placeholders that must be replaced when a forward local use reference resolves.</summary>
-internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgClipBox? Clip);
+internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame);
 
 /// <summary>Applies typed local references through their geometry-specific supported transforms.</summary>
 internal static class SvgReferenceResolver
 {
     /// <summary>Resolves an already parsed local reference immediately or retains its typed placeholder for document-end resolution.</summary>
-    internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgClipBox? clip, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
-        if (definitions.TryGetValue(reference.Id, out SvgDefinition definition)) scene.AddGeometry(Apply(definition, reference, clip));
-        else pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference, clip));
+        if (definitions.TryGetValue(reference.Id, out SvgDefinition definition)) scene.AddGeometry(Apply(definition, reference, frame));
+        else pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference, frame));
     }
 
-    internal static SvgGeometry Apply(SvgDefinition definition, SvgUseReference reference, SvgClipBox? clip)
+    internal static SvgGeometry Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame)
     {
         SvgGeometry geometry = ApplyInstanceFill(definition, reference);
         return geometry.Kind switch
         {
-            SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(geometry.Rectangle, reference), clip)),
-            SvgGeometryKind.AxisAlignedLine => ClipLine(ApplyAxisAlignedLine(geometry.AxisAlignedLine, reference), clip),
+            SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(geometry.Rectangle, reference), frame)),
+            SvgGeometryKind.AxisAlignedLine => ClipLine(ApplyAxisAlignedLine(geometry.AxisAlignedLine, reference), frame),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.")
         };
     }
 
-    private static SvgRectangle ClipRectangle(SvgRectangle rectangle, SvgClipBox? clip) => clip is null ? rectangle : clip.Value.ClipRectangle(rectangle);
+    private static SvgRectangle ClipRectangle(SvgRectangle rectangle, SvgViewportFrame? frame) => frame is null ? rectangle : frame.Value.ClipShifted(rectangle);
 
-    private static SvgGeometry ClipLine(SvgAxisAlignedLine line, SvgClipBox? clip) => clip is null ? SvgGeometry.FromAxisAlignedLine(line) : clip.Value.ClipLine(line);
+    private static SvgGeometry ClipLine(SvgAxisAlignedLine line, SvgViewportFrame? frame) => frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line);
 
     private static SvgGeometry ApplyInstanceFill(SvgDefinition definition, SvgUseReference reference)
     {
@@ -61,7 +61,7 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
-            scene.Replace(pendingUse.Slot, Apply(definition, pendingUse.Reference, pendingUse.Clip));
+            scene.Replace(pendingUse.Slot, Apply(definition, pendingUse.Reference, pendingUse.Frame));
         }
     }
 
