@@ -90,7 +90,7 @@ still requires the full recipe metadata, repeated-capture stability checks, and
 fixture admission.
 The current capture recipe is revision 3. It first creates a blank target,
 configures page/network blocking, emulation and the page background, transparent by
-default with an explicit white input (capture-chrome.ps1 -Background white, recorded
+default with explicit white/black inputs (capture-chrome.ps1 -Background white|black, recorded
 per reference), then navigates to the data-URL page and waits for its load event
 before image decoding and screenshot capture. Each reference records the recipe
 that produced it: retained historical references may therefore record revision 1,
