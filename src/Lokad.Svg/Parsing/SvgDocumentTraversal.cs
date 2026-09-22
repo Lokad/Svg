@@ -47,15 +47,27 @@ internal static class SvgDocumentTraversal
                 state.NodeCount++;
                 bool directChild = reader.Depth == rootDepth + 1;
                 bool nestedInGroup = state.Groups.Count > 0;
+                bool inViewport = state.Viewports.Count > 0;
+                bool inScope = directChild || nestedInGroup || inViewport;
                 bool textElement = reader.LocalName == "text";
-                if (SvgDefinitionParser.TryParse(reader, directChild, directChild || nestedInGroup, root, state, namedColors, workCounter, cancellationToken)) { }
+                if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, namedColors, workCounter, cancellationToken)) { }
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
-                else if (SvgRenderedLeafParser.TryParse(reader, directChild, directChild || nestedInGroup, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
+                else if ((directChild || inViewport) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "svg")
+                {
+                    SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
+                    SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader);
+                    SvgClipBox box = new(viewport.X, viewport.Y, viewport.Width, viewport.Height, reader.Depth);
+                    if (inViewport) box = box.Intersect(state.Viewports[^1]);
+                    if (!reader.IsEmptyElement) state.Viewports.Add(box);
+                    state.SawStyleableNode = true;
+                }
+                else if (inViewport && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside nested viewports is not implemented.");
+                else if (SvgRenderedLeafParser.TryParse(reader, directChild, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {
                     state.HasUnsupportedContent |= !textElement && !reader.IsEmptyElement;
                     state.SawStyleableNode = true;
                 }
-                else if ((directChild || nestedInGroup) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
+                else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
                 {
                     SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
                     if (!reader.IsEmptyElement)
@@ -75,12 +87,13 @@ internal static class SvgDocumentTraversal
                 }
                 else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
                 else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsInertContainer(reader.LocalName)) { }
-                else if (directChild || nestedInGroup) state.HasUnsupportedContent = true;
+                else if (inScope) state.HasUnsupportedContent = true;
             }
             if (reader.NodeType == XmlNodeType.EndElement)
             {
                 if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
                 if (reader.Depth == state.SymbolDepth) { state.SymbolDepth = -1; state.SymbolId = null; }
+                if (state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth) state.Viewports.RemoveLast();
                 if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth)
                 {
                     SvgGroupScope group = state.Groups[^1];

@@ -35,20 +35,20 @@ internal static class SvgRenderedLeafParser
         switch (reader.LocalName)
         {
             case "rect":
-                state.Scene.AddGeometry(SvgLeafParser.ParseRectangle(reader, context));
+                state.Scene.AddGeometry(SvgLeafParser.ParseRectangle(reader, context, state.EffectiveClip));
                 return true;
             case "line":
-                state.Scene.AddGeometry(SvgLeafParser.ParseLine(reader, context));
+                state.Scene.AddGeometry(SvgLeafParser.ParseLine(reader, context, state.EffectiveClip));
                 return true;
             case "path":
-                using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget))
+                using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, state.EffectiveClip))
                 {
                     state.GeometryElementCount += path.ElementCount;
                     state.Scene.AddGeometries(path.Geometries);
                 }
                 return true;
             case "polygon" or "polyline":
-                using (SvgParsedGeometry pointList = SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, limits.MaximumPathCommands - state.GeometryElementCount, budget))
+                using (SvgParsedGeometry pointList = SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, state.EffectiveClip))
                 {
                     state.GeometryElementCount += pointList.ElementCount;
                     state.Scene.AddGeometries(pointList.Geometries);

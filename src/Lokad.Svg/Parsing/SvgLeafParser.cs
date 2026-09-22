@@ -4,8 +4,15 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses and lowers the currently supported paintable SVG leaves independently of XML traversal.</summary>
 internal static class SvgLeafParser
 {
-    internal static SvgGeometry ParseRectangle(XmlReader reader, SvgPaintableElementContext context)
-        => ParseRectangleWithStyle(reader, context).Geometry;
+    internal static SvgGeometry ParseRectangle(XmlReader reader, SvgPaintableElementContext context, SvgClipBox? clip)
+    {
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
+        SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
+        SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, syntax.StrokeWidth, element.Transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
+        if (clip is not null) rectangle = ClipStrokedRectangle(rectangle, stroke, clip.Value);
+        return SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null });
+    }
 
     internal static SvgParsedRectangle ParseRectangleWithStyle(XmlReader reader, SvgPaintableElementContext context)
     {
@@ -16,7 +23,7 @@ internal static class SvgLeafParser
         return new SvgParsedRectangle(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }), element.Style);
     }
 
-    internal static SvgGeometry ParseLine(XmlReader reader, SvgPaintableElementContext context)
+    internal static SvgGeometry ParseLine(XmlReader reader, SvgPaintableElementContext context, SvgClipBox? clip)
     {
         SvgLineSyntax syntax = SvgLineSyntax.Parse(reader);
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
@@ -26,7 +33,16 @@ internal static class SvgLeafParser
         if (strokeColor.Value.Alpha != 255 || strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque even-width line strokes are implemented.");
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor.Value, element.Presentation.Opacity);
         bool painted = element.Presentation.IsPainted;
-        return SvgGeometry.FromAxisAlignedLine(new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth));
+        SvgAxisAlignedLine line = new(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth);
+        return clip is null ? SvgGeometry.FromAxisAlignedLine(line) : clip.Value.ClipLine(line);
+    }
+
+    private static SvgRectangle ClipStrokedRectangle(SvgRectangle rectangle, SvgStroke? stroke, SvgClipBox clip)
+    {
+        if (stroke is null) return clip.ClipRectangle(rectangle);
+        double halfWidth = stroke.Value.Width / 2d;
+        if (!clip.Contains(rectangle.X - halfWidth, rectangle.Y - halfWidth, rectangle.X + rectangle.Width + halfWidth, rectangle.Y + rectangle.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
+        return rectangle;
     }
 
     private static SvgStroke? ParseRectangleStroke(SvgColor? color, string? widthValue, AxisTransform transform, double x, double y, double width, double height, byte opacity, bool hasFill)

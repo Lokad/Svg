@@ -49,7 +49,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
     }
 
-    internal SvgParsedGeometry Lower(SvgColor color, bool hasFill, AxisTransform transform)
+    internal SvgParsedGeometry Lower(SvgColor color, bool hasFill, AxisTransform transform, SvgClipBox? clip)
     {
         for (int boundaryIndex = 0; boundaryIndex < _boundaries.Count;)
         {
@@ -72,7 +72,8 @@ internal ref struct SvgOrthogonalGeometryLowering
                 int left = _intersections[intersectionIndex]; int right = _intersections[intersectionIndex + 1];
                 if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
                 if (_geometryElementCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path rectangle-band count exceeds the configured path-command limit." : _elementName + " rectangle-band count exceeds the configured path-command limit.");
-                _geometries.Add(SvgGeometry.FromOrthogonalBand(transform.ApplyOrthogonalRectangle(left, top, (long)right - left, (long)bottom - top, color, hasFill)));
+                SvgRectangle band = transform.ApplyOrthogonalRectangle(left, top, (long)right - left, (long)bottom - top, color, hasFill);
+                _geometries.Add(SvgGeometry.FromOrthogonalBand(clip is null ? band : clip.Value.ClipRectangle(band)));
                 _geometryElementCount++;
             }
         }

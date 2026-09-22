@@ -12,7 +12,7 @@ public sealed class SvgReferenceResolverTests
         SvgDefinition definition = CreateRectangleDefinition();
         Assert.True(state.Definitions.TryAdd("tile", definition));
 
-        SvgReferenceResolver.ResolveOrDefer(CreateReference(), state.Definitions, state.PendingUses, state.Scene, new ParserWorkCounter(100), CancellationToken.None);
+        SvgReferenceResolver.ResolveOrDefer(CreateReference(), state.Definitions, state.PendingUses, state.Scene, null, new ParserWorkCounter(100), CancellationToken.None);
 
         using SvgSceneStorage scene = state.Scene.Build();
         Assert.Equal(0, state.PendingUses.Count);
@@ -25,7 +25,7 @@ public sealed class SvgReferenceResolverTests
         using SvgDocumentState state = new(new RenderBudget(10_000), new ParserWorkCounter(100), CancellationToken.None);
         SvgDefinition definition = CreateRectangleDefinition();
 
-        SvgReferenceResolver.ResolveOrDefer(CreateReference(), state.Definitions, state.PendingUses, state.Scene, new ParserWorkCounter(100), CancellationToken.None);
+        SvgReferenceResolver.ResolveOrDefer(CreateReference(), state.Definitions, state.PendingUses, state.Scene, null, new ParserWorkCounter(100), CancellationToken.None);
         Assert.True(state.Definitions.TryAdd("tile", definition));
         SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, new ParserWorkCounter(100), CancellationToken.None);
 
@@ -39,8 +39,8 @@ public sealed class SvgReferenceResolverTests
     {
         SvgDefinition definition = new(SvgGeometry.FromAxisAlignedLine(new SvgAxisAlignedLine(0, 0, 2, 0, new SvgColor(255, 0, 0, 255), true, 2)), false);
 
-        SvgGeometry applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1, 0, AxisTransform.Identity, 255, true, null));
-        SvgException exception = Assert.Throws<SvgException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1.5, 0, AxisTransform.Identity, 255, true, null)));
+        SvgGeometry applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1, 0, AxisTransform.Identity, 255, true, null), null);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1.5, 0, AxisTransform.Identity, 255, true, null), null));
 
         Assert.Equal(new SvgAxisAlignedLine(1, 0, 3, 0, new SvgColor(255, 0, 0, 255), true, 2), applied.AxisAlignedLine);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);

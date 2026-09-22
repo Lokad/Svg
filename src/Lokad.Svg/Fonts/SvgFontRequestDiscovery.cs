@@ -46,6 +46,7 @@ internal static class SvgFontRequestDiscovery
         using var whitespaceLevels = new BudgetedParserList<SvgTextWhitespaceMode>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var eligibleLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var groupLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var viewportDepths = new BudgetedParserList<int>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         char[]? textChunk = null;
         RenderBudget.BudgetReservation? textChunkReservation = null;
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
@@ -124,8 +125,17 @@ internal static class SvgFontRequestDiscovery
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = parentAllowsText && textElement;
                     bool childAllowsText = parentAllowsText && isSvgElement && (reader.Depth == rootDepth || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName));
+                    bool plainViewport = false;
+                    if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && !rootElement && (directChild || viewportDepths.Count > 0) && reader.LocalName == "svg")
+                    {
+                        SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
+                        SvgNestedViewportSyntax.Parse(reader);
+                        plainViewport = true;
+                        sawStyleableNode = true;
+                        if (!reader.IsEmptyElement) viewportDepths.Add(reader.Depth);
+                    }
                     bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol");
-                    bool unsupportedContainer = (!rootElement && reader.LocalName is ("svg" or "style" or "symbol")) || (!directChild && reader.LocalName is ("defs" or "title" or "desc" or "metadata"));
+                    bool unsupportedContainer = (!rootElement && reader.LocalName is ("style" or "symbol")) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && reader.LocalName is ("defs" or "title" or "desc" or "metadata"));
                     bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline");
                     bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyRenderedLeaf);
                     // Retain requests admitted before this point: lowering still paints them before conversion rejects the unsupported sibling, so clearing here would omit a font lowering requires.
@@ -188,6 +198,7 @@ internal static class SvgFontRequestDiscovery
                     if (reader.Depth == inertDepth) inertDepth = -1;
                     if (reader.Depth == definitionsDepth) definitionsDepth = -1;
                     if (reader.Depth == symbolDepth) symbolDepth = -1;
+                    if (viewportDepths.Count > 0 && viewportDepths[^1] == reader.Depth) viewportDepths.RemoveLast();
                     if (inheritedLevels.Count != 0)
                     {
                         inheritedLevels.RemoveLast();

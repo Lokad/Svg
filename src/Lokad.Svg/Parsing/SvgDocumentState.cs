@@ -12,6 +12,7 @@ internal sealed class SvgDocumentState : IDisposable
         Scene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
         Strings = new BudgetedParserStringStore(budget);
         Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        Viewports = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         StyleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -22,6 +23,10 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserStringStore Strings { get; }
 
     internal BudgetedParserList<SvgGroupScope> Groups { get; }
+
+    internal BudgetedParserList<SvgClipBox> Viewports { get; }
+
+    internal SvgClipBox? EffectiveClip => Viewports.Count == 0 ? null : Viewports[^1];
 
     internal BudgetedParserList<CssRule> StyleRules { get; }
 
@@ -58,6 +63,7 @@ internal sealed class SvgDocumentState : IDisposable
         StyleRules.Dispose();
         Strings.Dispose();
         Groups.Dispose();
+        Viewports.Dispose();
         Scene.Dispose();
     }
 }
