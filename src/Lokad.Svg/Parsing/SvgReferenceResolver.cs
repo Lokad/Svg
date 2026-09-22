@@ -4,17 +4,17 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, AxisTransform Transform, AxisTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride);
 
 /// <summary>Records the placeholders that must be replaced when a forward local use reference resolves.</summary>
-internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame);
+internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame, byte? Mask);
 
 /// <summary>Applies typed local references through their geometry-specific supported transforms.</summary>
 internal static class SvgReferenceResolver
 {
     /// <summary>Resolves an already parsed local reference immediately or retains its typed placeholder for document-end resolution.</summary>
-    internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, byte? mask, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
-        if (definitions.TryGetValue(reference.Id, out SvgDefinition definition)) scene.AddGeometry(Apply(definition, reference, frame));
-        else pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference, frame));
+        if (definitions.TryGetValue(reference.Id, out SvgDefinition definition)) scene.AddGeometry(ApplyMask(definition, reference, frame, mask));
+        else pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference, frame, mask));
     }
 
     internal static SvgGeometry Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame)
@@ -84,6 +84,13 @@ internal static class SvgReferenceResolver
         };
     }
 
+    private static SvgGeometry ApplyMask(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, byte? mask)
+    {
+        SvgGeometry geometry = Apply(definition, reference, frame);
+        if (mask is null) return geometry;
+        return SvgMaskSyntax.ApplyMask(geometry, mask.Value, SvgMaskSyntax.MaskRegion(SvgMaskSyntax.BoundingBox(geometry)));
+    }
+
     private static SvgRectangle ClipRectangle(SvgRectangle rectangle, SvgViewportFrame? frame) => frame is null ? rectangle : frame.Value.ClipShifted(rectangle);
 
     private static SvgGeometry ClipLine(SvgAxisAlignedLine line, SvgViewportFrame? frame) => frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line);
@@ -117,9 +124,9 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
-            scene.Replace(pendingUse.Slot, Apply(definition, pendingUse.Reference, pendingUse.Frame));
+            scene.Replace(pendingUse.Slot, ApplyMask(definition, pendingUse.Reference, pendingUse.Frame, pendingUse.Mask));
         }
     }
 
-    private static byte MultiplyAlpha(byte left, byte right) => (byte)((left * right + 127) / 255);
+    internal static byte MultiplyAlpha(byte left, byte right) => (byte)((left * right + 127) / 255);
 }

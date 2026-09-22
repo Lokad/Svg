@@ -35,15 +35,16 @@ internal static class SvgRenderedLeafParser
         switch (reader.LocalName)
         {
             case "rect":
-                state.Scene.AddGeometry(SvgLeafParser.ParseRectangle(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state)));
+                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, SvgLeafParser.ParseRectangle(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state))));
                 return true;
             case "line":
-                state.Scene.AddGeometry(SvgLeafParser.ParseLine(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state)));
+                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, SvgLeafParser.ParseLine(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state))));
                 return true;
             case "path":
                 using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, SvgClipPathSyntax.ResolveLeafClip(reader, state)))
                 {
                     state.GeometryElementCount += path.ElementCount;
+                    SvgMaskSyntax.ApplyMaskToBands(reader, state, path.Storage.Items);
                     state.Scene.AddGeometries(path.Geometries);
                 }
                 return true;
@@ -51,6 +52,7 @@ internal static class SvgRenderedLeafParser
                 using (SvgParsedGeometry pointList = SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, SvgClipPathSyntax.ResolveLeafClip(reader, state)))
                 {
                     state.GeometryElementCount += pointList.ElementCount;
+                    SvgMaskSyntax.ApplyMaskToBands(reader, state, pointList.Storage.Items);
                     state.Scene.AddGeometries(pointList.Geometries);
                 }
                 return true;
@@ -59,6 +61,7 @@ internal static class SvgRenderedLeafParser
                 // Fail fast with the conversion-level category: the operation is already rejected as unsupported, so a later font lookup must not surface UnresolvedResource instead.
                 if (state.HasUnsupportedContent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "This SVG child element is not implemented yet.");
                 if (reader.GetAttribute("clip-path") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The clip-path attribute on text is not implemented.");
+                if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on text are not implemented.");
                 SvgResolvedDirectTextElement resolvedText = context.ResolveTextShape(reader);
                 SvgResolvedPaintableElement textElement = resolvedText.PaintableElement;
                 if (!textElement.Transform.Equals(AxisTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");

@@ -18,6 +18,7 @@ internal sealed class SvgDocumentState : IDisposable
         StyleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         Clips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
+        Masks = new BudgetedParserDictionary<string, byte>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }
 
@@ -36,6 +37,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserDictionary<string, SvgDefinition> Definitions { get; }
 
     internal BudgetedParserDictionary<string, SvgClipBox> Clips { get; }
+
+    internal BudgetedParserDictionary<string, byte> Masks { get; }
 
     internal BudgetedParserList<int> ClipDepths { get; }
 
@@ -63,6 +66,14 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal int ClipPathDepth { get; set; } = -1;
 
+    internal int MaskDepth { get; set; } = -1;
+
+    internal string? MaskId { get; set; }
+
+    internal bool MaskIsAlpha { get; set; }
+
+    internal byte? MaskValue { get; set; }
+
     internal string? ClipPathId { get; set; }
 
     internal SvgClipBox? ClipBox { get; set; }
@@ -76,6 +87,7 @@ internal sealed class SvgDocumentState : IDisposable
         PendingUses.Dispose();
         Definitions.Dispose();
         Clips.Dispose();
+        Masks.Dispose();
         ClipDepths.Dispose();
         StyleRules.Dispose();
         Strings.Dispose();

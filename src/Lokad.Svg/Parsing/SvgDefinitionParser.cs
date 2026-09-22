@@ -65,6 +65,38 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
+        if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "mask")
+        {
+            SvgElementAttributePolicy.ValidateMask(reader, workCounter, cancellationToken);
+            state.MaskId = reader.GetAttribute("id");
+            state.MaskIsAlpha = SvgMaskSyntax.ParseMaskType(reader.GetAttribute("mask-type"));
+            state.MaskValue = null;
+            if (reader.IsEmptyElement)
+            {
+                if (state.MaskId is not null) RegisterMask(state, workCounter, cancellationToken);
+            }
+            else state.MaskDepth = reader.Depth;
+            state.SawStyleableNode = true;
+            return true;
+        }
+        if (state.MaskDepth >= 0 && reader.Depth == state.MaskDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
+        {
+            if (reader.LocalName == "rect")
+            {
+                if (state.MaskValue is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle masks are implemented.");
+                SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
+                SvgRectangleSyntax.Parse(reader);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgResolvedPaintableElement element = context.ResolveShape(reader, false);
+                if (!element.Presentation.IsPainted) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Invisible mask content is not implemented.");
+                state.MaskValue = SvgMaskSyntax.InterpretValue(element.Presentation.Color, state.MaskIsAlpha);
+                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                state.SawStyleableNode = true;
+                return true;
+            }
+            state.HasUnsupportedContent = true;
+            return true;
+        }
         if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
@@ -79,12 +111,19 @@ internal static class SvgDefinitionParser
             double? baseWidth = parentFrame?.ViewportWidth ?? root.Width;
             double? baseHeight = parentFrame?.ViewportHeight ?? root.Height;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
-            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, SvgClipPathSyntax.ResolveLeafClip(reader, state), workCounter, cancellationToken);
+            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, SvgClipPathSyntax.ResolveLeafClip(reader, state), SvgMaskSyntax.ResolveUseMask(reader, state), workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
             return true;
         }
         return false;
+    }
+
+    internal static void RegisterMask(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.Consume(cancellationToken);
+        string retainedId = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask registration requires an identifier."));
+        if (!state.Masks.TryAdd(retainedId, state.MaskValue ?? 0)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
     }
 
     internal static void RegisterClipBox(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

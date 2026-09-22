@@ -1429,4 +1429,59 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+    [Fact]
+    public void Applies_a_white_mask_without_changing_content()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#ffffff'/></mask></defs><rect x='8' y='8' width='48' height='48' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Applies_a_gray_mask_as_translucency()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#808080'/></mask></defs><rect x='8' y='8' width='48' height='48' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 128), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Applies_an_alpha_type_mask_from_channel_alpha()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade' mask-type='alpha'><rect x='8' y='8' width='48' height='48' fill='#00ff00'/></mask></defs><rect x='8' y='8' width='48' height='48' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Registers_an_empty_mask_as_transparent()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'/></defs><rect x='8' y='8' width='48' height='48' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 0), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Rejects_chromatic_luminance_mask_content()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#ff0000'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_masks_on_groups()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#ffffff'/></mask></defs><g mask='url(#fade)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_unknown_mask_references()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='8' height='8' fill='red' mask='url(#missing)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
 }

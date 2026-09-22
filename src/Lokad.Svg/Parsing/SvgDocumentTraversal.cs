@@ -112,6 +112,14 @@ internal static class SvgDocumentTraversal
             if (reader.NodeType == XmlNodeType.EndElement)
             {
                 if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
+                if (reader.Depth == state.MaskDepth)
+                {
+                    if (state.MaskId is not null) SvgDefinitionParser.RegisterMask(state, workCounter, cancellationToken);
+                    state.MaskDepth = -1;
+                    state.MaskId = null;
+                    state.MaskIsAlpha = false;
+                    state.MaskValue = null;
+                }
                 if (reader.Depth == state.ClipPathDepth)
                 {
                     if (state.ClipPathId is not null) SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);

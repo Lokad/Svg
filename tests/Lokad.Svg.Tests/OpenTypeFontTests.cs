@@ -1683,7 +1683,9 @@ public sealed class OpenTypeFontTests
         [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><g clip-path='url(#c)'><rect width='5' height='5' fill='red'/></g><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><rect width='5' height='5' fill='red' clip-path='url(#c)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='a'><rect x='1' y='1' width='4' height='4'/></clipPath><clipPath id='b'><rect x='2' y='2' width='2' height='2'/></clipPath></defs><g clip-path='url(#a)'><g clip-path='url(#b)'><rect width='5' height='5' fill='red'/></g></g><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
-        public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
+        [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ffffff'/></mask></defs><rect width='5' height='5' fill='red' mask='url(#m)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m' mask-type='alpha'><rect x='1' y='1' width='3' height='3' fill='#00ff00'/></mask></defs><rect width='5' height='5' fill='red' mask='url(#m)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+    public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
         string[] expected = expectedRequests.Length == 0 ? [] : expectedRequests.Split(',');
@@ -1740,7 +1742,9 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><svg><text font-family='Example'>A</text></svg></svg>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><svg x='1' y='1'><rect width='2' height='2' fill='red'/></svg><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
         [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><style>rect { fill: red; }</style><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
-        public async Task Discovery_rejects_unsupported_text_before_lowering(string svg, SvgErrorCode code)
+        [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ffffff'/></mask></defs><g mask='url(#m)'><rect width='5' height='5' fill='red'/></g><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ffffff'/></mask></defs><style>rect { fill: red; }</style><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
+    public async Task Discovery_rejects_unsupported_text_before_lowering(string svg, SvgErrorCode code)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
         SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, CancellationToken.None));
@@ -1846,7 +1850,7 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><style>x</style></defs><text font-family='Unused'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><symbol id='s'><text font-family='Unused'>x</text></symbol><use href='#s'/></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><mask id='m'><rect width='1' height='1' fill='white'/></mask><rect width='5' height='5' fill='red' mask='url(#m)'/></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><mask id='m'><text font-family='Unused'>x</text></mask><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><mask id='m'><text font-family='Unused'>x</text></mask><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><clipPath id='c'><rect width='1' height='1'/></clipPath><rect width='5' height='5' fill='red' clip-path='url(#c)'/></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example'><tspan rotate='5'>A</tspan></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example'>A<tspan x='1'>A</tspan></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
@@ -1885,7 +1889,10 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><g clip-path='url(#missing)'><rect width='5' height='5' fill='red'/></g><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' clip-path='url(#c)'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='2' height='2'/><rect x='3' y='3' width='1' height='1'/></clipPath></defs><g clip-path='url(#c)'><rect width='5' height='5' fill='red'/></g><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
-        public async Task Discovery_and_lowering_agree_on_rejected_text(string svg, SvgErrorCode code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
+        [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ffffff'/></mask></defs><text font-family='Example' font-size='100' y='3' mask='url(#m)'>A</text><text font-family='Example' font-size='100' y='4'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect width='5' height='5' fill='red' mask='url(#missing)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ff0000'/></mask></defs><rect width='5' height='5' fill='red' mask='url(#m)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
+    public async Task Discovery_and_lowering_agree_on_rejected_text(string svg, SvgErrorCode code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
         string[] expected = expectedRequests.Length == 0 ? [] : expectedRequests.Split(',');
@@ -2346,7 +2353,7 @@ public sealed class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
 
-        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect mask='url(#missing)'/></defs><text font-family='Unused'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect filter='url(#missing)'/></defs><text font-family='Unused'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, source.RequestCount);
@@ -2361,7 +2368,7 @@ public sealed class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
 
-        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused' mask='url(#missing)'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused' filter='url(#missing)'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, source.RequestCount);
