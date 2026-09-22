@@ -1656,6 +1656,8 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><clipPath id='c'><rect width='1' height='1'/></clipPath><rect width='5' height='5' fill='red' clip-path='url(#c)'/></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' textLength='50'>A</text></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example'><tspan rotate='5'>A</tspan></text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><foreignObject width='5' height='5'><text font-family='Unused'>x</text></foreignObject><text font-family='Example' font-size='100' y='3'>A</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><pattern id='p'><text font-family='Unused'>x</text></pattern><rect width='5' height='5' fill='url(#p)'/></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     public async Task Discovery_and_lowering_agree_on_rejected_text(string svg, bool failsDuringDiscovery, SvgErrorCode code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
