@@ -1938,6 +1938,17 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Clamps_stacked_translucent_rectangle_composites_to_opaque_channels()
+    {
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect x='14' y='8' width='12' height='48' fill='#ff0000' fill-opacity='0.5'/><rect x='24' y='24' width='16' height='16' fill='#ffcc00' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgColor(255, 136, 0, 191), DecodePixel(png, 24, 24));
+        Assert.Equal(new SvgColor(255, 136, 0, 191), DecodePixel(png, 25, 30));
+        Assert.Equal(new SvgColor(255, 204, 0, 128), DecodePixel(png, 30, 30));
+        Assert.Equal(new SvgColor(255, 0, 0, 128), DecodePixel(png, 16, 10));
+    }
+
+    [Fact]
     public async Task Discovery_and_preparation_observe_cancellation_together()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>");
