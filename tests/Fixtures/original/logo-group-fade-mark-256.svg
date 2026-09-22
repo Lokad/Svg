@@ -1,0 +1,7 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256">
+  <g opacity="0.5">
+    <rect x="32" y="32" width="128" height="128" fill="#ff0000"/>
+    <rect x="96" y="96" width="128" height="128" fill="#0000ff"/>
+  </g>
+</svg>
