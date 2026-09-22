@@ -5,7 +5,7 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-All seventy-seven current manifest entries have exact decoded-pixel render gates; this
+All ninety-two current manifest entries are gated (eighty-three exact decoded-pixel references; nine classified-unsupported rejections with reasons); this
 is not a general pixel-fidelity claim.
 
 | Area | Status |
@@ -22,8 +22,8 @@ is not a general pixel-fidelity claim.
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms aggregate into at-most-64 KiB `IDAT` chunks under a budgeted 64 KiB cap with byte-identical output across all four forms, while memory forms accumulate budgeted segments without geometric copies; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and seventy-seven stable references |
-| Fixture corpus | Seventy-seven original CC0 probes with verified hashes; the manifest gate renders and compares all seventy-seven exactly |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and eighty-three stable references |
+| Fixture corpus | Ninety-two original CC0 probes with verified hashes; the manifest gate renders and compares all eighty-three exact entries exactly |
 
 ### Experimental supplied-font text
 
