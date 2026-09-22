@@ -395,10 +395,8 @@ public static class SvgConverter
             long coverage = (long)(endY - startY) * (endX - startX);
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient fill raster work exceeds the configured limit.");
             workUnits += coverage;
-            double baseX = gradient.Box.X + gradient.Gradient.X1 * gradient.Box.Width;
-            double baseY = gradient.Box.Y + gradient.Gradient.Y1 * gradient.Box.Height;
-            double directionX = (gradient.Gradient.X2 - gradient.Gradient.X1) * gradient.Box.Width;
-            double directionY = (gradient.Gradient.Y2 - gradient.Gradient.Y1) * gradient.Box.Height;
+            double directionX = gradient.Gradient.X2 - gradient.Gradient.X1;
+            double directionY = gradient.Gradient.Y2 - gradient.Gradient.Y1;
             double denominator = directionX * directionX + directionY * directionY;
             if (gradient.Fill.HasFill && denominator != 0)
             for (int y = startY; y < endY; y++)
@@ -410,7 +408,9 @@ public static class SvgConverter
                 double verticalCoverage = Math.Clamp(Math.Min(fillBottom, y + 1) - Math.Max(fillTop, y), 0, 1);
                 double horizontalCoverage = Math.Clamp(Math.Min(fillRight, x + 1) - Math.Max(fillLeft, x), 0, 1);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
-                double position = ((deviceX - baseX) * directionX + (deviceY - baseY) * directionY) / denominator;
+                double normalizedX = (deviceX - gradient.Box.X) / gradient.Box.Width;
+                double normalizedY = (deviceY - gradient.Box.Y) / gradient.Box.Height;
+                double position = ((normalizedX - gradient.Gradient.X1) * directionX + (normalizedY - gradient.Gradient.Y1) * directionY) / denominator;
                 if (position < 0) position = 0;
                 if (position > 1) position = 1;
                 double dither = GradientDither[x & 7, y & 7] / 64d;
