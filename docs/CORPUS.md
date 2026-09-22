@@ -8,7 +8,8 @@ The initial probes are original CC0 SVGs. A fidelity status is never changed mer
 because a candidate renderer produces an image: it requires a reviewed reference and
 an exact independent comparison. The visual test suite reads the manifest and renders
 and compares every current `exact` entry; a reference artifact alone is not a
-renderer pass.
+renderer pass. Entries inventoried as `unsupported` carry provenance, hashes
+and an explicit reason and are excluded from pixel comparison until admitted.
 
 Each materialized asset begins with its CC0 SPDX declaration. `originalSha256`
 preserves the pre-materialization bytes where that declaration was added;

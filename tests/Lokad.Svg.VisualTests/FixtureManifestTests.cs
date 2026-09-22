@@ -23,8 +23,6 @@ public sealed class FixtureManifestTests
 
             string expectedSupport = RequiredString(fixture, "expectedSupport");
             string expectedFidelity = RequiredString(fixture, "expectedFidelity");
-            Assert.Equal("exact", expectedSupport);
-            Assert.Equal("exact", expectedFidelity);
 
             string assetPath = Path.Combine(fixtures, RequiredString(fixture, "path"));
             Assert.True(File.Exists(assetPath), "Missing fixture: " + assetPath);
@@ -43,6 +41,9 @@ public sealed class FixtureManifestTests
             Assert.True(height > 0, "Fixture height must be positive: " + id);
             Assert.Equal("transparent", background);
 
+            if (expectedSupport == "exact")
+            {
+                Assert.Equal("exact", expectedFidelity);
             string metadataPath = Path.Combine(testOutput, RequiredString(fixture, "oracleIdentity").Replace('/', Path.DirectorySeparatorChar));
             Assert.True(File.Exists(metadataPath), "Missing reference metadata: " + metadataPath);
             using JsonDocument metadata = JsonDocument.Parse(File.ReadAllText(metadataPath));
@@ -72,6 +73,15 @@ public sealed class FixtureManifestTests
             PixelComparison comparison = PixelComparer.Compare(reference, candidate);
             Assert.True(comparison.IsExact, id + " differs from its admitted reference: " + JsonSerializer.Serialize(comparison));
             exactFixtureCount++;
+            }
+            else
+            {
+                Assert.Equal("unsupported", expectedSupport);
+                Assert.Equal("unsupported", expectedFidelity);
+                Assert.False(string.IsNullOrEmpty(fixture.GetProperty("unsupportedReason").GetString()), "Missing unsupported reason: " + id);
+                Assert.False(fixture.TryGetProperty("oracleIdentity", out _), "Unsupported fixture must not claim a reference: " + id);
+                Assert.False(fixture.TryGetProperty("referenceSha256", out _), "Unsupported fixture must not claim a reference hash: " + id);
+            }
         }
 
         Assert.True(exactFixtureCount > 0, "The fixture inventory contains no exact cases.");
