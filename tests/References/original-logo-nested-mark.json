@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-nested-mark",
+  "referencePng": "original-logo-nested-mark.png",
+  "referenceSha256": "8dca4454d60d4fca77a120e05384dafa2b034d8c44b445cdd781f29441ff6de3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "5d168bcf6c179202b3f5e30732d7437c97552aae6261f98e794d1dec275f7120",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-22"
+}
