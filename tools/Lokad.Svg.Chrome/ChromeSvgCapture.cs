@@ -10,6 +10,7 @@ internal static class ChromeSvgCapture
     {
         Transparent,
         White,
+        Black,
     }
 
     internal const int MaximumSvgBytes = 8 * 1024 * 1024;
@@ -22,7 +23,7 @@ internal static class ChromeSvgCapture
         if (svg.Length > MaximumSvgBytes) throw new InvalidDataException("SVG input exceeds the Chrome capture limit of 8 MiB.");
         if ((long)width * height > MaximumCapturePixels) throw new InvalidDataException("Chrome capture dimensions exceed the 2-million-pixel transport limit.");
         string svgDataUrl = "data:image/svg+xml;base64," + Convert.ToBase64String(svg.Span);
-        string pageBackground = background == CaptureBackground.White ? "#ffffff" : "transparent";
+        string pageBackground = background == CaptureBackground.White ? "#ffffff" : background == CaptureBackground.Black ? "#000000" : "transparent";
         string html = "<style>html,body{margin:0;overflow:hidden;background:" + pageBackground + "}</style><img id=svg src='" + svgDataUrl + "' style='display:block'>";
         string pageUrl = "data:text/html;base64," + Convert.ToBase64String(Encoding.UTF8.GetBytes(html));
         await using ChromeProcess chrome = await ChromeProcess.LaunchAsync(executable, cancellationToken);
@@ -37,7 +38,7 @@ internal static class ChromeSvgCapture
                 await page.SendAsync("Network.enable", "{}", cancellationToken);
                 await page.SendAsync("Network.setBlockedURLs", "{\"urls\":[\"http://*\",\"https://*\",\"file://*\",\"ftp://*\",\"ws://*\",\"wss://*\"]}", cancellationToken);
                 await page.SendAsync("Emulation.setDeviceMetricsOverride", JsonSerializer.Serialize(new { width, height, deviceScaleFactor = 1, mobile = false }), cancellationToken);
-                string backgroundOverride = background == CaptureBackground.White ? "{\"color\":{\"r\":255,\"g\":255,\"b\":255,\"a\":255}}" : "{\"color\":{\"r\":0,\"g\":0,\"b\":0,\"a\":0}}";
+                string backgroundOverride = background == CaptureBackground.White ? "{\"color\":{\"r\":255,\"g\":255,\"b\":255,\"a\":255}}" : background == CaptureBackground.Black ? "{\"color\":{\"r\":0,\"g\":0,\"b\":0,\"a\":255}}" : "{\"color\":{\"r\":0,\"g\":0,\"b\":0,\"a\":0}}";
                 await page.SendAsync("Emulation.setDefaultBackgroundColorOverride", backgroundOverride, cancellationToken);
                 await page.SendAsync("Page.navigate", JsonSerializer.Serialize(new { url = pageUrl }), cancellationToken);
                 await page.WaitForEventAsync("Page.loadEventFired", cancellationToken);

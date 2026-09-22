@@ -43,6 +43,7 @@ public sealed class FixtureManifestTests
             {
                 "transparent" => SvgColor.Transparent,
                 "white" => new SvgColor(255, 255, 255, 255),
+                "black" => new SvgColor(0, 0, 0, 255),
                 _ => throw new InvalidDataException("Unsupported fixture background: " + background),
             };
 

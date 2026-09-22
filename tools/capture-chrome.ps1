@@ -9,7 +9,7 @@ param(
     [int] $Height,
     [Parameter(Mandatory = $true)]
     [string] $CacheDirectory,
-    [ValidateSet('transparent', 'white')]
+    [ValidateSet('transparent', 'white', 'black')]
     [string] $Background = 'transparent',
     [string] $PinPath = (Join-Path $PSScriptRoot 'chrome-for-testing.json')
 )
@@ -35,7 +35,7 @@ $start.ArgumentList.Add($chromeTool)
 $start.ArgumentList.Add($executable)
 $start.ArgumentList.Add($Width.ToString([Globalization.CultureInfo]::InvariantCulture))
 $start.ArgumentList.Add($Height.ToString([Globalization.CultureInfo]::InvariantCulture))
-if ($Background -eq 'white') { $start.ArgumentList.Add('white') }
+if ($Background -ne 'transparent') { $start.ArgumentList.Add($Background) }
 $process = [System.Diagnostics.Process]::Start($start)
 if ($null -eq $process) { throw 'Chrome capture process could not be started.' }
 try

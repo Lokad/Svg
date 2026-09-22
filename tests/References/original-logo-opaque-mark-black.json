@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-opaque-mark-black",
+  "referencePng": "original-logo-opaque-mark-black.png",
+  "referenceSha256": "b69851dae6768196c6d18bcde7613bb0fc2b88bd7b69963f08feedb079ffec6a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "4ef6025a42760c43753f6c10aac31e131f3539caa3b7d38f4f16d40977c9118c",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-22"
+}
