@@ -696,6 +696,23 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Rejects_point_matched_composite_glyph_components_on_all_decode_paths()
+    {
+        byte[] font = CreateFont(1024, 3, 2, 1);
+        OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
+        WriteInt16(font, glyph.Offset, -1);
+        WriteUInt16(font, glyph.Offset + 10, 1);
+        WriteUInt16(font, glyph.Offset + 12, 1);
+        WriteInt16(font, glyph.Offset + 14, 2);
+        WriteInt16(font, glyph.Offset + 16, -3);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, metrics, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, new RenderBudget(1_000_000), new ParserWorkCounter(long.MaxValue), CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
     public void Validates_and_rejects_composite_glyph_instructions()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
@@ -707,9 +724,11 @@ public sealed class OpenTypeFontTests
         WriteInt16(font, glyph.Offset + 16, 0);
         WriteUInt16(font, glyph.Offset + 18, 0);
 
-        SvgException exception = Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, CancellationToken.None));
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, metrics, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, new RenderBudget(1_000_000), new ParserWorkCounter(long.MaxValue), CancellationToken.None)).ErrorCode);
     }
 
     [Fact]
