@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-thin-stroke-mark-256",
+  "referencePng": "original-logo-thin-stroke-mark-256.png",
+  "referenceSha256": "93f7a35096dc12c6508488c20078fa38fe1d48f900167b9e11c76727e19ab4e7",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 256, "height": 256, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "4ecfdf6e49d5184487743df1d0748cf29bc00650d161d1562bf54e3a5ea21de4",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-22"
+}
