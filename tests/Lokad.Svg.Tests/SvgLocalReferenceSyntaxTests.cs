@@ -13,7 +13,7 @@ public sealed class SvgLocalReferenceSyntaxTests
         using BudgetedParserStringStore strings = new(new RenderBudget(1_000));
         Assert.True(reader.Read());
 
-        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings);
+        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, null, null);
 
         Assert.Equal("tile", syntax.Id);
         Assert.Equal(2.25, syntax.X);
@@ -30,7 +30,7 @@ public sealed class SvgLocalReferenceSyntaxTests
         using BudgetedParserStringStore strings = new(budget);
         Assert.True(reader.Read());
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgLocalReferenceSyntax.Parse(reader, strings));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgLocalReferenceSyntax.Parse(reader, strings, null, null));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Parser]);
@@ -43,7 +43,7 @@ public sealed class SvgLocalReferenceSyntaxTests
         using BudgetedParserStringStore strings = new(new RenderBudget(1_000));
         Assert.True(reader.Read());
 
-        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings);
+        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, null, null);
 
         Assert.Equal("tile", syntax.Id);
         Assert.Equal(2, syntax.X);

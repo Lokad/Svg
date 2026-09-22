@@ -26,7 +26,7 @@ internal static class SvgLeafParser
 
     internal static SvgGeometry ParseImage(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget)
     {
-        SvgImageSyntax syntax = SvgImageSyntax.Parse(reader);
+        SvgImageSyntax syntax = SvgImageSyntax.Parse(reader, baseWidth, baseHeight);
         SvgResolvedPaintableElement element = context.ResolveShape(reader, false);
         double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
         double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");

@@ -49,6 +49,22 @@ internal static class SvgGeometrySyntax
         return result;
     }
 
+    /// <summary>Resolves an explicit bare-number or percentage viewport dimension against its base.</summary>
+    internal static double ParseViewportDimension(string value, double? baseValue)
+    {
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport dimension values exceed the configured syntax limit.");
+        if (token.EndsWith("%"))
+        {
+            if (baseValue is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage viewport dimensions require known parent dimensions.");
+            ReadOnlySpan<char> number = token[..^1].TrimEnd();
+            if (!double.TryParse(number, NumberStyles.Float, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent)) throw new SvgException(SvgErrorCode.MalformedInput, "Percentage viewport dimensions must be finite numbers.");
+            double resolved = percent * baseValue.Value / 100;
+            if (!double.IsFinite(resolved)) throw new SvgException(SvgErrorCode.LimitExceeded, "Percentage viewport dimensions exceed the admitted numeric range.");
+            return resolved;
+        }
+        return ParseRectangleCoordinate(value);
+    }
     /// <summary>Parses one finite direct-text coordinate without the rectangle fast path's quarter-pixel restriction.</summary>
     internal static double ParseTextCoordinate(string value)
     {
