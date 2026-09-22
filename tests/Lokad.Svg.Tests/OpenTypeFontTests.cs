@@ -1812,28 +1812,23 @@ public sealed class OpenTypeFontTests
         Assert.Equal(0, painted.Blue);
         Assert.True(painted.Alpha > 0);
         Assert.Equal(new SvgColor(0, 0, 0, 0), background);
-
-        SvgColor DecodePixel(ReadOnlyMemory<byte> image, int x, int y)
-        {
-            int width = BinaryPrimitives.ReadInt32BigEndian(image.Span.Slice(16, 4));
-            int height = BinaryPrimitives.ReadInt32BigEndian(image.Span.Slice(20, 4));
-            if ((uint)x >= (uint)width || (uint)y >= (uint)height) throw new ArgumentOutOfRangeException(nameof(x));
-            using var compressed = new MemoryStream();
-            for (int offset = 8; offset < image.Length;)
-            {
-                int length = BinaryPrimitives.ReadInt32BigEndian(image.Span.Slice(offset, 4));
-                if (image.Span.Slice(offset + 4, 4).SequenceEqual("IDAT"u8)) compressed.Write(image.Span.Slice(offset + 8, length));
-                offset += length + 12;
-            }
-            compressed.Position = 0;
-            using var zlib = new ZLibStream(compressed, CompressionMode.Decompress);
-            byte[] pixels = new byte[checked((width * 4 + 1) * height)];
-            zlib.ReadExactly(pixels);
-            int row = y * (width * 4 + 1);
-            if (pixels[row] != 0) throw new InvalidDataException("Test PNG decoder expects an unfiltered scanline.");
-            return new SvgColor(pixels[row + 1 + x * 4], pixels[row + 1 + x * 4 + 1], pixels[row + 1 + x * 4 + 2], pixels[row + 1 + x * 4 + 3]);
-        }
     }
+
+    [Fact]
+    public async Task Text_opacity_composes_multiplicatively_over_paint_and_coverage()
+    {
+        byte[] fillInput = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' fill='red' fill-opacity='0.5'>A</text></svg>");
+        byte[] layeredInput = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' fill='red' fill-opacity='0.5' opacity='0.5'>A</text></svg>");
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot fillSnapshot = await SvgFontSnapshot.CreateAsync(fillInput, catalog, provider, CancellationToken.None);
+        using SvgFontSnapshot layeredSnapshot = await SvgFontSnapshot.CreateAsync(layeredInput, catalog, provider, CancellationToken.None);
+        SvgColor fill = DecodePixel(SvgConverter.ConvertToPng(fillInput, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, fillSnapshot), CancellationToken.None), 1, 1);
+        SvgColor layered = DecodePixel(SvgConverter.ConvertToPng(layeredInput, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, layeredSnapshot), CancellationToken.None), 1, 1);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 48), fill);
+        Assert.Equal(new SvgColor(255, 0, 0, 24), layered);
+    }
+
     [Fact]
     public async Task Discovery_and_preparation_observe_cancellation_together()
     {
@@ -3876,6 +3871,27 @@ public sealed class OpenTypeFontTests
         int row = y * (width * 4 + 1);
         if (pixels[row] != 0) throw new InvalidDataException("Test PNG decoder expects an unfiltered scanline.");
         return pixels[row + 1 + x * 4 + 3];
+    }
+
+    private static SvgColor DecodePixel(ReadOnlyMemory<byte> image, int x, int y)
+    {
+        int width = BinaryPrimitives.ReadInt32BigEndian(image.Span.Slice(16, 4));
+        int height = BinaryPrimitives.ReadInt32BigEndian(image.Span.Slice(20, 4));
+        if ((uint)x >= (uint)width || (uint)y >= (uint)height) throw new ArgumentOutOfRangeException(nameof(x));
+        using var compressed = new MemoryStream();
+        for (int offset = 8; offset < image.Length;)
+        {
+            int length = BinaryPrimitives.ReadInt32BigEndian(image.Span.Slice(offset, 4));
+            if (image.Span.Slice(offset + 4, 4).SequenceEqual("IDAT"u8)) compressed.Write(image.Span.Slice(offset + 8, length));
+            offset += length + 12;
+        }
+        compressed.Position = 0;
+        using var zlib = new ZLibStream(compressed, CompressionMode.Decompress);
+        byte[] pixels = new byte[checked((width * 4 + 1) * height)];
+        zlib.ReadExactly(pixels);
+        int row = y * (width * 4 + 1);
+        if (pixels[row] != 0) throw new InvalidDataException("Test PNG decoder expects an unfiltered scanline.");
+        return new SvgColor(pixels[row + 1 + x * 4], pixels[row + 1 + x * 4 + 1], pixels[row + 1 + x * 4 + 2], pixels[row + 1 + x * 4 + 3]);
     }
 
     private static byte[] CreateFont(ushort unitsPerEm, ushort glyphCount, ushort numberOfHMetrics, short indexToLocFormat)
