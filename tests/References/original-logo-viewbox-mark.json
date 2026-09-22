@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-viewbox-mark",
+  "referencePng": "original-logo-viewbox-mark.png",
+  "referenceSha256": "01aa52bf7f2b3a53dc50e5751db236c99bbf47c30545c0d30f6262aa21d33677",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "9c661470b42a5b16ebe3954376b97bc184b078b11bc63e81cd4a0b4295c99fec",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-22"
+}
