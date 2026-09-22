@@ -56,6 +56,8 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal string? SymbolId { get; set; }
 
+    internal SvgViewBox? SymbolViewBox { get; set; }
+
     public void Dispose()
     {
         PendingUses.Dispose();

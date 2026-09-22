@@ -18,6 +18,8 @@ public sealed class SvgLocalReferenceSyntaxTests
         Assert.Equal("tile", syntax.Id);
         Assert.Equal(2.25, syntax.X);
         Assert.Equal(3, syntax.Y);
+        Assert.Null(syntax.Width);
+        Assert.Null(syntax.Height);
     }
 
     [Fact]

@@ -37,18 +37,18 @@ public sealed class SvgReferenceResolverTests
     [Fact]
     public void Applies_integral_and_rejects_fractional_line_use_offsets()
     {
-        SvgDefinition definition = new(SvgGeometry.FromAxisAlignedLine(new SvgAxisAlignedLine(0, 0, 2, 0, new SvgColor(255, 0, 0, 255), true, 2)), false);
+        SvgDefinition definition = new(SvgGeometry.FromAxisAlignedLine(new SvgAxisAlignedLine(0, 0, 2, 0, new SvgColor(255, 0, 0, 255), true, 2)), false, null);
 
-        SvgGeometry applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1, 0, AxisTransform.Identity, 255, true, null), null);
-        SvgException exception = Assert.Throws<SvgException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1.5, 0, AxisTransform.Identity, 255, true, null), null));
+        SvgGeometry applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null), null);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1.5, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null), null));
 
         Assert.Equal(new SvgAxisAlignedLine(1, 0, 3, 0, new SvgColor(255, 0, 0, 255), true, 2), applied.AxisAlignedLine);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
     private static SvgDefinition CreateRectangleDefinition()
-        => new(SvgGeometry.FromRectangle(new SvgRectangle(1, 2, 3, 4, new SvgColor(5, 6, 7, 255), true, null)), false);
+        => new(SvgGeometry.FromRectangle(new SvgRectangle(1, 2, 3, 4, new SvgColor(5, 6, 7, 255), true, null)), false, null);
 
     private static SvgUseReference CreateReference()
-        => new("tile", 0, 0, AxisTransform.Identity, 255, true, null);
+        => new("tile", 0, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null);
 }

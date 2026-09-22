@@ -46,7 +46,7 @@ internal static class SvgFontRequestDiscovery
         using var whitespaceLevels = new BudgetedParserList<SvgTextWhitespaceMode>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var eligibleLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var groupLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        using var viewportDepths = new BudgetedParserList<int>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var viewportSizes = new BudgetedParserList<SvgViewportSize>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         char[]? textChunk = null;
         RenderBudget.BudgetReservation? textChunkReservation = null;
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
@@ -66,6 +66,8 @@ internal static class SvgFontRequestDiscovery
             int symbolDepth = -1;
             int groupDepth = 0;
             int activeCandidateLevel = -1;
+            double? rootWidth = null;
+            double? rootHeight = null;
             while (reader.Read())
             {
                 workCounter.Consume(cancellationToken);
@@ -104,6 +106,8 @@ internal static class SvgFontRequestDiscovery
                     if (inheritedLevels.Count == 0)
                     {
                         SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, workCounter, cancellationToken);
+                        rootWidth = root.Width;
+                        rootHeight = root.Height;
                         style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.Opacity != 255);
                     }
                     else style = inheritedLevels[inheritedLevels.Count - 1];
@@ -126,13 +130,15 @@ internal static class SvgFontRequestDiscovery
                     bool isTextEligible = parentAllowsText && textElement;
                     bool childAllowsText = parentAllowsText && isSvgElement && (reader.Depth == rootDepth || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName));
                     bool plainViewport = false;
-                    if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && !rootElement && (directChild || viewportDepths.Count > 0) && reader.LocalName == "svg")
+                    if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && !rootElement && (directChild || viewportSizes.Count > 0) && reader.LocalName == "svg")
                     {
                         SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
-                        SvgNestedViewportSyntax.Parse(reader);
+                        double? baseWidth = viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width;
+                        double? baseHeight = viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height;
+                        SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, baseWidth, baseHeight);
                         plainViewport = true;
                         sawStyleableNode = true;
-                        if (!reader.IsEmptyElement) viewportDepths.Add(reader.Depth);
+                        if (!reader.IsEmptyElement) viewportSizes.Add(new SvgViewportSize(viewport.Width, viewport.Height, reader.Depth));
                     }
                     bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol");
                     bool unsupportedContainer = (!rootElement && reader.LocalName is ("style" or "symbol")) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && reader.LocalName is ("defs" or "title" or "desc" or "metadata"));
@@ -198,7 +204,7 @@ internal static class SvgFontRequestDiscovery
                     if (reader.Depth == inertDepth) inertDepth = -1;
                     if (reader.Depth == definitionsDepth) definitionsDepth = -1;
                     if (reader.Depth == symbolDepth) symbolDepth = -1;
-                    if (viewportDepths.Count > 0 && viewportDepths[^1] == reader.Depth) viewportDepths.RemoveLast();
+                    if (viewportSizes.Count > 0 && viewportSizes[^1].Depth == reader.Depth) viewportSizes.RemoveLast();
                     if (inheritedLevels.Count != 0)
                     {
                         inheritedLevels.RemoveLast();

@@ -1334,4 +1334,52 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Expands_a_symbol_viewBox_through_use_with_explicit_dimensions()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile' viewBox='0 0 16 16'><rect width='16' height='16' fill='red'/></symbol></defs><use href='#tile' x='16' y='16' width='32' height='32'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(16, 16, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Defaults_dimless_symbol_use_to_the_full_parent_viewport()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><symbol id='tile' viewBox='0 0 16 16'><rect width='16' height='16' fill='red'/></symbol></defs><use href='#tile' x='16' y='16'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(16, 16, 64, 64, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Maps_symbol_content_without_a_viewBox_one_to_one()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile'><rect width='16' height='16' fill='red'/></symbol></defs><use href='#tile' x='16' y='16' width='32' height='32'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(16, 16, 16, 16, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Applies_instance_fill_override_inside_symbols()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile' viewBox='0 0 16 16'><rect width='16' height='16'/></symbol></defs><use href='#tile' x='16' y='16' width='32' height='32' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(16, 16, 32, 32, new SvgColor(0, 0, 255, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Centers_meet_mapped_symbol_content_in_the_use_viewport()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile' viewBox='0 0 16 8'><rect width='16' height='8' fill='red'/></symbol></defs><use href='#tile' width='32' height='32'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(0, 8, 32, 16, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Composes_enclosing_group_transforms_around_symbol_viewports()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='tile' viewBox='0 0 16 16'><rect width='16' height='16' fill='red'/></symbol></defs><g transform='translate(4)'><use href='#tile' x='16' y='16' width='32' height='32'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(20, 16, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
 }

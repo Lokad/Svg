@@ -13,7 +13,8 @@ internal static class SvgDefinitionParser
             if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
             else SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context) : new SvgDefinition(SvgLeafParser.ParseLine(reader, context, null), false);
+            SvgViewBox? symbolViewBox = state.SymbolDepth >= 0 ? state.SymbolViewBox : null;
+            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, symbolViewBox) : new SvgDefinition(SvgLeafParser.ParseLine(reader, context, null), false, symbolViewBox);
             if (id is not null)
             {
                 workCounter.Consume(cancellationToken);
@@ -30,6 +31,7 @@ internal static class SvgDefinitionParser
             SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
             if (SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken) != default) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules on symbol definitions are not implemented.");
             state.SymbolId = reader.GetAttribute("id") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A symbol requires an id.");
+            state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
             if (!reader.IsEmptyElement) state.SymbolDepth = reader.Depth;
             return true;
         }
@@ -43,8 +45,11 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateUse(reader, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings);
-            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, state.EffectiveFrame, workCounter, cancellationToken);
+            SvgViewportFrame? frame = state.EffectiveFrame;
+            double? baseWidth = frame?.ViewportWidth ?? root.Width;
+            double? baseHeight = frame?.ViewportHeight ?? root.Height;
+            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
+            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, frame, workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
             return true;
@@ -52,9 +57,9 @@ internal static class SvgDefinitionParser
         return false;
     }
 
-    private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context)
+    private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgViewBox? symbolViewBox)
     {
         SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
-        return new SvgDefinition(parsed.Geometry, parsed.Geometry.Rectangle.HasFill && parsed.Style == default);
+        return new SvgDefinition(parsed.Geometry, parsed.Geometry.Rectangle.HasFill && parsed.Style == default, symbolViewBox);
     }
 }

@@ -33,6 +33,9 @@ internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int Offset
         };
     }
 
+    /// <summary>Applies this axis-aligned transform to a nested clip box.</summary>
+    internal SvgClipBox Apply(SvgClipBox box) => new(ScaleX * box.X + OffsetX, ScaleY * box.Y + OffsetY, ScaleX * box.Width, ScaleY * box.Height);
+
     /// <summary>Applies this transform to an integer orthogonal band while preserving its checked coordinate range.</summary>
     internal SvgRectangle ApplyOrthogonalRectangle(int x, int y, long width, long height, SvgColor color, bool hasFill)
         => new(ApplyCoordinate(ScaleX, x, OffsetX), ApplyCoordinate(ScaleY, y, OffsetY), ApplyExtent(ScaleX, width), ApplyExtent(ScaleY, height), color, hasFill, null);

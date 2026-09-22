@@ -55,19 +55,20 @@ internal static class SvgDocumentTraversal
                 else if ((directChild || inViewport) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "svg")
                 {
                     SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
-                    SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader);
+                    SvgViewportFrame? parentFrame = state.EffectiveFrame;
+                    SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.Width, parentFrame?.ViewportHeight ?? root.Height);
                     double offsetX = viewport.X;
                     double offsetY = viewport.Y;
                     SvgClipBox? parentClip = null;
-                    if (inViewport)
+                    if (parentFrame is not null)
                     {
-                        offsetX += state.Viewports[^1].OffsetX;
-                        offsetY += state.Viewports[^1].OffsetY;
-                        parentClip = state.Viewports[^1].Clip;
+                        offsetX += parentFrame.Value.OffsetX;
+                        offsetY += parentFrame.Value.OffsetY;
+                        parentClip = parentFrame.Value.Clip;
                     }
                     SvgClipBox box = new(offsetX, offsetY, viewport.Width, viewport.Height);
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
-                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(offsetX, offsetY, box, reader.Depth));
+                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(offsetX, offsetY, viewport.Width, viewport.Height, box, reader.Depth));
                     state.SawStyleableNode = true;
                 }
                 else if (inViewport && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside nested viewports is not implemented.");
@@ -101,7 +102,7 @@ internal static class SvgDocumentTraversal
             if (reader.NodeType == XmlNodeType.EndElement)
             {
                 if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
-                if (reader.Depth == state.SymbolDepth) { state.SymbolDepth = -1; state.SymbolId = null; }
+                if (reader.Depth == state.SymbolDepth) { state.SymbolDepth = -1; state.SymbolId = null; state.SymbolViewBox = null; }
                 if (state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth) state.Viewports.RemoveLast();
                 if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth)
                 {

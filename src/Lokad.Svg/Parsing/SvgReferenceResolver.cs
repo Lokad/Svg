@@ -1,7 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents a parsed direct local use reference before its target is resolved.</summary>
-internal readonly record struct SvgUseReference(string Id, double X, double Y, AxisTransform Transform, byte Opacity, bool IsPainted, SvgPaint? FillOverride);
+internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, AxisTransform Transform, AxisTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride);
 
 /// <summary>Records the placeholders that must be replaced when a forward local use reference resolves.</summary>
 internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame);
@@ -20,11 +20,67 @@ internal static class SvgReferenceResolver
     internal static SvgGeometry Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame)
     {
         SvgGeometry geometry = ApplyInstanceFill(definition, reference);
+        if (definition.SymbolViewBox is SvgViewBox symbolBox) return ApplySymbolInstance(geometry, symbolBox, reference, frame);
         return geometry.Kind switch
         {
             SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(geometry.Rectangle, reference), frame)),
             SvgGeometryKind.AxisAlignedLine => ClipLine(ApplyAxisAlignedLine(geometry.AxisAlignedLine, reference), frame),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.")
+        };
+    }
+
+    private static SvgGeometry ApplySymbolInstance(SvgGeometry geometry, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame)
+    {
+        bool isBand;
+        SvgRectangle box;
+        if (geometry.Kind == SvgGeometryKind.Rectangle)
+        {
+            if (geometry.Rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
+            box = geometry.Rectangle;
+            isBand = false;
+        }
+        else if (geometry.Kind == SvgGeometryKind.AxisAlignedLine)
+        {
+            box = geometry.AxisAlignedLine.ToStrokeBand();
+            isBand = true;
+        }
+        else throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.");
+        if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+        SvgRectangle mapped = MapSymbolBox(box, symbolBox, reference.Width.Value, reference.Height.Value);
+        SvgRectangle placed = mapped with { X = mapped.X + reference.X, Y = mapped.Y + reference.Y };
+        SvgRectangle transformed = reference.Transform.Apply(placed);
+        transformed = transformed with { Color = new SvgColor(transformed.Color.Red, transformed.Color.Green, transformed.Color.Blue, MultiplyAlpha(transformed.Color.Alpha, reference.Opacity)), HasFill = transformed.HasFill && reference.IsPainted };
+        SvgClipBox viewport = reference.InheritedTransform.Apply(new SvgClipBox(reference.X, reference.Y, reference.Width.Value, reference.Height.Value));
+        if (frame is not null)
+        {
+            transformed = frame.Value.Shift(transformed);
+            viewport = new SvgClipBox(viewport.X + frame.Value.OffsetX, viewport.Y + frame.Value.OffsetY, viewport.Width, viewport.Height);
+            viewport = viewport.Intersect(frame.Value.Clip);
+        }
+        SvgRectangle clipped = viewport.ClipRectangle(transformed);
+        return isBand ? SvgGeometry.FromOrthogonalBand(clipped) : SvgGeometry.FromRectangle(clipped);
+    }
+
+    private static SvgRectangle MapSymbolBox(SvgRectangle box, SvgViewBox viewBox, double viewportWidth, double viewportHeight)
+    {
+        double scaleX = viewportWidth / viewBox.Width;
+        double scaleY = viewportHeight / viewBox.Height;
+        if (viewBox.HorizontalAlignment != SvgViewBoxAlignment.None)
+        {
+            double scale = viewBox.Fit == SvgViewBoxFit.Slice ? Math.Max(scaleX, scaleY) : Math.Min(scaleX, scaleY);
+            scaleX = scale;
+            scaleY = scale;
+        }
+        double offsetX = GetAlignmentOffset(viewportWidth - viewBox.Width * scaleX, viewBox.HorizontalAlignment) - viewBox.X * scaleX;
+        double offsetY = GetAlignmentOffset(viewportHeight - viewBox.Height * scaleY, viewBox.VerticalAlignment) - viewBox.Y * scaleY;
+        return box with { X = box.X * scaleX + offsetX, Y = box.Y * scaleY + offsetY, Width = box.Width * scaleX, Height = box.Height * scaleY };
+
+        static double GetAlignmentOffset(double remaining, SvgViewBoxAlignment alignment) => alignment switch
+        {
+            SvgViewBoxAlignment.Min or SvgViewBoxAlignment.None => 0,
+            SvgViewBoxAlignment.Mid => remaining / 2,
+            SvgViewBoxAlignment.Max => remaining,
+            _ => throw new InvalidOperationException("Unknown viewBox alignment.")
         };
     }
 
