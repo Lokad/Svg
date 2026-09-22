@@ -851,6 +851,7 @@ runtime packages, native assets/PInvoke, System.Drawing, platform font engine,
 browser service or other Lokad runtime dependency. Windows was tested here;
 Linux support still needs fresh platform evidence. Rendering uses explicit
 resources/options, never implicit filesystem/network/installed-font access.
+Public converter and prepared-document entry points reject null arguments with named ArgumentNullException contracts.
 Third-party research is not permission to copy/vendor implementations.
 
 Preserve owned-result/caller-memory lifetimes, overlap rejection, non-array
