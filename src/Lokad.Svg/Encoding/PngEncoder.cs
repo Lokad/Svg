@@ -114,10 +114,7 @@ internal static class PngEncoder
 
     private static void CompressInto(int width, int height, ReadOnlySpan<byte> rgba, RenderBudget budget, Stream destination, PngWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
-        if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
-        int stride = checked(width * 4);
-        if (rgba.Length != checked(stride * height)) throw new ArgumentException("Pixel buffer length does not match dimensions.", nameof(rgba));
+        int stride = ValidatePixelBuffer(width, height, rgba);
         workCounter.ConsumePixels(width, height, cancellationToken);
         using RenderBudget.BudgetReservation rowReservation = budget.Reserve(checked((long)stride + 1), SvgMemoryCategory.Png);
         byte[] row = new byte[stride + 1];
@@ -127,20 +124,14 @@ internal static class PngEncoder
             cancellationToken.ThrowIfCancellationRequested();
             row[0] = 0;
             rgba.Slice(y * stride, stride).CopyTo(row.AsSpan(1));
-            for (int x = 1; x < row.Length; x += 4)
-            {
-                if (row[x + 3] == 0) { row[x] = 0; row[x + 1] = 0; row[x + 2] = 0; }
-            }
+            ClearTransparentPixelRgb(row);
             zlib.Write(row);
         }
     }
 
     private static async Task CompressIntoAsync(int width, int height, ReadOnlyMemory<byte> rgba, RenderBudget budget, Stream destination, PngWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
-        if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
-        int stride = checked(width * 4);
-        if (rgba.Length != checked(stride * height)) throw new ArgumentException("Pixel buffer length does not match dimensions.", nameof(rgba));
+        int stride = ValidatePixelBuffer(width, height, rgba.Span);
         workCounter.ConsumePixels(width, height, cancellationToken);
         using RenderBudget.BudgetReservation rowReservation = budget.Reserve(checked((long)stride + 1), SvgMemoryCategory.Png);
         byte[] row = new byte[stride + 1];
@@ -150,10 +141,7 @@ internal static class PngEncoder
             cancellationToken.ThrowIfCancellationRequested();
             row[0] = 0;
             rgba.Span.Slice(y * stride, stride).CopyTo(row.AsSpan(1));
-            for (int x = 1; x < row.Length; x += 4)
-            {
-                if (row[x + 3] == 0) { row[x] = 0; row[x + 1] = 0; row[x + 2] = 0; }
-            }
+            ClearTransparentPixelRgb(row);
             await zlib.WriteAsync(row, cancellationToken).ConfigureAwait(false);
         }
     }
@@ -259,13 +247,7 @@ internal static class PngEncoder
     {
         if (type.SequenceEqual(IdatChunkType)) workCounter.ConsumeSerializedBytes(data.Length, cancellationToken);
         int length = checked(12 + data.Length);
-        uint crc = 0xffffffff;
-        foreach (byte value in type) crc = CrcStep(crc, value);
-        for (int index = 0; index < data.Length; index++)
-        {
-            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-            crc = CrcStep(crc, data[index]);
-        }
+        uint crc = ComputeChunkCrc(type, data, cancellationToken);
         BinaryPrimitives.WriteUInt32BigEndian(output, checked((uint)data.Length));
         type.CopyTo(output[4..]); data.CopyTo(output[8..]);
         BinaryPrimitives.WriteUInt32BigEndian(output.Slice(8 + data.Length), ~crc);
@@ -275,13 +257,7 @@ internal static class PngEncoder
     private static void WriteChunk(Stream output, ReadOnlySpan<byte> type, ReadOnlySpan<byte> data, PngWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (type.SequenceEqual(IdatChunkType)) workCounter.ConsumeSerializedBytes(data.Length, cancellationToken);
-        uint crc = 0xffffffff;
-        foreach (byte value in type) crc = CrcStep(crc, value);
-        for (int index = 0; index < data.Length; index++)
-        {
-            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-            crc = CrcStep(crc, data[index]);
-        }
+        uint crc = ComputeChunkCrc(type, data, cancellationToken);
         Span<byte> length = stackalloc byte[4];
         BinaryPrimitives.WriteUInt32BigEndian(length, checked((uint)data.Length));
         output.Write(length);
@@ -300,13 +276,7 @@ internal static class PngEncoder
     private static async Task WriteChunkAsync(Stream output, ReadOnlyMemory<byte> type, ReadOnlyMemory<byte> data, byte[] scratch, PngWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (type.Span.SequenceEqual(IdatChunkType)) workCounter.ConsumeSerializedBytes(data.Length, cancellationToken);
-        uint crc = 0xffffffff;
-        foreach (byte value in type.Span) crc = CrcStep(crc, value);
-        for (int index = 0; index < data.Length; index++)
-        {
-            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-            crc = CrcStep(crc, data.Span[index]);
-        }
+        uint crc = ComputeChunkCrc(type.Span, data.Span, cancellationToken);
         BinaryPrimitives.WriteUInt32BigEndian(scratch, checked((uint)data.Length));
         await output.WriteAsync(scratch.AsMemory(0, 4), cancellationToken).ConfigureAwait(false);
         await output.WriteAsync(type, cancellationToken).ConfigureAwait(false);
@@ -768,6 +738,38 @@ internal static class PngEncoder
             cancellationToken.ThrowIfCancellationRequested();
             if (byteCount > _maximumWorkUnits - _usedWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "PNG serialization exceeds the configured work limit.");
             _usedWorkUnits += byteCount;
+        }
+    }
+
+    /// <summary>Computes one PNG chunk CRC with deterministic cancellation checkpoints.</summary>
+    private static uint ComputeChunkCrc(ReadOnlySpan<byte> type, ReadOnlySpan<byte> data, CancellationToken cancellationToken)
+    {
+        uint crc = 0xffffffff;
+        foreach (byte value in type) crc = CrcStep(crc, value);
+        for (int index = 0; index < data.Length; index++)
+        {
+            if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            crc = CrcStep(crc, data[index]);
+        }
+        return crc;
+    }
+
+    /// <summary>Validates pixel dimensions against their buffer and returns the row stride.</summary>
+    private static int ValidatePixelBuffer(int width, int height, ReadOnlySpan<byte> rgba)
+    {
+        if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
+        if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+        int stride = checked(width * 4);
+        if (rgba.Length != checked(stride * height)) throw new ArgumentException("Pixel buffer length does not match dimensions.", nameof(rgba));
+        return stride;
+    }
+
+    /// <summary>Clears RGB channels of fully transparent pixels in one filter row.</summary>
+    private static void ClearTransparentPixelRgb(Span<byte> row)
+    {
+        for (int x = 1; x < row.Length; x += 4)
+        {
+            if (row[x + 3] == 0) { row[x] = 0; row[x + 1] = 0; row[x + 2] = 0; }
         }
     }
 
