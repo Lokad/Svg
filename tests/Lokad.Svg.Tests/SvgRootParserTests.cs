@@ -237,6 +237,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Ignores_legacy_root_version_tags()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' version='1.1' baseProfile='tiny' width='12.5' height='7'><rect width='1' height='1' fill='red' focusable='false'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(12.5, root.Width);
+        Assert.Equal(7, root.Height);
+        Assert.Single(root.Rectangles);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
     public void Rejects_event_handler_attributes()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='red' onclick='x'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

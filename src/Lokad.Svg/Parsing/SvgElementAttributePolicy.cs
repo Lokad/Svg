@@ -64,14 +64,14 @@ internal static class SvgElementAttributePolicy
     private static bool IsAllowed(XmlReader reader, SvgElementKind kind)
     {
         if ((kind is SvgElementKind.Root or SvgElementKind.Group) && (reader.Prefix == "xmlns" || reader.Name == "xmlns")) return true;
-        if (reader.NamespaceURI.Length == 0 && (reader.LocalName is "role" or "tabindex" || reader.LocalName.StartsWith("aria-", StringComparison.Ordinal) || reader.LocalName.StartsWith("data-", StringComparison.Ordinal))) return true;
+        if (reader.NamespaceURI.Length == 0 && (reader.LocalName is "role" or "tabindex" or "focusable" || reader.LocalName.StartsWith("aria-", StringComparison.Ordinal) || reader.LocalName.StartsWith("data-", StringComparison.Ordinal))) return true;
         if ((kind is SvgElementKind.Group or SvgElementKind.Use or SvgElementKind.Image or SvgElementKind.LinearGradient) && reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") return true;
         if ((kind is SvgElementKind.Text or SvgElementKind.TextSpan) && reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space") return true;
         if (reader.NamespaceURI.Length != 0 && (reader.NamespaceURI == "http://www.w3.org/1999/xlink" || reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace")) return false;
         if (reader.NamespaceURI.Length != 0) return true;
         bool allowed = kind switch
         {
-            SvgElementKind.Root => reader.LocalName is "id" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style",
+            SvgElementKind.Root => reader.LocalName is "id" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "version" or "baseProfile" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style",
             SvgElementKind.Group => reader.LocalName is "id" or "class" or "href" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask",
             SvgElementKind.Rectangle => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask",
             SvgElementKind.Line => reader.LocalName is "id" or "class" or "x1" or "y1" or "x2" or "y2" or "color" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask",
@@ -95,7 +95,7 @@ internal static class SvgElementAttributePolicy
         return allowed;
     }
 
-    private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "clip-path" or "clipPathUnits" or "mask" or "mask-type" or "patternUnits" or "patternContentUnits" or "x1" or "y1" or "x2" or "y2" or "offset" or "stop-color" or "stop-opacity" or "gradientUnits" or "spreadMethod" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "space";
+    private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "version" or "baseProfile" or "focusable" or "clip-path" or "clipPathUnits" or "mask" or "mask-type" or "patternUnits" or "patternContentUnits" or "x1" or "y1" or "x2" or "y2" or "offset" or "stop-color" or "stop-opacity" or "gradientUnits" or "spreadMethod" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "space";
 
     private enum SvgElementKind { Root, Group, Rectangle, Line, Use, Path, PointList, Text, TextSpan, Symbol, NestedViewport, ClipPath, Mask, Image, Pattern, LinearGradient, GradientStop }
 }

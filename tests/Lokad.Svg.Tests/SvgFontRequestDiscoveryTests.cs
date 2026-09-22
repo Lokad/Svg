@@ -46,6 +46,14 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
+    public void Discovers_text_on_versioned_roots()
+    {
+        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg' version='1.1' baseProfile='tiny'><text font-family='Example'>x</text></svg>"u8.ToArray(), CancellationToken.None));
+
+        Assert.Equal("Example", request.Family);
+    }
+
+    [Fact]
     public void Skips_font_requests_for_whitespace_only_text_and_discovers_normalized_attribute_free_span_content()
     {
         SvgFontFaceRequest[] empty = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'> \t\r\n </text></svg>"u8.ToArray(), CancellationToken.None);
