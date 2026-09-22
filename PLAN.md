@@ -12,7 +12,7 @@ Logo-roadmap extension: 2026-09-21, against `f0f879f`. Section 8 adds planned
 S8–S17 without renumbering findings, reopening repairs or weakening pixel-exact
 acceptance. It records future work, not newly implemented SVG support.
 
-Single-agent refresh 2026-09-22, against `50a6a95`: PLAN.md ownership consolidated under one agent; R18 matrix reconciled (67 `→` 165 cases) with open-ended enumeration halted; the rejected theory discovery-gate split queued. No finding renumbered, no repair reopened.
+Single-agent refresh 2026-09-22, against `50a6a95`: PLAN.md ownership consolidated under one agent; R18 matrix reconciled (67 `→` 165 cases) with open-ended enumeration halted; the rejected theory discovery-gate split queued. No finding renumbered, no repair reopened; R24 filed for the translucent-overlap channel defect.
 
 ## 1. Current assessment and verification
 
@@ -650,6 +650,14 @@ reliability is the purpose, not optimizing this tool as if it were the renderer.
 
 Execution consequence: retain R04/R17/R18/R19/R20/R21/R22 closures; R22 closure now covers checkout/platform validation.
 Continue coordinated baseline work; R19/R20 allocation proposals do not authorize a speculative pooling rewrite.
+
+### R24 / P1 — Translucent rectangle overlaps emit impossible channel values
+
+**Fresh oracle reproduction (2026-09-22):** original CC0 fixture `tests/Fixtures/original/logo-translucent-mark.svg` (64x64 transparent: red and blue bars plus a yellow square, all `fill-opacity='0.5'`) renders 376 pixels different from three byte-identical fresh-process Chrome captures (recipe 3, Chrome for Testing 153.0.8010.52). At yellow-overlap columns the renderer emits green `(0,136,0,191)` where only red, yellow and blue paint exists: G and A plausible, R and B zeroed against a correct source-over of about `(255,136,0,191)`. A minimal two-layer repro (red bar plus yellow square, no blue) shows the same green at every overlapped row of the span left columns while yellow-alone renders perfectly, so this is a renderer channel-write fault rather than calibration drift. Single-layer pixels match exactly and interior two-layer composites drift by at most one alpha step (191 versus 192), which stays a separate S11 calibration question.
+
+Closure: isolate the span-fill fault that zeroes R/B while writing G/A at translucent-overlap span starts, add the two-layer repro as an exact regression, then re-run the logo oracle admission. The fixture stays inventoried as `unsupported` with the defect reason until repaired; admitted input must never silently render wrong pixels. S8 exact admissions of overlapping translucent content are blocked on R24.
+
+Execution consequence: retain all prior closures; R24 is open and blocks translucent-content admission only, not the remaining census.
 
 ## 5. Execution order and actual blockers
 
