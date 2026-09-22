@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-gradient-spread-mark",
+  "referencePng": "original-logo-gradient-spread-mark.png",
+  "referenceSha256": "5cb1916535f2099e3973c56e40574e903000b284bc8b21f9f4cd9b46cc324a5e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "5d5e387d87ee8ca072c06bb14c08e93e2e8a846f41517edf58d1e0c20c39a857",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-22"
+}
