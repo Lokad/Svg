@@ -1649,6 +1649,7 @@ public sealed class OpenTypeFontTests
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' stroke='none'>A</text></svg>", "Example", 1, 1, true, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' fill='red'>A</text></svg>", "Example", 1, 1, true, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text color='blue' font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text color='blue' fill='red' font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
