@@ -2319,6 +2319,24 @@ public sealed class OpenTypeFontTests
 
 
     [Fact]
+    public async Task Letter_spacing_shifts_rendered_glyphs_relative_to_unspaced_text()
+    {
+        byte[] plain = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'>AA</text></svg>");
+        byte[] spaced = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3' letter-spacing='10'>AA</text></svg>");
+        (SvgFontPackCatalog catalog1, CountingFontProvider provider1, CountingFontSource source1) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot1 = await SvgFontSnapshot.CreateAsync(plain, catalog1, provider1, CancellationToken.None);
+        ReadOnlyMemory<byte> png1 = SvgConverter.ConvertToPng(plain, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot1), CancellationToken.None);
+        (SvgFontPackCatalog catalog2, CountingFontProvider provider2, CountingFontSource source2) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot2 = await SvgFontSnapshot.CreateAsync(spaced, catalog2, provider2, CancellationToken.None);
+        ReadOnlyMemory<byte> png2 = SvgConverter.ConvertToPng(spaced, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot2), CancellationToken.None);
+
+        Assert.False(png1.Span.SequenceEqual(png2.Span));
+        Assert.True(DecodeAlpha(png1, 61, 1) > 0);
+        Assert.Equal(0, DecodeAlpha(png2, 61, 1));
+        Assert.True(DecodeAlpha(png2, 71, 1) > 0);
+    }
+
+    [Fact]
     public async Task Positions_direct_glyph_runs_for_admitted_text_anchors()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
