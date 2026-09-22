@@ -418,6 +418,8 @@ node admission passes. The full suite (706 + 6 + 83) and all 21 probe scenarios
 pass. Remaining factoring (known-content lists, unsupported-state transitions)
 stays under the same matrix.
 
+**Repair (defs inertness):** lowering painted group-wrapped definition content that discovery holds inert: `<g><defs><g><rect/></g></defs></g>` rendered opaque red while direct `<defs><rect/></defs>` correctly renders nothing. Rendered leaves now return false inside definitions (the `use` branch already required `DefinitionsDepth < 0`), so wrapped definition content falls through to the explicit unsupported tail instead of painting; direct definitions, admitted definition kinds and out-of-defs rendering are unchanged. Four parser/conversion regressions pin rejected group-wrapped rect/path content, inert direct content and end-to-end conversion rejection.
+
 ### R19 / P2 — Parse and identity transients have an initial allocation baseline
 
 **Source inspection:** `SvgComputedStyle.Resolve` evaluates all eight
