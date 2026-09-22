@@ -1759,6 +1759,7 @@ public sealed class OpenTypeFontTests
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><a href='#x' rel='noopener'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><a href='#x' hreflang='en'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.l { font-variant: small-caps; }</style><a class='l'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.l { text-decoration: underline; }</style><a class='l'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     public async Task Discovery_and_lowering_agree_on_rejected_text(string svg, bool failsDuringDiscovery, SvgErrorCode code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
