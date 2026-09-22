@@ -1050,6 +1050,8 @@ resource-limit boundaries. Any subdivision/curve approximation needs a bounded
 device-space error/work policy and S11's exact oracle gate; mathematical closeness
 alone is not Chrome fidelity.
 
+Landed 2026-09-22 (df18186): disjoint orthogonal multi-subpath `path` elements with `nonzero`/`evenodd` fill rules lower to rectangle bands (evenodd pairs crossings, nonzero sweeps winding; intersecting, unclosed, diagonal, relative and curve commands stay explicitly unsupported), with `original-logo-outlined-counter` admitted exact on three byte-identical recipe-3 captures. The orthogonal evenodd-hole research probe graduated exact before removal. General curves, diagonal edges, compound winding beyond disjoint orthogonal contours and transformed strokes remain open.
+
 ### S11 — Pixel-exact antialiasing and filled-path composition
 
 Build one bounded device-space coverage subsystem for path and basic-shape fills,
