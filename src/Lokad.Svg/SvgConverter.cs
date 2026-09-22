@@ -410,9 +410,14 @@ public static class SvgConverter
                 double verticalCoverage = Math.Clamp(Math.Min(fillBottom, y + 1) - Math.Max(fillTop, y), 0, 1);
                 double horizontalCoverage = Math.Clamp(Math.Min(fillRight, x + 1) - Math.Max(fillLeft, x), 0, 1);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
-                double normalizedX = (deviceX - gradient.Box.X) / gradient.Box.Width;
-                double normalizedY = (deviceY - gradient.Box.Y) / gradient.Box.Height;
-                double position = ((normalizedX - gradient.Gradient.X1) * directionX + (normalizedY - gradient.Gradient.Y1) * directionY) / denominator;
+                double position;
+                if (gradient.Gradient.IsUserSpace) position = ((deviceX - gradient.Gradient.X1) * directionX + (deviceY - gradient.Gradient.Y1) * directionY) / denominator;
+                else
+                {
+                    double normalizedX = (deviceX - gradient.Box.X) / gradient.Box.Width;
+                    double normalizedY = (deviceY - gradient.Box.Y) / gradient.Box.Height;
+                    position = ((normalizedX - gradient.Gradient.X1) * directionX + (normalizedY - gradient.Gradient.Y1) * directionY) / denominator;
+                }
                 double local = (position - gradient.Gradient.Offset1) / offsetSpan;
                 if (local < 0) local = 0;
                 if (local > 1) local = 1;

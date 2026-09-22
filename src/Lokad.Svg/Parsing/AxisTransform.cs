@@ -33,6 +33,14 @@ internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int Offset
         };
     }
 
+    /// <summary>Maps one user-space gradient vector endpoint through this admitted integer transform.</summary>
+    internal (double X, double Y) ApplyToUserPoint(double x, double y)
+    {
+        double mappedX = ScaleX * x + OffsetX;
+        double mappedY = ScaleY * y + OffsetY;
+        if (!double.IsFinite(mappedX) || !double.IsFinite(mappedY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the gradient coordinate range.");
+        return (mappedX, mappedY);
+    }
     /// <summary>Applies this axis-aligned transform to a nested clip box.</summary>
     internal SvgClipBox Apply(SvgClipBox box) => new(ScaleX * box.X + OffsetX, ScaleY * box.Y + OffsetY, ScaleX * box.Width, ScaleY * box.Height);
 

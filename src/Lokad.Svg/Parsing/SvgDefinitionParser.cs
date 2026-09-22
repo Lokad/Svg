@@ -128,8 +128,8 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateLinearGradient(reader, workCounter, cancellationToken);
             state.GradientId = reader.GetAttribute("id");
-            (double x1, double y1, double x2, double y2) = SvgGradientSyntax.ParseLinearVector(reader);
-            state.Gradient = new SvgLinearGradient(default, default, x1, y1, x2, y2, 0, 1, false);
+            (double x1, double y1, double x2, double y2, bool isUserSpace) = SvgGradientSyntax.ParseLinearVector(reader);
+            state.Gradient = new SvgLinearGradient(default, default, x1, y1, x2, y2, 0, 1, false, isUserSpace);
             if (!reader.IsEmptyElement) state.GradientDepth = reader.Depth;
             else if (state.GradientId is not null) RegisterGradient(state, workCounter, cancellationToken);
             state.GradientStops.Clear();

@@ -4,7 +4,7 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one admitted two-stop linear gradient with its bounding-box vector.</summary>
-internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty);
+internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace);
 
 /// <summary>Retains one parsed gradient stop with its offset while streaming.</summary>
 internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);
@@ -12,19 +12,27 @@ internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);
 /// <summary>Parses the bounded linear-gradient definition syntax and lowers gradient-filled rectangles.</summary>
 internal static class SvgGradientSyntax
 {
-    internal static (double X1, double Y1, double X2, double Y2) ParseLinearVector(XmlReader reader)
+    internal static (double X1, double Y1, double X2, double Y2, bool IsUserSpace) ParseLinearVector(XmlReader reader)
     {
         string? units = reader.GetAttribute("gradientUnits");
-        if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only objectBoundingBox gradient units are implemented.");
+        bool isUserSpace = units is not null && units.Equals("userSpaceOnUse", StringComparison.Ordinal);
+        if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal) && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only objectBoundingBox and userSpaceOnUse gradient units are implemented.");
         string? spread = reader.GetAttribute("spreadMethod");
         if (spread is not null && !spread.Equals("pad", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad gradient spread is implemented.");
-        double x1 = ParseAxis(reader.GetAttribute("x1") ?? "0");
-        double y1 = ParseAxis(reader.GetAttribute("y1") ?? "0");
-        double x2 = ParseAxis(reader.GetAttribute("x2") ?? "1");
-        double y2 = ParseAxis(reader.GetAttribute("y2") ?? "0");
+        string rawX1 = reader.GetAttribute("x1") ?? "0";
+        string rawY1 = reader.GetAttribute("y1") ?? "0";
+        string rawX2 = reader.GetAttribute("x2") ?? (isUserSpace ? "0" : "1");
+        string rawY2 = reader.GetAttribute("y2") ?? "0";
+        if (isUserSpace && (ContainsPercentage(rawX1) || ContainsPercentage(rawY1) || ContainsPercentage(rawX2) || ContainsPercentage(rawY2))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates are not implemented.");
+        double x1 = ParseAxis(rawX1);
+        double y1 = ParseAxis(rawY1);
+        double x2 = ParseAxis(rawX2);
+        double y2 = ParseAxis(rawY2);
         if (x1 == x2 && y1 == y2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate linear gradients are not implemented.");
-        return (x1, y1, x2, y2);
+        return (x1, y1, x2, y2, isUserSpace);
     }
+
+    private static bool ContainsPercentage(string value) => value.AsSpan().Trim().EndsWith("%");
 
     internal static string ParsePaintId(string? value)
     {
@@ -75,6 +83,14 @@ internal static class SvgGradientSyntax
         if (!state.Gradients.TryGetValue(ParseGradientId(style.Fill), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
+        if (gradient.IsUserSpace && frame is not null && (frame.Value.OffsetX != 0 || frame.Value.OffsetY != 0 || frame.Value.ViewportWidth is not null || frame.Value.ViewportHeight is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "userSpaceOnUse gradients inside transformed viewports are not implemented.");
+        if (gradient.IsUserSpace)
+        {
+            (double mappedX1, double mappedY1) = transform.ApplyToUserPoint(gradient.X1, gradient.Y1);
+            (double mappedX2, double mappedY2) = transform.ApplyToUserPoint(gradient.X2, gradient.Y2);
+            if (mappedX1 == mappedX2 && mappedY1 == mappedY2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate linear gradients are not implemented.");
+            gradient = gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2 };
+        }
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
