@@ -1660,6 +1660,7 @@ public sealed class OpenTypeFontTests
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><line id='l' x1='0' y1='0' x2='2' y2='0' stroke='red' stroke-width='2'/></defs><use href='#l'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><symbol id='s'><rect width='1' height='1' fill='red'/></symbol></defs><use href='#s'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text><text font-family='Example' font-size='100' y='4'>A</text></svg>", "Example", 1, 1, true, false)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan>A</tspan></text><text font-family='Example' font-size='100' y='4'>A</text></svg>", "Example", 1, 1, true, false)]
     public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
