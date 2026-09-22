@@ -1,0 +1,10 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <linearGradient id="gradient">
+      <stop offset="0" stop-color="#ff0000"/>
+      <stop offset="1" stop-color="#fe0001"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" fill="url(#gradient)"/>
+</svg>

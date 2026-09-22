@@ -1110,7 +1110,7 @@ gradients, degenerate bounds and fallback paint. Treat `color-interpolation` and
 alpha interpolation/rounding as explicit policies. Reuse paint evaluation for
 fills and strokes. Reference: [paint servers](https://www.w3.org/TR/SVG2/pservers.html).
 
-Exit: the retained four-pixel gradient and longer-size counterexample, followed by
+Calibration update 2026-09-22: ordered dithering identified as `floor(sRGB_direct_ramp(t) + transposed-Bayer8[x % 8][y % 8] / 64)` with pixel-centre `t` (sRGB-direct confirmed against linear-light; retained four-pixel reference matches on all 12 values; 99.68% over seven probes with one-LSB residuals in eight cells under steep slopes only, mechanism open). Retained recipe-3 probes `linear-gradient-shallow-64x64`, `linear-gradient-gray-64x8`, `linear-gradient-green-64x8`; full evidence and matrix in the rasterization design doc. S13 implementation may proceed under per-fixture oracle gating.`n`nExit: the retained four-pixel gradient and longer-size counterexample, followed by
 fractional, transformed, transparent and radial-stop vectors, gradient strokes and
 gradient inheritance/cycle tests. No new paint server is admitted on a one-size
 near fit; color-space/default behavior must agree with the pinned capture policy.
