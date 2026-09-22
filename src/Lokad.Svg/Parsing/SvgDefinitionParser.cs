@@ -156,7 +156,7 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
-        if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
+        if (state.DefinitionsDepth < 0 && (directChild || state.GroupDepth > 0) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
             if (!reader.IsEmptyElement) state.DefinitionsDepth = reader.Depth;

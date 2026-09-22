@@ -123,7 +123,7 @@ internal static class SvgFontRequestDiscovery
                         hasStyleSheet = true;
                     }
                     if (rootStyleElement) continue;
-                    if (isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && directChild && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
+                    if (isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && (directChild || hasGroupAncestor) && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
                     if (isSvgElement && reader.LocalName == "symbol" && definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1 && !reader.IsEmptyElement) symbolDepth = reader.Depth;
                     if (isSvgElement && definitionsDepth >= 0 && (reader.Depth == definitionsDepth + 1 || reader.Depth == symbolDepth + 1) && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)) sawStyleableNode = true;
                     if (isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
@@ -147,7 +147,7 @@ internal static class SvgFontRequestDiscovery
                     if (isSvgElement && !rootElement && reader.LocalName is ("linearGradient" or "radialGradient")) sawStyleableNode = true;
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName) && reader.GetAttribute("clip-path") is not null && !reader.IsEmptyElement) clipDepths.Add(reader.Depth);
                     bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "clipPath" or "mask" or "image" or "pattern" or "linearGradient" or "radialGradient" or "stop");
-                    bool unsupportedContainer = (!rootElement && reader.LocalName is ("style" or "symbol")) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && reader.LocalName is ("defs" or "title" or "desc" or "metadata"));
+                    bool unsupportedContainer = (!rootElement && reader.LocalName is ("style" or "symbol")) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && reader.LocalName is ("title" or "desc" or "metadata")) || (!directChild && !hasGroupAncestor && reader.LocalName == "defs");
                     bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "image");
                     bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyRenderedLeaf);
                     // Retain requests admitted before this point: lowering still paints them before conversion rejects the unsupported sibling, so clearing here would omit a font lowering requires.
@@ -158,7 +158,7 @@ internal static class SvgFontRequestDiscovery
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement)
                     {
                         if (!rootElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
-                        else if (directChild && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
+                        else if ((directChild || hasGroupAncestor) && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
                     }
                     if (inertDepth >= 0 && reader.Depth == inertDepth + 1 && isSvgElement)
                     {
