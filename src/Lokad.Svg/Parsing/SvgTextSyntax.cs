@@ -430,6 +430,14 @@ internal static class SvgTextFontSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal and italic text font styles are supported.");
     }
 
+    /// <summary>Validates the admitted default font variant shared by attributes and style declarations.</summary>
+    internal static void ValidateFontVariant(ReadOnlySpan<char> value)
+    {
+        ReadOnlySpan<char> token = value.Trim();
+        if (token.Equals("normal".AsSpan(), StringComparison.OrdinalIgnoreCase) || token.Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal font variants are implemented.");
+    }
+
 }
 
 /// <summary>Represents the direct-text font declarations found in one inline style value.</summary>

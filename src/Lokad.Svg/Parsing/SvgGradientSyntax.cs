@@ -50,6 +50,13 @@ internal static class SvgGradientSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad, repeat and reflect gradient spread methods are implemented.");
     }
 
+    /// <summary>Validates the admitted default color interpolation shared by attributes and style declarations.</summary>
+    internal static void ValidateColorInterpolation(ReadOnlySpan<char> value)
+    {
+        if (value.Trim().Equals("sRGB".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only sRGB color interpolation is implemented.");
+    }
+
     private static bool ContainsPercentage(string? value) => value is not null && value.AsSpan().Trim().EndsWith("%");
 
     internal static string ParsePaintId(string? value)

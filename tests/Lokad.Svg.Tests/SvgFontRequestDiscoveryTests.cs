@@ -54,6 +54,22 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
+    public void Discovers_text_with_default_font_variant()
+    {
+        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><style>#t { font-variant: normal; }</style><text id='t' font-family='Example' font-variant='normal'>x</text></svg>"u8.ToArray(), CancellationToken.None));
+
+        Assert.Equal("Example", request.Family);
+    }
+
+    [Fact]
+    public void Rejects_small_caps_font_variants_before_acquisition()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' font-variant='small-caps'>x</text></svg>"u8.ToArray(), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Discovers_text_with_ui_behavior_attributes()
     {
         SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' pointer-events='none' cursor='pointer'>x</text></svg>"u8.ToArray(), CancellationToken.None));

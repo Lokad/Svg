@@ -297,6 +297,30 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Admits_default_rendering_intents_on_shapes_and_groups()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g font-variant='normal'><rect width='1' height='1' fill='red' color-interpolation='sRGB'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Single(root.Rectangles);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Theory]
+    [InlineData("<text font-family='Example' font-variant='small-caps'>x</text>")]
+    [InlineData("<rect width='1' height='1' fill='red' color-interpolation='linearRGB'/>")]
+    [InlineData("<text font-family='Example' style='font-variant: small-caps'>x</text>")]
+    [InlineData("<rect width='1' height='1' fill='red' style='color-interpolation: linearRGB'/>")]
+    public void Rejects_non_default_rendering_intents(string leaf)
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + leaf + "</svg>");
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Rejects_link_nested_definitions()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><a><defs><rect id='tile' width='2' height='2' fill='red'/></defs></a><use href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
