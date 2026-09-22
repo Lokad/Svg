@@ -79,7 +79,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.ClipPath => reader.LocalName == "id",
             SvgElementKind.Mask => reader.LocalName is "id" or "mask-type",
             SvgElementKind.Pattern => reader.LocalName is "id" or "x" or "y" or "width" or "height" or "patternUnits" or "patternContentUnits",
-            SvgElementKind.LinearGradient => reader.LocalName is "id" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod",
+            SvgElementKind.LinearGradient => reader.LocalName is "id" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod" or "gradientTransform",
             SvgElementKind.GradientStop => reader.LocalName is "offset" or "stop-color" or "stop-opacity",
             SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask",
             SvgElementKind.NestedViewport => reader.LocalName is "x" or "y" or "width" or "height",

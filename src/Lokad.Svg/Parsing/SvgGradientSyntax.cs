@@ -28,6 +28,9 @@ internal static class SvgGradientSyntax
         double y1 = ParseAxis(rawY1);
         double x2 = ParseAxis(rawX2);
         double y2 = ParseAxis(rawY2);
+        AxisTransform gradientTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("gradientTransform"));
+        (x1, y1) = gradientTransform.ApplyToUserPoint(x1, y1);
+        (x2, y2) = gradientTransform.ApplyToUserPoint(x2, y2);
         if (x1 == x2 && y1 == y2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate linear gradients are not implemented.");
         return (x1, y1, x2, y2, isUserSpace);
     }
