@@ -161,13 +161,13 @@ public sealed class PublicContractTests
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray();
         using MemoryStream streamDestination = new();
         byte[] memoryDestination = new byte[64];
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes("{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/a.ttf\", \"byteSize\": 1, \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/a.ttf\" }] }"), "test-pack");
+        SvgFontPackCatalog catalog = CreateNullArgumentCatalog();
         NullArgumentFontProvider provider = new();
 
-        AssertSyncNullArgument(ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(SvgRenderOptions), typeof(CancellationToken)), "options", [new ReadOnlyMemory<byte>(svg), null, CancellationToken.None]);
-        AssertSyncNullArgument(ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(Memory<byte>), typeof(SvgRenderOptions), typeof(CancellationToken)), "options", [new ReadOnlyMemory<byte>(svg), new Memory<byte>(memoryDestination), null, CancellationToken.None]);
-        AssertSyncNullArgument(ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(Stream), typeof(SvgRenderOptions), typeof(CancellationToken)), "destination", [new ReadOnlyMemory<byte>(svg), null, SvgRenderOptions.Default, CancellationToken.None]);
-        AssertSyncNullArgument(ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(Stream), typeof(SvgRenderOptions), typeof(CancellationToken)), "options", [new ReadOnlyMemory<byte>(svg), streamDestination, null, CancellationToken.None]);
+        AssertSyncNullArgument(null, ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(SvgRenderOptions), typeof(CancellationToken)), "options", [new ReadOnlyMemory<byte>(svg), null, CancellationToken.None]);
+        AssertSyncNullArgument(null, ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(Memory<byte>), typeof(SvgRenderOptions), typeof(CancellationToken)), "options", [new ReadOnlyMemory<byte>(svg), new Memory<byte>(memoryDestination), null, CancellationToken.None]);
+        AssertSyncNullArgument(null, ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(Stream), typeof(SvgRenderOptions), typeof(CancellationToken)), "destination", [new ReadOnlyMemory<byte>(svg), null, SvgRenderOptions.Default, CancellationToken.None]);
+        AssertSyncNullArgument(null, ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPng), typeof(ReadOnlyMemory<byte>), typeof(Stream), typeof(SvgRenderOptions), typeof(CancellationToken)), "options", [new ReadOnlyMemory<byte>(svg), streamDestination, null, CancellationToken.None]);
         await AssertTaskNullArgument(ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPngAsync), typeof(ReadOnlyMemory<byte>), typeof(SvgRenderOptions), typeof(CancellationToken)).Invoke(null, [new ReadOnlyMemory<byte>(svg), null, CancellationToken.None]), "options");
         await AssertTaskNullArgument(ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPngAsync), typeof(ReadOnlyMemory<byte>), typeof(Memory<byte>), typeof(SvgRenderOptions), typeof(CancellationToken)).Invoke(null, [new ReadOnlyMemory<byte>(svg), new Memory<byte>(memoryDestination), null, CancellationToken.None]), "options");
         await AssertTaskNullArgument(ConvertMethod(typeof(SvgConverter), nameof(SvgConverter.ConvertToPngAsync), typeof(ReadOnlyMemory<byte>), typeof(Stream), typeof(SvgRenderOptions), typeof(CancellationToken)).Invoke(null, [new ReadOnlyMemory<byte>(svg), null, SvgRenderOptions.Default, CancellationToken.None]), "destination");
@@ -176,34 +176,72 @@ public sealed class PublicContractTests
         await AssertValueTaskNullArgument<SvgPreparedDocument>(ConvertMethod(typeof(SvgPreparedDocument), nameof(SvgPreparedDocument.CreateAsync), typeof(ReadOnlyMemory<byte>), typeof(SvgFontPackCatalog), typeof(ISvgFontProgramSourceProvider), typeof(SvgRenderOptions), typeof(CancellationToken)).Invoke(null, [new ReadOnlyMemory<byte>(svg), catalog, null, SvgRenderOptions.Default, CancellationToken.None]), "provider");
         await AssertValueTaskNullArgument<SvgPreparedDocument>(ConvertMethod(typeof(SvgPreparedDocument), nameof(SvgPreparedDocument.CreateAsync), typeof(ReadOnlyMemory<byte>), typeof(SvgFontPackCatalog), typeof(ISvgFontProgramSourceProvider), typeof(SvgRenderOptions), typeof(CancellationToken)).Invoke(null, [new ReadOnlyMemory<byte>(svg), catalog, provider, null, CancellationToken.None]), "options");
 
-        static MethodInfo ConvertMethod(Type type, string name, params Type[] parameterTypes)
-        {
-            if (type.GetMethod(name, parameterTypes) is not MethodInfo method) throw new InvalidOperationException("Missing method: " + name);
-            return method;
-        }
+    }
 
-        static void AssertSyncNullArgument(MethodInfo method, string parameterName, object?[] arguments)
-        {
-            try { method.Invoke(null, arguments); Assert.Fail("Null argument converted without an ArgumentNullException."); }
-            catch (TargetInvocationException exception) when (exception.InnerException is ArgumentNullException nullArgument)
-            {
-                Assert.Equal(parameterName, nullArgument.ParamName);
-            }
-        }
+    [Fact]
+    public async Task Catalog_and_snapshot_entry_points_reject_null_arguments()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray();
+        SvgFontPackCatalog catalog = CreateNullArgumentCatalog();
+        NullArgumentFontProvider provider = new();
+        NullArgumentFontSource source = new();
+        SvgFontFaceRequest request = new("Example", 400, false);
+        SvgFontPackResolution resolution = catalog.Resolve(request);
 
-        static async Task AssertTaskNullArgument(object? invocation, string parameterName)
+        AssertSyncNullArgument(null, ConvertMethod(typeof(SvgFontPackCatalog), "Parse", typeof(ReadOnlyMemory<byte>), typeof(string)), "requestedPackId", [new ReadOnlyMemory<byte>(System.Text.Encoding.UTF8.GetBytes("{}")), null]);
+        AssertSyncNullArgument(catalog, ConvertMethod(typeof(SvgFontPackCatalog), "Resolve", typeof(SvgFontFaceRequest)), "request", [null]);
+        AssertSyncNullArgument(catalog, ConvertMethod(typeof(SvgFontPackCatalog), "Bind", typeof(SvgFontPackResolution), typeof(ISvgFontProgramSource)), "resolution", [null, source]);
+        AssertSyncNullArgument(catalog, ConvertMethod(typeof(SvgFontPackCatalog), "Bind", typeof(SvgFontPackResolution), typeof(ISvgFontProgramSource)), "source", [resolution, null]);
+        AssertSyncNullArgument(catalog, ConvertMethod(typeof(SvgFontPackCatalog), "AcquireAsync", typeof(SvgFontPackResolution), typeof(ISvgFontProgramSourceProvider), typeof(CancellationToken)), "resolution", [null, provider, CancellationToken.None]);
+        AssertSyncNullArgument(catalog, ConvertMethod(typeof(SvgFontPackCatalog), "AcquireAsync", typeof(SvgFontPackResolution), typeof(ISvgFontProgramSourceProvider), typeof(CancellationToken)), "provider", [resolution, null, CancellationToken.None]);
+        await AssertValueTaskNullArgument<SvgFontSnapshot>(ConvertMethod(typeof(SvgFontSnapshot), "CreateAsync", typeof(System.Collections.Generic.IReadOnlyList<SvgFontProgramResolution>), typeof(CancellationToken)).Invoke(null, [null, CancellationToken.None]), "resolutions");
+        await AssertValueTaskNullArgument<SvgFontSnapshot>(ConvertMethod(typeof(SvgFontSnapshot), "CreateAsync", typeof(SvgFontPackCatalog), typeof(System.Collections.Generic.IReadOnlyList<SvgFontFaceRequest>), typeof(ISvgFontProgramSourceProvider), typeof(CancellationToken)).Invoke(null, [null, new[] { request }, provider, CancellationToken.None]), "catalog");
+        await AssertValueTaskNullArgument<SvgFontSnapshot>(ConvertMethod(typeof(SvgFontSnapshot), "CreateAsync", typeof(SvgFontPackCatalog), typeof(System.Collections.Generic.IReadOnlyList<SvgFontFaceRequest>), typeof(ISvgFontProgramSourceProvider), typeof(CancellationToken)).Invoke(null, [catalog, null, provider, CancellationToken.None]), "requests");
+        await AssertValueTaskNullArgument<SvgFontSnapshot>(ConvertMethod(typeof(SvgFontSnapshot), "CreateAsync", typeof(SvgFontPackCatalog), typeof(System.Collections.Generic.IReadOnlyList<SvgFontFaceRequest>), typeof(ISvgFontProgramSourceProvider), typeof(CancellationToken)).Invoke(null, [catalog, new[] { request }, null, CancellationToken.None]), "provider");
+        await AssertValueTaskNullArgument<SvgFontSnapshot>(ConvertMethod(typeof(SvgFontSnapshot), "CreateAsync", typeof(ReadOnlyMemory<byte>), typeof(SvgFontPackCatalog), typeof(ISvgFontProgramSourceProvider), typeof(CancellationToken)).Invoke(null, [new ReadOnlyMemory<byte>(svg), null, provider, CancellationToken.None]), "catalog");
+        AssertSyncNullArgument(null, ConvertMethod(typeof(SvgFontSnapshot), "CreateAsync", typeof(ReadOnlyMemory<byte>), typeof(SvgFontPackCatalog), typeof(ISvgFontProgramSourceProvider), typeof(SvgRenderLimits), typeof(CancellationToken)), "limits", [new ReadOnlyMemory<byte>(svg), catalog, provider, null, CancellationToken.None]);
+    }
+
+    private static MethodInfo ConvertMethod(Type type, string name, params Type[] parameterTypes)
+    {
+        if (type.GetMethod(name, parameterTypes) is not MethodInfo method) throw new InvalidOperationException("Missing method: " + name);
+        return method;
+    }
+
+    private static void AssertSyncNullArgument(object? target, MethodInfo method, string parameterName, object?[] arguments)
+    {
+        try { method.Invoke(target, arguments); Assert.Fail("Null argument converted without an ArgumentNullException."); }
+        catch (TargetInvocationException exception) when (exception.InnerException is ArgumentNullException nullArgument)
         {
-            if (invocation is not Task task) throw new InvalidOperationException("Expected a task.");
-            ArgumentNullException nullArgument = await Assert.ThrowsAsync<ArgumentNullException>(() => task);
             Assert.Equal(parameterName, nullArgument.ParamName);
         }
+    }
 
-        static async Task AssertValueTaskNullArgument<T>(object? invocation, string parameterName)
-        {
-            if (invocation is not ValueTask<T> task) throw new InvalidOperationException("Expected a value task.");
-            ArgumentNullException nullArgument = await Assert.ThrowsAsync<ArgumentNullException>(async () => await task);
-            Assert.Equal(parameterName, nullArgument.ParamName);
-        }
+    private static async Task AssertTaskNullArgument(object? invocation, string parameterName)
+    {
+        if (invocation is not Task task) throw new InvalidOperationException("Expected a task.");
+        ArgumentNullException nullArgument = await Assert.ThrowsAsync<ArgumentNullException>(() => task);
+        Assert.Equal(parameterName, nullArgument.ParamName);
+    }
+
+    private static async Task AssertValueTaskNullArgument<T>(object? invocation, string parameterName)
+    {
+        if (invocation is not ValueTask<T> task) throw new InvalidOperationException("Expected a value task.");
+        ArgumentNullException nullArgument = await Assert.ThrowsAsync<ArgumentNullException>(async () => await task);
+        Assert.Equal(parameterName, nullArgument.ParamName);
+    }
+
+    private static SvgFontPackCatalog CreateNullArgumentCatalog()
+    {
+        return SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes("{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/a.ttf\", \"byteSize\": 1, \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\" }], \"families\": [{ \"requestedFamily\": \"Example\", \"resolvedFamily\": \"Example\", \"relativeFontFile\": \"files/a.ttf\" }] }"), "test-pack");
+    }
+
+    private sealed class NullArgumentFontSource : ISvgFontProgramSource
+    {
+        public string StableId => "null-argument-source";
+
+        public ValueTask<ReadOnlyMemory<byte>> GetBytesAsync(CancellationToken cancellationToken)
+            => ValueTask.FromResult(ReadOnlyMemory<byte>.Empty);
     }
 
     private sealed class NullArgumentFontProvider : ISvgFontProgramSourceProvider
