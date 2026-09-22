@@ -1717,6 +1717,7 @@ public sealed class OpenTypeFontTests
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' transform='translate(1)'>A</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><switch><text font-family='Example' font-size='100' y='3'>A</text></switch></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><switch/><text font-family='Example' font-size='100' y='3'>A</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text><switch/></svg>", false, SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     public async Task Discovery_and_lowering_agree_on_rejected_text(string svg, bool failsDuringDiscovery, SvgErrorCode code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
