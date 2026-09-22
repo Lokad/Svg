@@ -1830,6 +1830,15 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Admitted_fill_rules_render_identically_on_simple_geometry()
+    {
+        ReadOnlyMemory<byte> nonzero = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='2' height='2' fill='red' fill-rule='nonzero'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> evenodd = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='2' height='2' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.Equal(nonzero.ToArray(), evenodd.ToArray());
+    }
+
+    [Fact]
     public async Task Discovery_and_preparation_observe_cancellation_together()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>");
