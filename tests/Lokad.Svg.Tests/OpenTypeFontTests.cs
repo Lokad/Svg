@@ -2349,6 +2349,16 @@ public sealed class OpenTypeFontTests
 
         Assert.Throws<OperationCanceledException>(() => cancelled.ConvertToPng(cancellation.Token));
         Assert.Null(cancelled.RetainedSceneGeometries);
+        using SvgPreparedDocument syncStream = await CreateSceneDocumentAsync(svg);
+        using FailingSceneWriteStream syncDestination = new();
+
+        Assert.Throws<IOException>(() => syncStream.ConvertToPng(syncDestination, CancellationToken.None));
+        Assert.Null(syncStream.RetainedSceneGeometries);
+        using SvgPreparedDocument asyncStream = await CreateSceneDocumentAsync(svg);
+        using FailingSceneWriteStream asyncDestination = new();
+
+        await Assert.ThrowsAsync<IOException>(async () => await asyncStream.ConvertToPngAsync(asyncDestination, CancellationToken.None));
+        Assert.Null(asyncStream.RetainedSceneGeometries);
     }
 
     [Fact]
@@ -2402,6 +2412,12 @@ public sealed class OpenTypeFontTests
         GC.Collect();
         GC.WaitForPendingFinalizers();
         GC.Collect();
+    }
+    private sealed class FailingSceneWriteStream : MemoryStream
+    {
+        public override void Write(ReadOnlySpan<byte> buffer) => throw new IOException("destination write failed");
+
+        public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken) => ValueTask.FromException(new IOException("destination write failed"));
     }
     [Fact]
     public async Task Svg_based_snapshot_skips_whitespace_only_direct_text_before_acquisition()
