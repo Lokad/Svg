@@ -209,6 +209,18 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Renders_palette_images_byte_identical_to_direct_fills()
+    {
+        byte[] image = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAAA1BMVEX/AAAZ4gk3AAAAC0lEQVR4nGNgAAEAAAYAAf6MZ8gAAAAASUVORK5CYII=' x='0' y='0' width='2' height='2'/></svg>");
+        byte[] direct = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>");
+
+        ReadOnlyMemory<byte> imagePng = SvgConverter.ConvertToPng(image, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(direct, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(imagePng.Span.SequenceEqual(directPng.Span));
+    }
+
+    [Fact]
     public void Rejects_link_nested_definitions()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><a><defs><rect id='tile' width='2' height='2' fill='red'/></defs></a><use href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

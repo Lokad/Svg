@@ -21,7 +21,10 @@ internal static class PngImageDecoder
         int width = 0;
         int height = 0;
         int channels = 0;
+        bool isPaletteType = false;
         byte[]? transparent = null;
+        byte[]? palette = null;
+        bool seenImageData = false;
         using var compressed = new MemoryStream();
         int position = PngSignature.Length;
         bool seenHeader = false;
@@ -47,7 +50,8 @@ internal static class PngImageDecoder
                 if (width <= 0 || height <= 0 || width > limits.MaximumDimension || height > limits.MaximumDimension) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG dimensions exceed the configured dimension limit.");
                 long pixelCount = (long)width * height;
                 if (pixelCount > limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG pixel count exceeds the configured pixel limit.");
-                channels = colorType switch { 0 => 1, 2 => 3, 6 => 4, _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only grayscale, RGB, and RGBA embedded PNG data are implemented.") };
+                isPaletteType = colorType == 3;
+                channels = colorType switch { 0 => 1, 2 => 3, 3 => 1, 6 => 4, _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only grayscale, palette, RGB, and RGBA embedded PNG data are implemented.") };
                 if (bitDepth != 8) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only 8-bit embedded PNG data are implemented.");
                 if (data[10] != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data uses an unsupported compression method.");
                 if (data[11] != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data uses an unsupported filter method.");
@@ -58,6 +62,14 @@ internal static class PngImageDecoder
             {
                 if (!seenHeader || seenEnd) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its image data.");
                 compressed.Write(data);
+                seenImageData = true;
+            }
+            else if (type.SequenceEqual("PLTE"u8))
+            {
+                if (!seenHeader || seenEnd || seenImageData) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its palette chunk.");
+                if (palette is not null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data repeats its palette chunk.");
+                if (length == 0 || length % 3 != 0 || length > 768) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed palette chunk.");
+                palette = data.ToArray();
             }
             else if (type.SequenceEqual("IEND"u8))
             {
@@ -105,11 +117,13 @@ internal static class PngImageDecoder
             }
             if (zlib.ReadByte() != -1) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries trailing pixel bytes.");
         }
-        return ScanSolidColor(pixels, width, height, channels, transparent, (int)rowBytes, workCounter, cancellationToken);
+        return ScanSolidColor(pixels, width, height, channels, transparent, palette, isPaletteType, (int)rowBytes, workCounter, cancellationToken);
     }
 
-    private static SvgColor ScanSolidColor(byte[] pixels, int width, int height, int channels, byte[]? transparent, int rowBytes, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgColor ScanSolidColor(byte[] pixels, int width, int height, int channels, byte[]? transparent, byte[]? palette, bool isPaletteType, int rowBytes, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        if (isPaletteType && palette is null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data is missing its palette chunk.");
+        if (isPaletteType && transparent is not null && transparent.Length > 256) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed transparency chunk.");
         byte[] previous = new byte[rowBytes];
         byte[] current = new byte[rowBytes];
         int red = -1;
@@ -127,11 +141,27 @@ internal static class PngImageDecoder
             for (int x = 0; x < width; x++)
             {
                 int offset = x * channels;
-                int pixelRed = current[offset];
-                int pixelGreen = channels == 1 ? current[offset] : current[offset + 1];
-                int pixelBlue = channels == 1 ? current[offset] : current[offset + 2];
-                int pixelAlpha = channels == 4 ? current[offset + 3] : 255;
-                if (transparent is not null) pixelAlpha = ApplyTransparency(pixelRed, pixelGreen, pixelBlue, pixelAlpha, channels, transparent);
+                int pixelRed;
+                int pixelGreen;
+                int pixelBlue;
+                int pixelAlpha;
+                if (isPaletteType)
+                {
+                    int index = current[offset];
+                    if (palette is null || index * 3 + 2 >= palette.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data references a missing palette entry.");
+                    pixelRed = palette[index * 3];
+                    pixelGreen = palette[index * 3 + 1];
+                    pixelBlue = palette[index * 3 + 2];
+                    pixelAlpha = transparent is not null && index < transparent.Length ? transparent[index] : 255;
+                }
+                else
+                {
+                    pixelRed = current[offset];
+                    pixelGreen = channels == 1 ? current[offset] : current[offset + 1];
+                    pixelBlue = channels == 1 ? current[offset] : current[offset + 2];
+                    pixelAlpha = channels == 4 ? current[offset + 3] : 255;
+                    if (transparent is not null) pixelAlpha = ApplyTransparency(pixelRed, pixelGreen, pixelBlue, pixelAlpha, channels, transparent);
+                }
                 if (red < 0)
                 {
                     red = pixelRed;

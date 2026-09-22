@@ -49,6 +49,45 @@ public sealed class PngImageDecoderTests
     }
 
     [Fact]
+    public void Decodes_a_solid_palette_pixel()
+    {
+        SvgColor color = Decode("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAAA1BMVEX/AAAZ4gk3AAAAC0lEQVR4nGNgAAEAAAYAAf6MZ8gAAAAASUVORK5CYII=");
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), color);
+    }
+
+    [Fact]
+    public void Decodes_a_palette_pixel_through_palette_transparency()
+    {
+        SvgColor color = Decode("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEX/AAAA/wDSh+9xAAAADklEQVR4nGNgZGRgZAQAABIABVUZwSwAAAACdFJOU/+ACA+zagAAAABJRU5ErkJggg==");
+
+        Assert.Equal(new SvgColor(0, 255, 0, 128), color);
+    }
+
+    [Fact]
+    public void Decodes_a_transparent_palette_pixel()
+    {
+        SvgColor color = Decode("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEX/AAAA/wDSh+9xAAAADklEQVR4nGNgZGRgZAQAABIABVUZwSwAAAACdFJOU/8A5bcwSgAAAABJRU5ErkJggg==");
+
+        Assert.Equal(new SvgColor(0, 255, 0, 0), color);
+    }
+
+    [Theory]
+    [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEX/AAAA/wDSh+9xAAAADklEQVR4nGNgYGRgZAAAAAwAAzi4CA8AAAAASUVORK5CYII=", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAABlBMVEX/AAAA/wDSh+9xAAAADklEQVR4nGNgZWVgZQUAAEIAFbGAWJQAAAAASUVORK5CYII=", SvgErrorCode.MalformedInput)]
+    [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAAC0lEQVR4nGNgAAEAAAYAAf6MZ8gAAAAASUVORK5CYII=", SvgErrorCode.MalformedInput)]
+    [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAAA1BMVEX/AAAZ4gk3AAAAA1BMVEX/AAAZ4gk3AAAAC0lEQVR4nGNgAAEAAAYAAf6MZ8gAAAAASUVORK5CYII=", SvgErrorCode.MalformedInput)]
+    [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAABFaP0WAAAAC0lEQVR4nGNgAAEAAAYAAf6MZ8gAAAADUExURf8AABniCTcAAAAASUVORK5CYII=", SvgErrorCode.MalformedInput)]
+    [InlineData("iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAMAAAEyb82AAAAAA1BMVEX/AAAZ4gk3AAAAC0lEQVR4nGNgAAEAAAYAAf6MZ8gAAAAASUVORK5CYII=", SvgErrorCode.UnsupportedFeature)]
+    public void Rejects_invalid_palette_data(string base64, SvgErrorCode expectedErrorCode)
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => Decode(base64));
+
+        Assert.Equal(expectedErrorCode, exception.ErrorCode);
+    }
+
+
+    [Fact]
     public void Rejects_color_managed_data()
     {
         SvgException exception = Assert.Throws<SvgException>(() => Decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAABGdBTUEAALGPC/xhBQAAAAxJREFUeJxj+M/AAAADAQEAyf6S7wAAAABJRU5ErkJggg=="));
