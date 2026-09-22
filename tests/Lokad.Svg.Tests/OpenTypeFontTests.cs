@@ -2375,6 +2375,14 @@ public sealed class OpenTypeFontTests
 
         await Assert.ThrowsAsync<IOException>(async () => await asyncStream.ConvertToPngAsync(asyncDestination, CancellationToken.None));
         Assert.Null(asyncStream.RetainedSceneGeometries);
+        using SvgPreparedDocument asyncCancelled = await CreateSceneDocumentAsync(svg);
+        using CancellationTokenSource asyncCancellation = new();
+        asyncCancellation.Cancel();
+
+        OperationCanceledException asyncFailure = await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await asyncCancelled.ConvertToPngAsync(asyncCancellation.Token));
+
+        Assert.Equal(asyncCancellation.Token, asyncFailure.CancellationToken);
+        Assert.Null(asyncCancelled.RetainedSceneGeometries);
     }
 
     [Fact]
