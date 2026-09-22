@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-embedded-image",
+  "referencePng": "original-logo-embedded-image.png",
+  "referenceSha256": "3a49c5418c1a285dae0d22fc3deb60f2c310277b5f0f50e62be802b8b673613f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "eb6f5cfcb550b0a1546dca3773074be3d859ffe465a8148e7ab3df8331a1cde7",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-22"
+}
