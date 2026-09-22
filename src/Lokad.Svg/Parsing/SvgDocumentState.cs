@@ -19,6 +19,7 @@ internal sealed class SvgDocumentState : IDisposable
         StyleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         Clips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
+        ObjectClips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Masks = new BudgetedParserDictionary<string, byte>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Patterns = new BudgetedParserDictionary<string, SvgPatternTile>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
         Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
@@ -41,6 +42,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserDictionary<string, SvgDefinition> Definitions { get; }
 
     internal BudgetedParserDictionary<string, SvgClipBox> Clips { get; }
+
+    internal BudgetedParserDictionary<string, SvgClipBox> ObjectClips { get; }
 
     internal BudgetedParserDictionary<string, byte> Masks { get; }
 
@@ -100,6 +103,8 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal SvgClipBox? ClipBox { get; set; }
 
+    internal bool ClipIsObjectBoundingBox { get; set; }
+
     internal string? SymbolId { get; set; }
 
     internal SvgViewBox? SymbolViewBox { get; set; }
@@ -109,6 +114,7 @@ internal sealed class SvgDocumentState : IDisposable
         PendingUses.Dispose();
         Definitions.Dispose();
         Clips.Dispose();
+        ObjectClips.Dispose();
         Masks.Dispose();
         Patterns.Dispose();
         Gradients.Dispose();

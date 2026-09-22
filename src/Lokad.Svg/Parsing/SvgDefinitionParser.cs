@@ -40,6 +40,7 @@ internal static class SvgDefinitionParser
             SvgElementAttributePolicy.ValidateClipPath(reader, workCounter, cancellationToken);
             state.ClipPathId = reader.GetAttribute("id");
             state.ClipBox = null;
+            state.ClipIsObjectBoundingBox = SvgClipPathSyntax.ParseClipUnits(reader.GetAttribute("clipPathUnits"));
             if (reader.IsEmptyElement)
             {
                 if (state.ClipPathId is not null) RegisterClipBox(state, workCounter, cancellationToken);
@@ -56,7 +57,9 @@ internal static class SvgDefinitionParser
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
-                SvgRectangle rect = context.ResolveTransform(reader).Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
+                AxisTransform clipTransform = context.ResolveTransform(reader);
+                if (state.ClipIsObjectBoundingBox && clipTransform != AxisTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transformed objectBoundingBox clip content is not implemented.");
+                SvgRectangle rect = clipTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
                 state.ClipBox = new SvgClipBox(rect.X, rect.Y, rect.Width, rect.Height);
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 state.SawStyleableNode = true;
@@ -253,7 +256,7 @@ internal static class SvgDefinitionParser
     {
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip-path registration requires an identifier."));
-        if (!state.Clips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+        if (state.ClipIsObjectBoundingBox) { if (state.Clips.TryGetValue(retainedId, out _) || !state.ObjectClips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique."); } else if (state.ObjectClips.TryGetValue(retainedId, out _) || !state.Clips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
     }
 
     private static SvgGeometry RequirePatternTileContent(SvgGeometry content, SvgPatternTile tile)
