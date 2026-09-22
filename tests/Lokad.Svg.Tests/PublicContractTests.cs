@@ -285,6 +285,18 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Truncated_inputs_stay_within_the_categorized_error_contract()
+    {
+        byte[] full = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='r' width='2' height='2' fill='red'/></defs><style>rect { fill: blue; }</style><g opacity='0.5'><use href='#r'/><rect width='1' height='1' fill='rgb(1, 2, 3)'/><text font-family='Example'>Aé</text></g></svg>");
+
+        for (int length = 0; length <= full.Length; length++)
+        {
+            try { SvgConverter.ConvertToPng(full[..length], SvgRenderOptions.Default, CancellationToken.None); Assert.Fail("Truncated input converted without a categorized failure."); }
+            catch (SvgException) { }
+        }
+    }
+
+    [Fact]
     public void Animated_rectangle_content_is_rejected_as_unsupported()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'><animate attributeName='fill' values='red;blue' dur='1s'/></rect></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
