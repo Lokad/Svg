@@ -1,0 +1,9 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <symbol id="tile" viewBox="0 0 16 16">
+      <rect width="16" height="16" fill="#ff0000"/>
+    </symbol>
+  </defs>
+  <use href="#tile" x="16" y="16"/>
+</svg>
