@@ -588,6 +588,51 @@ public sealed class OpenTypeFontTests
         Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetSimpleGlyphStructure(invalid, 1, CancellationToken.None)).ErrorCode);
     }
 
+    public enum SimpleGlyphPointDefect
+    {
+        TruncatedFlags,
+        FlagRepeatOverflow,
+        TruncatedCoordinates,
+    }
+
+    [Theory]
+    [InlineData(SimpleGlyphPointDefect.TruncatedFlags)]
+    [InlineData(SimpleGlyphPointDefect.FlagRepeatOverflow)]
+    [InlineData(SimpleGlyphPointDefect.TruncatedCoordinates)]
+    public void Rejects_malformed_simple_glyph_point_data_on_both_decode_paths(SimpleGlyphPointDefect defect)
+    {
+        byte[] font = BuildMalformedPointFont(defect);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 1, metrics, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 1, metrics, new RenderBudget(1_000_000), new ParserWorkCounter(long.MaxValue), CancellationToken.None)).ErrorCode);
+
+        byte[] BuildMalformedPointFont(SimpleGlyphPointDefect kind)
+        {
+            byte[] malformed = CreateFont(1024, 3, 2, 1);
+            OpenTypeTableRange range = OpenTypeFont.GetGlyphDataRange(malformed, 1, CancellationToken.None);
+            WriteInt16(malformed, range.Offset, 1);
+            if (kind is SimpleGlyphPointDefect.TruncatedFlags)
+            {
+                WriteUInt16(malformed, range.Offset + 10, 1);
+                WriteUInt16(malformed, range.Offset + 12, 17);
+            }
+            else if (kind is SimpleGlyphPointDefect.FlagRepeatOverflow)
+            {
+                WriteUInt16(malformed, range.Offset + 10, 0);
+                WriteUInt16(malformed, range.Offset + 12, 0);
+                malformed[range.Offset + 14] = 0x08;
+                malformed[range.Offset + 15] = 5;
+            }
+            else
+            {
+                WriteUInt16(malformed, range.Offset + 10, 0);
+                WriteUInt16(malformed, range.Offset + 12, 15);
+            }
+            return malformed;
+        }
+    }
+
     [Fact]
     public void Reads_composite_glyph_component_offsets_and_scale()
     {
