@@ -1072,6 +1072,8 @@ Investigate declared `shape-rendering` modes explicitly when present. The
 [rendering model](https://www.w3.org/TR/SVG2/render.html) defines semantics, not an
 implementation-independent recipe for the browser's exact edge pixels.
 
+Calibration evidence (2026-09-22, Chrome for Testing 153.0.8010.52, recipe 3, win64): the same local paint stack (half-opaque red under half-opaque blue over transparent) decodes as `(85,0,170,191)` when both rectangles cover the full canvas but `(85,0,170,192)` at the same coordinates when either rectangle is partial, confirmed across full/full, full/partial, partial/full and partial/partial 64x64 variants plus the admitted 2x2 exact reference at 191. Chrome output therefore depends on more than the local pixel stack (suspected fast versus general raster paths with truncating versus rounding alpha math), so reference pixels never transfer across documents and per-variant capture stays mandatory; a single global rounding rule cannot match both outcomes.
+
 Exit: zero decoded-pixel differences across the complete admitted probe family,
 three stable oracle captures per new reference, six-output equivalence and
 deterministic work/cancellation/cleanup tests. Failed research remains unsupported
