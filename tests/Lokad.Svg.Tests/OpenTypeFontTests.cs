@@ -725,6 +725,59 @@ public sealed class OpenTypeFontTests
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
+    public enum CompositeGlyphComponentDefect
+    {
+        TruncatedComponent,
+        TruncatedArguments,
+        TruncatedInstructions,
+    }
+
+    [Theory]
+    [InlineData(CompositeGlyphComponentDefect.TruncatedComponent)]
+    [InlineData(CompositeGlyphComponentDefect.TruncatedArguments)]
+    [InlineData(CompositeGlyphComponentDefect.TruncatedInstructions)]
+    public void Rejects_malformed_composite_glyph_components_on_all_decode_paths(CompositeGlyphComponentDefect defect)
+    {
+        byte[] font = BuildMalformedComponentFont(defect);
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
+
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, metrics, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, new RenderBudget(1_000_000), new ParserWorkCounter(long.MaxValue), CancellationToken.None)).ErrorCode);
+
+        byte[] BuildMalformedComponentFont(CompositeGlyphComponentDefect kind)
+        {
+            byte[] malformed = CreateFont(1024, 3, 2, 1);
+            OpenTypeTableRange range = OpenTypeFont.GetGlyphDataRange(malformed, 2, CancellationToken.None);
+            WriteInt16(malformed, range.Offset, -1);
+            if (kind is CompositeGlyphComponentDefect.TruncatedComponent)
+            {
+                WriteUInt16(malformed, range.Offset + 10, 35);
+                WriteUInt16(malformed, range.Offset + 12, 1);
+                WriteInt16(malformed, range.Offset + 14, 2);
+                WriteInt16(malformed, range.Offset + 16, -3);
+            }
+            else if (kind is CompositeGlyphComponentDefect.TruncatedArguments)
+            {
+                WriteUInt16(malformed, range.Offset + 10, 34);
+                WriteUInt16(malformed, range.Offset + 12, 1);
+                malformed[range.Offset + 14] = 2;
+                malformed[range.Offset + 15] = 253;
+                WriteUInt16(malformed, range.Offset + 16, 3);
+                WriteUInt16(malformed, range.Offset + 18, 1);
+            }
+            else
+            {
+                WriteUInt16(malformed, range.Offset + 10, 259);
+                WriteUInt16(malformed, range.Offset + 12, 1);
+                WriteInt16(malformed, range.Offset + 14, 0);
+                WriteInt16(malformed, range.Offset + 16, 0);
+                WriteUInt16(malformed, range.Offset + 18, 1);
+            }
+            return malformed;
+        }
+    }
+
     [Fact]
     public void Expands_composite_glyphs_with_their_affine_transform()
     {
