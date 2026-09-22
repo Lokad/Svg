@@ -12,6 +12,13 @@ internal static class SvgClipPathSyntax
         return id;
     }
 
+    /// <summary>Validates the admitted no-op clip rule shared by attributes and style declarations.</summary>
+    internal static void ValidateClipRule(ReadOnlySpan<char> value)
+    {
+        if (value.Trim().Equals("nonzero".AsSpan(), StringComparison.OrdinalIgnoreCase) || value.Trim().Equals("evenodd".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero and evenodd clip rules are implemented.");
+    }
+
     /// <summary>Parses the clip-path coordinate system, defaulting to userSpaceOnUse.</summary>
     internal static bool ParseClipUnits(string? value)
     {

@@ -89,6 +89,8 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("stroke-linecap", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-linecap", propertyValue);
             else if (property.Equals("stroke-linejoin", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-linejoin", propertyValue);
             else if (property.Equals("stroke-dasharray", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-dasharray", propertyValue);
+            else if (property.Equals("stroke-dashoffset", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-dashoffset", propertyValue);
+            else if (property.Equals("clip-rule", StringComparison.OrdinalIgnoreCase)) ValidateClipDeclaration(propertyValue);
             else if (allowsDirectTextFontProperties && property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) Set(ref family, InlineImportantProperties.Family, property, propertyValue, strings, ref important, false);
             else if (allowsDirectTextFontProperties && property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) Set(ref weight, InlineImportantProperties.Weight, property, propertyValue, strings, ref important, false);
             else if (allowsDirectTextFontProperties && property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) Set(ref fontStyle, InlineImportantProperties.FontStyle, property, propertyValue, strings, ref important, false);
@@ -123,6 +125,12 @@ internal static class SvgInlineStyleParser
         {
             TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
             SvgStrokeStyleSyntax.ValidateAttribute(name, stripped.ToString());
+        }
+
+        static void ValidateClipDeclaration(ReadOnlySpan<char> rawValue)
+        {
+            TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
+            SvgClipPathSyntax.ValidateClipRule(stripped);
         }
 
         static bool TryStripImportant(ReadOnlySpan<char> value, out ReadOnlySpan<char> stripped)

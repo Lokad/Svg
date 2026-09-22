@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Validates the admitted no-op stroke style subset shared by attributes and style declarations.</summary>
@@ -9,6 +11,7 @@ internal static class SvgStrokeStyleSyntax
         if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan());
         else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan());
         else if (localName == "stroke-dasharray") ValidateDasharray(value.AsSpan());
+        else if (localName == "stroke-dashoffset") ValidateDashoffset(value.AsSpan());
     }
 
     private static void ValidateLinecap(ReadOnlySpan<char> value)
@@ -21,6 +24,14 @@ internal static class SvgStrokeStyleSyntax
     {
         if (value.Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter stroke linejoins are implemented.");
+    }
+
+    private static void ValidateDashoffset(ReadOnlySpan<char> value)
+    {
+        ReadOnlySpan<char> token = value.Trim();
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
     }
 
     private static void ValidateDasharray(ReadOnlySpan<char> value)
