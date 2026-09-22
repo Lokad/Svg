@@ -1017,6 +1017,8 @@ completion date is justified by the existing unit-test total.
   unsupported outcome. Do not present the bounded static cascade as a browser CSS
   engine or ignore a declaration whose omission changes the mark.
 
+Landed 2026-09-22 (334cf7d): local `use` instances nested in `g`/`a` containers, including links wrapping groups, with the enclosing transform composed into each instance (unit-pinned) and `original-logo-link-use-mark` admitted exact on three byte-identical recipe-3 captures. Symbol-viewport, nested-svg and reference-graph work remains open.
+
 Exit: paired equivalent exports (attribute/inline/stylesheet paint, direct/local
 instance geometry, prefixed/default namespace) plus non-equivalent precedence
 controls; cancellation and invalid-reference tests prove bounded work and cleanup.

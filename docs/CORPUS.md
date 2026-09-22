@@ -39,6 +39,8 @@ origin, and integral viewBox mapping.
 candidate comparison. It pins the supported nonuniform `preserveAspectRatio="none"`
 mapping.
 
+`original-logo-link-use-mark` has an admitted stable pinned-Chrome reference and exact candidate comparison. It pins local `use` instantiation nested directly in a link (two bars) alongside a direct rectangle; group-nested instances and enclosing-transform composition are pinned by the converter matrix and unit tests.
+
 When a Chrome reference is admitted, record the pinned browser/archive hash, platform,
 recipe revision, input/materialized hashes, resource hashes and capture options in the
 manifest and `tests/References/`. References must be generated from the original bytes;
