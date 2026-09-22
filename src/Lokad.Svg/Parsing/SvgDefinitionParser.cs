@@ -169,7 +169,7 @@ internal static class SvgDefinitionParser
             double? baseWidth = parentFrame?.ViewportWidth ?? root.Width;
             double? baseHeight = parentFrame?.ViewportHeight ?? root.Height;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
-            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, SvgClipPathSyntax.ResolveLeafClip(reader, state), SvgMaskSyntax.ResolveUseMask(reader, state), workCounter, cancellationToken);
+            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, SvgClipPathSyntax.ResolveLeafClip(reader, state), SvgMaskSyntax.ResolveOptionalMask(reader, state), workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
             return true;

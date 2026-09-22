@@ -68,7 +68,7 @@ internal static class SvgMaskSyntax
         for (int index = 0; index < geometries.Length; index++) geometries[index] = ApplyMask(geometries[index], value, region);
     }
 
-    internal static byte? ResolveUseMask(XmlReader reader, SvgDocumentState state)
+    internal static byte? ResolveOptionalMask(XmlReader reader, SvgDocumentState state)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
