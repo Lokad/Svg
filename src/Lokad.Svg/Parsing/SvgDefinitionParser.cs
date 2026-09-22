@@ -171,7 +171,9 @@ internal static class SvgDefinitionParser
             double? baseHeight = parentFrame?.ViewportHeight ?? root.Height;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
             if (SvgMaskSyntax.HasCustomRegion(reader, state)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on use instances are not implemented.");
-            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, SvgClipPathSyntax.ResolveLeafClip(reader, state), SvgMaskSyntax.ResolveOptionalMask(reader, state), workCounter, cancellationToken);
+            SvgViewportFrame? useFrame = SvgClipPathSyntax.ResolveLeafClip(reader, state);
+            if (useFrame is not null && useFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
+            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, SvgMaskSyntax.ResolveOptionalMask(reader, state), workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
             return true;

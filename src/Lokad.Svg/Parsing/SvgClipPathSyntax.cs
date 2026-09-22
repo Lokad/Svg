@@ -30,6 +30,7 @@ internal static class SvgClipPathSyntax
         ArgumentNullException.ThrowIfNull(state);
         string? reference = reader.GetAttribute("clip-path");
         if (reference is null) return frame;
+        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
         string id = ParseClipId(reference);
         if (state.ObjectClips.TryGetValue(id, out SvgClipBox fractions))
         {
@@ -37,7 +38,9 @@ internal static class SvgClipPathSyntax
             SvgClipBox clip = frame is null ? resolved : frame.Value.Clip.Intersect(resolved);
             double offsetX = frame?.OffsetX ?? 0;
             double offsetY = frame?.OffsetY ?? 0;
-            return new SvgViewportFrame(offsetX, offsetY, frame?.ViewportWidth, frame?.ViewportHeight, clip, reader.Depth);
+            double scaleX = frame?.ScaleX ?? 1;
+            double scaleY = frame?.ScaleY ?? 1;
+            return new SvgViewportFrame(offsetX, offsetY, scaleX, scaleY, frame?.ViewportWidth, frame?.ViewportHeight, clip, reader.Depth);
         }
         return ResolveLeafClip(reader, state);
     }
@@ -48,12 +51,15 @@ internal static class SvgClipPathSyntax
         ArgumentNullException.ThrowIfNull(state);
         string? reference = reader.GetAttribute("clip-path");
         if (reference is null) return state.EffectiveFrame;
+        if (state.EffectiveFrame is not null && state.EffectiveFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
         if (state.ObjectClips.TryGetValue(ParseClipId(reference), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths are only implemented on rectangles.");
         if (!state.Clips.TryGetValue(ParseClipId(reference), out SvgClipBox box)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
         SvgViewportFrame? parent = state.EffectiveFrame;
         SvgClipBox clip = parent is null ? box : parent.Value.Clip.Intersect(box);
         double offsetX = parent?.OffsetX ?? 0;
         double offsetY = parent?.OffsetY ?? 0;
-        return new SvgViewportFrame(offsetX, offsetY, parent?.ViewportWidth, parent?.ViewportHeight, clip, reader.Depth);
+        double scaleX = parent?.ScaleX ?? 1;
+        double scaleY = parent?.ScaleY ?? 1;
+        return new SvgViewportFrame(offsetX, offsetY, scaleX, scaleY, parent?.ViewportWidth, parent?.ViewportHeight, clip, reader.Depth);
     }
 }

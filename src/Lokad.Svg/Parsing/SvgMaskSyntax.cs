@@ -107,7 +107,11 @@ internal static class SvgMaskSyntax
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
         string? reference = reader.GetAttribute("mask");
-        if (reference is not null && state.MaskRegions.TryGetValue(ParseMaskId(reference), out SvgClipBox custom)) return custom;
+        if (reference is not null && state.MaskRegions.TryGetValue(ParseMaskId(reference), out SvgClipBox custom))
+        {
+            if (state.EffectiveFrame is not null && !state.EffectiveFrame.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
+            return custom;
+        }
         return MaskRegion(fallback);
     }
     internal static byte? ResolveOptionalMask(XmlReader reader, SvgDocumentState state)

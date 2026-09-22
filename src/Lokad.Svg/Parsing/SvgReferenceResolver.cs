@@ -63,25 +63,8 @@ internal static class SvgReferenceResolver
 
     private static SvgRectangle MapSymbolBox(SvgRectangle box, SvgViewBox viewBox, double viewportWidth, double viewportHeight)
     {
-        double scaleX = viewportWidth / viewBox.Width;
-        double scaleY = viewportHeight / viewBox.Height;
-        if (viewBox.HorizontalAlignment != SvgViewBoxAlignment.None)
-        {
-            double scale = viewBox.Fit == SvgViewBoxFit.Slice ? Math.Max(scaleX, scaleY) : Math.Min(scaleX, scaleY);
-            scaleX = scale;
-            scaleY = scale;
-        }
-        double offsetX = GetAlignmentOffset(viewportWidth - viewBox.Width * scaleX, viewBox.HorizontalAlignment) - viewBox.X * scaleX;
-        double offsetY = GetAlignmentOffset(viewportHeight - viewBox.Height * scaleY, viewBox.VerticalAlignment) - viewBox.Y * scaleY;
+        (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, viewportWidth, viewportHeight);
         return box with { X = box.X * scaleX + offsetX, Y = box.Y * scaleY + offsetY, Width = box.Width * scaleX, Height = box.Height * scaleY };
-
-        static double GetAlignmentOffset(double remaining, SvgViewBoxAlignment alignment) => alignment switch
-        {
-            SvgViewBoxAlignment.Min or SvgViewBoxAlignment.None => 0,
-            SvgViewBoxAlignment.Mid => remaining / 2,
-            SvgViewBoxAlignment.Max => remaining,
-            _ => throw new InvalidOperationException("Unknown viewBox alignment.")
-        };
     }
 
     private static SvgGeometry ApplyMask(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, byte? mask)

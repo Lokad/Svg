@@ -57,18 +57,42 @@ internal static class SvgDocumentTraversal
                     SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
                     SvgViewportFrame? parentFrame = state.EffectiveFrame;
                     SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.Width, parentFrame?.ViewportHeight ?? root.Height);
-                    double offsetX = viewport.X;
-                    double offsetY = viewport.Y;
+                    SvgViewBox? nestedViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
+                    double localScaleX = 1;
+                    double localScaleY = 1;
+                    double viewOffsetX = 0;
+                    double viewOffsetY = 0;
+                    if (nestedViewBox is SvgViewBox viewBox)
+                    {
+                        (localScaleX, localScaleY, viewOffsetX, viewOffsetY) = SvgGeometrySyntax.MapViewBox(viewBox, viewport.Width, viewport.Height);
+                    }
+                    double composedScaleX = localScaleX;
+                    double composedScaleY = localScaleY;
+                    double composedOffsetX = viewport.X + viewOffsetX;
+                    double composedOffsetY = viewport.Y + viewOffsetY;
                     SvgClipBox? parentClip = null;
                     if (parentFrame is not null)
                     {
-                        offsetX += parentFrame.Value.OffsetX;
-                        offsetY += parentFrame.Value.OffsetY;
+                        composedScaleX = parentFrame.Value.ScaleX * localScaleX;
+                        composedScaleY = parentFrame.Value.ScaleY * localScaleY;
+                        composedOffsetX = parentFrame.Value.ScaleX * (viewport.X + viewOffsetX) + parentFrame.Value.OffsetX;
+                        composedOffsetY = parentFrame.Value.ScaleY * (viewport.Y + viewOffsetY) + parentFrame.Value.OffsetY;
                         parentClip = parentFrame.Value.Clip;
                     }
-                    SvgClipBox box = new(offsetX, offsetY, viewport.Width, viewport.Height);
+                    double clipOriginX = viewport.X;
+                    double clipOriginY = viewport.Y;
+                    double clipScaleX = 1;
+                    double clipScaleY = 1;
+                    if (parentFrame is not null)
+                    {
+                        clipScaleX = parentFrame.Value.ScaleX;
+                        clipScaleY = parentFrame.Value.ScaleY;
+                        clipOriginX = parentFrame.Value.ScaleX * viewport.X + parentFrame.Value.OffsetX;
+                        clipOriginY = parentFrame.Value.ScaleY * viewport.Y + parentFrame.Value.OffsetY;
+                    }
+                    SvgClipBox box = new(clipOriginX, clipOriginY, viewport.Width * clipScaleX, viewport.Height * clipScaleY);
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
-                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(offsetX, offsetY, viewport.Width, viewport.Height, box, reader.Depth));
+                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, viewport.Width, viewport.Height, box, reader.Depth));
                     state.SawStyleableNode = true;
                 }
                 else if (inViewport && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside nested viewports is not implemented.");
@@ -90,7 +114,8 @@ internal static class SvgDocumentTraversal
                             if (!state.Clips.TryGetValue(SvgClipPathSyntax.ParseClipId(clipReference), out SvgClipBox clipBox)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
                             SvgViewportFrame? clipParent = state.EffectiveFrame;
                             SvgClipBox clip = clipParent is null ? clipBox : clipParent.Value.Clip.Intersect(clipBox);
-                            state.Viewports.Add(new SvgViewportFrame(clipParent?.OffsetX ?? 0, clipParent?.OffsetY ?? 0, clipParent?.ViewportWidth, clipParent?.ViewportHeight, clip, reader.Depth));
+                            if (clipParent?.IsScaled ?? false) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
+                            state.Viewports.Add(new SvgViewportFrame(clipParent?.OffsetX ?? 0, clipParent?.OffsetY ?? 0, clipParent?.ScaleX ?? 1, clipParent?.ScaleY ?? 1, clipParent?.ViewportWidth, clipParent?.ViewportHeight, clip, reader.Depth));
                             state.ClipDepths.Add(reader.Depth);
                         }
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;

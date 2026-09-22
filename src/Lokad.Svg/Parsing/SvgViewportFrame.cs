@@ -1,15 +1,19 @@
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Carries one nested viewport origin offset with its absolute clip box and XML depth.</summary>
-internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY, double? ViewportWidth, double? ViewportHeight, SvgClipBox Clip, int Depth)
+internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY, double ScaleX, double ScaleY, double? ViewportWidth, double? ViewportHeight, SvgClipBox Clip, int Depth)
 {
+    internal bool IsScaled => ScaleX != 1 || ScaleY != 1;
+
+    internal bool IsTrivial => OffsetX == 0 && OffsetY == 0 && !IsScaled;
+
     /// <summary>Shifts one fill box into viewport-parent space without clipping.</summary>
     internal SvgRectangle Shift(SvgRectangle rectangle)
-        => rectangle with { X = rectangle.X + OffsetX, Y = rectangle.Y + OffsetY };
+        => rectangle with { X = rectangle.X * ScaleX + OffsetX, Y = rectangle.Y * ScaleY + OffsetY, Width = rectangle.Width * ScaleX, Height = rectangle.Height * ScaleY };
 
     /// <summary>Shifts one axis-aligned line into viewport-parent space without clipping.</summary>
     internal SvgAxisAlignedLine Shift(SvgAxisAlignedLine line)
-        => line with { X1 = line.X1 + OffsetX, X2 = line.X2 + OffsetX, Y1 = line.Y1 + OffsetY, Y2 = line.Y2 + OffsetY };
+        => line with { X1 = line.X1 * ScaleX + OffsetX, X2 = line.X2 * ScaleX + OffsetX, Y1 = line.Y1 * ScaleY + OffsetY, Y2 = line.Y2 * ScaleY + OffsetY };
 
     /// <summary>Shifts one fill box into viewport-parent space, then clips it to the viewport.</summary>
     internal SvgRectangle ClipShifted(SvgRectangle rectangle) => Clip.ClipRectangle(Shift(rectangle));

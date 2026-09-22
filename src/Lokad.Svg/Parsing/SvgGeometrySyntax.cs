@@ -91,6 +91,30 @@ internal static class SvgGeometrySyntax
         return result;
     }
 
+    /// <summary>Maps viewBox units into a viewport box under its alignment policy.</summary>
+    internal static (double ScaleX, double ScaleY, double OffsetX, double OffsetY) MapViewBox(SvgViewBox viewBox, double viewportWidth, double viewportHeight)
+    {
+        double scaleX = viewportWidth / viewBox.Width;
+        double scaleY = viewportHeight / viewBox.Height;
+        if (viewBox.HorizontalAlignment != SvgViewBoxAlignment.None)
+        {
+            double scale = viewBox.Fit == SvgViewBoxFit.Slice ? Math.Max(scaleX, scaleY) : Math.Min(scaleX, scaleY);
+            scaleX = scale;
+            scaleY = scale;
+        }
+        double offsetX = MapAlignmentOffset(viewportWidth - viewBox.Width * scaleX, viewBox.HorizontalAlignment) - viewBox.X * scaleX;
+        double offsetY = MapAlignmentOffset(viewportHeight - viewBox.Height * scaleY, viewBox.VerticalAlignment) - viewBox.Y * scaleY;
+        return (scaleX, scaleY, offsetX, offsetY);
+    }
+
+    private static double MapAlignmentOffset(double remaining, SvgViewBoxAlignment alignment) => alignment switch
+    {
+        SvgViewBoxAlignment.Min or SvgViewBoxAlignment.None => 0,
+        SvgViewBoxAlignment.Mid => remaining / 2,
+        SvgViewBoxAlignment.Max => remaining,
+        _ => throw new InvalidOperationException("Unknown viewBox alignment.")
+    };
+
     internal static SvgViewBox? ParseViewBox(string? value, string? preserveAspectRatio)
     {
         if (value is not null && value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "viewBox values exceed the configured syntax limit.");
