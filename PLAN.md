@@ -293,7 +293,8 @@ output-size differences can be established independently of timing measurements.
 
 Prioritize independent failure-boundary vectors with exact category, phase,
 draw-order and cleanup assertions. Extend malformed/truncated cmap/glyf,
-off-curve/implied-point and contour-boundary coverage. Preserve six-output,
+off-curve/implied-point and contour-boundary coverage; degenerate single-point, paired off-curve and
+all-off-curve contours now pin implied-midpoint segments. Preserve six-output,
 non-array memory, stream failure/backpressure, concurrency and package-boundary
 tests; these layers are not redundant. Share fixture builders, not expected
 answers derived from production decoding.

@@ -523,6 +523,18 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public void Builds_quadratic_contours_for_degenerate_point_configurations()
+    {
+        Assert.Empty(OpenTypeFont.BuildQuadraticContours([new OpenTypeGlyphPoint(3, 7, true)], [0], null, CancellationToken.None));
+
+        OpenTypeQuadraticSegment singleOffCurve = Assert.Single(OpenTypeFont.BuildQuadraticContours([new OpenTypeGlyphPoint(3, 7, false)], [0], null, CancellationToken.None));
+
+        Assert.Equal(new OpenTypeQuadraticSegment(new(3, 7), new(3, 7), new(3, 7)), singleOffCurve);
+        Assert.Equal([new OpenTypeQuadraticSegment(new(2, 0), new(0, 0), new(2, 0)), new OpenTypeQuadraticSegment(new(2, 0), new(4, 0), new(2, 0))], OpenTypeFont.BuildQuadraticContours([new OpenTypeGlyphPoint(0, 0, false), new OpenTypeGlyphPoint(4, 0, false)], [1], null, CancellationToken.None));
+        Assert.Equal([new OpenTypeQuadraticSegment(new(2, 2), new(0, 0), new(2, 0)), new OpenTypeQuadraticSegment(new(2, 0), new(4, 0), new(4, 2)), new OpenTypeQuadraticSegment(new(4, 2), new(4, 4), new(2, 2))], OpenTypeFont.BuildQuadraticContours([new OpenTypeGlyphPoint(0, 0, false), new OpenTypeGlyphPoint(4, 0, false), new OpenTypeGlyphPoint(4, 4, false)], [2], null, CancellationToken.None));
+    }
+
+    [Fact]
     public void Segment_building_charges_contour_and_point_records()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
