@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-responsive-viewport-mark",
+  "referencePng": "original-logo-responsive-viewport-mark.png",
+  "referenceSha256": "ad5a865145d9d651ddbe20af744f17b30291deef9ab698d6c0682b68eb19940e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "70ee847abaa1ea0e32fd8f05162659b4f226e106206da2334552411d09c09ead",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-22"
+}
