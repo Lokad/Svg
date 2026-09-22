@@ -38,6 +38,14 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
+    public void Discovers_text_through_ignored_accessibility_attributes()
+    {
+        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg' role='img' aria-label='Mark'><g data-layer='1' tabindex='0'><text font-family='Example'>x</text></g></svg>"u8.ToArray(), CancellationToken.None));
+
+        Assert.Equal("Example", request.Family);
+    }
+
+    [Fact]
     public void Skips_font_requests_for_whitespace_only_text_and_discovers_normalized_attribute_free_span_content()
     {
         SvgFontFaceRequest[] empty = SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'> \t\r\n </text></svg>"u8.ToArray(), CancellationToken.None);
