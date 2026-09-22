@@ -92,6 +92,7 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.OrthogonalBand => geometry.Rectangle,
             SvgGeometryKind.PatternFill => geometry.Pattern.Fill,
             SvgGeometryKind.GradientFill => geometry.Gradient.Fill,
+            SvgGeometryKind.GradientStroke => geometry.GradientStroke.OuterBox(),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")
         };
     }
@@ -120,6 +121,9 @@ internal static class SvgMaskSyntax
         return SvgGeometry.FromGradientFill(stamped.ClipTo(region));
     }
 
+    private static SvgGeometry ApplyGradientStrokeMask(SvgGradientStrokeGeometry stroke, byte value, SvgClipBox region)
+        => SvgGeometry.FromGradientStroke(stroke.Stamped(value).ClipTo(region));
+
     internal static SvgGeometry ApplyMask(SvgGeometry geometry, byte value, SvgClipBox region)
     {
         return geometry.Kind switch
@@ -129,6 +133,7 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.OrthogonalBand => SvgGeometry.FromOrthogonalBand(StampRectangle(region.ClipRectangle(geometry.Rectangle), value)),
             SvgGeometryKind.PatternFill => ApplyPatternMask(geometry.Pattern, value, region),
             SvgGeometryKind.GradientFill => ApplyGradientMask(geometry.Gradient, value, region),
+            SvgGeometryKind.GradientStroke => ApplyGradientStrokeMask(geometry.GradientStroke, value, region),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")
         };
     }

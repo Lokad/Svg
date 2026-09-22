@@ -270,6 +270,9 @@ public static class SvgConverter
                 case SvgGeometryKind.GradientFill:
                     RasterizeGradientFill(geometry.Gradient, destination);
                     return;
+                case SvgGeometryKind.GradientStroke:
+                    RasterizeGradientStrokeFill(geometry.GradientStroke, destination);
+                    return;
                 default:
                     throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains invalid geometry.");
             }
@@ -383,55 +386,69 @@ public static class SvgConverter
         void RasterizeGradientFill(SvgGradientGeometry gradient, byte[] destination)
         {
             if (!gradient.Fill.HasFill && gradient.Stroke is null) return;
-            double fillTop = MapRectangleEdge(gradient.Fill.Y, verticalScale, verticalOffset);
-            double fillBottom = MapRectangleEdge(gradient.Fill.Y + gradient.Fill.Height, verticalScale, verticalOffset);
-            double fillLeft = MapRectangleEdge(gradient.Fill.X, horizontalScale, horizontalOffset);
-            double fillRight = MapRectangleEdge(gradient.Fill.X + gradient.Fill.Width, horizontalScale, horizontalOffset);
-            bool hasFractionalEdge = fillTop != Math.Truncate(fillTop) || fillBottom != Math.Truncate(fillBottom) || fillLeft != Math.Truncate(fillLeft) || fillRight != Math.Truncate(fillRight);
-            int startY = ClampFloor(fillTop, outputHeight);
-            int endY = ClampCeiling(fillBottom, outputHeight);
-            int startX = ClampFloor(fillLeft, outputWidth);
-            int endX = ClampCeiling(fillRight, outputWidth);
+            RasterizeGradientArea(gradient.Gradient, gradient.Box, gradient.Fill, gradient.Opacity, gradient.Fill.HasFill, destination);
+            if (gradient.Stroke is SvgStroke stroke) RasterizeGradientStroke(gradient, stroke, destination);
+        }
+
+        void RasterizeGradientStrokeFill(SvgGradientStrokeGeometry stroke, byte[] destination)
+        {
+            if (stroke.Fill.HasFill) RasterizeSolidRectangle(stroke.Fill, destination);
+            if (!stroke.HasStroke) return;
+            RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Top, stroke.Opacity, true, destination);
+            RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Bottom, stroke.Opacity, true, destination);
+            RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Left, stroke.Opacity, true, destination);
+            RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Right, stroke.Opacity, true, destination);
+        }
+
+        void RasterizeGradientArea(SvgLinearGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
+        {
+            double areaTop = MapRectangleEdge(area.Y, verticalScale, verticalOffset);
+            double areaBottom = MapRectangleEdge(area.Y + area.Height, verticalScale, verticalOffset);
+            double areaLeft = MapRectangleEdge(area.X, horizontalScale, horizontalOffset);
+            double areaRight = MapRectangleEdge(area.X + area.Width, horizontalScale, horizontalOffset);
+            bool hasFractionalEdge = areaTop != Math.Truncate(areaTop) || areaBottom != Math.Truncate(areaBottom) || areaLeft != Math.Truncate(areaLeft) || areaRight != Math.Truncate(areaRight);
+            int startY = ClampFloor(areaTop, outputHeight);
+            int endY = ClampCeiling(areaBottom, outputHeight);
+            int startX = ClampFloor(areaLeft, outputWidth);
+            int endX = ClampCeiling(areaRight, outputWidth);
             long coverage = (long)(endY - startY) * (endX - startX);
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient fill raster work exceeds the configured limit.");
             workUnits += coverage;
-            double directionX = gradient.Gradient.X2 - gradient.Gradient.X1;
-            double directionY = gradient.Gradient.Y2 - gradient.Gradient.Y1;
+            double directionX = definition.X2 - definition.X1;
+            double directionY = definition.Y2 - definition.Y1;
             double denominator = directionX * directionX + directionY * directionY;
-            double offsetSpan = gradient.Gradient.Offset2 - gradient.Gradient.Offset1;
-            if (gradient.Fill.HasFill && offsetSpan <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
-            if (gradient.Fill.HasFill && denominator != 0)
+            double offsetSpan = definition.Offset2 - definition.Offset1;
+            if (paint && offsetSpan <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
+            if (paint && denominator != 0)
             for (int y = startY; y < endY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
             for (int x = startX; x < endX; x++)
             {
-                double verticalCoverage = Math.Clamp(Math.Min(fillBottom, y + 1) - Math.Max(fillTop, y), 0, 1);
-                double horizontalCoverage = Math.Clamp(Math.Min(fillRight, x + 1) - Math.Max(fillLeft, x), 0, 1);
+                double verticalCoverage = Math.Clamp(Math.Min(areaBottom, y + 1) - Math.Max(areaTop, y), 0, 1);
+                double horizontalCoverage = Math.Clamp(Math.Min(areaRight, x + 1) - Math.Max(areaLeft, x), 0, 1);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double position;
-                if (gradient.Gradient.IsUserSpace) position = ((deviceX - gradient.Gradient.X1) * directionX + (deviceY - gradient.Gradient.Y1) * directionY) / denominator;
+                if (definition.IsUserSpace) position = ((deviceX - definition.X1) * directionX + (deviceY - definition.Y1) * directionY) / denominator;
                 else
                 {
-                    double normalizedX = (deviceX - gradient.Box.X) / gradient.Box.Width;
-                    double normalizedY = (deviceY - gradient.Box.Y) / gradient.Box.Height;
-                    position = ((normalizedX - gradient.Gradient.X1) * directionX + (normalizedY - gradient.Gradient.Y1) * directionY) / denominator;
+                    double normalizedX = (deviceX - box.X) / box.Width;
+                    double normalizedY = (deviceY - box.Y) / box.Height;
+                    position = ((normalizedX - definition.X1) * directionX + (normalizedY - definition.Y1) * directionY) / denominator;
                 }
-                double local = (position - gradient.Gradient.Offset1) / offsetSpan;
+                double local = (position - definition.Offset1) / offsetSpan;
                 if (local < 0) local = 0;
                 if (local > 1) local = 1;
                 position = local;
                 double dither = GradientDither[x & 7, y & 7] / 64d;
-                SvgColor tileColor = new(InterpolateChannel(gradient.Gradient.Start.Red, gradient.Gradient.End.Red, position, dither), InterpolateChannel(gradient.Gradient.Start.Green, gradient.Gradient.End.Green, position, dither), InterpolateChannel(gradient.Gradient.Start.Blue, gradient.Gradient.End.Blue, position, dither), gradient.Opacity);
+                SvgColor tileColor = new(InterpolateChannel(definition.Start.Red, definition.End.Red, position, dither), InterpolateChannel(definition.Start.Green, definition.End.Green, position, dither), InterpolateChannel(definition.Start.Blue, definition.End.Blue, position, dither), opacity);
                 SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
                 int offset = (y * outputWidth + x) * 4;
                 BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
             }
             }
-            if (gradient.Stroke is SvgStroke stroke) RasterizeGradientStroke(gradient, stroke, destination);
         }
-
         void RasterizeGradientStroke(SvgGradientGeometry gradient, SvgStroke stroke, byte[] destination)
         {
             double halfWidth = stroke.Width / 2d;

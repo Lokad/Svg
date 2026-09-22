@@ -86,14 +86,7 @@ internal static class SvgGradientSyntax
         if (!state.Gradients.TryGetValue(ParseGradientId(style.Fill), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
-        if (gradient.IsUserSpace && frame is not null && (frame.Value.OffsetX != 0 || frame.Value.OffsetY != 0 || frame.Value.ViewportWidth is not null || frame.Value.ViewportHeight is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "userSpaceOnUse gradients inside transformed viewports are not implemented.");
-        if (gradient.IsUserSpace)
-        {
-            (double mappedX1, double mappedY1) = transform.ApplyToUserPoint(gradient.X1, gradient.Y1);
-            (double mappedX2, double mappedY2) = transform.ApplyToUserPoint(gradient.X2, gradient.Y2);
-            if (mappedX1 == mappedX2 && mappedY1 == mappedY2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate linear gradients are not implemented.");
-            gradient = gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2 };
-        }
+        gradient = MapUserSpaceVector(transform, gradient, frame);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
@@ -113,9 +106,61 @@ internal static class SvgGradientSyntax
         return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, fill, opacity, painted ? stroke : null));
     }
 
+    internal static bool IsGradientStrokeUrl(string? stroke)
+        => stroke is not null && stroke.StartsWith("url(", StringComparison.Ordinal);
+
+    internal static SvgLinearGradient MapUserSpaceVector(AxisTransform transform, SvgLinearGradient gradient, SvgViewportFrame? frame)
+    {
+        if (!gradient.IsUserSpace) return gradient;
+        if (frame is not null && (frame.Value.OffsetX != 0 || frame.Value.OffsetY != 0 || frame.Value.ViewportWidth is not null || frame.Value.ViewportHeight is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "userSpaceOnUse gradients inside transformed viewports are not implemented.");
+        (double mappedX1, double mappedY1) = transform.ApplyToUserPoint(gradient.X1, gradient.Y1);
+        (double mappedX2, double mappedY2) = transform.ApplyToUserPoint(gradient.X2, gradient.Y2);
+        if (mappedX1 == mappedX2 && mappedY1 == mappedY2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate linear gradients are not implemented.");
+        return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2 };
+    }
+
+    internal static SvgGeometry LowerGradientStrokeRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
+    {
+        if (state.Patterns.TryGetValue(ParseGradientId(style.Stroke), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern strokes are not implemented.");
+        if (!state.Gradients.TryGetValue(ParseGradientId(style.Stroke), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        AxisTransform transform = context.ResolveTransform(reader);
+        gradient = MapUserSpaceVector(transform, gradient, frame);
+        SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
+        SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.NamedColors);
+        SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
+        bool painted = presentation.IsPainted;
+        byte opacity = presentation.Opacity;
+        SvgColor fillColor = SvgPaintResolver.ResolveFillColor(presentation.Paint, opacity);
+        bool hasFill = presentation.Paint.HasFill && painted;
+        SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
+        if (probe is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width gradient strokes no larger than the rectangle dimensions are implemented.");
+        double halfWidth = probe.Value.Width / 2d;
+        int strokeWidth = probe.Value.Width;
+        SvgRectangle top = new(placement.X - halfWidth, placement.Y - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
+        SvgRectangle bottom = new(placement.X - halfWidth, placement.Y + placement.Height - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
+        SvgRectangle left = new(placement.X - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
+        SvgRectangle right = new(placement.X + placement.Width - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
+        SvgRectangle box = placement;
+        SvgRectangle fill = placement with { Color = fillColor, HasFill = hasFill && !gradient.IsEmpty };
+        if (frame is not null)
+        {
+            if (!frame.Value.Clip.Contains(placement.X - halfWidth, placement.Y - halfWidth, placement.X + placement.Width + halfWidth, placement.Y + placement.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
+            SvgRectangle shifted = frame.Value.Shift(placement);
+            fill = frame.Value.Clip.ClipRectangle(shifted) with { Color = fillColor, HasFill = hasFill && !gradient.IsEmpty };
+            box = frame.Value.Shift(box);
+            top = frame.Value.Clip.ClipRectangle(frame.Value.Shift(top));
+            bottom = frame.Value.Clip.ClipRectangle(frame.Value.Shift(bottom));
+            left = frame.Value.Clip.ClipRectangle(frame.Value.Shift(left));
+            right = frame.Value.Clip.ClipRectangle(frame.Value.Shift(right));
+        }
+        return SvgGeometry.FromGradientStroke(new SvgGradientStrokeGeometry(fill, top, bottom, left, right, gradient, box, opacity, painted));
+    }
+
     private static SvgStroke? ParseGradientStroke(XmlReader reader, SvgComputedStyle style, SvgPaintableElementContext context, AxisTransform transform, SvgRectangle placement, byte opacity, bool painted)
     {
         if (style.Stroke is null || style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) return null;
+        if (IsGradientStrokeUrl(style.Stroke)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient fills with gradient strokes are not implemented.");
         SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
         return SvgLeafParser.ParseRectangleStroke(strokeColor, reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, opacity, painted);
     }

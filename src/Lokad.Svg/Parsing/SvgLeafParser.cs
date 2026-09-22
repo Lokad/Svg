@@ -12,6 +12,7 @@ internal static class SvgLeafParser
         SvgComputedStyle patternStyle = context.ResolveStyle(reader);
         if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill)) return LowerPaintServerRect(reader, context, patternStyle, state, frame);
         if (SvgGradientSyntax.IsGradientFill(patternStyle.Fill)) return SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, frame);
+        if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke)) return SvgGradientSyntax.LowerGradientStrokeRect(reader, context, patternStyle, state, frame);
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
         SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, syntax.StrokeWidth, element.Transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
