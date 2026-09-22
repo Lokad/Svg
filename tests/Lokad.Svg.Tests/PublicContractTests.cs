@@ -355,6 +355,18 @@ public sealed class PublicContractTests
         Assert.Equal("outputScale", Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderOptions(null, double.NaN, SvgColor.Transparent, SvgRenderLimits.Default)).ParamName);
     }
 
+    [Theory]
+    [InlineData("", 400, typeof(ArgumentException), "family")]
+    [InlineData("   ", 400, typeof(ArgumentException), "family")]
+    [InlineData("Example", 0, typeof(ArgumentOutOfRangeException), "weight")]
+    [InlineData("Example", -1, typeof(ArgumentOutOfRangeException), "weight")]
+    public void Font_face_requests_validate_family_and_weight(string family, int weight, Type errorType, string parameterName)
+    {
+        Exception exception = Assert.Throws(errorType, () => new SvgFontFaceRequest(family, weight, false));
+
+        Assert.Equal(parameterName, ((ArgumentException)exception).ParamName);
+    }
+
     [Fact]
     public void Cancellation_is_observed_before_the_unimplemented_renderer()
     {
