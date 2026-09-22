@@ -977,7 +977,7 @@ Capture each document at its intended size and representative small/large sizes
 (for example 24, 64 and 256 pixels on the chosen reference axis, preserving aspect
 ratio), plus selected non-integral output scales. Compare transparent output and
 white/dark-background composition where applicable. Keep full-size references;
-thumbnail approval, blur/downsampling or scaled diffs are not admission tests.
+thumbnail approval, blur/downsampling or scaled diffs are not admission tests. Size variants require size-specific root dimensions (or verified percentage dimensions): a smaller capture viewport alone clips a fixed-dimension root instead of scaling it, as a 24/256 viewBox-mark probe confirmed.
 
 Agree and record a numeric document-coverage target on the frozen inventory before
 calling the result "most". A document counts as exact only when every declared
