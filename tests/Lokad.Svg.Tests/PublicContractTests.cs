@@ -588,7 +588,6 @@ public sealed class PublicContractTests
     [InlineData("<style>circle { fill: red; }</style><rect/>")]
     [InlineData("<style>rect { stroke-width: 1; }</style><rect/>")]
     [InlineData("<style>rect { fill: red</style><rect/>")]
-    [InlineData("<path d='m 0 0 h 1 v 1 h -1 z'/>")]
     [InlineData("<polygon points='0,0 1,1 1,2 0,2'/>")]
     [InlineData("<rect x='0.1'/>")]
     [InlineData("<foreign:rect xmlns:foreign='urn:foreign' width='1' height='1'/>")]

@@ -10,46 +10,94 @@ internal static class SvgOrthogonalGeometryTokenizer
         ArgumentNullException.ThrowIfNull(contourEnds);
         ValidatePathCommandCount(value, maximumGeometryElements, workCounter, cancellationToken);
         PathTokenReader tokens = new(value, workCounter, cancellationToken);
-        if (tokens.End || tokens.ReadCommand() != 'M') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+        if (tokens.End || tokens.ReadCommand() is not ('M' or 'm')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
         BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
         try
         {
             int commandIndex = 0;
+            SvgPoint current = new(0, 0);
             bool hasMore = true;
+            bool firstMove = true;
+            char moveCommand = 'M';
             while (hasMore)
             {
-                points.Add(new SvgPoint(tokens.ReadInteger(), tokens.ReadInteger()));
+                if (!firstMove)
+                {
+                    if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    moveCommand = tokens.ReadCommand();
+                    if (moveCommand is not ('M' or 'm')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
+                }
+                firstMove = false;
+                int dx = tokens.ReadInteger();
+                int dy = tokens.ReadInteger();
+                current = moveCommand == 'M' ? new SvgPoint(dx, dy) : AddOffset(current, dx, dy);
+                points.Add(current);
                 int contourStart = points.Count - 1;
+                char implicitLine = moveCommand == 'M' ? 'L' : 'l';
+                while (tokens.PeekIsValueStart() && !tokens.End)
+                {
+                    if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    int ix = tokens.ReadInteger();
+                    int iy = tokens.ReadInteger();
+                    current = AddLinePoint(points, contourStart, current, implicitLine == 'L' ? new SvgPoint(ix, iy) : AddOffset(current, ix, iy));
+                }
                 bool closed = false;
                 while (!tokens.End)
                 {
                     if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    if (tokens.PeekIsValueStart())
+                    {
+                        int ix = tokens.ReadInteger();
+                        int iy = tokens.ReadInteger();
+                        current = AddLinePoint(points, contourStart, current, implicitLine == 'L' ? new SvgPoint(ix, iy) : AddOffset(current, ix, iy));
+                        continue;
+                    }
                     char command = tokens.ReadCommand();
-                    SvgPoint current = points[^1];
-                    if (command == 'H') points.Add(new SvgPoint(tokens.ReadInteger(), current.Y));
-                    else if (command == 'V') points.Add(new SvgPoint(current.X, tokens.ReadInteger()));
-                    else if (command == 'L') points.Add(new SvgPoint(tokens.ReadInteger(), tokens.ReadInteger()));
+                    if (command == 'H' || command == 'h')
+                    {
+                        do
+                        {
+                            int hx = tokens.ReadInteger();
+                            current = AddLinePoint(points, contourStart, current, command == 'H' ? new SvgPoint(hx, current.Y) : AddOffset(current, hx, 0));
+                        } while (tokens.PeekIsValueStart() && !tokens.End);
+                        implicitLine = command == 'H' ? 'H' : 'h';
+                    }
+                    else if (command == 'V' || command == 'v')
+                    {
+                        do
+                        {
+                            int vy = tokens.ReadInteger();
+                            current = AddLinePoint(points, contourStart, current, command == 'V' ? new SvgPoint(current.X, vy) : AddOffset(current, 0, vy));
+                        } while (tokens.PeekIsValueStart() && !tokens.End);
+                        implicitLine = command == 'V' ? 'V' : 'v';
+                    }
+                    else if (command == 'L' || command == 'l')
+                    {
+                        do
+                        {
+                            int lx = tokens.ReadInteger();
+                            int ly = tokens.ReadInteger();
+                            current = AddLinePoint(points, contourStart, current, command == 'L' ? new SvgPoint(lx, ly) : AddOffset(current, lx, ly));
+                        } while (tokens.PeekIsValueStart() && !tokens.End);
+                        implicitLine = command;
+                    }
                     else if (command is 'Z' or 'z') { closed = true; break; }
-                    else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+                    else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 }
-                if (!closed) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+                if (!closed) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
+                current = points[contourStart];
                 int contourEnd = points.Count;
-                if (contourEnd - contourStart < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+                if (contourEnd - contourStart < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 if (points.Count > maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
                 for (int pointIndex = contourStart; pointIndex < contourEnd; pointIndex++)
                 {
                     SvgPoint start = points[pointIndex]; SvgPoint end = pointIndex + 1 < contourEnd ? points[pointIndex + 1] : points[contourStart];
-                    if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+                    if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 }
                 contourEnds.Add(contourEnd);
                 if (tokens.End) hasMore = false;
-                else
-                {
-                    if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    if (tokens.ReadCommand() != 'M') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
-                }
             }
-            if (contourEnds.Count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+            if (contourEnds.Count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
             return points;
         }
         catch
@@ -59,6 +107,41 @@ internal static class SvgOrthogonalGeometryTokenizer
         }
     }
 
+    private static SvgPoint AddOffset(SvgPoint current, int dx, int dy)
+    {
+        try { return new SvgPoint(checked(current.X + dx), checked(current.Y + dy)); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer path exceeds the coordinate range."); }
+    }
+
+    private static SvgPoint AddLinePoint(BudgetedParserList<SvgPoint> points, int contourStart, SvgPoint current, SvgPoint next)
+    {
+        if (points.Count - contourStart >= 2)
+        {
+            SvgPoint previous = points[points.Count - 2];
+            if (previous.Y == current.Y && current.Y == next.Y)
+            {
+                long step = (long)current.X - previous.X;
+                long advance = (long)next.X - current.X;
+                if ((advance > 0 && step > 0) || (advance < 0 && step < 0))
+                {
+                    points[points.Count - 1] = next;
+                    return next;
+                }
+            }
+            else if (previous.X == current.X && current.X == next.X)
+            {
+                long step = (long)current.Y - previous.Y;
+                long advance = (long)next.Y - current.Y;
+                if ((advance > 0 && step > 0) || (advance < 0 && step < 0))
+                {
+                    points[points.Count - 1] = next;
+                    return next;
+                }
+            }
+        }
+        points.Add(next);
+        return next;
+    }
     internal static BudgetedParserList<SvgPoint> ParsePointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ValidatePointListVertexCount(value, maximumGeometryElements, workCounter, cancellationToken);
@@ -96,7 +179,7 @@ internal static class SvgOrthogonalGeometryTokenizer
         for (int index = 0; index < value.Length; index++)
         {
             if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
-            if (value[index] is not ('M' or 'L' or 'H' or 'V' or 'Z' or 'z')) continue;
+            if (value[index] is not ('M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z')) continue;
             if (commandCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
             commandCount++;
         }
@@ -128,7 +211,7 @@ internal static class SvgOrthogonalGeometryTokenizer
         return true;
     }
 
-    private static bool IsPathCommand(char value) => value is 'M' or 'L' or 'H' or 'V' or 'Z' or 'z';
+    private static bool IsPathCommand(char value) => value is 'M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z';
 
     private static bool IsPathSeparator(char value) => value == ',' || char.IsWhiteSpace(value);
 
@@ -163,7 +246,7 @@ internal static class SvgOrthogonalGeometryTokenizer
         {
             SkipSeparators();
             ConsumeCheckpoints();
-            if (_position == _value.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+            if (_position == _value.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
             return _value[_position++];
         }
 
@@ -173,15 +256,24 @@ internal static class SvgOrthogonalGeometryTokenizer
             ConsumeCheckpoints();
             int start = _position;
             while (_position < _value.Length && !IsPathSeparator(_value[_position]) && !IsPathCommand(_value[_position])) { _position++; ConsumeCheckpoints(); }
-            if (start == _position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+            if (start == _position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
             return _value[start.._position];
         }
 
         internal int ReadInteger()
         {
             ReadOnlySpan<char> value = ReadValue();
-            if (!IsPathInteger(value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed absolute axis-aligned integer paths are implemented.");
+            if (!IsPathInteger(value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
             return SvgGeometrySyntax.ParseInteger(value);
+        }
+
+        internal bool PeekIsValueStart()
+        {
+            int position = _position;
+            while (position < _value.Length && IsPathSeparator(_value[position])) position++;
+            if (position == _value.Length) return false;
+            char next = _value[position];
+            return char.IsAsciiDigit(next) || next is '-' or '+' or '.';
         }
 
         private void SkipSeparators()

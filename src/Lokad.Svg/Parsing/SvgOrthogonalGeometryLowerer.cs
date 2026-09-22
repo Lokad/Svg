@@ -166,12 +166,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
         ArgumentNullException.ThrowIfNull(workCounter);
-        if (contourEnds.Count == 0 || contourEnds[contourEnds.Count - 1] != points.Count) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint closed absolute axis-aligned integer path contours are implemented.");
+        if (contourEnds.Count == 0 || contourEnds[contourEnds.Count - 1] != points.Count) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint closed axis-aligned integer path contours are implemented.");
         int contourStart = 0;
         for (int contourIndex = 0; contourIndex < contourEnds.Count; contourIndex++)
         {
             int contourEnd = contourEnds[contourIndex];
-            if (contourEnd <= contourStart || contourEnd - contourStart < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint closed absolute axis-aligned integer path contours are implemented.");
+            if (contourEnd <= contourStart || contourEnd - contourStart < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint closed axis-aligned integer path contours are implemented.");
             contourStart = contourEnd;
         }
         contourStart = 0;
@@ -198,7 +198,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                         workCounter.Consume(cancellationToken);
                         SvgPoint secondEdgeStart = points[secondIndex]; SvgPoint secondEdgeEnd = secondIndex + 1 < secondEnd ? points[secondIndex + 1] : points[secondStart];
                         bool secondHorizontal = secondEdgeStart.Y == secondEdgeEnd.Y;
-                        if (EdgesIntersect(firstEdgeStart, firstEdgeEnd, firstHorizontal, secondEdgeStart, secondEdgeEnd, secondHorizontal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint closed absolute axis-aligned integer path contours are implemented.");
+                        if (EdgesIntersect(firstEdgeStart, firstEdgeEnd, firstHorizontal, secondEdgeStart, secondEdgeEnd, secondHorizontal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint closed axis-aligned integer path contours are implemented.");
                     }
                 }
                 secondStart = secondEnd;
@@ -235,7 +235,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 ? Math.Min(firstStart.X, firstEnd.X) <= secondStart.X && secondStart.X <= Math.Max(firstStart.X, firstEnd.X) && Math.Min(secondStart.Y, secondEnd.Y) <= firstStart.Y && firstStart.Y <= Math.Max(secondStart.Y, secondEnd.Y)
                 : Math.Min(secondStart.X, secondEnd.X) <= firstStart.X && firstStart.X <= Math.Max(secondStart.X, secondEnd.X) && Math.Min(firstStart.Y, firstEnd.Y) <= secondStart.Y && secondStart.Y <= Math.Max(firstStart.Y, firstEnd.Y);
 
-    private string SimpleShapeMessage() => _isPath ? "Only simple closed absolute axis-aligned integer paths are implemented." : "Only simple closed axis-aligned integer " + _elementName + " elements are implemented.";
+    private string SimpleShapeMessage() => _isPath ? "Only simple closed axis-aligned integer paths are implemented." : "Only simple closed axis-aligned integer " + _elementName + " elements are implemented.";
 }
 
 /// <summary>Owns the exact retained typed-geometry array produced by one lowered orthogonal shape.</summary>
