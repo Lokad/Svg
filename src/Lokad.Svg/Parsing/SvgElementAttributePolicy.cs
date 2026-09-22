@@ -55,7 +55,11 @@ internal static class SvgElementAttributePolicy
         while (reader.MoveToNextAttribute())
         {
             workCounter.Consume(cancellationToken);
-            if (IsAllowed(reader, kind)) continue;
+            if (IsAllowed(reader, kind))
+            {
+                if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader.LocalName, reader.Value);
+                continue;
+            }
             throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " attribute '" + reader.Name + "' is not implemented.");
         }
         reader.MoveToElement();
@@ -71,14 +75,14 @@ internal static class SvgElementAttributePolicy
         if (reader.NamespaceURI.Length != 0) return true;
         bool allowed = kind switch
         {
-            SvgElementKind.Root => reader.LocalName is "id" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "version" or "baseProfile" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style",
-            SvgElementKind.Group => reader.LocalName is "id" or "class" or "href" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask",
-            SvgElementKind.Rectangle => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask",
-            SvgElementKind.Line => reader.LocalName is "id" or "class" or "x1" or "y1" or "x2" or "y2" or "color" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask",
-            SvgElementKind.Use => reader.LocalName is "id" or "class" or "href" or "x" or "y" or "width" or "height" or "transform" or "fill" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask",
-            SvgElementKind.Path => reader.LocalName is "id" or "class" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask",
-            SvgElementKind.PointList => reader.LocalName is "id" or "class" or "points" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask",
-            SvgElementKind.Text => reader.LocalName is "id" or "class" or "x" or "y" or "dx" or "dy" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask",
+            SvgElementKind.Root => reader.LocalName is "id" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "version" or "baseProfile" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "style",
+            SvgElementKind.Group => reader.LocalName is "id" or "class" or "href" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray",
+            SvgElementKind.Rectangle => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray",
+            SvgElementKind.Line => reader.LocalName is "id" or "class" or "x1" or "y1" or "x2" or "y2" or "color" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray",
+            SvgElementKind.Use => reader.LocalName is "id" or "class" or "href" or "x" or "y" or "width" or "height" or "transform" or "fill" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray",
+            SvgElementKind.Path => reader.LocalName is "id" or "class" or "d" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray",
+            SvgElementKind.PointList => reader.LocalName is "id" or "class" or "points" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray",
+            SvgElementKind.Text => reader.LocalName is "id" or "class" or "x" or "y" or "dx" or "dy" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray",
             SvgElementKind.TextSpan => reader.LocalName is "id" or "class" or "dx" or "dy" or "letter-spacing" or "style",
             SvgElementKind.Symbol => reader.LocalName is "id" or "viewBox" or "preserveAspectRatio",
             SvgElementKind.ClipPath => reader.LocalName is "id" or "clipPathUnits",
@@ -86,7 +90,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.Pattern => reader.LocalName is "id" or "x" or "y" or "width" or "height" or "patternUnits" or "patternContentUnits",
             SvgElementKind.LinearGradient => reader.LocalName is "id" or "href" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod" or "gradientTransform",
             SvgElementKind.GradientStop => reader.LocalName is "offset" or "stop-color" or "stop-opacity",
-            SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask",
+            SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray",
             SvgElementKind.NestedViewport => reader.LocalName is "x" or "y" or "width" or "height" or "viewBox" or "preserveAspectRatio",
             _ => false
         };
