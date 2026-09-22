@@ -1694,6 +1694,7 @@ public sealed class OpenTypeFontTests
 
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' font-size='0'>A</text></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='-5' y='3'>A</text></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A</text></svg> trailing", true, SvgErrorCode.MalformedInput, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A<tspan font-style='italic'>A</tspan></text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A<text font-family='Example'>A</text></text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
