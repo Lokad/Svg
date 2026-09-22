@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-nested-viewbox-mark",
+  "referencePng": "original-logo-nested-viewbox-mark.png",
+  "referenceSha256": "8ae86539dc1e158101ad0959998503982789f06aabc8bc31a085c6f0b2596a99",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "615c81d4bdf9357981b2781ce7e5faee11bc82c68c65637cb503a21b3e334daa",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-22"
+}
