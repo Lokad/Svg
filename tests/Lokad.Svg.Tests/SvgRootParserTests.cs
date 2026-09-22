@@ -226,6 +226,19 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Quantizes_decimal_and_percentage_opacity_identically()
+    {
+        for (int percent = 0; percent <= 100; percent++)
+        {
+            double value = percent / 100.0;
+            byte decimalForm = SvgColorParser.ParseOpacity(value.ToString("G17", System.Globalization.CultureInfo.InvariantCulture));
+            byte percentForm = SvgColorParser.Parse("rgba(255, 0, 0, " + percent.ToString(System.Globalization.CultureInfo.InvariantCulture) + "%)", SvgRootParser.CssNamedColors).Alpha;
+
+            Assert.True(decimalForm == percentForm, "Opacity " + percent + "% quantizes differently across decimal and percentage spellings.");
+        }
+    }
+
+    [Fact]
     public void Applies_color_fill_and_element_alpha_in_documented_order()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='#ff000001' fill-opacity='0.5' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
