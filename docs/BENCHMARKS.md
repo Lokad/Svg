@@ -165,7 +165,7 @@ strictly-less-work with identical semantics (full suite green). After segmented 
 - High entropy after segmented staging: owned traffic (2,077.48 KB) is the ~1 MB payload
   plus the final copy with no geometric copies (previously 5,119.77 KB with Gen2 pressure);
   caller memory additionally skips the final result (1,052.41 KB traffic, 1,051,463 B peak).
-  Streams are unchanged (about 132 KB). All speeds are within noise of each other.
+  Streams are unchanged (about 132 KB). All speeds are within noise of each other. After sharing chunk CRC, pixel validation and transparent-row filtering (`53323e3`), the same ShortRun measures high-entropy owned 65.35 ms / 2,077.61 KB, caller memory 66.80 ms / 1,052.41 KB, streams 58.48 ms / 131.95 KB and 59.53 ms / 132.33 KB, with low-entropy forms unchanged to the byte: allocation traffic is identical and times are within noise, so no performance effect is claimed in either direction.
 
 | Method | Mean | Allocated | Accounted peak |
 | --- | ---: | ---: | ---: |
