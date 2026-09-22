@@ -1593,6 +1593,9 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s'><line x1='0' y1='0' x2='1' y2='0' stroke='red' stroke-width='2'/></symbol></defs><style>g { font-family: Example; }</style><g><text font-family='Example'>A</text></g></svg>", true, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><style>x</style></defs><text font-family='Unused'>A</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><symbol id='s'><text font-family='Unused'>x</text></symbol><use href='#s'/></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><mask id='m'><rect width='1' height='1' fill='white'/></mask><rect width='5' height='5' fill='red' mask='url(#m)'/></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><mask id='m'><text font-family='Unused'>x</text></mask><text font-family='Example' font-size='100' y='3'>A</text></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><clipPath id='c'><rect width='1' height='1'/></clipPath><rect width='5' height='5' fill='red' clip-path='url(#c)'/></svg>", false, SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     public async Task Discovery_and_lowering_agree_on_rejected_text(string svg, bool failsDuringDiscovery, SvgErrorCode code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
