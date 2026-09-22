@@ -101,7 +101,7 @@ public sealed class DevToolsConnectionTests
     {
         byte[] oversized = new byte[ChromeSvgCapture.MaximumSvgBytes + 1];
 
-        await Assert.ThrowsAsync<InvalidDataException>(async () => await ChromeSvgCapture.CaptureAsync("missing", oversized, 1, 1, CancellationToken.None));
+        await Assert.ThrowsAsync<InvalidDataException>(async () => await ChromeSvgCapture.CaptureAsync("missing", oversized, 1, 1, ChromeSvgCapture.CaptureBackground.Transparent, CancellationToken.None));
     }
 
     [Fact]

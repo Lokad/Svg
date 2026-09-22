@@ -12,15 +12,16 @@ internal static class Program
             return 0;
         }
 
-        if (arguments.Length != 3 || !int.TryParse(arguments[1], out int width) || !int.TryParse(arguments[2], out int height))
+        if ((arguments.Length != 3 && (arguments.Length != 4 || arguments[3] != "white")) || !int.TryParse(arguments[1], out int width) || !int.TryParse(arguments[2], out int height))
         {
-            Console.Error.WriteLine("Usage: Lokad.Svg.Chrome <path-to-pinned-chrome> <width> <height> < svg > capture.png");
+            Console.Error.WriteLine("Usage: Lokad.Svg.Chrome <path-to-pinned-chrome> <width> <height> [white] < svg > capture.png");
             return 2;
         }
 
         using CancellationTokenSource cancellation = new(TimeSpan.FromSeconds(30));
         byte[] svg = await ChromeSvgCapture.ReadSvgAsync(Console.OpenStandardInput(), cancellation.Token);
-        byte[] png = await ChromeSvgCapture.CaptureAsync(arguments[0], svg, width, height, cancellation.Token);
+        ChromeSvgCapture.CaptureBackground background = arguments.Length == 4 ? ChromeSvgCapture.CaptureBackground.White : ChromeSvgCapture.CaptureBackground.Transparent;
+        byte[] png = await ChromeSvgCapture.CaptureAsync(arguments[0], svg, width, height, background, cancellation.Token);
         await Console.OpenStandardOutput().WriteAsync(png, cancellation.Token);
         return 0;
     }

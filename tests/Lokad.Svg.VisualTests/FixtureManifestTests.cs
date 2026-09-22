@@ -39,7 +39,12 @@ public sealed class FixtureManifestTests
             string background = RequiredString(fixture, "background");
             Assert.True(width > 0, "Fixture width must be positive: " + id);
             Assert.True(height > 0, "Fixture height must be positive: " + id);
-            Assert.Equal("transparent", background);
+            SvgColor backgroundColor = background switch
+            {
+                "transparent" => SvgColor.Transparent,
+                "white" => new SvgColor(255, 255, 255, 255),
+                _ => throw new InvalidDataException("Unsupported fixture background: " + background),
+            };
 
             if (expectedSupport == "exact")
             {
@@ -68,7 +73,7 @@ public sealed class FixtureManifestTests
             RgbaImage reference = PngRgbaDecoder.Decode(referenceBytes, expectedPixels);
             Assert.Equal(width, reference.Width);
             Assert.Equal(height, reference.Height);
-            SvgRenderOptions options = new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default);
+            SvgRenderOptions options = new(null, scale, backgroundColor, SvgRenderLimits.Default);
             RgbaImage candidate = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, options, CancellationToken.None), SvgRenderLimits.Default.MaximumPixels);
             PixelComparison comparison = PixelComparer.Compare(reference, candidate);
             Assert.True(comparison.IsExact, id + " differs from its admitted reference: " + JsonSerializer.Serialize(comparison));
