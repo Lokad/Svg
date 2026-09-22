@@ -182,9 +182,11 @@ public sealed class SvgFontPackCatalogTests
             { "packId": "test-pack", "files": [{ "relativePath": "files/a.ttf", "byteSize": 1, "sha256": "not-a-hash" }], "families": [{ "requestedFamily": "A", "resolvedFamily": "A", "relativeFontFile": "files/a.ttf" }] }
             """));
         SvgException oversized = Assert.Throws<SvgException>(() => SvgFontPackCatalog.Parse(new byte[1024 * 1024 + 1], "test-pack"));
+        SvgException empty = Assert.Throws<SvgException>(() => Parse(string.Empty));
 
         Assert.Equal(SvgErrorCode.MalformedInput, invalidHash.ErrorCode);
         Assert.Equal(SvgErrorCode.LimitExceeded, oversized.ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, empty.ErrorCode);
     }
 
     private static SvgFontPackCatalog Parse(string manifest) => SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
