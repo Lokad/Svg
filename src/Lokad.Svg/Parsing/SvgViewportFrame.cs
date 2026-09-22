@@ -1,7 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Carries one nested viewport origin offset with its absolute clip box and XML depth.</summary>
-internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY, double ViewportWidth, double ViewportHeight, SvgClipBox Clip, int Depth)
+internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY, double? ViewportWidth, double? ViewportHeight, SvgClipBox Clip, int Depth)
 {
     /// <summary>Shifts one fill box into viewport-parent space without clipping.</summary>
     internal SvgRectangle Shift(SvgRectangle rectangle)

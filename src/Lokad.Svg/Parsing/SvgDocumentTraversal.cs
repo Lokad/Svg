@@ -72,6 +72,7 @@ internal static class SvgDocumentTraversal
                     state.SawStyleableNode = true;
                 }
                 else if (inViewport && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside nested viewports is not implemented.");
+                else if (state.ClipDepths.Count > 0 && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside clipped groups is not implemented.");
                 else if (SvgRenderedLeafParser.TryParse(reader, directChild, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {
                     state.HasUnsupportedContent |= !textElement && !reader.IsEmptyElement;
@@ -83,6 +84,15 @@ internal static class SvgDocumentTraversal
                     if (!reader.IsEmptyElement)
                     {
                         state.Groups.Add(parsedGroup.Scope);
+                        string? clipReference = reader.GetAttribute("clip-path");
+                        if (clipReference is not null)
+                        {
+                            if (!state.Clips.TryGetValue(SvgClipPathSyntax.ParseClipId(clipReference), out SvgClipBox clipBox)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
+                            SvgViewportFrame? clipParent = state.EffectiveFrame;
+                            SvgClipBox clip = clipParent is null ? clipBox : clipParent.Value.Clip.Intersect(clipBox);
+                            state.Viewports.Add(new SvgViewportFrame(clipParent?.OffsetX ?? 0, clipParent?.OffsetY ?? 0, clipParent?.ViewportWidth, clipParent?.ViewportHeight, clip, reader.Depth));
+                            state.ClipDepths.Add(reader.Depth);
+                        }
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
                         if (parsedGroup.Scope.IsolatesOpacity)
                         {
@@ -102,8 +112,16 @@ internal static class SvgDocumentTraversal
             if (reader.NodeType == XmlNodeType.EndElement)
             {
                 if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
+                if (reader.Depth == state.ClipPathDepth)
+                {
+                    if (state.ClipPathId is not null) SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
+                    state.ClipPathDepth = -1;
+                    state.ClipPathId = null;
+                    state.ClipBox = null;
+                }
                 if (reader.Depth == state.SymbolDepth) { state.SymbolDepth = -1; state.SymbolId = null; state.SymbolViewBox = null; }
                 if (state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth) state.Viewports.RemoveLast();
+                if (state.ClipDepths.Count > 0 && state.ClipDepths[^1] == reader.Depth) state.ClipDepths.RemoveLast();
                 if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth)
                 {
                     SvgGroupScope group = state.Groups[^1];

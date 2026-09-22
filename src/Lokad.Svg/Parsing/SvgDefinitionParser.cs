@@ -35,6 +35,36 @@ internal static class SvgDefinitionParser
             if (!reader.IsEmptyElement) state.SymbolDepth = reader.Depth;
             return true;
         }
+        if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "clipPath")
+        {
+            SvgElementAttributePolicy.ValidateClipPath(reader, workCounter, cancellationToken);
+            state.ClipPathId = reader.GetAttribute("id");
+            state.ClipBox = null;
+            if (reader.IsEmptyElement)
+            {
+                if (state.ClipPathId is not null) RegisterClipBox(state, workCounter, cancellationToken);
+            }
+            else state.ClipPathDepth = reader.Depth;
+            state.SawStyleableNode = true;
+            return true;
+        }
+        if (state.ClipPathDepth >= 0 && reader.Depth == state.ClipPathDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
+        {
+            if (reader.LocalName == "rect")
+            {
+                if (state.ClipBox is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle clip paths are implemented.");
+                SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+                SvgRectangle rect = context.ResolveTransform(reader).Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
+                state.ClipBox = new SvgClipBox(rect.X, rect.Y, rect.Width, rect.Height);
+                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                state.SawStyleableNode = true;
+                return true;
+            }
+            state.HasUnsupportedContent = true;
+            return true;
+        }
         if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
@@ -45,16 +75,23 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateUse(reader, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-            SvgViewportFrame? frame = state.EffectiveFrame;
-            double? baseWidth = frame?.ViewportWidth ?? root.Width;
-            double? baseHeight = frame?.ViewportHeight ?? root.Height;
+            SvgViewportFrame? parentFrame = state.EffectiveFrame;
+            double? baseWidth = parentFrame?.ViewportWidth ?? root.Width;
+            double? baseHeight = parentFrame?.ViewportHeight ?? root.Height;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
-            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, frame, workCounter, cancellationToken);
+            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, SvgClipPathSyntax.ResolveLeafClip(reader, state), workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
             return true;
         }
         return false;
+    }
+
+    internal static void RegisterClipBox(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.Consume(cancellationToken);
+        string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip-path registration requires an identifier."));
+        if (!state.Clips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
     }
 
     private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgViewBox? symbolViewBox)

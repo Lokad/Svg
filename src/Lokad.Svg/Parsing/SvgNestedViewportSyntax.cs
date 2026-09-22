@@ -27,4 +27,4 @@ internal readonly record struct SvgNestedViewportSyntax(double X, double Y, doub
     }
 }
 /// <summary>Retains one admitted viewport size with its XML depth while discovering font requests.</summary>
-internal readonly record struct SvgViewportSize(double Width, double Height, int Depth);
+internal readonly record struct SvgViewportSize(double? Width, double? Height, int Depth);

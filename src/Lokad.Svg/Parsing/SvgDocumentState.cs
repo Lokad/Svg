@@ -6,15 +6,18 @@ namespace Lokad.Svg.Parsing;
 internal sealed class SvgDocumentState : IDisposable
 {
     private const int DefinitionStorageBytes = 256;
+    private const int ClipStorageBytes = 128;
 
     internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         Scene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
         Strings = new BudgetedParserStringStore(budget);
         Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        ClipDepths = new BudgetedParserList<int>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Viewports = new BudgetedParserList<SvgViewportFrame>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         StyleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
+        Clips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }
 
@@ -31,6 +34,10 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserList<CssRule> StyleRules { get; }
 
     internal BudgetedParserDictionary<string, SvgDefinition> Definitions { get; }
+
+    internal BudgetedParserDictionary<string, SvgClipBox> Clips { get; }
+
+    internal BudgetedParserList<int> ClipDepths { get; }
 
     internal BudgetedParserList<PendingUse> PendingUses { get; }
 
@@ -54,6 +61,12 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal int SymbolDepth { get; set; } = -1;
 
+    internal int ClipPathDepth { get; set; } = -1;
+
+    internal string? ClipPathId { get; set; }
+
+    internal SvgClipBox? ClipBox { get; set; }
+
     internal string? SymbolId { get; set; }
 
     internal SvgViewBox? SymbolViewBox { get; set; }
@@ -62,6 +75,8 @@ internal sealed class SvgDocumentState : IDisposable
     {
         PendingUses.Dispose();
         Definitions.Dispose();
+        Clips.Dispose();
+        ClipDepths.Dispose();
         StyleRules.Dispose();
         Strings.Dispose();
         Groups.Dispose();
