@@ -324,6 +324,17 @@ public sealed class PublicContractTests
         Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderLimits(1024, 1024, 16, 16, 1024, 16, 16, 16, 16, 0));
     }
 
+    [Fact]
+    public void Render_limit_convenience_constructors_forward_default_nesting_limits()
+    {
+        SvgRenderLimits eight = new(1024, 1024, 16, 16, 1024, 16, 16, 16);
+        SvgRenderLimits nine = new(1024, 1024, 16, 16, 1024, 16, 16, 16, 64);
+
+        Assert.Equal(128, eight.MaximumXmlDepth);
+        Assert.Equal(256, eight.MaximumAttributesPerElement);
+        Assert.Equal(256, nine.MaximumAttributesPerElement);
+    }
+
     [Theory]
     [InlineData(0, "maximumAccountedBytes")]
     [InlineData(1, "maximumInputBytes")]
