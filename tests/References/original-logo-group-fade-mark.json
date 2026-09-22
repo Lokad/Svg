@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-group-fade-mark",
+  "referencePng": "original-logo-group-fade-mark.png",
+  "referenceSha256": "75ee3e9283f82446a95fac91f26e342e742d02cc20c5ba52645593340956bbdf",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "4421eac0ea22471b03d2df0a47a88b484c682b4060f87e411761b4a1da1d598a",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-22"
+}
