@@ -78,6 +78,14 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
+    public void Discovers_text_around_hidden_overflow_viewports()
+    {
+        SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><svg x='1' y='1' width='3' height='3' overflow='hidden'><rect width='5' height='5' fill='red'/></svg><text font-family='Example'>x</text></svg>"u8.ToArray(), CancellationToken.None));
+
+        Assert.Equal("Example", request.Family);
+    }
+
+    [Fact]
     public void Discovers_text_on_versioned_roots()
     {
         SvgFontFaceRequest request = Assert.Single(SvgFontRequestDiscovery.Discover("<svg xmlns='http://www.w3.org/2000/svg' version='1.1' baseProfile='tiny'><text font-family='Example'>x</text></svg>"u8.ToArray(), CancellationToken.None));

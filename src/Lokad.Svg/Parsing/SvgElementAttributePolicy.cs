@@ -60,6 +60,7 @@ internal static class SvgElementAttributePolicy
                 if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader.LocalName, reader.Value);
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "font-variant") SvgTextFontSyntax.ValidateFontVariant(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "color-interpolation") SvgGradientSyntax.ValidateColorInterpolation(reader.Value.AsSpan());
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow") SvgNestedViewportSyntax.ValidateOverflow(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "clip-rule") SvgClipPathSyntax.ValidateClipRule(reader.Value.AsSpan());
                 continue;
             }
@@ -78,7 +79,7 @@ internal static class SvgElementAttributePolicy
         if (reader.NamespaceURI.Length != 0) return true;
         bool allowed = kind switch
         {
-            SvgElementKind.Root => reader.LocalName is "id" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "version" or "baseProfile" or "font-family" or "font-weight" or "font-style" or "font-variant" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "color-interpolation" or "style",
+            SvgElementKind.Root => reader.LocalName is "id" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "version" or "baseProfile" or "overflow" or "font-family" or "font-weight" or "font-style" or "font-variant" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "color-interpolation" or "style",
             SvgElementKind.Group => reader.LocalName is "id" or "class" or "href" or "font-family" or "font-weight" or "font-style" or "font-variant" or "font-size" or "letter-spacing" or "color" or "fill" or "fill-opacity" or "stroke" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "color-interpolation",
             SvgElementKind.Rectangle => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "rx" or "ry" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "color-interpolation",
             SvgElementKind.Line => reader.LocalName is "id" or "class" or "x1" or "y1" or "x2" or "y2" or "color" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "color-interpolation",
@@ -94,7 +95,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.LinearGradient => reader.LocalName is "id" or "href" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod" or "gradientTransform",
             SvgElementKind.GradientStop => reader.LocalName is "offset" or "stop-color" or "stop-opacity",
             SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "color-interpolation",
-            SvgElementKind.NestedViewport => reader.LocalName is "x" or "y" or "width" or "height" or "viewBox" or "preserveAspectRatio",
+            SvgElementKind.NestedViewport => reader.LocalName is "x" or "y" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "overflow",
             _ => false
         };
         if (allowed && reader.LocalName is ("id" or "class") && reader.Value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
@@ -102,7 +103,7 @@ internal static class SvgElementAttributePolicy
         return allowed;
     }
 
-    private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "clip-rule" or "opacity" or "display" or "visibility" or "version" or "baseProfile" or "focusable" or "clip-path" or "clipPathUnits" or "mask" or "mask-type" or "patternUnits" or "patternContentUnits" or "x1" or "y1" or "x2" or "y2" or "offset" or "stop-color" or "stop-opacity" or "gradientUnits" or "spreadMethod" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "space";
+    private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "clip-rule" or "opacity" or "display" or "visibility" or "version" or "baseProfile" or "focusable" or "clip-path" or "clipPathUnits" or "mask" or "mask-type" or "patternUnits" or "patternContentUnits" or "x1" or "y1" or "x2" or "y2" or "offset" or "stop-color" or "stop-opacity" or "gradientUnits" or "spreadMethod" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "overflow" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "space";
 
     private enum SvgElementKind { Root, Group, Rectangle, Line, Use, Path, PointList, Text, TextSpan, Symbol, NestedViewport, ClipPath, Mask, Image, Pattern, LinearGradient, GradientStop }
 }

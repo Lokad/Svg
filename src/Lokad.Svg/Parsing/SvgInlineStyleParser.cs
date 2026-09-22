@@ -91,6 +91,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("stroke-dasharray", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-dasharray", propertyValue);
             else if (property.Equals("stroke-dashoffset", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-dashoffset", propertyValue);
             else if (property.Equals("clip-rule", StringComparison.OrdinalIgnoreCase)) ValidateClipDeclaration(propertyValue);
+            else if (property.Equals("overflow", StringComparison.OrdinalIgnoreCase)) ValidateOverflowDeclaration(propertyValue);
             else if (property.Equals("font-variant", StringComparison.OrdinalIgnoreCase)) ValidateFontVariantDeclaration(propertyValue);
             else if (property.Equals("color-interpolation", StringComparison.OrdinalIgnoreCase)) ValidateColorInterpolationDeclaration(propertyValue);
             else if (allowsDirectTextFontProperties && property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) Set(ref family, InlineImportantProperties.Family, property, propertyValue, strings, ref important, false);
@@ -128,6 +129,12 @@ internal static class SvgInlineStyleParser
         {
             TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
             SvgStrokeStyleSyntax.ValidateAttribute(name, stripped.ToString());
+        }
+
+        static void ValidateOverflowDeclaration(ReadOnlySpan<char> rawValue)
+        {
+            TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
+            SvgNestedViewportSyntax.ValidateOverflow(stripped);
         }
 
         static void ValidateClipDeclaration(ReadOnlySpan<char> rawValue)

@@ -321,6 +321,27 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Accepts_hidden_overflow_on_root_and_nested_viewports()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5' overflow='hidden' style='overflow: hidden'><svg x='1' y='1' width='3' height='3' overflow='hidden'><rect width='5' height='5' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Single(root.Rectangles);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Theory]
+    [InlineData("<svg x='1' y='1' width='3' height='3' overflow='visible'><rect width='5' height='5' fill='red'/></svg>")]
+    [InlineData("<svg width='5' height='5' overflow='scroll'><rect width='5' height='5' fill='red'/></svg>")]
+    public void Rejects_non_hidden_viewport_overflow(string viewport)
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'>" + viewport + "</svg>");
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Rejects_link_nested_definitions()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><a><defs><rect id='tile' width='2' height='2' fill='red'/></defs></a><use href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
