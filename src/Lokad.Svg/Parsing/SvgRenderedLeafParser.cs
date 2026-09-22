@@ -38,7 +38,7 @@ internal static class SvgRenderedLeafParser
         switch (reader.LocalName)
         {
             case "rect":
-                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, SvgLeafParser.ParseRectangle(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state))));
+                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, SvgLeafParser.ParseRectangle(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state)));
                 return true;
             case "line":
                 state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, SvgLeafParser.ParseLine(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state))));

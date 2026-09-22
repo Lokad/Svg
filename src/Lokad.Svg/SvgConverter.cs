@@ -264,6 +264,9 @@ public static class SvgConverter
                 case SvgGeometryKind.GlyphContours:
                     RasterizeGlyphContours(geometry.Glyph, destination);
                     return;
+                case SvgGeometryKind.PatternFill:
+                    RasterizePatternFill(geometry.Pattern, destination);
+                    return;
                 default:
                     throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains invalid geometry.");
             }
@@ -279,6 +282,90 @@ public static class SvgConverter
             if (band.HasFill) RasterizeSolidRectangle(band, destination);
         }
 
+        void RasterizePatternFill(SvgPatternGeometry pattern, byte[] destination)
+        {
+            if (!pattern.Fill.HasFill && pattern.Stroke is null) return;
+            long tilePixels = (long)pattern.TileWidth * pattern.TileHeight;
+            if (tilePixels <= 0 || tilePixels > options.Limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile surface exceeds the configured pixel limit.");
+            using RenderBudget.BudgetReservation tileReservation = budget.Reserve(checked(tilePixels * 4), SvgMemoryCategory.Surface);
+            byte[] tile = new byte[(int)tilePixels * 4];
+            BlitPatternTile(pattern, tile);
+            if (pattern.Fill.HasFill) StampPatternFill(pattern, tile, destination);
+            if (pattern.Stroke is SvgStroke stroke) RasterizePatternStroke(pattern, stroke, destination);
+        }
+
+        void BlitPatternTile(SvgPatternGeometry pattern, byte[] tile)
+        {
+            BlitPatternBox(pattern.Content, tile, pattern);
+            if (pattern.Content.Stroke is SvgStroke stroke)
+            {
+                double halfWidth = stroke.Width / 2d;
+                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y - halfWidth, pattern.Content.Width + stroke.Width, stroke.Width, stroke.Color, true, null), tile, pattern);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y + pattern.Content.Height - halfWidth, pattern.Content.Width + stroke.Width, stroke.Width, stroke.Color, true, null), tile, pattern);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y + halfWidth, stroke.Width, pattern.Content.Height - stroke.Width, stroke.Color, true, null), tile, pattern);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X + pattern.Content.Width - halfWidth, pattern.Content.Y + halfWidth, stroke.Width, pattern.Content.Height - stroke.Width, stroke.Color, true, null), tile, pattern);
+            }
+        }
+
+        void BlitPatternBox(SvgRectangle box, byte[] tile, SvgPatternGeometry pattern)
+        {
+            int startX = (int)(box.X - pattern.OriginX);
+            int startY = (int)(box.Y - pattern.OriginY);
+            int endX = startX + (int)box.Width;
+            int endY = startY + (int)box.Height;
+            for (int y = startY; y < endY; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                for (int x = startX; x < endX; x++)
+                {
+                    int offset = (y * pattern.TileWidth + x) * 4;
+                    BlendSourceOver(tile.AsSpan(offset, 4), box.Color, false);
+                }
+            }
+        }
+
+        void StampPatternFill(SvgPatternGeometry pattern, byte[] tile, byte[] destination)
+        {
+            double fillTop = MapRectangleEdge(pattern.Fill.Y, verticalScale, verticalOffset);
+            double fillBottom = MapRectangleEdge(pattern.Fill.Y + pattern.Fill.Height, verticalScale, verticalOffset);
+            double fillLeft = MapRectangleEdge(pattern.Fill.X, horizontalScale, horizontalOffset);
+            double fillRight = MapRectangleEdge(pattern.Fill.X + pattern.Fill.Width, horizontalScale, horizontalOffset);
+            bool hasFractionalEdge = fillTop != Math.Truncate(fillTop) || fillBottom != Math.Truncate(fillBottom) || fillLeft != Math.Truncate(fillLeft) || fillRight != Math.Truncate(fillRight);
+            int startY = ClampFloor(fillTop, outputHeight);
+            int endY = ClampCeiling(fillBottom, outputHeight);
+            int startX = ClampFloor(fillLeft, outputWidth);
+            int endX = ClampCeiling(fillRight, outputWidth);
+            long coverage = (long)(endY - startY) * (endX - startX);
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern fill raster work exceeds the configured limit.");
+            workUnits += coverage;
+            for (int y = startY; y < endY; y++)
+            {
+            cancellationToken.ThrowIfCancellationRequested();
+            for (int x = startX; x < endX; x++)
+            {
+                double verticalCoverage = Math.Clamp(Math.Min(fillBottom, y + 1) - Math.Max(fillTop, y), 0, 1);
+                double horizontalCoverage = Math.Clamp(Math.Min(fillRight, x + 1) - Math.Max(fillLeft, x), 0, 1);
+                int tileX = PositiveModulo(x - pattern.OriginX, pattern.TileWidth);
+                int tileY = PositiveModulo(y - pattern.OriginY, pattern.TileHeight);
+                int tileOffset = (tileY * pattern.TileWidth + tileX) * 4;
+                SvgColor tileColor = new(tile[tileOffset], tile[tileOffset + 1], tile[tileOffset + 2], MultiplyAlpha(tile[tileOffset + 3], pattern.Opacity));
+                SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
+                int offset = (y * outputWidth + x) * 4;
+                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+            }
+            }
+        }
+
+        void RasterizePatternStroke(SvgPatternGeometry pattern, SvgStroke stroke, byte[] destination)
+        {
+            double halfWidth = stroke.Width / 2d;
+            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y - halfWidth, pattern.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
+            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y + pattern.Fill.Height - halfWidth, pattern.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
+            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y + halfWidth, stroke.Width, pattern.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
+            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X + pattern.Fill.Width - halfWidth, pattern.Fill.Y + halfWidth, stroke.Width, pattern.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
+        }
+
+        static int PositiveModulo(int value, int modulus) => ((value % modulus) + modulus) % modulus;
         void RasterizeGlyphContours(SvgGlyphGeometry glyph, byte[] destination)
         {
             if (glyph.Contours.Length == 0) return;

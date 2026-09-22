@@ -97,6 +97,33 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
+        if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "pattern")
+        {
+            SvgElementAttributePolicy.ValidatePattern(reader, workCounter, cancellationToken);
+            state.PatternId = reader.GetAttribute("id");
+            state.PatternTile = SvgPatternSyntax.ParsePatternElement(reader);
+            if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
+            else if (state.PatternId is not null) RegisterPattern(state, workCounter, cancellationToken);
+            state.SawStyleableNode = true;
+            return true;
+        }
+        if (state.PatternDepth >= 0 && reader.Depth == state.PatternDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
+        {
+            if (reader.LocalName == "rect")
+            {
+                if (state.PatternTile?.Content is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle pattern tiles are implemented.");
+                SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
+                SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgGeometry content = SvgLeafParser.ParseRectangle(reader, tileContext, null, state);
+                SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern tile accumulation requires pattern dimensions.");
+                state.PatternTile = tile with { Content = RequirePatternTileContent(content, tile) };
+                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                state.SawStyleableNode = true;
+                return true;
+            }
+            state.HasUnsupportedContent = true;
+            return true;
+        }
         if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
@@ -119,6 +146,14 @@ internal static class SvgDefinitionParser
         return false;
     }
 
+    internal static void RegisterPattern(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.Consume(cancellationToken);
+        string retainedId = state.Strings.Copy(state.PatternId ?? throw new InvalidOperationException("Pattern registration requires an identifier."));
+        SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern registration requires pattern dimensions.");
+        if (!state.Patterns.TryAdd(retainedId, tile)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
+    }
+
     internal static void RegisterMask(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
@@ -131,6 +166,16 @@ internal static class SvgDefinitionParser
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip-path registration requires an identifier."));
         if (!state.Clips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+    }
+
+    private static SvgGeometry RequirePatternTileContent(SvgGeometry content, SvgPatternTile tile)
+    {
+        if (content.Kind != SvgGeometryKind.Rectangle) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rectangle pattern tile content is implemented.");
+        SvgRectangle box = content.Rectangle;
+        if (!box.HasFill) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Unpainted pattern tile content is not implemented.");
+        if (box.X != Math.Truncate(box.X) || box.Y != Math.Truncate(box.Y) || box.Width != Math.Truncate(box.Width) || box.Height != Math.Truncate(box.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer pattern tile content is implemented.");
+        if (box.X < tile.OriginX || box.Y < tile.OriginY || box.X + box.Width > tile.OriginX + tile.TileWidth || box.Y + box.Height > tile.OriginY + tile.TileHeight) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern tile content overflowing its tile is not implemented.");
+        return content;
     }
 
     private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgViewBox? symbolViewBox)

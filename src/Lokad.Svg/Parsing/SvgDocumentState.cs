@@ -7,6 +7,7 @@ internal sealed class SvgDocumentState : IDisposable
 {
     private const int DefinitionStorageBytes = 256;
     private const int ClipStorageBytes = 128;
+    private const int PatternStorageBytes = 128;
 
     internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -19,6 +20,7 @@ internal sealed class SvgDocumentState : IDisposable
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         Clips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Masks = new BudgetedParserDictionary<string, byte>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
+        Patterns = new BudgetedParserDictionary<string, SvgPatternTile>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }
 
@@ -39,6 +41,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserDictionary<string, SvgClipBox> Clips { get; }
 
     internal BudgetedParserDictionary<string, byte> Masks { get; }
+
+    internal BudgetedParserDictionary<string, SvgPatternTile> Patterns { get; }
 
     internal BudgetedParserList<int> ClipDepths { get; }
 
@@ -68,6 +72,12 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal int MaskDepth { get; set; } = -1;
 
+    internal int PatternDepth { get; set; } = -1;
+
+    internal string? PatternId { get; set; }
+
+    internal SvgPatternTile? PatternTile { get; set; }
+
     internal string? MaskId { get; set; }
 
     internal bool MaskIsAlpha { get; set; }
@@ -88,6 +98,7 @@ internal sealed class SvgDocumentState : IDisposable
         Definitions.Dispose();
         Clips.Dispose();
         Masks.Dispose();
+        Patterns.Dispose();
         ClipDepths.Dispose();
         StyleRules.Dispose();
         Strings.Dispose();

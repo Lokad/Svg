@@ -36,7 +36,7 @@ internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double 
     }
 }
 
-internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours }
+internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill }
 
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
 internal readonly struct SvgGeometry
@@ -45,6 +45,7 @@ internal readonly struct SvgGeometry
     private readonly SvgRectangle _rectangle;
     private readonly SvgAxisAlignedLine _axisAlignedLine;
     private readonly SvgGlyphGeometry? _glyph;
+    private readonly SvgPatternGeometry? _pattern;
 
     private SvgGeometry(SvgGeometryKind kind, SvgRectangle rectangle)
     {
@@ -52,6 +53,7 @@ internal readonly struct SvgGeometry
         _rectangle = rectangle;
         _axisAlignedLine = default;
         _glyph = null;
+        _pattern = null;
     }
 
     private SvgGeometry(SvgAxisAlignedLine axisAlignedLine)
@@ -60,6 +62,7 @@ internal readonly struct SvgGeometry
         _rectangle = default;
         _axisAlignedLine = axisAlignedLine;
         _glyph = null;
+        _pattern = null;
     }
 
     private SvgGeometry(SvgGlyphGeometry glyph)
@@ -69,6 +72,17 @@ internal readonly struct SvgGeometry
         _rectangle = default;
         _axisAlignedLine = default;
         _glyph = glyph;
+        _pattern = null;
+    }
+
+    private SvgGeometry(SvgPatternGeometry pattern)
+    {
+        ArgumentNullException.ThrowIfNull(pattern);
+        _kind = SvgGeometryKind.PatternFill;
+        _rectangle = default;
+        _axisAlignedLine = default;
+        _glyph = null;
+        _pattern = pattern;
     }
 
     internal SvgGeometryKind Kind => _kind;
@@ -96,9 +110,17 @@ internal readonly struct SvgGeometry
 
     internal static SvgGeometry FromGlyphContours(SvgGlyphGeometry glyph) => new(glyph);
 
+    internal static SvgGeometry FromPatternFill(SvgPatternGeometry pattern) => new(pattern);
+
+    internal SvgPatternGeometry Pattern
+        => _kind == SvgGeometryKind.PatternFill
+            ? _pattern ?? throw new InvalidOperationException("This SVG geometry does not contain pattern tile content.")
+            : throw new InvalidOperationException("This SVG geometry does not contain pattern tile content.");
+
     internal void Dispose()
     {
         if (_kind == SvgGeometryKind.GlyphContours) _glyph?.Dispose();
+        if (_kind == SvgGeometryKind.PatternFill) _pattern?.Dispose();
     }
 
     internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
@@ -189,6 +211,48 @@ internal sealed class SvgGlyphGeometry : IDisposable
     {
         _reservation?.Dispose();
         _reservation = null;
+    }
+}
+
+/// <summary>Owns retained pattern tile content with its integer grid and fill region.</summary>
+internal sealed class SvgPatternGeometry : IDisposable
+{
+    internal SvgPatternGeometry(SvgRectangle Content, int OriginX, int OriginY, int TileWidth, int TileHeight, SvgRectangle Fill, byte Opacity, SvgStroke? Stroke)
+    {
+        this.Content = Content;
+        this.OriginX = OriginX;
+        this.OriginY = OriginY;
+        this.TileWidth = TileWidth;
+        this.TileHeight = TileHeight;
+        this.Fill = Fill;
+        this.Opacity = Opacity;
+        this.Stroke = Stroke;
+    }
+
+    internal SvgRectangle Content { get; }
+
+    internal int OriginX { get; }
+
+    internal int OriginY { get; }
+
+    internal int TileWidth { get; }
+
+    internal int TileHeight { get; }
+
+    internal SvgRectangle Fill { get; }
+
+    internal byte Opacity { get; }
+
+    internal SvgStroke? Stroke { get; }
+
+    internal SvgPatternGeometry ClipTo(SvgClipBox box)
+        => new(Content, OriginX, OriginY, TileWidth, TileHeight, box.ClipRectangle(Fill), Opacity, Stroke);
+
+    internal SvgPatternGeometry Stamped(byte value)
+        => new(Content, OriginX, OriginY, TileWidth, TileHeight, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width));
+
+    public void Dispose()
+    {
     }
 }
 
