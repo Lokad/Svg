@@ -4,7 +4,7 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one admitted two-stop linear gradient with its bounding-box vector.</summary>
-internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, bool IsEmpty);
+internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty);
 
 /// <summary>Retains one parsed gradient stop with its offset while streaming.</summary>
 internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);

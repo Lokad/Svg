@@ -1520,8 +1520,54 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 1, false), geometry.Gradient.Gradient);
+        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 1, 0, 1, false), geometry.Gradient.Gradient);
         Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(0, 0, 0, 0), true, null), geometry.Gradient.Fill);
+    }
+
+    [Fact]
+    public void Lowers_offset_two_stop_gradient_fill_with_retained_offsets()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0.25' stop-color='#ff0000'/><stop offset='0.75' stop-color='#0000ff'/></linearGradient></defs><rect x='8' y='8' width='48' height='48' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0.25, 0.75, false), geometry.Gradient.Gradient);
+    }
+
+    [Fact]
+    public void Rejects_equal_offset_linear_gradient_stops()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0.5' stop-color='#ff0000'/><stop offset='0.5' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_reversed_offset_linear_gradient_stops()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0.75' stop-color='#ff0000'/><stop offset='0.25' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Clamps_outside_offset_linear_gradient_stops_into_range()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='-0.5' stop-color='#ff0000'/><stop offset='1.5' stop-color='#0000ff'/></linearGradient></defs><rect x='8' y='8' width='48' height='48' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false), geometry.Gradient.Gradient);
+    }
+
+    [Fact]
+    public void Rejects_clamped_equal_offset_linear_gradient_stops()
+    {
+        SvgException above = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='2' stop-color='#ff0000'/><stop offset='3' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException below = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='-2' stop-color='#ff0000'/><stop offset='-1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, above.ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, below.ErrorCode);
     }
 
     [Fact]

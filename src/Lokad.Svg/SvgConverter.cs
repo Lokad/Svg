@@ -398,6 +398,8 @@ public static class SvgConverter
             double directionX = gradient.Gradient.X2 - gradient.Gradient.X1;
             double directionY = gradient.Gradient.Y2 - gradient.Gradient.Y1;
             double denominator = directionX * directionX + directionY * directionY;
+            double offsetSpan = gradient.Gradient.Offset2 - gradient.Gradient.Offset1;
+            if (gradient.Fill.HasFill && offsetSpan <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
             if (gradient.Fill.HasFill && denominator != 0)
             for (int y = startY; y < endY; y++)
             {
@@ -411,8 +413,10 @@ public static class SvgConverter
                 double normalizedX = (deviceX - gradient.Box.X) / gradient.Box.Width;
                 double normalizedY = (deviceY - gradient.Box.Y) / gradient.Box.Height;
                 double position = ((normalizedX - gradient.Gradient.X1) * directionX + (normalizedY - gradient.Gradient.Y1) * directionY) / denominator;
-                if (position < 0) position = 0;
-                if (position > 1) position = 1;
+                double local = (position - gradient.Gradient.Offset1) / offsetSpan;
+                if (local < 0) local = 0;
+                if (local > 1) local = 1;
+                position = local;
                 double dither = GradientDither[x & 7, y & 7] / 64d;
                 SvgColor tileColor = new(InterpolateChannel(gradient.Gradient.Start.Red, gradient.Gradient.End.Red, position, dither), InterpolateChannel(gradient.Gradient.Start.Green, gradient.Gradient.End.Green, position, dither), InterpolateChannel(gradient.Gradient.Start.Blue, gradient.Gradient.End.Blue, position, dither), gradient.Opacity);
                 SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);

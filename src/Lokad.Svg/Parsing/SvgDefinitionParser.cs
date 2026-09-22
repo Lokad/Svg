@@ -129,7 +129,7 @@ internal static class SvgDefinitionParser
             SvgElementAttributePolicy.ValidateLinearGradient(reader, workCounter, cancellationToken);
             state.GradientId = reader.GetAttribute("id");
             (double x1, double y1, double x2, double y2) = SvgGradientSyntax.ParseLinearVector(reader);
-            state.Gradient = new SvgLinearGradient(default, default, x1, y1, x2, y2, false);
+            state.Gradient = new SvgLinearGradient(default, default, x1, y1, x2, y2, 0, 1, false);
             if (!reader.IsEmptyElement) state.GradientDepth = reader.Depth;
             else if (state.GradientId is not null) RegisterGradient(state, workCounter, cancellationToken);
             state.GradientStops.Clear();
@@ -177,9 +177,9 @@ internal static class SvgDefinitionParser
     internal static void RegisterGradient(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
-        if (state.GradientStops.Count != 0 && (state.GradientStops.Count != 2 || state.GradientStops[0].Offset != 0 || state.GradientStops[1].Offset != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only empty or two-stop zero-to-one linear gradients are implemented.");
+        if (state.GradientStops.Count != 0 && (state.GradientStops.Count != 2 || !(state.GradientStops[0].Offset < state.GradientStops[1].Offset))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only empty or two-stop increasing-offset linear gradients are implemented.");
         SvgLinearGradient vector = state.Gradient ?? throw new InvalidOperationException("Gradient registration requires gradient dimensions.");
-        SvgLinearGradient gradient = state.GradientStops.Count == 0 ? vector with { IsEmpty = true } : vector with { Start = state.GradientStops[0].Color, End = state.GradientStops[1].Color };
+        double clampedFirst = Math.Clamp(state.GradientStops.Count == 0 ? 0 : state.GradientStops[0].Offset, 0, 1); double clampedSecond = Math.Clamp(state.GradientStops.Count == 0 ? 1 : state.GradientStops[1].Offset, 0, 1); if (state.GradientStops.Count != 0 && !(clampedFirst < clampedSecond)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop linear gradients spanning a nonzero clamped offset range are implemented."); SvgLinearGradient gradient = state.GradientStops.Count == 0 ? vector with { IsEmpty = true } : vector with { Start = state.GradientStops[0].Color, End = state.GradientStops[1].Color, Offset1 = clampedFirst, Offset2 = clampedSecond };
         string retainedId = state.Strings.Copy(state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier."));
         if (!state.Gradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
     }
