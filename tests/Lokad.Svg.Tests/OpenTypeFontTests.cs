@@ -2266,6 +2266,22 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Lays_out_supplementary_scalars_with_utf16_span_bookkeeping()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFormat12Font())], CancellationToken.None);
+        SvgPositionedGlyph glyph = Assert.Single(SvgGlyphLayout.Layout(snapshot.Fonts[0], "😀", 10, 2, 3, CancellationToken.None));
+        SvgTextLetterSpacingSpan[] spans = [new(0, 2, 10), new(2, 4, 20)];
+        using SvgPositionedGlyphStorage pair = SvgGlyphLayout.CreateStorage(snapshot.Fonts[0], "😀😀", 10, 2, 3, 2, spans, SvgTextAnchor.Start, new RenderBudget(1_000_000), string.Empty, null, CancellationToken.None);
+
+        Assert.Equal((ushort)2, glyph.GlyphIndex);
+        Assert.Equal(2, glyph.X);
+        Assert.Equal(3, glyph.Y);
+        Assert.Equal(6000d / 1024, glyph.Advance);
+        Assert.Equal(2, pair.Glyphs[0].X);
+        Assert.Equal(2 + 6000d / 1024 + 10, pair.Glyphs[1].X);
+    }
+
+    [Fact]
     public async Task Positions_direct_glyph_runs_for_admitted_text_anchors()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
