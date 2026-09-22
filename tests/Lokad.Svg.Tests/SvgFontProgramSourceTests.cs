@@ -204,6 +204,16 @@ public sealed class SvgFontProgramSourceTests
         Assert.Same(bytes, segment.Array);
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void Memory_sources_reject_blank_stable_ids(string stableId)
+    {
+        ArgumentException exception = Assert.Throws<ArgumentException>(() => new SvgMemoryFontProgramSource(stableId, ReadOnlyMemory<byte>.Empty));
+
+        Assert.Equal("stableId", exception.ParamName);
+    }
+
     [Fact]
     public async Task Bound_source_rejects_changed_or_wrong_sized_bytes()
     {
