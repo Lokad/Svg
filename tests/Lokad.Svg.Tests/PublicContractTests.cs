@@ -175,6 +175,13 @@ public sealed class PublicContractTests
         await AssertValueTaskNullArgument<SvgPreparedDocument>(ConvertMethod(typeof(SvgPreparedDocument), nameof(SvgPreparedDocument.CreateAsync), typeof(ReadOnlyMemory<byte>), typeof(SvgFontPackCatalog), typeof(ISvgFontProgramSourceProvider), typeof(SvgRenderOptions), typeof(CancellationToken)).Invoke(null, [new ReadOnlyMemory<byte>(svg), null, provider, SvgRenderOptions.Default, CancellationToken.None]), "catalog");
         await AssertValueTaskNullArgument<SvgPreparedDocument>(ConvertMethod(typeof(SvgPreparedDocument), nameof(SvgPreparedDocument.CreateAsync), typeof(ReadOnlyMemory<byte>), typeof(SvgFontPackCatalog), typeof(ISvgFontProgramSourceProvider), typeof(SvgRenderOptions), typeof(CancellationToken)).Invoke(null, [new ReadOnlyMemory<byte>(svg), catalog, null, SvgRenderOptions.Default, CancellationToken.None]), "provider");
         await AssertValueTaskNullArgument<SvgPreparedDocument>(ConvertMethod(typeof(SvgPreparedDocument), nameof(SvgPreparedDocument.CreateAsync), typeof(ReadOnlyMemory<byte>), typeof(SvgFontPackCatalog), typeof(ISvgFontProgramSourceProvider), typeof(SvgRenderOptions), typeof(CancellationToken)).Invoke(null, [new ReadOnlyMemory<byte>(svg), catalog, provider, null, CancellationToken.None]), "options");
+        ConstructorInfo optionsConstructor = typeof(SvgRenderOptions).GetConstructors().Single(static c => c.GetParameters().Length == 5);
+
+        try { optionsConstructor.Invoke([null, 1.0, SvgColor.Transparent, null, null]); Assert.Fail("Null limits constructed without an ArgumentNullException."); }
+        catch (TargetInvocationException exception) when (exception.InnerException is ArgumentNullException nullArgument)
+        {
+            Assert.Equal("limits", nullArgument.ParamName);
+        }
 
     }
 
@@ -208,7 +215,7 @@ public sealed class PublicContractTests
         return method;
     }
 
-    private static void AssertSyncNullArgument(object? target, MethodInfo method, string parameterName, object?[] arguments)
+    private static void AssertSyncNullArgument(object? target, MethodBase method, string parameterName, object?[] arguments)
     {
         try { method.Invoke(target, arguments); Assert.Fail("Null argument converted without an ArgumentNullException."); }
         catch (TargetInvocationException exception) when (exception.InnerException is ArgumentNullException nullArgument)
@@ -315,6 +322,37 @@ public sealed class PublicContractTests
     public void Render_limits_reject_a_nonpositive_attribute_limit()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderLimits(1024, 1024, 16, 16, 1024, 16, 16, 16, 16, 0));
+    }
+
+    [Theory]
+    [InlineData(0, "maximumAccountedBytes")]
+    [InlineData(1, "maximumInputBytes")]
+    [InlineData(2, "maximumDimension")]
+    [InlineData(3, "maximumPixels")]
+    [InlineData(4, "maximumEncodedPngBytes")]
+    [InlineData(5, "maximumNodes")]
+    [InlineData(6, "maximumPathCommands")]
+    [InlineData(7, "maximumWorkUnits")]
+    [InlineData(8, "maximumXmlDepth")]
+    [InlineData(9, "maximumAttributesPerElement")]
+    public void Render_limits_reject_nonpositive_values_at_every_position(int position, string parameterName)
+    {
+        ConstructorInfo constructor = typeof(SvgRenderLimits).GetConstructors().Single(static c => c.GetParameters().Length == 10);
+        object?[] arguments = [268_435_456L, 16_777_216, 16_384, 16_777_216, 134_217_728, 100_000, 1_000_000, 100_000_000, 128, 256];
+        arguments[position] = position == 0 ? (object)0L : (object)0;
+
+        try { constructor.Invoke(arguments); Assert.Fail("Nonpositive limit constructed without an ArgumentOutOfRangeException."); }
+        catch (TargetInvocationException exception) when (exception.InnerException is ArgumentOutOfRangeException outOfRange)
+        {
+            Assert.Equal(parameterName, outOfRange.ParamName);
+        }
+    }
+
+    [Fact]
+    public void Render_options_reject_a_nonpositive_or_nonfinite_output_scale()
+    {
+        Assert.Equal("outputScale", Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderOptions(null, 0, SvgColor.Transparent, SvgRenderLimits.Default)).ParamName);
+        Assert.Equal("outputScale", Assert.Throws<ArgumentOutOfRangeException>(() => new SvgRenderOptions(null, double.NaN, SvgColor.Transparent, SvgRenderLimits.Default)).ParamName);
     }
 
     [Fact]
