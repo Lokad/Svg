@@ -1131,7 +1131,7 @@ near fit; color-space/default behavior must agree with the pinned capture policy
   nested layer storage bounded, preserve offscreen origins, and test any tiled
   implementation against untiled references for seams and exact rounding.
 
-Exit: overlapping children under group opacity (not per-child opacity), nested
+Landed 2026-09-22 (c15a4be): single-rectangle `clipPath` definitions clipping `g`/`a` containers and admitted leaves via `clip-path="url(#id)"`, reusing the viewport-frame intersect machinery (backward references only, nested clips intersect, stroked-crossing and clipped-text explicitly rejected, text eligibility withdrawn under clip scopes in discovery); `original-logo-clipped-mark` admitted exact on three byte-identical recipe-3 captures. Multi-rectangle clips, forward references, masks and general opacity nesting remain open.`n`nExit: overlapping children under group opacity (not per-child opacity), nested
 clipped/gradient instances, masks on strokes, intersecting clips, negative/fractional
 layer bounds and clip/mask/opacity combinations. Deny excessive depth/surface area
 before allocation, and prove cleanup on cancellation or destination failure.
