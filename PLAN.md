@@ -643,16 +643,14 @@ and partial-port-file failures. Test a silent peer, event flood, cancelled captu
 and failed executable launch. Only then measure transport buffer reuse; oracle
 reliability is the purpose, not optimizing this tool as if it were the renderer.
 
-Execution consequence: retain R17 closure; finish R04/R18 and the reproduced
-R20/R21 resource/lifetime defects before broadening text. Repair R22 so passing
-validation is reproducible. Continue R19's coordinated baseline work; R19/R20
-allocation proposals do not authorize a speculative pooling rewrite.
+Execution consequence: retain R04/R17/R18/R19/R20/R21/R22 closures; R22 closure now covers checkout/platform validation.
+Continue coordinated baseline work; R19/R20 allocation proposals do not authorize a speculative pooling rewrite.
 
 ## 5. Execution order and actual blockers
 
 | Stage | Status | Next concrete deliverable / exit evidence |
 | --- | --- | --- |
-| S1 — typed sizing and surface failure cleanup | Original stale-size/cleanup defects repaired; retained tests pass. | Preserve parser sizing from `T` and correct scene call sites; close R15's remaining independently supplied scene-kind invariant. |
+| S1 — typed sizing and surface failure cleanup | Original stale-size/cleanup defects repaired; retained tests pass. Parser/scene sizing from `T` and the R15 scene-kind removal are closed with per-type ledger-peak regressions. | Preserve parser/scene sizing from `T` with per-type ledger-peak regressions. |
 | S2 — glyph sampling preflight | Complete for the current sampling model. | Preserve exact 517-unit vector and denial before bounds/coverage. This is not fidelity acceptance. |
 | S3 — complete decoder/storage ownership | Complete; focused phase observations, one-byte denial boundaries and cleanup tests pass. | Preserve reservations for simple/composite temporary and exact arrays, active recursion and retained contour transfer. Keep raw inspection helpers off budgeted rendering paths. |
 | S4 — malformed reader, matrices and numeric admission | Complete; malformed readers, matrices and numeric outline/device/coverage arithmetic have categorized regressions. | Preserve asymmetric/nested and malformed-cmap vectors, finite coordinate checks and exact admitted pixels. |
