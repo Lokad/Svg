@@ -177,3 +177,17 @@ strictly-less-work with identical semantics (full suite green).
 | `EncodeLowEntropyCallerMemory` | 1.21 ms | 8.95 KB | 8,246 B |
 | `EncodeLowEntropyStream` | 1.29 ms | 18.88 KB | 14,337 B |
 | `EncodeLowEntropyStreamAsync` | 1.35 ms | 19.25 KB | 14,401 B |
+
+### Glyph decode, transform and copy phases (`SvgTextBenchmarks`)
+
+- The same triangle `A` (one contour) measured in three slices sharing one setup:
+  `DecodeGlyphContours` decodes cmap/expansion/points, `TransformAndCopyContours`
+  transforms into a flat array then copies per-contour arrays from reused decoded
+  storage, and `DecodeTransformAndCopyContours` runs the full path. Values scale
+  with segment count; the copy phase is a small share of a small glyph.
+
+| Method | Mean | Allocated |
+| --- | ---: | ---: |
+| `DecodeGlyphContours` | 674.0 ns | 2,192 B |
+| `TransformAndCopyContours` | 151.2 ns | 688 B |
+| `DecodeTransformAndCopyContours` | 795.9 ns | 2,680 B |

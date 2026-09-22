@@ -38,16 +38,44 @@ public class SvgTextBenchmarks
         return document.ConvertToPng(CancellationToken.None).Length;
     }
 
-    [GlobalCleanup]
-    public void CleanUp() => _state.Snapshot.Dispose();
+    [Benchmark]
+    public int DecodeGlyphContours()
+    {
+        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(_state.Font.Bytes, _state.Glyph.GlyphIndex, _state.Font.Metrics, new RenderBudget(long.MaxValue), null, CancellationToken.None);
+        return decoded.Segments.Length;
+    }
 
-    private sealed class TextBenchmarkState(byte[] svg, SvgFontPackCatalog catalog, SingleSourceProvider provider, SvgFontSnapshot snapshot, SvgRenderOptions options)
+    [Benchmark]
+    public int TransformAndCopyContours()
+    {
+        using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(_state.Font, _state.Glyph, 16, _state.Decoded, new RenderBudget(long.MaxValue), null, CancellationToken.None);
+        return contours.Contours.Length;
+    }
+
+    [Benchmark]
+    public int DecodeTransformAndCopyContours()
+    {
+        using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(_state.Font, _state.Glyph, 16, new RenderBudget(long.MaxValue), null, CancellationToken.None);
+        return contours.Contours.Length;
+    }
+
+    [GlobalCleanup]
+    public void CleanUp()
+    {
+        _state.Decoded.Dispose();
+        _state.Snapshot.Dispose();
+    }
+
+    private sealed class TextBenchmarkState(byte[] svg, SvgFontPackCatalog catalog, SingleSourceProvider provider, SvgFontSnapshot snapshot, SvgRenderOptions options, SvgPreparedFont font, SvgPositionedGlyph glyph, OpenTypeGlyphContourStorage decoded)
     {
         public byte[] Svg = svg;
         public SvgFontPackCatalog Catalog = catalog;
         public SingleSourceProvider Provider = provider;
         public SvgFontSnapshot Snapshot = snapshot;
         public SvgRenderOptions Options = options;
+        public SvgPreparedFont Font = font;
+        public SvgPositionedGlyph Glyph = glyph;
+        public OpenTypeGlyphContourStorage Decoded = decoded;
 
         public static TextBenchmarkState Create()
         {
@@ -66,7 +94,10 @@ public class SvgTextBenchmarks
             byte[] svgBytes = System.Text.Encoding.UTF8.GetBytes(svg.ToString());
             SvgFontSnapshot snapshot = SvgFontSnapshot.CreateAsync(svgBytes, catalog, provider, CancellationToken.None).GetAwaiter().GetResult();
             SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
-            return new TextBenchmarkState(svgBytes, catalog, provider, snapshot, options);
+            SvgPreparedFont face = snapshot.Fonts[0];
+            SvgPositionedGlyph glyph = SvgGlyphLayout.Layout(face, "A", 16, 0, 0, CancellationToken.None)[0];
+            OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(face.Bytes, glyph.GlyphIndex, face.Metrics, new RenderBudget(long.MaxValue), null, CancellationToken.None);
+            return new TextBenchmarkState(svgBytes, catalog, provider, snapshot, options, face, glyph, decoded);
         }
     }
 
