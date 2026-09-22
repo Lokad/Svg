@@ -1671,7 +1671,10 @@ public sealed class OpenTypeFontTests
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><symbol id='s'><rect width='1' height='1' fill='red'/></symbol></defs><use href='#s'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text><text font-family='Example' font-size='100' y='4'>A</text></svg>", "Example", 1, 1, true, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan>A</tspan></text><text font-family='Example' font-size='100' y='4'>A</text></svg>", "Example", 1, 1, true, false)]
-    public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><rect id='r' width='2' height='2' fill='red'/></defs><g><use href='#r'/></g><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><rect id='r' width='2' height='2' fill='red'/></defs><a href='#x'><use href='#r'/></a><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><rect id='r' width='2' height='2' fill='red'/></defs><a href='#x'><g><use href='#r'/></g></a><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+        public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
         string[] expected = expectedRequests.Length == 0 ? [] : expectedRequests.Split(',');
@@ -1784,6 +1787,20 @@ public sealed class OpenTypeFontTests
 
         Assert.True(full > 0);
         Assert.Equal(full / 2, (int)half);
+    }
+
+    [Fact]
+    public void Nested_use_applies_enclosing_group_transform()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><defs><rect id='r' width='2' height='2' fill='red'/></defs><g transform='translate(1)'><use href='#r'/></g></svg>");
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, null), CancellationToken.None);
+
+        Assert.Equal(0, DecodeAlpha(png, 0, 0));
+        Assert.Equal(0, DecodeAlpha(png, 0, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), DecodePixel(png, 1, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), DecodePixel(png, 2, 1));
+        Assert.Equal(0, DecodeAlpha(png, 3, 1));
+        Assert.Equal(0, DecodeAlpha(png, 1, 2));
     }
 
 

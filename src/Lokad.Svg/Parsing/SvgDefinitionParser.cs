@@ -5,7 +5,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Routes bounded definitions, symbols and local instances while preserving streaming order.</summary>
 internal static class SvgDefinitionParser
 {
-    internal static bool TryParse(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (state.DefinitionsDepth >= 0 && (reader.Depth == state.DefinitionsDepth + 1 || reader.Depth == state.SymbolDepth + 1) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
         {
@@ -39,7 +39,7 @@ internal static class SvgDefinitionParser
             if (!reader.IsEmptyElement) state.DefinitionsDepth = reader.Depth;
             return true;
         }
-        if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
+        if (state.DefinitionsDepth < 0 && (directChild || isEligible) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "use")
         {
             SvgElementAttributePolicy.ValidateUse(reader, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);

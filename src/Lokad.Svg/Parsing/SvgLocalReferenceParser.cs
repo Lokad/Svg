@@ -9,6 +9,6 @@ internal static class SvgLocalReferenceParser
     {
         SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings);
         SvgResolvedLocalReferencePresentation presentation = SvgLocalReferencePresentationResolver.Resolve(context.ResolveStyle(reader), context.InheritedPresentation, context.NamedColors);
-        return new SvgUseReference(syntax.Id, syntax.X, syntax.Y, syntax.Transform, presentation.Opacity, presentation.IsPainted, presentation.FillOverride);
+        return new SvgUseReference(syntax.Id, syntax.X, syntax.Y, context.ResolveTransform(reader), presentation.Opacity, presentation.IsPainted, presentation.FillOverride);
     }
 }

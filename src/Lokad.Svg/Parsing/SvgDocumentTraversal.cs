@@ -48,7 +48,7 @@ internal static class SvgDocumentTraversal
                 bool directChild = reader.Depth == rootDepth + 1;
                 bool nestedInGroup = state.Groups.Count > 0;
                 bool textElement = reader.LocalName == "text";
-                if (SvgDefinitionParser.TryParse(reader, directChild, root, state, namedColors, workCounter, cancellationToken)) { }
+                if (SvgDefinitionParser.TryParse(reader, directChild, directChild || nestedInGroup, root, state, namedColors, workCounter, cancellationToken)) { }
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
                 else if (SvgRenderedLeafParser.TryParse(reader, directChild, directChild || nestedInGroup, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {

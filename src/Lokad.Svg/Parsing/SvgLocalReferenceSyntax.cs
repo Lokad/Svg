@@ -3,7 +3,7 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Parses the policy-validated bounded local-use reference syntax before style resolution.</summary>
-internal readonly record struct SvgLocalReferenceSyntax(string Id, double X, double Y, AxisTransform Transform)
+internal readonly record struct SvgLocalReferenceSyntax(string Id, double X, double Y)
 {
     internal static SvgLocalReferenceSyntax Parse(XmlReader reader, BudgetedParserStringStore strings)
     {
@@ -12,7 +12,6 @@ internal readonly record struct SvgLocalReferenceSyntax(string Id, double X, dou
         if (href.Length - 1 > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Local reference identifiers exceed the configured syntax limit.");
         double x = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("x") ?? "0");
         double y = SvgGeometrySyntax.ParseRectangleCoordinate(reader.GetAttribute("y") ?? "0");
-        AxisTransform transform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"));
-        return new SvgLocalReferenceSyntax(strings.Copy(href.AsSpan(1)), x, y, transform);
+        return new SvgLocalReferenceSyntax(strings.Copy(href.AsSpan(1)), x, y);
     }
 }
