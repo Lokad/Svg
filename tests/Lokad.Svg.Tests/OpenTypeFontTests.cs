@@ -2383,6 +2383,32 @@ public sealed class OpenTypeFontTests
 
         Assert.Equal(asyncCancellation.Token, asyncFailure.CancellationToken);
         Assert.Null(asyncCancelled.RetainedSceneGeometries);
+        using SvgPreparedDocument memorySync = await CreateSceneDocumentAsync(svg);
+        using CancellationTokenSource memoryCancellation = new();
+        memoryCancellation.Cancel();
+
+        Assert.Throws<OperationCanceledException>(() => memorySync.ConvertToPng(new byte[1_000_000], memoryCancellation.Token));
+        Assert.Null(memorySync.RetainedSceneGeometries);
+        using SvgPreparedDocument streamSync = await CreateSceneDocumentAsync(svg);
+        using CancellationTokenSource streamCancellation = new();
+        streamCancellation.Cancel();
+        using MemoryStream streamDestination = new();
+
+        Assert.Throws<OperationCanceledException>(() => streamSync.ConvertToPng(streamDestination, streamCancellation.Token));
+        Assert.Null(streamSync.RetainedSceneGeometries);
+        using SvgPreparedDocument memoryAsync = await CreateSceneDocumentAsync(svg);
+        using CancellationTokenSource memoryAsyncCancellation = new();
+        memoryAsyncCancellation.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await memoryAsync.ConvertToPngAsync(new byte[1_000_000], memoryAsyncCancellation.Token));
+        Assert.Null(memoryAsync.RetainedSceneGeometries);
+        using SvgPreparedDocument streamAsync = await CreateSceneDocumentAsync(svg);
+        using CancellationTokenSource streamAsyncCancellation = new();
+        streamAsyncCancellation.Cancel();
+        using MemoryStream asyncStreamDestination = new();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await streamAsync.ConvertToPngAsync(asyncStreamDestination, streamAsyncCancellation.Token));
+        Assert.Null(streamAsync.RetainedSceneGeometries);
     }
 
     [Fact]

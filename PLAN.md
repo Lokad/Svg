@@ -551,7 +551,7 @@ concurrency and caller-owned output lifetimes unchanged.
 disposing it, so a retained completed operation no longer keeps geometry on the heap;
 the once-only state machine already excludes racing an in-flight async conversion.
 Five regressions pin cleared references across dispose-before-use, all six outputs,
-five failure paths (destination limit, sync/async cancellation with the async token pinned, sync/async stream failure),
+cancellation across all six output forms with the async token pinned plus destination-limit and sync/async stream failure,
 repeated disposal and attempted reuse, plus no-inline weak-reference
 heap probes for both end states (the detach-off variants fail as expected). The full
 suite (720 + 6 + 83) and all 21 probe scenarios pass.
