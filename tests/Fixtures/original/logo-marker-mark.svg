@@ -1,0 +1,10 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <marker id="dot" refX="4" refY="4" markerWidth="8" markerHeight="8" orient="auto">
+      <rect width="8" height="8" fill="#ff0000"/>
+    </marker>
+    <line id="shaft" x1="0" y1="0" x2="48" y2="0" stroke="#000000" stroke-width="2"/>
+  </defs>
+  <use href="#shaft" x="8" y="28" marker-end="url(#dot)"/>
+</svg>
