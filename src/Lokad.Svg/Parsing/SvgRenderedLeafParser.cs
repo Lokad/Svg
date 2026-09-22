@@ -10,6 +10,7 @@ internal static class SvgRenderedLeafParser
     internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!isEligible || reader.NamespaceURI != "http://www.w3.org/2000/svg") return false;
+        if (state.DefinitionsDepth >= 0) return false;
         switch (reader.LocalName)
         {
             case "rect":

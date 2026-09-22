@@ -107,6 +107,43 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Rejects_group_wrapped_definition_content_instead_of_painting_it()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><defs><g><rect width='5' height='5' fill='red'/></g></defs></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Empty(root.Geometries);
+        Assert.True(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Rejects_group_wrapped_definition_paths_instead_of_painting_them()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><defs><path d='M0,0 H5 V5 H0 Z' fill='red'/></defs></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Empty(root.Geometries);
+        Assert.True(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Rejects_group_wrapped_definitions_at_conversion()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><defs><g><rect width='5' height='5' fill='red'/></g></defs></g></svg>"u8.ToArray();
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Leaves_direct_definition_content_inert()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect width='5' height='5' fill='red'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Empty(root.Geometries);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
     public void Rejects_link_nested_definitions()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><a><defs><rect id='tile' width='2' height='2' fill='red'/></defs></a><use href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
