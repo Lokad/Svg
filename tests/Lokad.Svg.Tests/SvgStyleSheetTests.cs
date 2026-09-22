@@ -39,6 +39,71 @@ public sealed class SvgStyleSheetTests
     }
 
     [Fact]
+    public void Important_stylesheet_declarations_beat_higher_specificity_normal_declarations()
+    {
+        SvgStyleCascade cascade = new();
+        cascade.Apply(new InlineStyle(null, "red", null, null, null, null, null, null), 100);
+        cascade.Apply(new InlineStyle(null, "blue", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, 1);
+
+        InlineStyle style = cascade.ToInlineStyle();
+
+        Assert.Equal("blue", style.Fill);
+        Assert.Equal(InlineImportantProperties.Fill, style.Important);
+    }
+
+    [Fact]
+    public void Later_important_stylesheet_declarations_win_source_order_ties()
+    {
+        SvgStyleCascade cascade = new();
+        cascade.Apply(new InlineStyle(null, "red", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, 1);
+        cascade.Apply(new InlineStyle(null, "blue", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, 1);
+
+        Assert.Equal("blue", cascade.ToInlineStyle().Fill);
+    }
+
+    [Fact]
+    public void Normal_stylesheet_declarations_do_not_override_earlier_important_ones()
+    {
+        SvgStyleCascade cascade = new();
+        cascade.Apply(new InlineStyle(null, "red", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, 1);
+        cascade.Apply(new InlineStyle(null, "blue", null, null, null, null, null, null), 101);
+
+        Assert.Equal("red", cascade.ToInlineStyle().Fill);
+    }
+
+    [Theory]
+    [InlineData("fill: red !important", "red", true)]
+    [InlineData("fill: red!important", "red", true)]
+    [InlineData("fill: red !IMPORTANT", "red", true)]
+    [InlineData("fill: red ! important", "red", true)]
+    [InlineData("fill: red", "red", false)]
+    public void Parses_important_suffix_variants(string declaration, string expectedValue, bool expectedImportant)
+    {
+        InlineStyle style = SvgInlineStyleParser.Parse(declaration, new ParserWorkCounter(100), CancellationToken.None);
+
+        Assert.Equal(expectedValue, style.Fill);
+        Assert.Equal(expectedImportant, (style.Important & InlineImportantProperties.Fill) != 0);
+    }
+
+    [Fact]
+    public void Important_beats_normal_within_one_declaration_block_regardless_of_order()
+    {
+        InlineStyle importantFirst = SvgInlineStyleParser.Parse("fill: red !important; fill: blue", new ParserWorkCounter(100), CancellationToken.None);
+        InlineStyle importantLast = SvgInlineStyleParser.Parse("fill: red; fill: blue !important", new ParserWorkCounter(100), CancellationToken.None);
+
+        Assert.Equal("red", importantFirst.Fill);
+        Assert.Equal("blue", importantLast.Fill);
+    }
+
+    [Fact]
+    public void Rejects_empty_important_declarations()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgInlineStyleParser.Parse("fill: !important", new ParserWorkCounter(100), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Checks_stylesheet_read_work_before_allocating_text_storage()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<style>x</style>"));

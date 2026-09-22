@@ -137,7 +137,6 @@ public sealed class SvgFontRequestDiscoveryTests
 
     [Theory]
     [InlineData("font-family:", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("font-family: Example !important", SvgErrorCode.UnsupportedFeature)]
     [InlineData("font-family:: Example", SvgErrorCode.MalformedInput)]
     public void Rejects_the_same_invalid_inline_font_declarations_as_rendering(string declaration, SvgErrorCode expectedErrorCode)
     {

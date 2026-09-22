@@ -182,6 +182,38 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Important_stylesheet_fill_beats_higher_specificity_normal_fill()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: blue !important; } #r { fill: red; }</style><rect id='r' width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgColor(0, 0, 255, 255), root.Rectangles[0].Color);
+    }
+
+    [Fact]
+    public void Important_stylesheet_fill_beats_normal_inline_fill()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#r { fill: blue !important; }</style><rect id='r' width='1' height='1' style='fill: red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgColor(0, 0, 255, 255), root.Rectangles[0].Color);
+    }
+
+    [Fact]
+    public void Important_inline_fill_beats_important_stylesheet_fill()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#r { fill: blue !important; }</style><rect id='r' width='1' height='1' style='fill: red !important'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+    }
+
+    [Fact]
+    public void Important_inline_fill_beats_later_normal_inline_fill()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' style='fill: red !important; fill: blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+    }
+
+    [Fact]
     public void Resolves_a_forward_rectangle_definition_through_use_in_document_order()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#tile' x='2'/><defs><rect id='tile' width='1' height='1' fill='red'/></defs><rect x='3' width='1' height='1' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

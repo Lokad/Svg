@@ -39,7 +39,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     {
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), WorkCounter, CancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, StyleSheet);
-        return new SvgResolvedDirectTextElement(new SvgResolvedPaintableElement(style, ResolveTransform(reader), ResolvePresentation(style, false)), inline.TextFont.Overlay(StyleSheet.TextFont), inline.WhiteSpace ?? StyleSheet.WhiteSpace, inline.LetterSpacing ?? StyleSheet.LetterSpacing);
+        return new SvgResolvedDirectTextElement(new SvgResolvedPaintableElement(style, ResolveTransform(reader), ResolvePresentation(style, false)), SvgInlineStyleParser.MergeFont(inline.TextFont, inline.Important, StyleSheet.TextFont, StyleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inline.WhiteSpace, inline.Important, InlineImportantProperties.WhiteSpace, StyleSheet.WhiteSpace, StyleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inline.LetterSpacing, inline.Important, InlineImportantProperties.LetterSpacing, StyleSheet.LetterSpacing, StyleSheet.Important));
     }
 }
 

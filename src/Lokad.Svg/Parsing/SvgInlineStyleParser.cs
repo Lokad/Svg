@@ -5,11 +5,36 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
 {
     internal SvgTextInlineFontProperties TextFont { get; init; }
 
+    /// <summary>Gets the per-property !important markers carried by the specified declarations.</summary>
+    internal InlineImportantProperties Important { get; init; }
+
     /// <summary>Gets the specified CSS whitespace declaration when direct text admits it.</summary>
     internal string? WhiteSpace { get; init; }
 
     /// <summary>Gets the specified scalar CSS letter-spacing declaration when direct text admits it.</summary>
     internal string? LetterSpacing { get; init; }
+}
+
+
+/// <summary>Identifies the specified-style declarations carrying !important priority.</summary>
+[Flags]
+internal enum InlineImportantProperties
+{
+    None = 0,
+    Color = 1 << 0,
+    Fill = 1 << 1,
+    FillOpacity = 1 << 2,
+    Stroke = 1 << 3,
+    Display = 1 << 4,
+    Visibility = 1 << 5,
+    Opacity = 1 << 6,
+    FillRule = 1 << 7,
+    Family = 1 << 8,
+    Weight = 1 << 9,
+    FontStyle = 1 << 10,
+    FontSize = 1 << 11,
+    WhiteSpace = 1 << 12,
+    LetterSpacing = 1 << 13,
 }
 
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
@@ -43,6 +68,7 @@ internal static class SvgInlineStyleParser
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
         string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null;
+        InlineImportantProperties important = InlineImportantProperties.None;
         SvgInlineDeclarationReader declarations = new(value, workCounter, cancellationToken);
         while (declarations.TryRead(out ReadOnlySpan<char> declaration))
         {
@@ -51,27 +77,63 @@ internal static class SvgInlineStyleParser
             ReadOnlySpan<char> property = declaration[..separator].Trim();
             ReadOnlySpan<char> propertyValue = declaration[(separator + 1)..].Trim();
             if (property.Length > SvgSyntaxLimits.MaximumValueTokenCharacters || propertyValue.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Inline style property names and values exceed the configured syntax limit.");
-            if (propertyValue.Length == 0 || propertyValue.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty and !important inline style declarations are not implemented.");
-            if (property.Equals("color", StringComparison.OrdinalIgnoreCase)) color = Copy(propertyValue, strings);
-            else if (property.Equals("fill", StringComparison.OrdinalIgnoreCase)) fill = Copy(propertyValue, strings);
-            else if (property.Equals("fill-opacity", StringComparison.OrdinalIgnoreCase)) fillOpacity = Copy(propertyValue, strings);
-            else if (property.Equals("stroke", StringComparison.OrdinalIgnoreCase)) stroke = Copy(propertyValue, strings);
-            else if (property.Equals("display", StringComparison.OrdinalIgnoreCase)) display = Copy(propertyValue, strings);
-            else if (property.Equals("visibility", StringComparison.OrdinalIgnoreCase)) visibility = Copy(propertyValue, strings);
-            else if (property.Equals("opacity", StringComparison.OrdinalIgnoreCase)) opacity = Copy(propertyValue, strings);
-            else if (property.Equals("fill-rule", StringComparison.OrdinalIgnoreCase)) fillRule = Copy(propertyValue, strings);
-            else if (allowsDirectTextFontProperties && property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) family = Copy(propertyValue, strings);
-            else if (allowsDirectTextFontProperties && property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) weight = Copy(propertyValue, strings);
-            else if (allowsDirectTextFontProperties && property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) fontStyle = Copy(propertyValue, strings);
-            else if (allowsDirectTextFontProperties && property.Equals("font-size", StringComparison.OrdinalIgnoreCase)) size = Copy(propertyValue, strings);
-            else if (allowsDirectTextFontProperties && property.Equals("white-space", StringComparison.OrdinalIgnoreCase)) whiteSpace = Copy(propertyValue, strings);
-            else if (allowsDirectTextFontProperties && property.Equals("letter-spacing", StringComparison.OrdinalIgnoreCase)) letterSpacing = Copy(propertyValue, strings);
+            if (propertyValue.Length == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty inline style declarations are not implemented.");
+            if (property.Equals("color", StringComparison.OrdinalIgnoreCase)) Set(ref color, InlineImportantProperties.Color, propertyValue, strings, ref important);
+            else if (property.Equals("fill", StringComparison.OrdinalIgnoreCase)) Set(ref fill, InlineImportantProperties.Fill, propertyValue, strings, ref important);
+            else if (property.Equals("fill-opacity", StringComparison.OrdinalIgnoreCase)) Set(ref fillOpacity, InlineImportantProperties.FillOpacity, propertyValue, strings, ref important);
+            else if (property.Equals("stroke", StringComparison.OrdinalIgnoreCase)) Set(ref stroke, InlineImportantProperties.Stroke, propertyValue, strings, ref important);
+            else if (property.Equals("display", StringComparison.OrdinalIgnoreCase)) Set(ref display, InlineImportantProperties.Display, propertyValue, strings, ref important);
+            else if (property.Equals("visibility", StringComparison.OrdinalIgnoreCase)) Set(ref visibility, InlineImportantProperties.Visibility, propertyValue, strings, ref important);
+            else if (property.Equals("opacity", StringComparison.OrdinalIgnoreCase)) Set(ref opacity, InlineImportantProperties.Opacity, propertyValue, strings, ref important);
+            else if (property.Equals("fill-rule", StringComparison.OrdinalIgnoreCase)) Set(ref fillRule, InlineImportantProperties.FillRule, propertyValue, strings, ref important);
+            else if (allowsDirectTextFontProperties && property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) Set(ref family, InlineImportantProperties.Family, propertyValue, strings, ref important);
+            else if (allowsDirectTextFontProperties && property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) Set(ref weight, InlineImportantProperties.Weight, propertyValue, strings, ref important);
+            else if (allowsDirectTextFontProperties && property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) Set(ref fontStyle, InlineImportantProperties.FontStyle, propertyValue, strings, ref important);
+            else if (allowsDirectTextFontProperties && property.Equals("font-size", StringComparison.OrdinalIgnoreCase)) Set(ref size, InlineImportantProperties.FontSize, propertyValue, strings, ref important);
+            else if (allowsDirectTextFontProperties && property.Equals("white-space", StringComparison.OrdinalIgnoreCase)) Set(ref whiteSpace, InlineImportantProperties.WhiteSpace, propertyValue, strings, ref important);
+            else if (allowsDirectTextFontProperties && property.Equals("letter-spacing", StringComparison.OrdinalIgnoreCase)) Set(ref letterSpacing, InlineImportantProperties.LetterSpacing, propertyValue, strings, ref important);
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing };
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, Important = important };
+
+        static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important)
+        {
+            bool isImportant = TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
+            if (stripped.IsEmpty) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty inline style declarations are not implemented.");
+            if (stripped.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
+            if (!isImportant && (important & flag) != 0) return;
+            slot = strings is null ? stripped.ToString() : strings.Copy(stripped);
+            if (isImportant) important |= flag;
+            else important &= ~flag;
+        }
+
+        static bool TryStripImportant(ReadOnlySpan<char> value, out ReadOnlySpan<char> stripped)
+        {
+            stripped = value;
+            ReadOnlySpan<char> trimmed = value.Trim();
+            if (trimmed.Length <= 9 || !trimmed[^9..].Equals("important".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
+            ReadOnlySpan<char> before = trimmed[..^9].TrimEnd();
+            if (before.IsEmpty || before[^1] != '!') return false;
+            stripped = before[..^1].TrimEnd();
+            return true;
+        }
     }
 
-    private static string Copy(ReadOnlySpan<char> value, BudgetedParserStringStore? strings) => strings is null ? value.ToString() : strings.Copy(value);
+
+    /// <summary>Merges one specified-style value with !important priority before fallback order.</summary>
+    internal static string? MergeWithImportance(string? upper, InlineImportantProperties upperImportant, InlineImportantProperties flag, string? lower, InlineImportantProperties lowerImportant)
+    {
+        if ((upperImportant & flag) != 0 && upper is not null) return upper;
+        if ((lowerImportant & flag) != 0 && lower is not null) return lower;
+        return upper ?? lower;
+    }
+
+    /// <summary>Merges one inline font declaration block with !important priority.</summary>
+    internal static SvgTextInlineFontProperties MergeFont(SvgTextInlineFontProperties upper, InlineImportantProperties upperImportant, SvgTextInlineFontProperties lower, InlineImportantProperties lowerImportant)
+        => new(MergeWithImportance(upper.Family, upperImportant, InlineImportantProperties.Family, lower.Family, lowerImportant),
+            MergeWithImportance(upper.Weight, upperImportant, InlineImportantProperties.Weight, lower.Weight, lowerImportant),
+            MergeWithImportance(upper.Style, upperImportant, InlineImportantProperties.FontStyle, lower.Style, lowerImportant),
+            MergeWithImportance(upper.Size, upperImportant, InlineImportantProperties.FontSize, lower.Size, lowerImportant));
 
     /// <summary>Streams nonempty semicolon-delimited declarations while charging each 4 KiB scan checkpoint once.</summary>
     internal ref struct SvgInlineDeclarationReader

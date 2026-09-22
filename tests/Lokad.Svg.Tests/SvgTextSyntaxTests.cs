@@ -97,7 +97,6 @@ public sealed class SvgTextSyntaxTests
 
     [Theory]
     [InlineData("font-family:", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("font-family: Example !important", SvgErrorCode.UnsupportedFeature)]
     [InlineData("font-family:: Example", SvgErrorCode.MalformedInput)]
     public void Rejects_inline_font_declarations_outside_the_paint_style_subset(string declaration, SvgErrorCode expectedErrorCode)
     {

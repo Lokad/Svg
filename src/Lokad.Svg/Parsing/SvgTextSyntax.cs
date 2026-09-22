@@ -318,6 +318,7 @@ internal static class SvgTextSyntax
         if (HasUnsupportedProperties(styleSheet)) return false;
         string? xmlSpace = null;
         string? whiteSpace = null;
+        InlineImportantProperties inlineImportant = InlineImportantProperties.None;
         string? inlineLetterSpacing = null;
         string? presentationLetterSpacing = null;
         string? dx = null;
@@ -342,6 +343,7 @@ internal static class SvgTextSyntax
                 InlineStyle inline = SvgInlineStyleParser.Parse(reader.Value, workCounter, cancellationToken, true);
                 if ((inline.WhiteSpace is null && inline.LetterSpacing is null) || HasUnsupportedProperties(inline)) { reader.MoveToElement(); style = inherited; return false; }
                 whiteSpace = inline.WhiteSpace;
+                inlineImportant = inline.Important;
                 inlineLetterSpacing = inline.LetterSpacing;
                 continue;
             }
@@ -370,8 +372,8 @@ internal static class SvgTextSyntax
         }
         reader.MoveToElement();
         SvgTextWhitespaceMode mode = xmlSpace is null ? inherited.WhitespaceMode : ParseXmlWhitespaceMode(xmlSpace);
-        if ((whiteSpace ?? styleSheet.WhiteSpace) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
-        string? letterSpacing = inlineLetterSpacing ?? styleSheet.LetterSpacing ?? presentationLetterSpacing;
+        if (SvgInlineStyleParser.MergeWithImportance(whiteSpace, inlineImportant, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
+        string? letterSpacing = SvgInlineStyleParser.MergeWithImportance(inlineLetterSpacing, inlineImportant, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important) ?? presentationLetterSpacing;
         SvgTextPositionOffset? positionOffset = dx is null && dy is null ? null : new SvgTextPositionOffset(dx is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dx), dy is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dy));
         style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing), positionOffset);
         return true;
@@ -431,12 +433,7 @@ internal static class SvgTextFontSyntax
 }
 
 /// <summary>Represents the direct-text font declarations found in one inline style value.</summary>
-internal readonly record struct SvgTextInlineFontProperties(string? Family, string? Weight, string? Style, string? Size)
-{
-    /// <summary>Uses this declaration's explicitly present values before the lower-precedence declarations.</summary>
-    internal SvgTextInlineFontProperties Overlay(SvgTextInlineFontProperties lower)
-        => new(Family ?? lower.Family, Weight ?? lower.Weight, Style ?? lower.Style, Size ?? lower.Size);
-}
+internal readonly record struct SvgTextInlineFontProperties(string? Family, string? Weight, string? Style, string? Size);
 
 /// <summary>Represents the explicit single-font style and baseline origin of one initial text run.</summary>
 internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y, double Dx, double Dy, double LetterSpacing, SvgTextAnchor Anchor, string SourceElementId);

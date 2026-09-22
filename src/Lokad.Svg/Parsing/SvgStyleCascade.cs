@@ -1,8 +1,10 @@
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Accumulates specified stylesheet declarations by per-property specificity and source order.</summary>
+/// <summary>Accumulates specified stylesheet declarations by per-property !important priority, specificity and source order.</summary>
 internal struct SvgStyleCascade
 {
+    private const int ImportantBias = 1_000_000;
+
     private string? _color;
     private string? _fill;
     private string? _fillOpacity;
@@ -17,52 +19,72 @@ internal struct SvgStyleCascade
     private string? _fontSize;
     private string? _whiteSpace;
     private string? _letterSpacing;
-    private int _colorSpecificity;
-    private int _fillSpecificity;
-    private int _fillOpacitySpecificity;
-    private int _strokeSpecificity;
-    private int _displaySpecificity;
-    private int _visibilitySpecificity;
-    private int _opacitySpecificity;
-    private int _fillRuleSpecificity;
-    private int _familySpecificity;
-    private int _weightSpecificity;
-    private int _fontStyleSpecificity;
-    private int _fontSizeSpecificity;
-    private int _whiteSpaceSpecificity;
-    private int _letterSpacingSpecificity;
+    private int _colorRank;
+    private int _fillRank;
+    private int _fillOpacityRank;
+    private int _strokeRank;
+    private int _displayRank;
+    private int _visibilityRank;
+    private int _opacityRank;
+    private int _fillRuleRank;
+    private int _familyRank;
+    private int _weightRank;
+    private int _fontStyleRank;
+    private int _fontSizeRank;
+    private int _whiteSpaceRank;
+    private int _letterSpacingRank;
 
     public SvgStyleCascade()
     {
-        _colorSpecificity = _fillSpecificity = _fillOpacitySpecificity = _strokeSpecificity = -1;
-        _displaySpecificity = _visibilitySpecificity = _opacitySpecificity = _fillRuleSpecificity = -1;
-        _familySpecificity = _weightSpecificity = _fontStyleSpecificity = _fontSizeSpecificity = _whiteSpaceSpecificity = _letterSpacingSpecificity = -1;
+        _colorRank = _fillRank = _fillOpacityRank = _strokeRank = -1;
+        _displayRank = _visibilityRank = _opacityRank = _fillRuleRank = -1;
+        _familyRank = _weightRank = _fontStyleRank = _fontSizeRank = _whiteSpaceRank = _letterSpacingRank = -1;
     }
 
     internal void Apply(InlineStyle style, int specificity)
     {
-        Apply(ref _color, ref _colorSpecificity, style.Color, specificity);
-        Apply(ref _fill, ref _fillSpecificity, style.Fill, specificity);
-        Apply(ref _fillOpacity, ref _fillOpacitySpecificity, style.FillOpacity, specificity);
-        Apply(ref _stroke, ref _strokeSpecificity, style.Stroke, specificity);
-        Apply(ref _display, ref _displaySpecificity, style.Display, specificity);
-        Apply(ref _visibility, ref _visibilitySpecificity, style.Visibility, specificity);
-        Apply(ref _opacity, ref _opacitySpecificity, style.Opacity, specificity);
-        Apply(ref _fillRule, ref _fillRuleSpecificity, style.FillRule, specificity);
-        Apply(ref _family, ref _familySpecificity, style.TextFont.Family, specificity);
-        Apply(ref _weight, ref _weightSpecificity, style.TextFont.Weight, specificity);
-        Apply(ref _fontStyle, ref _fontStyleSpecificity, style.TextFont.Style, specificity);
-        Apply(ref _fontSize, ref _fontSizeSpecificity, style.TextFont.Size, specificity);
-        Apply(ref _whiteSpace, ref _whiteSpaceSpecificity, style.WhiteSpace, specificity);
-        Apply(ref _letterSpacing, ref _letterSpacingSpecificity, style.LetterSpacing, specificity);
+        Apply(ref _color, ref _colorRank, style.Color, (style.Important & InlineImportantProperties.Color) != 0, specificity);
+        Apply(ref _fill, ref _fillRank, style.Fill, (style.Important & InlineImportantProperties.Fill) != 0, specificity);
+        Apply(ref _fillOpacity, ref _fillOpacityRank, style.FillOpacity, (style.Important & InlineImportantProperties.FillOpacity) != 0, specificity);
+        Apply(ref _stroke, ref _strokeRank, style.Stroke, (style.Important & InlineImportantProperties.Stroke) != 0, specificity);
+        Apply(ref _display, ref _displayRank, style.Display, (style.Important & InlineImportantProperties.Display) != 0, specificity);
+        Apply(ref _visibility, ref _visibilityRank, style.Visibility, (style.Important & InlineImportantProperties.Visibility) != 0, specificity);
+        Apply(ref _opacity, ref _opacityRank, style.Opacity, (style.Important & InlineImportantProperties.Opacity) != 0, specificity);
+        Apply(ref _fillRule, ref _fillRuleRank, style.FillRule, (style.Important & InlineImportantProperties.FillRule) != 0, specificity);
+        Apply(ref _family, ref _familyRank, style.TextFont.Family, (style.Important & InlineImportantProperties.Family) != 0, specificity);
+        Apply(ref _weight, ref _weightRank, style.TextFont.Weight, (style.Important & InlineImportantProperties.Weight) != 0, specificity);
+        Apply(ref _fontStyle, ref _fontStyleRank, style.TextFont.Style, (style.Important & InlineImportantProperties.FontStyle) != 0, specificity);
+        Apply(ref _fontSize, ref _fontSizeRank, style.TextFont.Size, (style.Important & InlineImportantProperties.FontSize) != 0, specificity);
+        Apply(ref _whiteSpace, ref _whiteSpaceRank, style.WhiteSpace, (style.Important & InlineImportantProperties.WhiteSpace) != 0, specificity);
+        Apply(ref _letterSpacing, ref _letterSpacingRank, style.LetterSpacing, (style.Important & InlineImportantProperties.LetterSpacing) != 0, specificity);
     }
 
-    internal InlineStyle ToInlineStyle() => new(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing };
-
-    private static void Apply(ref string? value, ref int currentSpecificity, string? candidate, int specificity)
+    internal InlineStyle ToInlineStyle()
     {
-        if (candidate is null || specificity < currentSpecificity) return;
+        InlineImportantProperties important = InlineImportantProperties.None;
+        if (_colorRank >= ImportantBias) important |= InlineImportantProperties.Color;
+        if (_fillRank >= ImportantBias) important |= InlineImportantProperties.Fill;
+        if (_fillOpacityRank >= ImportantBias) important |= InlineImportantProperties.FillOpacity;
+        if (_strokeRank >= ImportantBias) important |= InlineImportantProperties.Stroke;
+        if (_displayRank >= ImportantBias) important |= InlineImportantProperties.Display;
+        if (_visibilityRank >= ImportantBias) important |= InlineImportantProperties.Visibility;
+        if (_opacityRank >= ImportantBias) important |= InlineImportantProperties.Opacity;
+        if (_fillRuleRank >= ImportantBias) important |= InlineImportantProperties.FillRule;
+        if (_familyRank >= ImportantBias) important |= InlineImportantProperties.Family;
+        if (_weightRank >= ImportantBias) important |= InlineImportantProperties.Weight;
+        if (_fontStyleRank >= ImportantBias) important |= InlineImportantProperties.FontStyle;
+        if (_fontSizeRank >= ImportantBias) important |= InlineImportantProperties.FontSize;
+        if (_whiteSpaceRank >= ImportantBias) important |= InlineImportantProperties.WhiteSpace;
+        if (_letterSpacingRank >= ImportantBias) important |= InlineImportantProperties.LetterSpacing;
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Important = important };
+    }
+
+    private static void Apply(ref string? value, ref int currentRank, string? candidate, bool candidateImportant, int specificity)
+    {
+        if (candidate is null) return;
+        int rank = specificity + (candidateImportant ? ImportantBias : 0);
+        if (rank < currentRank) return;
         value = candidate;
-        currentSpecificity = specificity;
+        currentRank = rank;
     }
 }

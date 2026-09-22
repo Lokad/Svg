@@ -34,6 +34,28 @@ public sealed class SvgContainerInheritanceTests
     }
 
     [Fact]
+    public void Important_stylesheet_font_beats_normal_inline_font()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<g/>"));
+        Assert.True(reader.Read());
+
+        InlineStyle inline = SvgInlineStyleParser.Parse("font-family: Inline", new ParserWorkCounter(100), CancellationToken.None, true);
+        InlineStyle styleSheet = SvgInlineStyleParser.Parse("font-family: Important !important", new ParserWorkCounter(100), CancellationToken.None, true);
+        SvgComputedStyle computedStyle = SvgComputedStyle.Resolve(reader, inline, styleSheet);
+        SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(
+            reader,
+            inline,
+            computedStyle,
+            styleSheet,
+            new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity),
+            SvgInheritedTextStyle.Default,
+            false,
+            new Dictionary<string, SvgColor>());
+
+        Assert.Equal("Important", resolved.TextStyle.Family);
+    }
+
+    [Fact]
     public void Rejects_nested_group_opacity()
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<g opacity='0.5'/>"));
