@@ -267,6 +267,9 @@ public static class SvgConverter
                 case SvgGeometryKind.PatternFill:
                     RasterizePatternFill(geometry.Pattern, destination);
                     return;
+                case SvgGeometryKind.GradientFill:
+                    RasterizeGradientFill(geometry.Gradient, destination);
+                    return;
                 default:
                     throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains invalid geometry.");
             }
@@ -366,6 +369,68 @@ public static class SvgConverter
         }
 
         static int PositiveModulo(int value, int modulus) => ((value % modulus) + modulus) % modulus;
+
+        static byte InterpolateChannel(byte start, byte end, double position, double dither)
+        {
+            double value = start + (end - start) * position + dither;
+            if (value <= 0) return 0;
+            if (value >= 255) return 255;
+            return (byte)Math.Floor(value + 1e-9);
+        }
+
+
+
+        void RasterizeGradientFill(SvgGradientGeometry gradient, byte[] destination)
+        {
+            if (!gradient.Fill.HasFill && gradient.Stroke is null) return;
+            double fillTop = MapRectangleEdge(gradient.Fill.Y, verticalScale, verticalOffset);
+            double fillBottom = MapRectangleEdge(gradient.Fill.Y + gradient.Fill.Height, verticalScale, verticalOffset);
+            double fillLeft = MapRectangleEdge(gradient.Fill.X, horizontalScale, horizontalOffset);
+            double fillRight = MapRectangleEdge(gradient.Fill.X + gradient.Fill.Width, horizontalScale, horizontalOffset);
+            bool hasFractionalEdge = fillTop != Math.Truncate(fillTop) || fillBottom != Math.Truncate(fillBottom) || fillLeft != Math.Truncate(fillLeft) || fillRight != Math.Truncate(fillRight);
+            int startY = ClampFloor(fillTop, outputHeight);
+            int endY = ClampCeiling(fillBottom, outputHeight);
+            int startX = ClampFloor(fillLeft, outputWidth);
+            int endX = ClampCeiling(fillRight, outputWidth);
+            long coverage = (long)(endY - startY) * (endX - startX);
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient fill raster work exceeds the configured limit.");
+            workUnits += coverage;
+            double baseX = gradient.Box.X + gradient.Gradient.X1 * gradient.Box.Width;
+            double baseY = gradient.Box.Y + gradient.Gradient.Y1 * gradient.Box.Height;
+            double directionX = (gradient.Gradient.X2 - gradient.Gradient.X1) * gradient.Box.Width;
+            double directionY = (gradient.Gradient.Y2 - gradient.Gradient.Y1) * gradient.Box.Height;
+            double denominator = directionX * directionX + directionY * directionY;
+            if (gradient.Fill.HasFill && denominator != 0)
+            for (int y = startY; y < endY; y++)
+            {
+            cancellationToken.ThrowIfCancellationRequested();
+            double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
+            for (int x = startX; x < endX; x++)
+            {
+                double verticalCoverage = Math.Clamp(Math.Min(fillBottom, y + 1) - Math.Max(fillTop, y), 0, 1);
+                double horizontalCoverage = Math.Clamp(Math.Min(fillRight, x + 1) - Math.Max(fillLeft, x), 0, 1);
+                double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
+                double position = ((deviceX - baseX) * directionX + (deviceY - baseY) * directionY) / denominator;
+                if (position < 0) position = 0;
+                if (position > 1) position = 1;
+                double dither = GradientDither[x & 7, y & 7] / 64d;
+                SvgColor tileColor = new(InterpolateChannel(gradient.Gradient.Start.Red, gradient.Gradient.End.Red, position, dither), InterpolateChannel(gradient.Gradient.Start.Green, gradient.Gradient.End.Green, position, dither), InterpolateChannel(gradient.Gradient.Start.Blue, gradient.Gradient.End.Blue, position, dither), gradient.Opacity);
+                SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
+                int offset = (y * outputWidth + x) * 4;
+                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+            }
+            }
+            if (gradient.Stroke is SvgStroke stroke) RasterizeGradientStroke(gradient, stroke, destination);
+        }
+
+        void RasterizeGradientStroke(SvgGradientGeometry gradient, SvgStroke stroke, byte[] destination)
+        {
+            double halfWidth = stroke.Width / 2d;
+            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y - halfWidth, gradient.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
+            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y + gradient.Fill.Height - halfWidth, gradient.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
+            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y + halfWidth, stroke.Width, gradient.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
+            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X + gradient.Fill.Width - halfWidth, gradient.Fill.Y + halfWidth, stroke.Width, gradient.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
+        }
         void RasterizeGlyphContours(SvgGlyphGeometry glyph, byte[] destination)
         {
             if (glyph.Contours.Length == 0) return;
@@ -519,6 +584,18 @@ public static class SvgConverter
             };
         }
     }
+
+        private static readonly int[,] GradientDither =
+        {
+            { 0, 32, 8, 40, 2, 34, 10, 42 },
+            { 48, 16, 56, 24, 50, 18, 58, 26 },
+            { 12, 44, 4, 36, 14, 46, 6, 38 },
+            { 60, 28, 52, 20, 62, 30, 54, 22 },
+            { 3, 35, 11, 43, 1, 33, 9, 41 },
+            { 51, 19, 59, 27, 49, 17, 57, 25 },
+            { 15, 47, 7, 39, 13, 45, 5, 37 },
+            { 63, 31, 55, 23, 61, 29, 53, 21 },
+        };
 
     private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {

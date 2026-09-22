@@ -124,6 +124,34 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
+        if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "linearGradient")
+        {
+            SvgElementAttributePolicy.ValidateLinearGradient(reader, workCounter, cancellationToken);
+            state.GradientId = reader.GetAttribute("id");
+            (double x1, double y1, double x2, double y2) = SvgGradientSyntax.ParseLinearVector(reader);
+            state.Gradient = new SvgLinearGradient(default, default, x1, y1, x2, y2, false);
+            if (!reader.IsEmptyElement) state.GradientDepth = reader.Depth;
+            else if (state.GradientId is not null) RegisterGradient(state, workCounter, cancellationToken);
+            state.GradientStops.Clear();
+            state.SawStyleableNode = true;
+            return true;
+        }
+        if (state.GradientDepth >= 0 && reader.Depth == state.GradientDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
+        {
+            if (reader.LocalName == "stop")
+            {
+                if (state.GradientStops.Count >= 2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop linear gradients are implemented.");
+                SvgElementAttributePolicy.ValidateGradientStop(reader, workCounter, cancellationToken);
+                double offset = SvgGradientSyntax.ParseStopOffset(reader.GetAttribute("offset"));
+                SvgColor stopColor = SvgGradientSyntax.ParseStopColor(reader, namedColors, workCounter, cancellationToken);
+                state.GradientStops.Add(new SvgGradientStop(offset, stopColor));
+                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                state.SawStyleableNode = true;
+                return true;
+            }
+            state.HasUnsupportedContent = true;
+            return true;
+        }
         if (state.DefinitionsDepth < 0 && directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
@@ -144,6 +172,16 @@ internal static class SvgDefinitionParser
             return true;
         }
         return false;
+    }
+
+    internal static void RegisterGradient(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.Consume(cancellationToken);
+        if (state.GradientStops.Count != 0 && (state.GradientStops.Count != 2 || state.GradientStops[0].Offset != 0 || state.GradientStops[1].Offset != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only empty or two-stop zero-to-one linear gradients are implemented.");
+        SvgLinearGradient vector = state.Gradient ?? throw new InvalidOperationException("Gradient registration requires gradient dimensions.");
+        SvgLinearGradient gradient = state.GradientStops.Count == 0 ? vector with { IsEmpty = true } : vector with { Start = state.GradientStops[0].Color, End = state.GradientStops[1].Color };
+        string retainedId = state.Strings.Copy(state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier."));
+        if (!state.Gradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
     }
 
     internal static void RegisterPattern(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

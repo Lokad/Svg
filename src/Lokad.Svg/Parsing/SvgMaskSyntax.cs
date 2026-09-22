@@ -91,6 +91,7 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.AxisAlignedLine => geometry.AxisAlignedLine.ToStrokeBand(),
             SvgGeometryKind.OrthogonalBand => geometry.Rectangle,
             SvgGeometryKind.PatternFill => geometry.Pattern.Fill,
+            SvgGeometryKind.GradientFill => geometry.Gradient.Fill,
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")
         };
     }
@@ -107,6 +108,18 @@ internal static class SvgMaskSyntax
         return SvgGeometry.FromPatternFill(stamped.ClipTo(region));
     }
 
+    private static SvgGeometry ApplyGradientMask(SvgGradientGeometry gradient, byte value, SvgClipBox region)
+    {
+        SvgGradientGeometry stamped = gradient.Stamped(value);
+        if (stamped.Stroke is not null)
+        {
+            double halfWidth = stamped.Stroke.Value.Width / 2d;
+            SvgRectangle fill = stamped.Fill;
+            if (!region.Contains(fill.X - halfWidth, fill.Y - halfWidth, fill.X + fill.Width + halfWidth, fill.Y + fill.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked gradient fills crossing a mask region boundary are not implemented.");
+        }
+        return SvgGeometry.FromGradientFill(stamped.ClipTo(region));
+    }
+
     internal static SvgGeometry ApplyMask(SvgGeometry geometry, byte value, SvgClipBox region)
     {
         return geometry.Kind switch
@@ -115,6 +128,7 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.AxisAlignedLine => StampLine(region.ClipLine(geometry.AxisAlignedLine), value),
             SvgGeometryKind.OrthogonalBand => SvgGeometry.FromOrthogonalBand(StampRectangle(region.ClipRectangle(geometry.Rectangle), value)),
             SvgGeometryKind.PatternFill => ApplyPatternMask(geometry.Pattern, value, region),
+            SvgGeometryKind.GradientFill => ApplyGradientMask(geometry.Gradient, value, region),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")
         };
     }

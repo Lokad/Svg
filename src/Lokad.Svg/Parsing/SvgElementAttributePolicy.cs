@@ -40,6 +40,10 @@ internal static class SvgElementAttributePolicy
 
     internal static void ValidatePattern(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Pattern, "Pattern", workCounter, cancellationToken);
 
+    internal static void ValidateLinearGradient(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.LinearGradient, "Linear gradient", workCounter, cancellationToken);
+
+    internal static void ValidateGradientStop(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.GradientStop, "Gradient stop", workCounter, cancellationToken);
+
     internal static void ValidateImage(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Image, "Image", workCounter, cancellationToken);
 
     private static void Validate(XmlReader reader, SvgElementKind kind, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -75,6 +79,8 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.ClipPath => reader.LocalName == "id",
             SvgElementKind.Mask => reader.LocalName is "id" or "mask-type",
             SvgElementKind.Pattern => reader.LocalName is "id" or "x" or "y" or "width" or "height" or "patternUnits" or "patternContentUnits",
+            SvgElementKind.LinearGradient => reader.LocalName is "id" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod",
+            SvgElementKind.GradientStop => reader.LocalName is "offset" or "stop-color" or "stop-opacity",
             SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask",
             SvgElementKind.NestedViewport => reader.LocalName is "x" or "y" or "width" or "height",
             _ => false
@@ -84,7 +90,7 @@ internal static class SvgElementAttributePolicy
         return allowed;
     }
 
-    private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "clip-path" or "mask" or "mask-type" or "patternUnits" or "patternContentUnits" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "space";
+    private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "opacity" or "display" or "visibility" or "clip-path" or "mask" or "mask-type" or "patternUnits" or "patternContentUnits" or "x1" or "y1" or "x2" or "y2" or "offset" or "stop-color" or "stop-opacity" or "gradientUnits" or "spreadMethod" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "space";
 
-    private enum SvgElementKind { Root, Group, Rectangle, Line, Use, Path, PointList, Text, TextSpan, Symbol, NestedViewport, ClipPath, Mask, Image, Pattern }
+    private enum SvgElementKind { Root, Group, Rectangle, Line, Use, Path, PointList, Text, TextSpan, Symbol, NestedViewport, ClipPath, Mask, Image, Pattern, LinearGradient, GradientStop }
 }

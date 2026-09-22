@@ -112,6 +112,14 @@ internal static class SvgDocumentTraversal
             if (reader.NodeType == XmlNodeType.EndElement)
             {
                 if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
+                if (reader.Depth == state.GradientDepth)
+                {
+                    if (state.GradientId is not null) SvgDefinitionParser.RegisterGradient(state, workCounter, cancellationToken);
+                    state.GradientDepth = -1;
+                    state.GradientId = null;
+                    state.Gradient = null;
+                    state.GradientStops.Clear();
+                }
                 if (reader.Depth == state.PatternDepth)
                 {
                     if (state.PatternId is not null) SvgDefinitionParser.RegisterPattern(state, workCounter, cancellationToken);

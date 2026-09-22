@@ -144,8 +144,9 @@ internal static class SvgFontRequestDiscovery
                     if (isSvgElement && !rootElement && reader.LocalName == "clipPath") sawStyleableNode = true;
                     if (isSvgElement && !rootElement && reader.LocalName == "mask") sawStyleableNode = true;
                     if (isSvgElement && !rootElement && reader.LocalName == "pattern") sawStyleableNode = true;
+                    if (isSvgElement && !rootElement && reader.LocalName is ("linearGradient" or "radialGradient")) sawStyleableNode = true;
                     if (inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName) && reader.GetAttribute("clip-path") is not null && !reader.IsEmptyElement) clipDepths.Add(reader.Depth);
-                    bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "clipPath" or "mask" or "image" or "pattern");
+                    bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "clipPath" or "mask" or "image" or "pattern" or "linearGradient" or "radialGradient" or "stop");
                     bool unsupportedContainer = (!rootElement && reader.LocalName is ("style" or "symbol")) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && reader.LocalName is ("defs" or "title" or "desc" or "metadata"));
                     bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "image");
                     bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyRenderedLeaf);

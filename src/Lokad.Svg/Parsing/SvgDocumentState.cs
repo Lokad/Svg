@@ -21,6 +21,8 @@ internal sealed class SvgDocumentState : IDisposable
         Clips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Masks = new BudgetedParserDictionary<string, byte>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Patterns = new BudgetedParserDictionary<string, SvgPatternTile>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
+        Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
+        GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }
 
@@ -43,6 +45,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserDictionary<string, byte> Masks { get; }
 
     internal BudgetedParserDictionary<string, SvgPatternTile> Patterns { get; }
+
+    internal BudgetedParserDictionary<string, SvgLinearGradient> Gradients { get; }
 
     internal BudgetedParserList<int> ClipDepths { get; }
 
@@ -76,6 +80,14 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal string? PatternId { get; set; }
 
+    internal string? GradientId { get; set; }
+
+    internal SvgLinearGradient? Gradient { get; set; }
+
+    internal BudgetedParserList<SvgGradientStop> GradientStops { get; }
+
+    internal int GradientDepth { get; set; } = -1;
+
     internal SvgPatternTile? PatternTile { get; set; }
 
     internal string? MaskId { get; set; }
@@ -99,6 +111,8 @@ internal sealed class SvgDocumentState : IDisposable
         Clips.Dispose();
         Masks.Dispose();
         Patterns.Dispose();
+        Gradients.Dispose();
+        GradientStops.Dispose();
         ClipDepths.Dispose();
         StyleRules.Dispose();
         Strings.Dispose();

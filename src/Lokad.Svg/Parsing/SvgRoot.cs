@@ -36,7 +36,7 @@ internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double 
     }
 }
 
-internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill }
+internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill, GradientFill }
 
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
 internal readonly struct SvgGeometry
@@ -46,6 +46,7 @@ internal readonly struct SvgGeometry
     private readonly SvgAxisAlignedLine _axisAlignedLine;
     private readonly SvgGlyphGeometry? _glyph;
     private readonly SvgPatternGeometry? _pattern;
+    private readonly SvgGradientGeometry? _gradient;
 
     private SvgGeometry(SvgGeometryKind kind, SvgRectangle rectangle)
     {
@@ -54,6 +55,7 @@ internal readonly struct SvgGeometry
         _axisAlignedLine = default;
         _glyph = null;
         _pattern = null;
+        _gradient = null;
     }
 
     private SvgGeometry(SvgAxisAlignedLine axisAlignedLine)
@@ -63,6 +65,7 @@ internal readonly struct SvgGeometry
         _axisAlignedLine = axisAlignedLine;
         _glyph = null;
         _pattern = null;
+        _gradient = null;
     }
 
     private SvgGeometry(SvgGlyphGeometry glyph)
@@ -73,6 +76,7 @@ internal readonly struct SvgGeometry
         _axisAlignedLine = default;
         _glyph = glyph;
         _pattern = null;
+        _gradient = null;
     }
 
     private SvgGeometry(SvgPatternGeometry pattern)
@@ -83,6 +87,17 @@ internal readonly struct SvgGeometry
         _axisAlignedLine = default;
         _glyph = null;
         _pattern = pattern;
+    }
+
+    private SvgGeometry(SvgGradientGeometry gradient)
+    {
+        ArgumentNullException.ThrowIfNull(gradient);
+        _kind = SvgGeometryKind.GradientFill;
+        _rectangle = default;
+        _axisAlignedLine = default;
+        _glyph = null;
+        _pattern = null;
+        _gradient = gradient;
     }
 
     internal SvgGeometryKind Kind => _kind;
@@ -112,6 +127,13 @@ internal readonly struct SvgGeometry
 
     internal static SvgGeometry FromPatternFill(SvgPatternGeometry pattern) => new(pattern);
 
+    internal static SvgGeometry FromGradientFill(SvgGradientGeometry gradient) => new(gradient);
+
+    internal SvgGradientGeometry Gradient
+        => _kind == SvgGeometryKind.GradientFill
+            ? _gradient ?? throw new InvalidOperationException("This SVG geometry does not contain gradient stops.")
+            : throw new InvalidOperationException("This SVG geometry does not contain gradient stops.");
+
     internal SvgPatternGeometry Pattern
         => _kind == SvgGeometryKind.PatternFill
             ? _pattern ?? throw new InvalidOperationException("This SVG geometry does not contain pattern tile content.")
@@ -121,6 +143,7 @@ internal readonly struct SvgGeometry
     {
         if (_kind == SvgGeometryKind.GlyphContours) _glyph?.Dispose();
         if (_kind == SvgGeometryKind.PatternFill) _pattern?.Dispose();
+        if (_kind == SvgGeometryKind.GradientFill) _gradient?.Dispose();
     }
 
     internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
@@ -250,6 +273,39 @@ internal sealed class SvgPatternGeometry : IDisposable
 
     internal SvgPatternGeometry Stamped(byte value)
         => new(Content, OriginX, OriginY, TileWidth, TileHeight, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width));
+
+    public void Dispose()
+    {
+    }
+}
+
+/// <summary>Owns retained linear-gradient stops with their bounding-box vector and fill region.</summary>
+internal sealed class SvgGradientGeometry : IDisposable
+{
+    internal SvgGradientGeometry(SvgLinearGradient Gradient, SvgRectangle Box, SvgRectangle Fill, byte Opacity, SvgStroke? Stroke)
+    {
+        this.Gradient = Gradient;
+        this.Box = Box;
+        this.Fill = Fill;
+        this.Opacity = Opacity;
+        this.Stroke = Stroke;
+    }
+
+    internal SvgLinearGradient Gradient { get; }
+
+    internal SvgRectangle Box { get; }
+
+    internal SvgRectangle Fill { get; }
+
+    internal byte Opacity { get; }
+
+    internal SvgStroke? Stroke { get; }
+
+    internal SvgGradientGeometry ClipTo(SvgClipBox box)
+        => new(Gradient, Box, box.ClipRectangle(Fill), Opacity, Stroke);
+
+    internal SvgGradientGeometry Stamped(byte value)
+        => new(Gradient, Box, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width));
 
     public void Dispose()
     {

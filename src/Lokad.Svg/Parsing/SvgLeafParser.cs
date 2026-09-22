@@ -10,7 +10,8 @@ internal static class SvgLeafParser
     {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         SvgComputedStyle patternStyle = context.ResolveStyle(reader);
-        if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill)) return SvgPatternSyntax.LowerPatternRect(reader, context, patternStyle, state, frame);
+        if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill)) return LowerPaintServerRect(reader, context, patternStyle, state, frame);
+        if (SvgGradientSyntax.IsGradientFill(patternStyle.Fill)) return SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, frame);
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
         SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, syntax.StrokeWidth, element.Transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
@@ -43,6 +44,13 @@ internal static class SvgLeafParser
 
     private static SvgColor StampOpacity(SvgColor color, byte opacity)
         => new(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, opacity));
+
+    private static SvgGeometry LowerPaintServerRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle patternStyle, SvgDocumentState state, SvgViewportFrame? frame)
+    {
+        string paintId = SvgGradientSyntax.ParsePaintId(patternStyle.Fill);
+        if (state.Patterns.TryGetValue(paintId, out _)) return SvgPatternSyntax.LowerPatternRect(reader, context, patternStyle, state, frame);
+        return SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, frame);
+    }
 
     internal static SvgParsedRectangle ParseRectangleWithStyle(XmlReader reader, SvgPaintableElementContext context)
     {
