@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-gradient-stroke-mark",
+  "referencePng": "original-logo-gradient-stroke-mark.png",
+  "referenceSha256": "f3f8bf539262bbf586891c3b8cab7810796bcbf0c66cd671b883a08dac2b2731",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "52cd995da9de43127aa2ce3587ef63fd678576c6ab71bae044a42bc1ad20b7e1",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-22"
+}
