@@ -248,6 +248,31 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Quantizes_attribute_opacity_percentages_identically()
+    {
+        for (int percent = 0; percent <= 100; percent++)
+        {
+            double value = percent / 100.0;
+            byte decimalForm = SvgColorParser.ParseOpacity(value.ToString("G17", System.Globalization.CultureInfo.InvariantCulture));
+            byte percentForm = SvgColorParser.ParseOpacity(percent.ToString(System.Globalization.CultureInfo.InvariantCulture) + "%");
+
+            Assert.True(decimalForm == percentForm, "Opacity " + percent + "% quantizes differently across decimal and attribute percentage spellings.");
+        }
+    }
+
+    [Fact]
+    public void Rejects_out_of_range_opacity_percentages()
+    {
+        SvgException above = Assert.Throws<SvgException>(() => SvgColorParser.ParseOpacity("101%"));
+        SvgException below = Assert.Throws<SvgException>(() => SvgColorParser.ParseOpacity("-1%"));
+        SvgException malformed = Assert.Throws<SvgException>(() => SvgColorParser.ParseOpacity("lots%"));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, above.ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, below.ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, malformed.ErrorCode);
+    }
+
+    [Fact]
     public void Applies_color_fill_and_element_alpha_in_documented_order()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='#ff000001' fill-opacity='0.5' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
