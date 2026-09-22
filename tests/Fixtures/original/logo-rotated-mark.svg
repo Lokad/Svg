@@ -1,0 +1,7 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <g transform="rotate(90 32 32)">
+    <rect x="28" y="8" width="8" height="48" fill="#ff0000"/>
+  </g>
+  <rect x="8" y="8" width="8" height="48" fill="#0000ff"/>
+</svg>
