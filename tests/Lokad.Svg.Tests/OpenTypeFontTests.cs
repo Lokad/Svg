@@ -1659,6 +1659,7 @@ public sealed class OpenTypeFontTests
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Missing' font-weight='bold' font-size='100' y='3'>A</text></svg>", "Missing", 1, 1, true, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Missing' font-style='italic' font-size='100' y='3'>A</text></svg>", "Missing", 1, 1, true, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Missing' font-size='100' y='3'>A</text><text font-family='Missing' font-weight='bold' font-size='100' y='4'>A</text></svg>", "Missing,Missing", 1, 1, true, false)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.l { opacity: 0.5; }</style><a class='l'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", "Example", 1, 1, true, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='0.5' y='3'>A</text></svg>", "Example", 1, 1, false, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='10000' y='3'>A</text></svg>", "Example", 1, 1, false, false)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><title>t</title></defs><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
