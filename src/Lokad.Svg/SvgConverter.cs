@@ -660,7 +660,7 @@ public static class SvgConverter
     {
         int sourceContribution = (source * sourceAlpha + outputAlpha / 2) / outputAlpha;
         int retainedContribution = (destination * destinationAlpha * inverseSourceAlpha + 255 * outputAlpha - 1) / (255 * outputAlpha);
-        return checked((byte)(sourceContribution + retainedContribution));
+        return (byte)Math.Min(sourceContribution + retainedContribution, 255);
     }
 
     /// <summary>Owns the pixel surface and its budget reservation until encoding or a failed caller releases it.</summary>
