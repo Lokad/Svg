@@ -1797,6 +1797,44 @@ public sealed class OpenTypeFontTests
         Assert.Equal(0, source.RequestCount);
     }
     [Fact]
+    public async Task Painted_text_pixels_carry_the_declared_fill_color()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' fill='red'>A</text></svg>");
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None);
+
+        SvgColor painted = DecodePixel(png, 1, 1);
+        SvgColor background = DecodePixel(png, 0, 0);
+
+        Assert.Equal(255, painted.Red);
+        Assert.Equal(0, painted.Green);
+        Assert.Equal(0, painted.Blue);
+        Assert.True(painted.Alpha > 0);
+        Assert.Equal(new SvgColor(0, 0, 0, 0), background);
+
+        SvgColor DecodePixel(ReadOnlyMemory<byte> image, int x, int y)
+        {
+            int width = BinaryPrimitives.ReadInt32BigEndian(image.Span.Slice(16, 4));
+            int height = BinaryPrimitives.ReadInt32BigEndian(image.Span.Slice(20, 4));
+            if ((uint)x >= (uint)width || (uint)y >= (uint)height) throw new ArgumentOutOfRangeException(nameof(x));
+            using var compressed = new MemoryStream();
+            for (int offset = 8; offset < image.Length;)
+            {
+                int length = BinaryPrimitives.ReadInt32BigEndian(image.Span.Slice(offset, 4));
+                if (image.Span.Slice(offset + 4, 4).SequenceEqual("IDAT"u8)) compressed.Write(image.Span.Slice(offset + 8, length));
+                offset += length + 12;
+            }
+            compressed.Position = 0;
+            using var zlib = new ZLibStream(compressed, CompressionMode.Decompress);
+            byte[] pixels = new byte[checked((width * 4 + 1) * height)];
+            zlib.ReadExactly(pixels);
+            int row = y * (width * 4 + 1);
+            if (pixels[row] != 0) throw new InvalidDataException("Test PNG decoder expects an unfiltered scanline.");
+            return new SvgColor(pixels[row + 1 + x * 4], pixels[row + 1 + x * 4 + 1], pixels[row + 1 + x * 4 + 2], pixels[row + 1 + x * 4 + 3]);
+        }
+    }
+    [Fact]
     public async Task Discovery_and_preparation_observe_cancellation_together()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>");
