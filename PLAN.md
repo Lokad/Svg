@@ -323,7 +323,8 @@ cancellation and repeated-origin tests. |
 | Paint/font declaration consumers still have separate dispatch; alpha arithmetic is repeated. | The inline scanner, inherited text resolver and per-property cascade are already shared. Cross-test remaining semantics before further extraction: decimal and percentage opacity now quantize identically across all 101 whole-percent values. |
 
 Completed simplifications: one parse/check/raster scope for six outputs, cached
-SFNT table ranges, and reuse of decoded simple-glyph structure. Do not list those
+SFNT table ranges, and reuse of decoded simple-glyph structure. Malformed inputs pin identical
+failure codes and untouched destinations across all six forms. Do not list those
 as entirely unimplemented work.
 
 ### R15 — Weak invariants to strengthen alongside repairs

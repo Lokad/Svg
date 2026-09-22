@@ -78,6 +78,18 @@ public sealed class OutputDimensionTests
         }
     }
 
+    [Fact]
+    public async Task Malformed_inputs_fail_identically_in_all_six_api_forms()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><rect>"u8.ToArray();
+
+        foreach (OutputForm form in Enum.GetValues<OutputForm>())
+        {
+            SvgException exception = await Assert.ThrowsAsync<SvgException>(() => Convert(svg, SvgRenderOptions.Default, form));
+            Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+        }
+    }
+
     private static async Task<ReadOnlyMemory<byte>> Convert(byte[] svg, SvgRenderOptions options, OutputForm form)
     {
         byte[] memoryDestination = new byte[1_024];
