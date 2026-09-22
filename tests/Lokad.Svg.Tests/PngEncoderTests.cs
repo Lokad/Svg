@@ -18,6 +18,17 @@ public sealed class PngEncoderTests
         Assert.Equal("IDAT", System.Text.Encoding.ASCII.GetString(png, 37, 4));
     }
 
+    [Theory]
+    [InlineData(0, 1, 4, typeof(ArgumentOutOfRangeException), "width")]
+    [InlineData(1, 0, 4, typeof(ArgumentOutOfRangeException), "height")]
+    [InlineData(1, 1, 3, typeof(ArgumentException), "rgba")]
+    public void Rejects_invalid_pixel_buffers(int width, int height, int byteCount, Type errorType, string parameterName)
+    {
+        Exception exception = Assert.Throws(errorType, () => PngEncoder.Encode(width, height, new byte[byteCount], CancellationToken.None));
+
+        Assert.Equal(parameterName, ((ArgumentException)exception).ParamName);
+    }
+
     [Fact]
     public void Cancellation_is_checked_before_scanline_encoding()
     {
