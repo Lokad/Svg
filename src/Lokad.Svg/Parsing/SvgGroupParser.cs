@@ -7,7 +7,8 @@ internal static class SvgGroupParser
 {
     internal static SvgParsedGroup Parse(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
+        if (reader.LocalName == "switch") SvgElementAttributePolicy.ValidateSwitch(reader, workCounter, cancellationToken);
+        else SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet);
@@ -15,7 +16,7 @@ internal static class SvgGroupParser
         byte? mask = SvgMaskSyntax.ResolveOptionalMask(reader, state);
         if (mask is not null && SvgMaskSyntax.HasCustomRegion(reader, state)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on masked groups are not implemented.");
         byte combined = mask is null ? resolved.Opacity : SvgReferenceResolver.MultiplyAlpha(resolved.Opacity, mask.Value);
-        SvgGroupKind kind = SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;
+        SvgGroupKind kind = reader.LocalName == "switch" ? SvgGroupKind.Switch : SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;
         return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255), combined);
     }
 }

@@ -14,6 +14,7 @@ internal sealed class SvgDocumentState : IDisposable
         Scene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
         Strings = new BudgetedParserStringStore(budget);
         Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        Switches = new BudgetedParserList<SwitchScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         ClipDepths = new BudgetedParserList<int>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Viewports = new BudgetedParserList<SvgViewportFrame>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         StyleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -33,6 +34,12 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserStringStore Strings { get; }
 
     internal BudgetedParserList<SvgGroupScope> Groups { get; }
+
+    /// <summary>Gets the open switch containers with their first-child consumption state.</summary>
+    internal BudgetedParserList<SwitchScope> Switches { get; }
+
+    /// <summary>Gets or sets the depth of the skipped switch subtree root, or -1 when nothing is skipped.</summary>
+    internal int SkipDepth { get; set; } = -1;
 
     internal BudgetedParserList<SvgViewportFrame> Viewports { get; }
 
@@ -128,6 +135,7 @@ internal sealed class SvgDocumentState : IDisposable
         ClipDepths.Dispose();
         StyleRules.Dispose();
         Strings.Dispose();
+        Switches.Dispose();
         Groups.Dispose();
         Viewports.Dispose();
         Scene.Dispose();
@@ -137,4 +145,4 @@ internal sealed class SvgDocumentState : IDisposable
 /// <summary>Represents one inherited group or link context while streaming the document.</summary>
 internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, bool IsolatesOpacity);
 
-internal enum SvgGroupKind { Group, Link }
+internal enum SvgGroupKind { Group, Link, Switch }

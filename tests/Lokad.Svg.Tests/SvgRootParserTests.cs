@@ -144,6 +144,55 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Renders_only_the_first_switch_child()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><switch><rect x='1' y='2' width='3' height='4' fill='red'/><rect x='5' y='6' width='7' height='8' fill='blue'/></switch></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Single(root.Rectangles);
+        Assert.Equal(new SvgRectangle(1, 2, 3, 4, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Switch_applies_group_transforms_to_its_first_child()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><switch transform='translate(1, 2)'><rect width='2' height='2' fill='red'/><rect width='2' height='2' fill='blue'/></switch></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Single(root.Rectangles);
+        Assert.Equal(new SvgRectangle(1, 2, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Empty_switch_renders_nothing()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><switch/><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Single(root.Rectangles);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Rejects_switch_children_with_conditional_attributes()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><switch><rect requiredFeatures='http://www.w3.org/TR/SVG11/feature#BasicStructure' width='1' height='1' fill='red'/></switch></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Renders_switch_content_byte_identical_to_direct_content()
+    {
+        byte[] direct = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+        byte[] switched = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><switch><rect x='1' y='1' width='2' height='2' fill='red'/></switch></svg>"u8.ToArray();
+
+        ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(direct, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> switchedPng = SvgConverter.ConvertToPng(switched, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(directPng.Span.SequenceEqual(switchedPng.Span));
+    }
+
+    [Fact]
     public void Rejects_link_nested_definitions()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><a><defs><rect id='tile' width='2' height='2' fill='red'/></defs></a><use href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

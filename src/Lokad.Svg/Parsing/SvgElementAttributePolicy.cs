@@ -9,6 +9,9 @@ internal static class SvgElementAttributePolicy
 
     internal static void ValidateGroup(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Group, "Group", workCounter, cancellationToken);
 
+    /// <summary>Validates the switch container against the shared group attribute subset.</summary>
+    internal static void ValidateSwitch(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Group, "Switch", workCounter, cancellationToken);
+
     internal static void ValidateRectangle(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Rectangle, "Rectangle", workCounter, cancellationToken);
 
     internal static void ValidateLine(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Line, "Line", workCounter, cancellationToken);

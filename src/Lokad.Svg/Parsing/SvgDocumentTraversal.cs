@@ -45,12 +45,27 @@ internal static class SvgDocumentTraversal
                 SvgStructuralAdmission.ValidateElementStructure(reader, limits);
                 if (state.NodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                 state.NodeCount++;
+                bool skipped = state.SkipDepth >= 0 && reader.Depth > state.SkipDepth;
+                if (!skipped && state.Switches.Count > 0 && reader.Depth == state.Switches[state.Switches.Count - 1].Depth + 1)
+                {
+                    SwitchScope top = state.Switches[state.Switches.Count - 1];
+                    if (top.FirstChildConsumed)
+                    {
+                        if (!reader.IsEmptyElement) state.SkipDepth = reader.Depth;
+                        skipped = true;
+                    }
+                    else state.Switches[state.Switches.Count - 1] = top with { FirstChildConsumed = true };
+                }
                 bool directChild = reader.Depth == rootDepth + 1;
                 bool nestedInGroup = state.Groups.Count > 0;
                 bool inViewport = state.Viewports.Count > 0;
                 bool inScope = directChild || nestedInGroup || inViewport;
                 bool textElement = reader.LocalName == "text";
-                if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, namedColors, workCounter, cancellationToken)) { }
+                if (skipped)
+                {
+                    // Skipped switch content never renders and never invalidates the operation.
+                }
+                else if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, namedColors, workCounter, cancellationToken)) { }
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
                 else if ((directChild || inViewport) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "svg")
                 {
@@ -108,6 +123,7 @@ internal static class SvgDocumentTraversal
                     if (!reader.IsEmptyElement)
                     {
                         state.Groups.Add(parsedGroup.Scope);
+                        if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
                         string? clipReference = reader.GetAttribute("clip-path");
                         if (clipReference is not null)
                         {
@@ -136,6 +152,8 @@ internal static class SvgDocumentTraversal
             }
             if (reader.NodeType == XmlNodeType.EndElement)
             {
+                if (reader.Depth == state.SkipDepth) state.SkipDepth = -1;
+                if (state.Switches.Count > 0 && state.Switches[state.Switches.Count - 1].Depth == reader.Depth) state.Switches.RemoveLast();
                 if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
                 if (reader.Depth == state.GradientDepth)
                 {

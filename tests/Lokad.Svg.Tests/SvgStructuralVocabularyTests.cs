@@ -7,6 +7,7 @@ public sealed class SvgStructuralVocabularyTests
     [Theory]
     [InlineData("g", true, true, false, false)]
     [InlineData("a", true, false, false, false)]
+    [InlineData("switch", true, false, false, false)]
     [InlineData("defs", false, false, true, true)]
     [InlineData("title", false, false, true, false)]
     [InlineData("desc", false, false, true, false)]

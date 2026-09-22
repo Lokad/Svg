@@ -3,8 +3,8 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Shares the admitted structural container names between font-request discovery and document lowering.</summary>
 internal static class SvgStructuralVocabulary
 {
-    /// <summary>Identifies the group and link containers that propagate text eligibility and group style scope.</summary>
-    internal static bool IsGroupOrLinkContainer(string localName) => localName is "g" or "a";
+    /// <summary>Identifies the group, link and switch containers that propagate text eligibility and group style scope.</summary>
+    internal static bool IsGroupOrLinkContainer(string localName) => localName is "g" or "a" or "switch";
 
     /// <summary>Identifies the group container that establishes group style scope.</summary>
     internal static bool IsGroupContainer(string localName) => localName == "g";
@@ -20,4 +20,8 @@ internal static class SvgStructuralVocabulary
 
     /// <summary>Identifies the definition container that admits local geometry references.</summary>
     internal static bool IsDefinitionsContainer(string localName) => localName == "defs";
+
 }
+
+/// <summary>Tracks one open switch container and whether its first element child was consumed.</summary>
+internal readonly record struct SwitchScope(int Depth, bool FirstChildConsumed);
