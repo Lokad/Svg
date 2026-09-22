@@ -78,34 +78,43 @@ internal static class SvgInlineStyleParser
             ReadOnlySpan<char> propertyValue = declaration[(separator + 1)..].Trim();
             if (property.Length > SvgSyntaxLimits.MaximumValueTokenCharacters || propertyValue.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Inline style property names and values exceed the configured syntax limit.");
             if (propertyValue.Length == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty inline style declarations are not implemented.");
-            if (property.Equals("color", StringComparison.OrdinalIgnoreCase)) Set(ref color, InlineImportantProperties.Color, propertyValue, strings, ref important);
-            else if (property.Equals("fill", StringComparison.OrdinalIgnoreCase)) Set(ref fill, InlineImportantProperties.Fill, propertyValue, strings, ref important);
-            else if (property.Equals("fill-opacity", StringComparison.OrdinalIgnoreCase)) Set(ref fillOpacity, InlineImportantProperties.FillOpacity, propertyValue, strings, ref important);
-            else if (property.Equals("stroke", StringComparison.OrdinalIgnoreCase)) Set(ref stroke, InlineImportantProperties.Stroke, propertyValue, strings, ref important);
-            else if (property.Equals("display", StringComparison.OrdinalIgnoreCase)) Set(ref display, InlineImportantProperties.Display, propertyValue, strings, ref important);
-            else if (property.Equals("visibility", StringComparison.OrdinalIgnoreCase)) Set(ref visibility, InlineImportantProperties.Visibility, propertyValue, strings, ref important);
-            else if (property.Equals("opacity", StringComparison.OrdinalIgnoreCase)) Set(ref opacity, InlineImportantProperties.Opacity, propertyValue, strings, ref important);
-            else if (property.Equals("fill-rule", StringComparison.OrdinalIgnoreCase)) Set(ref fillRule, InlineImportantProperties.FillRule, propertyValue, strings, ref important);
-            else if (allowsDirectTextFontProperties && property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) Set(ref family, InlineImportantProperties.Family, propertyValue, strings, ref important);
-            else if (allowsDirectTextFontProperties && property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) Set(ref weight, InlineImportantProperties.Weight, propertyValue, strings, ref important);
-            else if (allowsDirectTextFontProperties && property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) Set(ref fontStyle, InlineImportantProperties.FontStyle, propertyValue, strings, ref important);
-            else if (allowsDirectTextFontProperties && property.Equals("font-size", StringComparison.OrdinalIgnoreCase)) Set(ref size, InlineImportantProperties.FontSize, propertyValue, strings, ref important);
-            else if (allowsDirectTextFontProperties && property.Equals("white-space", StringComparison.OrdinalIgnoreCase)) Set(ref whiteSpace, InlineImportantProperties.WhiteSpace, propertyValue, strings, ref important);
-            else if (allowsDirectTextFontProperties && property.Equals("letter-spacing", StringComparison.OrdinalIgnoreCase)) Set(ref letterSpacing, InlineImportantProperties.LetterSpacing, propertyValue, strings, ref important);
+            if (property.Equals("color", StringComparison.OrdinalIgnoreCase)) Set(ref color, InlineImportantProperties.Color, property, propertyValue, strings, ref important, true);
+            else if (property.Equals("fill", StringComparison.OrdinalIgnoreCase)) Set(ref fill, InlineImportantProperties.Fill, property, propertyValue, strings, ref important, true);
+            else if (property.Equals("fill-opacity", StringComparison.OrdinalIgnoreCase)) Set(ref fillOpacity, InlineImportantProperties.FillOpacity, property, propertyValue, strings, ref important, true);
+            else if (property.Equals("stroke", StringComparison.OrdinalIgnoreCase)) Set(ref stroke, InlineImportantProperties.Stroke, property, propertyValue, strings, ref important, true);
+            else if (property.Equals("display", StringComparison.OrdinalIgnoreCase)) Set(ref display, InlineImportantProperties.Display, property, propertyValue, strings, ref important, true);
+            else if (property.Equals("visibility", StringComparison.OrdinalIgnoreCase)) Set(ref visibility, InlineImportantProperties.Visibility, property, propertyValue, strings, ref important, true);
+            else if (property.Equals("opacity", StringComparison.OrdinalIgnoreCase)) Set(ref opacity, InlineImportantProperties.Opacity, property, propertyValue, strings, ref important, true);
+            else if (property.Equals("fill-rule", StringComparison.OrdinalIgnoreCase)) Set(ref fillRule, InlineImportantProperties.FillRule, property, propertyValue, strings, ref important, true);
+            else if (allowsDirectTextFontProperties && property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) Set(ref family, InlineImportantProperties.Family, property, propertyValue, strings, ref important, false);
+            else if (allowsDirectTextFontProperties && property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) Set(ref weight, InlineImportantProperties.Weight, property, propertyValue, strings, ref important, false);
+            else if (allowsDirectTextFontProperties && property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) Set(ref fontStyle, InlineImportantProperties.FontStyle, property, propertyValue, strings, ref important, false);
+            else if (allowsDirectTextFontProperties && property.Equals("font-size", StringComparison.OrdinalIgnoreCase)) Set(ref size, InlineImportantProperties.FontSize, property, propertyValue, strings, ref important, false);
+            else if (allowsDirectTextFontProperties && property.Equals("white-space", StringComparison.OrdinalIgnoreCase)) Set(ref whiteSpace, InlineImportantProperties.WhiteSpace, property, propertyValue, strings, ref important, false);
+            else if (allowsDirectTextFontProperties && property.Equals("letter-spacing", StringComparison.OrdinalIgnoreCase)) Set(ref letterSpacing, InlineImportantProperties.LetterSpacing, property, propertyValue, strings, ref important, false);
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
         return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, Important = important };
 
-        static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important)
+        static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> property, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important, bool mapKeywords)
         {
             bool isImportant = TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
             if (stripped.IsEmpty) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty inline style declarations are not implemented.");
             if (stripped.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
+            if (mapKeywords && TryMapPaintKeyword(property, stripped, out string? mapped))
+            {
+                if (!isImportant && (important & flag) != 0) return;
+                slot = mapped;
+                if (isImportant) important |= flag;
+                else important &= ~flag;
+                return;
+            }
             if (!isImportant && (important & flag) != 0) return;
             slot = strings is null ? stripped.ToString() : strings.Copy(stripped);
             if (isImportant) important |= flag;
             else important &= ~flag;
         }
+
 
         static bool TryStripImportant(ReadOnlySpan<char> value, out ReadOnlySpan<char> stripped)
         {
@@ -134,6 +143,50 @@ internal static class SvgInlineStyleParser
             MergeWithImportance(upper.Weight, upperImportant, InlineImportantProperties.Weight, lower.Weight, lowerImportant),
             MergeWithImportance(upper.Style, upperImportant, InlineImportantProperties.FontStyle, lower.Style, lowerImportant),
             MergeWithImportance(upper.Size, upperImportant, InlineImportantProperties.FontSize, lower.Size, lowerImportant));
+
+    /// <summary>Maps an inherit, initial or unset paint keyword to its specified value.</summary>
+    /// <returns>True when the value is a keyword, with the mapped value (null for inherited absence). Throws for unplumbed inherit.</returns>
+    internal static bool TryMapPaintKeyword(ReadOnlySpan<char> attribute, ReadOnlySpan<char> value, out string? mapped)
+    {
+        ReadOnlySpan<char> token = value.Trim();
+        if (token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase))
+        {
+            if (attribute.Equals("color".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("fill".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("fill-opacity".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("visibility".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                mapped = null;
+                return true;
+            }
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inherited paint values are not implemented for this property.");
+        }
+        if (token.Equals("initial".AsSpan(), StringComparison.OrdinalIgnoreCase))
+        {
+            mapped = InitialPaintValue(attribute);
+            return true;
+        }
+        if (token.Equals("unset".AsSpan(), StringComparison.OrdinalIgnoreCase))
+        {
+            if (attribute.Equals("color".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("fill".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("fill-opacity".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("visibility".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                mapped = null;
+                return true;
+            }
+            mapped = InitialPaintValue(attribute);
+            return true;
+        }
+        mapped = null;
+        return false;
+    }
+
+    private static string InitialPaintValue(ReadOnlySpan<char> attribute)
+    {
+        if (attribute.Equals("color".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("fill".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "black";
+        if (attribute.Equals("fill-opacity".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("opacity".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "1";
+        if (attribute.Equals("stroke".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "none";
+        if (attribute.Equals("display".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "inline";
+        if (attribute.Equals("visibility".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "visible";
+        if (attribute.Equals("fill-rule".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "nonzero";
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Initial paint values are not implemented for this property.");
+    }
 
     /// <summary>Streams nonempty semicolon-delimited declarations while charging each 4 KiB scan checkpoint once.</summary>
     internal ref struct SvgInlineDeclarationReader

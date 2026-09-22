@@ -95,6 +95,51 @@ public sealed class SvgStyleSheetTests
         Assert.Equal("blue", importantLast.Fill);
     }
 
+    [Theory]
+    [InlineData("fill", "inherit", null)]
+    [InlineData("fill", "initial", "black")]
+    [InlineData("fill", "unset", null)]
+    [InlineData("color", "INHERIT", null)]
+    [InlineData("fill-opacity", "initial", "1")]
+    [InlineData("fill-opacity", "unset", null)]
+    [InlineData("stroke", "initial", "none")]
+    [InlineData("stroke", "unset", "none")]
+    [InlineData("display", "initial", "inline")]
+    [InlineData("visibility", "unset", null)]
+    [InlineData("opacity", "initial", "1")]
+    [InlineData("fill-rule", "unset", "nonzero")]
+    public void Maps_paint_keywords_to_specified_values(string property, string value, string? expected)
+    {
+        InlineStyle style = SvgInlineStyleParser.Parse(property + ": " + value, new ParserWorkCounter(100), CancellationToken.None);
+
+        Assert.Equal(expected, GetPaintValue(style, property));
+
+        static string? GetPaintValue(InlineStyle style, string property) => property switch
+        {
+            "color" => style.Color,
+            "fill" => style.Fill,
+            "fill-opacity" => style.FillOpacity,
+            "stroke" => style.Stroke,
+            "display" => style.Display,
+            "visibility" => style.Visibility,
+            "opacity" => style.Opacity,
+            "fill-rule" => style.FillRule,
+            _ => throw new InvalidOperationException("Unexpected paint property.")
+        };
+    }
+
+    [Theory]
+    [InlineData("stroke: inherit")]
+    [InlineData("display: inherit")]
+    [InlineData("opacity: inherit")]
+    [InlineData("fill-rule: inherit")]
+    public void Rejects_unplumbed_inherit_declarations(string declaration)
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgInlineStyleParser.Parse(declaration, new ParserWorkCounter(100), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
     [Fact]
     public void Rejects_empty_important_declarations()
     {

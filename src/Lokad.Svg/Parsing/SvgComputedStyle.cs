@@ -15,6 +15,8 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
     {
         if (inlineImportant && inlineValue is not null) return inlineValue;
         if (styleSheetImportant && styleSheetValue is not null) return styleSheetValue;
-        return inlineValue ?? styleSheetValue ?? reader.GetAttribute(attribute);
+        string? resolved = inlineValue ?? styleSheetValue ?? reader.GetAttribute(attribute);
+        if (resolved is not null && SvgInlineStyleParser.TryMapPaintKeyword(attribute.AsSpan(), resolved.AsSpan(), out string? mapped)) return mapped;
+        return resolved;
     }
 }
