@@ -4,13 +4,16 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one admitted two-stop linear gradient with its bounding-box vector.</summary>
-internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace);
+internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread);
+
+/// <summary>Identifies the admitted stop-range extension rule.</summary>
+internal enum SvgGradientSpread { Pad, Repeat, Reflect }
 
 /// <summary>Retains one parsed gradient stop with its offset while streaming.</summary>
 internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);
 
 /// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
-internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, AxisTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, string? Href);
+internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, AxisTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href);
 
 /// <summary>Parses the bounded linear-gradient definition syntax and lowers gradient-filled rectangles.</summary>
 internal static class SvgGradientSyntax
@@ -22,7 +25,7 @@ internal static class SvgGradientSyntax
         bool isUserSpace = units is not null && units.Equals("userSpaceOnUse", StringComparison.Ordinal);
         if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal) && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only objectBoundingBox and userSpaceOnUse gradient units are implemented.");
         string? spread = reader.GetAttribute("spreadMethod");
-        if (spread is not null && !spread.Equals("pad", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad gradient spread is implemented.");
+        SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
         string? rawX1 = reader.GetAttribute("x1");
         string? rawY1 = reader.GetAttribute("y1");
         string? rawX2 = reader.GetAttribute("x2");
@@ -36,7 +39,15 @@ internal static class SvgGradientSyntax
         string? transformValue = reader.GetAttribute("gradientTransform");
         AxisTransform gradientTransform = SvgGeometrySyntax.ParseTransform(transformValue);
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
-        return new SvgGradientTemplate(x1, y1, x2, y2, isUserSpace, gradientTransform, transformValue is not null, vectorCount, units is not null, href);
+        return new SvgGradientTemplate(x1, y1, x2, y2, isUserSpace, gradientTransform, transformValue is not null, vectorCount, units is not null, spreadMethod, spread is not null, href);
+    }
+
+    internal static SvgGradientSpread ParseSpreadMethod(string? value)
+    {
+        if (value is null || value.Equals("pad", StringComparison.OrdinalIgnoreCase)) return SvgGradientSpread.Pad;
+        if (value.Equals("repeat", StringComparison.OrdinalIgnoreCase)) return SvgGradientSpread.Repeat;
+        if (value.Equals("reflect", StringComparison.OrdinalIgnoreCase)) return SvgGradientSpread.Reflect;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad, repeat and reflect gradient spread methods are implemented.");
     }
 
     private static bool ContainsPercentage(string? value) => value is not null && value.AsSpan().Trim().EndsWith("%");

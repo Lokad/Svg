@@ -192,8 +192,8 @@ internal static class SvgDefinitionParser
             if (template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient unit overrides without vector overrides are not implemented.");
         }
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty) = ResolveGradientStops(state, template);
-        (double x1, double y1, double x2, double y2, bool isUserSpace) = ResolveGradientVector(template, state);
-        SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace);
+        (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread) = ResolveGradientVector(template, state);
+        SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread);
         string retainedId = state.Strings.Copy(state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier."));
         if (!state.Gradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
     }
@@ -215,13 +215,14 @@ internal static class SvgDefinitionParser
         return (first.Color, second.Color, clampedFirst, clampedSecond, false);
     }
 
-    private static (double X1, double Y1, double X2, double Y2, bool IsUserSpace) ResolveGradientVector(SvgGradientTemplate template, SvgDocumentState state)
+    private static (double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientSpread Spread) ResolveGradientVector(SvgGradientTemplate template, SvgDocumentState state)
     {
         double x1 = template.X1;
         double y1 = template.Y1;
         double x2 = template.X2;
         double y2 = template.Y2;
         bool isUserSpace = template.IsUserSpace;
+        SvgGradientSpread spread = template.Spread;
         if (template.Href is not null && template.VectorCount == 0)
         {
             if (!state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgLinearGradient parent)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
@@ -230,6 +231,7 @@ internal static class SvgDefinitionParser
             x2 = parent.X2;
             y2 = parent.Y2;
             if (!template.HasUnits) isUserSpace = parent.IsUserSpace;
+            if (!template.HasSpread) spread = parent.Spread;
         }
         if (template.HasTransform)
         {
@@ -237,7 +239,7 @@ internal static class SvgDefinitionParser
             (x2, y2) = template.Transform.ApplyToUserPoint(x2, y2);
         }
         if (x1 == x2 && y1 == y2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate linear gradients are not implemented.");
-        return (x1, y1, x2, y2, isUserSpace);
+        return (x1, y1, x2, y2, isUserSpace, spread);
 
     }
 

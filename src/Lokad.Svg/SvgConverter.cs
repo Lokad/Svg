@@ -438,8 +438,17 @@ public static class SvgConverter
                     position = ((normalizedX - definition.X1) * directionX + (normalizedY - definition.Y1) * directionY) / denominator;
                 }
                 double local = (position - definition.Offset1) / offsetSpan;
-                if (local < 0) local = 0;
-                if (local > 1) local = 1;
+                if (definition.Spread == SvgGradientSpread.Repeat) local -= Math.Floor(local);
+                else if (definition.Spread == SvgGradientSpread.Reflect)
+                {
+                    double cycle = local - 2 * Math.Floor(local / 2);
+                    local = cycle > 1 ? 2 - cycle : cycle;
+                }
+                else
+                {
+                    if (local < 0) local = 0;
+                    if (local > 1) local = 1;
+                }
                 position = local;
                 double dither = GradientDither[x & 7, y & 7] / 64d;
                 SvgColor tileColor = new(InterpolateChannel(definition.Start.Red, definition.End.Red, position, dither), InterpolateChannel(definition.Start.Green, definition.End.Green, position, dither), InterpolateChannel(definition.Start.Blue, definition.End.Blue, position, dither), opacity);
