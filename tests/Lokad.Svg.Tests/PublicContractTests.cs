@@ -205,6 +205,9 @@ public sealed class PublicContractTests
         Assert.Equal(134_217_728, limits.MaximumEncodedPngBytes);
         Assert.Equal(128, limits.MaximumXmlDepth);
         Assert.Equal(256, limits.MaximumAttributesPerElement);
+        Assert.Equal(100_000, limits.MaximumNodes);
+        Assert.Equal(1_000_000, limits.MaximumPathCommands);
+        Assert.Equal(100_000_000, limits.MaximumWorkUnits);
     }
 
     [Fact]
