@@ -156,6 +156,31 @@ public sealed class PublicContractTests
     }
 
     [Fact]
+    public void Internal_signatures_do_not_use_optional_parameters()
+    {
+        List<string> violations = new();
+        foreach (Type type in typeof(SvgConverter).Assembly.GetTypes())
+        {
+            foreach (MethodBase method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly))
+            {
+                foreach (ParameterInfo parameter in method.GetParameters())
+                {
+                    if (parameter.HasDefaultValue) violations.Add(type.FullName + "." + method.Name + "(" + parameter.Name + ")");
+                }
+            }
+            foreach (ConstructorInfo constructor in type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+            {
+                foreach (ParameterInfo parameter in constructor.GetParameters())
+                {
+                    if (parameter.HasDefaultValue) violations.Add(type.FullName + ".ctor(" + parameter.Name + ")");
+                }
+            }
+        }
+
+        Assert.True(violations.Count == 0, String.Join("; ", violations));
+    }
+
+    [Fact]
     public void Prepared_document_conversion_methods_require_all_parameters()
     {
         MethodInfo[] methods = typeof(SvgPreparedDocument).GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(method => method.Name is nameof(SvgPreparedDocument.ConvertToPng) or nameof(SvgPreparedDocument.ConvertToPngAsync)).ToArray();

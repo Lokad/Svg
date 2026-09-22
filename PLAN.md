@@ -360,8 +360,8 @@ as entirely unimplemented work.
   optional source syntax belongs only before resolution; positioned glyphs should
   retain finite concrete coordinates.
 - Preserve the now-validated inherited-text reference type and required context
-  constructor state. Audit remaining internal optional parameters when touching
-  APIs; public reflection tests do not cover internal signatures.
+  constructor state. An assembly-wide reflection test now rejects optional parameters
+  on every method and constructor, closing the internal-signature audit. Preserve it when touching APIs.
 
 ### R17 / P0 — Font discovery control storage is budgeted and probed fresh-process (closed)
 
