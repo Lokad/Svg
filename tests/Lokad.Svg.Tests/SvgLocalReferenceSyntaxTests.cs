@@ -34,4 +34,26 @@ public sealed class SvgLocalReferenceSyntaxTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Parser]);
     }
+
+    [Fact]
+    public void Resolves_legacy_xlink_href_use_references()
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<use xmlns:xlink='http://www.w3.org/1999/xlink' xlink:href='#tile' x='2'/>"));
+        using BudgetedParserStringStore strings = new(new RenderBudget(1_000));
+        Assert.True(reader.Read());
+
+        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings);
+
+        Assert.Equal("tile", syntax.Id);
+        Assert.Equal(2, syntax.X);
+    }
+
+    [Fact]
+    public void Renders_legacy_xlink_href_use_references_identically()
+    {
+        byte[] hrefPng = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><defs><rect id='r' width='2' height='2' fill='red'/></defs><use href='#r'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] xlinkPng = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='4' height='4'><defs><rect id='r' width='2' height='2' fill='red'/></defs><use xlink:href='#r'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        Assert.Equal(hrefPng, xlinkPng);
+    }
 }
