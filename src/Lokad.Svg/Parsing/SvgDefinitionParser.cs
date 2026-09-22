@@ -74,6 +74,7 @@ internal static class SvgDefinitionParser
             state.MaskId = reader.GetAttribute("id");
             state.MaskIsAlpha = SvgMaskSyntax.ParseMaskType(reader.GetAttribute("mask-type"));
             state.MaskValue = null;
+            state.MaskCustomRegion = SvgMaskSyntax.ParseMaskRegion(reader);
             if (reader.IsEmptyElement)
             {
                 if (state.MaskId is not null) RegisterMask(state, workCounter, cancellationToken);
@@ -169,6 +170,7 @@ internal static class SvgDefinitionParser
             double? baseWidth = parentFrame?.ViewportWidth ?? root.Width;
             double? baseHeight = parentFrame?.ViewportHeight ?? root.Height;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
+            if (SvgMaskSyntax.HasCustomRegion(reader, state)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on use instances are not implemented.");
             SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, SvgClipPathSyntax.ResolveLeafClip(reader, state), SvgMaskSyntax.ResolveOptionalMask(reader, state), workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
@@ -250,6 +252,7 @@ internal static class SvgDefinitionParser
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask registration requires an identifier."));
         if (!state.Masks.TryAdd(retainedId, state.MaskValue ?? 0)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+        if (state.MaskCustomRegion is SvgClipBox region && !state.MaskRegions.TryAdd(retainedId, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
     }
 
     internal static void RegisterClipBox(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

@@ -5,6 +5,30 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses the bounded mask definition syntax and applies retained mask values to lowered geometry.</summary>
 internal static class SvgMaskSyntax
 {
+    /// <summary>Parses an explicit userSpaceOnUse mask region, returning null for the default region.</summary>
+    internal static SvgClipBox? ParseMaskRegion(XmlReader reader)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        string? units = reader.GetAttribute("maskUnits");
+        string? contentUnits = reader.GetAttribute("maskContentUnits");
+        if (contentUnits is not null && !contentUnits.Equals("userSpaceOnUse", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse mask content units are implemented.");
+        string? x = reader.GetAttribute("x");
+        string? y = reader.GetAttribute("y");
+        string? width = reader.GetAttribute("width");
+        string? height = reader.GetAttribute("height");
+        bool isUserSpace = units is not null && units.Equals("userSpaceOnUse", StringComparison.Ordinal);
+        bool isBoundingBox = units is null || units.Equals("objectBoundingBox", StringComparison.Ordinal);
+        if (!isUserSpace && !isBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse and objectBoundingBox mask units are implemented.");
+        if (x is null && y is null && width is null && height is null) return null;
+        if (!isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox mask regions are not implemented.");
+        if (x is null || y is null || width is null || height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Default mask regions with userSpaceOnUse units are not implemented.");
+        double regionX = SvgGeometrySyntax.ParseRectangleCoordinate(x);
+        double regionY = SvgGeometrySyntax.ParseRectangleCoordinate(y);
+        double regionWidth = SvgGeometrySyntax.ParseRectangleCoordinate(width);
+        double regionHeight = SvgGeometrySyntax.ParseRectangleCoordinate(height);
+        if (regionWidth < 0 || regionHeight < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Mask region dimensions cannot be negative.");
+        return new SvgClipBox(regionX, regionY, regionWidth, regionHeight);
+    }
     internal static bool ParseMaskType(string? value)
     {
         if (value is null || value.Equals("luminance", StringComparison.OrdinalIgnoreCase)) return false;
@@ -41,7 +65,7 @@ internal static class SvgMaskSyntax
         string? reference = reader.GetAttribute("mask");
         if (reference is null) return geometry;
         byte value = ResolveMaskValue(reference, state);
-        return ApplyMask(geometry, value, MaskRegion(BoundingBox(geometry)));
+        return ApplyMask(geometry, value, ResolveRegion(reader, state, BoundingBox(geometry)));
     }
 
     internal static void ApplyMaskToBands(XmlReader reader, SvgDocumentState state, SvgGeometry[] geometries)
@@ -64,10 +88,28 @@ internal static class SvgMaskSyntax
             right = Math.Max(right, box.X + box.Width);
             bottom = Math.Max(bottom, box.Y + box.Height);
         }
-        SvgClipBox region = MaskRegion(new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, false, null));
+        SvgClipBox region = ResolveRegion(reader, state, new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, false, null));
         for (int index = 0; index < geometries.Length; index++) geometries[index] = ApplyMask(geometries[index], value, region);
     }
 
+    /// <summary>Reports whether the referenced mask carries an explicit region.</summary>
+    internal static bool HasCustomRegion(XmlReader reader, SvgDocumentState state)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        ArgumentNullException.ThrowIfNull(state);
+        string? reference = reader.GetAttribute("mask");
+        return reference is not null && state.MaskRegions.TryGetValue(ParseMaskId(reference), out _);
+    }
+
+    /// <summary>Resolves the explicit mask region or falls back to the default bounding-box region.</summary>
+    internal static SvgClipBox ResolveRegion(XmlReader reader, SvgDocumentState state, SvgRectangle fallback)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        ArgumentNullException.ThrowIfNull(state);
+        string? reference = reader.GetAttribute("mask");
+        if (reference is not null && state.MaskRegions.TryGetValue(ParseMaskId(reference), out SvgClipBox custom)) return custom;
+        return MaskRegion(fallback);
+    }
     internal static byte? ResolveOptionalMask(XmlReader reader, SvgDocumentState state)
     {
         ArgumentNullException.ThrowIfNull(reader);
