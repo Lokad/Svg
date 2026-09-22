@@ -188,7 +188,7 @@ internal static class SvgDefinitionParser
         if (state.GradientStops.Count != 0 && state.GradientStops.Count != 2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only empty or two-stop linear gradients are implemented.");
         if (template.Href is not null)
         {
-            if (template.VectorCount is > 0 and < 4) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial gradient vector overrides with href inheritance are not implemented.");
+            if (template.VectorCount is > 0 and < 4 && template.HasUnits) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial gradient vector overrides with gradient unit overrides are not implemented.");
             if (template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient unit overrides without vector overrides are not implemented.");
         }
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty) = ResolveGradientStops(state, template);
@@ -223,13 +223,13 @@ internal static class SvgDefinitionParser
         double y2 = template.Y2;
         bool isUserSpace = template.IsUserSpace;
         SvgGradientSpread spread = template.Spread;
-        if (template.Href is not null && template.VectorCount == 0)
+        if (template.Href is not null && template.VectorCount < 4)
         {
             if (!state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgLinearGradient parent)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
-            x1 = parent.X1;
-            y1 = parent.Y1;
-            x2 = parent.X2;
-            y2 = parent.Y2;
+            x1 = template.HasX1 ? template.X1 : parent.X1;
+            y1 = template.HasY1 ? template.Y1 : parent.Y1;
+            x2 = template.HasX2 ? template.X2 : parent.X2;
+            y2 = template.HasY2 ? template.Y2 : parent.Y2;
             if (!template.HasUnits) isUserSpace = parent.IsUserSpace;
             if (!template.HasSpread) spread = parent.Spread;
         }
