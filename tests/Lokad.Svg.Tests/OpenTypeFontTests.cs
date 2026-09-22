@@ -2300,6 +2300,25 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Gpos_pair_adjustments_shift_rendered_pixels_relative_to_unadjusted_text()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='5'><text font-family='Example' font-size='100' y='3'>AA</text></svg>");
+        (SvgFontPackCatalog catalog1, CountingFontProvider provider1, CountingFontSource source1) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot1 = await SvgFontSnapshot.CreateAsync(input, catalog1, provider1, CancellationToken.None);
+        ReadOnlyMemory<byte> png1 = SvgConverter.ConvertToPng(input, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot1), CancellationToken.None);
+        (SvgFontPackCatalog catalog2, CountingFontProvider provider2, CountingFontSource source2) = CreateExamplePack(CreateTriangleGposFont());
+        using SvgFontSnapshot snapshot2 = await SvgFontSnapshot.CreateAsync(input, catalog2, provider2, CancellationToken.None);
+        ReadOnlyMemory<byte> png2 = SvgConverter.ConvertToPng(input, new SvgRenderOptions(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot2), CancellationToken.None);
+
+        Assert.False(png1.Span.SequenceEqual(png2.Span));
+        Assert.Equal(0, DecodeAlpha(png1, 31, 1));
+        Assert.True(DecodeAlpha(png1, 61, 1) > 0);
+        Assert.True(DecodeAlpha(png2, 31, 1) > 0);
+        Assert.Equal(0, DecodeAlpha(png2, 61, 1));
+    }
+
+
+    [Fact]
     public async Task Positions_direct_glyph_runs_for_admitted_text_anchors()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1024, 3, 2, 1))], CancellationToken.None);
