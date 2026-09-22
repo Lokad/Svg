@@ -8,9 +8,7 @@ internal static class SvgClipPathSyntax
     internal static string ParseClipId(string? value)
     {
         if (value is null) throw new SvgException(SvgErrorCode.MalformedInput, "A clip-path reference is required.");
-        if (value.Length < 7 || !value.StartsWith("url(#", StringComparison.Ordinal) || !value.EndsWith(")", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local clip-path references are implemented.");
-        string id = value.Substring(5, value.Length - 6);
-        if (id.Length == 0 || id.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local clip-path references are implemented.");
+        if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local clip-path references are implemented.");
         return id;
     }
 

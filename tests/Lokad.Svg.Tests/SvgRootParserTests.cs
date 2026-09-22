@@ -192,6 +192,22 @@ public sealed class SvgRootParserTests
         Assert.True(directPng.Span.SequenceEqual(switchedPng.Span));
     }
 
+    [Theory]
+    [InlineData("<defs><clipPath id='c'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><rect width='5' height='5' fill='red' clip-path='url(#c)'/>", "<defs><clipPath id='c'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><rect width='5' height='5' fill='red' clip-path='url(\"#c\")'/>")]
+    [InlineData("<defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ffffff'/></mask></defs><rect width='5' height='5' fill='red' mask='url(#m)'/>", "<defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ffffff'/></mask></defs><rect width='5' height='5' fill='red' mask='url(\"#m\")'/>")]
+    [InlineData("<defs><pattern id='p' width='2' height='2' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red'/></pattern></defs><rect width='5' height='5' fill='url(#p)'/>", "<defs><pattern id='p' width='2' height='2' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red'/></pattern></defs><rect width='5' height='5' fill='url(\"#p\")'/>")]
+    [InlineData("<defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='5' height='5' fill='url(#g)'/>", "<defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='5' height='5' fill='url(\"#g\")'/>")]
+    public void Quoted_local_references_render_byte_identical_to_unquoted_ones(string plainBody, string quotedBody)
+    {
+        byte[] plain = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'>" + plainBody + "</svg>");
+        byte[] quoted = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'>" + quotedBody + "</svg>");
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> quotedPng = SvgConverter.ConvertToPng(quoted, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(plainPng.Span.SequenceEqual(quotedPng.Span));
+    }
+
     [Fact]
     public void Rejects_link_nested_definitions()
     {

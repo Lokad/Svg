@@ -55,18 +55,14 @@ internal static class SvgGradientSyntax
     internal static string ParsePaintId(string? value)
     {
         if (value is null) throw new SvgException(SvgErrorCode.MalformedInput, "A paint server reference is required.");
-        if (value.Length < 7 || !value.StartsWith("url(#", StringComparison.Ordinal) || !value.EndsWith(")", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
-        string id = value.Substring(5, value.Length - 6);
-        if (id.Length == 0 || id.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
+        if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
         return id;
     }
 
     internal static string ParseGradientId(string? value)
     {
         if (value is null) throw new SvgException(SvgErrorCode.MalformedInput, "A gradient reference is required.");
-        if (value.Length < 7 || !value.StartsWith("url(#", StringComparison.Ordinal) || !value.EndsWith(")", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
-        string id = value.Substring(5, value.Length - 6);
-        if (id.Length == 0 || id.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
+        if (!SvgLocalUrl.TryParseId(value, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local gradient references are implemented.");
         return id;
     }
 
