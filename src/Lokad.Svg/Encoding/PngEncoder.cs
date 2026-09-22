@@ -704,9 +704,10 @@ internal static class PngEncoder
                 Segment tail = _segments[^1];
                 if (tail.Used < tail.Buffer.Length) return tail;
             }
-            // Later segments track the current write with a 4 KiB floor against write
-            // fragmentation; chunk boundaries always come from the cumulative slicer below.
-            int capacity = _segments.Count == 0 ? Math.Min(Math.Max(64, remaining), MaximumIdatPayloadBytes) : Math.Min(Math.Max(4096, remaining), MaximumIdatPayloadBytes);
+            // Later segments track the current write with the same 64-byte floor; chunk boundaries
+            // always come from the cumulative slicer below. This class has a single caller feeding
+            // DeflateStream chunks, so no adversarial write-fragmentation guard is needed.
+            int capacity = Math.Min(Math.Max(64, remaining), MaximumIdatPayloadBytes);
             RenderBudget.BudgetReservation reservation = _budget.Reserve(capacity, SvgMemoryCategory.Png);
             byte[] segment;
             try { segment = new byte[capacity]; }

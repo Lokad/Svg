@@ -144,7 +144,7 @@ cross-platform guarantees or proof of any single allocation site share.
 Same environment and ShortRun job, measuring the first R19 optimization. No
 resolved delta: confidence intervals overlap throughout and allocation traffic
 is byte-identical, so no speedup is claimed. The change is retained as
-strictly-less-work with identical semantics (full suite green).
+strictly-less-work with identical semantics (full suite green). After segmented PNG staging the same benchmark measures 301.78 μs / 92.26 KB: the +0.16 KB is segment bookkeeping, times within noise.
 
 | Method | Before | After |
 | --- | ---: | ---: |
@@ -169,14 +169,14 @@ strictly-less-work with identical semantics (full suite green).
 
 | Method | Mean | Allocated | Accounted peak |
 | --- | ---: | ---: | ---: |
-| `EncodeHighEntropyOwned` | 63.02 ms | 2,077.48 KB | 2,099,077 B |
-| `EncodeHighEntropyCallerMemory` | 61.38 ms | 1,052.41 KB | 1,051,463 B |
-| `EncodeHighEntropyStream` | 63.99 ms | 132.15 KB | 100,353 B |
-| `EncodeHighEntropyStreamAsync` | 64.46 ms | 132.51 KB | 100,417 B |
-| `EncodeLowEntropyOwned` | 1.25 ms | 15.16 KB | 12,451 B |
-| `EncodeLowEntropyCallerMemory` | 1.21 ms | 8.95 KB | 8,246 B |
+| `EncodeHighEntropyOwned` | 64.78 ms | 2,077.45 KB | 2,099,077 B |
+| `EncodeHighEntropyCallerMemory` | 59.99 ms | 1,052.32 KB | 1,051,463 B |
+| `EncodeHighEntropyStream` | 64.24 ms | 132.11 KB | 100,353 B |
+| `EncodeHighEntropyStreamAsync` | 61.67 ms | 132.39 KB | 100,417 B |
+| `EncodeLowEntropyOwned` | 1.24 ms | 15.16 KB | 12,451 B |
+| `EncodeLowEntropyCallerMemory` | 1.25 ms | 8.95 KB | 8,246 B |
 | `EncodeLowEntropyStream` | 1.29 ms | 18.88 KB | 14,337 B |
-| `EncodeLowEntropyStreamAsync` | 1.35 ms | 19.25 KB | 14,401 B |
+| `EncodeLowEntropyStreamAsync` | 1.36 ms | 19.25 KB | 14,401 B |
 
 ### Glyph decode, transform and copy phases (`SvgTextBenchmarks`)
 
