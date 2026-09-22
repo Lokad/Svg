@@ -6,13 +6,16 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Encoding;
 
 /// <summary>Decodes solid-color 8-bit PNG data URIs into a single color without retaining pixels.</summary>
+/// <summary>Retains one decoded solid-color image with its intrinsic dimensions.</summary>
+internal readonly record struct DecodedSolidImage(SvgColor Color, int Width, int Height);
+
 internal static class PngImageDecoder
 {
     private static readonly byte[] PngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
 
     private static uint[]? _crcTable;
 
-    internal static SvgColor DecodeSolidColor(ReadOnlyMemory<byte> png, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static DecodedSolidImage DecodeSolidColor(ReadOnlyMemory<byte> png, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(budget);
@@ -117,7 +120,7 @@ internal static class PngImageDecoder
             }
             if (zlib.ReadByte() != -1) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries trailing pixel bytes.");
         }
-        return ScanSolidColor(pixels, width, height, channels, transparent, palette, isPaletteType, (int)rowBytes, workCounter, cancellationToken);
+        return new DecodedSolidImage(ScanSolidColor(pixels, width, height, channels, transparent, palette, isPaletteType, (int)rowBytes, workCounter, cancellationToken), width, height);
     }
 
     private static SvgColor ScanSolidColor(byte[] pixels, int width, int height, int channels, byte[]? transparent, byte[]? palette, bool isPaletteType, int rowBytes, ParserWorkCounter workCounter, CancellationToken cancellationToken)

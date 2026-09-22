@@ -30,13 +30,14 @@ internal static class SvgLeafParser
         SvgResolvedPaintableElement element = context.ResolveShape(reader, false);
         double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
         double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
-        SvgColor color = DecodeImage(syntax.Href, element, limits, budget, context.WorkCounter, context.CancellationToken);
-        SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, width, height, color, element.Presentation.HasFill, null));
+        DecodedSolidImage image = DecodeImage(syntax.Href, element, limits, budget, context.WorkCounter, context.CancellationToken);
+        if (reader.GetAttribute("preserveAspectRatio") is null && image.Width * height != image.Height * width) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image placement with a mismatched aspect ratio is not implemented.");
+        SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, width, height, image.Color, element.Presentation.HasFill, null));
         if (frame is not null) rectangle = frame.Value.Clip.ClipRectangle(frame.Value.Shift(rectangle));
         return SvgGeometry.FromRectangle(rectangle);
     }
 
-    private static SvgColor DecodeImage(string href, SvgResolvedPaintableElement element, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static DecodedSolidImage DecodeImage(string href, SvgResolvedPaintableElement element, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         const string Prefix = "data:image/png;base64,";
         if (!href.StartsWith(Prefix, StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only base64 PNG data-URI embedded images are implemented.");
@@ -44,7 +45,8 @@ internal static class SvgLeafParser
         try { bytes = Convert.FromBase64String(href.Substring(Prefix.Length)); }
         catch (FormatException) { throw new SvgException(SvgErrorCode.MalformedInput, "Embedded image data is not valid base64."); }
         using RenderBudget.BudgetReservation reservation = budget.Reserve(bytes.Length, SvgMemoryCategory.Parser);
-        return StampOpacity(PngImageDecoder.DecodeSolidColor(bytes, limits, budget, workCounter, cancellationToken), element.Presentation.Opacity);
+        DecodedSolidImage decoded = PngImageDecoder.DecodeSolidColor(bytes, limits, budget, workCounter, cancellationToken);
+        return new DecodedSolidImage(StampOpacity(decoded.Color, element.Presentation.Opacity), decoded.Width, decoded.Height);
     }
 
     private static SvgColor StampOpacity(SvgColor color, byte opacity)

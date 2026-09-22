@@ -15,6 +15,13 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
         return new SvgImageSyntax(href, x, y, width, height);
     }
 
+    /// <summary>Validates the admitted image preserveAspectRatio shared by attributes and style declarations.</summary>
+    internal static void ValidatePreserveAspectRatio(ReadOnlySpan<char> value)
+    {
+        if (value.Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only none image preserveAspectRatio is implemented.");
+    }
+
     private static double? ParseDimension(string? value, double? baseValue)
     {
         if (value is null) return null;

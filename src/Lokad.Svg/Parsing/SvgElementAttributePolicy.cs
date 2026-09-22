@@ -61,6 +61,7 @@ internal static class SvgElementAttributePolicy
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "font-variant") SvgTextFontSyntax.ValidateFontVariant(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "color-interpolation") SvgGradientSyntax.ValidateColorInterpolation(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow") SvgNestedViewportSyntax.ValidateOverflow(reader.Value.AsSpan());
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "preserveAspectRatio" && kind == SvgElementKind.Image) SvgImageSyntax.ValidatePreserveAspectRatio(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "clip-rule") SvgClipPathSyntax.ValidateClipRule(reader.Value.AsSpan());
                 continue;
             }
@@ -94,7 +95,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.Pattern => reader.LocalName is "id" or "x" or "y" or "width" or "height" or "patternUnits" or "patternContentUnits",
             SvgElementKind.LinearGradient => reader.LocalName is "id" or "href" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod" or "gradientTransform",
             SvgElementKind.GradientStop => reader.LocalName is "offset" or "stop-color" or "stop-opacity",
-            SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "color-interpolation",
+            SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "preserveAspectRatio" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "color-interpolation",
             SvgElementKind.NestedViewport => reader.LocalName is "x" or "y" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "overflow",
             _ => false
         };

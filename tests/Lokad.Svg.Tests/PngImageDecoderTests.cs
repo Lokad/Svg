@@ -114,6 +114,6 @@ public sealed class PngImageDecoderTests
     private static SvgColor Decode(string base64)
     {
         byte[] png = Convert.FromBase64String(base64);
-        return PngImageDecoder.DecodeSolidColor(png, SvgRenderLimits.Default, new RenderBudget(100_000), new ParserWorkCounter(10_000), CancellationToken.None);
+        return PngImageDecoder.DecodeSolidColor(png, SvgRenderLimits.Default, new RenderBudget(100_000), new ParserWorkCounter(10_000), CancellationToken.None).Color;
     }
 }
