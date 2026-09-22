@@ -238,7 +238,6 @@ internal static class SvgDefinitionParser
             (x1, y1) = template.Transform.ApplyToUserPoint(x1, y1);
             (x2, y2) = template.Transform.ApplyToUserPoint(x2, y2);
         }
-        if (x1 == x2 && y1 == y2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate linear gradients are not implemented.");
         return (x1, y1, x2, y2, isUserSpace, spread);
 
     }
