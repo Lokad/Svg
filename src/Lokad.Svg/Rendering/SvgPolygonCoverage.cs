@@ -2,13 +2,14 @@ using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Computes exact geometric coverage of simple closed integer polygons over device pixels.</summary>
+/// <summary>Computes exact geometric coverage of simple closed polygons over device pixels.</summary>
 /// <remarks>
 /// <para>For one pixel square, returns the exact fractional intersection area (0 through 1) with the polygon,
 /// triangulated as a fan from its first vertex with signed accumulation. The absolute value is taken at the
 /// end, so clockwise and counter-clockwise orientations agree.</para>
 /// <para>Contours with fewer than three points enclose no area and return 0. Self-intersecting contours are
-/// outside this contract; contour validation rejects them before coverage runs.</para>
+/// outside this contract; contour validation rejects them before coverage runs. Integer vertices convert to
+/// device coordinates exactly.</para>
 /// <para>This is pure geometry. Coverage-to-alpha quantization, opacity products and compositing remain
 /// separate calibration concerns and must not be folded into these values.</para>
 /// <para>Callers charge one raster work unit per evaluated pixel; this kernel holds no budget itself and
@@ -19,35 +20,55 @@ internal static class SvgPolygonCoverage
     /// <summary>Maximum vertices after clipping one triangle against four pixel half-planes (3 + 4).</summary>
     private const int ClippedVertexCapacity = 8;
 
-    /// <summary>Returns the exact fractional area of the pixel square covered by the simple polygon.</summary>
+    /// <summary>Returns the exact fractional area of the pixel square covered by the simple integer polygon.</summary>
     internal static double GetExactCoverage(ReadOnlySpan<SvgPoint> contour, int pixelX, int pixelY, CancellationToken cancellationToken)
     {
         if (contour.Length < 3) return 0;
         double left = pixelX;
         double top = pixelY;
-        double right = left + 1;
-        double bottom = top + 1;
-        SvgPoint origin = contour[0];
         double signedArea = 0;
+        double originX = contour[0].X;
+        double originY = contour[0].Y;
         for (int index = 1; index + 1 < contour.Length; index++)
         {
             if ((index & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-            signedArea += ClipTriangleArea(origin, contour[index], contour[index + 1], left, top, right, bottom);
+            signedArea += ClipTriangleArea(originX, originY, contour[index].X, contour[index].Y, contour[index + 1].X, contour[index + 1].Y, left, top);
         }
         cancellationToken.ThrowIfCancellationRequested();
         return Math.Clamp(Math.Abs(signedArea), 0, 1);
     }
 
-    private static double ClipTriangleArea(SvgPoint first, SvgPoint second, SvgPoint third, double left, double top, double right, double bottom)
+    /// <summary>Returns the exact fractional area of the pixel square covered by the simple device-space polygon.</summary>
+    internal static double GetExactCoverage(ReadOnlySpan<SvgDevicePoint> contour, int pixelX, int pixelY, CancellationToken cancellationToken)
     {
+        if (contour.Length < 3) return 0;
+        double left = pixelX;
+        double top = pixelY;
+        double signedArea = 0;
+        SvgDevicePoint origin = contour[0];
+        for (int index = 1; index + 1 < contour.Length; index++)
+        {
+            if ((index & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+            SvgDevicePoint second = contour[index];
+            SvgDevicePoint third = contour[index + 1];
+            signedArea += ClipTriangleArea(origin.X, origin.Y, second.X, second.Y, third.X, third.Y, left, top);
+        }
+        cancellationToken.ThrowIfCancellationRequested();
+        return Math.Clamp(Math.Abs(signedArea), 0, 1);
+    }
+
+    private static double ClipTriangleArea(double firstX, double firstY, double secondX, double secondY, double thirdX, double thirdY, double left, double top)
+    {
+        double right = left + 1;
+        double bottom = top + 1;
         Span<double> ping = stackalloc double[ClippedVertexCapacity * 2];
         Span<double> pong = stackalloc double[ClippedVertexCapacity * 2];
-        ping[0] = first.X;
-        ping[1] = first.Y;
-        ping[2] = second.X;
-        ping[3] = second.Y;
-        ping[4] = third.X;
-        ping[5] = third.Y;
+        ping[0] = firstX;
+        ping[1] = firstY;
+        ping[2] = secondX;
+        ping[3] = secondY;
+        ping[4] = thirdX;
+        ping[5] = thirdY;
         int count = ClipHalfPlane(ping[..6], pong, 0, left, true);
         count = ClipHalfPlane(pong[..(count * 2)], ping, 0, right, false);
         count = ClipHalfPlane(ping[..(count * 2)], pong, 1, top, true);
