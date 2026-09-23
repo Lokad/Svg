@@ -381,3 +381,12 @@ Method: the opaque blue capture was compared pixel-by-pixel against the faithful
 Facts: all 5 residuals sit on the blue left edge in apex-adjacent partial rows and read ~2x the replica tri value (mask 1-2 vs 0 computed from 0.75; mask 7-8 vs 4 computed from 4.35), suggesting the partial-row triangle helper undercounts when the row height is fractional. The red triangle in the same image and all other probes are fully exact, so the effect is path-dependent (apex partial-row edge spans), not a global rule error.
 
 Decision: the residual is localized to partial-row triangle exclusions on one edge configuration; the next step is a scratch probe isolating a partial-row edge span (fractional apex with a shallow edge) to test partial-row dY handling directly, rather than more global variant sweeps. No implementation change; the diagonal lowering gate is unchanged.
+
+## Full hold-out tabulation (2026-09-24 decision analysis)
+Question: what is the exact validation state of the calibrated diagonal pipeline (faithful AAA coverage, round-half-up layer halving, shared-switch compositing, exact opaque compositing) across every retained probe?
+
+Method: a single tabulation run compares the replica plus compositing rules against all twelve probes.
+
+Facts: zero mismatches on all six single triangles, the 8x8 overlap, both disjoint layer probes, and both opaque-background probes, plus the mirrored-fractional and symmetric-rectangle decision probes. The half-grid overlap keeps exactly 5 blue-side pixels (row-1 sliver needing mask 1-2 from tri 0; rows 2-4 needing +2-3 opaque units, a uniform +0.012 left-edge shift). Fresh single-triangle blue captures prove the shift is coverage-intrinsic. All global snap, tiebreak, rounding, and fDY variants were swept; the source-faithful transcription uniquely minimizes mismatches.
+
+Decision: the calibrated pipeline is complete except the 5-pixel blue-side residual, which is now bounded (one probe, one edge configuration, maxerr 4 opaque units) with its discriminating follow-up defined (single blue triangle already captured; apex-strip partial-row dY handling is the prime suspect). Renderer integration may proceed with the diagonal gate held until the residual clears, since every other family is exactly characterized. No implementation change in this turn.
