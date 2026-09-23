@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
@@ -220,6 +221,76 @@ internal static class SvgGradientSyntax
             return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, opacity), Stroke = painted ? stroke : null });
         }
         return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, fill, opacity, painted ? stroke : null));
+    }
+
+    /// <summary>Lowers one gradient-filled orthogonal path or point-list shape into gradient-evaluated rectangle bands.</summary>
+    internal static SvgParsedGeometry LowerGradientBands(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame)
+    {
+        if (style.FillOpacity is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill opacity with gradient fills is not implemented.");
+        if (style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient-filled paths with strokes are not implemented.");
+        if (!state.Gradients.TryGetValue(ParseGradientId(style.Fill), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+        AxisTransform transform = context.ResolveTransform(reader);
+        gradient = MapUserSpaceVector(transform, gradient, frame);
+        gradient = MirrorBoundingBoxVector(transform, gradient);
+        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
+        bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+        using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedParserList<SvgPoint> points = TokenizeGradientBands(reader, elementName, isPath, maximumGeometryElements, budget, context, contourEnds);
+        SvgRectangle box = BoxFromGradientBands(points, transform, frame, context);
+        using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+        if (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
+        {
+            if (gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
+            return lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame);
+        }
+        SvgParsedGeometry solid = lowering.Lower(default, painted && !gradient.IsEmpty, transform, frame);
+        SvgGeometry[] bands = solid.Storage.Items;
+        for (int bandIndex = 0; bandIndex < bands.Length; bandIndex++)
+        {
+            context.WorkCounter.Consume(context.CancellationToken);
+            bands[bandIndex] = SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, bands[bandIndex].Rectangle, opacity, null));
+        }
+        return solid;
+        static BudgetedParserList<SvgPoint> TokenizeGradientBands(XmlReader reader, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgPaintableElementContext context, BudgetedParserList<int> contourEnds)
+        {
+            if (isPath)
+            {
+                string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
+                BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds);
+                try { SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, elementName, context.WorkCounter, context.CancellationToken); }
+                catch { points.Dispose(); throw; }
+                return points;
+            }
+            string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
+            BudgetedParserList<SvgPoint> pointList = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            try
+            {
+                SvgOrthogonalGeometryLowering.ValidateSimpleContour(pointList, elementName, context.WorkCounter, context.CancellationToken);
+                contourEnds.Add(pointList.Count);
+            }
+            catch { pointList.Dispose(); throw; }
+            return pointList;
+        }
+        static SvgRectangle BoxFromGradientBands(BudgetedParserList<SvgPoint> points, AxisTransform transform, SvgViewportFrame? frame, SvgPaintableElementContext context)
+        {
+            int minimumX = points[0].X;
+            int minimumY = points[0].Y;
+            int maximumX = points[0].X;
+            int maximumY = points[0].Y;
+            for (int pointIndex = 1; pointIndex < points.Count; pointIndex++)
+            {
+                if ((pointIndex & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
+                SvgPoint point = points[pointIndex];
+                if (point.X < minimumX) minimumX = point.X;
+                if (point.Y < minimumY) minimumY = point.Y;
+                if (point.X > maximumX) maximumX = point.X;
+                if (point.Y > maximumY) maximumY = point.Y;
+            }
+            SvgRectangle box = transform.Apply(new SvgRectangle(minimumX, minimumY, (double)maximumX - minimumX, (double)maximumY - minimumY, default, true, null));
+            return frame is null ? box : frame.Value.Shift(box);
+        }
     }
 
     internal static bool IsGradientStrokeUrl(string? stroke)

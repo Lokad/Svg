@@ -45,7 +45,7 @@ internal static class SvgRenderedLeafParser
                 state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, SvgLeafParser.ParseLine(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state))));
                 return true;
             case "path":
-                using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, SvgClipPathSyntax.ResolveLeafClip(reader, state)))
+                using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))
                 {
                     state.GeometryElementCount += path.ElementCount;
                     SvgMaskSyntax.ApplyMaskToBands(reader, state, path.Storage.Items);
@@ -53,7 +53,7 @@ internal static class SvgRenderedLeafParser
                 }
                 return true;
             case "polygon" or "polyline":
-                using (SvgParsedGeometry pointList = SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, SvgClipPathSyntax.ResolveLeafClip(reader, state)))
+                using (SvgParsedGeometry pointList = SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))
                 {
                     state.GeometryElementCount += pointList.ElementCount;
                     SvgMaskSyntax.ApplyMaskToBands(reader, state, pointList.Storage.Items);

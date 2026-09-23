@@ -1175,6 +1175,71 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_gradient_filled_paths_into_gradient_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        foreach (SvgGeometry geometry in root.Geometries)
+        {
+            Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+            Assert.Equal(new SvgRectangle(1, 1, 6, 6, default, true, null), geometry.Gradient.Box);
+        }
+        Assert.Equal(new SvgRectangle(1, 1, 6, 2, default, true, null), root.Geometries[0].Gradient.Fill);
+        Assert.Equal(new SvgRectangle(1, 3, 2, 4, default, true, null), root.Geometries[1].Gradient.Fill);
+    }
+
+    [Fact]
+    public void Lowers_gradient_filled_polygons_into_gradient_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='1,1 7,1 7,3 3,3 3,7 1,7' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        foreach (SvgGeometry geometry in root.Geometries)
+        {
+            Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+            Assert.Equal(new SvgRectangle(1, 1, 6, 6, default, true, null), geometry.Gradient.Box);
+        }
+    }
+
+    [Fact]
+    public void Renders_reflected_gradient_paths_identical_to_hand_mirrored_baselines()
+    {
+        byte[] reflected = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' transform='translate(8,0) scale(-1,1)'/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='1' y1='0' x2='0' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M7,1 H1 V3 H5 V7 H7 Z' fill='url(#g)'/></svg>");
+
+        ReadOnlyMemory<byte> reflectedPng = SvgConverter.ConvertToPng(reflected, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(reflectedPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Fact]
+    public void Renders_degenerate_pad_gradient_paths_as_end_stop_solids()
+    {
+        byte[] gradient = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='1' y1='1' x2='1' y2='1'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)'/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='blue'/></svg>");
+
+        ReadOnlyMemory<byte> gradientPng = SvgConverter.ConvertToPng(gradient, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(gradientPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Theory]
+    [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' stroke='red' stroke-width='2'/>")]
+    [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' fill-opacity='0.5'/>")]
+    [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' stroke='url(#g)' stroke-width='2'/>")]
+    [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#h)'/>")]
+    [InlineData("<g fill='url(#g)'><path d='M1,1 H7 V3 H3 V7 H1 Z'/></g>")]
+    public void Rejects_unsupported_gradient_path_forms(string body)
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Lowers_closed_axis_aligned_rectangle_paths()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 1,2 H 4 V 6 H 1 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

@@ -25,6 +25,11 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgResolvedPaintableElement ResolveShape(XmlReader reader, bool acceptsStroke)
     {
         SvgComputedStyle style = ResolveStyle(reader);
+        return ResolveShape(style, reader, acceptsStroke);
+    }
+
+    internal SvgResolvedPaintableElement ResolveShape(SvgComputedStyle style, XmlReader reader, bool acceptsStroke)
+    {
         return new SvgResolvedPaintableElement(style, ResolveTransform(reader), ResolvePresentation(style, acceptsStroke));
     }
 
