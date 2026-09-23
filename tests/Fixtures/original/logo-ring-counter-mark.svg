@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <path d="M8,32 A24,24 0 1 1 56,32 A24,24 0 1 1 8,32 Z M20,32 A12,12 0 1 0 44,32 A12,12 0 1 0 20,32 Z" fill-rule="evenodd" fill="#ff0000"/>
+</svg>
