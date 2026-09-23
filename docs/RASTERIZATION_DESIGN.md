@@ -315,3 +315,12 @@ SPDX-materialized input has a three-capture stable 362×296 Windows-pinned-Chrom
 reference. The current converter returns `UnsupportedFeature`; this classifies a
 needed general-path/composition workload without treating an unsupported browser
 reference as a feature admission.
+
+## Input vertex-grid snapping elimination (2026-09-23 decision analysis)
+Question: does input vertex quantization to a device-space subpixel grid, followed by exact area computation and output rounding, explain the diagonal hold-out family? This was the explicitly open next step after the fixed-point output-quantization finding; uniform supersampling and output-only adjustments were already eliminated and are not revisited here.
+
+Method: six retained transparent probes (base, mirror, winding-reordered, 2x-scaled, fractional at 1/8 increments, half-grid at 1/32 increments). An independent exact-area implementation cross-checks the admitted SvgPolygonCoverage kernel totals (17.5 for the 8x8 family, 70.0 for the 16x16 probe) and reproduces the recorded baselines (base 7 mismatches/maxerr 3 under round, fractional 21/32). Grid search over 30 combinations: snap denominators 1, 2, 4, 8, 16 by nearest/floor/ceil, then exact area with round or trunc output. Analysis scripts are scratch artifacts, not retained.
+
+Facts: the best combination (quarter-grid nearest snap with round output) still leaves 72 mismatches across the six probes with maxerr 12, against 78 for the unsnapped round baseline. Every combination fails decisively; the fractional and half-grid probes dominate with 21+ mismatches each and errors up to 104. The 16x16 top-row alpha identity with the 8x8 top row is corner-anchored self-similarity (both are vertex-A corner pixels with exact coverage 5/6), not rasterizer scale-invariance, so it constrains nothing beyond the base row.
+
+Decision: input vertex-grid snapping is eliminated as a general mechanism for these grids, modes and output rules. The device-space edge/scanline calculation remains the open question. No implementation change; the diagonal lowering gate is unchanged.
