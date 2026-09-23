@@ -1344,6 +1344,53 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_pattern_filled_paths_into_pattern_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        foreach (SvgGeometry geometry in root.Geometries)
+        {
+            Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
+            Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), geometry.Pattern.Content);
+        }
+        Assert.Equal(new SvgRectangle(1, 1, 6, 2, default, true, null), root.Geometries[0].Pattern.Fill);
+        Assert.Equal(new SvgRectangle(1, 3, 2, 4, default, true, null), root.Geometries[1].Pattern.Fill);
+    }
+
+    [Fact]
+    public void Lowers_pattern_filled_polygons_into_pattern_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><polygon points='1,1 7,1 7,3 3,3 3,7 1,7' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        foreach (SvgGeometry geometry in root.Geometries)
+        {
+            Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
+        }
+    }
+
+    [Fact]
+    public void Routes_gradient_and_pattern_paints_to_their_own_band_lowerers()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M0,0 H4 V4 H0 Z' fill='url(#g)'/><path d='M4,4 H8 V8 H4 Z' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(SvgGeometryKind.GradientFill, root.Geometries[0].Kind);
+        Assert.Equal(SvgGeometryKind.PatternFill, root.Geometries[1].Kind);
+    }
+
+    [Theory]
+    [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)' stroke='red' stroke-width='2'/>")]
+    [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)' fill-opacity='0.5'/>")]
+    [InlineData("<path d='M1,1 H7 V7 H1 Z' fill='url(#p)' transform='translate(8,0) scale(-1,1)'/>")]
+    public void Rejects_unsupported_pattern_path_forms(string body)
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Clips_use_instances_to_their_clip_path_box()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs><use href='#r' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

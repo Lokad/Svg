@@ -237,7 +237,7 @@ internal static class SvgGradientSyntax
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        using BudgetedParserList<SvgPoint> points = TokenizeGradientBands(reader, elementName, isPath, maximumGeometryElements, budget, context, contourEnds);
+        using BudgetedParserList<SvgPoint> points = SvgOrthogonalShapeParser.TokenizeBands(reader, elementName, isPath, maximumGeometryElements, budget, context, contourEnds);
         SvgRectangle box = BoxFromGradientBands(points, transform, frame, context);
         using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         if (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
@@ -253,26 +253,6 @@ internal static class SvgGradientSyntax
             bands[bandIndex] = SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, bands[bandIndex].Rectangle, opacity, null));
         }
         return solid;
-        static BudgetedParserList<SvgPoint> TokenizeGradientBands(XmlReader reader, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgPaintableElementContext context, BudgetedParserList<int> contourEnds)
-        {
-            if (isPath)
-            {
-                string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-                BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds);
-                try { SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, elementName, context.WorkCounter, context.CancellationToken); }
-                catch { points.Dispose(); throw; }
-                return points;
-            }
-            string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
-            BudgetedParserList<SvgPoint> pointList = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            try
-            {
-                SvgOrthogonalGeometryLowering.ValidateSimpleContour(pointList, elementName, context.WorkCounter, context.CancellationToken);
-                contourEnds.Add(pointList.Count);
-            }
-            catch { pointList.Dispose(); throw; }
-            return pointList;
-        }
         static SvgRectangle BoxFromGradientBands(BudgetedParserList<SvgPoint> points, AxisTransform transform, SvgViewportFrame? frame, SvgPaintableElementContext context)
         {
             int minimumX = points[0].X;

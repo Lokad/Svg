@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
@@ -60,6 +61,34 @@ internal static class SvgPatternSyntax
 
     internal static bool IsPatternFill(string? fill)
         => fill is not null && fill.StartsWith("url(", StringComparison.Ordinal);
+
+    /// <summary>Lowers one pattern-filled orthogonal path or point-list shape into pattern-evaluated rectangle bands.</summary>
+    internal static SvgParsedGeometry LowerPatternBands(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame)
+    {
+        if (style.FillOpacity is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill opacity with pattern fills is not implemented.");
+        if (style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern-filled paths with strokes are not implemented.");
+        if (!state.Patterns.TryGetValue(ParsePatternId(style.Fill), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
+        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
+        AxisTransform transform = context.ResolveTransform(reader);
+        if (transform.ScaleX < 0 || transform.ScaleY < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
+        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
+        bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+        using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedParserList<SvgPoint> points = SvgOrthogonalShapeParser.TokenizeBands(reader, elementName, isPath, maximumGeometryElements, budget, context, contourEnds);
+        using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return lowering.Lower(default, false, transform, frame);
+        SvgRectangle content = tile.Content.Value.Rectangle;
+        SvgParsedGeometry solid = lowering.Lower(default, painted, transform, frame);
+        SvgGeometry[] bands = solid.Storage.Items;
+        for (int bandIndex = 0; bandIndex < bands.Length; bandIndex++)
+        {
+            context.WorkCounter.Consume(context.CancellationToken);
+            bands[bandIndex] = SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bands[bandIndex].Rectangle, opacity, null));
+        }
+        return solid;
+    }
 
     internal static SvgGeometry LowerPatternRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
     {
