@@ -7,6 +7,30 @@ namespace Lokad.Svg.VisualTests;
 public sealed class FixtureManifestTests
 {
     [Fact]
+    public void Every_variant_references_an_existing_parent()
+    {
+        string testOutput = AppContext.BaseDirectory;
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(testOutput, "Fixtures", "manifest.json")));
+        Dictionary<string, JsonElement> fixtures = new(StringComparer.Ordinal);
+        foreach (JsonElement fixture in manifest.RootElement.GetProperty("fixtures").EnumerateArray())
+        {
+            string id = fixture.GetProperty("id").GetString() ?? throw new InvalidDataException("id is missing.");
+            Assert.True(fixtures.TryAdd(id, fixture), "Duplicate fixture ID: " + id);
+        }
+        int variantCount = 0;
+        foreach (JsonElement fixture in fixtures.Values)
+        {
+            if (!fixture.TryGetProperty("variantOf", out JsonElement parent)) continue;
+            variantCount++;
+            string id = fixture.GetProperty("id").GetString() ?? throw new InvalidDataException("id is missing.");
+            string parentId = parent.GetString() ?? throw new InvalidDataException("variantOf is missing: " + id);
+            Assert.NotEqual(id, parentId);
+            Assert.True(fixtures.TryGetValue(parentId, out JsonElement parentFixture), "Dangling variant parent: " + id);
+            Assert.False(parentFixture.TryGetProperty("variantOf", out _), "Chained variant parent: " + id);
+        }
+        Assert.True(variantCount > 0, "The fixture inventory contains no variants.");
+    }
+    [Fact]
     public void Every_declared_exact_fixture_has_a_valid_admitted_reference_and_matches_it()
     {
         string testOutput = AppContext.BaseDirectory;
@@ -99,10 +123,11 @@ public sealed class FixtureManifestTests
                 {
                     ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, unsupportedOptions, CancellationToken.None);
                     Assert.True(png.Span.StartsWith(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }), "Unsupported fixture did not render PNG: " + id);
-                    if (fixture.TryGetProperty("knownDifferenceIdentity", out JsonElement knownDifferenceIdentity))
+                    if (!fixture.TryGetProperty("knownDifferenceIdentity", out JsonElement knownDifferenceIdentity))
                     {
-                        AssertKnownDifference(id, testOutput, knownDifferenceIdentity.GetString() ?? throw new InvalidDataException("knownDifferenceIdentity is missing."), width, height, scale, background, png);
+                        throw new InvalidDataException("Missing known-difference capture: " + id);
                     }
+                    AssertKnownDifference(id, testOutput, knownDifferenceIdentity.GetString() ?? throw new InvalidDataException("knownDifferenceIdentity is missing."), width, height, scale, background, png);
                 }
                 else
                 {
