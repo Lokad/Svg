@@ -235,8 +235,8 @@ internal static class SvgDefinitionParser
         }
         if (template.HasTransform)
         {
-            (x1, y1) = template.Transform.ApplyToUserPoint(x1, y1);
-            (x2, y2) = template.Transform.ApplyToUserPoint(x2, y2);
+            (x1, y1) = template.Transform.Apply(x1, y1);
+            (x2, y2) = template.Transform.Apply(x2, y2);
         }
         return (x1, y1, x2, y2, isUserSpace, spread);
 

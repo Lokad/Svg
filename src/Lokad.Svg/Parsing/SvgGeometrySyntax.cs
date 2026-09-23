@@ -198,7 +198,7 @@ internal static class SvgGeometrySyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only meet, slice, and none preserveAspectRatio values are implemented.");
     }
 
-    private ref struct DelimitedTokenReader
+    internal ref struct DelimitedTokenReader
     {
         private readonly ReadOnlySpan<char> _value;
         private int _position;

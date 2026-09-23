@@ -2252,10 +2252,29 @@ public sealed class SvgRootParserTests
         Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 2, 0, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
     }
 
-    [Fact]
-    public void Rejects_fractional_gradient_transforms()
+    [Theory]
+    [InlineData("translate(0.5, 0)", "0.5", "0", "1.5", "0")]
+    [InlineData("scale(0.5)", "0", "0", "0.5", "0")]
+    [InlineData("translate(0.5, 0) scale(2)", "0.5", "0", "2.5", "0")]
+    public void Gradient_fractional_transforms_match_explicit_vectors(string transform, string x1, string y1, string x2, string y2)
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientTransform='translate(0.5, 0)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        byte[] transformed = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><linearGradient id='g' gradientTransform='" + transform + "'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='5' height='5' fill='url(#g)'/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><linearGradient id='g' x1='" + x1 + "' y1='" + y1 + "' x2='" + x2 + "' y2='" + y2 + "'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='5' height='5' fill='url(#g)'/></svg>");
+
+        ReadOnlyMemory<byte> transformedPng = SvgConverter.ConvertToPng(transformed, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(transformedPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Theory]
+    [InlineData("scale(0)")]
+    [InlineData("scale(-1)")]
+    [InlineData("matrix(1, 1, 0, 1, 0, 0)")]
+    [InlineData("")]
+    public void Rejects_unsupported_gradient_transform_forms(string transform)
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientTransform='" + transform + "'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }

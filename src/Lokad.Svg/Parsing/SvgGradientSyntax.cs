@@ -13,7 +13,22 @@ internal enum SvgGradientSpread { Pad, Repeat, Reflect }
 internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);
 
 /// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
-internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, AxisTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2);
+internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2);
+
+/// <summary>Retains one admitted axis-aligned gradient transform with finite coordinates.</summary>
+internal readonly record struct SvgGradientTransform(double ScaleX, double ScaleY, double OffsetX, double OffsetY)
+{
+    internal static SvgGradientTransform Identity { get; } = new(1, 1, 0, 0);
+
+    /// <summary>Maps one gradient vector endpoint, rejecting non-finite results.</summary>
+    internal (double X, double Y) Apply(double x, double y)
+    {
+        double mappedX = ScaleX * x + OffsetX;
+        double mappedY = ScaleY * y + OffsetY;
+        if (!double.IsFinite(mappedX) || !double.IsFinite(mappedY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported gradient transform exceeds the gradient coordinate range.");
+        return (mappedX, mappedY);
+    }
+}
 
 /// <summary>Parses the bounded linear-gradient definition syntax and lowers gradient-filled rectangles.</summary>
 internal static class SvgGradientSyntax
@@ -37,10 +52,78 @@ internal static class SvgGradientSyntax
         double x2 = ParseAxis(rawX2 ?? (isUserSpace ? "0" : "1"));
         double y2 = ParseAxis(rawY2 ?? "0");
         string? transformValue = reader.GetAttribute("gradientTransform");
-        AxisTransform gradientTransform = SvgGeometrySyntax.ParseTransform(transformValue);
+        SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue);
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
         return new SvgGradientTemplate(x1, y1, x2, y2, isUserSpace, gradientTransform, transformValue is not null, vectorCount, units is not null, spreadMethod, spread is not null, href, rawX1 is not null, rawY1 is not null, rawX2 is not null, rawY2 is not null);
     }
+
+    private static SvgGradientTransform ParseGradientTransform(string? value)
+    {
+        if (value is null) return SvgGradientTransform.Identity;
+        if (value.Length > SvgSyntaxLimits.MaximumTransformCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform values exceed the configured syntax limit.");
+        ReadOnlySpan<char> input = value.AsSpan();
+        SvgGradientTransform transform = SvgGradientTransform.Identity;
+        int position = 0;
+        bool hasFunction = false;
+        while (true)
+        {
+            while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
+            if (position == input.Length)
+            {
+                if (!hasFunction) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), positive scale(), and positive axis-aligned matrix() gradient transforms are implemented.");
+                return transform;
+            }
+            int nameStart = position;
+            while (position < input.Length && char.IsAsciiLetter(input[position])) position++;
+            if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), positive scale(), and positive axis-aligned matrix() gradient transforms are implemented.");
+            ReadOnlySpan<char> name = input[nameStart..position];
+            while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
+            if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), positive scale(), and positive axis-aligned matrix() gradient transforms are implemented.");
+            position++;
+            int argumentsStart = position;
+            while (position < input.Length && input[position] != ')') position++;
+            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), positive scale(), and positive axis-aligned matrix() gradient transforms are implemented.");
+            transform = ComposeGradientTransform(transform, ParseGradientTransformFunction(name, input[argumentsStart..position]));
+            position++;
+            hasFunction = true;
+        }
+    }
+
+    private static SvgGradientTransform ParseGradientTransformFunction(ReadOnlySpan<char> name, ReadOnlySpan<char> arguments)
+    {
+        bool isMatrix = name.Equals("matrix".AsSpan(), StringComparison.OrdinalIgnoreCase);
+        bool isTranslate = name.Equals("translate".AsSpan(), StringComparison.OrdinalIgnoreCase);
+        if (!isMatrix && !isTranslate && !name.Equals("scale".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), positive scale(), and positive axis-aligned matrix() gradient transforms are implemented.");
+        Span<double> values = stackalloc double[6];
+        int valueCount = 0;
+        SvgGeometrySyntax.DelimitedTokenReader tokens = new(arguments);
+        while (tokens.TryReadValue(out ReadOnlySpan<char> value))
+        {
+            if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, isMatrix ? "matrix() requires six coordinates." : "Transforms require one or two coordinates.");
+            values[valueCount++] = ParseGradientTransformCoordinate(value);
+        }
+        if (isMatrix)
+        {
+            if (valueCount != 6) throw new SvgException(SvgErrorCode.MalformedInput, "matrix() requires six coordinates.");
+            if (values[1] != 0 || values[2] != 0 || values[0] <= 0 || values[3] <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive axis-aligned matrix() gradient transforms are implemented.");
+            return new SvgGradientTransform(values[0], values[3], values[4], values[5]);
+        }
+        if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
+        double first = values[0];
+        double second = valueCount == 2 ? values[1] : (isTranslate ? 0 : first);
+        if (isTranslate) return new SvgGradientTransform(1, 1, first, second);
+        if (first <= 0 || second <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive scale() gradient transforms are implemented.");
+        return new SvgGradientTransform(first, second, 0, 0);
+    }
+
+    private static double ParseGradientTransformCoordinate(ReadOnlySpan<char> value)
+    {
+        if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient transform coordinates must be finite bounded numbers.");
+        return result;
+    }
+
+    private static SvgGradientTransform ComposeGradientTransform(SvgGradientTransform outer, SvgGradientTransform inner)
+        => new(outer.ScaleX * inner.ScaleX, outer.ScaleY * inner.ScaleY, outer.ScaleX * inner.OffsetX + outer.OffsetX, outer.ScaleY * inner.OffsetY + outer.OffsetY);
 
     internal static SvgGradientSpread ParseSpreadMethod(string? value)
     {
