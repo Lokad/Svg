@@ -8,6 +8,8 @@ internal sealed class SvgDocumentState : IDisposable
     private const int DefinitionStorageBytes = 256;
     private const int ClipStorageBytes = 128;
     private const int PatternStorageBytes = 128;
+    // Covers one gradient entry (128, as for patterns) plus one retained clamped stop array sized from its actual element type.
+    private static readonly int GradientStorageBytes = checked(128 + (int)ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(SvgGradientSyntax.MaximumGradientStops));
 
     internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -25,7 +27,7 @@ internal sealed class SvgDocumentState : IDisposable
         MaskRegions = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         MaskContentBoxes = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Patterns = new BudgetedParserDictionary<string, SvgPatternTile>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
-        Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
+        Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }

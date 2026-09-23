@@ -451,7 +451,18 @@ public static class SvgConverter
                 }
                 position = local;
                 double dither = GradientDither[x & 7, y & 7] / 64d;
-                SvgColor tileColor = new(InterpolateChannel(definition.Start.Red, definition.End.Red, position, dither), InterpolateChannel(definition.Start.Green, definition.End.Green, position, dither), InterpolateChannel(definition.Start.Blue, definition.End.Blue, position, dither), opacity);
+                SvgColor tileColor;
+                if (definition.Stops.Length > 2)
+                {
+                    double absolute = definition.Offset1 + position * offsetSpan;
+                    int segment = 0;
+                    while (segment < definition.Stops.Length - 2 && absolute > definition.Stops[segment + 1].Offset) segment++;
+                    SvgGradientStop first = definition.Stops[segment];
+                    SvgGradientStop second = definition.Stops[segment + 1];
+                    double blend = (absolute - first.Offset) / (second.Offset - first.Offset);
+                    tileColor = new(InterpolateChannel(first.Color.Red, second.Color.Red, blend, dither), InterpolateChannel(first.Color.Green, second.Color.Green, blend, dither), InterpolateChannel(first.Color.Blue, second.Color.Blue, blend, dither), opacity);
+                }
+                else tileColor = new(InterpolateChannel(definition.Start.Red, definition.End.Red, position, dither), InterpolateChannel(definition.Start.Green, definition.End.Green, position, dither), InterpolateChannel(definition.Start.Blue, definition.End.Blue, position, dither), opacity);
                 SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
                 int offset = (y * outputWidth + x) * 4;
                 BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);

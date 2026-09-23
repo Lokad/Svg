@@ -4,8 +4,8 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Retains one admitted two-stop linear gradient with its bounding-box vector.</summary>
-internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread);
+/// <summary>Retains one admitted two-to-eight-stop linear gradient with its bounding-box vector.</summary>
+internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops);
 
 /// <summary>Identifies the admitted stop-range extension rule.</summary>
 internal enum SvgGradientSpread { Pad, Repeat, Reflect }
@@ -34,6 +34,9 @@ internal readonly record struct SvgGradientTransform(double ScaleX, double Scale
 /// <summary>Parses the bounded linear-gradient definition syntax and lowers gradient-filled rectangles.</summary>
 internal static class SvgGradientSyntax
 {
+    /// <summary>Bounds retained linear-gradient stops; the per-entry storage charge covers exactly this many.</summary>
+    internal const int MaximumGradientStops = 8;
+
     internal static SvgGradientTemplate ParseLinearVector(XmlReader reader)
     {
         ArgumentNullException.ThrowIfNull(reader);

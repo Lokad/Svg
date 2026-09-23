@@ -1155,7 +1155,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 8, 0, 0, 1, false, true, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 8, 0, 0, 1, false, true, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
         Assert.Equal(new SvgRectangle(0, 3, 8, 2, default, true, null), geometry.Gradient.Box);
     }
 
@@ -1266,7 +1266,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 1, 0, 0, 0, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 1, 0, 0, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2683,7 +2683,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 1, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 1, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
         Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(0, 0, 0, 0), true, null), geometry.Gradient.Fill);
     }
 
@@ -2694,7 +2694,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0.25, 0.75, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0.25, 0.75, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0.25, new SvgColor(255, 0, 0, 255)), new(0.75, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2720,7 +2720,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2741,7 +2741,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 8, 0, 56, 0, 0, 1, false, true, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 8, 0, 56, 0, 0, 1, false, true, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2751,7 +2751,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 8, 8, 16, 8, 0, 1, false, true, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 8, 8, 16, 8, 0, 1, false, true, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2777,7 +2777,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 2, 0, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 2, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Theory]
@@ -2820,7 +2820,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='0.5' y2='0' spreadMethod='repeat'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='8' y='8' width='48' height='48' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Repeat), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Repeat, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2829,7 +2829,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='0.5' y2='0' spreadMethod='reflect'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='8' y='8' width='48' height='48' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Reflect), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Reflect, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2856,7 +2856,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2865,7 +2865,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='b'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='c' href='#b' x1='0' y1='0' x2='0.5' y2='0'/></defs><rect x='8' y='8' width='48' height='48' fill='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2874,7 +2874,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='b' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='c' href='#b'><stop offset='0' stop-color='#00ff00'/><stop offset='1' stop-color='#ffff00'/></linearGradient></defs><rect x='8' y='8' width='48' height='48' fill='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(0, 255, 0, 255), new SvgColor(255, 255, 0, 255), 0, 0, 1, 1, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(0, 255, 0, 255), new SvgColor(255, 255, 0, 255), 0, 0, 1, 1, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(0, 255, 0, 255)), new(1, new SvgColor(255, 255, 0, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2956,7 +2956,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='a' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='b' href='#a'/><linearGradient id='c' href='#b' x1='0' y1='0' x2='0.5' y2='0'/></defs><rect x='8' y='8' width='48' height='48' fill='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2965,7 +2965,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='a' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='b' href='#a' gradientTransform='translate(1, 0)'/></defs><rect x='8' y='8' width='48' height='48' fill='url(#b)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 1, 0, 2, 0, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 1, 0, 2, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
     }
 
     [Fact]
@@ -2980,7 +2980,7 @@ public sealed class SvgRootParserTests
         Assert.Equal(new SvgRectangle(12, 44, 40, 8, new SvgColor(0, 0, 0, 0), true, null), geometry.GradientStroke.Bottom);
         Assert.Equal(new SvgRectangle(12, 20, 8, 24, new SvgColor(0, 0, 0, 0), true, null), geometry.GradientStroke.Left);
         Assert.Equal(new SvgRectangle(44, 20, 8, 24, new SvgColor(0, 0, 0, 0), true, null), geometry.GradientStroke.Right);
-        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad), geometry.GradientStroke.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.GradientStroke.Gradient);
         Assert.True(geometry.GradientStroke.HasStroke);
     }
 
@@ -3082,9 +3082,26 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_three_stop_linear_gradients()
+    public void Lowers_multi_stop_linear_gradients_with_retained_clamped_stops()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='0.5' stop-color='#00ff00'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='0.5' stop-color='#00ff00'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(0.5, new SvgColor(0, 255, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Gradient.Gradient);
+    }
+
+    [Fact]
+    public void Rejects_linear_gradients_with_more_than_eight_stops()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='0.1' stop-color='#ff0000'/><stop offset='0.2' stop-color='#ff0000'/><stop offset='0.3' stop-color='#ff0000'/><stop offset='0.4' stop-color='#ff0000'/><stop offset='0.5' stop-color='#ff0000'/><stop offset='0.6' stop-color='#ff0000'/><stop offset='0.7' stop-color='#ff0000'/><stop offset='0.8' stop-color='#ff0000'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_non_increasing_multi_stop_linear_gradients()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='0.5' stop-color='#00ff00'/><stop offset='0.5' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
@@ -3395,5 +3412,21 @@ public sealed class SvgRootParserTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='8' height='8' fill='red' mask='url(#missing)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    private static void AssertEqualGradient(SvgLinearGradient expected, SvgLinearGradient actual)
+    {
+        Assert.Equal(expected.Start, actual.Start);
+        Assert.Equal(expected.End, actual.End);
+        Assert.Equal(expected.X1, actual.X1);
+        Assert.Equal(expected.Y1, actual.Y1);
+        Assert.Equal(expected.X2, actual.X2);
+        Assert.Equal(expected.Y2, actual.Y2);
+        Assert.Equal(expected.Offset1, actual.Offset1);
+        Assert.Equal(expected.Offset2, actual.Offset2);
+        Assert.Equal(expected.IsEmpty, actual.IsEmpty);
+        Assert.Equal(expected.IsUserSpace, actual.IsUserSpace);
+        Assert.Equal(expected.Spread, actual.Spread);
+        Assert.Equal(expected.Stops, actual.Stops);
     }
 }

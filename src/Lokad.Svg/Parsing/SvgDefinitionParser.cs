@@ -150,7 +150,7 @@ internal static class SvgDefinitionParser
         {
             if (reader.LocalName == "stop")
             {
-                if (state.GradientStops.Count >= 2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop linear gradients are implemented.");
+                if (state.GradientStops.Count >= SvgGradientSyntax.MaximumGradientStops) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only linear gradients with at most eight stops are implemented.");
                 SvgElementAttributePolicy.ValidateGradientStop(reader, workCounter, cancellationToken);
                 double offset = SvgGradientSyntax.ParseStopOffset(reader.GetAttribute("offset"));
                 SvgColor stopColor = SvgGradientSyntax.ParseStopColor(reader, namedColors, workCounter, cancellationToken);
@@ -192,34 +192,43 @@ internal static class SvgDefinitionParser
     {
         workCounter.Consume(cancellationToken);
         SvgGradientTemplate template = state.Gradient ?? throw new InvalidOperationException("Gradient registration requires gradient dimensions.");
-        if (state.GradientStops.Count != 0 && state.GradientStops.Count != 2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only empty or two-stop linear gradients are implemented.");
+        if (state.GradientStops.Count != 0 && (state.GradientStops.Count < 2 || state.GradientStops.Count > SvgGradientSyntax.MaximumGradientStops)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only empty or two-to-eight-stop linear gradients are implemented.");
         if (template.Href is not null)
         {
             if (template.VectorCount is > 0 and < 4 && template.HasUnits) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial gradient vector overrides with gradient unit overrides are not implemented.");
             if (template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient unit overrides without vector overrides are not implemented.");
         }
-        (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty) = ResolveGradientStops(state, template);
+        (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveGradientStops(state, template);
         (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread) = ResolveGradientVector(template, state);
-        SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread);
+        SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops);
         string retainedId = state.Strings.Copy(state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier."));
         if (!state.Gradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
     }
 
-    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty) ResolveGradientStops(SvgDocumentState state, SvgGradientTemplate template)
+    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveGradientStops(SvgDocumentState state, SvgGradientTemplate template)
     {
-        if (state.GradientStops.Count == 2) return ClampStopRange(state.GradientStops[0], state.GradientStops[1]);
-        if (template.Href is null) return (default, default, 0, 1, true);
+        if (state.GradientStops.Count >= 2) return ClampStopList(state);
+        if (template.Href is null) return (default, default, 0, 1, true, Array.Empty<SvgGradientStop>());
         if (!state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgLinearGradient parent)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
-        return (parent.Start, parent.End, parent.Offset1, parent.Offset2, parent.IsEmpty);
+        return (parent.Start, parent.End, parent.Offset1, parent.Offset2, parent.IsEmpty, parent.Stops);
     }
 
-    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty) ClampStopRange(SvgGradientStop first, SvgGradientStop second)
+    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ClampStopList(SvgDocumentState state)
     {
-        if (!(first.Offset < second.Offset)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
-        double clampedFirst = Math.Clamp(first.Offset, 0, 1);
-        double clampedSecond = Math.Clamp(second.Offset, 0, 1);
-        if (!(clampedFirst < clampedSecond)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop linear gradients spanning a nonzero clamped offset range are implemented.");
-        return (first.Color, second.Color, clampedFirst, clampedSecond, false);
+        for (int index = 1; index < state.GradientStops.Count; index++)
+        {
+            if (!(state.GradientStops[index - 1].Offset < state.GradientStops[index].Offset)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only increasing-offset linear gradient stops are implemented.");
+        }
+        SvgGradientStop[] clamped = new SvgGradientStop[state.GradientStops.Count];
+        for (int index = 0; index < clamped.Length; index++)
+        {
+            clamped[index] = new SvgGradientStop(Math.Clamp(state.GradientStops[index].Offset, 0, 1), state.GradientStops[index].Color);
+        }
+        for (int index = 1; index < clamped.Length; index++)
+        {
+            if (!(clamped[index - 1].Offset < clamped[index].Offset)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only linear gradient stops spanning a nonzero clamped offset range are implemented.");
+        }
+        return (clamped[0].Color, clamped[^1].Color, clamped[0].Offset, clamped[^1].Offset, false, clamped);
     }
 
     private static (double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientSpread Spread) ResolveGradientVector(SvgGradientTemplate template, SvgDocumentState state)
