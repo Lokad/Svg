@@ -99,6 +99,10 @@ public sealed class FixtureManifestTests
                 {
                     ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, unsupportedOptions, CancellationToken.None);
                     Assert.True(png.Span.StartsWith(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }), "Unsupported fixture did not render PNG: " + id);
+                    if (fixture.TryGetProperty("knownDifferenceIdentity", out JsonElement knownDifferenceIdentity))
+                    {
+                        AssertKnownDifference(id, testOutput, knownDifferenceIdentity.GetString() ?? throw new InvalidDataException("knownDifferenceIdentity is missing."), width, height, scale, background, png);
+                    }
                 }
                 else
                 {
@@ -109,6 +113,37 @@ public sealed class FixtureManifestTests
 
         Assert.True(exactFixtureCount > 0, "The fixture inventory contains no exact cases.");
 
+        static void AssertKnownDifference(string id, string testOutput, string identityPath, int width, int height, double scale, string background, ReadOnlyMemory<byte> png)
+        {
+            string metadataPath = Path.Combine(testOutput, identityPath.Replace('/', Path.DirectorySeparatorChar));
+            Assert.True(File.Exists(metadataPath), "Missing known-difference metadata: " + metadataPath);
+            using JsonDocument metadata = JsonDocument.Parse(File.ReadAllText(metadataPath));
+            JsonElement metadataRoot = metadata.RootElement;
+            Assert.Equal(id, RequiredString(metadataRoot, "fixtureId"));
+            Assert.Equal(3, metadataRoot.GetProperty("freshProcessCaptures").GetInt32());
+            Assert.Equal("identical", RequiredString(metadataRoot, "decodedPixelStability"));
+            Assert.Equal(width, metadataRoot.GetProperty("viewport").GetProperty("width").GetInt32());
+            Assert.Equal(height, metadataRoot.GetProperty("viewport").GetProperty("height").GetInt32());
+            Assert.Equal(scale, metadataRoot.GetProperty("viewport").GetProperty("deviceScaleFactor").GetDouble());
+            Assert.Equal(background, RequiredString(metadataRoot, "background"));
+            string metadataDirectory = Path.GetDirectoryName(metadataPath) ?? throw new InvalidDataException("Known-difference metadata has no directory.");
+            string referencePngPath = Path.Combine(metadataDirectory, RequiredString(metadataRoot, "referencePng"));
+            Assert.True(File.Exists(referencePngPath), "Missing known-difference reference PNG: " + referencePngPath);
+            byte[] referenceBytes = File.ReadAllBytes(referencePngPath);
+            Assert.Equal(RequiredString(metadataRoot, "referenceSha256"), Hash(referenceBytes));
+            int expectedPixels = checked(width * height);
+            RgbaImage reference = PngRgbaDecoder.Decode(referenceBytes, expectedPixels);
+            Assert.Equal(width, reference.Width);
+            Assert.Equal(height, reference.Height);
+            RgbaImage candidate = PngRgbaDecoder.Decode(png.ToArray(), expectedPixels);
+            PixelComparison comparison = PixelComparer.Compare(reference, candidate);
+            Assert.True(comparison.DimensionsMatch, "Known-difference fixture dimensions drifted: " + id);
+            Assert.False(comparison.IsExact, "Known-difference fixture rendered exactly; graduate it to exact: " + id);
+            JsonElement expected = metadataRoot.GetProperty("comparison");
+            Assert.Equal(expected.GetProperty("changedPixelCount").GetInt64(), comparison.ChangedPixelCount);
+            Assert.Equal(expected.GetProperty("maximumChannelError").GetByte(), comparison.MaximumChannelError);
+            Assert.Equal(expected.GetProperty("maximumAlphaError").GetByte(), comparison.MaximumAlphaError);
+        }
         static string RequiredString(JsonElement element, string name)
         {
             return element.GetProperty(name).GetString() ?? throw new InvalidDataException(name + " is missing.");

@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-translucent-mark",
+  "referencePng": "original-logo-translucent-mark.png",
+  "referenceSha256": "bc1fe09154064cffb8954aa321296f39874cdb1b63a161577e4cbae1edb42da0",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "ff438a016462becacf6bc8bd4d22824f8239ea435c5773f3d585bdae0e9b7559",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 376,
+    "maximumChannelError": 1,
+    "maximumAlphaError": 1,
+    "exact": false
+  },
+  "admittedAt": "2026-09-23"
+}

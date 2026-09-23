@@ -23,7 +23,7 @@ is not a general pixel-fidelity claim.
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
 | Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and eighty-three stable references |
-| Fixture corpus | Ninety-two original CC0 probes with verified hashes; the manifest gate renders and compares all eighty-three exact entries exactly and locks all nine unsupported entries to their observed render-or-reject behavior with categorized rejection codes |
+| Fixture corpus | Ninety-two original CC0 probes with verified hashes; the manifest gate renders and compares all eighty-three exact entries exactly and locks all nine unsupported entries to their observed render-or-reject behavior with categorized rejection codes, and the four renderable entries carry retained pinned-Chrome references with ratcheted decoded-RGBA mismatch measures |
 
 ### Experimental supplied-font text
 
