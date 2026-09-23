@@ -108,17 +108,24 @@ internal static class PngImageDecoder
         using RenderBudget.BudgetReservation reservation = budget.Reserve(checked(pixelBytes + 2 * rowBytes), SvgMemoryCategory.Parser);
         byte[] pixels = new byte[(int)pixelBytes];
         compressed.Position = 0;
-        using (var zlib = new ZLibStream(compressed, CompressionMode.Decompress))
+        try
         {
-            int filled = 0;
-            while (filled < pixels.Length)
+            using (var zlib = new ZLibStream(compressed, CompressionMode.Decompress))
             {
-                workCounter.Consume(cancellationToken);
-                int read = zlib.Read(pixels, filled, pixels.Length - filled);
-                if (read == 0) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data ends inside its pixel stream.");
-                filled += read;
+                int filled = 0;
+                while (filled < pixels.Length)
+                {
+                    workCounter.Consume(cancellationToken);
+                    int read = zlib.Read(pixels, filled, pixels.Length - filled);
+                    if (read == 0) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data ends inside its pixel stream.");
+                    filled += read;
+                }
+                if (zlib.ReadByte() != -1) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries trailing pixel bytes.");
             }
-            if (zlib.ReadByte() != -1) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries trailing pixel bytes.");
+        }
+        catch (InvalidDataException)
+        {
+            throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries corrupt compressed pixel data.");
         }
         return new DecodedSolidImage(ScanSolidColor(pixels, width, height, channels, transparent, palette, isPaletteType, (int)rowBytes, workCounter, cancellationToken), width, height);
     }
@@ -243,7 +250,7 @@ internal static class PngImageDecoder
         return aboveError <= upperLeftError ? above : upperLeft;
     }
 
-    private static bool IsCritical(ReadOnlySpan<byte> type) => (type[3] & 0x20) == 0;
+    private static bool IsCritical(ReadOnlySpan<byte> type) => (type[0] & 0x20) == 0;
 
     private static bool IsColorManaged(ReadOnlySpan<byte> type)
         => type.SequenceEqual("gAMA"u8) || type.SequenceEqual("cHRM"u8) || type.SequenceEqual("sRGB"u8) || type.SequenceEqual("iCCP"u8);

@@ -111,9 +111,80 @@ public sealed class PngImageDecoderTests
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
+    [Fact]
+    public void Categorizes_corrupt_compressed_pixels_as_malformed()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => Decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQAnGP4z8DwHwAFAAH/aW6S9AAAAABJRU5ErkJggg=="));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_unknown_critical_chunks()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => Decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAEFCQ2GQE/TiAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg=="));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Ignores_unknown_ancillary_chunks()
+    {
+        SvgColor color = Decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAGFiQ0RDaMl7AAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==");
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), color);
+    }
+
+    [Fact]
+    public async Task Corrupt_compressed_pixels_fail_identically_in_all_six_api_forms()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQAnGP4z8DwHwAFAAH/aW6S9AAAAABJRU5ErkJggg==' x='0' y='0' width='1' height='1'/></svg>");
+
+        foreach (OutputForm form in Enum.GetValues<OutputForm>())
+        {
+            SvgException exception = await Assert.ThrowsAsync<SvgException>(() => ConvertPublicPng(svg, form));
+            Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+        }
+    }
+
+    private static async Task<ReadOnlyMemory<byte>> ConvertPublicPng(byte[] svg, OutputForm form)
+    {
+        byte[] memoryDestination = new byte[1_024];
+        using MemoryStream streamDestination = new();
+        try
+        {
+            switch (form)
+            {
+                case OutputForm.Owned: return Lokad.Svg.SvgConverter.ConvertToPng(svg, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None);
+                case OutputForm.OwnedAsync: return await Lokad.Svg.SvgConverter.ConvertToPngAsync(svg, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None);
+                case OutputForm.Memory:
+                    int written = Lokad.Svg.SvgConverter.ConvertToPng(svg, memoryDestination, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None);
+                    return memoryDestination.AsMemory(0, written);
+                case OutputForm.MemoryAsync:
+                    int writtenAsync = await Lokad.Svg.SvgConverter.ConvertToPngAsync(svg, memoryDestination, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None);
+                    return memoryDestination.AsMemory(0, writtenAsync);
+                case OutputForm.Stream:
+                    Lokad.Svg.SvgConverter.ConvertToPng(svg, streamDestination, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None);
+                    return streamDestination.ToArray();
+                case OutputForm.StreamAsync:
+                    await Lokad.Svg.SvgConverter.ConvertToPngAsync(svg, streamDestination, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None);
+                    return streamDestination.ToArray();
+                default: throw new ArgumentOutOfRangeException(nameof(form));
+            }
+        }
+        catch (SvgException)
+        {
+            Assert.All(memoryDestination, value => Assert.Equal(0, value));
+            Assert.Equal(0, streamDestination.Length);
+            throw;
+        }
+    }
+
+    private enum OutputForm { Owned, OwnedAsync, Memory, MemoryAsync, Stream, StreamAsync }
+
     private static SvgColor Decode(string base64)
     {
-        byte[] png = Convert.FromBase64String(base64);
+        byte[] png = System.Convert.FromBase64String(base64);
         return PngImageDecoder.DecodeSolidColor(png, SvgRenderLimits.Default, new RenderBudget(100_000), new ParserWorkCounter(10_000), CancellationToken.None).Color;
     }
 }
