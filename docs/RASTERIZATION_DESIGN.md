@@ -324,3 +324,12 @@ Method: six retained transparent probes (base, mirror, winding-reordered, 2x-sca
 Facts: the best combination (quarter-grid nearest snap with round output) still leaves 72 mismatches across the six probes with maxerr 12, against 78 for the unsnapped round baseline. Every combination fails decisively; the fractional and half-grid probes dominate with 21+ mismatches each and errors up to 104. The 16x16 top-row alpha identity with the 8x8 top row is corner-anchored self-similarity (both are vertex-A corner pixels with exact coverage 5/6), not rasterizer scale-invariance, so it constrains nothing beyond the base row.
 
 Decision: input vertex-grid snapping is eliminated as a general mechanism for these grids, modes and output rules. The device-space edge/scanline calculation remains the open question. No implementation change; the diagonal lowering gate is unchanged.
+
+## Scanline edge-sampling elimination (2026-09-23 decision analysis)
+Question: does evaluating triangle edge crossings once per pixel row and filling the resulting span, with span endpoints or edge slopes optionally quantized, explain the diagonal hold-out? This tests the scanline half of the open edge/scanline question; vertex snapping was eliminated previously.
+
+Method: the same six retained transparent probes. Span variants: crossings sampled at row top, center, or bottom; span endpoints snapped to 1/4, 1/8, 1/16 grids; edge slopes snapped to 1/8, 1/16; output round or trunc. Per-pixel coverage is the column clip of the sampled span. Scripts are scratch artifacts.
+
+Facts: center sampling is the best of the family yet still leaves 93 mismatches with maxerr 117 across the six probes, against 78 for the unsnapped exact-area baseline. Top/bottom sampling exceed 119 mismatches with errors to 244. Snapping slopes to 1/8 or 1/16 strictly worsens the exact-slope span result (70-71 versus 62 over four probes). The family fails structurally wherever an edge crossing moves within a row, worst on fractional phases.
+
+Decision: per-row single-sample spans, with or without endpoint or slope quantization, are eliminated. What remains open is an area-accumulating edge walk whose fixed-point accumulation must reproduce exactly the observed small mixed deltas, or the actual mask-writer algorithm identified from the pinned Skia revision and verified black-box against the hold-out. No implementation change; the diagonal lowering gate is unchanged.
