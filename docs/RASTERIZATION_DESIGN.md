@@ -355,3 +355,11 @@ Question: is the single-unit tri residual a transcription error? Re-reading setL
 Facts: with faithful fDY, all six retained transparent probes replicate pixel-exact (576/576) with no forcing, plus the decision probe (64/64), total 640/640. The previously forced values fall out naturally: fDY of the -1 slope is 65535 (quick_div truncation, not the table 65536), fDY of the -1/6 slope is 393216. Integer-vertex probes are unchanged (their exercised paths never touch the differing branch). Table extraction itself was verified value-by-value against the closed-form reciprocal.
 
 Decision: the AAA mask writer is confirmed as the browser backend mechanism for diagonal fills on transparent backgrounds. Admission into the renderer still requires: white/black compositing with the recorded overshoot, overlap/layer-opacity compositing, slice-3 compound/curved geometry, and renderer integration preserving rectangle equivalence with work/cancellation/bounds accounting plus the full suite. No implementation change in this turn; the diagonal lowering gate is unchanged.
+
+## Opaque-background compositing is exact (2026-09-24 decision analysis)
+Question: does single-layer AAA coverage composite exactly over opaque backgrounds, and does the recorded white-background overshoot generalize beyond group-opacity paths? The white/black diagonal probes share the base triangle geometry with three-run stable references.
+Method: per-pixel comparison of the white/black references against the exact replica alphas (base probe decoded straight as (255,0,0,A) everywhere). Predicted white (255,255-A,255-A) and black (A,0,0) with exact integer arithmetic, no rounding model.
+
+Facts: zero anomalies across all 64 pixels times three images. White matches (255,255-A,255-A) exactly and black matches (A,0,0) exactly. The +1 white overshoot does not appear in this single-layer case, so it stays scoped to group-opacity paths (group-fade-mark) rather than general white compositing.
+
+Decision: opaque-background compositing of single-layer AAA coverage is validated exact with no rounding model needed. The remaining compositing work is two-layer source-over (overlap probes) with the known coverage-dependent alpha question. No implementation change; the diagonal lowering gate is unchanged.
