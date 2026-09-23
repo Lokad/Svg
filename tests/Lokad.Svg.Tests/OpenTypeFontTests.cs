@@ -1703,6 +1703,7 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><path d='M0,0 H5 V5 H0 Z' fill='red' clip-path='url(#c)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g transform='translate(5,0) scale(-1,1)'><rect x='0' y='0' width='2' height='2' fill='red'/></g><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><path d='M1,1 H6 V6 H1 Z M3,0 H5 V8 H3 Z' fill='red'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='2' height='2' transform='translate(1,1)'/></clipPath></defs><rect width='5' height='5' fill='red' clip-path='url(#c)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

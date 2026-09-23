@@ -1282,6 +1282,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Clips_leaves_to_transformed_clip_path_content()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='1' y='1' width='4' height='4' transform='translate(1,1)'/></clipPath></defs><rect x='0' y='0' width='8' height='8' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
     public void Lowers_intersecting_contours_with_nonzero_winding()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M1,1 H6 V6 H1 Z M3,0 H5 V8 H3 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
