@@ -92,7 +92,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.Symbol => reader.LocalName is "id" or "viewBox" or "preserveAspectRatio",
             SvgElementKind.ClipPath => reader.LocalName is "id" or "clipPathUnits" or "clip-rule",
             SvgElementKind.Mask => reader.LocalName is "id" or "mask-type" or "x" or "y" or "width" or "height" or "maskUnits" or "maskContentUnits",
-            SvgElementKind.Pattern => reader.LocalName is "id" or "x" or "y" or "width" or "height" or "patternUnits" or "patternContentUnits",
+            SvgElementKind.Pattern => reader.LocalName is "id" or "x" or "y" or "width" or "height" or "patternUnits" or "patternContentUnits" or "patternTransform",
             SvgElementKind.LinearGradient => reader.LocalName is "id" or "href" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod" or "gradientTransform",
             SvgElementKind.GradientStop => reader.LocalName is "offset" or "stop-color" or "stop-opacity",
             SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "preserveAspectRatio" or "opacity" or "display" or "visibility" or "style" or "clip-path" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "color-interpolation",

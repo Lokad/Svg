@@ -121,7 +121,9 @@ internal static class SvgDefinitionParser
                 SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 SvgGeometry content = SvgLeafParser.ParseRectangle(reader, tileContext, null, state);
                 SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern tile accumulation requires pattern dimensions.");
-                state.PatternTile = tile with { Content = RequirePatternTileContent(content, tile) };
+                SvgGeometry validated = RequirePatternTileContent(content, tile);
+                SvgRectangle shifted = validated.Rectangle with { X = validated.Rectangle.X + tile.ShiftX, Y = validated.Rectangle.Y + tile.ShiftY };
+                state.PatternTile = tile with { Content = SvgGeometry.FromRectangle(shifted) };
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 state.SawStyleableNode = true;
                 return true;

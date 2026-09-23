@@ -3,7 +3,7 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one admitted pattern tile with its integer grid while streaming.</summary>
-internal readonly record struct SvgPatternTile(SvgGeometry? Content, int OriginX, int OriginY, int TileWidth, int TileHeight);
+internal readonly record struct SvgPatternTile(SvgGeometry? Content, int OriginX, int OriginY, int TileWidth, int TileHeight, int ShiftX, int ShiftY);
 
 /// <summary>Parses the bounded pattern definition syntax and lowers pattern-filled rectangles.</summary>
 internal static class SvgPatternSyntax
@@ -19,7 +19,36 @@ internal static class SvgPatternSyntax
         int y = ParseGridCoordinate(reader.GetAttribute("y") ?? "0");
         int width = ParseGridExtent(reader.GetAttribute("width"));
         int height = ParseGridExtent(reader.GetAttribute("height"));
-        return new SvgPatternTile(null, x, y, width, height);
+        (int shiftX, int shiftY) = ParsePatternTransform(reader.GetAttribute("patternTransform"));
+        return new SvgPatternTile(null, x, y, width, height, shiftX, shiftY);
+
+    }
+
+    /// <summary>Parses the admitted integer translate-only pattern transform.</summary>
+    internal static (int X, int Y) ParsePatternTransform(string? value)
+    {
+        if (value is null) return (0, 0);
+        if (value.Length > SvgSyntaxLimits.MaximumTransformCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform values exceed the configured syntax limit.");
+        ReadOnlySpan<char> input = value.AsSpan().Trim();
+        int separator = input.IndexOf('(');
+        if (separator <= 0 || !input.EndsWith(")")) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate() pattern transforms are implemented.");
+        if (!input[..separator].Trim().Equals("translate".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate() pattern transforms are implemented.");
+        ReadOnlySpan<char> arguments = input[(separator + 1)..^1];
+        int first = 0;
+        int second = 0;
+        int valueCount = 0;
+        SvgGeometrySyntax.DelimitedTokenReader tokens = new(arguments);
+        while (tokens.TryReadValue(out ReadOnlySpan<char> token))
+        {
+            if (valueCount == 2) throw new SvgException(SvgErrorCode.MalformedInput, "Pattern translate() requires one or two coordinates.");
+            double parsed = SvgGeometrySyntax.ParseRectangleCoordinate(token.ToString());
+            if (parsed != Math.Truncate(parsed)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate() pattern transforms are implemented.");
+            if (valueCount == 0) first = (int)parsed;
+            else second = (int)parsed;
+            valueCount++;
+        }
+        if (valueCount == 0) throw new SvgException(SvgErrorCode.MalformedInput, "Pattern translate() requires one or two coordinates.");
+        return valueCount == 1 ? (first, 0) : (first, second);
     }
 
     internal static string ParsePatternId(string? value)

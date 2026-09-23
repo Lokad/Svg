@@ -1098,6 +1098,22 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_translucent_lines_to_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='1' y1='3' x2='5' y2='3' stroke='red' stroke-width='2' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(1, 2, 4, 2, new SvgColor(255, 0, 0, 128), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Lowers_translucent_stroke_colors_on_lines()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='1' y1='3' x2='5' y2='3' stroke='#ff000080' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(1, 2, 4, 2, new SvgColor(255, 0, 0, 128), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
     public void Preserves_the_full_extent_of_extreme_axis_aligned_line_coordinates()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='-2147483648' y1='2' x2='2147483647' y2='2' stroke='red' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -3011,6 +3027,33 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Shifts_pattern_content_through_translate_transforms()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='translate(2,3)'><rect width='8' height='8' fill='red'/></pattern></defs><rect x='8' y='8' width='48' height='48' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
+        Assert.Equal(new SvgRectangle(2, 3, 8, 8, new SvgColor(255, 0, 0, 255), true, null), geometry.Pattern.Content);
+        Assert.Equal(0, geometry.Pattern.OriginX);
+        Assert.Equal(0, geometry.Pattern.OriginY);
+    }
+
+    [Theory]
+    [InlineData("scale(2)", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("rotate(45)", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("translate(0.5)", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("translate()", SvgErrorCode.MalformedInput)]
+    [InlineData("translate(1,2,3)", SvgErrorCode.MalformedInput)]
+    [InlineData("matrix(1,0,0,1,0,0)", SvgErrorCode.UnsupportedFeature)]
+    public void Rejects_unsupported_pattern_transforms(string transform, SvgErrorCode code)
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(code, exception.ErrorCode);
+    }
+
     [Fact]
     public void Lowers_a_solid_embedded_image_to_a_rectangle()
     {
