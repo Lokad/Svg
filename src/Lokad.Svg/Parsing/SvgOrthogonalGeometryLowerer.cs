@@ -148,6 +148,7 @@ internal ref struct SvgOrthogonalGeometryLowering
 
     internal static void ValidateSimpleContour(BudgetedParserList<SvgPoint> points, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        if (SvgContourTopology.Classify(points.AsSpan(), 0, points.Count) == SvgContourKind.Diagonal) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned " + elementName + " contours are implemented.");
         for (int firstIndex = 0; firstIndex < points.Count; firstIndex++)
         {
             SvgPoint firstStart = points[firstIndex]; SvgPoint firstEnd = points[(firstIndex + 1) % points.Count];
@@ -182,6 +183,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         for (int contourIndex = 0; contourIndex < contourEnds.Count; contourIndex++)
         {
             int contourEnd = contourEnds[contourIndex];
+            if (SvgContourTopology.Classify(points.AsSpan(), contourStart, contourEnd) == SvgContourKind.Diagonal) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned " + elementName + " contours are implemented.");
             ValidateContourSlice(points, contourStart, contourEnd, elementName, workCounter, cancellationToken);
             contourStart = contourEnd;
         }

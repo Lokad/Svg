@@ -2,7 +2,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Parses bounded absolute orthogonal path and point-list syntax into charged point storage.</summary>
+/// <summary>Parses bounded absolute integer path and point-list contours into charged point storage. Diagonal contours materialize here; orthogonality is enforced downstream at lowering.</summary>
 internal static class SvgOrthogonalGeometryTokenizer
 {
     internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<int> contourEnds)
@@ -92,7 +92,7 @@ internal static class SvgOrthogonalGeometryTokenizer
                 for (int pointIndex = contourStart; pointIndex < contourEnd; pointIndex++)
                 {
                     SvgPoint start = points[pointIndex]; SvgPoint end = pointIndex + 1 < contourEnd ? points[pointIndex + 1] : points[contourStart];
-                    if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
+                    if (start.X == end.X && start.Y == end.Y) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 }
                 contourEnds.Add(contourEnd);
                 if (tokens.End) hasMore = false;
@@ -162,7 +162,7 @@ internal static class SvgOrthogonalGeometryTokenizer
             for (int index = 0; index < points.Count; index++)
             {
                 SvgPoint start = points[index]; SvgPoint end = points[(index + 1) % points.Count];
-                if ((start.X == end.X) == (start.Y == end.Y)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
+                if (start.X == end.X && start.Y == end.Y) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
             }
             return points;
         }
