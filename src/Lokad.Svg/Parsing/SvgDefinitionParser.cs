@@ -14,7 +14,7 @@ internal static class SvgDefinitionParser
             else SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
             SvgViewBox? symbolViewBox = state.SymbolDepth >= 0 ? state.SymbolViewBox : null;
-            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, symbolViewBox) : new SvgDefinition(SvgLeafParser.ParseLine(reader, context, null), false, symbolViewBox);
+            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, symbolViewBox) : new SvgDefinition(SvgLeafParser.ParseLine(reader, context, null, state), false, symbolViewBox);
             if (id is not null)
             {
                 workCounter.Consume(cancellationToken);
