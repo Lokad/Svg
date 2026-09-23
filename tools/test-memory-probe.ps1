@@ -126,6 +126,31 @@ $limit = Invoke-Probe -Name 'limit' -InputPath $fixture -Output $limitOutput -Ex
 if ($limit['outcome'] -ne 'svg-error' -or $limit['svgErrorCode'] -ne 'LimitExceeded' -or (Test-Path -LiteralPath $limitOutput)) { throw 'The limited probe did not reject before output.' }
 if (-not $limit.ContainsKey('conversionManagedAllocatedBytes') -or [long]$limit['conversionManagedAllocatedBytes'] -le 0) { throw 'The limited probe did not report managed conversion allocation.' }
 
+$imageInput = Join-Path $ResultsDirectory "$runId-image.svg"
+$imagePixel = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg=="
+[IO.File]::WriteAllText($imageInput, '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><image href="data:image/png;base64,' + $imagePixel + '" x="0" y="0" width="8" height="8"/></svg>', [Text.UTF8Encoding]::new($false))
+$imageBytes = [IO.FileInfo]::new($imageInput).Length
+$imageOutput = Join-Path $ResultsDirectory "$runId-image.png"
+$image = Invoke-Probe -Name 'image' -InputPath $imageInput -Output $imageOutput -ExpectedExitCode 0
+if ($image['outcome'] -ne 'success' -or $image['inputBytes'] -ne $imageBytes.ToString() -or -not (Test-Path -LiteralPath $imageOutput)) { throw 'The embedded-image probe did not convert its solid PNG data URI.' }
+if (-not $image.ContainsKey('conversionManagedAllocatedBytes') -or [long]$image['conversionManagedAllocatedBytes'] -le 0) { throw 'The embedded-image probe did not report managed conversion allocation.' }
+
+$imageDeniedOutput = Join-Path $ResultsDirectory "$runId-image-denied.png"
+$imageDenied = Invoke-Probe -Name 'image-denied' -InputPath $imageInput -Output $imageDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-accounted-bytes', '131122')
+if ($imageDenied['outcome'] -ne 'svg-error' -or $imageDenied['svgErrorCode'] -ne 'LimitExceeded' -or $imageDenied['inputBytes'] -ne $imageBytes.ToString() -or (Test-Path -LiteralPath $imageDeniedOutput)) { throw 'The storage-denied embedded-image probe did not reject before output.' }
+
+$patternInput = Join-Path $ResultsDirectory "$runId-pattern.svg"
+[IO.File]::WriteAllText($patternInput, '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><defs><pattern id="p" width="256" height="256" patternUnits="userSpaceOnUse"><rect width="256" height="256" fill="red"/></pattern></defs><rect x="0" y="0" width="64" height="64" fill="url(#p)"/></svg>', [Text.UTF8Encoding]::new($false))
+$patternBytes = [IO.FileInfo]::new($patternInput).Length
+$patternOutput = Join-Path $ResultsDirectory "$runId-pattern.png"
+$pattern = Invoke-Probe -Name 'pattern' -InputPath $patternInput -Output $patternOutput -ExpectedExitCode 0
+if ($pattern['outcome'] -ne 'success' -or $pattern['inputBytes'] -ne $patternBytes.ToString() -or -not (Test-Path -LiteralPath $patternOutput)) { throw 'The pattern tile probe did not convert its tiled fill.' }
+if (-not $pattern.ContainsKey('conversionManagedAllocatedBytes') -or [long]$pattern['conversionManagedAllocatedBytes'] -le 0) { throw 'The pattern tile probe did not report managed conversion allocation.' }
+
+$patternDeniedOutput = Join-Path $ResultsDirectory "$runId-pattern-work-denied.png"
+$patternDenied = Invoke-Probe -Name 'pattern-work-denied' -InputPath $patternInput -Output $patternDeniedOutput -ExpectedExitCode 1 -ExtraArguments @('--maximum-work-units', '10000')
+if ($patternDenied['outcome'] -ne 'svg-error' -or $patternDenied['svgErrorCode'] -ne 'LimitExceeded' -or $patternDenied['inputBytes'] -ne $patternBytes.ToString() -or (Test-Path -LiteralPath $patternDeniedOutput)) { throw 'The work-denied pattern tile probe did not reject before output.' }
+
 $xmlWorkspaceInput = Join-Path $ResultsDirectory "$runId-xml-workspace.svg"
 $xmlWorkspacePayload = New-Object string('x', 64KB)
 [IO.File]::WriteAllText($xmlWorkspaceInput, '<svg xmlns="http://www.w3.org/2000/svg"><metadata>' + $xmlWorkspacePayload + '</metadata></svg>', [Text.UTF8Encoding]::new($false))
@@ -228,4 +253,4 @@ $summary = [ordered]@{
 $summaryPath = Join-Path $ResultsDirectory "$runId-summary.json"
 [IO.File]::WriteAllText($summaryPath, ($summary | ConvertTo-Json -Depth 6), [Text.UTF8Encoding]::new($false))
 
-Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text and attribute shapes and five fresh-process font-discovery ledger scenarios. Summary retained at $summaryPath."
+Write-Output "Memory probe scenarios passed, including $XmlReaderProbeRuns fresh-process XML-reader measurements for text and attribute shapes, fresh-process font-discovery ledger scenarios, two fresh-process embedded-image conversion scenarios, and two fresh-process pattern tile scenarios. Summary retained at $summaryPath."
