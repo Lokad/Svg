@@ -52,6 +52,8 @@ public sealed class SvgContourTopologyTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='m0,0 l8,0 l-8,8 z' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 L0,8 Z' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8 H0 Z M16,16 L24,16 L16,24 Z' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 M16,16 H24 V24 H16 Z' fill='red'/></svg>", "Only closed axis-aligned integer paths are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", "Only axis-aligned polygon contours are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><polyline points='0,0 8,0 0,8' fill='red'/></svg>", "Only axis-aligned polyline contours are implemented.")]
     public void Diagonal_contours_reach_the_lowering_gate(string svg, string messageFragment)
@@ -69,5 +71,14 @@ public sealed class SvgContourTopologyTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Contains("Only closed axis-aligned integer paths are implemented.", exception.Message);
+    }
+
+    [Fact]
+    public void Final_subpath_may_omit_Z_for_fill_closure()
+    {
+        SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgRoot open = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8 H0' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(closed.Rectangles, open.Rectangles);
     }
 }

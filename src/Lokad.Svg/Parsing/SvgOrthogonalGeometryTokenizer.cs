@@ -41,7 +41,6 @@ internal static class SvgOrthogonalGeometryTokenizer
                     int iy = tokens.ReadInteger();
                     current = AddLinePoint(points, contourStart, current, implicitLine == 'L' ? new SvgPoint(ix, iy) : AddOffset(current, ix, iy));
                 }
-                bool closed = false;
                 while (!tokens.End)
                 {
                     if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
@@ -81,10 +80,9 @@ internal static class SvgOrthogonalGeometryTokenizer
                         } while (tokens.PeekIsValueStart() && !tokens.End);
                         implicitLine = command;
                     }
-                    else if (command is 'Z' or 'z') { closed = true; break; }
+                    else if (command is 'Z' or 'z') { break; }
                     else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 }
-                if (!closed) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 current = points[contourStart];
                 int contourEnd = points.Count;
                 if (contourEnd - contourStart < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
