@@ -31,8 +31,9 @@ internal static class SvgLeafParser
         double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
         double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
         DecodedSolidImage image = DecodeImage(syntax.Href, element, limits, budget, context.WorkCounter, context.CancellationToken);
-        if (reader.GetAttribute("preserveAspectRatio") is null && image.Width * height != image.Height * width) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image placement with a mismatched aspect ratio is not implemented.");
-        SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, width, height, image.Color, element.Presentation.HasFill, null));
+        string? aspect = reader.GetAttribute("preserveAspectRatio");
+        SvgRectangle placement = SvgImageSyntax.MapPlacement(aspect, syntax, image, width, height);
+        SvgRectangle rectangle = element.Transform.Apply(placement with { Color = image.Color, HasFill = element.Presentation.HasFill });
         if (frame is not null) rectangle = frame.Value.Clip.ClipRectangle(frame.Value.Shift(rectangle));
         return SvgGeometry.FromRectangle(rectangle);
     }

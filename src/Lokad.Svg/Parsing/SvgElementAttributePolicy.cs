@@ -61,7 +61,7 @@ internal static class SvgElementAttributePolicy
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "font-variant") SvgTextFontSyntax.ValidateFontVariant(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "color-interpolation") SvgGradientSyntax.ValidateColorInterpolation(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow") SvgNestedViewportSyntax.ValidateOverflow(reader.Value.AsSpan());
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "preserveAspectRatio" && kind == SvgElementKind.Image) SvgImageSyntax.ValidatePreserveAspectRatio(reader.Value.AsSpan());
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "preserveAspectRatio" && kind == SvgElementKind.Image) _ = SvgImageSyntax.ParsePlacementAspectRatio(reader.Value);;
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "clip-rule") SvgClipPathSyntax.ValidateClipRule(reader.Value.AsSpan());
                 continue;
             }

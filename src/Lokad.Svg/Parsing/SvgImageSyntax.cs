@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg.Encoding;
 
 namespace Lokad.Svg.Parsing;
 
@@ -15,12 +16,6 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
         return new SvgImageSyntax(href, x, y, width, height);
     }
 
-    /// <summary>Validates the admitted image preserveAspectRatio shared by attributes and style declarations.</summary>
-    internal static void ValidatePreserveAspectRatio(ReadOnlySpan<char> value)
-    {
-        if (value.Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only none image preserveAspectRatio is implemented.");
-    }
 
     private static double? ParseDimension(string? value, double? baseValue)
     {
@@ -34,5 +29,43 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
     {
         if (value is null) return 0;
         return SvgGeometrySyntax.ParseViewportDimension(value, baseValue);
+    }
+
+    /// <summary>Parses the admitted image placement aspect policy, defaulting to centered meet.</summary>
+    internal static (SvgViewBoxAlignment HorizontalAlignment, SvgViewBoxAlignment VerticalAlignment, SvgViewBoxFit Fit) ParsePlacementAspectRatio(string? value)
+    {
+        if (value is not null && value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "preserveAspectRatio values exceed the configured syntax limit.");
+        return SvgGeometrySyntax.ParsePreserveAspectRatio(value);
+    }
+
+
+    /// <summary>Maps one solid image into its placement box under the effective aspect policy.</summary>
+    internal static SvgRectangle MapPlacement(string? preserveAspectRatio, SvgImageSyntax syntax, DecodedSolidImage image, double width, double height)
+    {
+        if (image.Width * height == image.Height * width) return new(syntax.X, syntax.Y, width, height, default, true, null);
+        (SvgViewBoxAlignment horizontalAlignment, SvgViewBoxAlignment verticalAlignment, SvgViewBoxFit fit) = ParsePlacementAspectRatio(preserveAspectRatio);
+        if (fit == SvgViewBoxFit.None) return new(syntax.X, syntax.Y, width, height, default, true, null);
+        (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(new SvgViewBox(0, 0, image.Width, image.Height, horizontalAlignment, verticalAlignment, fit), width, height);
+        double left = syntax.X + offsetX;
+        double top = syntax.Y + offsetY;
+        double right = left + image.Width * scaleX;
+        double bottom = top + image.Height * scaleY;
+        if (fit == SvgViewBoxFit.Slice)
+        {
+            left = Math.Max(left, syntax.X);
+            top = Math.Max(top, syntax.Y);
+            right = Math.Min(right, syntax.X + width);
+            bottom = Math.Min(bottom, syntax.Y + height);
+        }
+        RequireIntegralEdges(left, top, right, bottom);
+        return new(left, top, right - left, bottom - top, default, true, null);
+    }
+
+    private static void RequireIntegralEdges(double left, double top, double right, double bottom)
+    {
+        if (Math.Abs(left - Math.Round(left, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
+        if (Math.Abs(top - Math.Round(top, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
+        if (Math.Abs(right - Math.Round(right, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
+        if (Math.Abs(bottom - Math.Round(bottom, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
     }
 }

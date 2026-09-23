@@ -135,7 +135,7 @@ internal static class SvgInlineStyleParser
         static void ValidateImagePreserveAspectRatioDeclaration(ReadOnlySpan<char> rawValue)
         {
             TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
-            SvgImageSyntax.ValidatePreserveAspectRatio(stripped);
+            _ = SvgImageSyntax.ParsePlacementAspectRatio(stripped.ToString());
         }
 
         static void ValidateOverflowDeclaration(ReadOnlySpan<char> rawValue)
