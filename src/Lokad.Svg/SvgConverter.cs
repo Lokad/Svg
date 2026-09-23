@@ -327,11 +327,15 @@ public static class SvgConverter
             int startY = (int)(box.Y - pattern.OriginY);
             int endX = startX + (int)box.Width;
             int endY = startY + (int)box.Height;
+            long blitted = (long)(endY - startY) * (endX - startX);
+            if (blitted > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile raster work exceeds the configured limit.");
+            workUnits += blitted;
             for (int y = startY; y < endY; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 for (int x = startX; x < endX; x++)
                 {
+                    if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                     int offset = (y * pattern.TileWidth + x) * 4;
                     BlendSourceOver(tile.AsSpan(offset, 4), box.Color, false);
                 }

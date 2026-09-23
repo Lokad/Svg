@@ -165,6 +165,51 @@ public sealed class RenderBudgetTests
         Assert.Equal(long.MaxValue, budget.Snapshot().CurrentBytes);
     }
 
+    [Fact]
+    public void Pattern_tile_blit_charges_content_pixels()
+    {
+        RenderBudget budget = new(1_000);
+
+        using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(PatternRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits(20)), budget, CancellationToken.None);
+
+        Assert.Equal(20, surface.WorkUnits);
+        Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels[0..4]);
+        Assert.Equal(16, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Pattern_tile_blit_denies_before_content_work_exceeds_the_limit()
+    {
+        RenderBudget budget = new(1_000);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits(15));
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(PatternRoot(), options, budget, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Contains("Pattern tile", exception.Message);
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+    public void Pattern_tile_blit_observes_cancellation()
+    {
+        RenderBudget budget = new(1_000);
+        var options = new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits(20));
+
+        Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(PatternRoot(), options, budget, new CancellationToken(true)));
+
+        AssertBudgetReleased(budget);
+    }
+
+    private static SvgRoot PatternRoot()
+    {
+        SvgRectangle content = new(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null);
+        SvgRectangle fill = new(0, 0, 2, 2, default, true, null);
+        SvgGeometry geometry = SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, 0, 0, 4, 4, fill, 255, null));
+        return new SvgRoot(2, 2, null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255)], false, 0, null);
+    }
+
+    private static SvgRenderLimits PatternLimits(int maximumWorkUnits) => new(1_000, 1_000, 64, 4_096, 1_000, 64, 64, maximumWorkUnits);
     private static SvgRoot GlyphRoot()
     {
         SvgGlyphQuadraticContour contour = new([
