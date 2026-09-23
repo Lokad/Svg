@@ -7,7 +7,8 @@ namespace Lokad.Svg.Tests;
 public sealed class PngImageDecoderTests
 {
     private const string RedPixel = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==";
-
+    private const string Wide16384 = "iVBORw0KGgoAAAANSUhEUgAAQAAAAAABCAYAAAAmn7ZYAAABVklEQVR4nO3SMQ0AAACDMPyb3oz0wABpq8kDBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYICBAzvUh3LqxPMyAAAAAElFTkSuQmCC";
+    private const string RgbaWithTransparency = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAnRSTlMAAHaTzTgAAAANSURBVHicY/jPwPAfAAUAAf+JmT0dAAAAAElFTkSuQmCC";
     [Fact]
     public void Decodes_a_solid_rgba_pixel()
     {
@@ -182,6 +183,78 @@ public sealed class PngImageDecoderTests
 
     private enum OutputForm { Owned, OwnedAsync, Memory, MemoryAsync, Stream, StreamAsync }
 
+    [Fact]
+    public void Denied_idat_storage_rejects_decode_without_retention()
+    {
+        byte[] png = System.Convert.FromBase64String(RedPixel);
+        RenderBudget budget = new(5);
+
+        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, budget, new ParserWorkCounter(10_000), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Denied_pixel_storage_rejects_decode_without_retention()
+    {
+        byte[] png = System.Convert.FromBase64String(RedPixel);
+        RenderBudget budget = new(20);
+
+        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, budget, new ParserWorkCounter(10_000), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Exhausted_work_rejects_decode()
+    {
+        byte[] png = System.Convert.FromBase64String(RedPixel);
+
+        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, new RenderBudget(100_000), new ParserWorkCounter(0), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Cancelled_decode_throws_operation_cancelled()
+    {
+        byte[] png = System.Convert.FromBase64String(RedPixel);
+
+        Assert.Throws<OperationCanceledException>(() => Decode(png, new RenderBudget(100_000), new ParserWorkCounter(10_000), new CancellationToken(true)));
+    }
+
+    [Fact]
+    public void Wider_rows_consume_more_decoder_work()
+    {
+        byte[] small = System.Convert.FromBase64String(RedPixel);
+        byte[] large = System.Convert.FromBase64String(Wide16384);
+        ParserWorkCounter smallWork = new(1_000_000);
+        ParserWorkCounter largeWork = new(1_000_000);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Decode(small, new RenderBudget(100_000), smallWork, CancellationToken.None));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Decode(large, new RenderBudget(1_000_000), largeWork, CancellationToken.None));
+
+        Assert.True(largeWork.Used > smallWork.Used);
+    }
+
+    [Fact]
+    public void Malformed_transparency_stays_malformed_with_tight_budget()
+    {
+        byte[] png = System.Convert.FromBase64String(RgbaWithTransparency);
+        RenderBudget budget = new(1);
+
+        SvgException exception = Assert.Throws<SvgException>(() => Decode(png, budget, new ParserWorkCounter(10_000), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    private static SvgColor Decode(byte[] png, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        return PngImageDecoder.DecodeSolidColor(png, SvgRenderLimits.Default, budget, workCounter, cancellationToken).Color;
+    }
     private static SvgColor Decode(string base64)
     {
         byte[] png = System.Convert.FromBase64String(base64);

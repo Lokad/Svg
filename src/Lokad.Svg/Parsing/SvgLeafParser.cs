@@ -42,12 +42,19 @@ internal static class SvgLeafParser
     {
         const string Prefix = "data:image/png;base64,";
         if (!href.StartsWith(Prefix, StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only base64 PNG data-URI embedded images are implemented.");
-        byte[] bytes;
-        try { bytes = Convert.FromBase64String(href.Substring(Prefix.Length)); }
-        catch (FormatException) { throw new SvgException(SvgErrorCode.MalformedInput, "Embedded image data is not valid base64."); }
-        using RenderBudget.BudgetReservation reservation = budget.Reserve(bytes.Length, SvgMemoryCategory.Parser);
-        DecodedSolidImage decoded = PngImageDecoder.DecodeSolidColor(bytes, limits, budget, workCounter, cancellationToken);
-        return new DecodedSolidImage(StampOpacity(decoded.Color, element.Presentation.Opacity), decoded.Width, decoded.Height);
+        ArgumentNullException.ThrowIfNull(limits);
+        ArgumentNullException.ThrowIfNull(budget);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        ReadOnlySpan<char> encoded = href.AsSpan(Prefix.Length);
+        long maxDecoded = ((long)encoded.Length + 3) / 4 * 3;
+        if (maxDecoded > limits.MaximumAccountedBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image data exceeds the configured accounting limit.");
+        if (maxDecoded > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image data exceeds the configured accounting limit.");
+        using RenderBudget.BudgetReservation? reservation = maxDecoded > 0 ? budget.Reserve(maxDecoded, SvgMemoryCategory.Parser) : null;
+        workCounter.ConsumeBytes(encoded.Length, cancellationToken);
+        byte[] decoded = new byte[(int)maxDecoded];
+        if (!Convert.TryFromBase64Chars(encoded, decoded, out int written)) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded image data is not valid base64.");
+        DecodedSolidImage image = PngImageDecoder.DecodeSolidColor(decoded.AsMemory(0, written), limits, budget, workCounter, cancellationToken);
+        return new DecodedSolidImage(StampOpacity(image.Color, element.Presentation.Opacity), image.Width, image.Height);
     }
 
     private static SvgColor StampOpacity(SvgColor color, byte opacity)

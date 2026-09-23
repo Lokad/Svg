@@ -29,6 +29,8 @@ internal static class PngImageDecoder
         byte[]? palette = null;
         bool seenImageData = false;
         using var compressed = new MemoryStream();
+        using var storage = new WorkingStorage(budget);
+        long compressedLength = 0;
         int position = PngSignature.Length;
         bool seenHeader = false;
         bool seenEnd = false;
@@ -41,6 +43,7 @@ internal static class PngImageDecoder
             ReadOnlySpan<byte> type = png.Span.Slice(position + 4, 4);
             ReadOnlySpan<byte> data = png.Span.Slice(position + 8, length);
             uint expectedCrc = BinaryPrimitives.ReadUInt32BigEndian(png.Span.Slice(position + 8 + length, 4));
+            workCounter.ConsumeBytes(length, cancellationToken);
             if (ComputeCrc(type, data) != expectedCrc) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data fails its chunk integrity check.");
             if (type.SequenceEqual("IHDR"u8))
             {
@@ -64,6 +67,12 @@ internal static class PngImageDecoder
             else if (type.SequenceEqual("IDAT"u8))
             {
                 if (!seenHeader || seenEnd) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its image data.");
+                if (length > 0)
+                {
+                    compressedLength += length;
+                    if (compressedLength > limits.MaximumAccountedBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG data exceeds the configured accounting limit.");
+                    storage.ReserveCompressed(compressedLength);
+                }
                 compressed.Write(data);
                 seenImageData = true;
             }
@@ -72,7 +81,9 @@ internal static class PngImageDecoder
                 if (!seenHeader || seenEnd || seenImageData) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its palette chunk.");
                 if (palette is not null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data repeats its palette chunk.");
                 if (length == 0 || length % 3 != 0 || length > 768) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed palette chunk.");
-                palette = data.ToArray();
+                storage.ReservePalette(length);
+                try { palette = data.ToArray(); }
+                catch { storage.ReleasePalette(); throw; }
             }
             else if (type.SequenceEqual("IEND"u8))
             {
@@ -84,7 +95,17 @@ internal static class PngImageDecoder
             {
                 if (!seenHeader || seenEnd) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its transparency chunk.");
                 if (transparent is not null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data repeats its transparency chunk.");
-                transparent = data.ToArray();
+                ValidateTransparencyLength(data, channels, isPaletteType);
+                if (length > 0)
+                {
+                    storage.ReserveTransparency(length);
+                    try { transparent = data.ToArray(); }
+                    catch { storage.ReleaseTransparency(); throw; }
+                }
+                else
+                {
+                    transparent = [];
+                }
             }
             else if (IsColorManaged(type))
             {
@@ -144,12 +165,14 @@ internal static class PngImageDecoder
         for (int y = 0; y < height; y++)
         {
             workCounter.Consume(cancellationToken);
+            workCounter.ConsumeBytes(rowBytes, cancellationToken);
             int filter = pixels[position];
             if (filter > 4) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data uses an unsupported row filter.");
             Buffer.BlockCopy(pixels, position + 1, current, 0, current.Length);
-            UnfilterRow(filter, current, previous, channels);
+            UnfilterRow(filter, current, previous, channels, cancellationToken);
             for (int x = 0; x < width; x++)
             {
+                if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                 int offset = x * channels;
                 int pixelRed;
                 int pixelGreen;
@@ -209,21 +232,30 @@ internal static class PngImageDecoder
         throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries transparency for an alpha channel.");
     }
 
-    private static void UnfilterRow(int filter, byte[] current, byte[] previous, int channels)
+    private static void UnfilterRow(int filter, byte[] current, byte[] previous, int channels, CancellationToken cancellationToken)
     {
         switch (filter)
         {
             case 0:
                 return;
             case 1:
-                for (int index = channels; index < current.Length; index++) current[index] += current[index - channels];
+                for (int index = channels; index < current.Length; index++)
+                {
+                    if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    current[index] += current[index - channels];
+                }
                 return;
             case 2:
-                for (int index = 0; index < current.Length; index++) current[index] += previous[index];
+                for (int index = 0; index < current.Length; index++)
+                {
+                    if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    current[index] += previous[index];
+                }
                 return;
             case 3:
                 for (int index = 0; index < current.Length; index++)
                 {
+                    if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                     int left = index >= channels ? current[index - channels] : 0;
                     current[index] += (byte)((left + previous[index]) / 2);
                 }
@@ -231,6 +263,7 @@ internal static class PngImageDecoder
             default:
                 for (int index = 0; index < current.Length; index++)
                 {
+                    if ((index & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                     int left = index >= channels ? current[index - channels] : 0;
                     int above = previous[index];
                     int upperLeft = index >= channels ? previous[index - channels] : 0;
@@ -248,6 +281,74 @@ internal static class PngImageDecoder
         int upperLeftError = Math.Abs(estimate - upperLeft);
         if (leftError <= aboveError && leftError <= upperLeftError) return left;
         return aboveError <= upperLeftError ? above : upperLeft;
+    }
+
+    /// <summary>Owns the budgeted IDAT, palette and transparency copies retained while one PNG decodes.</summary>
+    private sealed class WorkingStorage : IDisposable
+    {
+        private readonly RenderBudget _budget;
+        private RenderBudget.BudgetReservation? _palette;
+        private RenderBudget.BudgetReservation? _transparency;
+        private RenderBudget.BudgetReservation? _compressed;
+
+        internal WorkingStorage(RenderBudget budget)
+        {
+            ArgumentNullException.ThrowIfNull(budget);
+            _budget = budget;
+        }
+
+        internal void ReservePalette(int length) => _palette = _budget.Reserve(length, SvgMemoryCategory.Parser);
+
+        internal void ReleasePalette()
+        {
+            _palette?.Dispose();
+            _palette = null;
+        }
+
+        internal void ReserveTransparency(int length) => _transparency = _budget.Reserve(length, SvgMemoryCategory.Parser);
+
+        internal void ReleaseTransparency()
+        {
+            _transparency?.Dispose();
+            _transparency = null;
+        }
+
+        internal void ReserveCompressed(long total)
+        {
+            RenderBudget.BudgetReservation next = _budget.Reserve(total, SvgMemoryCategory.Parser);
+            _compressed?.Dispose();
+            _compressed = next;
+        }
+
+        public void Dispose()
+        {
+            _compressed?.Dispose();
+            _compressed = null;
+            _transparency?.Dispose();
+            _transparency = null;
+            _palette?.Dispose();
+            _palette = null;
+        }
+    }
+
+    private static void ValidateTransparencyLength(ReadOnlySpan<byte> data, int channels, bool isPaletteType)
+    {
+        if (isPaletteType)
+        {
+            if (data.Length > 256) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed transparency chunk.");
+        }
+        else if (channels == 1)
+        {
+            if (data.Length != 2) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed transparency chunk.");
+        }
+        else if (channels == 3)
+        {
+            if (data.Length != 6) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed transparency chunk.");
+        }
+        else
+        {
+            throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries transparency for an alpha channel.");
+        }
     }
 
     private static bool IsCritical(ReadOnlySpan<byte> type) => (type[0] & 0x20) == 0;
