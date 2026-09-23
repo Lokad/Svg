@@ -120,6 +120,7 @@ internal static class SvgDefinitionParser
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
                 SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                tileContext = tileContext with { InheritedPresentation = tileContext.InheritedPresentation with { Transform = AxisTransform.Identity } };
                 SvgGeometry content = SvgLeafParser.ParseRectangle(reader, tileContext, null, state);
                 SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern tile accumulation requires pattern dimensions.");
                 SvgGeometry validated = RequirePatternTileContent(content, tile);

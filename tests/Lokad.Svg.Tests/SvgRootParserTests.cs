@@ -546,6 +546,32 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Expands_transformed_group_nested_definitions_without_ancestor_transforms()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(4,0)'><defs><rect id='r' x='0' y='0' width='4' height='8' fill='red'/></defs></g><use href='#r' x='0' y='0'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(0, 0, 4, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Applies_element_local_transforms_to_nested_definitions()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='2' height='8' fill='red' transform='translate(2,0)'/></defs><use href='#r' x='0' y='0'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(2, 0, 2, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Lowers_pattern_tile_content_without_ancestor_transforms()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(4,0)'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect x='0' y='0' width='2' height='2' fill='red'/></pattern></defs></g><rect x='0' y='0' width='8' height='8' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), geometry.Pattern.Content);
+    }
+
+    [Fact]
     public void Expands_a_prior_rectangle_definition_through_a_fractional_use_offset()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='2' height='2' fill='red'/></defs><use href='#tile' x='1.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
