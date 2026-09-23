@@ -123,6 +123,7 @@ internal static class SvgDocumentTraversal
                 }
                 else if (inViewport && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside nested viewports is not implemented.");
                 else if (state.ClipDepths.Count > 0 && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside clipped groups is not implemented.");
+                else if (state.MaskScopes.Count > 0 && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
                 else if (SvgRenderedLeafParser.TryParse(reader, directChild, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {
                     state.HasUnsupportedContent |= !textElement && !reader.IsEmptyElement;
@@ -211,6 +212,7 @@ internal static class SvgDocumentTraversal
                 {
                     SvgGroupScope group = state.Groups[^1];
                     state.Groups.RemoveLast();
+                    if (group.HasMaskScope) state.MaskScopes.RemoveLast();
                     if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;
                     if (group.IsolatesOpacity)
                     {

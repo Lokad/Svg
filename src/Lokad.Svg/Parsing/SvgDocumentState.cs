@@ -30,6 +30,8 @@ internal sealed class SvgDocumentState : IDisposable
         Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        MaskScopeSnapshots = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }
 
     internal SvgSceneBuilder Scene { get; }
@@ -106,6 +108,12 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<SvgGradientStop> GradientStops { get; }
 
+    /// <summary>Gets the content boxes of the currently open masked-group scopes for child coverage checks.</summary>
+    internal BudgetedParserList<SvgClipBox> MaskScopes { get; }
+
+    /// <summary>Gets the append-only retained mask scope boxes snapshotted by deferred use references.</summary>
+    internal BudgetedParserList<SvgClipBox> MaskScopeSnapshots { get; }
+
     internal int GradientDepth { get; set; } = -1;
 
     internal SvgPatternTile? PatternTile { get; set; }
@@ -142,6 +150,8 @@ internal sealed class SvgDocumentState : IDisposable
         Patterns.Dispose();
         Gradients.Dispose();
         GradientStops.Dispose();
+        MaskScopes.Dispose();
+        MaskScopeSnapshots.Dispose();
         ClipDepths.Dispose();
         StyleRules.Dispose();
         Strings.Dispose();
@@ -153,6 +163,6 @@ internal sealed class SvgDocumentState : IDisposable
 }
 
 /// <summary>Represents one inherited group or link context while streaming the document.</summary>
-internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, bool IsolatesOpacity);
+internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, bool IsolatesOpacity, bool HasMaskScope);
 
 internal enum SvgGroupKind { Group, Link, Switch }

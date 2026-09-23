@@ -53,7 +53,7 @@ public sealed class SvgPaintableElementContextTests
         SvgPaintableElementContext rootContext = SvgPaintableElementContext.Create(reader, false, root, state, new Dictionary<string, SvgColor>(), workCounter, CancellationToken.None);
 
         SvgInheritedPresentation groupPresentation = new(new SvgPaint(new SvgColor(7, 8, 9, 255), true, 128, new SvgColor(10, 11, 12, 255), true), false, false, new AxisTransform(2, 3, 4, 5));
-        state.Groups.Add(new SvgGroupScope(1, SvgGroupKind.Group, groupPresentation, SvgInheritedTextStyle.Default, false));
+        state.Groups.Add(new SvgGroupScope(1, SvgGroupKind.Group, groupPresentation, SvgInheritedTextStyle.Default, false, false));
         SvgPaintableElementContext groupContext = SvgPaintableElementContext.Create(reader, false, root, state, new Dictionary<string, SvgColor>(), workCounter, CancellationToken.None);
 
         Assert.Equal(rootPresentation, rootContext.InheritedPresentation);

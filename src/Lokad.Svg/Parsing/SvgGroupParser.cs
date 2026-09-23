@@ -16,8 +16,19 @@ internal static class SvgGroupParser
         byte? mask = SvgMaskSyntax.ResolveOptionalMask(reader, state);
         if (mask is not null && SvgMaskSyntax.HasCustomRegion(reader, state)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on masked groups are not implemented.");
         byte combined = mask is null ? resolved.Opacity : SvgReferenceResolver.MultiplyAlpha(resolved.Opacity, mask.Value);
+        bool hasMaskScope = reader.IsEmptyElement ? false : PushMaskScope(reader, state);
         SvgGroupKind kind = reader.LocalName == "switch" ? SvgGroupKind.Switch : SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;
-        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255), combined);
+        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255, hasMaskScope), combined);
+    }
+
+    /// <summary>Pushes the referenced mask content box for child coverage checks, reporting whether a scope was pushed.</summary>
+    private static bool PushMaskScope(XmlReader reader, SvgDocumentState state)
+    {
+        string? reference = reader.GetAttribute("mask");
+        if (reference is null) return false;
+        if (!state.MaskContentBoxes.TryGetValue(SvgMaskSyntax.ParseMaskId(reference), out SvgClipBox scope)) return false;
+        state.MaskScopes.Add(scope);
+        return true;
     }
 }
 

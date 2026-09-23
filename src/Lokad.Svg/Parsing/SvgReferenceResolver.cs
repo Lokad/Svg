@@ -4,7 +4,7 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, AxisTransform Transform, AxisTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId);
 
 /// <summary>Records the placeholders that must be replaced when a forward local use reference resolves.</summary>
-internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame, byte? Mask, string? MaskReference);
+internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame, byte? Mask, string? MaskReference, int MaskScopeStart, int MaskScopeCount);
 
 /// <summary>Applies typed local references through their geometry-specific supported transforms.</summary>
 internal static class SvgReferenceResolver
@@ -14,7 +14,11 @@ internal static class SvgReferenceResolver
     {
         workCounter.Consume(cancellationToken);
         if (definitions.TryGetValue(reference.Id, out SvgDefinition definition)) scene.AddGeometry(ApplyMask(definition, reference, frame, mask, maskReference, state));
-        else pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference, frame, mask, maskReference));
+        else
+        {
+            int scopeStart = SnapshotMaskScopes(state, workCounter, cancellationToken);
+            pendingUses.Add(new PendingUse(scene.AddReferencePlaceholder(), reference, frame, mask, maskReference, scopeStart, state.MaskScopeSnapshots.Count - scopeStart));
+        }
     }
 
     internal static SvgGeometry Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
@@ -72,6 +76,7 @@ internal static class SvgReferenceResolver
     private static SvgGeometry ApplyMask(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDocumentState state)
     {
         SvgGeometry geometry = Apply(definition, reference, frame, state);
+        SvgMaskSyntax.ValidateMaskScopes(state, geometry);
         if (mask is null) return geometry;
         SvgRectangle box = SvgMaskSyntax.BoundingBox(geometry);
         if (maskReference is not null) SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, box);
@@ -199,8 +204,22 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
-            scene.Replace(pendingUse.Slot, ApplyMask(definition, pendingUse.Reference, pendingUse.Frame, pendingUse.Mask, pendingUse.MaskReference, state));
+            SvgGeometry geometry = ApplyMask(definition, pendingUse.Reference, pendingUse.Frame, pendingUse.Mask, pendingUse.MaskReference, state);
+            if (pendingUse.MaskScopeCount > 0) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
+            scene.Replace(pendingUse.Slot, geometry);
         }
+    }
+
+    /// <summary>Copies the open masked-group scope boxes into the retained snapshot store, returning the snapshot start.</summary>
+    private static int SnapshotMaskScopes(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        int start = state.MaskScopeSnapshots.Count;
+        foreach (SvgClipBox scope in state.MaskScopes.AsSpan())
+        {
+            workCounter.Consume(cancellationToken);
+            state.MaskScopeSnapshots.Add(scope);
+        }
+        return start;
     }
 
     internal static byte MultiplyAlpha(byte left, byte right) => (byte)((left * right + 127) / 255);

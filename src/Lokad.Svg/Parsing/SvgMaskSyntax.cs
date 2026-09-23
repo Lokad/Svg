@@ -100,6 +100,49 @@ internal static class SvgMaskSyntax
         if (state.MaskContentBoxes.TryGetValue(ParseMaskId(reference), out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
     }
 
+    /// <summary>Requires every open masked-group scope to cover one lowered child, including stroked extents.</summary>
+    internal static void ValidateMaskScopes(SvgDocumentState state, SvgGeometry geometry)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        if (state.MaskScopes.Count == 0) return;
+        SvgRectangle box = CoverageBox(geometry);
+        for (int index = 0; index < state.MaskScopes.Count; index++)
+        {
+            if (!state.MaskScopes[index].Contains(box.X, box.Y, box.X + box.Width, box.Y + box.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering masked group children is implemented.");
+        }
+    }
+
+    /// <summary>Requires every snapshotted masked-group scope to cover one deferred instance box.</summary>
+    internal static void ValidateMaskScopeSnapshot(SvgDocumentState state, int start, int count, SvgRectangle box)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        for (int index = start; index < start + count; index++)
+        {
+            if (!state.MaskScopeSnapshots[index].Contains(box.X, box.Y, box.X + box.Width, box.Y + box.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering masked group children is implemented.");
+        }
+    }
+
+    /// <summary>Requires every open masked-group scope to cover each lowered band.</summary>
+    internal static void ValidateMaskScopeBands(SvgDocumentState state, SvgGeometry[] geometries)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(geometries);
+        if (state.MaskScopes.Count == 0) return;
+        foreach (SvgGeometry geometry in geometries) ValidateMaskScopes(state, geometry);
+    }
+
+    /// <summary>Builds the coverage box for one lowered geometry, expanding stroked rectangles by their half width.</summary>
+    private static SvgRectangle CoverageBox(SvgGeometry geometry)
+    {
+        SvgRectangle box = BoundingBox(geometry);
+        if (box.Stroke is SvgStroke stroke)
+        {
+            double halfWidth = stroke.Width / 2d;
+            return box with { X = box.X - halfWidth, Y = box.Y - halfWidth, Width = box.Width + stroke.Width, Height = box.Height + stroke.Width };
+        }
+        return box;
+    }
+
     /// <summary>Reports whether the referenced mask carries an explicit region.</summary>
     internal static bool HasCustomRegion(XmlReader reader, SvgDocumentState state)
     {

@@ -39,16 +39,21 @@ internal static class SvgRenderedLeafParser
         switch (reader.LocalName)
         {
             case "rect":
-                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, SvgLeafParser.ParseRectangle(reader, context, state.EffectiveFrame, state)));
+                SvgGeometry rectangle = SvgLeafParser.ParseRectangle(reader, context, state.EffectiveFrame, state);
+                SvgMaskSyntax.ValidateMaskScopes(state, rectangle);
+                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, rectangle));
                 return true;
             case "line":
-                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, SvgLeafParser.ParseLine(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state)));
+                SvgGeometry line = SvgLeafParser.ParseLine(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state);
+                SvgMaskSyntax.ValidateMaskScopes(state, line);
+                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, line));
                 return true;
             case "path":
                 using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))
                 {
                     state.GeometryElementCount += path.ElementCount;
                     SvgMaskSyntax.ApplyMaskToBands(reader, state, path.Storage.Items);
+                    SvgMaskSyntax.ValidateMaskScopeBands(state, path.Storage.Items);
                     state.Scene.AddGeometries(path.Geometries);
                 }
                 return true;
@@ -57,6 +62,7 @@ internal static class SvgRenderedLeafParser
                 {
                     state.GeometryElementCount += pointList.ElementCount;
                     SvgMaskSyntax.ApplyMaskToBands(reader, state, pointList.Storage.Items);
+                    SvgMaskSyntax.ValidateMaskScopeBands(state, pointList.Storage.Items);
                     state.Scene.AddGeometries(pointList.Geometries);
                 }
                 return true;
@@ -64,7 +70,9 @@ internal static class SvgRenderedLeafParser
             {
                 SvgViewportFrame? imageFrame = SvgClipPathSyntax.ResolveLeafClip(reader, state);
                 SvgViewportFrame? imageParent = state.EffectiveFrame;
-                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, SvgLeafParser.ParseImage(reader, context, imageFrame, imageParent?.ViewportWidth ?? root.Width, imageParent?.ViewportHeight ?? root.Height, limits, budget)));
+                SvgGeometry image = SvgLeafParser.ParseImage(reader, context, imageFrame, imageParent?.ViewportWidth ?? root.Width, imageParent?.ViewportHeight ?? root.Height, limits, budget);
+                SvgMaskSyntax.ValidateMaskScopes(state, image);
+                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, image));
                 return true;
             }
             case "text":
