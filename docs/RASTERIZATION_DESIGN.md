@@ -213,6 +213,72 @@ rounding alone cannot repair the prior overlap candidates. This is a classified
 negative calibration result: it does not identify Chrome's coverage backend and
 does not admit general geometry.
 
+## Coverage-dependent alpha rounding on rectangle-pure overlaps (2026-09-23 decision probes)
+
+Question: does any context-free source-over rounding explain the overlap
+known differences (original-logo-translucent-mark 376 px, original-logo-use-fade-mark
+256 px, both maximum error 1)? All inputs below are axis-aligned integer rectangles,
+so no geometric coverage uncertainty is involved.
+
+Method: retained known-difference references plus fresh two-run decision captures
+(identical decoded pixels across both runs): q1 single mid-channel layers
+(`#1aF8` and `#ff000080` side by side), q2 direct-rect partial red-over-red overlap,
+q3a 64x64 full red-over-blue coverage, q3b 2x2 partial red-over-blue corner overlap.
+Decision captures are not retained and carry no manifest entries; the q1/q2/q3 PNGs
+remain scratch artifacts. Fresh 64x64-open measurements below come from the
+candidate builds described; every stated renderer output was executed, never derived.
+
+Facts (decoded RGBA, reference versus candidate):
+- Full-canvas half-over-half stacks composite to alpha 191: the retained
+  integer-alpha-overlap 2x2 red-over-blue reference (exact) and q3a 64x64
+  red-over-blue (85,0,170,191 on every pixel, both runs). Channels agree at
+  (85,0,170) in both sizes.
+- Partial half-over-half stacks composite to alpha 192: use-fade-mark 16x16
+  use-instance overlap (retained known-difference reference), direct-rect Q2
+  16x16 overlap ((255,0,0,192) on all 256 pixels, both runs), and q3b 1x1 corner
+  overlap ((85,0,170,192), both runs).
+- Canvas size (2 versus 64), reference path (direct rects versus use instances),
+  corner versus interior position, and paint colors do not move the split; canvas
+  coverage does. The channel bytes are identical across the split; only the alpha
+  differs by one, so no context-free formula over the local (128,128) stack can
+  produce both 191 and 192.
+- Single half layers: q1 gives (17,171,255,136) for `#1aF8` and (255,0,0,128) for
+  half red. The pinned Hex_colors_with_alpha_are_supported expectation
+  (17,170,...) is therefore oracle-contradicted on green; Comma_form_rgb_and_rgba
+  ((4,5,6,128)) and Half_opacity_layers_truncate_retained_alpha ([85,0,170,191])
+  pin truncating behavior without oracle backing. Those tests were left unchanged.
+
+Eliminated uniform rules (each implemented and measured against the full core
+suite plus the four overlap references; the tree was reverted afterwards, so no
+library change below is committed):
+- Status-quo truncation misses every partial alpha (use-fade 256, translucent 320
+  alpha deltas, q3b, Q2) and q1 green (170 versus 171).
+- Rounded output alpha only: repairs partial alphas but breaks the retained
+  integer-alpha-overlap (192 versus 191) and shifts (24,24)-class reds 255 to 254
+  against their references.
+- Byte-premultiplied intermediates with truncating unpremultiply: zeroes use-fade
+  and all overlap alphas but breaks integer-alpha-overlap and degrades single
+  `#1aF8` red 17 to 16 against q1.
+- Byte-premultiplied intermediates with rounded alpha and rounded unpremultiply:
+  zeroes use-fade-mark (256 to 0) and translucent-mark (376 to 0), matches q1
+  singles exactly, and leaves viewbox-mark-24 (28, geometric) and
+  group-fade-mark-white (1792, separate mechanism) byte-identical — but breaks
+  integer-alpha-overlap (192 versus retained 191) and the three non-oracle unit
+  expectations above. Recipe for reproduction: round each source and destination
+  channel product to bytes when premultiplying, round the output alpha, and round
+  (not truncate) the final unpremultiply division.
+
+Decision: no context-free source-over rule is admitted. The full-canvas exception
+is load-bearing: identical local stacks composite to 191 when they cover the
+canvas and 192 otherwise. A coverage-dependent rounding was deliberately not
+implemented — it has no backend mechanism and its domain across nested viewports,
+viewport scaling, groups, and clipping is ill-defined, so it would be a
+fixture-specific branch by another name. The white-background overshoot (group
+fade over white, unchanged under every compositing variant tried) needs its own
+mechanism. Designed next experiment (not run): mixed full-base plus partial-patch
+stacks to separate per-pixel, per-layer, and per-operation rules. The remaining
+question — which backend path treats full layers differently — is escalated as a
+genuine feasibility uncertainty: it cannot be settled from outside the browser.
 ## Calibration source pin
 
 The Chromium `153.0.8010.52` tag used by the retained Windows recipe pins
