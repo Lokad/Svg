@@ -87,6 +87,23 @@ public sealed class FixtureManifestTests
                 Assert.False(string.IsNullOrEmpty(fixture.GetProperty("unsupportedReason").GetString()), "Missing unsupported reason: " + id);
                 Assert.False(fixture.TryGetProperty("oracleIdentity", out _), "Unsupported fixture must not claim a reference: " + id);
                 Assert.False(fixture.TryGetProperty("referenceSha256", out _), "Unsupported fixture must not claim a reference hash: " + id);
+                SvgRenderOptions unsupportedOptions = new(null, scale, backgroundColor, SvgRenderLimits.Default);
+                string observedBehavior = RequiredString(fixture, "observedBehavior");
+                if (observedBehavior.StartsWith("rejects:", StringComparison.Ordinal))
+                {
+                    SvgErrorCode expectedCode = Enum.Parse<SvgErrorCode>(observedBehavior.Substring("rejects:".Length));
+                    SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, unsupportedOptions, CancellationToken.None));
+                    Assert.Equal(expectedCode, exception.ErrorCode);
+                }
+                else if (observedBehavior == "renders")
+                {
+                    ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, unsupportedOptions, CancellationToken.None);
+                    Assert.True(png.Span.StartsWith(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }), "Unsupported fixture did not render PNG: " + id);
+                }
+                else
+                {
+                    throw new InvalidDataException("Unknown observedBehavior: " + id);
+                }
             }
         }
 
