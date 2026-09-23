@@ -40,6 +40,7 @@ internal static class SvgPatternSyntax
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
+        if (transform.ScaleX < 0 || transform.ScaleY < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         SvgStroke? stroke = ParsePatternStroke(reader, style, context, transform, placement, opacity, painted);

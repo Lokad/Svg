@@ -18,20 +18,20 @@ internal static class SvgGeometrySyntax
             while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
             if (position == input.Length)
             {
-                if (!hasFunction) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+                if (!hasFunction) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
                 return transform;
             }
 
             int nameStart = position;
             while (position < input.Length && char.IsAsciiLetter(input[position])) position++;
-            if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+            if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
             ReadOnlySpan<char> name = input[nameStart..position];
             while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
-            if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+            if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
             position++;
             int argumentsStart = position;
             while (position < input.Length && input[position] != ')') position++;
-            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
             transform = transform.Compose(ParseTransformFunction(name, input[argumentsStart..position]));
             position++;
             hasFunction = true;
@@ -157,7 +157,7 @@ internal static class SvgGeometrySyntax
     {
         bool isMatrix = name.Equals("matrix", StringComparison.OrdinalIgnoreCase);
         bool isTranslate = name.Equals("translate", StringComparison.OrdinalIgnoreCase);
-        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), positive scale(), and axis-aligned matrix() transforms are implemented.");
+        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
         Span<int> values = stackalloc int[6];
         int valueCount = 0;
         DelimitedTokenReader tokens = new(arguments);
@@ -170,13 +170,13 @@ internal static class SvgGeometrySyntax
         {
             if (valueCount != 6) throw new SvgException(SvgErrorCode.MalformedInput, "matrix() requires six coordinates.");
             int scaleX = values[0]; int skewY = values[1]; int skewX = values[2]; int scaleY = values[3]; int offsetX = values[4]; int offsetY = values[5];
-            if (skewX != 0 || skewY != 0 || scaleX <= 0 || scaleY <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive axis-aligned integer matrix() transforms are implemented.");
+            if (skewX != 0 || skewY != 0 || scaleX == 0 || scaleY == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero axis-aligned integer matrix() transforms are implemented.");
             return new AxisTransform(scaleX, scaleY, offsetX, offsetY);
         }
         if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
         int first = values[0]; int second = valueCount == 2 ? values[1] : first;
         if (isTranslate) return new AxisTransform(1, 1, first, valueCount == 2 ? second : 0);
-        if (first <= 0 || second <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive integer scale() values are implemented.");
+        if (first == 0 || second == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero integer scale() values are implemented.");
         return new AxisTransform(first, second, 0, 0);
     }
 

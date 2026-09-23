@@ -1090,6 +1090,91 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Reflects_rectangles_through_negative_integer_scale()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='1' y='2' width='3' height='4' transform='translate(8,0) scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(4, 2, 3, 4, new SvgColor(0, 0, 0, 255), true, null), root.Rectangles[0]);
+    }
+
+    [Fact]
+    public void Reflects_rectangles_through_negative_axis_aligned_matrix()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='1' y='2' width='3' height='4' transform='matrix(-1,0,0,1,8,0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(4, 2, 3, 4, new SvgColor(0, 0, 0, 255), true, null), root.Rectangles[0]);
+    }
+
+    [Theory]
+    [InlineData("scale(0)")]
+    [InlineData("scale(0,1)")]
+    [InlineData("scale(1,0)")]
+    [InlineData("matrix(0,0,0,1,0,0)")]
+    [InlineData("matrix(1,1,0,1,0,0)")]
+    [InlineData("matrix(1,0,1,1,0,0)")]
+    [InlineData("rotate(45)")]
+    public void Rejects_zero_and_skewed_geometry_transforms(string transform)
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect width='8' height='8' transform='" + transform + "'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Mirrors_bounding_box_gradient_vectors_under_reflection()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' transform='translate(8,0) scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 1, 0, 0, 0, 0, 1, false, false, SvgGradientSpread.Pad), geometry.Gradient.Gradient);
+    }
+
+    [Fact]
+    public void Clips_symbol_content_to_the_use_viewport_before_the_instance_transform()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 4 4'><rect width='4' height='4' fill='red'/></symbol></defs><use href='#s' x='0' y='0' width='4' height='4' transform='translate(8,0) scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Rejects_reflected_pattern_fills()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='2' height='2' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red'/></pattern></defs><rect width='4' height='4' fill='url(#p)' transform='scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Renders_reflected_paths_identical_to_hand_mirrored_baselines()
+    {
+        byte[] reflected = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M1,1 H4 V6 H1 Z' fill='red' transform='translate(8,0) scale(-1,1)'/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M7,1 H4 V6 H7 Z' fill='red'/></svg>");
+
+        ReadOnlyMemory<byte> reflectedPng = SvgConverter.ConvertToPng(reflected, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(reflectedPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Fact]
+    public void Rejects_reflected_bands_beyond_the_coordinate_range()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M -2147483648,0 H 0 V 1 H -2147483648 Z' transform='scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_extreme_line_stroke_scales_under_reflection()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><line id='l' x1='0' y1='0' x2='0' y2='2' stroke='red' stroke-width='2'/></defs><use href='#l' transform='matrix(-2147483648,0,0,1,0,0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Lowers_closed_axis_aligned_rectangle_paths()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 1,2 H 4 V 6 H 1 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

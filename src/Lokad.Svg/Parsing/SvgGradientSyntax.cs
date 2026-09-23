@@ -196,6 +196,7 @@ internal static class SvgGradientSyntax
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceVector(transform, gradient, frame);
+        gradient = MirrorBoundingBoxVector(transform, gradient);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
@@ -231,6 +232,17 @@ internal static class SvgGradientSyntax
         (double mappedX1, double mappedY1) = transform.ApplyToUserPoint(gradient.X1, gradient.Y1);
         (double mappedX2, double mappedY2) = transform.ApplyToUserPoint(gradient.X2, gradient.Y2);
         return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2 };
+    }
+
+    /// <summary>Mirrors one objectBoundingBox gradient vector when the referencing transform reflects its axis.</summary>
+    internal static SvgLinearGradient MirrorBoundingBoxVector(AxisTransform transform, SvgLinearGradient gradient)
+    {
+        if (gradient.IsUserSpace) return gradient;
+        double x1 = transform.ScaleX < 0 ? 1 - gradient.X1 : gradient.X1;
+        double x2 = transform.ScaleX < 0 ? 1 - gradient.X2 : gradient.X2;
+        double y1 = transform.ScaleY < 0 ? 1 - gradient.Y1 : gradient.Y1;
+        double y2 = transform.ScaleY < 0 ? 1 - gradient.Y2 : gradient.Y2;
+        return gradient with { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2 };
     }
 
     internal static SvgGeometry LowerGradientStrokeRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
