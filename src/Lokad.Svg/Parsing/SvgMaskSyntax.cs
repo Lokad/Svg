@@ -63,7 +63,9 @@ internal static class SvgMaskSyntax
         string? reference = reader.GetAttribute("mask");
         if (reference is null) return geometry;
         byte value = ResolveMaskValue(reference, state);
-        return ApplyMask(geometry, value, ResolveRegion(reader, state, BoundingBox(geometry)));
+        SvgRectangle fallback = BoundingBox(geometry);
+        ValidateMaskCoverage(reference, state, fallback);
+        return ApplyMask(geometry, value, ResolveRegion(reader, state, fallback));
     }
 
     internal static void ApplyMaskToBands(XmlReader reader, SvgDocumentState state, SvgGeometry[] geometries)
@@ -86,8 +88,16 @@ internal static class SvgMaskSyntax
             right = Math.Max(right, box.X + box.Width);
             bottom = Math.Max(bottom, box.Y + box.Height);
         }
-        SvgClipBox region = ResolveRegion(reader, state, new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, false, null));
+        SvgRectangle fallback = new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, false, null);
+        ValidateMaskCoverage(reference, state, fallback);
+        SvgClipBox region = ResolveRegion(reader, state, fallback);
         for (int index = 0; index < geometries.Length; index++) geometries[index] = ApplyMask(geometries[index], value, region);
+    }
+
+    /// <summary>Requires retained mask content to cover the masked geometry bounding box.</summary>
+    internal static void ValidateMaskCoverage(string reference, SvgDocumentState state, SvgRectangle fallback)
+    {
+        if (state.MaskContentBoxes.TryGetValue(ParseMaskId(reference), out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
     }
 
     /// <summary>Reports whether the referenced mask carries an explicit region.</summary>

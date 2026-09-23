@@ -12,7 +12,7 @@ public sealed class SvgReferenceResolverTests
         SvgDefinition definition = CreateRectangleDefinition();
         Assert.True(state.Definitions.TryAdd("tile", definition));
 
-        SvgReferenceResolver.ResolveOrDefer(CreateReference(), state.Definitions, state.PendingUses, state.Scene, null, null, new ParserWorkCounter(100), CancellationToken.None);
+        SvgReferenceResolver.ResolveOrDefer(CreateReference(), state.Definitions, state.PendingUses, state.Scene, null, null, null, state, new ParserWorkCounter(100), CancellationToken.None);
 
         using SvgSceneStorage scene = state.Scene.Build();
         Assert.Equal(0, state.PendingUses.Count);
@@ -25,9 +25,9 @@ public sealed class SvgReferenceResolverTests
         using SvgDocumentState state = new(new RenderBudget(10_000), new ParserWorkCounter(100), CancellationToken.None);
         SvgDefinition definition = CreateRectangleDefinition();
 
-        SvgReferenceResolver.ResolveOrDefer(CreateReference(), state.Definitions, state.PendingUses, state.Scene, null, null, new ParserWorkCounter(100), CancellationToken.None);
+        SvgReferenceResolver.ResolveOrDefer(CreateReference(), state.Definitions, state.PendingUses, state.Scene, null, null, null, state, new ParserWorkCounter(100), CancellationToken.None);
         Assert.True(state.Definitions.TryAdd("tile", definition));
-        SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, new ParserWorkCounter(100), CancellationToken.None);
+        SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, new ParserWorkCounter(100), CancellationToken.None);
 
         using SvgSceneStorage scene = state.Scene.Build();
         Assert.Equal(1, state.PendingUses.Count);
