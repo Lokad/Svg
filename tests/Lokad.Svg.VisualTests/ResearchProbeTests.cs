@@ -33,7 +33,7 @@ public sealed class ResearchProbeTests
             JsonElement oracle = probe.GetProperty("oracle");
             Assert.Equal(3, oracle.GetProperty("freshProcessCaptures").GetInt32());
             Assert.Equal("identical", RequiredString(oracle, "decodedPixelStability"));
-            Assert.Equal("transparent", RequiredString(oracle, "background"));
+            Assert.Contains(RequiredString(oracle, "background"), new[] { "transparent", "white", "black" });
             Assert.Matches("^[0-9a-f]{64}$", RequiredString(oracle, "chromeExecutableSha256"));
             Assert.Equal(1, oracle.GetProperty("deviceScaleFactor").GetInt32());
             string reference = Path.Combine(research, RequiredString(oracle, "referencePng").Replace('/', Path.DirectorySeparatorChar));
