@@ -275,7 +275,8 @@ implemented — it has no backend mechanism and its domain across nested viewpor
 viewport scaling, groups, and clipping is ill-defined, so it would be a
 fixture-specific branch by another name. The white-background overshoot (group
 fade over white, unchanged under every compositing variant tried) needs its own
-mechanism. Mixed-stack disambiguation (same session, fresh two-run decision captures with
+mechanism. White-background per-region table (same session, retained reference versus current renderer, all alpha 255): red-only pixels render (255,127,127) against (255,126,126); blue-only and blue-over-red overlap pixels render (127,127,255) against (126,126,255). Every non-saturated channel overshoots by exactly one; saturated channels and alpha are exact. No local product was found that yields these numerators: the uniform -1 across all non-saturated channels with exact alpha has no single-term explanation in the blend, group-opacity, background-color, or dither candidates above, so the white overshoot stays an independent mechanism with this table as its retained characterization.
+Mixed-stack disambiguation (same session, fresh two-run decision captures with
 run-to-run agreement, not retained): a full red-half base with a partial blue-half
 16x16 patch composites its interior probe pixel to (85,0,170,192), and a partial
 red-half base with a full blue-half cover composites its red-region probe pixel to
