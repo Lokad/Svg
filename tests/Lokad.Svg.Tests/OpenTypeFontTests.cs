@@ -1702,6 +1702,7 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,0 H5 V5 H0 Z' fill='url(#g)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><clipPath id='c'><rect x='1' y='1' width='3' height='3'/></clipPath></defs><path d='M0,0 H5 V5 H0 Z' fill='red' clip-path='url(#c)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g transform='translate(5,0) scale(-1,1)'><rect x='0' y='0' width='2' height='2' fill='red'/></g><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><path d='M1,1 H6 V6 H1 Z M3,0 H5 V8 H3 Z' fill='red'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
@@ -1917,6 +1918,7 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='0.5' stop-color='#00ff00'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='5' height='5' fill='url(#g)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='5' height='5' fill='url(#g)'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g transform='scale(-1,1)'><text font-family='Example' font-size='100' y='3'>A</text></g></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><path d='M0,0 H4 V4 H0 Z M4,0 H8 V4 H4 Z' fill='red'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     public async Task Discovery_and_lowering_agree_on_rejected_text(string svg, SvgErrorCode code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
