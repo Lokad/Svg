@@ -275,8 +275,23 @@ implemented — it has no backend mechanism and its domain across nested viewpor
 viewport scaling, groups, and clipping is ill-defined, so it would be a
 fixture-specific branch by another name. The white-background overshoot (group
 fade over white, unchanged under every compositing variant tried) needs its own
-mechanism. Designed next experiment (not run): mixed full-base plus partial-patch
-stacks to separate per-pixel, per-layer, and per-operation rules. The remaining
+mechanism. Mixed-stack disambiguation (same session, fresh two-run decision captures with
+run-to-run agreement, not retained): a full red-half base with a partial blue-half
+16x16 patch composites its interior probe pixel to (85,0,170,192), and a partial
+red-half base with a full blue-half cover composites its red-region probe pixel to
+(85,0,170,192). Predictions were: bottom-layer coverage 191/192, stack-unanimity
+192/192, per-operation source coverage 192/191. Measured 192/192 eliminates the
+bottom-layer rule (it required 191 on the full-base case) and the per-operation
+source rule (it required 191 on the full-cover case). The sole survivor is
+stack-unanimity — truncate the alpha if and only if every layer covering the pixel
+is full-canvas, else round — which fits every datum above (integer-overlap,
+use-fade, Q2, q3a, q3b, both mixed cases). It is still not implemented, for the
+same reason: "full-canvas" has no clean domain once groups isolate surfaces,
+clips cut coverage implicitly, and viewBox/output scales fractionalize edges, so
+a per-pixel all-full flag would be spooky action at a distance, not a mechanism.
+The backend-path question stands escalated.
+
+The remaining
 question — which backend path treats full layers differently — is escalated as a
 genuine feasibility uncertainty: it cannot be settled from outside the browser.
 ## Calibration source pin
