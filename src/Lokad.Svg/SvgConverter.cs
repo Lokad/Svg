@@ -182,6 +182,14 @@ public static class SvgConverter
         {
             throw new SvgException(SvgErrorCode.LimitExceeded, "Output scaling and viewBox mapping exceed the admitted numeric range.");
         }
+        if (horizontalScale != 1 || verticalScale != 1)
+        {
+            foreach (SvgGeometry geometry in root.Geometries)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (geometry.Kind == SvgGeometryKind.PatternFill) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
+            }
+        }
         RenderBudget.BudgetReservation surface = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
         try
         {
