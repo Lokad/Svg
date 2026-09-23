@@ -1399,6 +1399,36 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Renders_nested_viewport_opacity_identical_to_group_opacity()
+    {
+        byte[] viewport = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><svg x='0' y='0' width='8' height='8' opacity='0.5'><rect x='0' y='0' width='8' height='8' fill='red'/><rect x='2' y='2' width='4' height='4' fill='blue'/></svg></svg>");
+        byte[] group = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g opacity='0.5'><rect x='0' y='0' width='8' height='8' fill='red'/><rect x='2' y='2' width='4' height='4' fill='blue'/></g></svg>");
+
+        ReadOnlyMemory<byte> viewportPng = SvgConverter.ConvertToPng(viewport, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> groupPng = SvgConverter.ConvertToPng(group, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(viewportPng.Span.SequenceEqual(groupPng.Span));
+    }
+
+    [Fact]
+    public void Rejects_nested_viewport_opacity_inside_opacity_scopes()
+    {
+        SvgException inner = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' opacity='0.5'><svg x='0' y='0' width='8' height='8' opacity='0.5'><rect width='8' height='8' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException outer = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='0' y='0' width='8' height='8' opacity='0.5'><g opacity='0.5'><rect width='8' height='8' fill='red'/></g></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, inner.ErrorCode);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, outer.ErrorCode);
+    }
+
+    [Fact]
+    public void Admits_empty_nested_viewports_with_opacity()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><svg x='0' y='0' width='8' height='8' opacity='0.5'/><rect x='0' y='0' width='8' height='8' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
     public void Lowers_intersecting_contours_with_nonzero_winding()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M1,1 H6 V6 H1 Z M3,0 H5 V8 H3 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

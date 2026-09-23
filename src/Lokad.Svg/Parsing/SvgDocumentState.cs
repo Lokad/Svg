@@ -92,6 +92,8 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal int MaskDepth { get; set; } = -1;
 
+    internal int ViewportOpacityDepth { get; set; } = -1;
+
     internal int PatternDepth { get; set; } = -1;
 
     internal string? PatternId { get; set; }

@@ -108,6 +108,17 @@ internal static class SvgDocumentTraversal
                     SvgClipBox box = new(clipOriginX, clipOriginY, viewport.Width * clipScaleX, viewport.Height * clipScaleY);
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
                     if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, viewport.Width, viewport.Height, box, reader.Depth));
+                    byte viewportOpacity = SvgColorParser.ParseOpacity(reader.GetAttribute("opacity"));
+                    if (viewportOpacity != 255)
+                    {
+                        if (root.Opacity != 255 || state.HasOpacityScope) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested viewport opacity requires separate compositing calibration.");
+                        if (!reader.IsEmptyElement)
+                        {
+                            state.Scene.BeginOpacityScope(viewportOpacity);
+                            state.HasOpacityScope = true;
+                            state.ViewportOpacityDepth = reader.Depth;
+                        }
+                    }
                     state.SawStyleableNode = true;
                 }
                 else if (inViewport && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside nested viewports is not implemented.");
@@ -189,6 +200,12 @@ internal static class SvgDocumentTraversal
                 }
                 if (reader.Depth == state.SymbolDepth) { state.SymbolDepth = -1; state.SymbolId = null; state.SymbolViewBox = null; }
                 if (state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth) state.Viewports.RemoveLast();
+                if (state.ViewportOpacityDepth == reader.Depth)
+                {
+                    state.ViewportOpacityDepth = -1;
+                    state.Scene.EndOpacityScope();
+                    state.HasOpacityScope = false;
+                }
                 if (state.ClipDepths.Count > 0 && state.ClipDepths[^1] == reader.Depth) state.ClipDepths.RemoveLast();
                 if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth)
                 {
