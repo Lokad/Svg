@@ -129,6 +129,7 @@ internal static class SvgLeafParser
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, elementName, false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
         SvgParsedGeometry filled = lowering.LowerEllipseFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, element, frame, state.Budget);
+        bool nonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(reader.GetAttribute("vector-effect"));
         if (elementName != "circle")
         {
             SvgStroke? ellipseStroke = ParseCircleStroke(element, reader);
@@ -137,7 +138,7 @@ internal static class SvgLeafParser
             if (ellipseDashes is not null && !ellipseDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed ellipse strokes are not implemented.");
             try
             {
-                using SvgParsedGeometry ring = lowering.LowerEllipseStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, element, ellipseStroke.Value, frame, state.Budget);
+                using SvgParsedGeometry ring = lowering.LowerEllipseStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, element, ellipseStroke.Value, nonScalingStroke, frame, state.Budget);
                 return ConcatGeometries(filled, ring, state.Budget, context.WorkCounter, context.CancellationToken);
             }
             catch { filled.Dispose(); throw; }
@@ -148,7 +149,7 @@ internal static class SvgLeafParser
         if (circleDashes is not null && !circleDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed circle strokes are not implemented.");
         try
         {
-            using SvgParsedGeometry ring = lowering.LowerCircleStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, element, stroke.Value, frame, state.Budget);
+            using SvgParsedGeometry ring = lowering.LowerCircleStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, element, stroke.Value, nonScalingStroke, frame, state.Budget);
             return ConcatGeometries(filled, ring, state.Budget, context.WorkCounter, context.CancellationToken);
         }
         catch { filled.Dispose(); throw; }

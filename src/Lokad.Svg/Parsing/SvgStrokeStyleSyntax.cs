@@ -124,7 +124,7 @@ internal static class SvgStrokeStyleSyntax
     }
 
     /// <summary>Resolves one admitted solid stroke, or nothing when the element carries no stroke paint.</summary>
-    internal readonly record struct SvgAdmittedStroke(SvgColor Color, int Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join, double[]? DashPattern, double DashOffset);
+    internal readonly record struct SvgAdmittedStroke(SvgColor Color, int Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join, double[]? DashPattern, double DashOffset, bool NonScalingStroke);
 
     /// <summary>Validates the stroke subset shared by stroked shapes, rejecting paint servers, odd widths, small limits and unsupported dash combinations.</summary>
     internal static SvgAdmittedStroke? ResolveAdmittedStroke(XmlReader reader, SvgComputedStyle style, SvgResolvedPaintableElement shape, string elementName)
@@ -150,8 +150,20 @@ internal static class SvgStrokeStyleSyntax
             if (!hasPositive) return null;
             if (hasZero && cap != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Zero-length dashes with round or square caps are not implemented.");
         }
+        bool nonScaling = ParseVectorEffect(reader.GetAttribute("vector-effect"));
+        if (dashes is not null && nonScaling && Math.Abs(shape.Transform.ScaleX) != Math.Abs(shape.Transform.ScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniformly scaled dashed strokes are not implemented.");
         SvgColor color = SvgPaintResolver.ApplyOpacity(shape.Presentation.StrokeColor.Value, shape.Presentation.Opacity);
-        return new SvgAdmittedStroke(color, width, miterLimit, cap, join, dashes, dashOffset);
+        return new SvgAdmittedStroke(color, width, miterLimit, cap, join, dashes, dashOffset, nonScaling);
+    }
+
+    /// <summary>Parses the vector effect, defaulting to scaling strokes like SVG.</summary>
+    internal static bool ParseVectorEffect(string? value)
+    {
+        if (value is null) return false;
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
+        if (token.Equals("non-scaling-stroke".AsSpan(), StringComparison.OrdinalIgnoreCase)) return true;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only scaling and non-scaling strokes are implemented.");
     }
 
     /// <summary>Parses the open-end cap style, defaulting to butt like SVG.</summary>

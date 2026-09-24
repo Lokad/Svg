@@ -241,6 +241,72 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Nonscaling_uniform_stroke_matches_explicit()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' vector-effect='non-scaling-stroke'/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><polygon points='0,0 16,0 16,16 0,16' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
+    public void Nonscaling_nonuniform_stroke_matches_explicit()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2,1)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' vector-effect='non-scaling-stroke'/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><polygon points='0,0 16,0 16,8 0,8' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
+    public void Nonscaling_dashed_stroke_matches_explicit()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2' vector-effect='non-scaling-stroke'/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><polygon points='0,0 16,0 16,16 0,16' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
+    public void Nonscaling_circle_stroke_matches_explicit()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2)'><circle cx='8' cy='8' r='6' fill='none' stroke='red' stroke-width='2' vector-effect='non-scaling-stroke'/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><circle cx='16' cy='16' r='12' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
+    public void Nonuniform_dashed_nonscaling_stroke_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2,1)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2' vector-effect='non-scaling-stroke'/></g></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_unknown_vector_effects()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' vector-effect='non-rotation'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Vector_effect_on_rectangle_stroke_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' vector-effect='non-scaling-stroke'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Round_join_differs_from_miter()
     {
         byte[] round = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polyline points='2,14 8,2 14,14' fill='none' stroke='red' stroke-width='4' stroke-linejoin='round'/></svg>", out _, out _);
