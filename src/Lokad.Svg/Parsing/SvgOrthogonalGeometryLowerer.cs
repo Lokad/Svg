@@ -184,10 +184,10 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
 
         return FinishPolygonFill(mapped, ends, color, hasFill, false, frame, budget);
-
-        static SvgDevicePoint ShiftVertex(SvgViewportFrame? viewport, double x, double y)
-            => viewport is null ? new SvgDevicePoint(x, y) : new SvgDevicePoint(x * viewport.Value.ScaleX + viewport.Value.OffsetX, y * viewport.Value.ScaleY + viewport.Value.OffsetY);
     }
+
+    private static SvgDevicePoint ShiftVertex(SvgViewportFrame? viewport, double x, double y)
+        => viewport is null ? new SvgDevicePoint(x, y) : new SvgDevicePoint(x * viewport.Value.ScaleX + viewport.Value.OffsetX, y * viewport.Value.ScaleY + viewport.Value.OffsetY);
 
     private static (SvgAffineTransform Map, double ScaleX, double ScaleY) BuildDeviceMap(AxisTransform transform, SvgViewportFrame? frame)
     {
@@ -293,7 +293,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported expansion range."); }
         using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         SvgContourBuilder builder = new(pointCapacity, contourCapacity);
-        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken);
+        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, null);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = new int[builder.ContourCount];
         for (int contour = 0; contour < builder.ContourCount; contour++)
@@ -305,6 +305,120 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, true, frame, budget);
     }
 
+    /// <summary>Strokes one integer point contour with butt caps and miter joins into one nonzero outline fill.</summary>
+    internal SvgParsedGeometry LowerStrokePolyline(BudgetedParserList<SvgPoint> points, bool closed, AxisTransform transform, int width, double miterLimit, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(budget);
+        if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path stroke point count exceeds the configured path-command limit." : _elementName + " stroke point count exceeds the configured path-command limit.");
+        double deviceWidth = StrokeDeviceWidth(width, transform, frame);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        for (int index = 0; index < points.Count; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            (double x, double y) = transform.ApplyToVertex(points[index].X, points[index].Y);
+            mapped.Add(ShiftVertex(frame, x, y));
+        }
+
+        long wantedPoints = 4L * mapped.Count + 8;
+        int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
+        long scratchBytes;
+        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(closed ? 2 : 1)); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
+        using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
+        SvgContourBuilder outlines = new(pointCapacity, closed ? 2 : 1);
+        if (closed) SvgStrokeOutline.StrokeClosedPolyline(mapped.AsSpan(), deviceWidth, miterLimit, outlines, _cancellationToken);
+        else SvgStrokeOutline.StrokeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, outlines, _cancellationToken);
+        return FinishStrokeFill(outlines, color, hasFill, frame, budget) with { ElementCount = points.Count + 1 };
+    }
+
+    /// <summary>Strokes device-space contours with butt caps and miter joins into one nonzero outline fill.</summary>
+    internal SvgParsedGeometry LowerStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, AxisTransform transform, int width, double miterLimit, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(budget);
+        if (closedEnds.Length != source.ContourCount) throw new InvalidOperationException("Stroke contour closure flags must match the sampled contours.");
+        if (source.PointCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path stroke point count exceeds the configured path-command limit." : _elementName + " stroke point count exceeds the configured path-command limit.");
+        double deviceWidth = StrokeDeviceWidth(width, transform, frame);
+        long wantedPoints = 4L * source.PointCount + 8;
+        int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
+        long wantedContours;
+        try { wantedContours = checked(2L * source.ContourCount + 2); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
+        int contourCapacity = wantedContours > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedContours;
+        long scratchBytes;
+        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
+        using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
+        SvgContourBuilder outlines = new(pointCapacity, contourCapacity);
+        for (int contour = 0; contour < source.ContourCount; contour++)
+        {
+            if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
+            if (closedEnds[contour]) SvgStrokeOutline.StrokeClosedPolyline(source.GetContour(contour), deviceWidth, miterLimit, outlines, _cancellationToken);
+            else SvgStrokeOutline.StrokeOpenPolyline(source.GetContour(contour), deviceWidth, miterLimit, outlines, _cancellationToken);
+        }
+
+        return FinishStrokeFill(outlines, color, hasFill, frame, budget);
+    }
+
+    private double StrokeDeviceWidth(int width, AxisTransform transform, SvgViewportFrame? frame)
+    {
+        double scaleX = transform.ScaleX * (frame?.ScaleX ?? 1);
+        double scaleY = transform.ScaleY * (frame?.ScaleY ?? 1);
+        if (Math.Abs(scaleX) != Math.Abs(scaleY) || scaleX == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled " + _elementName + " strokes are implemented.");
+        double deviceWidth = width * Math.Abs(scaleX);
+        if (!double.IsFinite(deviceWidth) || deviceWidth <= 0 || deviceWidth > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
+        return deviceWidth;
+    }
+
+    /// <summary>Strokes path data with butt caps and miter joins into one nonzero outline fill, tracking explicit closepath seals.</summary>
+    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasArc, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke command count exceeds the configured path-command limit.");
+        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
+        double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame);
+        SvgFlattenPolicy flattenPolicy = new(FlattenFlatness, FlattenMaxDepth, CurveSegmentsPerCommand);
+        long wantedPoints = (long)_maximumGeometryElements * (CurveSegmentsPerCommand + 1);
+        int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
+        int contourCapacity = pointCapacity < _maximumGeometryElements ? pointCapacity : _maximumGeometryElements;
+        long scratchBytes;
+        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
+        using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
+        SvgContourBuilder builder = new(pointCapacity, contourCapacity);
+        using BudgetedParserList<bool> closedEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, closedEnds);
+        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds.AsSpan(), element.Transform, width, miterLimit, color, hasFill, frame, budget);
+        return stroked with { ElementCount = commandCount + 1 };
+    }
+
+    /// <summary>Retains stroke outline loops as one nonzero fill without structure validation, which spike retraces would false-positive.</summary>
+    private SvgParsedGeometry FinishStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(outlines);
+        ArgumentNullException.ThrowIfNull(budget);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        int[] ends = new int[outlines.ContourCount];
+        bool hasCurves = false;
+        for (int contour = 0; contour < outlines.ContourCount; contour++)
+        {
+            foreach (SvgDevicePoint vertex in outlines.GetContour(contour))
+            {
+                _workCounter.Consume(_cancellationToken);
+                mapped.Add(vertex);
+                if (Math.Abs(vertex.X * 4 - Math.Round(vertex.X * 4, MidpointRounding.AwayFromZero)) > 0.000000001 || Math.Abs(vertex.Y * 4 - Math.Round(vertex.Y * 4, MidpointRounding.AwayFromZero)) > 0.000000001) hasCurves = true;
+            }
+
+            ends[contour] = mapped.Count;
+        }
+
+        SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
+        ValidateDeviceRange(retained);
+        return RetainPolygonFill(retained, ends, null, color, hasFill, false, hasCurves, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+    }
+
     /// <summary>Validates separated device contours once and retains one polygon fill with scene-owned storage.</summary>
     private SvgParsedGeometry FinishPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgColor color, bool hasFill, bool hasCurves, SvgViewportFrame? frame, RenderBudget budget)
     {
@@ -312,11 +426,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
         SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
-        foreach (SvgDevicePoint vertex in retained)
-        {
-            if (!double.IsFinite(vertex.X) || !double.IsFinite(vertex.Y) || Math.Abs(vertex.X) > int.MaxValue || Math.Abs(vertex.Y) > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill coordinates exceed the admitted numeric range.");
-        }
-
+        ValidateDeviceRange(retained);
         ChargePairs(_workCounter, (long)retained.Length * (retained.Length - 1) / 2, _cancellationToken);
         if (SvgContourStructure.ClassifySet(retained, ends, _cancellationToken) != SvgContourFlags.None) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
         int[]? signs = null;
@@ -327,15 +437,31 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
         }
 
-        SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, _isEvenOdd, hasCurves, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
-        _geometries.Add(SvgGeometry.FromPolygonFill(fill));
-        _geometryElementCount++;
-        return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
+        return RetainPolygonFill(retained, ends, signs, color, hasFill, _isEvenOdd, hasCurves, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
 
         static void ChargePairs(ParserWorkCounter workCounter, long pairs, CancellationToken cancellationToken)
         {
             for (long charged = 0; charged < pairs; charged += ParserWorkCounter.ByteCheckpointSize) workCounter.Consume(cancellationToken);
         }
+    }
+
+    private static void ValidateDeviceRange(SvgDevicePoint[] retained)
+    {
+        foreach (SvgDevicePoint vertex in retained)
+        {
+            if (!double.IsFinite(vertex.X) || !double.IsFinite(vertex.Y) || Math.Abs(vertex.X) > int.MaxValue || Math.Abs(vertex.Y) > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill coordinates exceed the admitted numeric range.");
+        }
+    }
+
+    private SvgParsedGeometry RetainPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, bool hasCurves, SvgClipBox? clip, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(retained);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, isEvenOdd, hasCurves, clip, budget);
+        _geometries.Add(SvgGeometry.FromPolygonFill(fill));
+        _geometryElementCount++;
+        return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
     }
 
     public void Dispose()

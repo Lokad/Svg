@@ -16,33 +16,53 @@ internal static class SvgOrthogonalShapeParser
         }
         string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
         (int commandCount, bool hasCurve, bool hasArc) = ScanPathCommands(d, context.WorkCounter, context.CancellationToken);
+        SvgResolvedPaintableElement shape;
+        SvgParsedGeometry filled;
         if (hasCurve)
         {
             if (d.Contains('.') || d.Contains('e') || d.Contains('E')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer path coordinates are implemented; fractional and scientific notation stay unsupported.");
-            SvgResolvedPaintableElement curveElement = context.ResolveShape(style, reader, false);
-            bool curveEvenOdd = curveElement.Style.FillRule is not null && curveElement.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+            shape = context.ResolveShape(style, reader, true);
+            bool curveEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, "path", true, curveEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            SvgParsedGeometry curved = curveLowering.LowerCurveFill(d, commandCount, hasArc, curveElement, frame, budget);
-            return curved with { ElementCount = commandCount + 1 };
+            SvgParsedGeometry curved = curveLowering.LowerCurveFill(d, commandCount, hasArc, shape, frame, budget);
+            filled = curved with { ElementCount = commandCount + 1 };
         }
-
-        using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds);
-        if (HasDiagonalContour(points, contourEnds))
+        else
         {
-            SvgResolvedPaintableElement diagonalElement = context.ResolveShape(style, reader, false);
-            bool diagonalEvenOdd = diagonalElement.Style.FillRule is not null && diagonalElement.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-            using SvgOrthogonalGeometryLowering diagonalLowering = new(points, contourEnds, "path", true, diagonalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            return diagonalLowering.LowerPolygonFill(diagonalElement.Presentation.Color, diagonalElement.Presentation.HasFill, diagonalElement.Transform, frame, budget);
+            using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds);
+            if (HasDiagonalContour(points, contourEnds))
+            {
+                shape = context.ResolveShape(style, reader, true);
+                bool diagonalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+                using SvgOrthogonalGeometryLowering diagonalLowering = new(points, contourEnds, "path", true, diagonalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+                filled = diagonalLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
+            }
+            else
+            {
+                SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, "path", context.WorkCounter, context.CancellationToken);
+                shape = context.ResolveShape(style, reader, true);
+                bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+                using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+                filled = lowering.Lower(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame);
+            }
         }
 
-        SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, "path", context.WorkCounter, context.CancellationToken);
-        SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
-        bool isEvenOdd = element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-        using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-        return lowering.Lower(element.Presentation.Color, element.Presentation.HasFill, element.Transform, frame);
+        SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke;
+        SvgParsedGeometry stroked;
+        try
+        {
+            stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, shape, "path");
+            if (stroke is null) return filled;
+            using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, "path", true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, shape, stroke.Value.Color, shape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, frame, budget);
+        }
+        catch { filled.Dispose(); throw; }
+        return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
 
         static (int CommandCount, bool HasCurve, bool HasArc) ScanPathCommands(string value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
@@ -95,19 +115,58 @@ internal static class SvgOrthogonalShapeParser
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         contourEnds.Add(points.Count);
+        SvgResolvedPaintableElement shape;
+        SvgParsedGeometry filled;
         if (HasDiagonalContour(points, contourEnds))
         {
-            SvgResolvedPaintableElement diagonalElement = context.ResolveShape(style, reader, false);
-            bool diagonalEvenOdd = diagonalElement.Style.FillRule is not null && diagonalElement.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+            shape = context.ResolveShape(style, reader, true);
+            bool diagonalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using SvgOrthogonalGeometryLowering diagonalLowering = new(points, contourEnds, elementName, false, diagonalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            return diagonalLowering.LowerPolygonFill(diagonalElement.Presentation.Color, diagonalElement.Presentation.HasFill, diagonalElement.Transform, frame, budget);
+            filled = diagonalLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
+        }
+        else
+        {
+            SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, elementName, context.WorkCounter, context.CancellationToken);
+            shape = context.ResolveShape(style, reader, true);
+            bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+            using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, false, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            filled = lowering.Lower(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame);
         }
 
-        SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, elementName, context.WorkCounter, context.CancellationToken);
-        SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
-        bool isEvenOdd = element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-        using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, false, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-        return lowering.Lower(element.Presentation.Color, element.Presentation.HasFill, element.Transform, frame);
+        SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke;
+        SvgParsedGeometry stroked;
+        try
+        {
+            stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, shape, elementName);
+            if (stroke is null) return filled;
+            using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, false, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            stroked = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", shape.Transform, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Color, shape.Presentation.IsPainted, frame, budget);
+        }
+        catch { filled.Dispose(); throw; }
+        return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
+    }
+
+    private static SvgParsedGeometry ConcatParsedGeometries(SvgParsedGeometry first, SvgParsedGeometry second, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        try
+        {
+            using BudgetedParserList<SvgGeometry> combined = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+            combined.AddRange(first.Geometries);
+            combined.AddRange(second.Geometries);
+            int elements = first.ElementCount > int.MaxValue - second.ElementCount ? int.MaxValue : first.ElementCount + second.ElementCount;
+            SvgParsedGeometry result = new(combined.Detach(), elements);
+            first.Dispose();
+            second.Dispose();
+            return result;
+        }
+        catch
+        {
+            first.Dispose();
+            second.Dispose();
+            throw;
+        }
     }
 
     private static bool HasDiagonalContour(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds)

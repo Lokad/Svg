@@ -24,7 +24,7 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgPathDataParser
 {
     /// <summary>Parses path data, mapping each vertex and appending sealed contours to the builder.</summary>
-    internal static void ParsePath(string? value, SvgAffineTransform transform, SvgContourBuilder builder, SvgFlattenPolicy flattenPolicy, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void ParsePath(string? value, SvgAffineTransform transform, SvgContourBuilder builder, SvgFlattenPolicy flattenPolicy, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(workCounter);
@@ -55,7 +55,7 @@ internal static class SvgPathDataParser
                 {
                     bool absolute = command == 'M';
                     (double x, double y) = reader.ReadPoint();
-                    if (open) builder.EndContour();
+                    if (open) SealContour(false);
                     currentX = absolute ? x : RequireFinite(currentX + x);
                     currentY = absolute ? y : RequireFinite(currentY + y);
                     builder.BeginContour(transform.Apply(currentX, currentY));
@@ -115,7 +115,7 @@ internal static class SvgPathDataParser
                     hasPreviousQuadratic = false;
                     if (open)
                     {
-                        builder.EndContour();
+                        SealContour(true);
                         open = false;
                     }
 
@@ -258,7 +258,13 @@ internal static class SvgPathDataParser
             command = reader.ReadCommand();
         }
 
-        if (open) builder.EndContour();
+        if (open) SealContour(false);
+
+        void SealContour(bool explicitlyClosed)
+        {
+            builder.EndContour();
+            if (closedEnds is not null) closedEnds.Add(explicitlyClosed);
+        }
     }
 
     private static void ValidateCommandBudget(string value, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken)

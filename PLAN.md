@@ -795,7 +795,7 @@ half-coverage differences and double-composited band corners are unresolved, not
 permission to admit an approximation. Test acute miters, round tangencies, hairlines,
 dash seams, open/closed/degenerate paths, self-overlap and transformed strokes.
 Bounds/expansion/work denial tests are independent of pixel success.
-Status 2026-09-24: polyline-subset kernel landed (SvgStrokeOutline: butt caps, miter/bevel joins, open/closed/degenerate paths, 13 kernel tests); curves, round caps/joins, dashes and renderer wiring remain open.
+Status 2026-09-24: polyline-subset kernel landed (SvgStrokeOutline: butt caps, miter/bevel joins, open/closed/degenerate paths, 13 kernel tests); curves, round caps/joins, dashes and renderer wiring remain open. Status 2026-09-24: admitted-subset stroke wiring landed (solid even-width butt/miter polygon/polyline/path strokes with per-subpath closure tracking, uniform-scale gating and nonzero outline fills, 17 end-to-end tests); round/square caps, round/bevel joins, dashes, odd widths, shape strokes and non-uniform scales remain open.
 
 ### S13 — Paint servers
 
