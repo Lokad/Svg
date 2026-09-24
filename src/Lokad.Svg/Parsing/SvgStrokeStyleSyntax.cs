@@ -124,7 +124,7 @@ internal static class SvgStrokeStyleSyntax
     }
 
     /// <summary>Resolves one admitted solid stroke, or nothing when the element carries no stroke paint.</summary>
-    internal readonly record struct SvgAdmittedStroke(SvgColor Color, int Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join, double[]? DashPattern, double DashOffset, bool NonScalingStroke);
+    internal readonly record struct SvgAdmittedStroke(SvgColor Color, int Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join, double[]? DashPattern, double DashOffset, double? PathLength, bool NonScalingStroke);
 
     /// <summary>Validates the stroke subset shared by stroked shapes, rejecting paint servers, odd widths, small limits and unsupported dash combinations.</summary>
     internal static SvgAdmittedStroke? ResolveAdmittedStroke(XmlReader reader, SvgComputedStyle style, SvgResolvedPaintableElement shape, string elementName)
@@ -151,9 +151,15 @@ internal static class SvgStrokeStyleSyntax
             if (hasZero && cap != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Zero-length dashes with round or square caps are not implemented.");
         }
         bool nonScaling = ParseVectorEffect(reader.GetAttribute("vector-effect"));
+        double? pathLength = ParsePathLength(reader.GetAttribute("pathLength"));
+        if (pathLength == 0 && dashes is not null)
+        {
+            if (dashes[0] > 0) dashes = null;
+            else return null;
+        }
         if (dashes is not null && nonScaling && Math.Abs(shape.Transform.ScaleX) != Math.Abs(shape.Transform.ScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniformly scaled dashed strokes are not implemented.");
         SvgColor color = SvgPaintResolver.ApplyOpacity(shape.Presentation.StrokeColor.Value, shape.Presentation.Opacity);
-        return new SvgAdmittedStroke(color, width, miterLimit, cap, join, dashes, dashOffset, nonScaling);
+        return new SvgAdmittedStroke(color, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling);
     }
 
     /// <summary>Parses the vector effect, defaulting to scaling strokes like SVG.</summary>
@@ -164,6 +170,17 @@ internal static class SvgStrokeStyleSyntax
         if (token.Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
         if (token.Equals("non-scaling-stroke".AsSpan(), StringComparison.OrdinalIgnoreCase)) return true;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only scaling and non-scaling strokes are implemented.");
+    }
+
+    /// <summary>Parses one path length in user units, returning nothing when absent.</summary>
+    internal static double? ParsePathLength(string? value)
+    {
+        if (value is null) return null;
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number path lengths are implemented.");
+        if (result < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Path length cannot be negative.");
+        if (result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number path lengths are implemented.");
+        return result;
     }
 
     /// <summary>Parses the open-end cap style, defaulting to butt like SVG.</summary>

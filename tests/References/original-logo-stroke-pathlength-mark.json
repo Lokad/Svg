@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-stroke-pathlength-mark",
+  "referencePng": "original-logo-stroke-pathlength-mark.png",
+  "referenceSha256": "4d9c5710d3d77267a0998e22dea2d9d4d03953ac7321f0f07a343d7913be6f79",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 32, "height": 16, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "d03545a11756cb1b82451871c2583fca1142ac5c78ad5a100122474a78c948df",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 5,
+    "maximumChannelError": 102,
+    "maximumAlphaError": 102,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

@@ -90,6 +90,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("stroke-linejoin", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-linejoin", propertyValue);
             else if (property.Equals("stroke-dasharray", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-dasharray", propertyValue);
             else if (property.Equals("stroke-dashoffset", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-dashoffset", propertyValue);
+            else if (property.Equals("pathLength", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline path lengths are not implemented.");
             else if (property.Equals("clip-rule", StringComparison.OrdinalIgnoreCase)) ValidateClipDeclaration(propertyValue);
             else if (property.Equals("overflow", StringComparison.OrdinalIgnoreCase)) ValidateOverflowDeclaration(propertyValue);
             else if (property.Equals("preserveAspectRatio", StringComparison.OrdinalIgnoreCase)) ValidateImagePreserveAspectRatioDeclaration(propertyValue);

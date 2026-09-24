@@ -421,7 +421,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes user-space fractional point-list vertices through device-space contours with the caller cap and join styles.</summary>
-    internal SvgParsedGeometry LowerStrokePointList(BudgetedParserList<SvgFractionalPoint> points, bool closed, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokePointList(BudgetedParserList<SvgFractionalPoint> points, bool closed, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
@@ -443,12 +443,12 @@ internal ref struct SvgOrthogonalGeometryLowering
 
         builder.EndContour();
         bool[] closedEnds = [closed];
-        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds, false, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, nonScaling, color, hasFill, frame, budget);
+        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds, false, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget);
         return stroked with { ElementCount = points.Count + 1 };
     }
 
     /// <summary>Strokes one integer point contour with the caller cap and join styles into one nonzero outline fill.</summary>
-    internal SvgParsedGeometry LowerStrokePolyline(BudgetedParserList<SvgPoint> points, bool closed, AxisTransform transform, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, bool nonScaling, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokePolyline(BudgetedParserList<SvgPoint> points, bool closed, AxisTransform transform, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
@@ -482,18 +482,20 @@ internal ref struct SvgOrthogonalGeometryLowering
             return FinishStrokeFill(outlines, color, hasFill, false, frame, budget) with { ElementCount = points.Count + 1 };
         }
         double dashScale = Math.Abs(transform.ScaleX * (frame?.ScaleX ?? 1));
-        return LowerDashedStrokePolyline(mapped, closed, deviceWidth, dashScale, miterLimit, cap, join, dashes, dashOffset, color, hasFill, frame, budget) with { ElementCount = points.Count + 1 };
+        return LowerDashedStrokePolyline(mapped, closed, deviceWidth, dashScale, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget) with { ElementCount = points.Count + 1 };
     }
 
     /// <summary>Strokes one mapped contour through the dash pattern into one nonzero outline fill.</summary>
-    private SvgParsedGeometry LowerDashedStrokePolyline(BudgetedParserList<SvgDevicePoint> mapped, bool closed, double deviceWidth, double dashScale, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[] dashes, double dashOffset, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    private SvgParsedGeometry LowerDashedStrokePolyline(BudgetedParserList<SvgDevicePoint> mapped, bool closed, double deviceWidth, double dashScale, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[] dashes, double dashOffset, double? pathLength, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(dashes);
         ArgumentNullException.ThrowIfNull(budget);
-        (double[] pattern, double minimumStep) = ScaleDashPattern(dashes, dashScale);
+        double[] pattern = ScaleDashPattern(dashes, dashScale);
 
         double contourLength = DashContourLength(mapped.AsSpan(), closed);
+        double dashFactor = RescaleDashPattern(pattern, contourLength / dashScale, pathLength);
+        double minimumStep = DashMinimumStep(pattern);
         long cuts;
         try { cuts = double.IsFinite(contourLength) ? checked((long)(contourLength / minimumStep) + 2) : MaximumFlattenedContourPoints; }
         catch (OverflowException) { cuts = MaximumFlattenedContourPoints; }
@@ -514,24 +516,63 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgContourBuilder outlines = new(pointCapacity, (int)contourCapacity);
         using BudgetedParserList<SvgDevicePoint> leading = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         using BudgetedParserList<SvgDevicePoint> current = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        StrokeDashedContour(mapped.AsSpan(), closed, pattern, dashOffset * dashScale, deviceWidth, miterLimit, cap, join, outlines, leading, current);
+        double scaledOffset = dashOffset * dashScale * dashFactor;
+        if (!double.IsFinite(scaledOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
+        StrokeDashedContour(mapped.AsSpan(), closed, pattern, scaledOffset, deviceWidth, miterLimit, cap, join, outlines, leading, current);
         return FinishStrokeFill(outlines, color, hasFill, false, frame, budget);
     }
 
-    /// <summary>Scales one dash pattern into device units, reporting the smallest positive step.</summary>
-    private static (double[] Pattern, double MinimumStep) ScaleDashPattern(double[] dashes, double dashScale)
+    /// <summary>Scales one dash pattern into device units.</summary>
+    private static double[] ScaleDashPattern(double[] dashes, double dashScale)
     {
         ArgumentNullException.ThrowIfNull(dashes);
         double[] pattern = new double[dashes.Length];
-        double minimumStep = double.PositiveInfinity;
-        for (int index = 0; index < dashes.Length; index++)
+        for (int index = 0; index < dashes.Length; index++) pattern[index] = dashes[index] * dashScale;
+
+        return pattern;
+    }
+
+    /// <summary>Rescales device-space dash entries by the path-length factor, reporting the applied factor.</summary>
+    private static double RescaleDashPattern(double[] pattern, double userLength, double? pathLength)
+    {
+        ArgumentNullException.ThrowIfNull(pattern);
+        if (pathLength is null || !(userLength > 0)) return 1;
+        double factor = userLength / pathLength.Value;
+        if (!double.IsFinite(factor)) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
+        for (int index = 0; index < pattern.Length; index++)
         {
-            double step = dashes[index] * dashScale;
-            pattern[index] = step;
+            pattern[index] *= factor;
+            if (!double.IsFinite(pattern[index])) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
+        }
+
+        return factor;
+    }
+
+    /// <summary>Reports the smallest positive dash step for cut estimation.</summary>
+    private static double DashMinimumStep(double[] pattern)
+    {
+        ArgumentNullException.ThrowIfNull(pattern);
+        double minimumStep = double.PositiveInfinity;
+        foreach (double step in pattern)
+        {
             if (step > 0 && step < minimumStep) minimumStep = step;
         }
 
-        return (pattern, minimumStep);
+        return minimumStep;
+    }
+
+    /// <summary>Measures all device-space contours along their segments.</summary>
+    private double DashTotalLength(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        double total = 0;
+        for (int contour = 0; contour < source.ContourCount; contour++)
+        {
+            if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
+            total += DashContourLength(source.GetContour(contour), closedEnds[contour]);
+        }
+
+        return total;
     }
 
     /// <summary>Measures one device-space contour along its segments, wrapping closed loops through the seam.</summary>
@@ -676,13 +717,16 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes sampled contours through the dash pattern into one nonzero outline fill.</summary>
-    private SvgParsedGeometry LowerDashedStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, AxisTransform transform, double deviceWidth, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[] dashes, double dashOffset, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    private SvgParsedGeometry LowerDashedStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, AxisTransform transform, double deviceWidth, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[] dashes, double dashOffset, double? pathLength, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(dashes);
         ArgumentNullException.ThrowIfNull(budget);
         double dashScale = Math.Abs(transform.ScaleX * (frame?.ScaleX ?? 1));
-        (double[] pattern, double minimumStep) = ScaleDashPattern(dashes, dashScale);
+        double[] pattern = ScaleDashPattern(dashes, dashScale);
+        double totalDeviceLength = DashTotalLength(source, closedEnds);
+        double dashFactor = RescaleDashPattern(pattern, totalDeviceLength / dashScale, pathLength);
+        double minimumStep = DashMinimumStep(pattern);
 
         long totalCuts = 0;
         for (int contour = 0; contour < source.ContourCount; contour++)
@@ -714,7 +758,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgContourBuilder outlines = new(pointCapacity, (int)contourCapacity);
         using BudgetedParserList<SvgDevicePoint> leading = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         using BudgetedParserList<SvgDevicePoint> current = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        double scaledOffset = dashOffset * dashScale;
+        double scaledOffset = dashOffset * dashScale * dashFactor;
+        if (!double.IsFinite(scaledOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
         for (int contour = 0; contour < source.ContourCount; contour++)
         {
             if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
@@ -725,14 +770,14 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes device-space contours with the caller cap and join styles into one nonzero outline fill.</summary>
-    internal SvgParsedGeometry LowerStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, AxisTransform transform, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, bool nonScaling, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, AxisTransform transform, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(budget);
         if (closedEnds.Length != source.ContourCount) throw new InvalidOperationException("Stroke contour closure flags must match the sampled contours.");
         if (source.PointCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path stroke point count exceeds the configured path-command limit." : _elementName + " stroke point count exceeds the configured path-command limit.");
         double deviceWidth = StrokeDeviceWidth(width, transform, frame, nonScaling);
-        if (dashes is not null) return LowerDashedStrokeContours(source, closedEnds, hasCurves, transform, deviceWidth, miterLimit, cap, join, dashes, dashOffset, color, hasFill, frame, budget);
+        if (dashes is not null) return LowerDashedStrokeContours(source, closedEnds, hasCurves, transform, deviceWidth, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget);
         long wantedPoints = 4L * source.PointCount + 8;
         if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join != SvgStrokeJoin.Miter)
         {
@@ -775,7 +820,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes path data with the caller cap and join styles into one nonzero outline fill, tracking explicit closepath seals.</summary>
-    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasArc, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasArc, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke command count exceeds the configured path-command limit.");
@@ -793,7 +838,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgContourBuilder builder = new(pointCapacity, contourCapacity);
         using BudgetedParserList<bool> closedEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, closedEnds);
-        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, nonScaling, color, hasFill, frame, budget);
+        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget);
         return stroked with { ElementCount = commandCount + 1 };
     }
 
