@@ -116,12 +116,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_group_wrapped_definition_paths_instead_of_painting_them()
+    public void Parses_group_wrapped_definition_paths_without_painting_them()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><defs><path d='M0,0 H5 V5 H0 Z' fill='red'/></defs></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Empty(root.Geometries);
-        Assert.True(root.HasUnsupportedChild);
+        Assert.False(root.HasUnsupportedChild);
     }
 
     [Fact]

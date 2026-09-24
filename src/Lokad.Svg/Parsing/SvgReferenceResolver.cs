@@ -1,3 +1,5 @@
+using Lokad.Svg.Rendering;
+
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents a parsed direct local use reference before its target is resolved.</summary>
@@ -13,7 +15,10 @@ internal static class SvgReferenceResolver
     internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
-        if (definitions.TryGetValue(reference.Id, out SvgDefinition definition)) scene.AddGeometry(ApplyMask(definition, reference, frame, mask, maskReference, state));
+        if (definitions.TryGetValue(reference.Id, out SvgDefinition definition))
+        {
+            foreach (SvgGeometry geometry in ApplyMask(definition, reference, frame, mask, maskReference, state)) scene.AddGeometry(geometry);
+        }
         else
         {
             int scopeStart = SnapshotMaskScopes(state, workCounter, cancellationToken);
@@ -21,17 +26,36 @@ internal static class SvgReferenceResolver
         }
     }
 
-    internal static SvgGeometry Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
+    internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
     {
         if (definition.SymbolViewBox is SvgViewBox symbolBox) return ApplySymbol(definition, symbolBox, reference, frame, state);
-        if (reference.PaintServerId is not null) return LowerDirectInstancePaintFill(definition, reference, frame, state);
-        SvgGeometry geometry = ApplyInstanceFill(definition, reference);
-        return geometry.Kind switch
+        if (reference.PaintServerId is not null) return [LowerDirectInstancePaintFill(definition, reference, frame, state)];
+        SvgGeometry[] sources = ApplyInstanceFill(definition, reference);
+        SvgGeometry[] applied = new SvgGeometry[sources.Length];
+        for (int index = 0; index < sources.Length; index++)
         {
-            SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(geometry.Rectangle, reference), frame)),
-            SvgGeometryKind.AxisAlignedLine => ClipLine(ApplyAxisAlignedLine(geometry.AxisAlignedLine, reference), frame),
-            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.")
-        };
+            applied[index] = sources[index].Kind switch
+            {
+                SvgGeometryKind.Rectangle or SvgGeometryKind.OrthogonalBand => SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)),
+                SvgGeometryKind.AxisAlignedLine => ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame),
+                SvgGeometryKind.PolygonFill => ApplyPolygon(sources[index].Polygon, reference, frame, state),
+                _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.")
+            };
+        }
+
+        return applied;
+    }
+
+    private static SvgGeometry ApplyPolygon(SvgPolygonFill polygon, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
+        SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
+        for (int index = 0; index < mapped.Length; index++) mapped[index] = instanceMap.Apply(polygon.Points[index].X + reference.X, polygon.Points[index].Y + reference.Y);
+        SvgClipBox? clip = polygon.Clip;
+        if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
+        SvgColor color = new(polygon.Color.Red, polygon.Color.Green, polygon.Color.Blue, MultiplyAlpha(polygon.Color.Alpha, reference.Opacity));
+        return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, state.Budget));
     }
 
     private static SvgGeometry ApplySymbolInstance(SvgGeometry geometry, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame)
@@ -73,41 +97,57 @@ internal static class SvgReferenceResolver
         return box with { X = box.X * scaleX + offsetX, Y = box.Y * scaleY + offsetY, Width = box.Width * scaleX, Height = box.Height * scaleY };
     }
 
-    private static SvgGeometry ApplyMask(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDocumentState state)
+    private static SvgGeometry[] ApplyMask(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDocumentState state)
     {
-        SvgGeometry geometry = Apply(definition, reference, frame, state);
-        SvgMaskSyntax.ValidateMaskScopes(state, geometry);
-        if (mask is null) return geometry;
-        SvgRectangle box = SvgMaskSyntax.BoundingBox(geometry);
-        if (maskReference is not null) SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, box);
-        return SvgMaskSyntax.ApplyMask(geometry, mask.Value, SvgMaskSyntax.MaskRegion(box));
+        SvgGeometry[] sources = Apply(definition, reference, frame, state);
+        SvgGeometry[] applied = new SvgGeometry[sources.Length];
+        for (int index = 0; index < sources.Length; index++)
+        {
+            SvgMaskSyntax.ValidateMaskScopes(state, sources[index]);
+            if (mask is null) applied[index] = sources[index];
+            else
+            {
+                SvgRectangle box = SvgMaskSyntax.BoundingBox(sources[index]);
+                if (maskReference is not null) SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, box);
+                applied[index] = SvgMaskSyntax.ApplyMask(sources[index], mask.Value, SvgMaskSyntax.MaskRegion(box));
+            }
+        }
+
+        return applied;
     }
 
     private static SvgRectangle ClipRectangle(SvgRectangle rectangle, SvgViewportFrame? frame) => frame is null ? rectangle : frame.Value.ClipShifted(rectangle);
 
     private static SvgGeometry ClipLine(SvgAxisAlignedLine line, SvgViewportFrame? frame) => frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line);
 
-    private static SvgGeometry ApplyInstanceFill(SvgDefinition definition, SvgUseReference reference)
+    private static SvgGeometry[] ApplyInstanceFill(SvgDefinition definition, SvgUseReference reference)
     {
-        if (reference.FillOverride is null) return definition.Geometry;
-        if (definition.Geometry.Kind != SvgGeometryKind.Rectangle || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible rectangle definition.");
+        if (reference.FillOverride is null) return definition.Geometries;
+        if (definition.Geometries.Length != 1 || definition.Geometries[0].Kind != SvgGeometryKind.Rectangle || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible rectangle definition.");
         SvgPaint fill = reference.FillOverride.Value;
-        return SvgGeometry.FromRectangle(definition.Geometry.Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill });
+        return [SvgGeometry.FromRectangle(definition.Geometries[0].Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill })];
     }
 
-    private static SvgGeometry ApplySymbol(SvgDefinition definition, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
+    private static SvgGeometry[] ApplySymbol(SvgDefinition definition, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
     {
-        if (reference.PaintServerId is null) return ApplySymbolInstance(ApplyInstanceFill(definition, reference), symbolBox, reference, frame);
-        return ApplySymbolPaintServerFill(definition, symbolBox, reference, frame, state);
+        if (reference.PaintServerId is null)
+        {
+            SvgGeometry[] sources = ApplyInstanceFill(definition, reference);
+            SvgGeometry[] applied = new SvgGeometry[sources.Length];
+            for (int index = 0; index < sources.Length; index++) applied[index] = ApplySymbolInstance(sources[index], symbolBox, reference, frame);
+            return applied;
+        }
+
+        return [ApplySymbolPaintServerFill(definition, symbolBox, reference, frame, state)];
     }
 
     private static SvgGeometry LowerDirectInstancePaintFill(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
     {
-        if (definition.Geometry.Kind != SvgGeometryKind.Rectangle || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible rectangle definition.");
-        if (definition.Geometry.Rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
+        if (definition.Geometries.Length != 1 || definition.Geometries[0].Kind != SvgGeometryKind.Rectangle || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible rectangle definition.");
+        if (definition.Geometries[0].Rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
         string paintId = reference.PaintServerId ?? throw new InvalidOperationException("Instance paint lowering requires a paint-server reference.");
-        if (state.Patterns.TryGetValue(paintId, out SvgPatternTile tile)) return LowerInstancePatternFill(tile, InstancePlacement(definition.Geometry.Rectangle, reference), reference, frame);
-        if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient)) return LowerInstanceGradientFill(gradient, InstancePlacement(definition.Geometry.Rectangle, reference), InstanceBox(definition.Geometry.Rectangle, reference, frame), reference, frame);
+        if (state.Patterns.TryGetValue(paintId, out SvgPatternTile tile)) return LowerInstancePatternFill(tile, InstancePlacement(definition.Geometries[0].Rectangle, reference), reference, frame);
+        if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient)) return LowerInstanceGradientFill(gradient, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame);
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
     }
 
@@ -158,13 +198,13 @@ internal static class SvgReferenceResolver
 
     private static SvgGeometry ApplySymbolPaintServerFill(SvgDefinition definition, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
     {
-        if (definition.Geometry.Kind != SvgGeometryKind.Rectangle || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible rectangle definition.");
-        if (definition.Geometry.Rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
+        if (definition.Geometries.Length != 1 || definition.Geometries[0].Kind != SvgGeometryKind.Rectangle || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible rectangle definition.");
+        if (definition.Geometries[0].Rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
         if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
         string paintId = reference.PaintServerId ?? throw new InvalidOperationException("Instance paint lowering requires a paint-server reference.");
-        SvgRectangle fillBox = ApplySymbolInstance(definition.Geometry, symbolBox, reference, frame).Rectangle with { Color = default };
+        SvgRectangle fillBox = ApplySymbolInstance(definition.Geometries[0], symbolBox, reference, frame).Rectangle with { Color = default };
         (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(symbolBox, reference.Width.Value, reference.Height.Value);
-        SvgRectangle contentBox = definition.Geometry.Rectangle;
+        SvgRectangle contentBox = definition.Geometries[0].Rectangle;
         SvgRectangle box = reference.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + reference.X, contentBox.Y * scaleY + offsetY + reference.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
         if (frame is not null) box = frame.Value.Shift(box);
         if (state.Patterns.TryGetValue(paintId, out SvgPatternTile tile))
@@ -204,9 +244,10 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
-            SvgGeometry geometry = ApplyMask(definition, pendingUse.Reference, pendingUse.Frame, pendingUse.Mask, pendingUse.MaskReference, state);
-            if (pendingUse.MaskScopeCount > 0) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
-            scene.Replace(pendingUse.Slot, geometry);
+            SvgGeometry[] applied = ApplyMask(definition, pendingUse.Reference, pendingUse.Frame, pendingUse.Mask, pendingUse.MaskReference, state);
+            if (applied.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Forward references to multi-geometry use definitions stay unsupported.");
+            if (pendingUse.MaskScopeCount > 0) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(applied[0]));
+            scene.Replace(pendingUse.Slot, applied[0]);
         }
     }
 

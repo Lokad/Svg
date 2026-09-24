@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
@@ -11,10 +12,15 @@ internal static class SvgDefinitionParser
         {
             string? id = state.SymbolDepth >= 0 ? state.SymbolId : reader.GetAttribute("id");
             if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-            else SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
+            else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
+            else if (reader.LocalName == "path") SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
+            else if (reader.LocalName == "circle" || reader.LocalName == "ellipse") SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
+            else SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
             SvgViewBox? symbolViewBox = state.SymbolDepth >= 0 ? state.SymbolViewBox : null;
-            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, symbolViewBox) : new SvgDefinition(SvgLeafParser.ParseLine(reader, context, null, state), false, symbolViewBox);
+            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, symbolViewBox)
+                : reader.LocalName == "line" ? new SvgDefinition([SvgLeafParser.ParseLine(reader, context, null, state)], false, symbolViewBox)
+                : ParseShapeDefinition(reader, context, state, symbolViewBox);
             if (id is not null)
             {
                 workCounter.Consume(cancellationToken);
@@ -294,9 +300,29 @@ internal static class SvgDefinitionParser
         return content;
     }
 
+    private static SvgDefinition ParseShapeDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
+    {
+        SvgGeometry[] geometries = reader.LocalName switch
+        {
+            "polygon" or "polyline" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, int.MaxValue, state.Budget, null, state)),
+            "path" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePath(reader, context, int.MaxValue, state.Budget, null, state)),
+            "circle" => [SvgLeafParser.ParseCircle(reader, context, null, state)],
+            "ellipse" => [SvgLeafParser.ParseEllipse(reader, context, null, state)],
+            _ => throw new InvalidOperationException("Unsupported definition leaf reached shape lowering."),
+        };
+        if (geometries.Length > 0) state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Scene);
+        return new SvgDefinition(geometries, false, symbolViewBox);
+    }
+
+    private static SvgGeometry[] RetainParsedGeometries(SvgParsedGeometry parsed)
+    {
+        try { return parsed.Geometries.ToArray(); }
+        finally { parsed.Dispose(); }
+    }
+
     private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgViewBox? symbolViewBox)
     {
         SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
-        return new SvgDefinition(parsed.Geometry, parsed.Geometry.Rectangle.HasFill && parsed.Style == default, symbolViewBox);
+        return new SvgDefinition([parsed.Geometry], parsed.Geometry.Rectangle.HasFill && parsed.Style == default, symbolViewBox);
     }
 }

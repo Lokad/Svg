@@ -529,11 +529,11 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Extra_content_in_an_instantiated_symbol_is_rejected_as_unsupported()
+    public void Extra_content_in_an_instantiated_symbol_is_rejected_like_multi_rectangle_symbols()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><symbol id='tile'><rect width='1' height='1' fill='red'/><circle cx='0' cy='0' r='1'/></symbol></defs><use href='#tile'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 
     [Theory]

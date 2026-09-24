@@ -152,15 +152,6 @@ public sealed class SvgShapeElementsTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
 
-    [Fact]
-    public void Circle_reference_through_use_stays_unsupported()
-    {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><circle id='c' cx='4' cy='4' r='2' fill='red'/></defs><use href='#c'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-    }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {

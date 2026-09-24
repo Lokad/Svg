@@ -16,7 +16,7 @@ public sealed class SvgReferenceResolverTests
 
         using SvgSceneStorage scene = state.Scene.Build();
         Assert.Equal(0, state.PendingUses.Count);
-        Assert.Equal(definition.Geometry, Assert.Single(scene.Geometries));
+        Assert.Equal(definition.Geometries, scene.Geometries);
     }
 
     [Fact]
@@ -31,16 +31,16 @@ public sealed class SvgReferenceResolverTests
 
         using SvgSceneStorage scene = state.Scene.Build();
         Assert.Equal(1, state.PendingUses.Count);
-        Assert.Equal(definition.Geometry, Assert.Single(scene.Geometries));
+        Assert.Equal(definition.Geometries, scene.Geometries);
     }
 
     [Fact]
     public void Applies_integral_and_rejects_fractional_line_use_offsets()
     {
         using SvgDocumentState state = new(new RenderBudget(10_000), new ParserWorkCounter(100), CancellationToken.None);
-        SvgDefinition definition = new(SvgGeometry.FromAxisAlignedLine(new SvgAxisAlignedLine(0, 0, 2, 0, new SvgColor(255, 0, 0, 255), true, 2)), false, null);
+        SvgDefinition definition = new([SvgGeometry.FromAxisAlignedLine(new SvgAxisAlignedLine(0, 0, 2, 0, new SvgColor(255, 0, 0, 255), true, 2))], false, null);
 
-        SvgGeometry applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null, null), null, state);
+        SvgGeometry applied = Assert.Single(SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null, null), null, state));
         SvgException exception = Assert.Throws<SvgException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 1.5, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null, null), null, state));
 
         Assert.Equal(new SvgAxisAlignedLine(1, 0, 3, 0, new SvgColor(255, 0, 0, 255), true, 2), applied.AxisAlignedLine);
@@ -48,7 +48,7 @@ public sealed class SvgReferenceResolverTests
     }
 
     private static SvgDefinition CreateRectangleDefinition()
-        => new(SvgGeometry.FromRectangle(new SvgRectangle(1, 2, 3, 4, new SvgColor(5, 6, 7, 255), true, null)), false, null);
+        => new([SvgGeometry.FromRectangle(new SvgRectangle(1, 2, 3, 4, new SvgColor(5, 6, 7, 255), true, null))], false, null);
 
     private static SvgUseReference CreateReference()
         => new("tile", 0, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null, null);

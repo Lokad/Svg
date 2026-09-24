@@ -724,6 +724,7 @@ Do not infer coverage or a date from unit-test totals.
 Exit: independently expected cascade/reference/viewport results, shared numeric
 and eligibility boundaries, plus representative exporter documents. General CSS,
 scripting, events, external-document retrieval and animation are not prerequisites.
+Status 2026-09-24: direct local use of polygon/polyline/path/circle/ellipse fills wired (list-holding definitions with transform/placement/opacity/clip composition, backward and forward references, 13 end-to-end tests); forward multi-geometry references, symbol-held polygon content, fill overrides on non-rectangles and masked polygon instances remain open.
 
 ### S10 — General filled geometry and transforms
 
