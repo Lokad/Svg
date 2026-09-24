@@ -86,6 +86,63 @@ internal sealed class SvgContourBuilder
         else _pointCount += SvgEllipticalArc.Sample(arc, policy, _points.AsSpan(_pointCount), cancellationToken);
     }
 
+    /// <summary>Appends one sampled full-ellipse loop as a sealed contour.</summary>
+    /// <remarks>
+    /// <para>The ellipse stands alone: an open contour is a misuse. Corner radii and rotation arrive in
+    /// the device frame under the caller transform, matching endpoint arcs; general-affine ellipse axes
+    /// need user-space sampling owned by a later slice.</para>
+    /// </remarks>
+    internal void AddEllipse(SvgDevicePoint center, double radiusX, double radiusY, double rotationRadians, SvgFlattenPolicy policy, CancellationToken cancellationToken)
+    {
+        if (_openStart >= 0) throw new InvalidOperationException("A contour is already open.");
+        if (_contourCount >= _starts.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported contour range.");
+        ValidatePoint(center, nameof(center));
+        if (!double.IsFinite(radiusX) || !double.IsFinite(radiusY) || radiusX <= 0 || radiusY <= 0) throw new ArgumentOutOfRangeException(nameof(radiusX));
+        if (!double.IsFinite(rotationRadians)) throw new ArgumentOutOfRangeException(nameof(rotationRadians));
+        int start = _pointCount;
+        _pointCount += SvgEllipticalArc.SampleFull(center, radiusX, radiusY, rotationRadians, policy, _points.AsSpan(_pointCount), cancellationToken);
+        _starts[_contourCount] = start;
+        _ends[_contourCount] = _pointCount;
+        _contourCount++;
+    }
+
+    /// <summary>Appends one axis-aligned rounded rectangle as a sealed contour, closing arc endpoint included.</summary>
+    /// <remarks>
+    /// <para>Corner radii clamp to half the side lengths; a zero radius falls back to sharp corners and a
+    /// zero side draws nothing. Negative sizes or radii are caller contract violations.</para>
+    /// </remarks>
+    internal void AddRoundedRect(double x, double y, double width, double height, double cornerX, double cornerY, SvgFlattenPolicy policy, CancellationToken cancellationToken)
+    {
+        if (_openStart >= 0) throw new InvalidOperationException("A contour is already open.");
+        if (!double.IsFinite(x) || !double.IsFinite(y) || !double.IsFinite(width) || !double.IsFinite(height)) throw new ArgumentOutOfRangeException(nameof(x));
+        if (!double.IsFinite(cornerX) || !double.IsFinite(cornerY) || cornerX < 0 || cornerY < 0) throw new ArgumentOutOfRangeException(nameof(cornerX));
+        if (width < 0 || height < 0) throw new ArgumentOutOfRangeException(nameof(width));
+        if (width == 0 || height == 0) return;
+        if (_contourCount >= _starts.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported contour range.");
+        double radiusX = Math.Min(cornerX, width / 2);
+        double radiusY = Math.Min(cornerY, height / 2);
+        BeginContour(new SvgDevicePoint(RequireFinite(x + radiusX), y));
+        if (radiusX == 0 || radiusY == 0)
+        {
+            AddLine(new SvgDevicePoint(RequireFinite(x + width), y));
+            AddLine(new SvgDevicePoint(RequireFinite(x + width), RequireFinite(y + height)));
+            AddLine(new SvgDevicePoint(x, RequireFinite(y + height)));
+        }
+        else
+        {
+            AddLine(new SvgDevicePoint(RequireFinite(x + width - radiusX), y));
+            AddArc(radiusX, radiusY, 0, false, true, new SvgDevicePoint(RequireFinite(x + width), RequireFinite(y + radiusY)), policy, cancellationToken);
+            AddLine(new SvgDevicePoint(RequireFinite(x + width), RequireFinite(y + height - radiusY)));
+            AddArc(radiusX, radiusY, 0, false, true, new SvgDevicePoint(RequireFinite(x + width - radiusX), RequireFinite(y + height)), policy, cancellationToken);
+            AddLine(new SvgDevicePoint(RequireFinite(x + radiusX), RequireFinite(y + height)));
+            AddArc(radiusX, radiusY, 0, false, true, new SvgDevicePoint(x, RequireFinite(y + height - radiusY)), policy, cancellationToken);
+            AddLine(new SvgDevicePoint(x, RequireFinite(y + radiusY)));
+            AddArc(radiusX, radiusY, 0, false, true, new SvgDevicePoint(RequireFinite(x + radiusX), y), policy, cancellationToken);
+        }
+
+        EndContour();
+    }
+
     /// <summary>Seals the open contour, keeping its points for coverage.</summary>
     internal void EndContour()
     {
@@ -126,5 +183,11 @@ internal sealed class SvgContourBuilder
     private static void ValidatePoint(SvgDevicePoint point, string parameterName)
     {
         if (!double.IsFinite(point.X) || !double.IsFinite(point.Y)) throw new ArgumentOutOfRangeException(parameterName);
+    }
+
+    private static double RequireFinite(double value)
+    {
+        if (!double.IsFinite(value)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the admitted numeric range.");
+        return value;
     }
 }

@@ -163,6 +163,84 @@ public sealed class SvgContourBuilderTests
         Assert.Equal([new SvgDevicePoint(1, 1), new SvgDevicePoint(2, 3)], builder.GetContour(0).ToArray());
     }
 
+    [Fact]
+    public void Ellipse_appends_standalone_loop()
+    {
+        SvgContourBuilder builder = new(256, 4);
+        builder.AddEllipse(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None);
+
+        Assert.Equal(1, builder.ContourCount);
+        ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
+        Assert.True(contour.Length > 4);
+        Assert.Equal(new SvgDevicePoint(12, 4), contour[^1]);
+    }
+
+    [Fact]
+    public void Ellipse_rejects_open_contour_and_bad_shapes()
+    {
+        SvgContourBuilder builder = new(256, 4);
+        builder.BeginContour(new SvgDevicePoint(0, 0));
+
+        Assert.Throws<InvalidOperationException>(() => builder.AddEllipse(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
+        builder.EndContour();
+        Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddEllipse(new SvgDevicePoint(4, 4), 0, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddEllipse(new SvgDevicePoint(double.NaN, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
+    }
+
+    [Fact]
+    public void Sharp_rect_is_exact()
+    {
+        SvgContourBuilder builder = new(16, 4);
+        builder.AddRoundedRect(0, 0, 8, 4, 0, 0, new SvgFlattenPolicy(0.5, 64, 16), CancellationToken.None);
+
+        Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 4), new SvgDevicePoint(0, 4)], builder.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Coarse_rounded_rect_is_exact()
+    {
+        SvgContourBuilder builder = new(256, 4);
+        builder.AddRoundedRect(0, 0, 8, 4, 2, 1, new SvgFlattenPolicy(100.0, 64, 256), CancellationToken.None);
+
+        Assert.Equal([new SvgDevicePoint(2, 0), new SvgDevicePoint(6, 0), new SvgDevicePoint(8, 1), new SvgDevicePoint(8, 3), new SvgDevicePoint(6, 4), new SvgDevicePoint(2, 4), new SvgDevicePoint(0, 3), new SvgDevicePoint(0, 1), new SvgDevicePoint(2, 0)], builder.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Oversized_corners_clamp_to_half_sides()
+    {
+        SvgContourBuilder builder = new(256, 4);
+        builder.AddRoundedRect(0, 0, 8, 4, 100, 100, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None);
+        ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
+
+        Assert.Equal(new SvgDevicePoint(4, 0), contour[0]);
+        Assert.True(contour.Length >= 9);
+        Assert.Contains(new SvgDevicePoint(8, 2), contour.ToArray());
+        Assert.Contains(new SvgDevicePoint(4, 4), contour.ToArray());
+        Assert.Contains(new SvgDevicePoint(0, 2), contour.ToArray());
+    }
+
+    [Fact]
+    public void Rounded_rect_rejects_bad_inputs_and_open_contour()
+    {
+        SvgContourBuilder builder = new(256, 4);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddRoundedRect(0, 0, 8, 4, -1, 1, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => builder.AddRoundedRect(0, 0, -8, 4, 2, 1, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
+        builder.BeginContour(new SvgDevicePoint(0, 0));
+        Assert.Throws<InvalidOperationException>(() => builder.AddRoundedRect(0, 0, 8, 4, 2, 1, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None));
+        builder.EndContour();
+    }
+
+    [Fact]
+    public void Zero_sized_rect_draws_nothing()
+    {
+        SvgContourBuilder builder = new(256, 4);
+        builder.AddRoundedRect(0, 0, 0, 4, 0, 0, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None);
+        builder.AddRoundedRect(0, 0, 8, 0, 0, 0, new SvgFlattenPolicy(0.5, 64, 256), CancellationToken.None);
+
+        Assert.Equal(0, builder.ContourCount);
+        Assert.Equal(0, builder.PointCount);
+    }
     private static int ArcContourLength(double flatness)
     {
         SvgContourBuilder builder = new(256, 4);

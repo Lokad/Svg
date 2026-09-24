@@ -201,6 +201,83 @@ public sealed class SvgEllipticalArcTests
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgEllipticalArc.Sample(arc, new SvgFlattenPolicy(0.125, 64, 256), buffer, CancellationToken.None)).ErrorCode);
     }
 
+    [Fact]
+    public void SampleFull_coarse_flatness_yields_cardinals()
+    {
+        SvgDevicePoint[] buffer = new SvgDevicePoint[16];
+
+        int count = SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(100.0, 64, 16), buffer, CancellationToken.None);
+
+        Assert.Equal(4, count);
+        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(System.Math.PI / 2.0), 4.0 + 8.0 * System.Math.Sin(System.Math.PI / 2.0)), buffer[0]);
+        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(System.Math.PI), 4.0 + 8.0 * System.Math.Sin(System.Math.PI)), buffer[1]);
+        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(3.0 * System.Math.PI / 2.0), 4.0 + 8.0 * System.Math.Sin(3.0 * System.Math.PI / 2.0)), buffer[2]);
+        Assert.Equal(new SvgDevicePoint(12, 4), buffer[3]);
+    }
+
+    [Fact]
+    public void SampleFull_fine_flatness_grows_loop()
+    {
+        SvgDevicePoint[] buffer = new SvgDevicePoint[256];
+
+        int count = SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), buffer, CancellationToken.None);
+
+        Assert.True(count > 4);
+        Assert.Equal(new SvgDevicePoint(12, 4), buffer[count - 1]);
+        for (int index = 0; index < count; index++)
+        {
+            Assert.True(double.IsFinite(buffer[index].X) && double.IsFinite(buffer[index].Y));
+        }
+    }
+
+    [Fact]
+    public void SampleFull_rotated_loop_closes()
+    {
+        SvgDevicePoint[] buffer = new SvgDevicePoint[256];
+
+        int count = SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 4, System.Math.PI / 2.0, new SvgFlattenPolicy(0.5, 64, 256), buffer, CancellationToken.None);
+
+        Assert.True(count >= 4);
+        Assert.Equal(4.0, buffer[count - 1].X, precision: 12);
+        Assert.Equal(12.0, buffer[count - 1].Y, precision: 12);
+    }
+
+    [Fact]
+    public void SampleFull_rejects_invalid_shapes()
+    {
+        SvgDevicePoint[] buffer = new SvgDevicePoint[16];
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 0, 8, 0, new SvgFlattenPolicy(0.5, 64, 16), buffer, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), -8, 8, 0, new SvgFlattenPolicy(0.5, 64, 16), buffer, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgEllipticalArc.SampleFull(new SvgDevicePoint(double.NaN, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 16), buffer, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 8, double.PositiveInfinity, new SvgFlattenPolicy(0.5, 64, 16), buffer, CancellationToken.None));
+    }
+
+    [Fact]
+    public void SampleFull_buffer_cap_throws_LimitExceeded()
+    {
+        SvgDevicePoint[] buffer = new SvgDevicePoint[2];
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), buffer, CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
+    public void SampleFull_segment_cap_throws_LimitExceeded()
+    {
+        SvgDevicePoint[] buffer = new SvgDevicePoint[256];
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 3), buffer, CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
+    public void SampleFull_precancelled_token_throws()
+    {
+        SvgDevicePoint[] buffer = new SvgDevicePoint[256];
+        using CancellationTokenSource cancelled = new();
+        cancelled.Cancel();
+
+        Assert.Throws<OperationCanceledException>(() => SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), buffer, cancelled.Token));
+    }
     private static int SampleCount(SvgNormalizedArc arc, double flatness)
     {
         SvgDevicePoint[] buffer = new SvgDevicePoint[256];

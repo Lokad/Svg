@@ -122,17 +122,49 @@ internal static class SvgEllipticalArc
         SubdivideArc(arc, middleAngle, toAngle, depth + 1, policy, output, ref appended, cancellationToken);
     }
 
+    /// <summary>Appends one full ellipse loop, ending exactly where angle zero starts.</summary>
+    /// <remarks>
+    /// <para>Each quarter subdivides independently with the endpoint convention, so the loop carries no
+    /// duplicate and its implicit closing edge is a tested chord. A flatness above the loop extent
+    /// collapses each quarter to its right end for four cardinal samples.</para>
+    /// </remarks>
+    /// <returns>The number of appended points, which is at least four.</returns>
+    internal static int SampleFull(SvgDevicePoint center, double radiusX, double radiusY, double rotationRadians, SvgFlattenPolicy policy, Span<SvgDevicePoint> output, CancellationToken cancellationToken)
+    {
+        ValidatePoint(center, nameof(center));
+        if (!double.IsFinite(radiusX) || !double.IsFinite(radiusY) || radiusX <= 0 || radiusY <= 0) throw new ArgumentOutOfRangeException(nameof(radiusX));
+        if (!double.IsFinite(rotationRadians)) throw new ArgumentOutOfRangeException(nameof(rotationRadians));
+        policy.Validate();
+        cancellationToken.ThrowIfCancellationRequested();
+        SvgDevicePoint origin = EllipsePointAt(center.X, center.Y, radiusX, radiusY, rotationRadians, 0);
+        SvgNormalizedArc loop = SvgNormalizedArc.CreateArc(origin, center, radiusX, radiusY, rotationRadians, 0, 2 * Math.PI, origin);
+        int appended = 0;
+        double quarter = Math.PI / 2;
+        SubdivideArc(loop, 0, quarter, 0, policy, output, ref appended, cancellationToken);
+        SubdivideArc(loop, quarter, 2 * quarter, 0, policy, output, ref appended, cancellationToken);
+        SubdivideArc(loop, 2 * quarter, 3 * quarter, 0, policy, output, ref appended, cancellationToken);
+        SubdivideArc(loop, 3 * quarter, 4 * quarter, 0, policy, output, ref appended, cancellationToken);
+        output[appended - 1] = origin;
+        cancellationToken.ThrowIfCancellationRequested();
+        return appended;
+    }
+
     private static SvgDevicePoint ArcPoint(SvgNormalizedArc arc, double angle)
+    {
+        return EllipsePointAt(arc.Center.X, arc.Center.Y, arc.RadiusX, arc.RadiusY, arc.RotationRadians, angle);
+    }
+
+    private static SvgDevicePoint EllipsePointAt(double centerX, double centerY, double radiusX, double radiusY, double rotationRadians, double angle)
     {
         double cosine = Math.Cos(angle);
         double sine = Math.Sin(angle);
-        double unitX = RequireFinite(arc.RadiusX * cosine);
-        double unitY = RequireFinite(arc.RadiusY * sine);
-        double rotationCosine = Math.Cos(arc.RotationRadians);
-        double rotationSine = Math.Sin(arc.RotationRadians);
+        double unitX = RequireFinite(radiusX * cosine);
+        double unitY = RequireFinite(radiusY * sine);
+        double rotationCosine = Math.Cos(rotationRadians);
+        double rotationSine = Math.Sin(rotationRadians);
         double rotatedX = RequireFinite(rotationCosine * unitX - rotationSine * unitY);
         double rotatedY = RequireFinite(rotationSine * unitX + rotationCosine * unitY);
-        return new SvgDevicePoint(RequireFinite(arc.Center.X + rotatedX), RequireFinite(arc.Center.Y + rotatedY));
+        return new SvgDevicePoint(RequireFinite(centerX + rotatedX), RequireFinite(centerY + rotatedY));
     }
 
     private static double ChordDeviation(SvgDevicePoint middle, SvgDevicePoint from, SvgDevicePoint to)
