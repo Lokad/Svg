@@ -82,7 +82,7 @@ public sealed class SvgPathDataParserTests
     public void Transform_maps_vertices()
     {
         SvgContourBuilder builder = new(16, 4);
-        SvgPathDataParser.ParseLinePath("M1 1L2 2Z", SvgAffineTransform.FromScale(2, 3), builder, 16, new ParserWorkCounter(1_000_000), CancellationToken.None);
+        SvgPathDataParser.ParsePath("M1 1L2 2Z", SvgAffineTransform.FromScale(2, 3), builder, new SvgFlattenPolicy(0.5, 64, 256), 16, new ParserWorkCounter(1_000_000), CancellationToken.None);
 
         Assert.Equal([new SvgDevicePoint(2, 3), new SvgDevicePoint(4, 6)], builder.GetContour(0).ToArray());
     }
@@ -116,13 +116,133 @@ public sealed class SvgPathDataParserTests
     }
 
     [Fact]
-    public void Curve_letters_are_unsupported()
+    public void Absolute_cubic_chains_flattened_points()
     {
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, ParseError("M0 0C1 1 2 2 3 3Z"));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, ParseError("M0 0S1 1 2 2Z"));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, ParseError("M0 0Q1 1 2 2Z"));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, ParseError("M0 0T1 1Z"));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, ParseError("M0 0A1 1 0 0 0 2 2Z"));
+        SvgContourBuilder builder = ParseCurve("M0 0C8 0 8 8 0 8Z", 3.0);
+
+        Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(6, 4), new SvgDevicePoint(0, 8)], builder.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Relative_cubic_matches_absolute()
+    {
+        SvgContourBuilder builder = ParseCurve("m0 0c8 0 8 8 0 8Z", 3.0);
+
+        Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(6, 4), new SvgDevicePoint(0, 8)], builder.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Smooth_cubic_reflects_previous_control()
+    {
+        SvgContourBuilder builder = ParseCurve("M0 0C8 0 8 8 0 8S-8 8 -8 0Z", 3.0);
+        ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
+
+        Assert.Equal(new SvgDevicePoint(6, 4), contour[1]);
+        Assert.Equal(new SvgDevicePoint(-8, 0), contour[^1]);
+        Assert.True(contour.Length >= 4);
+    }
+
+    [Fact]
+    public void Smooth_cubic_without_previous_uses_current()
+    {
+        SvgContourBuilder builder = ParseCurve("M0 0S8 8 8 0Z", 0.5);
+        ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
+
+        Assert.Equal(new SvgDevicePoint(0, 0), contour[0]);
+        Assert.Equal(new SvgDevicePoint(8, 0), contour[^1]);
+        Assert.True(contour.Length >= 2);
+    }
+
+    [Fact]
+    public void Absolute_quadratic_chains_flattened_points()
+    {
+        SvgContourBuilder builder = ParseCurve("M0 0Q4 8 8 0Z", 2.0);
+
+        Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(8, 0)], builder.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Relative_quadratic_matches_absolute()
+    {
+        SvgContourBuilder builder = ParseCurve("m0 0q4 8 8 0Z", 2.0);
+
+        Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(8, 0)], builder.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Smooth_quadratic_reflects_previous_control()
+    {
+        SvgContourBuilder builder = ParseCurve("M0 0Q4 8 8 0T16 0Z", 2.0);
+        ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
+
+        Assert.Equal(new SvgDevicePoint(4, 4), contour[1]);
+        Assert.Equal(new SvgDevicePoint(16, 0), contour[^1]);
+        Assert.True(contour.Length >= 3);
+    }
+
+    [Fact]
+    public void Smooth_quadratic_without_previous_draws_line()
+    {
+        SvgContourBuilder builder = ParseCurve("M0 0T8 0Z", 0.5);
+
+        Assert.Equal([new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)], builder.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Arc_lowering_brackets_exact_endpoints()
+    {
+        SvgContourBuilder builder = ParseCurve("M8 0A8 8 0 0 1 0 8Z", 0.5);
+        ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
+
+        Assert.True(contour.Length >= 3);
+        Assert.Equal(new SvgDevicePoint(8, 0), contour[0]);
+        Assert.Equal(new SvgDevicePoint(0, 8), contour[^1]);
+    }
+
+    [Fact]
+    public void Abutted_arc_flags_match_spaced_flags()
+    {
+        SvgContourBuilder spaced = ParseCurve("M8 0A8 8 0 0 1 0 8Z", 0.5);
+        SvgContourBuilder abutted = ParseCurve("M8 0A8 8 0 01 0 8Z", 0.5);
+
+        Assert.Equal(spaced.GetContour(0).ToArray(), abutted.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Relative_arc_matches_absolute()
+    {
+        SvgContourBuilder builder = ParseCurve("m8 0a8 8 0 0 1 -8 8Z", 0.5);
+        ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
+
+        Assert.Equal(new SvgDevicePoint(8, 0), contour[0]);
+        Assert.Equal(new SvgDevicePoint(0, 8), contour[^1]);
+    }
+
+    [Fact]
+    public void Arc_radii_apply_in_device_frame()
+    {
+        SvgContourBuilder scaled = new(256, 4);
+        SvgPathDataParser.ParsePath("M8 0A8 8 0 0 1 0 8Z", SvgAffineTransform.FromScale(2, 2), scaled, new SvgFlattenPolicy(0.5, 64, 256), 64, new ParserWorkCounter(1_000_000), CancellationToken.None);
+        SvgContourBuilder direct = ParseCurve("M16 0A8 8 0 0 1 0 16Z", 0.5);
+
+        Assert.Equal(direct.GetContour(0).ToArray(), scaled.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Truncated_curves_are_malformed()
+    {
+        Assert.Equal(SvgErrorCode.MalformedInput, ParseError("M0 0C1 1 2 2"));
+        Assert.Equal(SvgErrorCode.MalformedInput, ParseError("M0 0Q1 1"));
+        Assert.Equal(SvgErrorCode.MalformedInput, ParseError("M0 0A8 8 0 0"));
+        Assert.Equal(SvgErrorCode.MalformedInput, ParseError("M0 0A8 8 0 2 1 0 8"));
+        Assert.Equal(SvgErrorCode.MalformedInput, ParseError("M0 0C1 1"));
+    }
+
+    private static SvgContourBuilder ParseCurve(string value, double flatness)
+    {
+        SvgContourBuilder builder = new(256, 4);
+        SvgPathDataParser.ParsePath(value, SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(flatness, 64, 256), 64, new ParserWorkCounter(1_000_000), CancellationToken.None);
+        return builder;
     }
 
     [Fact]
@@ -148,7 +268,7 @@ public sealed class SvgPathDataParserTests
     {
         SvgContourBuilder builder = new(16, 4);
 
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgPathDataParser.ParseLinePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, 1, new ParserWorkCounter(1_000_000), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgPathDataParser.ParsePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 1, new ParserWorkCounter(1_000_000), CancellationToken.None)).ErrorCode);
     }
 
     [Fact]
@@ -156,7 +276,7 @@ public sealed class SvgPathDataParserTests
     {
         SvgContourBuilder builder = new(16, 4);
 
-        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgPathDataParser.ParseLinePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, 16, new ParserWorkCounter(0), CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgPathDataParser.ParsePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 16, new ParserWorkCounter(0), CancellationToken.None)).ErrorCode);
     }
 
     [Fact]
@@ -166,13 +286,13 @@ public sealed class SvgPathDataParserTests
         using CancellationTokenSource cancelled = new();
         cancelled.Cancel();
 
-        Assert.Throws<OperationCanceledException>(() => SvgPathDataParser.ParseLinePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, 16, new ParserWorkCounter(1_000_000), cancelled.Token));
+        Assert.Throws<OperationCanceledException>(() => SvgPathDataParser.ParsePath("M0 0L1 1Z", SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 16, new ParserWorkCounter(1_000_000), cancelled.Token));
     }
 
     private static SvgContourBuilder Parse(string? value)
     {
         SvgContourBuilder builder = new(64, 8);
-        SvgPathDataParser.ParseLinePath(value, SvgAffineTransform.Identity, builder, 64, new ParserWorkCounter(1_000_000), CancellationToken.None);
+        SvgPathDataParser.ParsePath(value, SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(0.5, 64, 256), 64, new ParserWorkCounter(1_000_000), CancellationToken.None);
         return builder;
     }
 
