@@ -153,6 +153,15 @@ public sealed class SvgShapeElementsTests
     }
 
 
+    [Fact]
+    public void Gray_masked_group_matches_half_opacity_group()
+    {
+        byte[] masked = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#m)'><polygon points='0,0 8,0 0,8' fill='red'/></g></svg>", out _, out _);
+        byte[] faded = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g opacity='0.5'><polygon points='0,0 8,0 0,8' fill='red'/></g></svg>", out _, out _);
+
+        Assert.Equal(faded, masked);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
