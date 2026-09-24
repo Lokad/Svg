@@ -265,17 +265,52 @@ internal static class SvgReferenceResolver
         if (reference.PaintServerId is null)
         {
             SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
-            SvgGeometry[] applied = new SvgGeometry[sources.Length];
+            List<SvgGeometry> applied = new(sources.Length);
             for (int index = 0; index < sources.Length; index++)
             {
-                applied[index] = sources[index].Kind switch
+                if (sources[index].Kind == SvgGeometryKind.Rectangle && sources[index].Rectangle.Stroke is not null)
+                {
+                    foreach (SvgGeometry expanded in ApplySymbolStrokedRectangle(sources[index].Rectangle, symbolBox, reference, frame, state)) applied.Add(expanded);
+                    continue;
+                }
+                applied.Add(sources[index].Kind switch
                 {
                     SvgGeometryKind.GradientFill => ApplySymbolGradientFill(sources[index].Gradient, symbolBox, reference, frame, state),
                     SvgGeometryKind.GradientStroke => ApplySymbolGradientStroke(sources[index].GradientStroke, symbolBox, reference, frame, state),
                     _ => ApplySymbolInstance(sources[index], symbolBox, reference, frame, state),
-                };
+                });
             }
-            return applied;
+            return applied.ToArray();
+
+        static SvgGeometry[] ApplySymbolStrokedRectangle(SvgRectangle source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
+        {
+            ArgumentNullException.ThrowIfNull(document);
+            if (source.Stroke is not SvgStroke sourceStroke) throw new InvalidOperationException("Symbol stroke expansion requires a stroked rectangle.");
+            if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            (double scaleX, double scaleY, double _, double _) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
+            if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of rectangle strokes is not implemented.");
+            if (Math.Abs(instance.Transform.ScaleX) != Math.Abs(instance.Transform.ScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
+            double scaledWidth = (double)sourceStroke.Width * Math.Abs(scaleX) * Math.Abs(instance.Transform.ScaleX);
+            SvgRectangle mapped = MapSymbolBox(source, viewBox, instance.Width.Value, instance.Height.Value);
+            SvgRectangle placed = mapped with { X = mapped.X + instance.X, Y = mapped.Y + instance.Y };
+            if (placed.X != Math.Truncate(placed.X) || placed.Y != Math.Truncate(placed.Y) || placed.Width != Math.Truncate(placed.Width) || placed.Height != Math.Truncate(placed.Height) || !double.IsFinite(scaledWidth) || scaledWidth < 2 || scaledWidth > int.MaxValue || scaledWidth != Math.Truncate(scaledWidth) || (int)scaledWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped even-width symbol-held rectangle strokes are implemented.");
+            SvgGeometry[] expanded = new SvgGeometry[instance.IsPainted ? 5 : 1];
+            expanded[0] = ApplySymbolInstance(SvgGeometry.FromRectangle(source with { Stroke = null }), viewBox, instance, viewportFrame, document);
+            if (instance.IsPainted)
+            {
+                double sourceHalfWidth = sourceStroke.Width / 2d;
+                SvgRectangle[] sources =
+                [
+                    new(source.X - sourceHalfWidth, source.Y - sourceHalfWidth, source.Width + sourceStroke.Width, sourceStroke.Width, sourceStroke.Color, true, null),
+                    new(source.X - sourceHalfWidth, source.Y + source.Height - sourceHalfWidth, source.Width + sourceStroke.Width, sourceStroke.Width, sourceStroke.Color, true, null),
+                    new(source.X - sourceHalfWidth, source.Y + sourceHalfWidth, sourceStroke.Width, source.Height - sourceStroke.Width, sourceStroke.Color, true, null),
+                    new(source.X + source.Width - sourceHalfWidth, source.Y + sourceHalfWidth, sourceStroke.Width, source.Height - sourceStroke.Width, sourceStroke.Color, true, null),
+                ];
+                for (int band = 0; band < sources.Length; band++)
+                    expanded[band + 1] = ApplySymbolInstance(SvgGeometry.FromRectangle(sources[band]), viewBox, instance, viewportFrame, document);
+            }
+            return expanded;
+        }
 
         static SvgGeometry ApplySymbolGradientFill(SvgGradientGeometry band, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
         {
