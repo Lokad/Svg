@@ -295,6 +295,51 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishPolygonFill(mapped, ends, stroke.Color, element.Presentation.IsPainted, SvgPolygonMapping.FlattenedCurves, frame, budget);
     }
 
+    /// <summary>Lowers one axis-aligned ellipse stroke into opposite-wound sampled ring fills.</summary>
+    internal SvgParsedGeometry LowerEllipseStrokeFill(double centerX, double centerY, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgStroke stroke, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        if (scaleX != scaleY || scaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Ellipse strokes under non-uniform polygon transforms stay unsupported.");
+        double deviceRadiusX = radiusX * scaleX;
+        double deviceRadiusY = radiusY * scaleX;
+        double deviceWidth = stroke.Width * scaleX;
+        if (!double.IsFinite(deviceRadiusX) || !double.IsFinite(deviceRadiusY) || !double.IsFinite(deviceWidth)) throw new SvgException(SvgErrorCode.LimitExceeded, "Ellipse stroke coordinates exceed the admitted numeric range.");
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        int[] ends;
+        if (deviceRadiusX <= 0 || deviceRadiusY <= 0) ends = [];
+        else
+        {
+            double outerRadiusX = deviceRadiusX + deviceWidth / 2;
+            double outerRadiusY = deviceRadiusY + deviceWidth / 2;
+            double innerRadiusX = deviceRadiusX - deviceWidth / 2;
+            double innerRadiusY = deviceRadiusY - deviceWidth / 2;
+            SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
+            SvgFlattenPolicy flattenPolicy = new(FlattenFlatness, FlattenMaxDepth, ShapeSegmentsPerShape);
+            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(2), SvgMemoryCategory.Geometry);
+            SvgContourBuilder builder = new(MaximumFlattenedContourPoints, 2);
+            builder.AddEllipse(center, outerRadiusX, outerRadiusY, 0, flattenPolicy, _cancellationToken);
+            if (innerRadiusX > 0 && innerRadiusY > 0) builder.AddEllipse(center, innerRadiusX, innerRadiusY, 0, flattenPolicy, _cancellationToken);
+            ends = new int[builder.ContourCount];
+            for (int contour = 0; contour < builder.ContourCount; contour++)
+            {
+                if (AppendStrippedContour(mapped, builder.GetContour(contour), _workCounter, _cancellationToken) < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed ellipse stroke contours are implemented.");
+                ends[contour] = mapped.Count;
+            }
+
+            if (ends.Length == 2)
+            {
+                for (int left = ends[0], right = ends[1] - 1; left < right; left++, right--)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    (mapped[left], mapped[right]) = (mapped[right], mapped[left]);
+                }
+            }
+        }
+
+        return FinishPolygonFill(mapped, ends, stroke.Color, element.Presentation.IsPainted, SvgPolygonMapping.FlattenedCurves, frame, budget);
+    }
+
     /// <summary>Lowers one axis-aligned rounded rectangle to a sampled polygon fill.</summary>
     internal SvgParsedGeometry LowerRoundedRectFill(double x, double y, double width, double height, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {

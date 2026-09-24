@@ -577,6 +577,7 @@ public sealed class PublicContractTests
     [InlineData("<path d='M 0 0 H 2 V 2 H 0 Z' fill='red'/>")]
     [InlineData("<polygon points='0,0 2,0 2,2 0,2' fill='red'/>")]
     [InlineData("<polyline points='0,0 2,0 2,2 0,2' fill='red'/>")]
+    [InlineData("<ellipse cx='1' cy='1' rx='1' ry='1' fill='red' stroke='red'/>")]
     [InlineData("<defs><rect id='tile' width='2' height='2' fill='red'/></defs><use href='#tile'/>")]
     [InlineData("<image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' width='1' height='1'/>")]
     public void Every_currently_supported_paintable_leaf_reaches_public_PNG_conversion(string content)
@@ -590,7 +591,6 @@ public sealed class PublicContractTests
 
     [Theory]
     [InlineData("<circle cx='1' cy='1' r='1' fill='url(#g)'/>")]
-    [InlineData("<ellipse cx='1' cy='1' rx='1' ry='1' fill='red' stroke='red'/>")]
     [InlineData("<text x='0' y='1'>x</text>")]
     [InlineData("<foreignObject width='1' height='1'><body/></foreignObject>")]
     [InlineData("<linearGradient id='paint'><stop offset='0' stop-color='red'/></linearGradient>")]

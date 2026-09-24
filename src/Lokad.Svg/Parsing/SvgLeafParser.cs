@@ -112,11 +112,10 @@ internal static class SvgLeafParser
         return LowerEllipseShape(reader, context, syntax, "circle", frame, state);
     }
 
-    internal static SvgGeometry ParseEllipse(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
+    internal static SvgParsedGeometry ParseEllipse(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgEllipseSyntax syntax = SvgEllipseSyntax.ParseEllipse(reader);
-        using SvgParsedGeometry parsed = LowerEllipseShape(reader, context, syntax, "ellipse", frame, state);
-        return parsed.Geometries[0];
+        return LowerEllipseShape(reader, context, syntax, "ellipse", frame, state);
     }
 
     private static SvgParsedGeometry LowerEllipseShape(XmlReader reader, SvgPaintableElementContext context, SvgEllipseSyntax syntax, string elementName, SvgViewportFrame? frame, SvgDocumentState state)
@@ -125,15 +124,23 @@ internal static class SvgLeafParser
         if (SvgPatternSyntax.IsPatternFill(style.Fill)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills on " + elementName + " elements are not implemented.");
         if (SvgGradientSyntax.IsGradientFill(style.Fill)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient fills on " + elementName + " elements are not implemented.");
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient strokes on " + elementName + " elements are not implemented.");
-        SvgResolvedPaintableElement element = context.ResolveShape(style, reader, elementName == "circle");
+        SvgResolvedPaintableElement element = context.ResolveShape(style, reader, elementName is "circle" or "ellipse");
         using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, elementName, false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
         SvgParsedGeometry filled = lowering.LowerEllipseFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, element, frame, state.Budget);
         if (elementName != "circle")
         {
-            if (element.Presentation.StrokeColor is not null || reader.GetAttribute("stroke-width") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Element strokes on ellipse elements are not implemented.");
-            return filled;
+            SvgStroke? ellipseStroke = ParseCircleStroke(element, reader);
+            if (ellipseStroke is null || !element.Presentation.IsPainted) return filled;
+            string? ellipseDashes = reader.GetAttribute("stroke-dasharray");
+            if (ellipseDashes is not null && !ellipseDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed ellipse strokes are not implemented.");
+            try
+            {
+                using SvgParsedGeometry ring = lowering.LowerEllipseStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, element, ellipseStroke.Value, frame, state.Budget);
+                return ConcatGeometries(filled, ring, state.Budget, context.WorkCounter, context.CancellationToken);
+            }
+            catch { filled.Dispose(); throw; }
         }
         SvgStroke? stroke = ParseCircleStroke(element, reader);
         if (stroke is null || !element.Presentation.IsPainted) return filled;

@@ -169,9 +169,37 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Ellipse_stroke_stays_unsupported()
+    public void Ellipse_stroke_renders_ring()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='red' stroke='blue' stroke-width='2'/></svg>");
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 8, 8));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 13, 8));
+    }
+
+    [Fact]
+    public void Circle_sized_ellipse_stroke_matches_circle_stroke()
+    {
+        byte[] ellipse = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='6' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+        byte[] circle = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><circle cx='8' cy='8' r='6' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(circle, ellipse);
+    }
+
+    [Fact]
+    public void Non_uniform_ellipse_stroke_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='scale(2,1)'><ellipse cx='8' cy='8' rx='6' ry='4' fill='none' stroke='red' stroke-width='2'/></g></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Dashed_ellipse_stroke_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></svg>");
 
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 

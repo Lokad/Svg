@@ -81,9 +81,21 @@ internal static class SvgRenderedLeafParser
                 }
                 return true;
             case "ellipse":
-                SvgGeometry ellipse = SvgLeafParser.ParseEllipse(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state);
-                SvgMaskSyntax.ValidateMaskScopes(state, ellipse);
-                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, ellipse));
+                using (SvgParsedGeometry ellipse = SvgLeafParser.ParseEllipse(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))
+                {
+                    if (ellipse.Geometries.Length == 1)
+                    {
+                        SvgGeometry single = ellipse.Geometries[0];
+                        SvgMaskSyntax.ValidateMaskScopes(state, single);
+                        state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, single));
+                    }
+                    else
+                    {
+                        SvgMaskSyntax.ApplyMaskToBands(reader, state, ellipse.Storage.Items);
+                        SvgMaskSyntax.ValidateMaskScopeBands(state, ellipse.Storage.Items);
+                        state.Scene.AddGeometries(ellipse.Geometries);
+                    }
+                }
                 return true;
             case "path":
                 using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, ResolveShapeClipFrame(reader, "path", true, state, limits, budget, context), state))

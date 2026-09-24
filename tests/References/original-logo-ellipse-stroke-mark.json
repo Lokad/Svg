@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-ellipse-stroke-mark",
+  "referencePng": "original-logo-ellipse-stroke-mark.png",
+  "referenceSha256": "10c8155f6a9cc8c668a5bd9c1a9d88d1f8db893df399067fc6e632f17d46f93f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "61bcc28ecb673a973c02da1a07bff6d9a64817fa1df5b8e9ef7e22c5c51ddfd0",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 235,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 63,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}
