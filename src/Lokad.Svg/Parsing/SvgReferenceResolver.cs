@@ -40,12 +40,21 @@ internal static class SvgReferenceResolver
                 SvgGeometryKind.AxisAlignedLine => ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame),
                 SvgGeometryKind.PolygonFill => ApplyPolygon(sources[index].Polygon, reference, frame, state),
                 SvgGeometryKind.GradientFill => LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame),
+                SvgGeometryKind.PatternFill => LowerEmbeddedInstancePatternFill(sources[index].Pattern, reference, frame),
                 SvgGeometryKind.GradientStroke => LowerEmbeddedInstanceGradientStroke(sources[index].GradientStroke, reference, frame),
                 _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.")
             };
         }
 
         return applied;
+
+        static SvgGeometry LowerEmbeddedInstancePatternFill(SvgPatternGeometry band, SvgUseReference instance, SvgViewportFrame? viewportFrame)
+        {
+            SvgPatternTile tile = new(SvgGeometry.FromRectangle(band.Content), band.OriginX, band.OriginY, band.TileWidth, band.TileHeight, 0, 0);
+            SvgRectangle placement = InstancePlacement(band.Fill, instance);
+            SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
+            return LowerInstancePatternFill(tile, placement, composed, viewportFrame);
+        }
 
         static SvgGeometry LowerEmbeddedInstanceGradientFill(SvgGradientGeometry band, SvgUseReference instance, SvgViewportFrame? viewportFrame)
         {

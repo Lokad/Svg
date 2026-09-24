@@ -1558,6 +1558,20 @@ public sealed class SvgRootParserTests
             Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
         }
     }
+    [Fact]
+    public void Lowers_pattern_filled_polygon_instances_through_placement()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='#ff0000'/></pattern></defs><defs><polygon id='q' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#p)'/></defs><use href='#q' x='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        foreach (SvgGeometry geometry in root.Geometries)
+        {
+            Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
+            Assert.Equal(128, geometry.Pattern.Opacity);
+        }
+        Assert.Equal(new SvgRectangle(8, 0, 8, 4, default, true, null), root.Geometries[0].Pattern.Fill);
+        Assert.Equal(new SvgRectangle(8, 4, 4, 4, default, true, null), root.Geometries[1].Pattern.Fill);
+    }
 
     [Fact]
     public void Routes_gradient_and_pattern_paints_to_their_own_band_lowerers()
