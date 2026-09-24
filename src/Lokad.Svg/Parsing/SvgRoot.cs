@@ -621,11 +621,20 @@ internal sealed class SvgSceneBuilder : IDisposable
         return slot;
     }
 
-    internal void Replace(SvgSceneSlot slot, SvgGeometry geometry)
+    /// <summary>Expands one deferred reference placeholder into its resolved geometries, returning the inserted extra-command count that later slots must add.</summary>
+    internal int ReplaceWithMany(SvgSceneSlot slot, ReadOnlySpan<SvgGeometry> applied)
     {
-        ReserveGradientStops(geometry);
-        _geometries[slot.GeometryIndex] = geometry;
+        if (applied.Length == 0) throw new InvalidOperationException("Deferred reference resolution requires at least one geometry.");
+        foreach (SvgGeometry geometry in applied) ReserveGradientStops(geometry);
+        _geometries[slot.GeometryIndex] = applied[0];
         _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255);
+        if (applied.Length == 1) return 0;
+        int firstGeometryIndex = _geometries.Count;
+        for (int index = 1; index < applied.Length; index++) _geometries.Add(applied[index]);
+        SvgDrawCommand[] extra = new SvgDrawCommand[applied.Length - 1];
+        for (int index = 0; index < extra.Length; index++) extra[index] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255);
+        _commands.Insert(slot.CommandIndex + 1, extra);
+        return extra.Length;
     }
 
     internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity));
@@ -691,6 +700,23 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
     {
         EnsureAdditionalCapacity(items.Length);
         CopyWithCheckpoints(items, _items.AsSpan(_count));
+        _count += items.Length;
+    }
+
+    /// <summary>Inserts items at the given scene position, shifting later entries right under bounded work.</summary>
+    internal void Insert(int index, ReadOnlySpan<T> items)
+    {
+        if ((uint)index > (uint)_count) throw new ArgumentOutOfRangeException(nameof(index));
+        if (items.Length == 0) return;
+        EnsureAdditionalCapacity(items.Length);
+        for (int remaining = _count - index; remaining > 0; remaining -= CopyCheckpointItems)
+        {
+            _workCounter.Consume(_cancellationToken);
+            int count = Math.Min(CopyCheckpointItems, remaining);
+            int sourceStart = index + remaining - count;
+            _items.AsSpan(sourceStart, count).CopyTo(_items.AsSpan(sourceStart + items.Length, count));
+        }
+        CopyWithCheckpoints(items, _items.AsSpan(index, items.Length));
         _count += items.Length;
     }
 
