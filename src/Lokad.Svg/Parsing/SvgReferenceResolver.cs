@@ -213,8 +213,26 @@ internal static class SvgReferenceResolver
         {
             SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
             SvgGeometry[] applied = new SvgGeometry[sources.Length];
-            for (int index = 0; index < sources.Length; index++) applied[index] = ApplySymbolInstance(sources[index], symbolBox, reference, frame, state);
+            for (int index = 0; index < sources.Length; index++)
+            {
+                applied[index] = sources[index].Kind == SvgGeometryKind.GradientFill
+                    ? ApplySymbolGradientFill(sources[index].Gradient, symbolBox, reference, frame, state)
+                    : ApplySymbolInstance(sources[index], symbolBox, reference, frame, state);
+            }
             return applied;
+
+        static SvgGeometry ApplySymbolGradientFill(SvgGradientGeometry band, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
+        {
+            if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
+            SvgRectangle fill = ApplySymbolInstance(SvgGeometry.FromRectangle(band.Fill), viewBox, instance, viewportFrame, document).Rectangle;
+            SvgRectangle contentBox = band.Box;
+            SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
+            if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
+            SvgLinearGradient vector = band.Gradient;
+            if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y };
+            return LowerPlacedGradientFill(vector, fill, box, MultiplyAlpha(band.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame);
+        }
         }
 
         return [ApplySymbolPaintServerFill(definition, symbolBox, reference, frame, state)];
@@ -242,10 +260,15 @@ internal static class SvgReferenceResolver
     private static SvgGeometry LowerInstanceGradientFill(SvgLinearGradient gradient, SvgRectangle placement, SvgRectangle box, SvgUseReference reference, SvgViewportFrame? frame)
     {
         if (gradient.IsUserSpace) gradient = gradient with { X1 = gradient.X1 + reference.X, Y1 = gradient.Y1 + reference.Y, X2 = gradient.X2 + reference.X, Y2 = gradient.Y2 + reference.Y };
-        gradient = SvgGradientSyntax.MapUserSpaceVector(reference.Transform, gradient, frame);
-        gradient = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, gradient);
+        return LowerPlacedGradientFill(gradient, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame);
+    }
+
+    private static SvgGeometry LowerPlacedGradientFill(SvgLinearGradient vector, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, AxisTransform vectorTransform, SvgViewportFrame? frame)
+    {
+        vector = SvgGradientSyntax.MapUserSpaceVector(vectorTransform, vector, frame);
+        vector = SvgGradientSyntax.MirrorBoundingBoxVector(vectorTransform, vector);
         if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
-        return FinishInstanceGradientFill(gradient, box, placement, reference.Opacity, reference.IsPainted);
+        return FinishInstanceGradientFill(vector, box, placement, opacity, painted);
     }
 
     private static SvgGeometry LowerInstancePatternFill(SvgPatternTile tile, SvgRectangle placement, SvgUseReference reference, SvgViewportFrame? frame)
