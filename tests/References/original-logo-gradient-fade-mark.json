@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-gradient-fade-mark",
+  "referencePng": "original-logo-gradient-fade-mark.png",
+  "referenceSha256": "09a03c2d95562832582522cc50a87654d3235b3af86dd0f6d1009a1bf93080b1",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "4c3f6ae1ae057fa4b8a0c6e0927db4d29dba922d95231d80da76f66b5c1e54c0",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 62,
+    "maximumChannelError": 128,
+    "maximumAlphaError": 0,
+    "exact": false
+  },
+  "admittedAt": "2026-09-24"
+}
