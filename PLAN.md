@@ -724,7 +724,7 @@ Do not infer coverage or a date from unit-test totals.
 Exit: independently expected cascade/reference/viewport results, shared numeric
 and eligibility boundaries, plus representative exporter documents. General CSS,
 scripting, events, external-document retrieval and animation are not prerequisites.
-Status 2026-09-24: direct local use of polygon/polyline/path/circle/ellipse fills wired (list-holding definitions with transform/placement/opacity/clip composition, backward and forward references, 13 end-to-end tests); forward multi-geometry references, symbol-held polygon content, fill overrides on non-rectangles and masked polygon instances remain open.
+Status 2026-09-24: direct local use of polygon/polyline/path/circle/ellipse fills wired (list-holding definitions with transform/placement/opacity/clip composition, backward and forward references, 13 end-to-end tests); forward multi-geometry references, fill overrides on non-rectangles and masked polygon instances remain open. Status 2026-09-24: symbol-held polygon and band fills wired through uniform viewBox maps (per-point and per-band mapping with placement/transform/opacity/viewport-clip composition, backward and forward references, 9 end-to-end tests); non-uniform symbol polygon maps stay explicitly unsupported.
 
 ### S10 — General filled geometry and transforms
 

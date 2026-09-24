@@ -58,8 +58,9 @@ internal static class SvgReferenceResolver
         return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, state.Budget));
     }
 
-    private static SvgGeometry ApplySymbolInstance(SvgGeometry geometry, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame)
+    private static SvgGeometry ApplySymbolInstance(SvgGeometry geometry, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
     {
+        if (geometry.Kind == SvgGeometryKind.PolygonFill) return ApplySymbolPolygon(geometry.Polygon, symbolBox, reference, frame, state);
         bool isBand;
         SvgRectangle box;
         if (geometry.Kind == SvgGeometryKind.Rectangle)
@@ -67,6 +68,11 @@ internal static class SvgReferenceResolver
             if (geometry.Rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
             box = geometry.Rectangle;
             isBand = false;
+        }
+        else if (geometry.Kind == SvgGeometryKind.OrthogonalBand)
+        {
+            box = geometry.Rectangle;
+            isBand = true;
         }
         else if (geometry.Kind == SvgGeometryKind.AxisAlignedLine)
         {
@@ -89,6 +95,47 @@ internal static class SvgReferenceResolver
         }
         SvgRectangle clipped = viewport.ClipRectangle(transformed);
         return isBand ? SvgGeometry.FromOrthogonalBand(clipped) : SvgGeometry.FromRectangle(clipped);
+
+        static SvgGeometry ApplySymbolPolygon(SvgPolygonFill source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
+        {
+            ArgumentNullException.ThrowIfNull(document);
+            if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
+            if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
+            for (int index = 0; index < mapped.Length; index++)
+            {
+                double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
+                double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
+                double placedX = instance.Transform.ScaleX * contentX + instance.Transform.OffsetX;
+                double placedY = instance.Transform.ScaleY * contentY + instance.Transform.OffsetY;
+                if (viewportFrame is not null)
+                {
+                    placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
+                    placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                }
+                if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                mapped[index] = new SvgDevicePoint(placedX, placedY);
+            }
+            SvgClipBox viewport = instance.Transform.Apply(new SvgClipBox(instance.X, instance.Y, instance.Width.Value, instance.Height.Value));
+            if (viewportFrame is not null)
+            {
+                viewport = new SvgClipBox(viewport.X + viewportFrame.Value.OffsetX, viewport.Y + viewportFrame.Value.OffsetY, viewport.Width, viewport.Height);
+                viewport = viewport.Intersect(viewportFrame.Value.Clip);
+            }
+            SvgClipBox clip;
+            if (source.Clip is null) clip = viewport;
+            else
+            {
+                SvgClipBox content = source.Clip.Value;
+                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY);
+                SvgClipBox placed = instance.Transform.Apply(shifted);
+                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height);
+                clip = placed.Intersect(viewport);
+            }
+            SvgColor color = new(source.Color.Red, source.Color.Green, source.Color.Blue, MultiplyAlpha(source.Color.Alpha, instance.Opacity));
+            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, source.ContourEnds, source.Signs, color, source.HasFill && instance.IsPainted, source.IsEvenOdd, source.Mapping, clip, document.Budget));
+        }
     }
 
     private static SvgRectangle MapSymbolBox(SvgRectangle box, SvgViewBox viewBox, double viewportWidth, double viewportHeight)
@@ -134,7 +181,7 @@ internal static class SvgReferenceResolver
         {
             SvgGeometry[] sources = ApplyInstanceFill(definition, reference);
             SvgGeometry[] applied = new SvgGeometry[sources.Length];
-            for (int index = 0; index < sources.Length; index++) applied[index] = ApplySymbolInstance(sources[index], symbolBox, reference, frame);
+            for (int index = 0; index < sources.Length; index++) applied[index] = ApplySymbolInstance(sources[index], symbolBox, reference, frame, state);
             return applied;
         }
 
@@ -202,7 +249,7 @@ internal static class SvgReferenceResolver
         if (definition.Geometries[0].Rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
         if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
         string paintId = reference.PaintServerId ?? throw new InvalidOperationException("Instance paint lowering requires a paint-server reference.");
-        SvgRectangle fillBox = ApplySymbolInstance(definition.Geometries[0], symbolBox, reference, frame).Rectangle with { Color = default };
+        SvgRectangle fillBox = ApplySymbolInstance(definition.Geometries[0], symbolBox, reference, frame, state).Rectangle with { Color = default };
         (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(symbolBox, reference.Width.Value, reference.Height.Value);
         SvgRectangle contentBox = definition.Geometries[0].Rectangle;
         SvgRectangle box = reference.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + reference.X, contentBox.Y * scaleY + offsetY + reference.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));

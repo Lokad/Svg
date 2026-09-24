@@ -106,9 +106,81 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
-    public void Symbol_polygon_use_stays_unsupported()
+    public void Symbol_polygon_matches_direct_rendering()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><use href='#s' width='8' height='8'/></svg>");
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Scaled_symbol_polygon_matches_direct_rendering()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 4 4'><polygon points='0,0 4,0 0,4' fill='red'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Offset_symbol_polygon_matches_shifted_rendering()
+    {
+        byte[] shifted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='2,1 6,1 2,5' fill='red'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 4 4'><polygon points='0,0 4,0 0,4' fill='red'/></symbol></defs><use href='#s' x='2' y='1' width='4' height='4'/></svg>", out _, out _);
+
+        Assert.Equal(shifted, instanced);
+    }
+
+    [Fact]
+    public void Symbol_polygon_viewBox_origin_matches_direct_rendering()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><polygon points='0,0 4,0 0,4' fill='red'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><defs><symbol id='s' viewBox='4 0 4 4'><polygon points='4,0 8,0 4,4' fill='red'/></symbol></defs><use href='#s' width='4' height='4'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Symbol_polygon_opacity_matches_fill_opacity()
+    {
+        byte[] faded = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' fill-opacity='0.5'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><use href='#s' width='8' height='8' opacity='0.5'/></svg>", out _, out _);
+
+        Assert.Equal(faded, instanced);
+    }
+
+    [Fact]
+    public void Forward_symbol_polygon_matches_backward_reference()
+    {
+        byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
+        byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><use href='#s' width='8' height='8'/><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs></svg>", out _, out _);
+
+        Assert.Equal(backward, forward);
+    }
+
+    [Fact]
+    public void Symbol_path_matches_direct_rendering()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 4 4'><path d='M0,0 L4,0 L0,4 Z' fill='red'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Symbol_orthogonal_band_matches_direct_rendering()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='red'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 4 4'><polygon points='0,0 4,0 4,4 0,4' fill='red'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Non_uniform_symbol_polygon_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4'><defs><symbol id='s' viewBox='0 0 4 4' preserveAspectRatio='none'><polygon points='0,0 4,0 0,4' fill='red'/></symbol></defs><use href='#s' width='8' height='4'/></svg>");
 
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 
