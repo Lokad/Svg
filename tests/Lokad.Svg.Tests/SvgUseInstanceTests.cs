@@ -406,6 +406,51 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(backward, forward);
     }
 
+    [Fact]
+    public void Translucent_fade_use_matches_direct()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><polygon points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><defs><polygon id='p' points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></defs><use href='#p'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Translucent_fade_forward_use_matches_backward()
+    {
+        byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><defs><polygon id='p' points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></defs><use href='#p'/></svg>", out _, out _);
+        byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><use href='#p'/><defs><polygon id='p' points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></defs></svg>", out _, out _);
+
+        Assert.Equal(backward, forward);
+    }
+
+    [Fact]
+    public void Translucent_fade_symbol_use_matches_direct_use()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><defs><polygon id='p' points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></defs><use href='#p'/></svg>", out _, out _);
+        byte[] symbol = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 16 16'><polygon points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></symbol></defs><use href='#s' width='16' height='16'/></svg>", out _, out _);
+
+        Assert.Equal(direct, symbol);
+    }
+
+    [Fact]
+    public void White_masked_fade_matches_unmasked_fade()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><polygon points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></svg>", out _, out _);
+        byte[] masked = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><defs><mask id='m'><rect x='0' y='0' width='16' height='16' fill='#ffffff'/></mask></defs><polygon points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)' mask='url(#m)'/></svg>", out _, out _);
+
+        Assert.Equal(direct, masked);
+    }
+
+    [Fact]
+    public void Nested_viewport_fade_use_matches_direct()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><svg x='8' y='0' width='16' height='16'><polygon points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></svg></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue' stop-opacity='0'/></linearGradient></defs><defs><polygon id='p' points='0,0 16,0 16,8 8,8 8,16 0,16' fill='url(#g)'/></defs><svg x='8' y='0' width='16' height='16'><use href='#p'/></svg></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
