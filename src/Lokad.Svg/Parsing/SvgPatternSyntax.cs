@@ -28,7 +28,7 @@ internal static class SvgPatternSyntax
     /// <summary>Parses the admitted integer translate-only pattern transform.</summary>
     internal static (int X, int Y) ParsePatternTransform(string? value)
     {
-        if (value is null) return (0, 0);
+        if (string.IsNullOrWhiteSpace(value)) return (0, 0);
         if (value.Length > SvgSyntaxLimits.MaximumTransformCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform values exceed the configured syntax limit.");
         ReadOnlySpan<char> input = value.AsSpan().Trim();
         int separator = input.IndexOf('(');

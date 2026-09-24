@@ -18,7 +18,7 @@ internal static class SvgGeometrySyntax
             while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
             if (position == input.Length)
             {
-                if (!hasFunction) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
+                if (!hasFunction) return transform;
                 return transform;
             }
 

@@ -1585,6 +1585,44 @@ public sealed class SvgRootParserTests
 
         Assert.True(gradientPng.Span.SequenceEqual(baselinePng.Span));
     }
+    [Fact]
+    public void Renders_empty_transforms_identical_to_untransformed_content()
+    {
+        byte[] plain = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='1' y='1' width='6' height='6' fill='red'/></svg>");
+        byte[] empty = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='1' y='1' width='6' height='6' fill='red' transform=''/></svg>");
+        byte[] blank = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='1' y='1' width='6' height='6' fill='red' transform='   '/></svg>");
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> emptyPng = SvgConverter.ConvertToPng(empty, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> blankPng = SvgConverter.ConvertToPng(blank, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(emptyPng.Span.SequenceEqual(plainPng.Span));
+        Assert.True(blankPng.Span.SequenceEqual(plainPng.Span));
+    }
+
+    [Fact]
+    public void Renders_empty_gradient_transforms_identical_to_untransformed_vectors()
+    {
+        byte[] plain = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>");
+        byte[] empty = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientTransform=''><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>");
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> emptyPng = SvgConverter.ConvertToPng(empty, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(emptyPng.Span.SequenceEqual(plainPng.Span));
+    }
+
+    [Fact]
+    public void Renders_empty_pattern_transforms_identical_to_unshifted_tiles()
+    {
+        byte[] plain = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p)'/></svg>");
+        byte[] empty = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse' patternTransform=''><rect width='4' height='4' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p)'/></svg>");
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> emptyPng = SvgConverter.ConvertToPng(empty, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(emptyPng.Span.SequenceEqual(plainPng.Span));
+    }
 
     [Fact]
     public void Renders_single_stop_use_instances_as_solid_bands()
@@ -3327,7 +3365,6 @@ public sealed class SvgRootParserTests
     [InlineData("scale(0)")]
     [InlineData("scale(-1)")]
     [InlineData("matrix(1, 1, 0, 1, 0, 0)")]
-    [InlineData("")]
     public void Rejects_unsupported_gradient_transform_forms(string transform)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientTransform='" + transform + "'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));

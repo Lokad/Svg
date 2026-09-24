@@ -74,7 +74,7 @@ internal static class SvgGradientSyntax
             while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
             if (position == input.Length)
             {
-                if (!hasFunction) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), positive scale(), and positive axis-aligned matrix() gradient transforms are implemented.");
+                if (!hasFunction) return transform;
                 return transform;
             }
             int nameStart = position;
