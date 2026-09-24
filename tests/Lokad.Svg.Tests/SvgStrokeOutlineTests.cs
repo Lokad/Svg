@@ -10,7 +10,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
         SvgContourBuilder builder = new(16, 4);
 
-        SvgStrokeOutline.StrokeOpenPolyline(line, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(line, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
         Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(8, 1), new SvgDevicePoint(8, -1), new SvgDevicePoint(0, -1)], builder.GetContour(0).ToArray());
@@ -22,7 +22,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(0, 8)];
         SvgContourBuilder builder = new(16, 4);
 
-        SvgStrokeOutline.StrokeOpenPolyline(line, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(line, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
         Assert.Equal([new SvgDevicePoint(-1, 0), new SvgDevicePoint(-1, 8), new SvgDevicePoint(1, 8), new SvgDevicePoint(1, 0)], builder.GetContour(0).ToArray());
@@ -34,7 +34,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
         SvgContourBuilder builder = new(16, 4);
 
-        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
         Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(7, 1), new SvgDevicePoint(7, 8), new SvgDevicePoint(9, 8), new SvgDevicePoint(9, -1), new SvgDevicePoint(0, -1)], builder.GetContour(0).ToArray());
@@ -46,7 +46,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] turn = [new SvgDevicePoint(8, 8), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 0)];
         SvgContourBuilder builder = new(16, 4);
 
-        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
         Assert.Equal([new SvgDevicePoint(9, 8), new SvgDevicePoint(9, -1), new SvgDevicePoint(0, -1), new SvgDevicePoint(0, 1), new SvgDevicePoint(7, 1), new SvgDevicePoint(7, 8)], builder.GetContour(0).ToArray());
@@ -58,7 +58,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] spike = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 0)];
         SvgContourBuilder builder = new(16, 4);
 
-        SvgStrokeOutline.StrokeOpenPolyline(spike, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(spike, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
         Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(8, 1), new SvgDevicePoint(8, -1), new SvgDevicePoint(0, -1), new SvgDevicePoint(0, 1), new SvgDevicePoint(8, 1), new SvgDevicePoint(8, -1), new SvgDevicePoint(0, -1)], builder.GetContour(0).ToArray());
@@ -70,7 +70,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(5, 0), new SvgDevicePoint(1, 3)];
         SvgContourBuilder builder = new(16, 4);
 
-        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 1, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 1, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
         Assert.Equal(1, builder.ContourCount);
@@ -88,7 +88,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(5, 0), new SvgDevicePoint(1, 3)];
         SvgContourBuilder builder = new(16, 4);
 
-        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
         Assert.Equal(1, builder.ContourCount);
@@ -107,7 +107,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)];
         SvgContourBuilder builder = new(32, 4);
 
-        SvgStrokeOutline.StrokeClosedPolyline(square, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeClosedPolyline(square, 2, 4, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(2, builder.ContourCount);
         ReadOnlySpan<SvgDevicePoint> outer = builder.GetContour(0);
@@ -137,7 +137,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 0)];
         SvgContourBuilder builder = new(32, 4);
 
-        SvgStrokeOutline.StrokeClosedPolyline(square, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeClosedPolyline(square, 2, 4, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(2, builder.ContourCount);
         Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(7, 1), new SvgDevicePoint(7, 7), new SvgDevicePoint(1, 7), new SvgDevicePoint(1, 1)], builder.GetContour(0).ToArray());
@@ -150,7 +150,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] sliver = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
         SvgContourBuilder builder = new(16, 4);
 
-        SvgStrokeOutline.StrokeClosedPolyline(sliver, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeClosedPolyline(sliver, 2, 4, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
         Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(8, 1), new SvgDevicePoint(8, -1), new SvgDevicePoint(0, -1), new SvgDevicePoint(0, 1)], builder.GetContour(0).ToArray());
@@ -162,7 +162,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
         SvgContourBuilder builder = new(16, 4);
 
-        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
         Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(7, 1), new SvgDevicePoint(7, 8), new SvgDevicePoint(9, 8), new SvgDevicePoint(9, -1), new SvgDevicePoint(0, -1)], builder.GetContour(0).ToArray());
@@ -176,10 +176,10 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] triple = [new SvgDevicePoint(3, 3), new SvgDevicePoint(3, 3), new SvgDevicePoint(3, 3)];
         SvgContourBuilder builder = new(16, 4);
 
-        SvgStrokeOutline.StrokeOpenPolyline(point, 2, 4, builder, CancellationToken.None);
-        SvgStrokeOutline.StrokeOpenPolyline(pair, 2, 4, builder, CancellationToken.None);
-        SvgStrokeOutline.StrokeClosedPolyline(pair, 2, 4, builder, CancellationToken.None);
-        SvgStrokeOutline.StrokeClosedPolyline(triple, 2, 4, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(point, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(pair, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeClosedPolyline(pair, 2, 4, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+        SvgStrokeOutline.StrokeClosedPolyline(triple, 2, 4, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(0, builder.ContourCount);
     }
@@ -190,14 +190,68 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
         SvgContourBuilder builder = new(16, 4);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, 0, 4, builder, CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, -2, 4, builder, CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, double.NaN, 4, builder, CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, 2, 0.5, builder, CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, 2, double.NaN, builder, CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeClosedPolyline(line, 0, 4, builder, CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeClosedPolyline(line, 2, 0.5, builder, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, 0, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, -2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, double.NaN, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, 2, 0.5, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, 2, double.NaN, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeClosedPolyline(line, 0, 4, SvgStrokeJoin.Miter, builder, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgStrokeOutline.StrokeClosedPolyline(line, 2, 0.5, SvgStrokeJoin.Miter, builder, CancellationToken.None));
         Assert.Equal(0, builder.ContourCount);
+    }
+
+    [Fact]
+    public void Round_cap_extends_half_width_past_tips()
+    {
+        SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
+        SvgContourBuilder builder = new(32, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(line, 2, 4, SvgStrokeCap.Round, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+
+        Assert.Equal(1, builder.ContourCount);
+        SvgDevicePoint[] contour = builder.GetContour(0).ToArray();
+        Assert.Equal(9, contour.Length);
+        Assert.InRange(contour.Select(point => point.X).Min(), -1, -0.75);
+        Assert.InRange(contour.Select(point => point.X).Max(), 8.75, 9);
+    }
+
+    [Fact]
+    public void Round_join_replaces_spike_with_arc()
+    {
+        SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
+        SvgContourBuilder miterBuilder = new(16, 4);
+        SvgContourBuilder roundBuilder = new(32, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, miterBuilder, CancellationToken.None);
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Round, roundBuilder, CancellationToken.None);
+
+        SvgDevicePoint[] miter = miterBuilder.GetContour(0).ToArray();
+        SvgDevicePoint[] round = roundBuilder.GetContour(0).ToArray();
+        SvgDevicePoint vertex = new(8, 0);
+        SvgDevicePoint[] shared = miter.Where(point => round.Contains(point)).ToArray();
+        SvgDevicePoint[] added = round.Where(point => !miter.Contains(point)).ToArray();
+        Assert.Equal(5, shared.Length);
+        Assert.Equal(3, added.Length);
+        foreach (SvgDevicePoint point in added) Assert.True(Distance(vertex, point) <= 1.000000001, "Round fan stays on the half-width circle.");
+
+        static double Distance(SvgDevicePoint first, SvgDevicePoint second)
+        {
+            double dx = first.X - second.X;
+            double dy = first.Y - second.Y;
+            return Math.Sqrt(dx * dx + dy * dy);
+        }
+    }
+
+    [Fact]
+    public void Spike_reversal_rounds_tip()
+    {
+        SvgDevicePoint[] spike = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 0)];
+        SvgContourBuilder builder = new(32, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(spike, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Round, builder, CancellationToken.None);
+
+        Assert.Equal(1, builder.ContourCount);
+        Assert.InRange(builder.GetContour(0).ToArray().Select(point => point.X).Max(), 8.75, 9);
     }
 
     [Fact]
@@ -207,7 +261,7 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)];
         CancellationToken canceled = new(true);
 
-        Assert.Throws<OperationCanceledException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, 2, 4, new SvgContourBuilder(32, 4), canceled));
-        Assert.Throws<OperationCanceledException>(() => SvgStrokeOutline.StrokeClosedPolyline(square, 2, 4, new SvgContourBuilder(32, 4), canceled));
+        Assert.Throws<OperationCanceledException>(() => SvgStrokeOutline.StrokeOpenPolyline(line, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, new SvgContourBuilder(32, 4), canceled));
+        Assert.Throws<OperationCanceledException>(() => SvgStrokeOutline.StrokeClosedPolyline(square, 2, 4, SvgStrokeJoin.Miter, new SvgContourBuilder(32, 4), canceled));
     }
 }

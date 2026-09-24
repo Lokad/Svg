@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-stroke-round-mark",
+  "referencePng": "original-logo-stroke-round-mark.png",
+  "referenceSha256": "cf979c2be9e7d30f9e348aa748c645ff6bf8f409aa846fcf0082333fb5487fba",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 16, "height": 16, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "b08a859592a47d7f087ce6a6008f06a2ec0fe1ab33c1af8b84cd5c6c61f94d0c",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 78,
+    "maximumChannelError": 59,
+    "maximumAlphaError": 59,
+    "exact": false
+  },
+  "admittedAt": "2026-09-24"
+}

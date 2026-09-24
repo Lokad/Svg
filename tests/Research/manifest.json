@@ -364,6 +364,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 34,
+        "maximumChannelError": 11,
+        "maximumAlphaError": 11,
+        "alphaChangedPixelCount": 34,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 0,
+        "maximumMismatchX": 7,
+        "maximumMismatchY": 7
+      },
       "oracle": {
         "referencePng": "references/round-join-8x8.png",
         "referenceSha256": "4e7fe812183668a582ea0b2d25ba7022af4671e3602f74516dfd4b79d306b37a",

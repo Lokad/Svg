@@ -375,8 +375,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
     }
 
-    /// <summary>Strokes user-space fractional point-list vertices through device-space contours with butt caps and miter joins.</summary>
-    internal SvgParsedGeometry LowerStrokePointList(BudgetedParserList<SvgFractionalPoint> points, bool closed, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgViewportFrame? frame, RenderBudget budget)
+    /// <summary>Strokes user-space fractional point-list vertices through device-space contours with the caller cap and join styles.</summary>
+    internal SvgParsedGeometry LowerStrokePointList(BudgetedParserList<SvgFractionalPoint> points, bool closed, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
@@ -398,12 +398,12 @@ internal ref struct SvgOrthogonalGeometryLowering
 
         builder.EndContour();
         bool[] closedEnds = [closed];
-        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds, false, element.Transform, width, miterLimit, color, hasFill, frame, budget);
+        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds, false, element.Transform, width, miterLimit, cap, join, color, hasFill, frame, budget);
         return stroked with { ElementCount = points.Count + 1 };
     }
 
-    /// <summary>Strokes one integer point contour with butt caps and miter joins into one nonzero outline fill.</summary>
-    internal SvgParsedGeometry LowerStrokePolyline(BudgetedParserList<SvgPoint> points, bool closed, AxisTransform transform, int width, double miterLimit, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    /// <summary>Strokes one integer point contour with the caller cap and join styles into one nonzero outline fill.</summary>
+    internal SvgParsedGeometry LowerStrokePolyline(BudgetedParserList<SvgPoint> points, bool closed, AxisTransform transform, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
@@ -418,19 +418,25 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
 
         long wantedPoints = 4L * mapped.Count + 8;
+        if (cap != SvgStrokeCap.Butt || join != SvgStrokeJoin.Miter)
+        {
+            int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
+            try { wantedPoints = checked(4L * mapped.Count * (fanSegments + 1) + 32); }
+            catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
+        }
         int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
         long scratchBytes;
         try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(closed ? 2 : 1)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
         using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         SvgContourBuilder outlines = new(pointCapacity, closed ? 2 : 1);
-        if (closed) SvgStrokeOutline.StrokeClosedPolyline(mapped.AsSpan(), deviceWidth, miterLimit, outlines, _cancellationToken);
-        else SvgStrokeOutline.StrokeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, outlines, _cancellationToken);
+        if (closed) SvgStrokeOutline.StrokeClosedPolyline(mapped.AsSpan(), deviceWidth, miterLimit, join, outlines, _cancellationToken);
+        else SvgStrokeOutline.StrokeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
         return FinishStrokeFill(outlines, color, hasFill, false, frame, budget) with { ElementCount = points.Count + 1 };
     }
 
-    /// <summary>Strokes device-space contours with butt caps and miter joins into one nonzero outline fill.</summary>
-    internal SvgParsedGeometry LowerStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, AxisTransform transform, int width, double miterLimit, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    /// <summary>Strokes device-space contours with the caller cap and join styles into one nonzero outline fill.</summary>
+    internal SvgParsedGeometry LowerStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, AxisTransform transform, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(budget);
@@ -438,6 +444,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (source.PointCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path stroke point count exceeds the configured path-command limit." : _elementName + " stroke point count exceeds the configured path-command limit.");
         double deviceWidth = StrokeDeviceWidth(width, transform, frame);
         long wantedPoints = 4L * source.PointCount + 8;
+        if (cap != SvgStrokeCap.Butt || join != SvgStrokeJoin.Miter)
+        {
+            int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
+            try { wantedPoints = checked(4L * source.PointCount * (fanSegments + 1) + 32); }
+            catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
+        }
         int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
         long wantedContours;
         try { wantedContours = checked(2L * source.ContourCount + 2); }
@@ -451,8 +463,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         for (int contour = 0; contour < source.ContourCount; contour++)
         {
             if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
-            if (closedEnds[contour]) SvgStrokeOutline.StrokeClosedPolyline(source.GetContour(contour), deviceWidth, miterLimit, outlines, _cancellationToken);
-            else SvgStrokeOutline.StrokeOpenPolyline(source.GetContour(contour), deviceWidth, miterLimit, outlines, _cancellationToken);
+            if (closedEnds[contour]) SvgStrokeOutline.StrokeClosedPolyline(source.GetContour(contour), deviceWidth, miterLimit, join, outlines, _cancellationToken);
+            else SvgStrokeOutline.StrokeOpenPolyline(source.GetContour(contour), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
         }
 
         return FinishStrokeFill(outlines, color, hasFill, hasCurves, frame, budget);
@@ -468,8 +480,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         return deviceWidth;
     }
 
-    /// <summary>Strokes path data with butt caps and miter joins into one nonzero outline fill, tracking explicit closepath seals.</summary>
-    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasArc, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgViewportFrame? frame, RenderBudget budget)
+    /// <summary>Strokes path data with the caller cap and join styles into one nonzero outline fill, tracking explicit closepath seals.</summary>
+    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasArc, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke command count exceeds the configured path-command limit.");
@@ -487,7 +499,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgContourBuilder builder = new(pointCapacity, contourCapacity);
         using BudgetedParserList<bool> closedEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, closedEnds);
-        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, color, hasFill, frame, budget);
+        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, cap, join, color, hasFill, frame, budget);
         return stroked with { ElementCount = commandCount + 1 };
     }
 

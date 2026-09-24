@@ -1,11 +1,12 @@
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Expands device-space polylines into bounded butt-capped stroke outlines.</summary>
+/// <summary>Expands device-space polylines into bounded stroke outlines with butt/round caps and miter/round joins.</summary>
 /// <remarks>
 /// <para>Joins miter within the caller limit and fall back to bevel, exactly the admitted miter-linejoin
-/// semantics including its limit; reversals always bevel. Open ends close butt across the tips. Curves,
-/// round caps and joins, dashes and non-solid strokes stay outside this kernel: flatten curves first if
-/// desired, with the fidelity of flattened-then-offset curves owned as an S11 concern.</para>
+/// semantics including its limit; reversals always bevel. Round joins arc the outer side through a flatness-bounded
+/// fan while the inner side keeps the plain corner. Open ends close butt across the tips or arc a semicircular
+/// cap. Curves, dashes and non-solid strokes stay outside this kernel: flatten curves first if desired,
+/// with the fidelity of flattened-then-offset curves owned as an S11 concern.</para>
 /// <para>Chains use the math-convention perpendicular. Open loops seal one forward and one mirrored
 /// backward chain into the stroked band. Closed loops emit one contour per side with opposite windings
 /// (inner reversed), except degenerate centerlines: fewer than two distinct points draw nothing, and exactly two emit
@@ -16,10 +17,30 @@ namespace Lokad.Svg.Rendering;
 /// zero-length rule. Callers charge one stroke-expansion work unit per appended point; this kernel holds
 /// no budget itself and allocates nothing beyond the caller buffer it fills through.</para>
 /// </remarks>
+/// <summary>Selects the admitted open-end cap style for one stroke.</summary>
+internal enum SvgStrokeCap
+{
+    /// <summary>Flat caps ending exactly at the end vertices.</summary>
+    Butt,
+
+    /// <summary>Semicircular caps extending half a width past the end vertices.</summary>
+    Round,
+}
+
+/// <summary>Selects the admitted corner join style for one stroke.</summary>
+internal enum SvgStrokeJoin
+{
+    /// <summary>Spiked joins within the miter limit with bevel fallback.</summary>
+    Miter,
+
+    /// <summary>Arc joins on the outer side with a plain inner corner.</summary>
+    Round,
+}
+
 internal static class SvgStrokeOutline
 {
-    /// <summary>Appends one sealed butt-capped outline loop for an open polyline, or nothing when degenerate.</summary>
-    internal static void StrokeOpenPolyline(ReadOnlySpan<SvgDevicePoint> points, double width, double miterLimit, SvgContourBuilder builder, CancellationToken cancellationToken)
+    /// <summary>Appends one sealed outline loop for an open polyline, or nothing when degenerate.</summary>
+    internal static void StrokeOpenPolyline(ReadOnlySpan<SvgDevicePoint> points, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, SvgContourBuilder builder, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ValidateWidth(width);
@@ -31,16 +52,21 @@ internal static class SvgStrokeOutline
         (double firstX, double firstY) = UnitDirection(points[first], points[SkipDegenerate(points, first + 1)]);
         (double lastX, double lastY) = UnitDirection(points[SkipDegenerateBackward(points, last - 1)], points[last]);
         builder.BeginContour(OffsetPoint(points[first], (firstX, firstY), halfWidth));
-        EmitForwardChain(builder, points, first, last, halfWidth, miterLimit, cancellationToken);
-        builder.AddLine(OffsetPoint(points[last], (lastX, lastY), halfWidth));
-        builder.AddLine(OffsetPoint(points[last], (lastX, lastY), -halfWidth));
-        EmitBackwardChain(builder, points, first, last, halfWidth, miterLimit, cancellationToken);
-        builder.AddLine(OffsetPoint(points[first], (-firstX, -firstY), halfWidth));
+        EmitForwardChain(builder, points, first, last, halfWidth, miterLimit, join, cancellationToken);
+        if (cap == SvgStrokeCap.Round) EmitArcFan(builder, points[last], halfWidth, (-lastY, lastX), (lastX, lastY), (lastY, -lastX), cancellationToken);
+        else
+        {
+            builder.AddLine(OffsetPoint(points[last], (lastX, lastY), halfWidth));
+            builder.AddLine(OffsetPoint(points[last], (lastX, lastY), -halfWidth));
+        }
+        EmitBackwardChain(builder, points, first, last, halfWidth, miterLimit, join, cancellationToken);
+        if (cap == SvgStrokeCap.Round) EmitArcFan(builder, points[first], halfWidth, (firstY, -firstX), (-firstX, -firstY), (-firstY, firstX), cancellationToken);
+        else builder.AddLine(OffsetPoint(points[first], (-firstX, -firstY), halfWidth));
         builder.EndContour();
     }
 
     /// <summary>Appends outer and inner sealed loops for a closed polyline, or nothing when degenerate.</summary>
-    internal static void StrokeClosedPolyline(ReadOnlySpan<SvgDevicePoint> points, double width, double miterLimit, SvgContourBuilder builder, CancellationToken cancellationToken)
+    internal static void StrokeClosedPolyline(ReadOnlySpan<SvgDevicePoint> points, double width, double miterLimit, SvgStrokeJoin join, SvgContourBuilder builder, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ValidateWidth(width);
@@ -48,11 +74,11 @@ internal static class SvgStrokeOutline
         int distinct = CountDistinct(points);
         if (distinct < 2) return;
         double halfWidth = width / 2;
-        EmitClosedChain(builder, points, halfWidth, miterLimit, false, distinct, cancellationToken);
-        if (distinct > 2) EmitClosedChain(builder, points, halfWidth, miterLimit, true, distinct, cancellationToken);
+        EmitClosedChain(builder, points, halfWidth, miterLimit, join, false, distinct, cancellationToken);
+        if (distinct > 2) EmitClosedChain(builder, points, halfWidth, miterLimit, join, true, distinct, cancellationToken);
     }
 
-    private static void EmitForwardChain(SvgContourBuilder builder, ReadOnlySpan<SvgDevicePoint> points, int first, int last, double halfWidth, double miterLimit, CancellationToken cancellationToken)
+    private static void EmitForwardChain(SvgContourBuilder builder, ReadOnlySpan<SvgDevicePoint> points, int first, int last, double halfWidth, double miterLimit, SvgStrokeJoin join, CancellationToken cancellationToken)
     {
         int segment = first;
         (double directionX, double directionY) = UnitDirection(points[segment], points[SkipDegenerate(points, segment + 1)]);
@@ -64,14 +90,14 @@ internal static class SvgStrokeOutline
             if (vertex >= last) break;
             int after = SkipDegenerate(points, vertex + 1);
             (double nextX, double nextY) = UnitDirection(points[vertex], points[after]);
-            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit);
+            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit, join, cancellationToken);
             directionX = nextX;
             directionY = nextY;
             segment = vertex;
         }
     }
 
-    private static void EmitBackwardChain(SvgContourBuilder builder, ReadOnlySpan<SvgDevicePoint> points, int first, int last, double halfWidth, double miterLimit, CancellationToken cancellationToken)
+    private static void EmitBackwardChain(SvgContourBuilder builder, ReadOnlySpan<SvgDevicePoint> points, int first, int last, double halfWidth, double miterLimit, SvgStrokeJoin join, CancellationToken cancellationToken)
     {
         int segment = last;
         (double directionX, double directionY) = UnitDirection(points[last], points[SkipDegenerateBackward(points, last - 1)]);
@@ -83,14 +109,14 @@ internal static class SvgStrokeOutline
             if (vertex <= first) break;
             int before = SkipDegenerateBackward(points, vertex - 1);
             (double nextX, double nextY) = UnitDirection(points[vertex], points[before]);
-            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit);
+            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit, join, cancellationToken);
             directionX = nextX;
             directionY = nextY;
             segment = vertex;
         }
     }
 
-    private static void EmitClosedChain(SvgContourBuilder builder, ReadOnlySpan<SvgDevicePoint> points, double halfWidth, double miterLimit, bool reverse, int distinct, CancellationToken cancellationToken)
+    private static void EmitClosedChain(SvgContourBuilder builder, ReadOnlySpan<SvgDevicePoint> points, double halfWidth, double miterLimit, SvgStrokeJoin join, bool reverse, int distinct, CancellationToken cancellationToken)
     {
         int start = SkipDegenerate(points, 0);
         (double initialX, double initialY) = ClosedDirection(points, start, reverse);
@@ -106,13 +132,13 @@ internal static class SvgStrokeOutline
             int vertex = reverse ? SkipDegenerateBackwardWrap(points, segment) : SkipDegenerateForwardWrap(points, segment);
             if (vertex == start || vertex == segment || remaining-- <= 0) break;
             (double nextX, double nextY) = ClosedDirection(points, vertex, reverse);
-            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit);
+            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit, join, cancellationToken);
             directionX = nextX;
             directionY = nextY;
             segment = vertex;
         }
 
-        if ((directionX, directionY) != (initialX, initialY)) EmitJoin(builder, points[start], (directionX, directionY), (initialX, initialY), halfWidth, miterLimit);
+        if ((directionX, directionY) != (initialX, initialY)) EmitJoin(builder, points[start], (directionX, directionY), (initialX, initialY), halfWidth, miterLimit, join, cancellationToken);
         cancellationToken.ThrowIfCancellationRequested();
         builder.EndContour();
     }
@@ -177,12 +203,60 @@ internal static class SvgStrokeOutline
         return count;
     }
 
-    private static void EmitJoin(SvgContourBuilder builder, SvgDevicePoint vertex, (double X, double Y) incoming, (double X, double Y) outgoing, double halfWidth, double miterLimit)
+    /// <summary>Bounds the chord deviation of one round arc fan segment, matching the curve flattening discipline.</summary>
+    private const double ArcFlatness = 0.25;
+
+    /// <summary>Returns the flatness-bounded segment count for one arc fan sweep, used for outline capacity planning.</summary>
+    internal static int MaxArcFanSegments(double radius, double sweep)
+    {
+        double step = 2 * Math.Acos(Math.Clamp(1 - ArcFlatness / radius, -1, 1));
+        if (!double.IsFinite(step) || step <= 0) return 1;
+        int segments = (int)Math.Ceiling(Math.Abs(sweep) / step);
+        return Math.Max(1, segments);
+    }
+
+    /// <summary>Emits the polygonal fan from one unit offset through another around a stroke vertex.</summary>
+    private static void EmitArcFan(SvgContourBuilder builder, SvgDevicePoint center, double radius, (double X, double Y) from, (double X, double Y) thru, (double X, double Y) to, CancellationToken cancellationToken)
+    {
+        double start = Math.Atan2(from.Y, from.X);
+        double end = Math.Atan2(to.Y, to.X);
+        double mid = Math.Atan2(thru.Y, thru.X);
+        double sweep = NormalizeAngle(end - start);
+        double relative = NormalizeAngle(mid - start);
+        if ((sweep > 0 && (relative < 0 || relative > sweep)) || (sweep < 0 && (relative > 0 || relative < sweep))) sweep += sweep > 0 ? -2 * Math.PI : 2 * Math.PI;
+        int segments = MaxArcFanSegments(radius, sweep);
+        for (int index = 0; index <= segments; index++)
+        {
+            if ((index & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+            double angle = start + sweep * index / segments;
+            builder.AddLine(new SvgDevicePoint(RequireFinite(center.X + radius * Math.Cos(angle)), RequireFinite(center.Y + radius * Math.Sin(angle))));
+        }
+    }
+
+    private static double NormalizeAngle(double value)
+    {
+        while (value <= -Math.PI) value += 2 * Math.PI;
+        while (value > Math.PI) value -= 2 * Math.PI;
+        return value;
+    }
+
+    private static void EmitJoin(SvgContourBuilder builder, SvgDevicePoint vertex, (double X, double Y) incoming, (double X, double Y) outgoing, double halfWidth, double miterLimit, SvgStrokeJoin join, CancellationToken cancellationToken)
     {
         double dot = incoming.X * outgoing.X + incoming.Y * outgoing.Y;
         double denominator = 1 + dot;
         double outgoingNormalX = -outgoing.Y;
         double outgoingNormalY = outgoing.X;
+        double cross = incoming.X * outgoing.Y - incoming.Y * outgoing.X;
+        if (join == SvgStrokeJoin.Round && denominator > 0 && cross > 0)
+        {
+            EmitArcFan(builder, vertex, halfWidth, (-incoming.Y, incoming.X), (-incoming.Y + outgoingNormalX, incoming.X + outgoingNormalY), (outgoingNormalX, outgoingNormalY), cancellationToken);
+            return;
+        }
+        if (join == SvgStrokeJoin.Round && denominator <= 0)
+        {
+            EmitArcFan(builder, vertex, halfWidth, (-incoming.Y, incoming.X), incoming, (incoming.Y, -incoming.X), cancellationToken);
+            return;
+        }
         if (denominator <= 0)
         {
             builder.AddLine(new SvgDevicePoint(RequireFinite(vertex.X + halfWidth * (-incoming.Y)), RequireFinite(vertex.Y + halfWidth * incoming.X)));

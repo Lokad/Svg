@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
@@ -9,22 +10,30 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Validates one stroke style attribute value, ignoring namespaces already cleared by the caller.</summary>
     internal static void ValidateAttribute(string localName, string value)
     {
-        if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan());
-        else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan());
+        ValidateAttribute(localName, value, false);
+    }
+
+    /// <summary>Validates one stroke style attribute value, admitting round caps and joins on kernel-stroked shapes.</summary>
+    internal static void ValidateAttribute(string localName, string value, bool allowRound)
+    {
+        if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan(), allowRound);
+        else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan(), allowRound);
         else if (localName == "stroke-dasharray") ValidateDasharray(value.AsSpan());
         else if (localName == "stroke-dashoffset") ValidateDashoffset(value.AsSpan());
     }
 
-    private static void ValidateLinecap(ReadOnlySpan<char> value)
+    private static void ValidateLinecap(ReadOnlySpan<char> value, bool allowRound)
     {
         if (value.Trim().Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented.");
+        if (allowRound && value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, allowRound ? "Only butt and round stroke linecaps are implemented." : "Only butt stroke linecaps are implemented.");
     }
 
-    private static void ValidateLinejoin(ReadOnlySpan<char> value)
+    private static void ValidateLinejoin(ReadOnlySpan<char> value, bool allowRound)
     {
         if (value.Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter stroke linejoins are implemented.");
+        if (allowRound && value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, allowRound ? "Only miter and round stroke linejoins are implemented." : "Only miter stroke linejoins are implemented.");
     }
 
     private static void ValidateDashoffset(ReadOnlySpan<char> value)
@@ -55,8 +64,8 @@ internal static class SvgStrokeStyleSyntax
         return strokeWidth;
     }
 
-    /// <summary>Resolves one admitted solid butt-and-miter stroke, or nothing when the element carries no stroke paint.</summary>
-    internal readonly record struct SvgAdmittedStroke(SvgColor Color, int Width, double MiterLimit);
+    /// <summary>Resolves one admitted solid stroke, or nothing when the element carries no stroke paint.</summary>
+    internal readonly record struct SvgAdmittedStroke(SvgColor Color, int Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join);
 
     /// <summary>Validates the stroke subset shared by stroked shapes, rejecting paint servers, odd widths and small limits.</summary>
     internal static SvgAdmittedStroke? ResolveAdmittedStroke(XmlReader reader, SvgComputedStyle style, SvgResolvedPaintableElement shape, string elementName)
@@ -66,8 +75,40 @@ internal static class SvgStrokeStyleSyntax
         if (shape.Presentation.StrokeColor is null) return null;
         int width = ParseStrokeWidth(reader.GetAttribute("stroke-width"), elementName);
         double miterLimit = ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
+        SvgStrokeCap cap = ParseLinecap(reader.GetAttribute("stroke-linecap"));
+        SvgStrokeJoin join = ParseLinejoin(reader.GetAttribute("stroke-linejoin"));
         SvgColor color = SvgPaintResolver.ApplyOpacity(shape.Presentation.StrokeColor.Value, shape.Presentation.Opacity);
-        return new SvgAdmittedStroke(color, width, miterLimit);
+        return new SvgAdmittedStroke(color, width, miterLimit, cap, join);
+    }
+
+    /// <summary>Parses the open-end cap style, defaulting to butt like SVG.</summary>
+    internal static SvgStrokeCap ParseLinecap(string? value)
+    {
+        if (value is null) return SvgStrokeCap.Butt;
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeCap.Butt;
+        if (token.Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeCap.Round;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt and round stroke linecaps are implemented.");
+    }
+
+    /// <summary>Parses the corner join style, defaulting to miter like SVG.</summary>
+    internal static SvgStrokeJoin ParseLinejoin(string? value)
+    {
+        if (value is null) return SvgStrokeJoin.Miter;
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeJoin.Miter;
+        if (token.Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeJoin.Round;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter and round stroke linejoins are implemented.");
+    }
+
+    /// <summary>Rejects non-butt caps and non-miter joins where strokes lower to fixed bands.</summary>
+    internal static void RequireButtCapJoin(XmlReader reader, string elementName)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        string? cap = reader.GetAttribute("stroke-linecap");
+        if (cap is not null && !cap.AsSpan().Trim().Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented on " + elementName + " strokes.");
+        string? join = reader.GetAttribute("stroke-linejoin");
+        if (join is not null && !join.AsSpan().Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter stroke linejoins are implemented on " + elementName + " strokes.");
     }
 
     /// <summary>Parses a miter limit of at least one, defaulting to four like SVG.</summary>

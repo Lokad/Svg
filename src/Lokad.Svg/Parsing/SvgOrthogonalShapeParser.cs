@@ -70,7 +70,7 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, "path", true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, shape, stroke.Value.Color, shape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, frame, budget);
+            stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, shape, stroke.Value.Color, shape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, frame, budget);
         }
         catch { filled.Dispose(); throw; }
         return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
@@ -141,7 +141,7 @@ internal static class SvgOrthogonalShapeParser
             {
                 fractionalStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, shape, elementName);
                 if (fractionalStroke is null) return filled;
-                fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", shape, fractionalStroke.Value.Color, shape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, frame, budget);
+                fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", shape, fractionalStroke.Value.Color, shape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, fractionalStroke.Value.Cap, fractionalStroke.Value.Join, frame, budget);
             }
             catch { filled.Dispose(); throw; }
             return ConcatParsedGeometries(filled, fractionalStroked, budget, context.WorkCounter, context.CancellationToken);
@@ -174,7 +174,7 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, false, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            stroked = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", shape.Transform, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Color, shape.Presentation.IsPainted, frame, budget);
+            stroked = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", shape.Transform, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.Color, shape.Presentation.IsPainted, frame, budget);
         }
         catch { filled.Dispose(); throw; }
         return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);

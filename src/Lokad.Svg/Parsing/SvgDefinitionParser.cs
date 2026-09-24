@@ -362,6 +362,7 @@ internal static class SvgDefinitionParser
 
     private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
+        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle");
         SvgComputedStyle style = context.ResolveStyle(reader);
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return new SvgDefinition([SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null)], false, symbolViewBox);
         SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
