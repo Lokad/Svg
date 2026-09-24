@@ -2643,6 +2643,33 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(new SvgRectangle(16, 16, 32, 32, new SvgColor(0, 0, 255, 255), true, null), Assert.Single(root.Rectangles));
     }
+    [Fact]
+    public void Applies_a_fill_override_to_an_unstyled_polygon()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><polygon id='p' points='0,0 8,0 0,8'/></defs><use href='#p' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), geometry.Polygon.Color);
+    }
+
+    [Fact]
+    public void Applies_a_fill_override_to_an_unstyled_orthogonal_band()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><polygon id='p' points='0,0 4,0 4,4 0,4'/></defs><use href='#p' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.Rectangle, geometry.Kind);
+        Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(0, 0, 255, 255), true, null), geometry.Rectangle);
+    }
+
+    [Fact]
+    public void Rejects_a_fill_override_on_a_stroked_polygon_pair()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red' stroke='blue' stroke-width='2'/></defs><use href='#p' fill='green'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
 
     [Fact]
     public void Centers_meet_mapped_symbol_content_in_the_use_viewport()

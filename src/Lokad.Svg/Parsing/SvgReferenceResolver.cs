@@ -30,7 +30,7 @@ internal static class SvgReferenceResolver
     {
         if (definition.SymbolViewBox is SvgViewBox symbolBox) return ApplySymbol(definition, symbolBox, reference, frame, state);
         if (reference.PaintServerId is not null) return [LowerDirectInstancePaintFill(definition, reference, frame, state)];
-        SvgGeometry[] sources = ApplyInstanceFill(definition, reference);
+        SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
         SvgGeometry[] applied = new SvgGeometry[sources.Length];
         for (int index = 0; index < sources.Length; index++)
         {
@@ -167,19 +167,31 @@ internal static class SvgReferenceResolver
 
     private static SvgGeometry ClipLine(SvgAxisAlignedLine line, SvgViewportFrame? frame) => frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line);
 
-    private static SvgGeometry[] ApplyInstanceFill(SvgDefinition definition, SvgUseReference reference)
+    private static SvgGeometry[] ApplyInstanceFill(SvgDefinition definition, SvgUseReference reference, SvgDocumentState state)
     {
         if (reference.FillOverride is null) return definition.Geometries;
-        if (definition.Geometries.Length != 1 || definition.Geometries[0].Kind != SvgGeometryKind.Rectangle || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible rectangle definition.");
+        if (definition.Geometries.Length != 1 || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible single-geometry definition.");
         SvgPaint fill = reference.FillOverride.Value;
-        return [SvgGeometry.FromRectangle(definition.Geometries[0].Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill })];
+        return definition.Geometries[0].Kind switch
+        {
+            SvgGeometryKind.Rectangle => [SvgGeometry.FromRectangle(definition.Geometries[0].Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill })],
+            SvgGeometryKind.OrthogonalBand => [SvgGeometry.FromOrthogonalBand(definition.Geometries[0].Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill })],
+            SvgGeometryKind.PolygonFill => [ApplyInstancePolygonFill(definition.Geometries[0].Polygon, fill, state)],
+            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible single-geometry definition."),
+        };
+
+        static SvgGeometry ApplyInstancePolygonFill(SvgPolygonFill source, SvgPaint paint, SvgDocumentState document)
+        {
+            ArgumentNullException.ThrowIfNull(document);
+            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(source.Points, source.ContourEnds, source.Signs, SvgPaintResolver.ResolveFillColor(paint, 255), paint.HasFill, source.IsEvenOdd, source.Mapping, source.Clip, document.Budget));
+        }
     }
 
     private static SvgGeometry[] ApplySymbol(SvgDefinition definition, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
     {
         if (reference.PaintServerId is null)
         {
-            SvgGeometry[] sources = ApplyInstanceFill(definition, reference);
+            SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
             SvgGeometry[] applied = new SvgGeometry[sources.Length];
             for (int index = 0; index < sources.Length; index++) applied[index] = ApplySymbolInstance(sources[index], symbolBox, reference, frame, state);
             return applied;

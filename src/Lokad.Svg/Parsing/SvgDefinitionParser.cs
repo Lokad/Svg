@@ -302,6 +302,7 @@ internal static class SvgDefinitionParser
 
     private static SvgDefinition ParseShapeDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
+        SvgComputedStyle style = context.ResolveStyle(reader);
         SvgGeometry[] geometries = reader.LocalName switch
         {
             "polygon" or "polyline" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, int.MaxValue, state.Budget, null, state)),
@@ -311,7 +312,18 @@ internal static class SvgDefinitionParser
             _ => throw new InvalidOperationException("Unsupported definition leaf reached shape lowering."),
         };
         if (geometries.Length > 0) state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Scene);
-        return new SvgDefinition(geometries, false, symbolViewBox);
+        return new SvgDefinition(geometries, IsOverrideableFill(style, geometries), symbolViewBox);
+
+        static bool IsOverrideableFill(SvgComputedStyle computed, SvgGeometry[] lowered)
+        {
+            if (computed != default || lowered.Length != 1) return false;
+            return lowered[0].Kind switch
+            {
+                SvgGeometryKind.OrthogonalBand => lowered[0].Rectangle.HasFill,
+                SvgGeometryKind.PolygonFill => lowered[0].Polygon.HasFill,
+                _ => false,
+            };
+        }
     }
 
     private static SvgGeometry[] RetainParsedGeometries(SvgParsedGeometry parsed)
