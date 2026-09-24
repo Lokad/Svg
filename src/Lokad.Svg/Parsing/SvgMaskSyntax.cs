@@ -237,6 +237,18 @@ internal static class SvgMaskSyntax
         return SvgGeometry.FromGradientFill(stamped.ClipTo(region));
     }
 
+    private static SvgGeometry ApplyRadialMask(SvgRadialGeometry radial, byte value, SvgClipBox region)
+    {
+        SvgRadialGeometry stamped = radial.Stamped(value);
+        if (stamped.Stroke is not null)
+        {
+            double halfWidth = stamped.Stroke.Value.Width / 2d;
+            SvgRectangle fill = stamped.Fill;
+            if (!region.Contains(fill.X - halfWidth, fill.Y - halfWidth, fill.X + fill.Width + halfWidth, fill.Y + fill.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked radial fills crossing a mask region boundary are not implemented.");
+        }
+        return SvgGeometry.FromRadialFill(stamped.ClipTo(region));
+    }
+
     private static SvgGeometry ApplyGradientStrokeMask(SvgGradientStrokeGeometry stroke, byte value, SvgClipBox region)
         => SvgGeometry.FromGradientStroke(stroke.Stamped(value).ClipTo(region));
 
@@ -249,6 +261,7 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.OrthogonalBand => SvgGeometry.FromOrthogonalBand(StampRectangle(region.ClipRectangle(geometry.Rectangle), value)),
             SvgGeometryKind.PatternFill => ApplyPatternMask(geometry.Pattern, value, region),
             SvgGeometryKind.GradientFill => ApplyGradientMask(geometry.Gradient, value, region),
+            SvgGeometryKind.RadialGradient => ApplyRadialMask(geometry.Radial, value, region),
             SvgGeometryKind.GradientStroke => ApplyGradientStrokeMask(geometry.GradientStroke, value, region),
             SvgGeometryKind.PolygonFill => SvgGeometry.FromPolygonFill(geometry.Polygon.Stamped(value, region)),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")

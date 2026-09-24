@@ -482,7 +482,7 @@ internal sealed class SvgGradientGeometry : IDisposable
     }
 }
 
-/// <summary>Owns retained concentric radial-gradient stops with their bounding-box circle and fill region.</summary>
+/// <summary>Owns retained radial-gradient stops with their circle and fill region.</summary>
 internal sealed class SvgRadialGeometry : IDisposable
 {
     internal SvgRadialGeometry(SvgRadialGradient Gradient, SvgRectangle Box, SvgRectangle Fill, byte Opacity, SvgStroke? Stroke)
@@ -503,6 +503,12 @@ internal sealed class SvgRadialGeometry : IDisposable
     internal byte Opacity { get; }
 
     internal SvgStroke? Stroke { get; }
+
+    internal SvgRadialGeometry ClipTo(SvgClipBox box)
+        => new(Gradient, Box, box.ClipRectangle(Fill), Opacity, Stroke);
+
+    internal SvgRadialGeometry Stamped(byte value)
+        => new(Gradient, Box, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width));
 
     public void Dispose()
     {
