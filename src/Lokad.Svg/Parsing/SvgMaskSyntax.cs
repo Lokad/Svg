@@ -190,6 +190,7 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.OrthogonalBand => geometry.Rectangle,
             SvgGeometryKind.PatternFill => geometry.Pattern.Fill,
             SvgGeometryKind.GradientFill => geometry.Gradient.Fill,
+            SvgGeometryKind.RadialGradient => geometry.Radial.Fill,
             SvgGeometryKind.GradientStroke => geometry.GradientStroke.OuterBox(),
             SvgGeometryKind.PolygonFill => PolygonBounds(geometry.Polygon),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")

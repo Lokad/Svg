@@ -277,6 +277,35 @@ public sealed class RenderBudgetTests
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
     }
 
+    [Fact]
+    public void Scene_builder_transfers_one_reservation_per_distinct_radial_stop_array()
+    {
+        RenderBudget budget = new(100_000);
+        using SvgSceneBuilder scene = new(budget, new ParserWorkCounter(1_000_000), CancellationToken.None);
+        SvgGradientStop[] sharedStops = [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
+        SvgGradientStop[] otherStops = [new SvgGradientStop(0, new SvgColor(0, 0, 0, 255)), new SvgGradientStop(0.5, new SvgColor(0, 255, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
+        scene.AddGeometry(RadialFill(sharedStops));
+        long afterFirst = SceneBytes(budget);
+        Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(2) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), afterFirst);
+        scene.AddGeometry(RadialFill(sharedStops));
+        Assert.Equal(afterFirst, SceneBytes(budget));
+        scene.AddGeometry(RadialFill(otherStops));
+        long afterThird = SceneBytes(budget);
+        Assert.Equal(afterFirst + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(3), afterThird);
+        scene.AddGeometry(EmptyRadialFill());
+        Assert.Equal(afterThird, SceneBytes(budget));
+        SvgSceneStorage storage = scene.Build();
+        try
+        {
+            Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(2) + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(3) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), SceneBytes(budget));
+        }
+        finally
+        {
+            storage.Dispose();
+        }
+        AssertBudgetReleased(budget);
+    }
+
     private static SvgGeometry GradientFill(SvgGradientStop[] stops, double x)
     {
         SvgLinearGradient gradient = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, stops);
@@ -292,6 +321,20 @@ public sealed class RenderBudgetTests
     }
 
     private static long SceneBytes(RenderBudget budget) => budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Scene];
+
+    private static SvgGeometry RadialFill(SvgGradientStop[] stops)
+    {
+        SvgRadialGradient gradient = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0, 1, false, SvgGradientSpread.Pad, stops);
+        SvgRectangle box = new(0, 0, 2, 2, default, true, null);
+        return SvgGeometry.FromRadialFill(new SvgRadialGeometry(gradient, box, box, 255, null));
+    }
+
+    private static SvgGeometry EmptyRadialFill()
+    {
+        SvgRadialGradient gradient = new(default, default, 0.5, 0.5, 0.5, 0, 1, true, SvgGradientSpread.Pad, Array.Empty<SvgGradientStop>());
+        SvgRectangle box = new(8, 0, 2, 2, default, true, null);
+        return SvgGeometry.FromRadialFill(new SvgRadialGeometry(gradient, box, box, 255, null));
+    }
 
     private static string EightStopGradientSvg() => "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"0.15\" stop-color=\"#ff8000\"/><stop offset=\"0.3\" stop-color=\"#ffff00\"/><stop offset=\"0.45\" stop-color=\"#00ff00\"/><stop offset=\"0.6\" stop-color=\"#00ffff\"/><stop offset=\"0.75\" stop-color=\"#0000ff\"/><stop offset=\"0.9\" stop-color=\"#8000ff\"/><stop offset=\"1\" stop-color=\"#ff00ff\"/></linearGradient></defs><rect x=\"0\" y=\"0\" width=\"16\" height=\"16\" fill=\"url(#g)\"/></svg>";
 

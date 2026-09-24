@@ -16,6 +16,12 @@ internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);
 /// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2);
 
+/// <summary>Retains one admitted one-to-eight-stop concentric radial gradient in bounding-box coordinates.</summary>
+internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double Offset1, double Offset2, bool IsEmpty, SvgGradientSpread Spread, SvgGradientStop[] Stops);
+
+/// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
+internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius);
+
 /// <summary>Retains one admitted axis-aligned gradient transform with finite coordinates.</summary>
 internal readonly record struct SvgGradientTransform(double ScaleX, double ScaleY, double OffsetX, double OffsetY)
 {
@@ -59,6 +65,32 @@ internal static class SvgGradientSyntax
         SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue);
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
         return new SvgGradientTemplate(x1, y1, x2, y2, isUserSpace, gradientTransform, transformValue is not null, vectorCount, units is not null, spreadMethod, spread is not null, href, rawX1 is not null, rawY1 is not null, rawX2 is not null, rawY2 is not null);
+    }
+
+    internal static SvgRadialTemplate ParseRadialVector(XmlReader reader)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        string? units = reader.GetAttribute("gradientUnits");
+        if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only objectBoundingBox radial gradient units are implemented.");
+        string? spread = reader.GetAttribute("spreadMethod");
+        SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
+        if (spreadMethod != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread radial gradients are implemented.");
+        if (reader.GetAttribute("gradientTransform") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient transforms are not implemented.");
+        if (reader.GetAttribute("fr") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Focal-radius radial gradients are not implemented.");
+        string? rawCenterX = reader.GetAttribute("cx");
+        string? rawCenterY = reader.GetAttribute("cy");
+        string? rawRadius = reader.GetAttribute("r");
+        int vectorCount = (rawCenterX is null ? 0 : 1) + (rawCenterY is null ? 0 : 1) + (rawRadius is null ? 0 : 1);
+        double centerX = ParseAxis(rawCenterX ?? "0.5");
+        double centerY = ParseAxis(rawCenterY ?? "0.5");
+        double radius = ParseAxis(rawRadius ?? "0.5");
+        if (radius < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Radial gradient radius cannot be negative.");
+        string? focalX = reader.GetAttribute("fx");
+        string? focalY = reader.GetAttribute("fy");
+        if (focalX is not null && ParseAxis(focalX) != centerX) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Offset radial foci are not implemented.");
+        if (focalY is not null && ParseAxis(focalY) != centerY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Offset radial foci are not implemented.");
+        string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
+        return new SvgRadialTemplate(centerX, centerY, radius, units is not null, spreadMethod, spread is not null, href, vectorCount, rawCenterX is not null, rawCenterY is not null, rawRadius is not null);
     }
 
     private static SvgGradientTransform ParseGradientTransform(string? value)
@@ -193,7 +225,11 @@ internal static class SvgGradientSyntax
 
     internal static SvgGeometry LowerGradientRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
     {
-        if (!state.Gradients.TryGetValue(ParseGradientId(style.Fill), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+        if (!state.Gradients.TryGetValue(ParseGradientId(style.Fill), out SvgLinearGradient gradient))
+        {
+            if (state.RadialGradients.TryGetValue(ParseGradientId(style.Fill), out SvgRadialGradient radial)) return LowerRadialRect(reader, context, style, state, radial, frame);
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+        }
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceVector(transform, gradient, frame);
@@ -225,11 +261,85 @@ internal static class SvgGradientSyntax
         return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, fill, fillOpacity, painted ? stroke : null));
     }
 
+    /// <summary>Lowers one concentric radial-gradient-filled rectangle with an optional solid stroke.</summary>
+    internal static SvgGeometry LowerRadialRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgRadialGradient gradient, SvgViewportFrame? frame)
+    {
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        AxisTransform transform = context.ResolveTransform(reader);
+        SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
+        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        byte fillOpacity = SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.FillOpacity));
+        SvgStroke? stroke = ParseGradientStroke(reader, style, context, transform, placement, opacity, painted);
+        if (stroke is not null && frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
+        SvgRectangle box = placement;
+        if (frame is not null)
+        {
+            if (stroke is not null)
+            {
+                double halfWidth = stroke.Value.Width / 2d;
+                if (!frame.Value.Clip.Contains(placement.X - halfWidth, placement.Y - halfWidth, placement.X + placement.Width + halfWidth, placement.Y + placement.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
+            }
+            placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
+            box = frame.Value.Shift(box);
+        }
+        SvgRectangle fill = placement with { HasFill = painted && !gradient.IsEmpty };
+        if (gradient.Stops.Length == 1) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
+        if (gradient.Radius == 0 && !gradient.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
+        return SvgGeometry.FromRadialFill(new SvgRadialGeometry(gradient, box, fill, fillOpacity, painted ? stroke : null));
+    }
+
+    /// <summary>Lowers one radial-gradient-filled orthogonal path or point-list shape into radial-evaluated rectangle bands sharing the shape box.</summary>
+    internal static SvgParsedGeometry LowerRadialBands(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgRadialGradient gradient, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame)
+    {
+        AxisTransform transform = context.ResolveTransform(reader);
+        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
+        SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
+        bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+        using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedParserList<SvgPoint> points = SvgOrthogonalShapeParser.TokenizeBands(reader, elementName, isPath, maximumGeometryElements, budget, context, contourEnds);
+        SvgRectangle box = BoxFromRadialBands(points, transform, frame, context);
+        using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+        if (gradient.Stops.Length == 1 || (gradient.Radius == 0 && !gradient.IsEmpty)) return lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame);
+        SvgParsedGeometry solid = lowering.Lower(default, painted && !gradient.IsEmpty, transform, frame);
+        SvgGeometry[] bands = solid.Storage.Items;
+        for (int bandIndex = 0; bandIndex < bands.Length; bandIndex++)
+        {
+            context.WorkCounter.Consume(context.CancellationToken);
+            bands[bandIndex] = SvgGeometry.FromRadialFill(new SvgRadialGeometry(gradient, box, bands[bandIndex].Rectangle, opacity, null));
+        }
+        return solid;
+
+        static SvgRectangle BoxFromRadialBands(BudgetedParserList<SvgPoint> points, AxisTransform transform, SvgViewportFrame? frame, SvgPaintableElementContext context)
+        {
+            int minimumX = points[0].X;
+            int minimumY = points[0].Y;
+            int maximumX = points[0].X;
+            int maximumY = points[0].Y;
+            for (int pointIndex = 1; pointIndex < points.Count; pointIndex++)
+            {
+                if ((pointIndex & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
+                SvgPoint point = points[pointIndex];
+                if (point.X < minimumX) minimumX = point.X;
+                if (point.Y < minimumY) minimumY = point.Y;
+                if (point.X > maximumX) maximumX = point.X;
+                if (point.Y > maximumY) maximumY = point.Y;
+            }
+            SvgRectangle box = transform.Apply(new SvgRectangle(minimumX, minimumY, (double)maximumX - minimumX, (double)maximumY - minimumY, default, true, null));
+            return frame is null ? box : frame.Value.Shift(box);
+        }
+    }
+
     /// <summary>Lowers one gradient-filled orthogonal path or point-list shape into gradient-evaluated rectangle bands.</summary>
     internal static SvgParsedGeometry LowerGradientBands(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame)
     {
         if (style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient-filled paths with strokes are not implemented.");
-        if (!state.Gradients.TryGetValue(ParseGradientId(style.Fill), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+        if (!state.Gradients.TryGetValue(ParseGradientId(style.Fill), out SvgLinearGradient gradient))
+        {
+            if (state.RadialGradients.TryGetValue(ParseGradientId(style.Fill), out SvgRadialGradient radial)) return LowerRadialBands(reader, context, style, state, radial, elementName, isPath, maximumGeometryElements, budget, frame);
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+        }
         AxisTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceVector(transform, gradient, frame);
         gradient = MirrorBoundingBoxVector(transform, gradient);
@@ -302,6 +412,7 @@ internal static class SvgGradientSyntax
     {
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle");
         if (state.Patterns.TryGetValue(ParseGradientId(style.Stroke), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern strokes are not implemented.");
+        if (state.RadialGradients.TryGetValue(ParseGradientId(style.Stroke), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient strokes are not implemented.");
         if (!state.Gradients.TryGetValue(ParseGradientId(style.Stroke), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
@@ -350,6 +461,7 @@ internal static class SvgGradientSyntax
         if ((syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
         if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
+        if (state.RadialGradients.TryGetValue(ParseGradientId(style.Stroke), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient strokes are not implemented.");
         if (!state.Gradients.TryGetValue(ParseGradientId(style.Stroke), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         gradient = MapUserSpaceVector(transform, gradient, frame);
         if (!gradient.IsUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse gradient strokes on lines are implemented.");

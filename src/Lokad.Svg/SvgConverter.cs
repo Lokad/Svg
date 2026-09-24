@@ -282,6 +282,9 @@ public static class SvgConverter
                 case SvgGeometryKind.GradientStroke:
                     RasterizeGradientStrokeFill(geometry.GradientStroke, destination);
                     return;
+                case SvgGeometryKind.RadialGradient:
+                    RasterizeRadialFill(geometry.Radial, destination);
+                    return;
                 case SvgGeometryKind.PolygonFill:
                     RasterizePolygonFill(geometry.Polygon, destination);
                     return;
@@ -470,6 +473,49 @@ public static class SvgConverter
             RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Right, stroke.Opacity, true, destination);
         }
 
+        static SvgColor TransparentTileColor(SvgColor first, SvgColor second, double blend, double dither, byte opacity)
+        {
+            double alpha = ((double)first.Alpha + ((double)second.Alpha - first.Alpha) * blend) * opacity / 255;
+            byte mask = (byte)Math.Floor(alpha + 0.5);
+            if (mask == 0) return new SvgColor(0, 0, 0, 0);
+            double red = ((double)first.Red + ((double)second.Red - first.Red) * blend) * alpha / 255 + dither;
+            double green = ((double)first.Green + ((double)second.Green - first.Green) * blend) * alpha / 255 + dither;
+            double blue = ((double)first.Blue + ((double)second.Blue - first.Blue) * blend) * alpha / 255 + dither;
+            byte premultRed = (byte)Math.Floor(red + 1e-9);
+            byte premultGreen = (byte)Math.Floor(green + 1e-9);
+            byte premultBlue = (byte)Math.Floor(blue + 1e-9);
+            double inverse = 255.0 / mask;
+            int r = (int)Math.Floor(premultRed * inverse + 0.5);
+            if (r > 255) r = 255;
+            int g = (int)Math.Floor(premultGreen * inverse + 0.5);
+            if (g > 255) g = 255;
+            int b = (int)Math.Floor(premultBlue * inverse + 0.5);
+            if (b > 255) b = 255;
+            return new SvgColor((byte)r, (byte)g, (byte)b, mask);
+        }
+
+
+        static SvgColor InterpolateGradientRamp(SvgGradientStop[] stops, SvgColor start, SvgColor end, double offset1, double offset2, double position, bool transparentStops, double dither, byte opacity)
+        {
+            if (stops.Length > 2)
+            {
+                double offsetSpan = offset2 - offset1;
+                double absolute = offset1 + position * offsetSpan;
+                int segment = 0;
+                while (segment < stops.Length - 2 && absolute >= stops[segment + 1].Offset) segment++;
+                SvgGradientStop first = stops[segment];
+                SvgGradientStop second = stops[segment + 1];
+                // A zero-width segment is a hard edge: the later stop wins at the shared offset, matching the pinned oracle.
+                double blend = second.Offset <= first.Offset ? 1 : (absolute - first.Offset) / (second.Offset - first.Offset);
+                if (transparentStops)
+                    return TransparentTileColor(first.Color, second.Color, blend, dither, opacity);
+                return new(InterpolateChannel(first.Color.Red, second.Color.Red, blend, dither), InterpolateChannel(first.Color.Green, second.Color.Green, blend, dither), InterpolateChannel(first.Color.Blue, second.Color.Blue, blend, dither), opacity);
+            }
+            if (transparentStops)
+                return TransparentTileColor(start, end, position, dither, opacity);
+            return new(InterpolateChannel(start.Red, end.Red, position, dither), InterpolateChannel(start.Green, end.Green, position, dither), InterpolateChannel(start.Blue, end.Blue, position, dither), opacity);
+        }
+
         void RasterizeGradientArea(SvgLinearGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
             double areaTop = MapRectangleEdge(area.Y, verticalScale, verticalOffset);
@@ -526,51 +572,73 @@ public static class SvgConverter
                 }
                 position = local;
                 double dither = GradientDither[x & 7, y & 7] / 64d;
-                SvgColor tileColor;
-                if (definition.Stops.Length > 2)
-                {
-                    double absolute = definition.Offset1 + position * offsetSpan;
-                    int segment = 0;
-                    while (segment < definition.Stops.Length - 2 && absolute >= definition.Stops[segment + 1].Offset) segment++;
-                    SvgGradientStop first = definition.Stops[segment];
-                    SvgGradientStop second = definition.Stops[segment + 1];
-                    // A zero-width segment is a hard edge: the later stop wins at the shared offset, matching the pinned oracle.
-                    double blend = second.Offset <= first.Offset ? 1 : (absolute - first.Offset) / (second.Offset - first.Offset);
-                    if (transparentStops)
-                        tileColor = TransparentTileColor(first.Color, second.Color, blend, dither, opacity);
-                    else
-                        tileColor = new(InterpolateChannel(first.Color.Red, second.Color.Red, blend, dither), InterpolateChannel(first.Color.Green, second.Color.Green, blend, dither), InterpolateChannel(first.Color.Blue, second.Color.Blue, blend, dither), opacity);
-                }
-                else if (transparentStops)
-                    tileColor = TransparentTileColor(definition.Start, definition.End, position, dither, opacity);
-                else tileColor = new(InterpolateChannel(definition.Start.Red, definition.End.Red, position, dither), InterpolateChannel(definition.Start.Green, definition.End.Green, position, dither), InterpolateChannel(definition.Start.Blue, definition.End.Blue, position, dither), opacity);
+                SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
                 SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
                 int offset = (y * outputWidth + x) * 4;
                 BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
             }
             }
 
-            static SvgColor TransparentTileColor(SvgColor first, SvgColor second, double blend, double dither, byte opacity)
+        }
+        void RasterizeRadialFill(SvgRadialGeometry radial, byte[] destination)
+        {
+            if (!radial.Fill.HasFill && radial.Stroke is null) return;
+            RasterizeRadialArea(radial.Gradient, radial.Box, radial.Fill, radial.Opacity, radial.Fill.HasFill, destination);
+            if (radial.Stroke is SvgStroke stroke)
             {
-                double alpha = ((double)first.Alpha + ((double)second.Alpha - first.Alpha) * blend) * opacity / 255;
-                byte mask = (byte)Math.Floor(alpha + 0.5);
-                if (mask == 0) return new SvgColor(0, 0, 0, 0);
-                double red = ((double)first.Red + ((double)second.Red - first.Red) * blend) * alpha / 255 + dither;
-                double green = ((double)first.Green + ((double)second.Green - first.Green) * blend) * alpha / 255 + dither;
-                double blue = ((double)first.Blue + ((double)second.Blue - first.Blue) * blend) * alpha / 255 + dither;
-                byte premultRed = (byte)Math.Floor(red + 1e-9);
-                byte premultGreen = (byte)Math.Floor(green + 1e-9);
-                byte premultBlue = (byte)Math.Floor(blue + 1e-9);
-                double inverse = 255.0 / mask;
-                int r = (int)Math.Floor(premultRed * inverse + 0.5);
-                if (r > 255) r = 255;
-                int g = (int)Math.Floor(premultGreen * inverse + 0.5);
-                if (g > 255) g = 255;
-                int b = (int)Math.Floor(premultBlue * inverse + 0.5);
-                if (b > 255) b = 255;
-                return new SvgColor((byte)r, (byte)g, (byte)b, mask);
+                double halfWidth = stroke.Width / 2d;
+                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y - halfWidth, radial.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
+                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y + radial.Fill.Height - halfWidth, radial.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
+                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y + halfWidth, stroke.Width, radial.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
+                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X + radial.Fill.Width - halfWidth, radial.Fill.Y + halfWidth, stroke.Width, radial.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
             }
         }
+
+        void RasterizeRadialArea(SvgRadialGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
+        {
+            double areaTop = MapRectangleEdge(area.Y, verticalScale, verticalOffset);
+            double areaBottom = MapRectangleEdge(area.Y + area.Height, verticalScale, verticalOffset);
+            double areaLeft = MapRectangleEdge(area.X, horizontalScale, horizontalOffset);
+            double areaRight = MapRectangleEdge(area.X + area.Width, horizontalScale, horizontalOffset);
+            bool hasFractionalEdge = areaTop != Math.Truncate(areaTop) || areaBottom != Math.Truncate(areaBottom) || areaLeft != Math.Truncate(areaLeft) || areaRight != Math.Truncate(areaRight);
+            int startY = ClampFloor(areaTop, outputHeight);
+            int endY = ClampCeiling(areaBottom, outputHeight);
+            int startX = ClampFloor(areaLeft, outputWidth);
+            int endX = ClampCeiling(areaRight, outputWidth);
+            long coverage = (long)(endY - startY) * (endX - startX);
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Radial fill raster work exceeds the configured limit.");
+            workUnits += coverage;
+            if (paint && definition.Radius <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
+            bool transparentStops = false;
+            foreach (SvgGradientStop stop in definition.Stops)
+            {
+                if (stop.Color.Alpha != 255) { transparentStops = true; break; }
+            }
+            if (paint)
+            for (int y = startY; y < endY; y++)
+            {
+            cancellationToken.ThrowIfCancellationRequested();
+            double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
+            for (int x = startX; x < endX; x++)
+            {
+                double verticalCoverage = Math.Clamp(Math.Min(areaBottom, y + 1) - Math.Max(areaTop, y), 0, 1);
+                double horizontalCoverage = Math.Clamp(Math.Min(areaRight, x + 1) - Math.Max(areaLeft, x), 0, 1);
+                double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
+                double normalizedX = (deviceX - box.X) / box.Width;
+                double normalizedY = (deviceY - box.Y) / box.Height;
+                double distanceX = normalizedX - definition.CenterX;
+                double distanceY = normalizedY - definition.CenterY;
+                double position = Math.Sqrt(distanceX * distanceX + distanceY * distanceY) / definition.Radius;
+                if (position > 1) position = 1;
+                double dither = GradientDither[x & 7, y & 7] / 64d;
+                SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
+                SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
+                int offset = (y * outputWidth + x) * 4;
+                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+            }
+            }
+        }
+
         void RasterizeGradientStroke(SvgGradientGeometry gradient, SvgStroke stroke, byte[] destination)
         {
             double halfWidth = stroke.Width / 2d;

@@ -29,6 +29,7 @@ internal sealed class SvgDocumentState : IDisposable
         MaskContentBoxes = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Patterns = new BudgetedParserDictionary<string, SvgPatternTile>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
         Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
+        RadialGradients = new BudgetedParserDictionary<string, SvgRadialGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -71,6 +72,8 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserDictionary<string, SvgLinearGradient> Gradients { get; }
 
+    internal BudgetedParserDictionary<string, SvgRadialGradient> RadialGradients { get; }
+
     internal BudgetedParserList<int> ClipDepths { get; }
 
     internal BudgetedParserList<PendingUse> PendingUses { get; }
@@ -105,7 +108,11 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal string? GradientId { get; set; }
 
+    internal string? RadialGradientId { get; set; }
+
     internal SvgGradientTemplate? Gradient { get; set; }
+
+    internal SvgRadialTemplate? RadialGradient { get; set; }
 
     internal BudgetedParserList<SvgGradientStop> GradientStops { get; }
 
@@ -116,6 +123,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserList<SvgClipBox> MaskScopeSnapshots { get; }
 
     internal int GradientDepth { get; set; } = -1;
+
+    internal int RadialGradientDepth { get; set; } = -1;
 
     internal SvgPatternTile? PatternTile { get; set; }
 
@@ -150,6 +159,7 @@ internal sealed class SvgDocumentState : IDisposable
         MaskContentBoxes.Dispose();
         Patterns.Dispose();
         Gradients.Dispose();
+        RadialGradients.Dispose();
         GradientStops.Dispose();
         MaskScopes.Dispose();
         MaskScopeSnapshots.Dispose();

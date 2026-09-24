@@ -338,6 +338,16 @@
       "width": 64,
       "height": 64,
       "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 26,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 11,
+        "maximumMismatchX": 54,
+        "maximumMismatchY": 54
+      },
       "oracle": {
         "referencePng": "references/radial-concentric-64x64.png",
         "referenceSha256": "2d04fbbfd90a95708513465892797f92546b6030078daaa4d22f614af47cc861",

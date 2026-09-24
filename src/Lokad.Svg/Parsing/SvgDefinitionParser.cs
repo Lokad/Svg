@@ -141,6 +141,18 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
+        if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "radialGradient")
+        {
+            SvgElementAttributePolicy.ValidateRadialGradient(reader, workCounter, cancellationToken);
+            state.RadialGradientId = reader.GetAttribute("id");
+            SvgRadialTemplate template = SvgGradientSyntax.ParseRadialVector(reader);
+            state.RadialGradient = template;
+            if (!reader.IsEmptyElement) state.RadialGradientDepth = reader.Depth;
+            else if (state.RadialGradientId is not null) RegisterRadialGradient(state, workCounter, cancellationToken);
+            state.GradientStops.Clear();
+            state.SawStyleableNode = true;
+            return true;
+        }
         if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "linearGradient")
         {
             SvgElementAttributePolicy.ValidateLinearGradient(reader, workCounter, cancellationToken);
@@ -153,11 +165,11 @@ internal static class SvgDefinitionParser
             state.SawStyleableNode = true;
             return true;
         }
-        if (state.GradientDepth >= 0 && reader.Depth == state.GradientDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
+        if (((state.GradientDepth >= 0 && reader.Depth == state.GradientDepth + 1) || (state.RadialGradientDepth >= 0 && reader.Depth == state.RadialGradientDepth + 1)) && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
             if (reader.LocalName == "stop")
             {
-                if (state.GradientStops.Count >= SvgGradientSyntax.MaximumGradientStops) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only linear gradients with at most eight stops are implemented.");
+                if (state.GradientStops.Count >= SvgGradientSyntax.MaximumGradientStops) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only gradients with at most eight stops are implemented.");
                 SvgElementAttributePolicy.ValidateGradientStop(reader, workCounter, cancellationToken);
                 double offset = SvgGradientSyntax.ParseStopOffset(reader.GetAttribute("offset"));
                 SvgColor stopColor = SvgGradientSyntax.ParseStopColor(reader, namedColors, workCounter, cancellationToken);
@@ -236,6 +248,46 @@ internal static class SvgDefinitionParser
         if (!state.Gradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
     }
 
+    internal static void RegisterRadialGradient(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.Consume(cancellationToken);
+        SvgRadialTemplate template = state.RadialGradient ?? throw new InvalidOperationException("Radial gradient registration requires gradient dimensions.");
+        if (state.GradientStops.Count != 0 && (state.GradientStops.Count > SvgGradientSyntax.MaximumGradientStops)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only empty or one-to-eight-stop radial gradients are implemented.");
+        if (template.Href is not null && template.VectorCount > 0 && template.VectorCount < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
+        if (template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial unit overrides without vector overrides are not implemented.");
+        (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveRadialStops(state, template);
+        (double centerX, double centerY, double radius, SvgGradientSpread spread) = ResolveRadialVector(template, state);
+        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, offset1, offset2, isEmpty, spread, stops);
+        string retainedId = state.Strings.Copy(state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier."));
+        if (state.Gradients.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
+        if (!state.RadialGradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
+    }
+
+    private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveRadialStops(SvgDocumentState state, SvgRadialTemplate template)
+    {
+        if (state.GradientStops.Count >= 1) return ClampStopList(state);
+        if (template.Href is null) return (default, default, 0, 1, true, Array.Empty<SvgGradientStop>());
+        if (!state.RadialGradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgRadialGradient parent)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local radial gradient references are implemented.");
+        return (parent.Start, parent.End, parent.Offset1, parent.Offset2, parent.IsEmpty, parent.Stops);
+    }
+
+    private static (double CenterX, double CenterY, double Radius, SvgGradientSpread Spread) ResolveRadialVector(SvgRadialTemplate template, SvgDocumentState state)
+    {
+        double centerX = template.CenterX;
+        double centerY = template.CenterY;
+        double radius = template.Radius;
+        SvgGradientSpread spread = template.Spread;
+        if (template.Href is not null && template.VectorCount == 0)
+        {
+            if (!state.RadialGradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgRadialGradient parent)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local radial gradient references are implemented.");
+            centerX = parent.CenterX;
+            centerY = parent.CenterY;
+            radius = parent.Radius;
+            if (!template.HasSpread) spread = parent.Spread;
+        }
+        return (centerX, centerY, radius, spread);
+    }
+
     private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveGradientStops(SvgDocumentState state, SvgGradientTemplate template)
     {
         if (state.GradientStops.Count >= 1) return ClampStopList(state);
@@ -256,7 +308,7 @@ internal static class SvgDefinitionParser
         {
             clamped[index] = new SvgGradientStop(Math.Clamp(state.GradientStops[index].Offset, 0, 1), state.GradientStops[index].Color);
         }
-        if (clamped.Length > 1 && !(clamped[0].Offset < clamped[^1].Offset)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only linear gradient stops spanning a nonzero clamped offset range are implemented.");
+        if (clamped.Length > 1 && !(clamped[0].Offset < clamped[^1].Offset)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only gradient stops spanning a nonzero clamped offset range are implemented.");
         return (clamped[0].Color, clamped[^1].Color, clamped[0].Offset, clamped[^1].Offset, false, clamped);
     }
 

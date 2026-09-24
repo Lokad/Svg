@@ -175,6 +175,14 @@ internal static class SvgDocumentTraversal
                     state.Gradient = null;
                     state.GradientStops.Clear();
                 }
+                if (reader.Depth == state.RadialGradientDepth)
+                {
+                    if (state.RadialGradientId is not null) SvgDefinitionParser.RegisterRadialGradient(state, workCounter, cancellationToken);
+                    state.RadialGradientDepth = -1;
+                    state.RadialGradientId = null;
+                    state.RadialGradient = null;
+                    state.GradientStops.Clear();
+                }
                 if (reader.Depth == state.PatternDepth)
                 {
                     if (state.PatternId is not null) SvgDefinitionParser.RegisterPattern(state, workCounter, cancellationToken);

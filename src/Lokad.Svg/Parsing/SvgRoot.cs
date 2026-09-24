@@ -37,7 +37,7 @@ internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double 
     }
 }
 
-internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill, GradientFill, GradientStroke, PolygonFill }
+internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill, GradientFill, GradientStroke, PolygonFill, RadialGradient }
 
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
 internal readonly struct SvgGeometry
@@ -49,6 +49,7 @@ internal readonly struct SvgGeometry
     private readonly SvgPatternGeometry? _pattern;
     private readonly SvgGradientGeometry? _gradient;
     private readonly SvgGradientStrokeGeometry? _gradientStroke;
+    private readonly SvgRadialGeometry? _radial;
     private readonly SvgPolygonFill? _polygon;
 
     private SvgGeometry(SvgGeometryKind kind, SvgRectangle rectangle)
@@ -60,6 +61,7 @@ internal readonly struct SvgGeometry
         _pattern = null;
         _gradient = null;
         _gradientStroke = null;
+        _radial = null;
         _polygon = null;
     }
 
@@ -72,6 +74,7 @@ internal readonly struct SvgGeometry
         _pattern = null;
         _gradient = null;
         _gradientStroke = null;
+        _radial = null;
         _polygon = null;
     }
 
@@ -85,6 +88,7 @@ internal readonly struct SvgGeometry
         _pattern = null;
         _gradient = null;
         _gradientStroke = null;
+        _radial = null;
         _polygon = null;
     }
 
@@ -98,6 +102,7 @@ internal readonly struct SvgGeometry
         _pattern = pattern;
         _gradient = null;
         _gradientStroke = null;
+        _radial = null;
         _polygon = null;
     }
 
@@ -111,6 +116,7 @@ internal readonly struct SvgGeometry
         _pattern = null;
         _gradient = gradient;
         _gradientStroke = null;
+        _radial = null;
         _polygon = null;
     }
 
@@ -127,6 +133,20 @@ internal readonly struct SvgGeometry
         _polygon = null;
     }
 
+    private SvgGeometry(SvgRadialGeometry radial)
+    {
+        ArgumentNullException.ThrowIfNull(radial);
+        _kind = SvgGeometryKind.RadialGradient;
+        _rectangle = default;
+        _axisAlignedLine = default;
+        _glyph = null;
+        _pattern = null;
+        _gradient = null;
+        _gradientStroke = null;
+        _radial = radial;
+        _polygon = null;
+    }
+
     private SvgGeometry(SvgPolygonFill polygon)
     {
         ArgumentNullException.ThrowIfNull(polygon);
@@ -137,6 +157,7 @@ internal readonly struct SvgGeometry
         _pattern = null;
         _gradient = null;
         _gradientStroke = null;
+        _radial = null;
         _polygon = polygon;
     }
 
@@ -171,6 +192,8 @@ internal readonly struct SvgGeometry
 
     internal static SvgGeometry FromGradientStroke(SvgGradientStrokeGeometry gradientStroke) => new(gradientStroke);
 
+    internal static SvgGeometry FromRadialFill(SvgRadialGeometry radial) => new(radial);
+
     internal static SvgGeometry FromPolygonFill(SvgPolygonFill polygon) => new(polygon);
 
     internal SvgGradientGeometry Gradient
@@ -188,6 +211,11 @@ internal readonly struct SvgGeometry
             ? _gradientStroke ?? throw new InvalidOperationException("This SVG geometry does not contain gradient stroke bands.")
             : throw new InvalidOperationException("This SVG geometry does not contain gradient stroke bands.");
 
+    internal SvgRadialGeometry Radial
+        => _kind == SvgGeometryKind.RadialGradient
+            ? _radial ?? throw new InvalidOperationException("This SVG geometry does not contain radial stops.")
+            : throw new InvalidOperationException("This SVG geometry does not contain radial stops.");
+
     internal SvgPolygonFill Polygon
         => _kind == SvgGeometryKind.PolygonFill
             ? _polygon ?? throw new InvalidOperationException("This SVG geometry does not contain polygon contours.")
@@ -200,6 +228,7 @@ internal readonly struct SvgGeometry
         if (_kind == SvgGeometryKind.GradientFill) _gradient?.Dispose();
         if (_kind == SvgGeometryKind.GradientStroke) _gradientStroke?.Dispose();
         if (_kind == SvgGeometryKind.PolygonFill) _polygon?.Dispose();
+        if (_kind == SvgGeometryKind.RadialGradient) _radial?.Dispose();
     }
 
     internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
@@ -453,6 +482,33 @@ internal sealed class SvgGradientGeometry : IDisposable
     }
 }
 
+/// <summary>Owns retained concentric radial-gradient stops with their bounding-box circle and fill region.</summary>
+internal sealed class SvgRadialGeometry : IDisposable
+{
+    internal SvgRadialGeometry(SvgRadialGradient Gradient, SvgRectangle Box, SvgRectangle Fill, byte Opacity, SvgStroke? Stroke)
+    {
+        this.Gradient = Gradient;
+        this.Box = Box;
+        this.Fill = Fill;
+        this.Opacity = Opacity;
+        this.Stroke = Stroke;
+    }
+
+    internal SvgRadialGradient Gradient { get; }
+
+    internal SvgRectangle Box { get; }
+
+    internal SvgRectangle Fill { get; }
+
+    internal byte Opacity { get; }
+
+    internal SvgStroke? Stroke { get; }
+
+    public void Dispose()
+    {
+    }
+}
+
 /// <summary>Retains one solid fill with four gradient-evaluated stroke bands.</summary>
 internal sealed class SvgGradientStrokeGeometry : IDisposable
 {
@@ -602,6 +658,7 @@ internal sealed class SvgSceneBuilder : IDisposable
         {
             SvgGeometryKind.GradientFill => geometry.Gradient.Gradient.Stops,
             SvgGeometryKind.GradientStroke => geometry.GradientStroke.Gradient.Stops,
+            SvgGeometryKind.RadialGradient => geometry.Radial.Gradient.Stops,
             _ => null,
         };
         if (stops is null || stops.Length == 0 || !_reservedStopArrays.Add(stops)) return;
