@@ -214,7 +214,7 @@ internal static class SvgDefinitionParser
             if (clipAttribute is null) return SvgClipPathSyntax.ResolveLeafClip(useReader, document);
             if (!document.ObjectClips.TryGetValue(SvgClipPathSyntax.ParseClipId(clipAttribute), out _)) return SvgClipPathSyntax.ResolveLeafClip(useReader, document);
             if (!document.Definitions.TryGetValue(useReference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on forward use references are not implemented.");
-            if (definition.SymbolViewBox is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on symbol instances are not implemented.");
+            if (definition.SymbolViewBox is SvgViewBox symbolBox) return ResolveSymbolUseClipFrame(useReader, useReference, document, definition, symbolBox);
             double left = double.PositiveInfinity;
             double top = double.PositiveInfinity;
             double right = double.NegativeInfinity;
@@ -230,6 +230,28 @@ internal static class SvgDefinitionParser
             }
             SvgRectangle instanceBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
             return SvgClipPathSyntax.ResolveLeafClipOrPlacement(useReader, document, document.EffectiveFrame, instanceBox);
+        }
+
+        static SvgViewportFrame? ResolveSymbolUseClipFrame(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document, SvgDefinition definition, SvgViewBox symbolBox)
+        {
+            if (useReference.Width is null || useReference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            foreach (SvgGeometry source in definition.Geometries)
+            {
+                SvgRectangle box = SvgMaskSyntax.BoundingBox(source);
+                SvgRectangle mapped = SvgReferenceResolver.MapSymbolBox(box, symbolBox, useReference.Width.Value, useReference.Height.Value);
+                SvgRectangle placed = useReference.Transform.Apply(new SvgRectangle(mapped.X + useReference.X, mapped.Y + useReference.Y, mapped.Width, mapped.Height, default, true, null));
+                left = Math.Min(left, placed.X);
+                top = Math.Min(top, placed.Y);
+                right = Math.Max(right, placed.X + placed.Width);
+                bottom = Math.Max(bottom, placed.Y + placed.Height);
+            }
+            SvgRectangle instanceBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
+            SvgClipBox viewport = useReference.Transform.Apply(new SvgClipBox(useReference.X, useReference.Y, useReference.Width.Value, useReference.Height.Value));
+            return SvgClipPathSyntax.ResolveLeafClipOrPlacement(useReader, document, document.EffectiveFrame, viewport.ClipRectangle(instanceBox));
         }
     }
 
