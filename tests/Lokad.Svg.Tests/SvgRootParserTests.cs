@@ -3782,6 +3782,18 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(2, root.Geometries.Length);
     }
+    [Fact]
+    public void Admits_masked_groups_with_forward_multi_geometry_uses()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#m)'><use href='#p'/></g><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Commands,
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128), command),
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255), command),
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 1, 255), command),
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255), command));
+        Assert.Equal(2, root.Geometries.Length);
+    }
 
     [Fact]
     public void Rejects_masked_groups_with_forward_uses_outside_mask_content()
