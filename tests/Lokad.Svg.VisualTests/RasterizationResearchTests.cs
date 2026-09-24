@@ -1327,6 +1327,8 @@ public sealed class RasterizationResearchTests
     private static readonly Point[] RedHalfGridOverlapTriangle = [new(1.28125, 1.15625), new(7.28125, 2.15625), new(2.28125, 7.15625)];
     private static readonly Point[] BlueHalfGridOverlapTriangle = [new(0.78125, 2.40625), new(6.78125, 1.40625), new(5.78125, 7.40625)];
     private static readonly Point[] ShallowApexTriangle = [new(4.40625, 1.40625), new(4.40625, 7.40625), new(0.40625, 2.40625)];
+    private static readonly Point[] Switch225Triangle = [new(0.53125, 2.15625), new(6.78125, 1.40625), new(5.78125, 7.40625)];
+    private static readonly Point[] Switch275Triangle = [new(1.03125, 2.65625), new(6.78125, 1.40625), new(5.78125, 7.40625)];
 
     [Fact]
     public void Analytic_blue_apex_triangle_records_its_partial_row_signature()
@@ -1363,6 +1365,44 @@ public sealed class RasterizationResearchTests
         Assert.Equal(0, comparison.MinimumMismatchX);
         Assert.Equal(1, comparison.MinimumMismatchY);
         Assert.Equal(4, comparison.MaximumMismatchX);
+        Assert.Equal(7, comparison.MaximumMismatchY);
+    }
+
+    [Fact]
+    public void Analytic_switch_225_triangle_records_its_partial_row_signature()
+    {
+        string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-switch-225-8x8.png");
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
+        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeAnalyticBlueTriangle(Switch225Triangle));
+
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(22, comparison.ChangedPixelCount);
+        Assert.Equal((byte)255, comparison.MaximumChannelError);
+        Assert.Equal((byte)24, comparison.MaximumAlphaError);
+        Assert.Equal(22, comparison.AlphaChangedPixelCount);
+        Assert.Equal(0, comparison.MinimumMismatchX);
+        Assert.Equal(1, comparison.MinimumMismatchY);
+        Assert.Equal(6, comparison.MaximumMismatchX);
+        Assert.Equal(7, comparison.MaximumMismatchY);
+    }
+
+    [Fact]
+    public void Analytic_switch_275_triangle_records_its_partial_row_signature()
+    {
+        string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-switch-275-8x8.png");
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
+        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeAnalyticBlueTriangle(Switch275Triangle));
+
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(21, comparison.ChangedPixelCount);
+        Assert.Equal((byte)255, comparison.MaximumChannelError);
+        Assert.Equal((byte)25, comparison.MaximumAlphaError);
+        Assert.Equal(21, comparison.AlphaChangedPixelCount);
+        Assert.Equal(1, comparison.MinimumMismatchX);
+        Assert.Equal(1, comparison.MinimumMismatchY);
+        Assert.Equal(6, comparison.MaximumMismatchX);
         Assert.Equal(7, comparison.MaximumMismatchY);
     }
 
