@@ -624,10 +624,20 @@ public static class SvgConverter
                 double verticalCoverage = Math.Clamp(Math.Min(areaBottom, y + 1) - Math.Max(areaTop, y), 0, 1);
                 double horizontalCoverage = Math.Clamp(Math.Min(areaRight, x + 1) - Math.Max(areaLeft, x), 0, 1);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
-                double normalizedX = (deviceX - box.X) / box.Width;
-                double normalizedY = (deviceY - box.Y) / box.Height;
-                double distanceX = normalizedX - definition.CenterX;
-                double distanceY = normalizedY - definition.CenterY;
+                double distanceX;
+                double distanceY;
+                if (definition.IsUserSpace)
+                {
+                    distanceX = deviceX - definition.CenterX;
+                    distanceY = deviceY - definition.CenterY;
+                }
+                else
+                {
+                    double normalizedX = (deviceX - box.X) / box.Width;
+                    double normalizedY = (deviceY - box.Y) / box.Height;
+                    distanceX = normalizedX - definition.CenterX;
+                    distanceY = normalizedY - definition.CenterY;
+                }
                 double position = Math.Sqrt(distanceX * distanceX + distanceY * distanceY) / definition.Radius;
                 if (position > 1) position = 1;
                 double dither = GradientDither[x & 7, y & 7] / 64d;
