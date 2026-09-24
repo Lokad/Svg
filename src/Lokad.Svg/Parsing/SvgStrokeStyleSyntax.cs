@@ -13,27 +13,28 @@ internal static class SvgStrokeStyleSyntax
         ValidateAttribute(localName, value, false);
     }
 
-    /// <summary>Validates one stroke style attribute value, admitting round caps and joins on kernel-stroked shapes.</summary>
-    internal static void ValidateAttribute(string localName, string value, bool allowRound)
+    /// <summary>Validates one stroke style attribute value, admitting round and square caps and round joins on kernel-stroked shapes.</summary>
+    internal static void ValidateAttribute(string localName, string value, bool allowNonButt)
     {
-        if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan(), allowRound);
-        else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan(), allowRound);
+        if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan(), allowNonButt);
+        else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan(), allowNonButt);
         else if (localName == "stroke-dasharray") ValidateDasharray(value.AsSpan());
         else if (localName == "stroke-dashoffset") ValidateDashoffset(value.AsSpan());
     }
 
-    private static void ValidateLinecap(ReadOnlySpan<char> value, bool allowRound)
+    private static void ValidateLinecap(ReadOnlySpan<char> value, bool allowNonButt)
     {
         if (value.Trim().Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        if (allowRound && value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, allowRound ? "Only butt and round stroke linecaps are implemented." : "Only butt stroke linecaps are implemented.");
+        if (allowNonButt && value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (allowNonButt && value.Trim().Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, allowNonButt ? "Only butt, round and square stroke linecaps are implemented." : "Only butt stroke linecaps are implemented.");
     }
 
-    private static void ValidateLinejoin(ReadOnlySpan<char> value, bool allowRound)
+    private static void ValidateLinejoin(ReadOnlySpan<char> value, bool allowNonButt)
     {
         if (value.Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        if (allowRound && value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, allowRound ? "Only miter and round stroke linejoins are implemented." : "Only miter stroke linejoins are implemented.");
+        if (allowNonButt && value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, allowNonButt ? "Only miter and round stroke linejoins are implemented." : "Only miter stroke linejoins are implemented.");
     }
 
     private static void ValidateDashoffset(ReadOnlySpan<char> value)
@@ -88,7 +89,8 @@ internal static class SvgStrokeStyleSyntax
         ReadOnlySpan<char> token = value.AsSpan().Trim();
         if (token.Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeCap.Butt;
         if (token.Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeCap.Round;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt and round stroke linecaps are implemented.");
+        if (token.Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase)) return SvgStrokeCap.Square;
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt, round and square stroke linecaps are implemented.");
     }
 
     /// <summary>Parses the corner join style, defaulting to miter like SVG.</summary>

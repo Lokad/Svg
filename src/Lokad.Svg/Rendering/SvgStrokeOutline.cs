@@ -1,6 +1,6 @@
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Expands device-space polylines into bounded stroke outlines with butt/round caps and miter/round joins.</summary>
+/// <summary>Expands device-space polylines into bounded stroke outlines with butt/round/square caps and miter/round joins.</summary>
 /// <remarks>
 /// <para>Joins miter within the caller limit and fall back to bevel, exactly the admitted miter-linejoin
 /// semantics including its limit; reversals always bevel. Round joins arc the outer side through a flatness-bounded
@@ -25,6 +25,9 @@ internal enum SvgStrokeCap
 
     /// <summary>Semicircular caps extending half a width past the end vertices.</summary>
     Round,
+
+    /// <summary>Flat caps extended half a width past the end vertices.</summary>
+    Square,
 }
 
 /// <summary>Selects the admitted corner join style for one stroke.</summary>
@@ -51,17 +54,24 @@ internal static class SvgStrokeOutline
         double halfWidth = width / 2;
         (double firstX, double firstY) = UnitDirection(points[first], points[SkipDegenerate(points, first + 1)]);
         (double lastX, double lastY) = UnitDirection(points[SkipDegenerateBackward(points, last - 1)], points[last]);
-        builder.BeginContour(OffsetPoint(points[first], (firstX, firstY), halfWidth));
+        SvgDevicePoint firstTip = points[first];
+        SvgDevicePoint lastTip = points[last];
+        if (cap == SvgStrokeCap.Square)
+        {
+            firstTip = new SvgDevicePoint(RequireFinite(points[first].X - firstX * halfWidth), RequireFinite(points[first].Y - firstY * halfWidth));
+            lastTip = new SvgDevicePoint(RequireFinite(points[last].X + lastX * halfWidth), RequireFinite(points[last].Y + lastY * halfWidth));
+        }
+        builder.BeginContour(OffsetPoint(firstTip, (firstX, firstY), halfWidth));
         EmitForwardChain(builder, points, first, last, halfWidth, miterLimit, join, cancellationToken);
         if (cap == SvgStrokeCap.Round) EmitArcFan(builder, points[last], halfWidth, (-lastY, lastX), (lastX, lastY), (lastY, -lastX), cancellationToken);
         else
         {
-            builder.AddLine(OffsetPoint(points[last], (lastX, lastY), halfWidth));
-            builder.AddLine(OffsetPoint(points[last], (lastX, lastY), -halfWidth));
+            builder.AddLine(OffsetPoint(lastTip, (lastX, lastY), halfWidth));
+            builder.AddLine(OffsetPoint(lastTip, (lastX, lastY), -halfWidth));
         }
         EmitBackwardChain(builder, points, first, last, halfWidth, miterLimit, join, cancellationToken);
         if (cap == SvgStrokeCap.Round) EmitArcFan(builder, points[first], halfWidth, (firstY, -firstX), (-firstX, -firstY), (-firstY, firstX), cancellationToken);
-        else builder.AddLine(OffsetPoint(points[first], (-firstX, -firstY), halfWidth));
+        else builder.AddLine(OffsetPoint(firstTip, (-firstX, -firstY), halfWidth));
         builder.EndContour();
     }
 

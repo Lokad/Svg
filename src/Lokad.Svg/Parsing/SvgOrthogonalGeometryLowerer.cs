@@ -418,7 +418,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
 
         long wantedPoints = 4L * mapped.Count + 8;
-        if (cap != SvgStrokeCap.Butt || join != SvgStrokeJoin.Miter)
+        if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join != SvgStrokeJoin.Miter)
         {
             int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
             try { wantedPoints = checked(4L * mapped.Count * (fanSegments + 1) + 32); }
@@ -444,7 +444,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (source.PointCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path stroke point count exceeds the configured path-command limit." : _elementName + " stroke point count exceeds the configured path-command limit.");
         double deviceWidth = StrokeDeviceWidth(width, transform, frame);
         long wantedPoints = 4L * source.PointCount + 8;
-        if (cap != SvgStrokeCap.Butt || join != SvgStrokeJoin.Miter)
+        if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join != SvgStrokeJoin.Miter)
         {
             int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
             try { wantedPoints = checked(4L * source.PointCount * (fanSegments + 1) + 32); }

@@ -17,6 +17,18 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    public void Horizontal_band_has_square_caps()
+    {
+        SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
+        SvgContourBuilder builder = new(16, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(line, 2, 4, SvgStrokeCap.Square, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+
+        Assert.Equal(1, builder.ContourCount);
+        Assert.Equal([new SvgDevicePoint(-1, 1), new SvgDevicePoint(9, 1), new SvgDevicePoint(9, -1), new SvgDevicePoint(-1, -1)], builder.GetContour(0).ToArray());
+    }
+
+    [Fact]
     public void Vertical_band_has_butt_caps()
     {
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(0, 8)];
