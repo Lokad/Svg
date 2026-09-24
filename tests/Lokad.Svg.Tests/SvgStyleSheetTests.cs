@@ -172,21 +172,19 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
     [Theory]
-    [InlineData(false, false, false)]
-    [InlineData(true, false, true)]
-    [InlineData(false, true, true)]
-    [InlineData(true, true, true)]
-    public void Rejects_a_late_root_stylesheet(bool sawStyleableNode, bool hasStyleSheet, bool throws)
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    public void Rejects_a_late_root_stylesheet(bool sawStyleableNode, bool throws)
     {
         if (throws)
         {
-            SvgException exception = Assert.Throws<SvgException>(() => SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode, hasStyleSheet));
+            SvgException exception = Assert.Throws<SvgException>(() => SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode));
 
             Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         }
         else
         {
-            SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode, hasStyleSheet);
+            SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode);
         }
     }
 

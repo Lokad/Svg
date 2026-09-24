@@ -1019,6 +1019,29 @@ public sealed class SvgRootParserTests
             rectangle => Assert.Equal(new SvgColor(0, 255, 0, 64), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(255, 255, 0, 128), rectangle.Color));
     }
+    [Fact]
+    public void Later_stylesheets_win_at_equal_specificity()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>rect { fill: red; }</style><style>rect { fill: blue; }</style><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(0, 0, 255, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Stylesheet_specificity_beats_later_source_order()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#r { fill: red; }</style><style>rect { fill: blue; }</style><rect id='r' width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Rejects_stylesheets_after_styleable_content()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1'/><style>rect { fill: red; }</style></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
 
     [Fact]
     public void Matches_class_selectors_without_materializing_class_tokens()

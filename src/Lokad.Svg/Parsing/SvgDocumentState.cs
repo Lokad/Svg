@@ -89,8 +89,6 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal bool SawStyleableNode { get; set; }
 
-    internal bool HasStyleSheet { get; set; }
-
     internal int DefinitionsDepth { get; set; } = -1;
 
     internal int SymbolDepth { get; set; } = -1;

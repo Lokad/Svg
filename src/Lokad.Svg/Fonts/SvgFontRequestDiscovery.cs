@@ -59,7 +59,6 @@ internal static class SvgFontRequestDiscovery
             bool hasRoot = false;
             int rootDepth = -1;
             string? rootId = null;
-            bool hasStyleSheet = false;
             bool sawStyleableNode = false;
             bool hasUnsupportedContent = false;
             int nodeCount = 0;
@@ -130,12 +129,11 @@ internal static class SvgFontRequestDiscovery
                     bool rootStyleElement = isSvgElement && reader.LocalName == "style" && directChild;
                     if (rootStyleElement)
                     {
-                        SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode, hasStyleSheet);
+                        SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode);
                         SvgRootStyleSheetParser.ThrowIfAttributed(reader);
                         using OwnedStyleSheetText styleText = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken);
                         SvgStyleSheet.Parse(styleText.Value, limits.MaximumNodes, styleRules, styleStrings, budget, workCounter, cancellationToken);
                         if (SvgStyleSheet.TargetsRootId(rootId, styleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
-                        hasStyleSheet = true;
                     }
                     if (rootStyleElement) continue;
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && (directChild || hasGroupAncestor) && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
