@@ -517,6 +517,9 @@ internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int Geom
 
 internal readonly record struct SvgPoint(int X, int Y);
 
+/// <summary>Retains one user-space fractional point-list vertex before device mapping.</summary>
+internal readonly record struct SvgFractionalPoint(double X, double Y);
+
 internal sealed class SvgSceneStorage : IDisposable
 {
     private readonly RenderBudget.BudgetReservation? _geometryReservation;

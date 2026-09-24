@@ -305,6 +305,61 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
     }
 
+    /// <summary>Lowers user-space fractional point-list vertices through the device map into one polygon fill.</summary>
+    internal SvgParsedGeometry LowerFractionalPointList(BudgetedParserList<SvgFractionalPoint> points, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(budget);
+        if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " vertex count exceeds the configured path-command limit.");
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        SvgFractionalPoint previous = default;
+        SvgFractionalPoint first = default;
+        bool hasKept = false;
+        for (int index = 0; index < points.Count; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            SvgFractionalPoint vertex = points[index];
+            if (hasKept && previous == vertex) continue;
+            if (hasKept && vertex == first && index == points.Count - 1) continue;
+            if (!hasKept) first = vertex;
+            previous = vertex;
+            hasKept = true;
+            mapped.Add(deviceMap.Apply(vertex.X, vertex.Y));
+        }
+
+        if (mapped.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + _elementName + " contours are implemented.");
+        int[] ends = [mapped.Count];
+        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
+    }
+
+    /// <summary>Strokes user-space fractional point-list vertices through device-space contours with butt caps and miter joins.</summary>
+    internal SvgParsedGeometry LowerStrokePointList(BudgetedParserList<SvgFractionalPoint> points, bool closed, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(budget);
+        if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " stroke point count exceeds the configured path-command limit.");
+        if (points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + _elementName + " contours are implemented.");
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame);
+        int pointCapacity = points.Count + 1 > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : points.Count + 1;
+        long scratchBytes;
+        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1)); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
+        using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
+        SvgContourBuilder builder = new(pointCapacity, 1);
+        builder.BeginContour(deviceMap.Apply(points[0].X, points[0].Y));
+        for (int index = 1; index < points.Count; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            builder.AddLine(deviceMap.Apply(points[index].X, points[index].Y));
+        }
+
+        builder.EndContour();
+        bool[] closedEnds = [closed];
+        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds, false, element.Transform, width, miterLimit, color, hasFill, frame, budget);
+        return stroked with { ElementCount = points.Count + 1 };
+    }
+
     /// <summary>Strokes one integer point contour with butt caps and miter joins into one nonzero outline fill.</summary>
     internal SvgParsedGeometry LowerStrokePolyline(BudgetedParserList<SvgPoint> points, bool closed, AxisTransform transform, int width, double miterLimit, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {

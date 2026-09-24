@@ -1,3 +1,4 @@
+using System.Globalization;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -173,6 +174,42 @@ internal static class SvgOrthogonalGeometryTokenizer
             points.Dispose();
             throw;
         }
+    }
+
+    internal static BudgetedParserList<SvgFractionalPoint> ParseFractionalPointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ValidatePointListVertexCount(value, maximumGeometryElements, workCounter, cancellationToken);
+        BudgetedParserList<SvgFractionalPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+        try
+        {
+            DelimitedTokenReader values = new(value, workCounter, cancellationToken);
+            int vertexCount = 0;
+            while (values.TryReadValue(out ReadOnlySpan<char> x))
+            {
+                if ((vertexCount & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                if (!values.TryReadValue(out ReadOnlySpan<char> y)) throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points must pair every x coordinate with a y coordinate.");
+                if (vertexCount >= maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, elementName + " vertex count exceeds the configured path-command limit.");
+                points.Add(new SvgFractionalPoint(ParseFractionalCoordinate(x, elementName), ParseFractionalCoordinate(y, elementName)));
+                vertexCount++;
+            }
+            if (points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + elementName + " contours are implemented.");
+            return points;
+        }
+        catch
+        {
+            points.Dispose();
+            throw;
+        }
+    }
+
+    private static double ParseFractionalCoordinate(ReadOnlySpan<char> value, string elementName)
+    {
+        ReadOnlySpan<char> token = value.Trim();
+        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, elementName + " point values exceed the configured syntax limit.");
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.MalformedInput, elementName + " point coordinates must be finite numbers.");
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.MalformedInput, elementName + " point coordinates must be finite numbers.");
+        return result;
     }
 
     private static void ValidatePathCommandCount(string value, int maximumGeometryElements, ParserWorkCounter workCounter, CancellationToken cancellationToken)

@@ -123,11 +123,32 @@ internal static class SvgOrthogonalShapeParser
             return SvgGradientSyntax.LowerGradientBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
         }
         string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
+        SvgResolvedPaintableElement shape;
+        SvgParsedGeometry filled;
+        bool hasFractional = pointsValue.Contains('.') || pointsValue.Contains('e') || pointsValue.Contains('E');
+        if (hasFractional)
+        {
+            shape = context.ResolveShape(style, reader, true);
+            bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+            using BudgetedParserList<SvgFractionalPoint> fractionalPoints = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noFractionEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering fractionalLowering = new(noFractionPoints, noFractionEnds, elementName, false, fractionalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            filled = fractionalLowering.LowerFractionalPointList(fractionalPoints, SvgPolygonMapping.FiniteEdges, shape, frame, budget) with { ElementCount = fractionalPoints.Count + 1 };
+            SvgStrokeStyleSyntax.SvgAdmittedStroke? fractionalStroke;
+            SvgParsedGeometry fractionalStroked;
+            try
+            {
+                fractionalStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, shape, elementName);
+                if (fractionalStroke is null) return filled;
+                fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", shape, fractionalStroke.Value.Color, shape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, frame, budget);
+            }
+            catch { filled.Dispose(); throw; }
+            return ConcatParsedGeometries(filled, fractionalStroked, budget, context.WorkCounter, context.CancellationToken);
+        }
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         contourEnds.Add(points.Count);
-        SvgResolvedPaintableElement shape;
-        SvgParsedGeometry filled;
         if (HasDiagonalContour(points, contourEnds))
         {
             shape = context.ResolveShape(style, reader, true);
