@@ -1533,7 +1533,6 @@ public sealed class SvgRootParserTests
 
     [Theory]
     [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' stroke='red' stroke-width='2'/>")]
-    [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' fill-opacity='0.5'/>")]
     [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' stroke='url(#g)' stroke-width='2'/>")]
     [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#h)'/>")]
     [InlineData("<g fill='url(#g)'><path d='M1,1 H7 V3 H3 V7 H1 Z'/></g>")]
@@ -1596,13 +1595,93 @@ public sealed class SvgRootParserTests
 
     [Theory]
     [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)' stroke='red' stroke-width='2'/>")]
-    [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)' fill-opacity='0.5'/>")]
     [InlineData("<path d='M1,1 H7 V7 H1 Z' fill='url(#p)' transform='translate(8,0) scale(-1,1)'/>")]
     public void Rejects_unsupported_pattern_path_forms(string body)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+    [Fact]
+    public void Renders_gradient_fill_opacity_identical_to_opacity()
+    {
+        byte[] faded = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' fill-opacity='0.5'/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' opacity='0.5'/></svg>");
+
+        ReadOnlyMemory<byte> fadedPng = SvgConverter.ConvertToPng(faded, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(fadedPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Fact]
+    public void Multiplies_element_opacity_with_gradient_fill_opacity()
+    {
+        byte[] layered = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' opacity='0.5' fill-opacity='0.5'/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' opacity='0.25'/></svg>");
+
+        ReadOnlyMemory<byte> layeredPng = SvgConverter.ConvertToPng(layered, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(layeredPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Fact]
+    public void Renders_gradient_path_fill_opacity_identical_to_opacity()
+    {
+        byte[] faded = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' fill-opacity='0.5'/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' opacity='0.5'/></svg>");
+
+        ReadOnlyMemory<byte> fadedPng = SvgConverter.ConvertToPng(faded, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(fadedPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Fact]
+    public void Renders_pattern_path_fill_opacity_identical_to_opacity()
+    {
+        byte[] faded = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)' fill-opacity='0.5'/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)' opacity='0.5'/></svg>");
+
+        ReadOnlyMemory<byte> fadedPng = SvgConverter.ConvertToPng(faded, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(fadedPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Fact]
+    public void Renders_pattern_rect_fill_opacity_identical_to_opacity()
+    {
+        byte[] faded = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p)' fill-opacity='0.5'/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p)' opacity='0.5'/></svg>");
+
+        ReadOnlyMemory<byte> fadedPng = SvgConverter.ConvertToPng(faded, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(fadedPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Fact]
+    public void Keeps_solid_stroke_opacity_outside_gradient_fill_opacity()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='url(#g)' fill-opacity='0.5' stroke='green' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(128, geometry.Gradient.Opacity);
+        Assert.Equal(new SvgColor(0, 128, 0, 255), geometry.Gradient.Stroke.GetValueOrDefault().Color);
+    }
+
+    [Fact]
+    public void Keeps_solid_stroke_opacity_outside_pattern_fill_opacity()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><rect x='1' y='1' width='6' height='6' fill='url(#p)' fill-opacity='0.5' stroke='green' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
+        Assert.Equal(128, geometry.Pattern.Opacity);
+        Assert.Equal(new SvgColor(0, 128, 0, 255), geometry.Pattern.Stroke.GetValueOrDefault().Color);
     }
 
     [Fact]

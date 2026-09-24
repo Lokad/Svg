@@ -815,7 +815,7 @@ evaluation; both gradients together should not require a new geometry variant.
 Exit: independent coordinate/stop expectations and exact size/phase/color/alpha
 oracle families, including diagonal ramps under nonuniform/rotated transforms,
 clipped/instanced shapes and combined gradient fills/strokes. Validate dithering/
-interpolation across unseen colors/slopes, not just a four-pixel red-blue ramp.
+interpolation across unseen colors/slopes, not just a four-pixel red-blue ramp. Status 2026-09-24: fill opacity composes onto gradient and pattern fills while solid strokes keep element opacity (7 end-to-end tests with opacity-transitive equivalence).
 
 ### S14 — Clips, masks, groups and operation order
 
