@@ -401,7 +401,7 @@ general-path slice. This does not reopen the broader tooling backlog as a gate.
    observations; source revision alone does not prove the executed backend.
    Record the hypothesis before implementation and its complete result afterward.
    Resolve the R24/R27 alpha cases here with general rules, not fixture-specific
-   branches. A mechanism that fails the hold-out is not an admission candidate.
+   branches. A mechanism that fails the hold-out is not an admission candidate. Status 2026-09-24: the hold-out gains two apex partial-row probes (diagonal-blue-apex-8x8 promotes the blue-alone residual configuration to retained evidence; diagonal-shallow-apex-8x8 isolates a two-edge fractional apex); both show the same directional analytic-deviation family with repeated +19/+11 absolute left-edge offsets. The exact replica remainder is still open; the diagonal gate stays held.
 2. **First non-orthogonal end-to-end slice.** Typed contour buffer + full affine
    mapping + solid fill + bounded coverage for a diagonal closed polygon.
    Separate geometry expectations from oracle coverage; include rotations,

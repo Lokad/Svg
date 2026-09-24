@@ -615,6 +615,23 @@ public sealed class RasterizationResearchTests
         return new RgbaImage(8, 8, pixels);
     }
 
+    private static RgbaImage RasterizeAnalyticBlueTriangle(ReadOnlySpan<Point> triangle)
+    {
+        byte[] pixels = new byte[8 * 8 * 4];
+        for (int y = 0; y < 8; y++)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                byte alpha = (byte)Math.Round(Area(ClipToPixel(triangle, x, y)) * 255, MidpointRounding.AwayFromZero);
+                if (alpha == 0) continue;
+                int offset = (y * 8 + x) * 4;
+                pixels[offset + 2] = 255;
+                pixels[offset + 3] = alpha;
+            }
+        }
+        return new RgbaImage(8, 8, pixels);
+    }
+
     private static RgbaImage RasterizeAnalyticDiagonalOverlap()
     {
         byte[] pixels = new byte[8 * 8 * 4];
@@ -1309,6 +1326,45 @@ public sealed class RasterizationResearchTests
     private static readonly Point[] BlueOverlapTriangle = [new(0.75, 2.375), new(6.75, 1.375), new(5.75, 7.375)];
     private static readonly Point[] RedHalfGridOverlapTriangle = [new(1.28125, 1.15625), new(7.28125, 2.15625), new(2.28125, 7.15625)];
     private static readonly Point[] BlueHalfGridOverlapTriangle = [new(0.78125, 2.40625), new(6.78125, 1.40625), new(5.78125, 7.40625)];
+    private static readonly Point[] ShallowApexTriangle = [new(4.40625, 1.40625), new(4.40625, 7.40625), new(0.40625, 2.40625)];
+
+    [Fact]
+    public void Analytic_blue_apex_triangle_records_its_partial_row_signature()
+    {
+        string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-blue-apex-8x8.png");
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
+        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeAnalyticBlueTriangle(BlueHalfGridOverlapTriangle));
+
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(22, comparison.ChangedPixelCount);
+        Assert.Equal((byte)255, comparison.MaximumChannelError);
+        Assert.Equal((byte)24, comparison.MaximumAlphaError);
+        Assert.Equal(22, comparison.AlphaChangedPixelCount);
+        Assert.Equal(0, comparison.MinimumMismatchX);
+        Assert.Equal(1, comparison.MinimumMismatchY);
+        Assert.Equal(6, comparison.MaximumMismatchX);
+        Assert.Equal(7, comparison.MaximumMismatchY);
+    }
+
+    [Fact]
+    public void Analytic_shallow_apex_triangle_records_its_partial_row_signature()
+    {
+        string referencePath = Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-shallow-apex-8x8.png");
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(referencePath), 64);
+        PixelComparison comparison = PixelComparer.Compare(reference, RasterizeAnalyticBlueTriangle(ShallowApexTriangle));
+
+        Assert.True(comparison.DimensionsMatch);
+        Assert.False(comparison.IsExact);
+        Assert.Equal(19, comparison.ChangedPixelCount);
+        Assert.Equal((byte)26, comparison.MaximumChannelError);
+        Assert.Equal((byte)26, comparison.MaximumAlphaError);
+        Assert.Equal(19, comparison.AlphaChangedPixelCount);
+        Assert.Equal(0, comparison.MinimumMismatchX);
+        Assert.Equal(1, comparison.MinimumMismatchY);
+        Assert.Equal(4, comparison.MaximumMismatchX);
+        Assert.Equal(7, comparison.MaximumMismatchY);
+    }
 
     private enum EdgeRounding { Floor, Nearest, Ceiling }
 
