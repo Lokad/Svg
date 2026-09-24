@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-quadratic-mark",
+  "referencePng": "original-logo-quadratic-mark.png",
+  "referenceSha256": "68ad3e9f96adf3d234c041579b30987acf14c6222505dec35cf77956bd29808e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "7e741382ad27c162376e253b6c5667df63a1bda0449bd3cc06f275f9be44558b",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 77,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 14,
+    "exact": false
+  },
+  "admittedAt": "2026-09-24"
+}

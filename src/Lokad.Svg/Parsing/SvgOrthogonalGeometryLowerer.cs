@@ -177,25 +177,98 @@ internal ref struct SvgOrthogonalGeometryLowering
             contourStart = contourEnd;
         }
 
+        return FinishPolygonFill(mapped, ends, color, hasFill, false, frame, budget);
+
+        static SvgDevicePoint ShiftVertex(SvgViewportFrame? viewport, double x, double y)
+            => viewport is null ? new SvgDevicePoint(x, y) : new SvgDevicePoint(x * viewport.Value.ScaleX + viewport.Value.OffsetX, y * viewport.Value.ScaleY + viewport.Value.OffsetY);
+    }
+
+    /// <summary>Lowers integer-coordinate curved path data through affine flattening into one polygon fill.</summary>
+    internal SvgParsedGeometry LowerCurveFill(string d, int commandCount, bool hasArc, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path curve command count exceeds the configured path-command limit.");
+        double frameScaleX = frame?.ScaleX ?? 1;
+        double frameScaleY = frame?.ScaleY ?? 1;
+        double frameOffsetX = frame?.OffsetX ?? 0;
+        double frameOffsetY = frame?.OffsetY ?? 0;
+        if (!double.IsFinite(frameScaleX) || !double.IsFinite(frameScaleY) || !double.IsFinite(frameOffsetX) || !double.IsFinite(frameOffsetY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport mapping exceeds the admitted numeric range.");
+        AxisTransform transform = element.Transform;
+        double scaleX = transform.ScaleX * frameScaleX;
+        double scaleY = transform.ScaleY * frameScaleY;
+        if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
+        const int FlattenSegmentsPerCommand = 1024;
+        const int MaximumFlattenedContourPoints = 65536;
+        SvgFlattenPolicy flattenPolicy = new(0.25, 64, FlattenSegmentsPerCommand);
+        long wantedPoints = (long)_maximumGeometryElements * (FlattenSegmentsPerCommand + 1);
+        int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
+        int contourCapacity = pointCapacity < _maximumGeometryElements ? pointCapacity : _maximumGeometryElements;
+        long scratchBytes;
+        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported expansion range."); }
+        using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
+        SvgContourBuilder builder = new(pointCapacity, contourCapacity);
+        SvgAffineTransform deviceMap = SvgAffineTransform.FromMatrix(frameScaleX, 0, 0, frameScaleY, frameOffsetX, frameOffsetY).Compose(SvgAffineTransform.FromMatrix(transform.ScaleX, 0, 0, transform.ScaleY, transform.OffsetX, transform.OffsetY));
+        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        int[] ends = new int[builder.ContourCount];
+        for (int contour = 0; contour < builder.ContourCount; contour++)
+        {
+            ReadOnlySpan<SvgDevicePoint> source = builder.GetContour(contour);
+            SvgDevicePoint previous = default;
+            SvgDevicePoint first = default;
+            bool hasKept = false;
+            int keptBefore = mapped.Count;
+            for (int index = 0; index < source.Length; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                SvgDevicePoint vertex = source[index];
+                if (hasKept && previous == vertex) continue;
+                if (hasKept && vertex == first && index == source.Length - 1) continue;
+                if (!hasKept) first = vertex;
+                previous = vertex;
+                hasKept = true;
+                mapped.Add(vertex);
+            }
+
+            if (mapped.Count - keptBefore < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer path contours are implemented.");
+            ends[contour] = mapped.Count;
+        }
+
+        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, true, frame, budget);
+    }
+
+    /// <summary>Validates separated device contours once and retains one polygon fill with scene-owned storage.</summary>
+    private SvgParsedGeometry FinishPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgColor color, bool hasFill, bool hasCurves, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(mapped);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(budget);
         SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
+        foreach (SvgDevicePoint vertex in retained)
+        {
+            if (!double.IsFinite(vertex.X) || !double.IsFinite(vertex.Y) || Math.Abs(vertex.X) > int.MaxValue || Math.Abs(vertex.Y) > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill coordinates exceed the admitted numeric range.");
+        }
+
+        ChargePairs(_workCounter, (long)retained.Length * (retained.Length - 1) / 2, _cancellationToken);
         if (SvgContourStructure.ClassifySet(retained, ends, _cancellationToken) != SvgContourFlags.None) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
         int[]? signs = null;
         if (_isEvenOdd)
         {
             signs = new int[ends.Length];
-            for (int outer = 0; outer < ends.Length; outer++)
-                for (int inner = outer + 1; inner < ends.Length; inner++)
-                    _workCounter.Consume(_cancellationToken);
+            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
             SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
         }
 
-        SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, _isEvenOdd, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, _isEvenOdd, hasCurves, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
         _geometries.Add(SvgGeometry.FromPolygonFill(fill));
         _geometryElementCount++;
         return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
 
-        static SvgDevicePoint ShiftVertex(SvgViewportFrame? viewport, double x, double y)
-            => viewport is null ? new SvgDevicePoint(x, y) : new SvgDevicePoint(x * viewport.Value.ScaleX + viewport.Value.OffsetX, y * viewport.Value.ScaleY + viewport.Value.OffsetY);
+        static void ChargePairs(ParserWorkCounter workCounter, long pairs, CancellationToken cancellationToken)
+        {
+            for (long charged = 0; charged < pairs; charged += ParserWorkCounter.ByteCheckpointSize) workCounter.Consume(cancellationToken);
+        }
     }
 
     public void Dispose()

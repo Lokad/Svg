@@ -15,6 +15,19 @@ internal static class SvgOrthogonalShapeParser
             return SvgGradientSyntax.LowerGradientBands(reader, context, style, state, "path", true, maximumGeometryElements, budget, frame);
         }
         string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
+        (int commandCount, bool hasCurve, bool hasArc) = ScanPathCommands(d, context.WorkCounter, context.CancellationToken);
+        if (hasCurve)
+        {
+            if (d.Contains('.') || d.Contains('e') || d.Contains('E')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer path coordinates are implemented; fractional and scientific notation stay unsupported.");
+            SvgResolvedPaintableElement curveElement = context.ResolveShape(style, reader, false);
+            bool curveEvenOdd = curveElement.Style.FillRule is not null && curveElement.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+            using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, "path", true, curveEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            SvgParsedGeometry curved = curveLowering.LowerCurveFill(d, commandCount, hasArc, curveElement, frame, budget);
+            return curved with { ElementCount = commandCount + 1 };
+        }
+
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds);
         if (HasDiagonalContour(points, contourEnds))
@@ -30,6 +43,23 @@ internal static class SvgOrthogonalShapeParser
         bool isEvenOdd = element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
         using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         return lowering.Lower(element.Presentation.Color, element.Presentation.HasFill, element.Transform, frame);
+
+        static (int CommandCount, bool HasCurve, bool HasArc) ScanPathCommands(string value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            int commands = 0;
+            bool curve = false;
+            bool arc = false;
+            for (int index = 0; index < value.Length; index++)
+            {
+                if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
+                char letter = value[index];
+                if (letter is 'A' or 'a') { arc = true; curve = true; commands++; }
+                else if (letter is 'C' or 'c' or 'S' or 's' or 'Q' or 'q' or 'T' or 't') { curve = true; commands++; }
+                else if (letter is 'M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z') commands++;
+            }
+
+            return (commands, curve, arc);
+        }
     }
 
     internal static BudgetedParserList<SvgPoint> TokenizeBands(XmlReader reader, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgPaintableElementContext context, BudgetedParserList<int> contourEnds)

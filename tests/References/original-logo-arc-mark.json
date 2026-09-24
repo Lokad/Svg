@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-arc-mark",
+  "referencePng": "original-logo-arc-mark.png",
+  "referenceSha256": "971bd248e3230fe78d8bc55adb775781a04efd74b3f5a20151ad0b962eaad7aa",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "694c44877611a4ee1984084e652f3d2dd0d88ce4cfc2edade9d122b35df53070",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 88,
+    "maximumChannelError": 27,
+    "maximumAlphaError": 27,
+    "exact": false
+  },
+  "admittedAt": "2026-09-24"
+}

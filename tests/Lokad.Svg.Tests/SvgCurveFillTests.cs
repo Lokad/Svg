@@ -1,0 +1,172 @@
+using System.Buffers.Binary;
+using System.IO.Compression;
+
+namespace Lokad.Svg.Tests;
+
+public sealed class SvgCurveFillTests
+{
+    [Fact]
+    public void Quadratic_arch_fills_below_curve()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 Q4,-8 8,8 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 7));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 7));
+        Assert.Equal(Pixel(pixels, 8, 1, 7), Pixel(pixels, 8, 6, 7));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 0));
+    }
+
+    [Fact]
+    public void Implicit_close_matches_explicit_close()
+    {
+        byte[] closed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 Q4,-8 8,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] open = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 Q4,-8 8,8' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(closed, open);
+    }
+
+    [Fact]
+    public void Cubic_smooth_command_renders()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 S4,0 8,8 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 7));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 0));
+    }
+
+    [Fact]
+    public void Twin_arc_full_circle_renders()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 A8,8 0 1 1 16,8 A8,8 0 1 1 0,8 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 8, 8));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 8, 12));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 0, 0));
+    }
+
+    [Fact]
+    public void Arc_under_anisotropic_transform_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><g transform='scale(2,1)'><path d='M0,4 A4,4 0 1 1 8,4 A4,4 0 1 1 0,4 Z' fill='red'/></g></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4.5,0 8,8 Z' fill='red'/></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q10,0 1e2,8 Z' fill='red'/></svg>")]
+    public void Non_integer_curve_coordinates_stay_unsupported(string svg)
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only integer path coordinates are implemented", rejected.Message);
+    }
+
+    [Fact]
+    public void Curve_under_nonuniform_output_mapping_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("non-uniform viewBox or output scaling", rejected.Message);
+    }
+
+    [Fact]
+    public void Straight_triangle_renders_under_nonuniform_output_mapping()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(8, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 8, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 15, 7));
+    }
+
+    [Fact]
+    public void Degenerate_curve_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C0,0 0,0 0,0 Z' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Curve_command_count_exceeds_small_limit()
+    {
+        SvgRenderLimits limits = new(268435456, 16777216, 16384, 16777216, 134217728, 100000, 3, 100000000);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits, null);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q1,0 2,2 Q3,3 4,4 Z' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Flattened_expansion_beyond_capacity_stays_bounded()
+    {
+        SvgRenderLimits limits = new(268435456, 16777216, 16384, 16777216, 134217728, 100000, 3000, 100000000);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits, null);
+        string d = string.Join(" ", Enumerable.Repeat("M0,0 C4000,0 4000,4000 0,4000", 1000));
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='" + d + "' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, rejected.ErrorCode);
+    }
+
+    private static byte[] RenderPixels(string svg, out int width, out int height)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None);
+        return DecodeRgba(png, out width, out height);
+    }
+
+    private static byte[] DecodeRgba(ReadOnlyMemory<byte> png, out int width, out int height)
+    {
+        width = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(16, 4));
+        height = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(20, 4));
+        using MemoryStream compressed = new();
+        for (int offset = 8; offset < png.Length;)
+        {
+            int length = BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(offset, 4));
+            if (png.Span.Slice(offset + 4, 4).SequenceEqual("IDAT"u8)) compressed.Write(png.Span.Slice(offset + 8, length));
+            offset += length + 12;
+        }
+
+        compressed.Position = 0;
+        using ZLibStream zlib = new(compressed, CompressionMode.Decompress);
+        byte[] raw = new byte[checked((width * 4 + 1) * height)];
+        zlib.ReadExactly(raw);
+        byte[] pixels = new byte[checked(width * 4 * height)];
+        for (int y = 0; y < height; y++)
+        {
+            if (raw[y * (width * 4 + 1)] != 0) throw new InvalidDataException("Test PNG decoder expects an unfiltered scanline.");
+            raw.AsSpan(y * (width * 4 + 1) + 1, width * 4).CopyTo(pixels.AsSpan(y * width * 4, width * 4));
+        }
+
+        return pixels;
+    }
+
+    private static SvgColor Pixel(byte[] pixels, int width, int x, int y)
+    {
+        int offset = (y * width + x) * 4;
+        return new SvgColor(pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]);
+    }
+
+    private static long AlphaSum(byte[] pixels)
+    {
+        long total = 0;
+        for (int index = 3; index < pixels.Length; index += 4) total += pixels[index];
+        return total;
+    }
+}

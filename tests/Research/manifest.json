@@ -232,6 +232,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 14,
+      "maximumChannelError": 15,
+      "maximumAlphaError": 15,
+      "alphaChangedPixelCount": 14,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 2,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 6
+    },
       "oracle": {
         "referencePng": "references/cubic-arch-8x8.png",
         "referenceSha256": "85a99a3939c0928043bd96d829b30b012facf19f25be414ae7cde0b192d2a5fc",

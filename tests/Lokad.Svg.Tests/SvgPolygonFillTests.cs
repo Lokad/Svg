@@ -13,7 +13,7 @@ public sealed class SvgPolygonFillTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] ends = [3];
         RenderBudget budget = new(long.MaxValue);
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, false, null, budget);
 
         SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
 
@@ -24,6 +24,7 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
         Assert.True(geometry.Polygon.HasFill);
         Assert.False(geometry.Polygon.IsEvenOdd);
+        Assert.False(geometry.Polygon.HasCurves);
         Assert.Null(geometry.Polygon.Clip);
         Assert.Throws<InvalidOperationException>(() => _ = SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null)).Polygon);
         Assert.Throws<InvalidOperationException>(() => _ = default(SvgGeometry).Polygon);
