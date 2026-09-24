@@ -199,7 +199,7 @@ internal static class SvgDefinitionParser
     {
         workCounter.Consume(cancellationToken);
         SvgGradientTemplate template = state.Gradient ?? throw new InvalidOperationException("Gradient registration requires gradient dimensions.");
-        if (state.GradientStops.Count != 0 && (state.GradientStops.Count < 2 || state.GradientStops.Count > SvgGradientSyntax.MaximumGradientStops)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only empty or two-to-eight-stop linear gradients are implemented.");
+        if (state.GradientStops.Count != 0 && (state.GradientStops.Count > SvgGradientSyntax.MaximumGradientStops)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only empty or one-to-eight-stop linear gradients are implemented.");
         if (template.Href is not null)
         {
             if (template.VectorCount is > 0 and < 4 && template.HasUnits) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial gradient vector overrides with gradient unit overrides are not implemented.");
@@ -214,7 +214,7 @@ internal static class SvgDefinitionParser
 
     private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveGradientStops(SvgDocumentState state, SvgGradientTemplate template)
     {
-        if (state.GradientStops.Count >= 2) return ClampStopList(state);
+        if (state.GradientStops.Count >= 1) return ClampStopList(state);
         if (template.Href is null) return (default, default, 0, 1, true, Array.Empty<SvgGradientStop>());
         if (!state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgLinearGradient parent)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         return (parent.Start, parent.End, parent.Offset1, parent.Offset2, parent.IsEmpty, parent.Stops);
