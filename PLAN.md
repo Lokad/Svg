@@ -258,7 +258,7 @@ pooling or process-wide caches to make the ledger look better.
   same-input fractional-scale variants with complete provenance.
 - Windows/Linux CI already builds/tests, runs memory/Chrome/font smoke, validates
   artifacts and tests packaging. Do not list these as absent. It does not invoke
-  test-validate-ci-artifacts.ps1's negative suite; wire the existing suite in.
+  test-validate-ci-artifacts.ps1's negative suite; wire the existing suite in. Status 2026-09-24: repaired stale validator tables for the fresh-process image and pattern probe workloads (25-report outcomes, LimitExceeded codes, input hashes, success-PNG allowance) with updated self-test counts, verified by a full local 25-scenario run, and wired the suite into CI on both platforms with artifact upload.
   The browser smoke covers a fixed tiny fixture, not representative corpus
   regeneration. Add a reproducible opt-in corpus validation command/report.
 - Many recent tests inspect lowered values or compare two paths through the same

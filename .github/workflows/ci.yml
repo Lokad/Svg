@@ -33,6 +33,8 @@ jobs:
         run: tools/test-font-probe.ps1 -ResultsDirectory artifacts/font-probe
       - shell: pwsh
         run: tools/validate-ci-artifacts.ps1 -Platform ${{ runner.os }} -ChromeDirectory artifacts/chrome-smoke -MemoryDirectory artifacts/memory-probe
+      - shell: pwsh
+        run: tools/test-validate-ci-artifacts.ps1 -ResultsDirectory artifacts/validator-selftest -Platform ${{ runner.os }}
       - if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -50,6 +52,12 @@ jobs:
         with:
           name: font-probe-${{ matrix.os }}
           path: artifacts/font-probe
+          if-no-files-found: warn
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validator-selftest-${{ matrix.os }}
+          path: artifacts/validator-selftest
           if-no-files-found: warn
       - run: dotnet pack src/Lokad.Svg/Lokad.Svg.csproj -c Release --no-build -o artifacts/packages
       - shell: pwsh

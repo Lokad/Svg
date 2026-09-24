@@ -161,7 +161,8 @@ function Test-MemoryArtifact
     if ($dotnetRuntimes -cnotcontains $childVersion) { Fail "Memory child runtime $childFramework is not among the recorded dotnet runtimes." }
 
     $expectedOutcomes = [ordered]@{
-        success = 'success'; limit = 'svg-error'; 'xml-workspace' = 'svg-error'
+        success = 'success'; limit = 'svg-error'; image = 'success'; 'image-denied' = 'svg-error'; pattern = 'success'; 'pattern-work-denied' = 'svg-error'
+        'xml-workspace' = 'svg-error'
         'xml-reader-text-1' = 'xml-reader-measured'; 'xml-reader-text-2' = 'xml-reader-measured'; 'xml-reader-text-3' = 'xml-reader-measured'
         'xml-attributes' = 'svg-error'; 'xml-reader-1' = 'xml-reader-measured'; 'xml-reader-2' = 'xml-reader-measured'; 'xml-reader-3' = 'xml-reader-measured'
         'xml-reader-attribute-values-1' = 'xml-reader-measured'; 'xml-reader-attribute-values-2' = 'xml-reader-measured'; 'xml-reader-attribute-values-3' = 'xml-reader-measured'
@@ -188,15 +189,15 @@ function Test-MemoryArtifact
         foreach ($suffix in @('stdout.txt', 'stderr.txt')) { if (-not (Test-Path -LiteralPath (Join-Path $MemoryDirectory "$runId-$name.$suffix") -PathType Leaf)) { Fail "Memory report $name did not retain $suffix." } }
     }
     foreach ($name in $expectedOutcomes.Keys) { if (-not $reportsByName.ContainsKey($name)) { Fail "Memory summary is missing report $name." } }
-    foreach ($name in @('limit', 'xml-workspace', 'xml-attributes', 'font-discovery-deep-groups-denied')) { Assert-Equal 'LimitExceeded' (Get-RequiredProperty $reportsByName[$name] 'svgErrorCode' "Memory report $name") "Memory report $name error code" }
+    foreach ($name in @('limit', 'image-denied', 'pattern-work-denied', 'xml-workspace', 'xml-attributes', 'font-discovery-deep-groups-denied')) { Assert-Equal 'LimitExceeded' (Get-RequiredProperty $reportsByName[$name] 'svgErrorCode' "Memory report $name") "Memory report $name error code" }
     Assert-Equal 'UnsupportedFeature' (Get-RequiredProperty $reportsByName['font-discovery-distinct-requests'] 'svgErrorCode' "Memory report font-discovery-distinct-requests") "Memory report font-discovery-distinct-requests error code"
     foreach ($name in @('font-discovery-deep-groups', 'font-discovery-deep-groups-denied', 'font-discovery-empty-texts', 'font-discovery-distinct-requests', 'font-discovery-cancelled')) { Assert-Equal 0 ([int64](Get-RequiredProperty $reportsByName[$name] 'discoveryCurrentBytes' "Memory report $name")) "Memory report $name retained ledger bytes" }
     foreach ($name in @('font-discovery-deep-groups-denied', 'font-discovery-cancelled')) { if ($reportsByName[$name].PSObject.Properties.Name -contains 'discoveryRequestCount') { Fail "Memory report $name unexpectedly discovered requests." } }
 
-    foreach ($name in @($expectedOutcomes.Keys | Where-Object { $_ -ne 'success' })) { if (Test-Path -LiteralPath (Join-Path $MemoryDirectory "$runId-$name.png")) { Fail "Memory report $name unexpectedly wrote a PNG." } }
+    foreach ($name in @($expectedOutcomes.Keys | Where-Object { $_ -notin @('success', 'image', 'pattern') })) { if (Test-Path -LiteralPath (Join-Path $MemoryDirectory "$runId-$name.png")) { Fail "Memory report $name unexpectedly wrote a PNG." } }
 
     $inputFiles = @{
-        success = $fixture; limit = $fixture; 'xml-workspace' = (Join-Path $MemoryDirectory "$runId-xml-workspace.svg")
+        success = $fixture; limit = $fixture; image = (Join-Path $MemoryDirectory "$runId-image.svg"); 'image-denied' = (Join-Path $MemoryDirectory "$runId-image.svg"); pattern = (Join-Path $MemoryDirectory "$runId-pattern.svg"); 'pattern-work-denied' = (Join-Path $MemoryDirectory "$runId-pattern.svg"); 'xml-workspace' = (Join-Path $MemoryDirectory "$runId-xml-workspace.svg")
         'xml-reader-text-1' = (Join-Path $MemoryDirectory "$runId-xml-workspace.svg"); 'xml-reader-text-2' = (Join-Path $MemoryDirectory "$runId-xml-workspace.svg"); 'xml-reader-text-3' = (Join-Path $MemoryDirectory "$runId-xml-workspace.svg")
         'xml-attributes' = (Join-Path $MemoryDirectory "$runId-xml-attributes.svg"); 'xml-reader-1' = (Join-Path $MemoryDirectory "$runId-xml-attributes.svg"); 'xml-reader-2' = (Join-Path $MemoryDirectory "$runId-xml-attributes.svg"); 'xml-reader-3' = (Join-Path $MemoryDirectory "$runId-xml-attributes.svg")
         'xml-reader-attribute-values-1' = (Join-Path $MemoryDirectory "$runId-xml-reader-attribute-values.svg"); 'xml-reader-attribute-values-2' = (Join-Path $MemoryDirectory "$runId-xml-reader-attribute-values.svg"); 'xml-reader-attribute-values-3' = (Join-Path $MemoryDirectory "$runId-xml-reader-attribute-values.svg")

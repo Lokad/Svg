@@ -165,14 +165,14 @@ $missingSummary = Copy-MemoryReports $missingMemory
 $missingEdited = Get-Content -LiteralPath $missingSummary.FullName -Raw | ConvertFrom-Json
 $missingEdited.reports = @($missingEdited.reports | Where-Object { $_.name -ne 'limit' })
 $missingEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $missingSummary.FullName -NoNewline -Encoding utf8
-Assert-ValidatorRejects $goodDirectory $missingMemory '*contains 20 reports*' 'a missing memory report'
+Assert-ValidatorRejects $goodDirectory $missingMemory '*contains 24 reports*' 'a missing memory report'
 
 $duplicateMemory = Join-Path $runDirectory 'memory-duplicate-report'
 $duplicateSummary = Copy-MemoryReports $duplicateMemory
 $duplicateEdited = Get-Content -LiteralPath $duplicateSummary.FullName -Raw | ConvertFrom-Json
 $duplicateEdited.reports = @($duplicateEdited.reports) + @($duplicateEdited.reports[0])
 $duplicateEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $duplicateSummary.FullName -NoNewline -Encoding utf8
-Assert-ValidatorRejects $goodDirectory $duplicateMemory '*contains 22 reports*' 'a duplicated memory report'
+Assert-ValidatorRejects $goodDirectory $duplicateMemory '*contains 26 reports*' 'a duplicated memory report'
 
 $unexpectedMemory = Join-Path $runDirectory 'memory-unexpected-report'
 $unexpectedSummary = Copy-MemoryReports $unexpectedMemory
