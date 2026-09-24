@@ -3635,11 +3635,28 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_translucent_gradient_stops()
+    public void Admits_translucent_gradient_stops_with_calibrated_alpha()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000' stop-opacity='0.5'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000' stop-opacity='0.5'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(2, geometry.Gradient.Gradient.Stops.Length);
+        Assert.Equal(new SvgColor(255, 0, 0, 128), geometry.Gradient.Gradient.Stops[0].Color);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), geometry.Gradient.Gradient.Stops[1].Color);
+    }
+
+    [Fact]
+    public void Admits_middle_translucent_stops_with_untouched_neighbors()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='0.5' stop-color='#00ff00' stop-opacity='0.5'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(3, geometry.Gradient.Gradient.Stops.Length);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Gradient.Gradient.Stops[0].Color);
+        Assert.Equal(new SvgColor(0, 255, 0, 128), geometry.Gradient.Gradient.Stops[1].Color);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), geometry.Gradient.Gradient.Stops[2].Color);
     }
     [Fact]
     public void Stamps_a_pattern_tile_across_its_fill_region()

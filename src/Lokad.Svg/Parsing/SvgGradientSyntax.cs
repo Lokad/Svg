@@ -184,13 +184,11 @@ internal static class SvgGradientSyntax
 
     internal static SvgColor ParseStopColor(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        string? opacityValue = reader.GetAttribute("stop-opacity");
-        if (opacityValue is not null && !opacityValue.Equals("1", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only full-opacity gradient stops are implemented.");
         string? colorValue = reader.GetAttribute("stop-color");
         SvgColor color = colorValue is null ? new SvgColor(0, 0, 0, 255) : SvgColorParser.Parse(colorValue, namedColors);
-        if (color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only opaque gradient stops are implemented.");
+        byte stopOpacity = SvgColorParser.ParseOpacity(reader.GetAttribute("stop-opacity"));
         workCounter.Consume(cancellationToken);
-        return color;
+        return new SvgColor(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, stopOpacity));
     }
 
     internal static SvgGeometry LowerGradientRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)

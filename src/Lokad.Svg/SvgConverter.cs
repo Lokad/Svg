@@ -489,6 +489,11 @@ public static class SvgConverter
             double denominator = directionX * directionX + directionY * directionY;
             double offsetSpan = definition.Offset2 - definition.Offset1;
             if (paint && offsetSpan <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
+            bool transparentStops = false;
+            foreach (SvgGradientStop stop in definition.Stops)
+            {
+                if (stop.Color.Alpha != 255) { transparentStops = true; break; }
+            }
             if (paint && denominator != 0)
             for (int y = startY; y < endY; y++)
             {
@@ -530,13 +535,39 @@ public static class SvgConverter
                     SvgGradientStop first = definition.Stops[segment];
                     SvgGradientStop second = definition.Stops[segment + 1];
                     double blend = (absolute - first.Offset) / (second.Offset - first.Offset);
-                    tileColor = new(InterpolateChannel(first.Color.Red, second.Color.Red, blend, dither), InterpolateChannel(first.Color.Green, second.Color.Green, blend, dither), InterpolateChannel(first.Color.Blue, second.Color.Blue, blend, dither), opacity);
+                    if (transparentStops)
+                        tileColor = TransparentTileColor(first.Color, second.Color, blend, dither, opacity);
+                    else
+                        tileColor = new(InterpolateChannel(first.Color.Red, second.Color.Red, blend, dither), InterpolateChannel(first.Color.Green, second.Color.Green, blend, dither), InterpolateChannel(first.Color.Blue, second.Color.Blue, blend, dither), opacity);
                 }
+                else if (transparentStops)
+                    tileColor = TransparentTileColor(definition.Start, definition.End, position, dither, opacity);
                 else tileColor = new(InterpolateChannel(definition.Start.Red, definition.End.Red, position, dither), InterpolateChannel(definition.Start.Green, definition.End.Green, position, dither), InterpolateChannel(definition.Start.Blue, definition.End.Blue, position, dither), opacity);
                 SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
                 int offset = (y * outputWidth + x) * 4;
                 BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
             }
+            }
+
+            static SvgColor TransparentTileColor(SvgColor first, SvgColor second, double blend, double dither, byte opacity)
+            {
+                double alpha = ((double)first.Alpha + ((double)second.Alpha - first.Alpha) * blend) * opacity / 255;
+                byte mask = (byte)Math.Floor(alpha + 0.5);
+                if (mask == 0) return new SvgColor(0, 0, 0, 0);
+                double red = ((double)first.Red + ((double)second.Red - first.Red) * blend) * alpha / 255 + dither;
+                double green = ((double)first.Green + ((double)second.Green - first.Green) * blend) * alpha / 255 + dither;
+                double blue = ((double)first.Blue + ((double)second.Blue - first.Blue) * blend) * alpha / 255 + dither;
+                byte premultRed = (byte)Math.Floor(red + 1e-9);
+                byte premultGreen = (byte)Math.Floor(green + 1e-9);
+                byte premultBlue = (byte)Math.Floor(blue + 1e-9);
+                double inverse = 255.0 / mask;
+                int r = (int)Math.Floor(premultRed * inverse + 0.5);
+                if (r > 255) r = 255;
+                int g = (int)Math.Floor(premultGreen * inverse + 0.5);
+                if (g > 255) g = 255;
+                int b = (int)Math.Floor(premultBlue * inverse + 0.5);
+                if (b > 255) b = 255;
+                return new SvgColor((byte)r, (byte)g, (byte)b, mask);
             }
         }
         void RasterizeGradientStroke(SvgGradientGeometry gradient, SvgStroke stroke, byte[] destination)

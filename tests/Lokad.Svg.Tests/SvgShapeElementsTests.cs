@@ -171,6 +171,33 @@ public sealed class SvgShapeElementsTests
         Assert.Equal(explicitBox, fractional);
     }
 
+    [Fact]
+    public void Translucent_gradient_fade_matches_calibrated_profile()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='16'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff' stop-opacity='0'/></linearGradient></defs><rect x='0' y='0' width='64' height='16' fill='url(#g)'/></svg>", out _, out _);
+
+        SvgColor opaqueEnd = Pixel(pixels, 64, 0, 8);
+        Assert.InRange(opaqueEnd.Alpha, 250, 255);
+        Assert.True(opaqueEnd.Red > 240, "opaque end stays red");
+        Assert.True(opaqueEnd.Blue < 16, "opaque end stays red");
+        SvgColor transparentEnd = Pixel(pixels, 64, 63, 8);
+        Assert.True(transparentEnd.Alpha <= 8, "transparent end fades out");
+        Assert.True(transparentEnd.Blue > 200, "transparent end stays blue");
+        SvgColor midpoint = Pixel(pixels, 64, 32, 8);
+        Assert.InRange(midpoint.Alpha, 120, 135);
+        Assert.InRange(midpoint.Red, 115, 140);
+        Assert.InRange(midpoint.Blue, 120, 140);
+    }
+
+    [Fact]
+    public void Stop_opacity_matches_rgba_stop_alpha()
+    {
+        byte[] faded = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff' stop-opacity='0.5'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>", out _, out _);
+        byte[] rgba = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='h'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='rgba(0, 0, 255, 0.5)'/></linearGradient></defs><rect width='8' height='8' fill='url(#h)'/></svg>", out _, out _);
+
+        Assert.Equal(rgba, faded);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
