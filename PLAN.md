@@ -178,7 +178,7 @@ viewBox, gradientTransform, patternTransform, referencing transforms and use.
 Test direct versus referenced geometry, diagonal ramps, anisotropic scale,
 translation, reflection, nonzero viewBox origin, output scale and clipping.
 Prefer a bounded explicit rejection until fixed over a silently wrong admitted
-combination. Do not solve this with per-fixture offsets or another shape kind.
+combination. Do not solve this with per-fixture offsets or another shape kind. Status 2026-09-24: R28 cases retained as rejects-pinned fixtures (original-logo-pattern-viewbox-mark, original-logo-gradient-anisotropic-mark; three identical pinned-Chrome captures each, candidate gates from b1c968f); exact paint maps remain S13 work.
 
 ### R29 / P0 — New paint/image paths bypass storage/work obligations
 
