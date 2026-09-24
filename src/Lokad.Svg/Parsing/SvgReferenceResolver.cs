@@ -268,9 +268,12 @@ internal static class SvgReferenceResolver
             SvgGeometry[] applied = new SvgGeometry[sources.Length];
             for (int index = 0; index < sources.Length; index++)
             {
-                applied[index] = sources[index].Kind == SvgGeometryKind.GradientFill
-                    ? ApplySymbolGradientFill(sources[index].Gradient, symbolBox, reference, frame, state)
-                    : ApplySymbolInstance(sources[index], symbolBox, reference, frame, state);
+                applied[index] = sources[index].Kind switch
+                {
+                    SvgGeometryKind.GradientFill => ApplySymbolGradientFill(sources[index].Gradient, symbolBox, reference, frame, state),
+                    SvgGeometryKind.GradientStroke => ApplySymbolGradientStroke(sources[index].GradientStroke, symbolBox, reference, frame, state),
+                    _ => ApplySymbolInstance(sources[index], symbolBox, reference, frame, state),
+                };
             }
             return applied;
 
@@ -285,6 +288,28 @@ internal static class SvgReferenceResolver
             SvgLinearGradient vector = band.Gradient;
             if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y };
             return LowerPlacedGradientFill(vector, fill, box, MultiplyAlpha(band.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame);
+        }
+
+        static SvgGeometry ApplySymbolGradientStroke(SvgGradientStrokeGeometry stroke, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
+        {
+            if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
+            SvgRectangle fill = ApplySymbolInstance(SvgGeometry.FromRectangle(stroke.Fill), viewBox, instance, viewportFrame, document).Rectangle;
+            SvgRectangle top = ApplySymbolInstance(SvgGeometry.FromRectangle(stroke.Top), viewBox, instance, viewportFrame, document).Rectangle;
+            SvgRectangle bottom = ApplySymbolInstance(SvgGeometry.FromRectangle(stroke.Bottom), viewBox, instance, viewportFrame, document).Rectangle;
+            SvgRectangle left = ApplySymbolInstance(SvgGeometry.FromRectangle(stroke.Left), viewBox, instance, viewportFrame, document).Rectangle;
+            SvgRectangle right = ApplySymbolInstance(SvgGeometry.FromRectangle(stroke.Right), viewBox, instance, viewportFrame, document).Rectangle;
+            SvgRectangle contentBox = stroke.Box;
+            SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
+            if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
+            SvgLinearGradient vector = stroke.Gradient;
+            if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y };
+            vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
+            vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
+            byte opacity = MultiplyAlpha(stroke.Opacity, instance.Opacity);
+            SvgColor baseColor = stroke.Fill.Color;
+            SvgRectangle finished = fill with { Color = new SvgColor(baseColor.Red, baseColor.Green, baseColor.Blue, MultiplyAlpha(baseColor.Alpha, instance.Opacity)), HasFill = fill.HasFill };
+            return SvgGeometry.FromGradientStroke(new SvgGradientStrokeGeometry(finished, top, bottom, left, right, vector, box, opacity, stroke.HasStroke && instance.IsPainted));
         }
         }
 
