@@ -10,8 +10,8 @@ public sealed class SvgEllipticalArcTests
         SvgDevicePoint start = new(1, 2);
         SvgDevicePoint end = new(7, 8);
 
-        Assert.Equal(SvgNormalizedArc.CreateLine(end), Arc(start, 0, 4, 0, false, true, end));
-        Assert.Equal(SvgNormalizedArc.CreateLine(end), Arc(start, 4, 0, 0, true, false, end));
+        Assert.Equal(SvgNormalizedArc.CreateLine(start, end), Arc(start, 0, 4, 0, false, true, end));
+        Assert.Equal(SvgNormalizedArc.CreateLine(start, end), Arc(start, 4, 0, 0, true, false, end));
     }
 
     [Fact]
@@ -28,8 +28,8 @@ public sealed class SvgEllipticalArcTests
     {
         SvgDevicePoint point = new(3, 5);
 
-        Assert.Equal(SvgNormalizedArc.CreateLine(point), Arc(point, 4, 4, 0, false, true, point));
-        Assert.Equal(SvgNormalizedArc.CreateLine(point), Arc(point, 4, 4, 30, true, false, point));
+        Assert.Equal(SvgNormalizedArc.CreateLine(point, point), Arc(point, 4, 4, 0, false, true, point));
+        Assert.Equal(SvgNormalizedArc.CreateLine(point, point), Arc(point, 4, 4, 30, true, false, point));
     }
 
     [Fact]
@@ -143,6 +143,69 @@ public sealed class SvgEllipticalArcTests
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Arc(new SvgDevicePoint(0, 0), 8, 8, 0, false, true, new SvgDevicePoint(1e308, 0))).ErrorCode);
     }
 
+    [Fact]
+    public void Sample_line_appends_end()
+    {
+        SvgNormalizedArc line = SvgNormalizedArc.CreateLine(new SvgDevicePoint(1, 2), new SvgDevicePoint(7, 8));
+        SvgDevicePoint[] buffer = new SvgDevicePoint[16];
+
+        int count = SvgEllipticalArc.Sample(line, new SvgFlattenPolicy(0.5, 64, 16), buffer, CancellationToken.None);
+
+        Assert.Equal(1, count);
+        Assert.Equal(new SvgDevicePoint(7, 8), buffer[0]);
+    }
+
+    [Fact]
+    public void Sample_quarter_arc_brackets_exact_endpoints()
+    {
+        SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, false, true, new SvgDevicePoint(0, 8));
+        SvgDevicePoint[] buffer = new SvgDevicePoint[256];
+
+        int count = SvgEllipticalArc.Sample(arc, new SvgFlattenPolicy(0.5, 64, 256), buffer, CancellationToken.None);
+
+        Assert.True(count >= 2);
+        Assert.Equal(new SvgDevicePoint(0, 8), buffer[count - 1]);
+        for (int index = 0; index < count; index++)
+        {
+            Assert.True(double.IsFinite(buffer[index].X) && double.IsFinite(buffer[index].Y));
+        }
+    }
+
+    [Fact]
+    public void Sample_finer_flatness_never_shrinks_output()
+    {
+        SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, false, true, new SvgDevicePoint(0, 8));
+
+        int coarse = SampleCount(arc, 2.0);
+        int fine = SampleCount(arc, 0.125);
+
+        Assert.True(coarse >= 1);
+        Assert.True(fine >= coarse);
+    }
+
+    [Fact]
+    public void Sample_segment_cap_throws_LimitExceeded()
+    {
+        SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, false, true, new SvgDevicePoint(0, 8));
+        SvgDevicePoint[] buffer = new SvgDevicePoint[256];
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgEllipticalArc.Sample(arc, new SvgFlattenPolicy(0.5, 64, 1), buffer, CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
+    public void Sample_buffer_cap_throws_LimitExceeded()
+    {
+        SvgNormalizedArc arc = Arc(new SvgDevicePoint(8, 0), 8, 8, 0, false, true, new SvgDevicePoint(0, 8));
+        SvgDevicePoint[] buffer = new SvgDevicePoint[1];
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgEllipticalArc.Sample(arc, new SvgFlattenPolicy(0.125, 64, 256), buffer, CancellationToken.None)).ErrorCode);
+    }
+
+    private static int SampleCount(SvgNormalizedArc arc, double flatness)
+    {
+        SvgDevicePoint[] buffer = new SvgDevicePoint[256];
+        return SvgEllipticalArc.Sample(arc, new SvgFlattenPolicy(flatness, 64, 256), buffer, CancellationToken.None);
+    }
     private static SvgNormalizedArc Arc(SvgDevicePoint start, double radiusX, double radiusY, double rotationDegrees, bool largeArc, bool sweep, SvgDevicePoint end)
     {
         return SvgEllipticalArc.Normalize(start, radiusX, radiusY, rotationDegrees, largeArc, sweep, end);

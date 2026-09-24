@@ -406,7 +406,7 @@ general-path slice. This does not reopen the broader tooling backlog as a gate.
    mapping + solid fill + bounded coverage for a diagonal closed polygon.
    Separate geometry expectations from oracle coverage; include rotations,
    reflection, fractional phases, clipped/off-canvas edges and output scaling.
-   Integrate through the public renderer, preserving rectangle equivalence. Status 2026-09-24: pure-geometry affine kernel landed (SvgAffineTransform: matrix/translate/scale/rotate-about-center/skew composition with LimitExceeded on non-finite Apply, 18 unit tests); no renderer wiring and no admitted-syntax change.
+   Integrate through the public renderer, preserving rectangle equivalence. Status 2026-09-24: pure-geometry affine kernel landed (SvgAffineTransform: matrix/translate/scale/rotate-about-center/skew composition with LimitExceeded on non-finite Apply, 18 unit tests); no renderer wiring and no admitted-syntax change; contour buffer chaining affine/flatten/arc-sampling landed (SvgContourBuilder with fixed explicitly owned storage plus SvgEllipticalArc.Sample, 17 unit tests); still no renderer wiring and no admitted-syntax change.
 3. **Compound and curved fills.** Extend the same representation to multiple
    contours, nonzero/evenodd, touching/coincident/self-intersections; quadratic/
    cubic curves and smooth commands; then elliptical arcs and normalized circles,
