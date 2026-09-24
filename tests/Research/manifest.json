@@ -40,6 +40,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 7,
+      "maximumChannelError": 3,
+      "maximumAlphaError": 3,
+      "alphaChangedPixelCount": 7,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 6
+    },
       "oracle": {
         "referencePng": "references/diagonal-triangle-8x8.png",
         "referenceSha256": "6d2ef5419855b4817c8fa98ae45c301372ecb8dc1aae98cedbb667bf11863e86",
@@ -330,6 +340,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 7,
+      "maximumChannelError": 3,
+      "maximumAlphaError": 3,
+      "alphaChangedPixelCount": 7,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 6
+    },
       "oracle": {
         "referencePng": "references/diagonal-triangle-mirror-8x8.png",
         "referenceSha256": "ee00acc82bbb777185dadf4a42817950eeab50fa23f2e175718476631866b804",
@@ -356,6 +376,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 7,
+      "maximumChannelError": 3,
+      "maximumAlphaError": 3,
+      "alphaChangedPixelCount": 7,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 6
+    },
       "oracle": {
         "referencePng": "references/diagonal-triangle-rotated-8x8.png",
         "referenceSha256": "ee00acc82bbb777185dadf4a42817950eeab50fa23f2e175718476631866b804",
@@ -382,6 +412,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 14,
+      "maximumChannelError": 3,
+      "maximumAlphaError": 3,
+      "alphaChangedPixelCount": 14,
+      "minimumMismatchX": 2,
+      "minimumMismatchY": 2,
+      "maximumMismatchX": 13,
+      "maximumMismatchY": 13
+    },
       "oracle": {
         "referencePng": "references/diagonal-triangle-16x16.png",
         "referenceSha256": "4a88a6607ece995828d7eafab67a4219216e8189e419bc3bd01740736c144c3f",
@@ -408,6 +448,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 7,
+      "maximumChannelError": 3,
+      "maximumAlphaError": 0,
+      "alphaChangedPixelCount": 0,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 6
+    },
       "oracle": {
         "referencePng": "references/diagonal-triangle-white-8x8.png",
         "referenceSha256": "264f02017f8b1928641e6ba0492c4ae61d5515dcc771399717db0405abd533ba",
@@ -434,6 +484,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 7,
+      "maximumChannelError": 3,
+      "maximumAlphaError": 0,
+      "alphaChangedPixelCount": 0,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 6
+    },
       "oracle": {
         "referencePng": "references/diagonal-triangle-black-8x8.png",
         "referenceSha256": "b235d712498e15c0b24c7058ad1b578b6edd11447185214e50c7ebcf70b34409",

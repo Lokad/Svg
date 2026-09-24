@@ -17,6 +17,14 @@ internal static class SvgOrthogonalShapeParser
         string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds);
+        if (contourEnds.Count == 1 && contourEnds[0] >= 3 && SvgContourTopology.Classify(points.AsSpan(), 0, contourEnds[0]) == SvgContourKind.Diagonal)
+        {
+            SvgResolvedPaintableElement diagonalElement = context.ResolveShape(style, reader, false);
+            bool diagonalEvenOdd = diagonalElement.Style.FillRule is not null && diagonalElement.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+            using SvgOrthogonalGeometryLowering diagonalLowering = new(points, contourEnds, "path", true, diagonalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            return diagonalLowering.LowerPolygonFill(diagonalElement.Presentation.Color, diagonalElement.Presentation.HasFill, diagonalElement.Transform, frame, budget);
+        }
+
         SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, "path", context.WorkCounter, context.CancellationToken);
         SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
         bool isEvenOdd = element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
@@ -55,6 +63,16 @@ internal static class SvgOrthogonalShapeParser
         }
         string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+        if (SvgContourTopology.Classify(points.AsSpan(), 0, points.Count) == SvgContourKind.Diagonal)
+        {
+            using BudgetedParserList<int> diagonalEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            diagonalEnds.Add(points.Count);
+            SvgResolvedPaintableElement diagonalElement = context.ResolveShape(style, reader, false);
+            bool diagonalEvenOdd = diagonalElement.Style.FillRule is not null && diagonalElement.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+            using SvgOrthogonalGeometryLowering diagonalLowering = new(points, diagonalEnds, elementName, false, diagonalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            return diagonalLowering.LowerPolygonFill(diagonalElement.Presentation.Color, diagonalElement.Presentation.HasFill, diagonalElement.Transform, frame, budget);
+        }
+
         SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, elementName, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         contourEnds.Add(points.Count);

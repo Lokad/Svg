@@ -7,7 +7,7 @@ namespace Lokad.Svg.VisualTests;
 public sealed class ResearchProbeTests
 {
     [Fact]
-    public void Stable_research_probes_retain_their_oracle_evidence_and_remain_explicitly_unsupported()
+    public void Stable_research_probes_retain_their_oracle_evidence_and_stay_categorized()
     {
         string research = Path.Combine(AppContext.BaseDirectory, "Research");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(research, "manifest.json")));
@@ -45,8 +45,30 @@ public sealed class ResearchProbeTests
             Assert.Equal(width, referenceImage.Width);
             Assert.Equal(height, referenceImage.Height);
 
-            SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None));
-            Assert.Equal(Enum.Parse<SvgErrorCode>(RequiredString(probe, "candidateError")), exception.ErrorCode);
+            if (probe.TryGetProperty("admittedRendering", out JsonElement admitted))
+            {
+                string background = RequiredString(oracle, "background");
+                SvgColor optionBackground = background switch { "white" => new SvgColor(255, 255, 255, 255), "black" => new SvgColor(0, 0, 0, 255), _ => SvgColor.Transparent };
+                ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, new SvgRenderOptions(null, 1, optionBackground, SvgRenderLimits.Default, null), CancellationToken.None);
+                RgbaImage rendered = PngRgbaDecoder.Decode(png.ToArray(), checked(width * height));
+                PixelComparison comparison = PixelComparer.Compare(referenceImage, rendered);
+                Assert.True(comparison.DimensionsMatch);
+                Assert.False(comparison.IsExact);
+                Assert.Equal(admitted.GetProperty("changedPixelCount").GetInt32(), comparison.ChangedPixelCount);
+                Assert.Equal((byte)admitted.GetProperty("maximumChannelError").GetInt32(), comparison.MaximumChannelError);
+                Assert.Equal((byte)admitted.GetProperty("maximumAlphaError").GetInt32(), comparison.MaximumAlphaError);
+                Assert.Equal(admitted.GetProperty("alphaChangedPixelCount").GetInt32(), comparison.AlphaChangedPixelCount);
+                Assert.Equal(admitted.GetProperty("minimumMismatchX").GetInt32(), comparison.MinimumMismatchX);
+                Assert.Equal(admitted.GetProperty("minimumMismatchY").GetInt32(), comparison.MinimumMismatchY);
+                Assert.Equal(admitted.GetProperty("maximumMismatchX").GetInt32(), comparison.MaximumMismatchX);
+                Assert.Equal(admitted.GetProperty("maximumMismatchY").GetInt32(), comparison.MaximumMismatchY);
+            }
+            else
+            {
+                SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None));
+                Assert.Equal(Enum.Parse<SvgErrorCode>(RequiredString(probe, "candidateError")), exception.ErrorCode);
+            }
+
             probeCount++;
         }
 

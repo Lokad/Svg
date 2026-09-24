@@ -142,6 +142,41 @@ internal ref struct SvgOrthogonalGeometryLowering
         return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
     }
 
+    /// <summary>Lowers one diagonal single-contour solid polygon to retained device points, keeping multi-contour and non-simple shapes rejected.</summary>
+    internal SvgParsedGeometry LowerPolygonFill(SvgColor color, bool hasFill, AxisTransform transform, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        if (_contourEnds.Count != 1 || _contourEnds[0] != _points.Count) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
+        if (_geometryElementCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path polygon point count exceeds the configured path-command limit." : _elementName + " polygon point count exceeds the configured path-command limit.");
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        SvgPoint previous = default;
+        SvgPoint first = default;
+        bool hasKept = false;
+        for (int index = 0; index < _points.Count; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            SvgPoint vertex = _points[index];
+            if (hasKept && previous == vertex) continue;
+            if (hasKept && vertex == first && index == _points.Count - 1) continue;
+            if (!hasKept) first = vertex;
+            previous = vertex;
+            hasKept = true;
+            (double x, double y) = transform.ApplyToVertex(vertex.X, vertex.Y);
+            mapped.Add(ShiftVertex(frame, x, y));
+        }
+
+        if (mapped.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
+        SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
+        if (SvgContourStructure.ClassifyContour(retained, 0, retained.Length, _cancellationToken) != SvgContourFlags.None) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+        SvgPolygonFill fill = SvgPolygonFill.Create(retained, color, hasFill, _isEvenOdd, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+        _geometries.Add(SvgGeometry.FromPolygonFill(fill));
+        _geometryElementCount++;
+        return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
+
+        static SvgDevicePoint ShiftVertex(SvgViewportFrame? viewport, double x, double y)
+            => viewport is null ? new SvgDevicePoint(x, y) : new SvgDevicePoint(x * viewport.Value.ScaleX + viewport.Value.OffsetX, y * viewport.Value.ScaleY + viewport.Value.OffsetY);
+    }
+
     public void Dispose()
     {
         _geometries.Dispose();

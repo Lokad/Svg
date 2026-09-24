@@ -1,6 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
 using Lokad.Svg.Fonts;
+using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 using System.Runtime.CompilerServices;
 
@@ -36,7 +37,7 @@ internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double 
     }
 }
 
-internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill, GradientFill, GradientStroke }
+internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill, GradientFill, GradientStroke, PolygonFill }
 
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
 internal readonly struct SvgGeometry
@@ -48,6 +49,7 @@ internal readonly struct SvgGeometry
     private readonly SvgPatternGeometry? _pattern;
     private readonly SvgGradientGeometry? _gradient;
     private readonly SvgGradientStrokeGeometry? _gradientStroke;
+    private readonly SvgPolygonFill? _polygon;
 
     private SvgGeometry(SvgGeometryKind kind, SvgRectangle rectangle)
     {
@@ -58,6 +60,7 @@ internal readonly struct SvgGeometry
         _pattern = null;
         _gradient = null;
         _gradientStroke = null;
+        _polygon = null;
     }
 
     private SvgGeometry(SvgAxisAlignedLine axisAlignedLine)
@@ -69,6 +72,7 @@ internal readonly struct SvgGeometry
         _pattern = null;
         _gradient = null;
         _gradientStroke = null;
+        _polygon = null;
     }
 
     private SvgGeometry(SvgGlyphGeometry glyph)
@@ -81,6 +85,7 @@ internal readonly struct SvgGeometry
         _pattern = null;
         _gradient = null;
         _gradientStroke = null;
+        _polygon = null;
     }
 
     private SvgGeometry(SvgPatternGeometry pattern)
@@ -93,6 +98,7 @@ internal readonly struct SvgGeometry
         _pattern = pattern;
         _gradient = null;
         _gradientStroke = null;
+        _polygon = null;
     }
 
     private SvgGeometry(SvgGradientGeometry gradient)
@@ -105,6 +111,7 @@ internal readonly struct SvgGeometry
         _pattern = null;
         _gradient = gradient;
         _gradientStroke = null;
+        _polygon = null;
     }
 
     private SvgGeometry(SvgGradientStrokeGeometry gradientStroke)
@@ -117,6 +124,20 @@ internal readonly struct SvgGeometry
         _pattern = null;
         _gradient = null;
         _gradientStroke = gradientStroke;
+        _polygon = null;
+    }
+
+    private SvgGeometry(SvgPolygonFill polygon)
+    {
+        ArgumentNullException.ThrowIfNull(polygon);
+        _kind = SvgGeometryKind.PolygonFill;
+        _rectangle = default;
+        _axisAlignedLine = default;
+        _glyph = null;
+        _pattern = null;
+        _gradient = null;
+        _gradientStroke = null;
+        _polygon = polygon;
     }
 
     internal SvgGeometryKind Kind => _kind;
@@ -150,6 +171,8 @@ internal readonly struct SvgGeometry
 
     internal static SvgGeometry FromGradientStroke(SvgGradientStrokeGeometry gradientStroke) => new(gradientStroke);
 
+    internal static SvgGeometry FromPolygonFill(SvgPolygonFill polygon) => new(polygon);
+
     internal SvgGradientGeometry Gradient
         => _kind == SvgGeometryKind.GradientFill
             ? _gradient ?? throw new InvalidOperationException("This SVG geometry does not contain gradient stops.")
@@ -165,12 +188,18 @@ internal readonly struct SvgGeometry
             ? _gradientStroke ?? throw new InvalidOperationException("This SVG geometry does not contain gradient stroke bands.")
             : throw new InvalidOperationException("This SVG geometry does not contain gradient stroke bands.");
 
+    internal SvgPolygonFill Polygon
+        => _kind == SvgGeometryKind.PolygonFill
+            ? _polygon ?? throw new InvalidOperationException("This SVG geometry does not contain polygon contours.")
+            : throw new InvalidOperationException("This SVG geometry does not contain polygon contours.");
+
     internal void Dispose()
     {
         if (_kind == SvgGeometryKind.GlyphContours) _glyph?.Dispose();
         if (_kind == SvgGeometryKind.PatternFill) _pattern?.Dispose();
         if (_kind == SvgGeometryKind.GradientFill) _gradient?.Dispose();
         if (_kind == SvgGeometryKind.GradientStroke) _gradientStroke?.Dispose();
+        if (_kind == SvgGeometryKind.PolygonFill) _polygon?.Dispose();
     }
 
     internal static SvgRectangle[] ToRectangles(ReadOnlySpan<SvgGeometry> geometries)
@@ -187,6 +216,52 @@ internal readonly struct SvgGeometry
             };
         }
         return rectangles;
+    }
+}
+
+/// <summary>Retains one admitted diagonal single-contour solid polygon with its scene-memory reservation until the scene is disposed.</summary>
+/// <remarks>
+/// <para>Points are device-space doubles with the caller transform and viewport shift applied; the output
+/// mapping runs at raster time under the rectangle edge discipline. The optional clip box stays in the
+/// same space and intersects raster bounds there. Scene storage covers the point array exactly; callers
+/// charge raster work per evaluated pixel, matching rectangle bands.</para>
+/// </remarks>
+internal sealed class SvgPolygonFill : IDisposable
+{
+    private RenderBudget.BudgetReservation? _reservation;
+
+    private SvgPolygonFill(SvgDevicePoint[] points, SvgColor color, bool hasFill, bool isEvenOdd, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
+    {
+        Points = points;
+        Color = color;
+        HasFill = hasFill;
+        IsEvenOdd = isEvenOdd;
+        Clip = clip;
+        _reservation = reservation;
+    }
+
+    internal SvgDevicePoint[] Points { get; }
+
+    internal SvgColor Color { get; }
+
+    internal bool HasFill { get; }
+
+    internal bool IsEvenOdd { get; }
+
+    internal SvgClipBox? Clip { get; }
+
+    internal static SvgPolygonFill Create(SvgDevicePoint[] points, SvgColor color, bool hasFill, bool isEvenOdd, SvgClipBox? clip, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(budget);
+        RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length), SvgMemoryCategory.Scene);
+        return new SvgPolygonFill(points, color, hasFill, isEvenOdd, clip, reservation);
+    }
+
+    public void Dispose()
+    {
+        _reservation?.Dispose();
+        _reservation = null;
     }
 }
 

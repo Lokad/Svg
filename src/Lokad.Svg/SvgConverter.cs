@@ -281,6 +281,9 @@ public static class SvgConverter
                 case SvgGeometryKind.GradientStroke:
                     RasterizeGradientStrokeFill(geometry.GradientStroke, destination);
                     return;
+                case SvgGeometryKind.PolygonFill:
+                    RasterizePolygonFill(geometry.Polygon, destination);
+                    return;
                 default:
                     throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains invalid geometry.");
             }
@@ -294,6 +297,62 @@ public static class SvgConverter
         void RasterizeOrthogonalBand(SvgRectangle band, byte[] destination)
         {
             if (band.HasFill) RasterizeSolidRectangle(band, destination);
+        }
+
+        void RasterizePolygonFill(SvgPolygonFill polygon, byte[] destination)
+        {
+            if (!polygon.HasFill || polygon.Points.Length < 3) return;
+            SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
+            bool hasFractionalEdge = false;
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            for (int index = 0; index < polygon.Points.Length; index++)
+            {
+                double edgeX = MapPolygonEdge(polygon.Points[index].X, horizontalScale, horizontalOffset);
+                double edgeY = MapPolygonEdge(polygon.Points[index].Y, verticalScale, verticalOffset);
+                mapped[index] = new SvgDevicePoint(edgeX, edgeY);
+                if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
+                if (edgeX < left) left = edgeX;
+                if (edgeY < top) top = edgeY;
+                if (edgeX > right) right = edgeX;
+                if (edgeY > bottom) bottom = edgeY;
+            }
+
+            int startY = ClampFloor(top, outputHeight);
+            int endY = ClampCeiling(bottom, outputHeight);
+            int startX = ClampFloor(left, outputWidth);
+            int endX = ClampCeiling(right, outputWidth);
+            if (polygon.Clip is SvgClipBox clip)
+            {
+                startY = Math.Max(startY, ClampFloor(clip.Y, outputHeight));
+                endY = Math.Min(endY, ClampCeiling(clip.Bottom, outputHeight));
+                startX = Math.Max(startX, ClampFloor(clip.X, outputWidth));
+                endX = Math.Min(endX, ClampCeiling(clip.Right, outputWidth));
+            }
+
+            if (endY <= startY || endX <= startX) return;
+            long coverage = (long)(endY - startY) * (endX - startX);
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
+            workUnits += coverage;
+            Span<int> contourEnds = stackalloc int[1];
+            contourEnds[0] = mapped.Length;
+            Span<int> evenOddSign = stackalloc int[1];
+            evenOddSign[0] = 1;
+            for (int y = startY; y < endY; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                for (int x = startX; x < endX; x++)
+                {
+                    double pixelCoverage = polygon.IsEvenOdd
+                        ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, evenOddSign, x, y, cancellationToken)
+                        : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                    SvgColor color = WithCoverage(polygon.Color, pixelCoverage);
+                    int offset = (y * outputWidth + x) * 4;
+                    BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+                }
+            }
         }
 
         void RasterizePatternFill(SvgPatternGeometry pattern, byte[] destination)
@@ -613,6 +672,13 @@ public static class SvgConverter
         {
             double edge = MapEdge(value, scale, offset);
             if (Math.Abs(edge * 4 - Math.Round(edge * 4, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle viewBox mapping must preserve quarter-pixel output edges.");
+            return edge;
+        }
+
+        static double MapPolygonEdge(double value, double scale, double offset)
+        {
+            double edge = MapEdge(value, scale, offset);
+            if (Math.Abs(edge * 4 - Math.Round(edge * 4, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon viewBox mapping must preserve quarter-pixel output edges.");
             return edge;
         }
 

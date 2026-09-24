@@ -48,15 +48,15 @@ public sealed class SvgContourTopologyTests
     }
 
     [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='m0,0 l8,0 l-8,8 z' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 L0,8 Z' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L8,8 L8,0 L0,8 Z' fill='red'/></svg>", "Only simple diagonal polygon contours are implemented;")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='m0,0 l8,0 l-8,8 z m16,16 l8,0 l-8,8 z' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 L0,8 Z M16,16 H24 L16,24 Z' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8 H0 Z M16,16 L24,16 L16,24 Z' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8' fill='red'/></svg>", "Only axis-aligned path contours are implemented.")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L8,8' fill='red'/></svg>", "Only closed axis-aligned integer paths are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 M16,16 H24 V24 H16 Z' fill='red'/></svg>", "Only closed axis-aligned integer paths are implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", "Only axis-aligned polygon contours are implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><polyline points='0,0 8,0 0,8' fill='red'/></svg>", "Only axis-aligned polyline contours are implemented.")]
-    public void Diagonal_contours_reach_the_lowering_gate(string svg, string messageFragment)
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 8,8 8,0 0,8' fill='red'/></svg>", "Only simple diagonal polygon contours are implemented;")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><polyline points='0,0 8,8 4,4 0,8' fill='red'/></svg>", "Only simple diagonal polygon contours are implemented;")]
+    public void Non_simple_diagonal_contours_stay_unsupported(string svg, string messageFragment)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderLimits.Default, CancellationToken.None));
 

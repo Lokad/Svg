@@ -1861,9 +1861,9 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_diagonal_polygon_segments()
+    public void Rejects_self_intersecting_diagonal_polygons()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 2,1 2,2 0,2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 2,2 2,0 0,2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
@@ -1995,9 +1995,9 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_relative_diagonal_segments()
+    public void Rejects_relative_multi_contour_diagonals()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='m0,0 l2,1 h-2 z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='m0,0 l2,1 h-2 z m4,4 l2,1 h-2 z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }

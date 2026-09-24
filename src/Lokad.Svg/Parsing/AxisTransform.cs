@@ -36,6 +36,16 @@ internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int Offset
         };
     }
 
+    /// <summary>Maps one integer contour vertex through this admitted integer transform, keeping integer vertices exact.</summary>
+    internal (double X, double Y) ApplyToVertex(int x, int y)
+    {
+        int mappedX;
+        int mappedY;
+        try { mappedX = checked(ScaleX * x + OffsetX); mappedY = checked(ScaleY * y + OffsetY); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+        return (mappedX, mappedY);
+    }
+
     /// <summary>Maps one user-space gradient vector endpoint through this admitted integer transform.</summary>
     internal (double X, double Y) ApplyToUserPoint(double x, double y)
     {
