@@ -253,6 +253,48 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
     }
 
+    /// <summary>Lowers one circle stroke ring to two opposite-wound sampled loops sharing one nonzero fill.</summary>
+    internal SvgParsedGeometry LowerCircleStrokeFill(double centerX, double centerY, double radius, SvgResolvedPaintableElement element, SvgStroke stroke, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        if (scaleX != scaleY || scaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Circle strokes under non-uniform polygon transforms stay unsupported.");
+        double deviceRadius = radius * scaleX;
+        double deviceWidth = stroke.Width * scaleX;
+        if (!double.IsFinite(deviceRadius) || !double.IsFinite(deviceWidth)) throw new SvgException(SvgErrorCode.LimitExceeded, "Circle stroke coordinates exceed the admitted numeric range.");
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        int[] ends;
+        if (deviceRadius <= 0) ends = [];
+        else
+        {
+            double outerRadius = deviceRadius + deviceWidth / 2;
+            double innerRadius = deviceRadius - deviceWidth / 2;
+            SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
+            SvgFlattenPolicy flattenPolicy = new(FlattenFlatness, FlattenMaxDepth, ShapeSegmentsPerShape);
+            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(2), SvgMemoryCategory.Geometry);
+            SvgContourBuilder builder = new(MaximumFlattenedContourPoints, 2);
+            builder.AddEllipse(center, outerRadius, outerRadius, 0, flattenPolicy, _cancellationToken);
+            if (innerRadius > 0) builder.AddEllipse(center, innerRadius, innerRadius, 0, flattenPolicy, _cancellationToken);
+            ends = new int[builder.ContourCount];
+            for (int contour = 0; contour < builder.ContourCount; contour++)
+            {
+                if (AppendStrippedContour(mapped, builder.GetContour(contour), _workCounter, _cancellationToken) < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed circle stroke contours are implemented.");
+                ends[contour] = mapped.Count;
+            }
+
+            if (ends.Length == 2)
+            {
+                for (int left = ends[0], right = ends[1] - 1; left < right; left++, right--)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    (mapped[left], mapped[right]) = (mapped[right], mapped[left]);
+                }
+            }
+        }
+
+        return FinishPolygonFill(mapped, ends, stroke.Color, element.Presentation.IsPainted, SvgPolygonMapping.FlattenedCurves, frame, budget);
+    }
+
     /// <summary>Lowers one axis-aligned rounded rectangle to a sampled polygon fill.</summary>
     internal SvgParsedGeometry LowerRoundedRectFill(double x, double y, double width, double height, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {

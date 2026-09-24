@@ -329,12 +329,18 @@ internal static class SvgDefinitionParser
         {
             "polygon" or "polyline" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, int.MaxValue, state.Budget, null, state)),
             "path" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePath(reader, context, int.MaxValue, state.Budget, null, state)),
-            "circle" => [SvgLeafParser.ParseCircle(reader, context, null, state)],
+            "circle" => RetainCircleGeometries(SvgLeafParser.ParseCircle(reader, context, null, state)),
             "ellipse" => [SvgLeafParser.ParseEllipse(reader, context, null, state)],
             _ => throw new InvalidOperationException("Unsupported definition leaf reached shape lowering."),
         };
         if (geometries.Length > 0) state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Scene);
         return new SvgDefinition(geometries, IsOverrideableFill(style, geometries), symbolViewBox);
+
+        static SvgGeometry[] RetainCircleGeometries(SvgParsedGeometry parsed)
+        {
+            try { return parsed.Geometries.ToArray(); }
+            finally { parsed.Dispose(); }
+        }
 
         static bool IsOverrideableFill(SvgComputedStyle computed, SvgGeometry[] lowered)
         {
