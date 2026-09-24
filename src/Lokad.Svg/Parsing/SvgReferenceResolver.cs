@@ -51,7 +51,18 @@ internal static class SvgReferenceResolver
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
         SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
-        for (int index = 0; index < mapped.Length; index++) mapped[index] = instanceMap.Apply(polygon.Points[index].X + reference.X, polygon.Points[index].Y + reference.Y);
+        for (int index = 0; index < mapped.Length; index++)
+        {
+            SvgDevicePoint placed = instanceMap.Apply(polygon.Points[index].X + reference.X, polygon.Points[index].Y + reference.Y);
+            if (frame is not null)
+            {
+                double shiftedX = placed.X * frame.Value.ScaleX + frame.Value.OffsetX;
+                double shiftedY = placed.Y * frame.Value.ScaleY + frame.Value.OffsetY;
+                if (!double.IsFinite(shiftedX) || !double.IsFinite(shiftedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                placed = new SvgDevicePoint(shiftedX, shiftedY);
+            }
+            mapped[index] = placed;
+        }
         SvgClipBox? clip = polygon.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         SvgColor color = new(polygon.Color.Red, polygon.Color.Green, polygon.Color.Blue, MultiplyAlpha(polygon.Color.Alpha, reference.Opacity));

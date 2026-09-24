@@ -2569,6 +2569,17 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(new SvgRectangle(8, 8, 32, 32, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
     }
+    [Fact]
+    public void Offsets_a_polygon_use_instance_by_its_nested_viewport_origin()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><polygon id='p' points='0,0 4,0 0,4' fill='red'/></defs><svg x='8' y='8' width='32' height='32'><use href='#p'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.Equal(new SvgDevicePoint(8, 8), geometry.Polygon.Points[0]);
+        Assert.Equal(new SvgDevicePoint(12, 8), geometry.Polygon.Points[1]);
+        Assert.Equal(new SvgDevicePoint(8, 12), geometry.Polygon.Points[2]);
+    }
 
     [Fact]
     public void Offsets_nested_viewport_content_by_the_viewport_origin()

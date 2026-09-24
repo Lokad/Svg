@@ -241,6 +241,15 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(backward, forward);
     }
 
+    [Fact]
+    public void Nested_viewport_polygon_use_matches_direct_rendering()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><svg x='4' y='0' width='12' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><svg x='4' y='0' width='12' height='8'><use href='#p'/></svg></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
