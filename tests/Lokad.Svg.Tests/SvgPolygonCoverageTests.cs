@@ -171,6 +171,91 @@ public sealed class SvgPolygonCoverageTests
         Assert.Equal(32, SumCoverages(triangle, -1, 9, -1, 9), precision: 9);
     }
 
+    [Fact]
+    public void Winding_preserves_orientation_sign()
+    {
+        SvgDevicePoint[] counterClockwise = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+        SvgDevicePoint[] clockwise = [new SvgDevicePoint(0, 0), new SvgDevicePoint(0, 8), new SvgDevicePoint(8, 0)];
+
+        Assert.Equal(32, SumWinding(counterClockwise, [3], -1, 9, -1, 9), precision: 10);
+        Assert.Equal(-32, SumWinding(clockwise, [3], -1, 9, -1, 9), precision: 10);
+    }
+
+    [Fact]
+    public void Opposite_wound_hole_subtracts()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(2, 6), new SvgDevicePoint(6, 6), new SvgDevicePoint(6, 2)];
+
+        Assert.Equal(48, SumWinding(points, [4, 8], -1, 9, -1, 9), precision: 10);
+    }
+
+    [Fact]
+    public void Same_wound_overlap_adds()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];
+
+        Assert.Equal(80, SumWinding(points, [4, 8], -1, 9, -1, 9), precision: 10);
+    }
+
+    [Fact]
+    public void Disjoint_contours_add()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(0, 4), new SvgDevicePoint(8, 8), new SvgDevicePoint(12, 8), new SvgDevicePoint(12, 12), new SvgDevicePoint(8, 12)];
+
+        Assert.Equal(32, SumWinding(points, [4, 8], -1, 13, -1, 13), precision: 10);
+    }
+
+    [Fact]
+    public void Short_and_empty_contours_contribute_zero()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+
+        Assert.Equal(0, SumWinding([], [], 0, 1, 0, 1), precision: 10);
+        Assert.Equal(32, SumWinding(points, [0, 2, 5], -1, 9, -1, 9), precision: 10);
+    }
+
+    [Fact]
+    public void Hole_pixel_cancels_exactly()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(2, 6), new SvgDevicePoint(6, 6), new SvgDevicePoint(6, 2)];
+        int[] ends = [4, 8];
+
+        Assert.Equal(0, SvgPolygonCoverage.GetWindingCoverage(points, ends, 4, 4, CancellationToken.None), precision: 10);
+        Assert.Equal(1, SvgPolygonCoverage.GetWindingCoverage(points, ends, 1, 1, CancellationToken.None), precision: 10);
+    }
+
+    [Fact]
+    public void Invalid_ends_are_rejected()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [3, 2], 0, 0, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [4], 0, 0, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [-1, 3], 0, 0, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [2], 0, 0, CancellationToken.None));
+    }
+
+    [Fact]
+    public void Winding_precancelled_token_throws()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+        using CancellationTokenSource cancelled = new();
+        cancelled.Cancel();
+
+        Assert.Throws<OperationCanceledException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [3], 0, 0, cancelled.Token));
+    }
+
+    private static double SumWinding(SvgDevicePoint[] points, int[] ends, int minimumX, int maximumX, int minimumY, int maximumY)
+    {
+        double total = 0;
+        for (int y = minimumY; y <= maximumY; y++)
+        for (int x = minimumX; x <= maximumX; x++)
+        {
+            total += SvgPolygonCoverage.GetWindingCoverage(points, ends, x, y, CancellationToken.None);
+        }
+
+        return total;
+    }
     private static double SumCoverages(SvgDevicePoint[] contour, int minimumX, int maximumX, int minimumY, int maximumY)
     {
         double total = 0;

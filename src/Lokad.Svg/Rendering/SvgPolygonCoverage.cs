@@ -42,19 +42,64 @@ internal static class SvgPolygonCoverage
     internal static double GetExactCoverage(ReadOnlySpan<SvgDevicePoint> contour, int pixelX, int pixelY, CancellationToken cancellationToken)
     {
         if (contour.Length < 3) return 0;
+        double signedArea = FanSignedArea(contour, 0, contour.Length, pixelX, pixelY, cancellationToken);
+        cancellationToken.ThrowIfCancellationRequested();
+        return Math.Clamp(Math.Abs(signedArea), 0, 1);
+    }
+
+    /// <summary>Returns the signed winding coverage of the pixel square across explicit contours.</summary>
+    /// <remarks>
+    /// <para>Each contour fans from its own first vertex with signed accumulation and no absolute value,
+    /// so authored orientation is preserved: opposite-wound holes subtract, same-wound overlaps add, and
+    /// nonzero fill tests the total against zero downstream. The ends partition the flat points exactly;
+    /// empty and short contours contribute nothing. Exactness needs separated contour boundaries within
+    /// the pixel; even-odd nesting resolution stays a wiring concern.</para>
+    /// </remarks>
+    internal static double GetWindingCoverage(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, int pixelX, int pixelY, CancellationToken cancellationToken)
+    {
+        ValidateContourEnds(points, contourEnds);
+        double winding = 0;
+        int start = 0;
+        for (int contour = 0; contour < contourEnds.Length; contour++)
+        {
+            if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+            int end = contourEnds[contour];
+            if (end - start >= 3) winding += FanSignedArea(points, start, end, pixelX, pixelY, cancellationToken);
+            start = end;
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        return winding;
+    }
+
+    private static void ValidateContourEnds(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds)
+    {
+        int previous = 0;
+        for (int index = 0; index < contourEnds.Length; index++)
+        {
+            if (contourEnds[index] < previous || contourEnds[index] > points.Length) throw new ArgumentOutOfRangeException(nameof(contourEnds));
+            previous = contourEnds[index];
+        }
+
+        if (contourEnds.Length > 0 && previous != points.Length) throw new ArgumentOutOfRangeException(nameof(contourEnds));
+    }
+
+    private static double FanSignedArea(ReadOnlySpan<SvgDevicePoint> contour, int start, int end, int pixelX, int pixelY, CancellationToken cancellationToken)
+    {
         double left = pixelX;
         double top = pixelY;
         double signedArea = 0;
-        SvgDevicePoint origin = contour[0];
-        for (int index = 1; index + 1 < contour.Length; index++)
+        double originX = contour[start].X;
+        double originY = contour[start].Y;
+        for (int index = start + 1; index + 1 < end; index++)
         {
             if ((index & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
             SvgDevicePoint second = contour[index];
             SvgDevicePoint third = contour[index + 1];
-            signedArea += ClipTriangleArea(origin.X, origin.Y, second.X, second.Y, third.X, third.Y, left, top);
+            signedArea += ClipTriangleArea(originX, originY, second.X, second.Y, third.X, third.Y, left, top);
         }
-        cancellationToken.ThrowIfCancellationRequested();
-        return Math.Clamp(Math.Abs(signedArea), 0, 1);
+
+        return signedArea;
     }
 
     private static double ClipTriangleArea(double firstX, double firstY, double secondX, double secondY, double thirdX, double thirdY, double left, double top)
