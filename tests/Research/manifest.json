@@ -681,6 +681,84 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-diagonal-slope-06-8x8",
+      "path": "diagonal-slope-06-8x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-24",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "9aa59862349252c6511d4720665ea70229e55b465c4b6c23393cf71f2d88aa9c",
+      "featureTags": ["geometry", "path", "diagonal-edge", "fractional-coordinates", "apex-partial-row", "left-slope", "coverage", "calibration"],
+      "width": 8,
+      "height": 8,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/diagonal-slope-06-8x8.png",
+        "referenceSha256": "ddf24d4e21866d8ad9fd28a60d64ebbd7909dba08a26dd64b96268533b68bc05",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-diagonal-slope-08-8x8",
+      "path": "diagonal-slope-08-8x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-24",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "4ea66d5d1e3fd56a661d948e16217733b7191168a6313f6614e320a7e46e5cd2",
+      "featureTags": ["geometry", "path", "diagonal-edge", "fractional-coordinates", "apex-partial-row", "left-slope", "coverage", "calibration"],
+      "width": 8,
+      "height": 8,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/diagonal-slope-08-8x8.png",
+        "referenceSha256": "6d35915aed04a454c4c61a813230d26933116f408d5d0dc36fb825d299b6199e",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-diagonal-slope-11-8x8",
+      "path": "diagonal-slope-11-8x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-24",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "4e14c2122b1ba22c49f24617fe66f1e7e9f4cc21979a8cd579bdef46af6e1097",
+      "featureTags": ["geometry", "path", "diagonal-edge", "fractional-coordinates", "apex-partial-row", "left-slope", "coverage", "calibration"],
+      "width": 8,
+      "height": 8,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/diagonal-slope-11-8x8.png",
+        "referenceSha256": "16edd0a8a86ddfc8014f4c02f5ff1527d469611a97ebdbf924d855701523b410",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
