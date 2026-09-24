@@ -531,10 +531,11 @@ public static class SvgConverter
                 {
                     double absolute = definition.Offset1 + position * offsetSpan;
                     int segment = 0;
-                    while (segment < definition.Stops.Length - 2 && absolute > definition.Stops[segment + 1].Offset) segment++;
+                    while (segment < definition.Stops.Length - 2 && absolute >= definition.Stops[segment + 1].Offset) segment++;
                     SvgGradientStop first = definition.Stops[segment];
                     SvgGradientStop second = definition.Stops[segment + 1];
-                    double blend = (absolute - first.Offset) / (second.Offset - first.Offset);
+                    // A zero-width segment is a hard edge: the later stop wins at the shared offset, matching the pinned oracle.
+                    double blend = second.Offset <= first.Offset ? 1 : (absolute - first.Offset) / (second.Offset - first.Offset);
                     if (transparentStops)
                         tileColor = TransparentTileColor(first.Color, second.Color, blend, dither, opacity);
                     else

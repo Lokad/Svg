@@ -246,19 +246,17 @@ internal static class SvgDefinitionParser
 
     private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ClampStopList(SvgDocumentState state)
     {
+        // A stop offset below the previous effective offset rises to it, forming a hard edge; Math.Clamp below preserves the order.
         for (int index = 1; index < state.GradientStops.Count; index++)
         {
-            if (!(state.GradientStops[index - 1].Offset < state.GradientStops[index].Offset)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only increasing-offset linear gradient stops are implemented.");
+            if (state.GradientStops[index].Offset < state.GradientStops[index - 1].Offset) state.GradientStops[index] = new SvgGradientStop(state.GradientStops[index - 1].Offset, state.GradientStops[index].Color);
         }
         SvgGradientStop[] clamped = new SvgGradientStop[state.GradientStops.Count];
         for (int index = 0; index < clamped.Length; index++)
         {
             clamped[index] = new SvgGradientStop(Math.Clamp(state.GradientStops[index].Offset, 0, 1), state.GradientStops[index].Color);
         }
-        for (int index = 1; index < clamped.Length; index++)
-        {
-            if (!(clamped[index - 1].Offset < clamped[index].Offset)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only linear gradient stops spanning a nonzero clamped offset range are implemented.");
-        }
+        if (clamped.Length > 1 && !(clamped[0].Offset < clamped[^1].Offset)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only linear gradient stops spanning a nonzero clamped offset range are implemented.");
         return (clamped[0].Color, clamped[^1].Color, clamped[0].Offset, clamped[^1].Offset, false, clamped);
     }
 

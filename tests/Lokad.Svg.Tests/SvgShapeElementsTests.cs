@@ -198,6 +198,17 @@ public sealed class SvgShapeElementsTests
         Assert.Equal(rgba, faded);
     }
 
+    [Fact]
+    public void Duplicate_gradient_stops_render_a_hard_edge()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='0.5' stop-color='#ff0000'/><stop offset='0.5' stop-color='#0000ff'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 3, 7));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 8, 4, 0));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 8, 7, 7));
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
