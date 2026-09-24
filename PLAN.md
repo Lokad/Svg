@@ -213,6 +213,7 @@ to the existing probe instead of creating another resource tool. Explicitly gate
 an affected feature if a safe short repair is unavailable; do not expand its syntax
 while its resource contract is false. This is new code, not reopening the repaired
 R04/R17 glyph/discovery defects.
+Status 2026-09-24: retained gradient stop arrays transfer one scene-owned reservation per distinct array at scene-add time (shared href and band references counted once, empty arrays skipped), with scene-builder accounting, retained-scene, and budget-denial regressions. Per-wrapper object bytes remain unreserved, matching the existing glyph-wrapper granularity.
 
 ### R30 / P1 design, P2 GC — Geometry, paint and ownership are becoming entangled
 

@@ -407,13 +407,15 @@ internal sealed class SvgSceneStorage : IDisposable
 {
     private readonly RenderBudget.BudgetReservation? _geometryReservation;
     private readonly RenderBudget.BudgetReservation? _commandReservation;
+    private readonly List<RenderBudget.BudgetReservation> _paintReservations;
 
-    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation)
+    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation, List<RenderBudget.BudgetReservation> paintReservations)
     {
         Geometries = geometries;
         Commands = commands;
         _geometryReservation = geometryReservation;
         _commandReservation = commandReservation;
+        _paintReservations = paintReservations;
     }
 
     internal SvgGeometry[] Geometries { get; }
@@ -423,18 +425,20 @@ internal sealed class SvgSceneStorage : IDisposable
 
     internal SvgDrawCommand[] Commands { get; }
 
-    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands)
+    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands, List<RenderBudget.BudgetReservation> paintReservations)
     {
+        ArgumentNullException.ThrowIfNull(paintReservations);
         OwnedSceneArray<SvgGeometry> ownedGeometries = geometries.Detach();
         try
         {
             OwnedSceneArray<SvgDrawCommand> ownedCommands = commands.Detach();
-            return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation);
+            return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation, paintReservations);
         }
         catch
         {
             foreach (SvgGeometry geometry in ownedGeometries.Items) geometry.Dispose();
             ownedGeometries.Dispose();
+            foreach (RenderBudget.BudgetReservation reservation in paintReservations) reservation.Dispose();
             throw;
         }
     }
@@ -444,31 +448,52 @@ internal sealed class SvgSceneStorage : IDisposable
         foreach (SvgGeometry geometry in Geometries) geometry.Dispose();
         _geometryReservation?.Dispose();
         _commandReservation?.Dispose();
+        foreach (RenderBudget.BudgetReservation reservation in _paintReservations) reservation.Dispose();
     }
 }
 
 /// <summary>Owns the mutable, budgeted scene construction phase until arrays transfer to scene storage.</summary>
 internal sealed class SvgSceneBuilder : IDisposable
 {
+    private readonly RenderBudget _budget;
     private readonly BudgetedSceneList<SvgGeometry> _geometries;
     private readonly BudgetedSceneList<SvgDrawCommand> _commands;
+    private List<RenderBudget.BudgetReservation> _paintReservations = new();
+    private readonly HashSet<SvgGradientStop[]> _reservedStopArrays = new();
     private bool _built;
 
     internal SvgSceneBuilder(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(budget);
+        _budget = budget;
         _geometries = new(budget, workCounter, cancellationToken);
         _commands = new(budget, workCounter, cancellationToken);
     }
 
     internal void AddGeometry(SvgGeometry geometry)
     {
+        ReserveGradientStops(geometry);
         int geometryIndex = _geometries.Count;
         _geometries.Add(geometry);
         _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255));
     }
 
+    /// <summary>Transfers one scene-owned reservation per distinct retained gradient stop array.</summary>
+    internal void ReserveGradientStops(SvgGeometry geometry)
+    {
+        SvgGradientStop[]? stops = geometry.Kind switch
+        {
+            SvgGeometryKind.GradientFill => geometry.Gradient.Gradient.Stops,
+            SvgGeometryKind.GradientStroke => geometry.GradientStroke.Gradient.Stops,
+            _ => null,
+        };
+        if (stops is null || stops.Length == 0 || !_reservedStopArrays.Add(stops)) return;
+        _paintReservations.Add(_budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(stops.Length), SvgMemoryCategory.Scene));
+    }
+
     internal void AddGeometries(ReadOnlySpan<SvgGeometry> geometries)
     {
+        foreach (SvgGeometry geometry in geometries) ReserveGradientStops(geometry);
         int firstGeometryIndex = _geometries.Count;
         _geometries.AddRange(geometries);
         for (int index = 0; index < geometries.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255));
@@ -484,6 +509,7 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal void Replace(SvgSceneSlot slot, SvgGeometry geometry)
     {
+        ReserveGradientStops(geometry);
         _geometries[slot.GeometryIndex] = geometry;
         _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255);
     }
@@ -496,7 +522,9 @@ internal sealed class SvgSceneBuilder : IDisposable
     {
         if (_built) throw new InvalidOperationException("The SVG scene has already been built.");
         _built = true;
-        return SvgSceneStorage.Create(_geometries, _commands);
+        SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations);
+        _paintReservations = new();
+        return storage;
     }
 
     public void Dispose()
@@ -504,6 +532,8 @@ internal sealed class SvgSceneBuilder : IDisposable
         foreach (SvgGeometry geometry in _geometries.Items) geometry.Dispose();
         _geometries.Dispose();
         _commands.Dispose();
+        foreach (RenderBudget.BudgetReservation reservation in _paintReservations) reservation.Dispose();
+        _paintReservations.Clear();
     }
 }
 
