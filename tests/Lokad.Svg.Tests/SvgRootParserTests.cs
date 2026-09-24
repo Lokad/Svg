@@ -1482,6 +1482,18 @@ public sealed class SvgRootParserTests
         Assert.Equal(new SvgRectangle(0, 0, 8, 4, default, true, null), root.Geometries[0].Gradient.Fill);
         Assert.Equal(new SvgRectangle(0, 4, 4, 4, default, true, null), root.Geometries[1].Gradient.Fill);
     }
+    [Fact]
+    public void Lowers_gradient_stroke_rect_instances_through_placement()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><rect id='r' x='0' y='0' width='8' height='8' fill='#ff0000' stroke='url(#g)' stroke-width='2'/></defs><use href='#r' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientStroke, geometry.Kind);
+        Assert.Equal(new SvgRectangle(8, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), geometry.GradientStroke.Fill);
+        Assert.Equal(new SvgRectangle(7, -1, 10, 2, default, true, null), geometry.GradientStroke.Top);
+        Assert.Equal(new SvgRectangle(8, 0, 8, 8, default, true, null), geometry.GradientStroke.Box);
+        Assert.Equal(255, geometry.GradientStroke.Opacity);
+    }
 
     [Fact]
     public void Renders_reflected_gradient_paths_identical_to_hand_mirrored_baselines()

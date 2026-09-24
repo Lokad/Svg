@@ -18,7 +18,7 @@ internal static class SvgDefinitionParser
             else SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
             SvgViewBox? symbolViewBox = state.SymbolDepth >= 0 ? state.SymbolViewBox : null;
-            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, symbolViewBox)
+            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, symbolViewBox)
                 : reader.LocalName == "line" ? new SvgDefinition([SvgLeafParser.ParseLine(reader, context, null, state)], false, symbolViewBox)
                 : ParseShapeDefinition(reader, context, state, symbolViewBox);
             if (id is not null)
@@ -332,8 +332,10 @@ internal static class SvgDefinitionParser
         finally { parsed.Dispose(); }
     }
 
-    private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgViewBox? symbolViewBox)
+    private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
+        SvgComputedStyle style = context.ResolveStyle(reader);
+        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return new SvgDefinition([SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null)], false, symbolViewBox);
         SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
         return new SvgDefinition([parsed.Geometry], parsed.Geometry.Rectangle.HasFill && parsed.Style == default, symbolViewBox);
     }

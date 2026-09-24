@@ -40,6 +40,7 @@ internal static class SvgReferenceResolver
                 SvgGeometryKind.AxisAlignedLine => ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame),
                 SvgGeometryKind.PolygonFill => ApplyPolygon(sources[index].Polygon, reference, frame, state),
                 SvgGeometryKind.GradientFill => LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame),
+                SvgGeometryKind.GradientStroke => LowerEmbeddedInstanceGradientStroke(sources[index].GradientStroke, reference, frame),
                 _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.")
             };
         }
@@ -52,6 +53,36 @@ internal static class SvgReferenceResolver
             SvgRectangle box = InstanceBox(band.Box, instance, viewportFrame);
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
             return LowerInstanceGradientFill(band.Gradient, placement, box, composed, viewportFrame);
+        }
+
+        static SvgGeometry LowerEmbeddedInstanceGradientStroke(SvgGradientStrokeGeometry stroke, SvgUseReference instance, SvgViewportFrame? viewportFrame)
+        {
+            SvgLinearGradient vector = stroke.Gradient;
+            if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 + instance.X, Y1 = vector.Y1 + instance.Y, X2 = vector.X2 + instance.X, Y2 = vector.Y2 + instance.Y };
+            vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
+            vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
+            SvgRectangle fill = InstancePlacement(stroke.Fill, instance);
+            SvgRectangle top = InstancePlacement(stroke.Top, instance);
+            SvgRectangle bottom = InstancePlacement(stroke.Bottom, instance);
+            SvgRectangle left = InstancePlacement(stroke.Left, instance);
+            SvgRectangle right = InstancePlacement(stroke.Right, instance);
+            SvgRectangle box = InstancePlacement(stroke.Box, instance);
+            if (viewportFrame is not null)
+            {
+                SvgRectangle extents = InstancePlacement(stroke.OuterBox(), instance);
+                if (!viewportFrame.Value.Clip.Contains(extents.X, extents.Y, extents.X + extents.Width, extents.Y + extents.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
+                fill = viewportFrame.Value.Clip.ClipRectangle(viewportFrame.Value.Shift(fill));
+                top = viewportFrame.Value.Clip.ClipRectangle(viewportFrame.Value.Shift(top));
+                bottom = viewportFrame.Value.Clip.ClipRectangle(viewportFrame.Value.Shift(bottom));
+                left = viewportFrame.Value.Clip.ClipRectangle(viewportFrame.Value.Shift(left));
+                right = viewportFrame.Value.Clip.ClipRectangle(viewportFrame.Value.Shift(right));
+                box = viewportFrame.Value.Shift(box);
+            }
+            byte opacity = MultiplyAlpha(stroke.Opacity, instance.Opacity);
+            bool painted = stroke.Fill.HasFill && instance.IsPainted;
+            SvgColor baseColor = stroke.Fill.Color;
+            SvgRectangle finished = fill with { Color = new SvgColor(baseColor.Red, baseColor.Green, baseColor.Blue, MultiplyAlpha(baseColor.Alpha, instance.Opacity)), HasFill = painted };
+            return SvgGeometry.FromGradientStroke(new SvgGradientStrokeGeometry(finished, top, bottom, left, right, vector, box, opacity, stroke.HasStroke && instance.IsPainted));
         }
     }
 
