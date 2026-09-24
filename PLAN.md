@@ -412,7 +412,7 @@ general-path slice. This does not reopen the broader tooling backlog as a gate.
    cubic curves and smooth commands; then elliptical arcs and normalized circles,
    ellipses/rounded rectangles. Use bounded device-space subdivision/edge work.
    Admit each family only when its full oracle family is exact; do not publish
-   parser-only completion as rendering support. Status 2026-09-24: pure-geometry quadratic/cubic flattening kernel landed (SvgCurveFlatten: adaptive device-space midpoint subdivision with explicit flatness/depth/expansion policy, LimitExceeded on depth/exhaustion/overflow, 20 unit tests); no parser/renderer wiring and no admitted-syntax change.
+   parser-only completion as rendering support. Status 2026-09-24: pure-geometry elliptical-arc normalization kernel landed (SvgEllipticalArc: endpoint-to-center conversion with radii correction, rotation, large-arc/sweep selection and line degeneracies, LimitExceeded on overflow, 14 unit tests); no parser/renderer wiring and no admitted-syntax change. Status 2026-09-24: pure-geometry quadratic/cubic flattening kernel landed (SvgCurveFlatten: adaptive device-space midpoint subdivision with explicit flatness/depth/expansion policy, LimitExceeded on depth/exhaustion/overflow, 20 unit tests); no parser/renderer wiring and no admitted-syntax change.
 4. **Outlined-wordmark checkpoint.** Retain independently selected outlined text
    logos with counters and many contours, plus flat curved marks, at intended,
    small and large sizes. Run all backgrounds/scales declared for each document.
