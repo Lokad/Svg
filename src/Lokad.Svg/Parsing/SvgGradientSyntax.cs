@@ -75,7 +75,6 @@ internal static class SvgGradientSyntax
         if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal) && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only objectBoundingBox and userSpaceOnUse radial gradient units are implemented.");
         string? spread = reader.GetAttribute("spreadMethod");
         SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
-        if (spreadMethod != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread radial gradients are implemented.");
         if (reader.GetAttribute("gradientTransform") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient transforms are not implemented.");
         if (reader.GetAttribute("fr") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Focal-radius radial gradients are not implemented.");
         string? rawCenterX = reader.GetAttribute("cx");

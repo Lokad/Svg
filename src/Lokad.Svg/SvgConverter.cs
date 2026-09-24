@@ -669,8 +669,17 @@ public static class SvgConverter
                     if (discriminant < 0) discriminant = 0;
                     position = raySquared / (dot + Math.Sqrt(discriminant));
                 }
-                if (position < 0) position = 0;
-                if (position > 1) position = 1;
+                if (definition.Spread == SvgGradientSpread.Repeat) position -= Math.Floor(position);
+                else if (definition.Spread == SvgGradientSpread.Reflect)
+                {
+                    double cycle = position - 2 * Math.Floor(position / 2);
+                    position = cycle > 1 ? 2 - cycle : cycle;
+                }
+                else
+                {
+                    if (position < 0) position = 0;
+                    if (position > 1) position = 1;
+                }
                 double dither = GradientDither[x & 7, y & 7] / 64d;
                 SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
                 SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
