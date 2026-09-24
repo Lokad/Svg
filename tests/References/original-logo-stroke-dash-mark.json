@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-stroke-dash-mark",
+  "referencePng": "original-logo-stroke-dash-mark.png",
+  "referenceSha256": "c11e0aa9779be06b584c05735c92697fe3aa82e4ef92351a410371ba0dfb5e89",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 32, "height": 16, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "01b22d3473867a816dc3cd214889b8a0c1d1b9a0343d0842eebb42c191ab8470",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-25"
+}

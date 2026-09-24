@@ -4,7 +4,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Validates the admitted no-op stroke style subset shared by attributes and style declarations.</summary>
+/// <summary>Validates the admitted stroke style subset shared by attributes and style declarations.</summary>
 internal static class SvgStrokeStyleSyntax
 {
     /// <summary>Validates one stroke style attribute value, ignoring namespaces already cleared by the caller.</summary>
@@ -18,7 +18,7 @@ internal static class SvgStrokeStyleSyntax
     {
         if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan(), allowNonButt);
         else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan(), allowNonButt);
-        else if (localName == "stroke-dasharray") ValidateDasharray(value.AsSpan());
+        else if (localName == "stroke-dasharray") ValidateDasharray(value.AsSpan(), allowNonButt);
         else if (localName == "stroke-dashoffset") ValidateDashoffset(value.AsSpan());
     }
 
@@ -39,16 +39,74 @@ internal static class SvgStrokeStyleSyntax
 
     private static void ValidateDashoffset(ReadOnlySpan<char> value)
     {
+        _ = ParseDashoffsetValue(value);
+    }
+
+    private static void ValidateDasharray(ReadOnlySpan<char> value, bool allowNonButt)
+    {
+        if (value.Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (!allowNonButt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
+        _ = ParseDashEntries(value);
+    }
+
+    /// <summary>Bounds retained dash pattern entries; longer lists stay explicitly unsupported.</summary>
+    internal const int MaximumDashEntries = 8;
+
+    /// <summary>Parses one dash pattern, returning nothing for an absent or solid pattern.</summary>
+    internal static double[]? ParseDasharray(string? value)
+    {
+        if (value is null) return null;
+        if (value.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return null;
+        return ParseDashEntries(value.AsSpan());
+    }
+
+    /// <summary>Parses one dash offset in user units, defaulting to zero like SVG.</summary>
+    internal static double ParseDashoffset(string? value)
+    {
+        if (value is null) return 0;
+        return ParseDashoffsetValue(value.AsSpan());
+    }
+
+    private static double ParseDashoffsetValue(ReadOnlySpan<char> value)
+    {
         ReadOnlySpan<char> token = value.Trim();
         if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
+        if (result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash offsets are implemented.");
+        return result;
     }
 
-    private static void ValidateDasharray(ReadOnlySpan<char> value)
+    private static double[] ParseDashEntries(ReadOnlySpan<char> value)
     {
-        if (value.Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
+        SvgGeometrySyntax.DelimitedTokenReader tokens = new(value);
+        int count = 0;
+        while (tokens.TryReadValue(out ReadOnlySpan<char> entry))
+        {
+            if (count >= MaximumDashEntries) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only dash arrays with at most eight entries are implemented.");
+            _ = ParseDashEntry(entry);
+            count++;
+        }
+
+        if (count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
+        tokens = new(value);
+        bool doubled = (count & 1) == 1;
+        double[] pattern = new double[doubled ? count * 2 : count];
+        int index = 0;
+        while (tokens.TryReadValue(out ReadOnlySpan<char> entry)) pattern[index++] = ParseDashEntry(entry);
+        if (doubled) Array.Copy(pattern, 0, pattern, count, count);
+        return pattern;
+    }
+
+    private static double ParseDashEntry(ReadOnlySpan<char> entry)
+    {
+        ReadOnlySpan<char> token = entry.Trim();
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash array entries are implemented.");
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px dash array entries are implemented.");
+        if (result < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Dash array lengths cannot be negative.");
+        if (result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dash array entries must be finite bounded numbers.");
+        return result;
     }
 
     /// <summary>Rejects paint-server strokes before color resolution, keeping solid colors and currentColor admitted.</summary>
@@ -66,9 +124,9 @@ internal static class SvgStrokeStyleSyntax
     }
 
     /// <summary>Resolves one admitted solid stroke, or nothing when the element carries no stroke paint.</summary>
-    internal readonly record struct SvgAdmittedStroke(SvgColor Color, int Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join);
+    internal readonly record struct SvgAdmittedStroke(SvgColor Color, int Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join, double[]? DashPattern, double DashOffset);
 
-    /// <summary>Validates the stroke subset shared by stroked shapes, rejecting paint servers, odd widths and small limits.</summary>
+    /// <summary>Validates the stroke subset shared by stroked shapes, rejecting paint servers, odd widths, small limits and unsupported dash combinations.</summary>
     internal static SvgAdmittedStroke? ResolveAdmittedStroke(XmlReader reader, SvgComputedStyle style, SvgResolvedPaintableElement shape, string elementName)
     {
         ArgumentNullException.ThrowIfNull(reader);
@@ -78,8 +136,22 @@ internal static class SvgStrokeStyleSyntax
         double miterLimit = ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
         SvgStrokeCap cap = ParseLinecap(reader.GetAttribute("stroke-linecap"));
         SvgStrokeJoin join = ParseLinejoin(reader.GetAttribute("stroke-linejoin"));
+        double[]? dashes = ParseDasharray(reader.GetAttribute("stroke-dasharray"));
+        double dashOffset = ParseDashoffset(reader.GetAttribute("stroke-dashoffset"));
+        if (dashes is not null)
+        {
+            bool hasPositive = false;
+            bool hasZero = false;
+            foreach (double entry in dashes)
+            {
+                if (entry == 0) hasZero = true;
+                else hasPositive = true;
+            }
+            if (!hasPositive) return null;
+            if (hasZero && cap != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Zero-length dashes with round or square caps are not implemented.");
+        }
         SvgColor color = SvgPaintResolver.ApplyOpacity(shape.Presentation.StrokeColor.Value, shape.Presentation.Opacity);
-        return new SvgAdmittedStroke(color, width, miterLimit, cap, join);
+        return new SvgAdmittedStroke(color, width, miterLimit, cap, join, dashes, dashOffset);
     }
 
     /// <summary>Parses the open-end cap style, defaulting to butt like SVG.</summary>

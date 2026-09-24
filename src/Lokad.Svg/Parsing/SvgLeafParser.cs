@@ -137,6 +137,8 @@ internal static class SvgLeafParser
         }
         SvgStroke? stroke = ParseCircleStroke(element, reader);
         if (stroke is null || !element.Presentation.IsPainted) return filled;
+        string? circleDashes = reader.GetAttribute("stroke-dasharray");
+        if (circleDashes is not null && !circleDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed circle strokes are not implemented.");
         try
         {
             using SvgParsedGeometry ring = lowering.LowerCircleStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, element, stroke.Value, frame, state.Budget);
