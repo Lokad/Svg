@@ -11,13 +11,16 @@ public sealed class SvgPolygonFillTests
     public void Polygon_fill_retains_typed_points_with_scene_storage()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+        int[] ends = [3];
         RenderBudget budget = new(long.MaxValue);
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, new SvgColor(255, 0, 0, 255), true, false, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, null, budget);
 
         SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
 
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
         Assert.Same(points, geometry.Polygon.Points);
+        Assert.Same(ends, geometry.Polygon.ContourEnds);
+        Assert.Null(geometry.Polygon.Signs);
         Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
         Assert.True(geometry.Polygon.HasFill);
         Assert.False(geometry.Polygon.IsEvenOdd);
@@ -77,13 +80,12 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Multi_contour_diagonal_path_stays_unsupported()
+    public void Nested_same_wound_nonzero_triangle_fills_outer()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z M2,1 L4,1 L2,3 Z' fill='red'/></svg>");
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z M2,1 L4,1 L2,3 Z' fill='red'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 1));
+        Assert.Equal(8164, AlphaSum(pixels));
     }
 
     [Fact]
@@ -136,6 +138,57 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 5, 0));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 0));
         Assert.Equal(2042, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Nonzero_opposite_wound_hole_stays_open()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M2,2 L2,6 L6,2 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 7, 7));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 3, 3));
+        Assert.Equal(14282, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Even_odd_same_wound_hole_stays_open()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M2,2 L6,2 L2,6 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 3, 3));
+        Assert.Equal(14282, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Nonzero_same_wound_overlap_fills()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M2,2 L6,2 L2,6 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 3, 3));
+        Assert.Equal(16320, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Touching_hole_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M0,4 L4,2 L4,6 Z' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Disjoint_triangles_union_sums_coverage()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,0 L0,4 Z M4,4 L8,4 L4,8 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 7));
+        Assert.Equal(4084, AlphaSum(pixels));
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)

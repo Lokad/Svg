@@ -1997,7 +1997,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Rejects_relative_multi_contour_diagonals()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='m0,0 l2,1 h-2 z m4,4 l2,1 h-2 z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='m0,0 l2,0 l0,2 l-2,0 z m2,1 l2,-1 l0,2 z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }

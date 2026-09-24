@@ -336,17 +336,15 @@ public static class SvgConverter
             long coverage = (long)(endY - startY) * (endX - startX);
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
             workUnits += coverage;
-            Span<int> contourEnds = stackalloc int[1];
-            contourEnds[0] = mapped.Length;
-            Span<int> evenOddSign = stackalloc int[1];
-            evenOddSign[0] = 1;
+            ReadOnlySpan<int> contourEnds = polygon.ContourEnds;
+            ReadOnlySpan<int> nestingSigns = polygon.Signs is int[] signs ? signs : Array.Empty<int>();
             for (int y = startY; y < endY; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 for (int x = startX; x < endX; x++)
                 {
                     double pixelCoverage = polygon.IsEvenOdd
-                        ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, evenOddSign, x, y, cancellationToken)
+                        ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
                         : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
                     SvgColor color = WithCoverage(polygon.Color, pixelCoverage);
                     int offset = (y * outputWidth + x) * 4;
