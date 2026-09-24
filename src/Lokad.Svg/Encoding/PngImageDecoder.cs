@@ -45,6 +45,7 @@ internal static class PngImageDecoder
             uint expectedCrc = BinaryPrimitives.ReadUInt32BigEndian(png.Span.Slice(position + 8 + length, 4));
             workCounter.ConsumeBytes(length, cancellationToken);
             if (ComputeCrc(type, data) != expectedCrc) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data fails its chunk integrity check.");
+            if (seenEnd) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data continues after its end chunk.");
             if (type.SequenceEqual("IHDR"u8))
             {
                 if (seenHeader || position != PngSignature.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data misplaces its header chunk.");

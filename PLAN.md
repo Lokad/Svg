@@ -342,7 +342,7 @@ This is not a reason to implement general image formats now.
 boundary without swallowing cancellation/limit exceptions, and add independent
 CRC-valid corrupt-compression/chunk-order/truncation cases across public output
 forms. Keep destinations untouched for parse failures. Pair with R29's decoder
-repair; keep multi-color image/resampling expansion deferred to measured demand.
+repair; keep multi-color image/resampling expansion deferred to measured demand. Status 2026-09-24: bit fix and pixel categorization already landed (26ba8fa); this turn adds a programmatic PNG builder with CRC self-check plus order/truncation negatives (IDAT-before-PLTE, missing/trailing/second-IHDR, truncated header, overlong length, empty stream, post-IEND guard) and a four-input six-forms failure matrix with destination-untouched asserts. Late tRNS stays lenient (existing vectors, harmless).
 
 ## 4. Completed repairs and deferred text work
 
