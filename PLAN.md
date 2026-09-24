@@ -735,6 +735,7 @@ Status 2026-09-24: direct local use of polygon/polyline/path/circle/ellipse fill
 - Preserve multiple contours/holes, either orientation, touching/coincident and
   self-intersecting contours under nonzero/evenodd. Distinguish implicit fill
   closure from explicit stroke closure.
+  Status 2026-09-24: integer straight-path fills seal every unclosed subpath implicitly (plus explicit return-to-start), lowering identically to the closed form and matching the general curved-path parser; stroke keeps explicit-closure tracking.
 - Normalize circles, ellipses, rounded rectangles, lines, polygons and polylines
   to shared geometry; retain independent equivalent-shape tests.
 - Support fractional coordinates, relevant units/percentages and all viewBox

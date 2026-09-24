@@ -2201,6 +2201,24 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Admits_nonfinal_unclosed_path_subpath()
+    {
+        SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgRoot open = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(closed.Rectangles, open.Rectangles);
+    }
+
+    [Fact]
+    public void Admits_explicit_return_to_start_path_subpath()
+    {
+        SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgRoot returned = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 V0 M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(closed.Rectangles, returned.Rectangles);
+    }
+
+    [Fact]
     public void Enforces_the_path_command_limit_before_expanding_polygon_storage()
     {
         SvgRenderLimits limits = new(1024, 1024, 10, 100, 1024, 1, 1, 100);

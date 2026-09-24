@@ -51,6 +51,8 @@ internal static class SvgOrthogonalGeometryTokenizer
                         current = AddLinePoint(points, contourStart, current, implicitLine == 'L' ? new SvgPoint(ix, iy) : AddOffset(current, ix, iy));
                         continue;
                     }
+                    // An unclosed subpath seals implicitly for fill when the next subpath begins; the outer loop consumes the moveto.
+                    if (tokens.PeekCommand() is 'M' or 'm') break;
                     char command = tokens.ReadCommand();
                     if (command == 'H' || command == 'h')
                     {
@@ -84,6 +86,8 @@ internal static class SvgOrthogonalGeometryTokenizer
                     else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 }
                 current = points[contourStart];
+                // An explicit return to the contour start without closepath seals the contour for fill.
+                if (points.Count > contourStart && points[points.Count - 1] == points[contourStart]) points.RemoveLast();
                 int contourEnd = points.Count;
                 if (contourEnd - contourStart < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 if (points.Count > maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
@@ -246,6 +250,14 @@ internal static class SvgOrthogonalGeometryTokenizer
             ConsumeCheckpoints();
             if (_position == _value.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
             return _value[_position++];
+        }
+
+        internal char PeekCommand()
+        {
+            SkipSeparators();
+            ConsumeCheckpoints();
+            if (_position == _value.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
+            return _value[_position];
         }
 
         internal ReadOnlySpan<char> ReadValue()

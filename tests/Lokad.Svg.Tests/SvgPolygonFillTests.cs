@@ -81,6 +81,24 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Unclosed_nonfinal_diagonal_subpath_seals_like_closepath()
+    {
+        byte[] closed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z M2,1 L4,1 L2,3 Z' fill='red'/></svg>", out _, out _);
+        byte[] unclosed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 M2,1 L4,1 L2,3' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(closed, unclosed);
+    }
+
+    [Fact]
+    public void Explicit_return_to_start_seals_like_closepath()
+    {
+        byte[] closed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] returned = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 L0,0' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(closed, returned);
+    }
+
+    [Fact]
     public void Nested_same_wound_nonzero_triangle_fills_outer()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z M2,1 L4,1 L2,3 Z' fill='red'/></svg>", out _, out _);
