@@ -127,7 +127,9 @@ internal static class SvgDefinitionParser
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
                 SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 tileContext = tileContext with { InheritedPresentation = tileContext.InheritedPresentation with { Transform = AxisTransform.Identity } };
-                SvgGeometry content = SvgLeafParser.ParseRectangle(reader, tileContext, null, state);
+                using SvgParsedGeometry parsedContent = SvgLeafParser.ParseRectangle(reader, tileContext, null, state);
+                if (parsedContent.Geometries.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle pattern tiles are implemented.");
+                SvgGeometry content = parsedContent.Geometries[0];
                 SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern tile accumulation requires pattern dimensions.");
                 SvgGeometry validated = RequirePatternTileContent(content, tile);
                 SvgRectangle shifted = validated.Rectangle with { X = validated.Rectangle.X + tile.ShiftX, Y = validated.Rectangle.Y + tile.ShiftY };
@@ -448,7 +450,7 @@ internal static class SvgDefinitionParser
     {
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle");
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return new SvgDefinition([SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null)], false, symbolViewBox);
+        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return new SvgDefinition(RetainParsedGeometries(SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null)), false, symbolViewBox);
         SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
         return new SvgDefinition([parsed.Geometry], parsed.Geometry.Rectangle.HasFill && parsed.Style == default, symbolViewBox);
     }

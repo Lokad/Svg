@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses and lowers the currently supported paintable SVG leaves independently of XML traversal.</summary>
 internal static class SvgLeafParser
 {
-    internal static SvgGeometry ParseRectangle(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
+    internal static SvgParsedGeometry ParseRectangle(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         SvgComputedStyle patternStyle = context.ResolveStyle(reader);
@@ -14,18 +14,26 @@ internal static class SvgLeafParser
         AxisTransform earlyTransform = context.ResolveTransform(reader);
         SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgViewportFrame? effectiveFrame = SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, frame, earlyPlacement);
-        if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill)) return LowerPaintServerRect(reader, context, patternStyle, state, effectiveFrame);
-        if (SvgGradientSyntax.IsGradientFill(patternStyle.Fill)) return SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, effectiveFrame);
+        if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill)) return RetainSingleGeometry(LowerPaintServerRect(reader, context, patternStyle, state, effectiveFrame), state, context);
+        if (SvgGradientSyntax.IsGradientFill(patternStyle.Fill)) return RetainSingleGeometry(SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, effectiveFrame), state, context);
         if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke)) return SvgGradientSyntax.LowerGradientStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
         double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
-        if (cornerX != 0 || cornerY != 0) return LowerRoundedRect(reader, context, syntax, cornerX, cornerY, effectiveFrame, state);
+        if (cornerX != 0 || cornerY != 0) return RetainSingleGeometry(LowerRoundedRect(reader, context, syntax, cornerX, cornerY, effectiveFrame, state), state, context);
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
         SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, syntax.StrokeWidth, element.Transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
         if (stroke is not null && effectiveFrame is not null && effectiveFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         if (effectiveFrame is not null) rectangle = ClipStrokedRectangle(rectangle, stroke, effectiveFrame.Value);
-        return SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null });
+        return RetainSingleGeometry(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }), state, context);
+    }
+
+    private static SvgParsedGeometry RetainSingleGeometry(SvgGeometry geometry, SvgDocumentState state, SvgPaintableElementContext context)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        using BudgetedParserList<SvgGeometry> retained = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        retained.Add(geometry);
+        return new SvgParsedGeometry(retained.Detach(), 0);
     }
 
     internal static SvgGeometry ParseImage(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget)

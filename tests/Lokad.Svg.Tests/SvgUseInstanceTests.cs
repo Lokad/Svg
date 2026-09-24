@@ -323,6 +323,15 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Radial_stroke_rect_use_matches_shifted_direct()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='8' y='0' width='8' height='8' fill='red' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red' stroke='url(#g)' stroke-width='2'/></defs><use href='#r' x='8'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
     public void Symbol_gradient_use_matches_direct_use()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#g)'/></defs><use href='#p'/></svg>", out _, out _);
