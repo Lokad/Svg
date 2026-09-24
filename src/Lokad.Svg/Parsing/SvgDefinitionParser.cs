@@ -184,7 +184,7 @@ internal static class SvgDefinitionParser
             double? baseHeight = parentFrame?.ViewportHeight ?? root.Height;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
             if (SvgMaskSyntax.HasCustomRegion(reader, state)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on use instances are not implemented.");
-            SvgViewportFrame? useFrame = SvgClipPathSyntax.ResolveLeafClip(reader, state);
+            SvgViewportFrame? useFrame = ResolveUseClipFrame(reader, reference, state);
             if (useFrame is not null && useFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
             string? maskAttribute = reader.GetAttribute("mask");
             SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, SvgMaskSyntax.ResolveOptionalMask(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), state, workCounter, cancellationToken);
@@ -193,6 +193,30 @@ internal static class SvgDefinitionParser
             return true;
         }
         return false;
+
+        static SvgViewportFrame? ResolveUseClipFrame(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)
+        {
+            string? clipAttribute = useReader.GetAttribute("clip-path");
+            if (clipAttribute is null) return SvgClipPathSyntax.ResolveLeafClip(useReader, document);
+            if (!document.ObjectClips.TryGetValue(SvgClipPathSyntax.ParseClipId(clipAttribute), out _)) return SvgClipPathSyntax.ResolveLeafClip(useReader, document);
+            if (!document.Definitions.TryGetValue(useReference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on forward use references are not implemented.");
+            if (definition.SymbolViewBox is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on symbol instances are not implemented.");
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            foreach (SvgGeometry source in definition.Geometries)
+            {
+                SvgRectangle box = SvgMaskSyntax.BoundingBox(source);
+                SvgRectangle placed = useReference.Transform.Apply(new SvgRectangle(box.X + useReference.X, box.Y + useReference.Y, box.Width, box.Height, default, true, null));
+                left = Math.Min(left, placed.X);
+                top = Math.Min(top, placed.Y);
+                right = Math.Max(right, placed.X + placed.Width);
+                bottom = Math.Max(bottom, placed.Y + placed.Height);
+            }
+            SvgRectangle instanceBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
+            return SvgClipPathSyntax.ResolveLeafClipOrPlacement(useReader, document, document.EffectiveFrame, instanceBox);
+        }
     }
 
     internal static void RegisterGradient(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

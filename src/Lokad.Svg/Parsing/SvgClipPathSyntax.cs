@@ -57,7 +57,7 @@ internal static class SvgClipPathSyntax
         string? reference = reader.GetAttribute("clip-path");
         if (reference is null) return state.EffectiveFrame;
         if (state.EffectiveFrame is not null && state.EffectiveFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
-        if (state.ObjectClips.TryGetValue(ParseClipId(reference), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths are only implemented on rectangles.");
+        if (state.ObjectClips.TryGetValue(ParseClipId(reference), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths are only implemented on rectangles, bands and straight contours.");
         if (!state.Clips.TryGetValue(ParseClipId(reference), out SvgClipBox box)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
         SvgViewportFrame? parent = state.EffectiveFrame;
         SvgClipBox clip = parent is null ? box : parent.Value.Clip.Intersect(box);
