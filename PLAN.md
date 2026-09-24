@@ -836,7 +836,7 @@ Keep related definition state coherent rather than separate nullable lookups.
 
 Exit: mixed fill/stroke/gradient, transform/use, nested viewport, clip/mask and
 opacity cases on transparent/white/dark backgrounds with independent expected
-operation order, exact pixels and bounded intermediate lifetime/work. Status 2026-09-24: masked groups admit polygon-fill children (white pass-through, gray isolation with combined factors, forward-use integration, 4 end-to-end tests).
+operation order, exact pixels and bounded intermediate lifetime/work. Status 2026-09-24: masked groups admit polygon-fill children (white pass-through, gray isolation with combined factors, forward-use integration, 4 end-to-end tests). Status 2026-09-24: objectBoundingBox clip fractions resolve per referencing band and straight-contour polygon fill through pre-tokenized bounds (5 end-to-end tests); curved contours stay explicitly unsupported.
 
 ### S15 — Live-text wordmarks (not a prerequisite for outlined text)
 

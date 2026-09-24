@@ -62,7 +62,7 @@ internal static class SvgRenderedLeafParser
                 state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, ellipse));
                 return true;
             case "path":
-                using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))
+                using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, ResolveShapeClipFrame(reader, "path", true, state, limits, budget, context), state))
                 {
                     state.GeometryElementCount += path.ElementCount;
                     SvgMaskSyntax.ApplyMaskToBands(reader, state, path.Storage.Items);
@@ -71,7 +71,7 @@ internal static class SvgRenderedLeafParser
                 }
                 return true;
             case "polygon" or "polyline":
-                using (SvgParsedGeometry pointList = SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))
+                using (SvgParsedGeometry pointList = SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, ResolveShapeClipFrame(reader, reader.LocalName, false, state, limits, budget, context), state))
                 {
                     state.GeometryElementCount += pointList.ElementCount;
                     SvgMaskSyntax.ApplyMaskToBands(reader, state, pointList.Storage.Items);
@@ -120,6 +120,49 @@ internal static class SvgRenderedLeafParser
             }
         }
         return false;
+
+        static SvgViewportFrame? ResolveShapeClipFrame(XmlReader reader, string elementName, bool isPath, SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, SvgPaintableElementContext context)
+        {
+            string? reference = reader.GetAttribute("clip-path");
+            if (reference is null) return SvgClipPathSyntax.ResolveLeafClip(reader, state);
+            if (!state.ObjectClips.TryGetValue(SvgClipPathSyntax.ParseClipId(reference), out _)) return SvgClipPathSyntax.ResolveLeafClip(reader, state);
+            using BudgetedParserList<SvgPoint> points = TokenizeShapePoints(reader, elementName, isPath, limits.MaximumPathCommands - state.GeometryElementCount, budget, context);
+            int minimumX = points[0].X;
+            int minimumY = points[0].Y;
+            int maximumX = points[0].X;
+            int maximumY = points[0].Y;
+            for (int pointIndex = 1; pointIndex < points.Count; pointIndex++)
+            {
+                if ((pointIndex & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
+                SvgPoint vertex = points[pointIndex];
+                if (vertex.X < minimumX) minimumX = vertex.X;
+                if (vertex.Y < minimumY) minimumY = vertex.Y;
+                if (vertex.X > maximumX) maximumX = vertex.X;
+                if (vertex.Y > maximumY) maximumY = vertex.Y;
+            }
+            AxisTransform transform = context.ResolveTransform(reader);
+            SvgRectangle placement = transform.Apply(new SvgRectangle(minimumX, minimumY, (double)maximumX - minimumX, (double)maximumY - minimumY, default, true, null));
+            return SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, state.EffectiveFrame, placement);
+
+            static BudgetedParserList<SvgPoint> TokenizeShapePoints(XmlReader shape, string name, bool pathData, int maximumGeometryElements, RenderBudget geometryBudget, SvgPaintableElementContext shapeContext)
+            {
+                try
+                {
+                    if (pathData)
+                    {
+                        string d = shape.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
+                        using BudgetedParserList<int> contourEnds = new(geometryBudget, SvgMemoryCategory.Geometry, shapeContext.WorkCounter, shapeContext.CancellationToken);
+                        return SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, geometryBudget, shapeContext.WorkCounter, shapeContext.CancellationToken, contourEnds);
+                    }
+                    string pointsValue = shape.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, name + " points are required.");
+                    return SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, name, maximumGeometryElements, geometryBudget, shapeContext.WorkCounter, shapeContext.CancellationToken);
+                }
+                catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnsupportedFeature)
+                {
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on curved or fractional contours are not implemented.");
+                }
+            }
+        }
 
         static BudgetedTextLayout ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount, out int childNodeCount)
         {
