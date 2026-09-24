@@ -20,7 +20,7 @@ internal readonly record struct SvgGradientTemplate(double X1, double Y1, double
 internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops);
 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
-internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, bool IsUserSpace, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius, bool HasFocalX, bool HasFocalY);
+internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius, bool HasFocalX, bool HasFocalY);
 
 /// <summary>Retains one admitted axis-aligned gradient transform with finite coordinates.</summary>
 internal readonly record struct SvgGradientTransform(double ScaleX, double ScaleY, double OffsetX, double OffsetY)
@@ -75,7 +75,9 @@ internal static class SvgGradientSyntax
         if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal) && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only objectBoundingBox and userSpaceOnUse radial gradient units are implemented.");
         string? spread = reader.GetAttribute("spreadMethod");
         SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
-        if (reader.GetAttribute("gradientTransform") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial gradient transforms are not implemented.");
+        string? transformValue = reader.GetAttribute("gradientTransform");
+        SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue);
+        if (gradientTransform.ScaleX != gradientTransform.ScaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform radial gradient transforms are not implemented.");
         if (reader.GetAttribute("fr") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Focal-radius radial gradients are not implemented.");
         string? rawCenterX = reader.GetAttribute("cx");
         string? rawCenterY = reader.GetAttribute("cy");
@@ -91,7 +93,7 @@ internal static class SvgGradientSyntax
         double focalX = rawFocalX is null ? centerX : ParseAxis(rawFocalX);
         double focalY = rawFocalY is null ? centerY : ParseAxis(rawFocalY);
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
-        return new SvgRadialTemplate(centerX, centerY, radius, focalX, focalY, isUserSpace, units is not null, spreadMethod, spread is not null, href, vectorCount, rawCenterX is not null, rawCenterY is not null, rawRadius is not null, rawFocalX is not null, rawFocalY is not null);
+        return new SvgRadialTemplate(centerX, centerY, radius, focalX, focalY, isUserSpace, gradientTransform, transformValue is not null, units is not null, spreadMethod, spread is not null, href, vectorCount, rawCenterX is not null, rawCenterY is not null, rawRadius is not null, rawFocalX is not null, rawFocalY is not null);
     }
 
     private static SvgGradientTransform ParseGradientTransform(string? value)

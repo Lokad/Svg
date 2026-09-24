@@ -286,6 +286,8 @@ internal static class SvgDefinitionParser
         double radius = template.Radius;
         bool isUserSpace = template.IsUserSpace;
         SvgGradientSpread spread = template.Spread;
+        double focalX;
+        double focalY;
         if (template.Href is not null && template.VectorCount == 0 && !template.HasFocalX && !template.HasFocalY)
         {
             if (!state.RadialGradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgRadialGradient parent)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local radial gradient references are implemented.");
@@ -294,10 +296,20 @@ internal static class SvgDefinitionParser
             radius = parent.Radius;
             if (!template.HasSpread) spread = parent.Spread;
             if (!template.HasUnits) isUserSpace = parent.IsUserSpace;
-            return (centerX, centerY, radius, parent.FocalX, parent.FocalY, isUserSpace, spread);
+            focalX = parent.FocalX;
+            focalY = parent.FocalY;
         }
-        double focalX = template.HasFocalX ? template.FocalX : centerX;
-        double focalY = template.HasFocalY ? template.FocalY : centerY;
+        else
+        {
+            focalX = template.HasFocalX ? template.FocalX : centerX;
+            focalY = template.HasFocalY ? template.FocalY : centerY;
+        }
+        if (template.HasTransform)
+        {
+            (centerX, centerY) = template.Transform.Apply(centerX, centerY);
+            (focalX, focalY) = template.Transform.Apply(focalX, focalY);
+            radius *= template.Transform.ScaleX;
+        }
         return (centerX, centerY, radius, focalX, focalY, isUserSpace, spread);
     }
 
