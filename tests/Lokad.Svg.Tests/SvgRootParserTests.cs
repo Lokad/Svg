@@ -3468,6 +3468,50 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(new SvgRectangle(8, 8, 48, 48, new SvgColor(255, 0, 0, 128), true, null), Assert.Single(root.Rectangles));
     }
+    [Fact]
+    public void Applies_a_gray_mask_to_a_diagonal_polygon()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade' maskUnits='userSpaceOnUse' x='16' y='16' width='32' height='32'><rect x='8' y='8' width='48' height='48' fill='#808080'/></mask></defs><polygon points='8,8 56,8 8,56' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 128), geometry.Polygon.Color);
+        Assert.True(geometry.Polygon.Clip.HasValue);
+        Assert.Equal(new SvgClipBox(16, 16, 32, 32), geometry.Polygon.Clip.Value);
+    }
+
+    [Fact]
+    public void Applies_a_white_mask_to_a_circle_without_changing_content()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='32' height='32' fill='#ffffff'/></mask></defs><circle cx='16' cy='16' r='8' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
+    }
+
+    [Fact]
+    public void Applies_a_gray_mask_to_a_stroked_polygon_pair()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><mask id='fade'><rect x='0' y='0' width='16' height='16' fill='#808080'/></mask></defs><polygon points='4,4 12,4 4,12' fill='#ff0000' stroke='#0000ff' stroke-width='2' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        foreach (SvgGeometry geometry in root.Geometries)
+        {
+            Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+            Assert.Equal(128, geometry.Polygon.Color.Alpha);
+        }
+    }
+
+    [Fact]
+    public void Applies_a_gray_mask_to_a_polygon_use_instance()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><defs><polygon id='p' points='0,0 8,0 0,8' fill='#ff0000'/></defs><use href='#p' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 128), geometry.Polygon.Color);
+    }
 
     [Fact]
     public void Applies_an_alpha_type_mask_from_channel_alpha()

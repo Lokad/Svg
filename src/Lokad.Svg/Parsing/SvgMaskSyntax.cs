@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
@@ -190,8 +191,25 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.PatternFill => geometry.Pattern.Fill,
             SvgGeometryKind.GradientFill => geometry.Gradient.Fill,
             SvgGeometryKind.GradientStroke => geometry.GradientStroke.OuterBox(),
+            SvgGeometryKind.PolygonFill => PolygonBounds(geometry.Polygon),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")
         };
+
+        static SvgRectangle PolygonBounds(SvgPolygonFill polygon)
+        {
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            foreach (SvgDevicePoint vertex in polygon.Points)
+            {
+                left = Math.Min(left, vertex.X);
+                top = Math.Min(top, vertex.Y);
+                right = Math.Max(right, vertex.X);
+                bottom = Math.Max(bottom, vertex.Y);
+            }
+            return new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), polygon.Color, polygon.HasFill, null);
+        }
     }
 
         private static SvgGeometry ApplyPatternMask(SvgPatternGeometry pattern, byte value, SvgClipBox region)
@@ -231,6 +249,7 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.PatternFill => ApplyPatternMask(geometry.Pattern, value, region),
             SvgGeometryKind.GradientFill => ApplyGradientMask(geometry.Gradient, value, region),
             SvgGeometryKind.GradientStroke => ApplyGradientStrokeMask(geometry.GradientStroke, value, region),
+            SvgGeometryKind.PolygonFill => SvgGeometry.FromPolygonFill(geometry.Polygon.Stamped(value, region)),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")
         };
     }

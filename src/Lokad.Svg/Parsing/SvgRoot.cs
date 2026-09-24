@@ -286,6 +286,17 @@ internal sealed class SvgPolygonFill : IDisposable
         return new SvgPolygonFill(points, contourEnds, signs, color, hasFill, isEvenOdd, mapping, clip, reservation);
     }
 
+    /// <summary>Stamps one polygon fill with a mask value inside its mask region, transferring scene ownership to the stamped fill.</summary>
+    /// <remarks><para>Contour storage is shared with the source fill and the source reservation transfers to the result. The caller drops the source without disposing it; disposing the dropped source stays a safe no-op.</para></remarks>
+    internal SvgPolygonFill Stamped(byte value, SvgClipBox region)
+    {
+        SvgColor stamped = new(Color.Red, Color.Green, Color.Blue, SvgReferenceResolver.MultiplyAlpha(Color.Alpha, value));
+        SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
+        RenderBudget.BudgetReservation? reservation = _reservation;
+        _reservation = null;
+        return new SvgPolygonFill(Points, ContourEnds, Signs, stamped, HasFill, IsEvenOdd, Mapping, clipped, reservation);
+    }
+
     public void Dispose()
     {
         _reservation?.Dispose();
