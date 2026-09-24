@@ -245,6 +245,83 @@ public sealed class SvgPolygonCoverageTests
         Assert.Throws<OperationCanceledException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [3], 0, 0, cancelled.Token));
     }
 
+    [Fact]
+    public void Same_wound_hole_subtracts_under_evenodd()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];
+
+        Assert.Equal(48, SumEvenOdd(points, [4, 8], [1, -1], -1, 9, -1, 9), precision: 10);
+    }
+
+    [Fact]
+    public void Opposite_wound_hole_matches_winding()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(2, 6), new SvgDevicePoint(6, 6), new SvgDevicePoint(6, 2)];
+
+        Assert.Equal(48, SumEvenOdd(points, [4, 8], [1, -1], -1, 9, -1, 9), precision: 10);
+    }
+
+    [Fact]
+    public void Resolved_parity_drives_hole()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];
+        int[] ends = [4, 8];
+        int[] signs = new int[2];
+        SvgContourNesting.ComputeParitySigns(points, ends, signs, CancellationToken.None);
+
+        Assert.Equal([1, -1], signs);
+        Assert.Equal(48, SumEvenOdd(points, ends, signs, -1, 9, -1, 9), precision: 10);
+    }
+
+    [Fact]
+    public void Zero_sign_masks_contour()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];
+
+        Assert.Equal(64, SumEvenOdd(points, [4, 8], [1, 0], -1, 9, -1, 9), precision: 10);
+    }
+
+    [Fact]
+    public void Invalid_sign_is_rejected()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetEvenOddCoverage(points, [3], [2], 0, 0, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetEvenOddCoverage(points, [3], [1, -1], 0, 0, CancellationToken.None));
+    }
+
+    [Fact]
+    public void Evenodd_hole_pixel_contrasts_winding()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];
+        int[] ends = [4, 8];
+        int[] signs = [1, -1];
+
+        Assert.Equal(0, SvgPolygonCoverage.GetEvenOddCoverage(points, ends, signs, 4, 4, CancellationToken.None), precision: 10);
+        Assert.Equal(2, SvgPolygonCoverage.GetWindingCoverage(points, ends, 4, 4, CancellationToken.None), precision: 10);
+    }
+
+    [Fact]
+    public void Evenodd_precancelled_token_throws()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+        using CancellationTokenSource cancelled = new();
+        cancelled.Cancel();
+
+        Assert.Throws<OperationCanceledException>(() => SvgPolygonCoverage.GetEvenOddCoverage(points, [3], [1], 0, 0, cancelled.Token));
+    }
+
+    private static double SumEvenOdd(SvgDevicePoint[] points, int[] ends, int[] signs, int minimumX, int maximumX, int minimumY, int maximumY)
+    {
+        double total = 0;
+        for (int y = minimumY; y <= maximumY; y++)
+        for (int x = minimumX; x <= maximumX; x++)
+        {
+            total += SvgPolygonCoverage.GetEvenOddCoverage(points, ends, signs, x, y, CancellationToken.None);
+        }
+
+        return total;
+    }
     private static double SumWinding(SvgDevicePoint[] points, int[] ends, int minimumX, int maximumX, int minimumY, int maximumY)
     {
         double total = 0;

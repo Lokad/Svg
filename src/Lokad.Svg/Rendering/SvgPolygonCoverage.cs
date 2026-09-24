@@ -72,7 +72,8 @@ internal static class SvgPolygonCoverage
         return winding;
     }
 
-    private static void ValidateContourEnds(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds)
+    /// <summary>Validates that the ends ascend and partition the flat points exactly.</summary>
+    internal static void ValidateContourEnds(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds)
     {
         int previous = 0;
         for (int index = 0; index < contourEnds.Length; index++)
@@ -82,6 +83,33 @@ internal static class SvgPolygonCoverage
         }
 
         if (contourEnds.Length > 0 && previous != points.Length) throw new ArgumentOutOfRangeException(nameof(contourEnds));
+    }
+
+    /// <summary>Returns the fractional even-odd coverage of the pixel square across signed contours.</summary>
+    /// <remarks>
+    /// <para>Each contour contributes its absolute fan area times its caller parity sign, so orientation
+    /// never matters and nested holes subtract under either winding. Signs come from nesting depth (see
+    /// SvgContourNesting); zero masks a contour out, and any other value is rejected. Exactness needs
+    /// separated contour boundaries within the pixel, matching the winding contract.</para>
+    /// </remarks>
+    internal static double GetEvenOddCoverage(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, ReadOnlySpan<int> signs, int pixelX, int pixelY, CancellationToken cancellationToken)
+    {
+        ValidateContourEnds(points, contourEnds);
+        if (signs.Length != contourEnds.Length) throw new ArgumentOutOfRangeException(nameof(signs));
+        double total = 0;
+        int start = 0;
+        for (int contour = 0; contour < contourEnds.Length; contour++)
+        {
+            if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+            int sign = signs[contour];
+            if (sign is not (-1 or 0 or 1)) throw new ArgumentOutOfRangeException(nameof(signs));
+            int end = contourEnds[contour];
+            if (end - start >= 3 && sign != 0) total += sign * Math.Abs(FanSignedArea(points, start, end, pixelX, pixelY, cancellationToken));
+            start = end;
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        return Math.Clamp(Math.Abs(total), 0, 1);
     }
 
     private static double FanSignedArea(ReadOnlySpan<SvgDevicePoint> contour, int start, int end, int pixelX, int pixelY, CancellationToken cancellationToken)
