@@ -13,6 +13,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        Budget = budget;
         Scene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
         Strings = new BudgetedParserStringStore(budget);
         Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -33,6 +34,8 @@ internal sealed class SvgDocumentState : IDisposable
         MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopeSnapshots = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }
+
+    internal RenderBudget Budget { get; }
 
     internal SvgSceneBuilder Scene { get; }
 

@@ -589,8 +589,8 @@ public sealed class PublicContractTests
     }
 
     [Theory]
-    [InlineData("<circle cx='1' cy='1' r='1' fill='red'/>")]
-    [InlineData("<ellipse cx='1' cy='1' rx='1' ry='1' fill='red'/>")]
+    [InlineData("<circle cx='1' cy='1' r='1' fill='url(#g)'/>")]
+    [InlineData("<ellipse cx='1' cy='1' rx='1' ry='1' fill='red' stroke='red'/>")]
     [InlineData("<text x='0' y='1'>x</text>")]
     [InlineData("<foreignObject width='1' height='1'><body/></foreignObject>")]
     [InlineData("<linearGradient id='paint'><stop offset='0' stop-color='red'/></linearGradient>")]

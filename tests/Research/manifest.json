@@ -13,6 +13,16 @@
       "width": 6,
       "height": 6,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 12,
+      "maximumChannelError": 24,
+      "maximumAlphaError": 24,
+      "alphaChangedPixelCount": 12,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 4,
+      "maximumMismatchY": 4
+    },
       "oracle": {
         "referencePng": "references/circle-6x6.png",
         "referenceSha256": "a05f124f16c82c3e94d5ffa6308e77449b8bf34c07c57e403f9063c9f9f8fe27",

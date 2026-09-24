@@ -25,6 +25,9 @@ internal static class SvgRenderedLeafParser
             case "polygon" or "polyline":
                 SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken);
                 break;
+            case "circle" or "ellipse":
+                SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
+                break;
             case "text":
                 SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                 break;
@@ -47,6 +50,16 @@ internal static class SvgRenderedLeafParser
                 SvgGeometry line = SvgLeafParser.ParseLine(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state);
                 SvgMaskSyntax.ValidateMaskScopes(state, line);
                 state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, line));
+                return true;
+            case "circle":
+                SvgGeometry circle = SvgLeafParser.ParseCircle(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state);
+                SvgMaskSyntax.ValidateMaskScopes(state, circle);
+                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, circle));
+                return true;
+            case "ellipse":
+                SvgGeometry ellipse = SvgLeafParser.ParseEllipse(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state);
+                SvgMaskSyntax.ValidateMaskScopes(state, ellipse);
+                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, ellipse));
                 return true;
             case "path":
                 using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))

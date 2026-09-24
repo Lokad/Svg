@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-circle-mark",
+  "referencePng": "original-logo-circle-mark.png",
+  "referenceSha256": "72f9d00aa7e323c81deead1b74786832784e725476a8b7d814023ce9eae006bc",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "806a19720019825540240790e73ea1de0b5da05c5acfb0412f43671ea982787f",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 145,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 63,
+    "exact": false
+  },
+  "admittedAt": "2026-09-24"
+}

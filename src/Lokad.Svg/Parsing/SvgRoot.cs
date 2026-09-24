@@ -271,7 +271,7 @@ internal sealed class SvgPolygonFill : IDisposable
         long bytes;
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length))); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
-        RenderBudget.BudgetReservation reservation = budget.Reserve(bytes, SvgMemoryCategory.Scene);
+        RenderBudget.BudgetReservation? reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
         return new SvgPolygonFill(points, contourEnds, signs, color, hasFill, isEvenOdd, hasCurves, clip, reservation);
     }
 
