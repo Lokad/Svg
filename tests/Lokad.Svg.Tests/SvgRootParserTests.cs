@@ -1453,6 +1453,20 @@ public sealed class SvgRootParserTests
             Assert.Equal(new SvgRectangle(1, 1, 6, 6, default, true, null), geometry.Gradient.Box);
         }
     }
+    [Fact]
+    public void Lowers_gradient_filled_polygon_instances_through_placement()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#g)'/></defs><use href='#p' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        foreach (SvgGeometry geometry in root.Geometries)
+        {
+            Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+            Assert.Equal(new SvgRectangle(8, 0, 8, 8, default, true, null), geometry.Gradient.Box);
+        }
+        Assert.Equal(new SvgRectangle(8, 0, 8, 4, default, true, null), root.Geometries[0].Gradient.Fill);
+        Assert.Equal(new SvgRectangle(8, 4, 4, 4, default, true, null), root.Geometries[1].Gradient.Fill);
+    }
 
     [Fact]
     public void Renders_reflected_gradient_paths_identical_to_hand_mirrored_baselines()
