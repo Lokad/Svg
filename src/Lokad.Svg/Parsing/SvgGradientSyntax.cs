@@ -16,11 +16,11 @@ internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);
 /// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2);
 
-/// <summary>Retains one admitted one-to-eight-stop concentric radial gradient in bounding-box coordinates.</summary>
-internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops);
+/// <summary>Retains one admitted one-to-eight-stop radial gradient with a strictly inside focal point.</summary>
+internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops);
 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
-internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, bool IsUserSpace, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius);
+internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, bool IsUserSpace, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius, bool HasFocalX, bool HasFocalY);
 
 /// <summary>Retains one admitted axis-aligned gradient transform with finite coordinates.</summary>
 internal readonly record struct SvgGradientTransform(double ScaleX, double ScaleY, double OffsetX, double OffsetY)
@@ -81,19 +81,18 @@ internal static class SvgGradientSyntax
         string? rawCenterX = reader.GetAttribute("cx");
         string? rawCenterY = reader.GetAttribute("cy");
         string? rawRadius = reader.GetAttribute("r");
+        string? rawFocalX = reader.GetAttribute("fx");
+        string? rawFocalY = reader.GetAttribute("fy");
         int vectorCount = (rawCenterX is null ? 0 : 1) + (rawCenterY is null ? 0 : 1) + (rawRadius is null ? 0 : 1);
-        if (isUserSpace && (ContainsPercentage(rawCenterX) || ContainsPercentage(rawCenterY) || ContainsPercentage(rawRadius))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates are not implemented.");
+        if (isUserSpace && (ContainsPercentage(rawCenterX) || ContainsPercentage(rawCenterY) || ContainsPercentage(rawRadius) || ContainsPercentage(rawFocalX) || ContainsPercentage(rawFocalY))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates are not implemented.");
         double centerX = ParseAxis(rawCenterX ?? (isUserSpace ? "0" : "0.5"));
         double centerY = ParseAxis(rawCenterY ?? (isUserSpace ? "0" : "0.5"));
         double radius = ParseAxis(rawRadius ?? (isUserSpace ? "0" : "0.5"));
         if (radius < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Radial gradient radius cannot be negative.");
-        string? focalX = reader.GetAttribute("fx");
-        string? focalY = reader.GetAttribute("fy");
-        if (isUserSpace && (ContainsPercentage(focalX) || ContainsPercentage(focalY))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage userSpaceOnUse gradient coordinates are not implemented.");
-        if (focalX is not null && ParseAxis(focalX) != centerX) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Offset radial foci are not implemented.");
-        if (focalY is not null && ParseAxis(focalY) != centerY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Offset radial foci are not implemented.");
+        double focalX = rawFocalX is null ? centerX : ParseAxis(rawFocalX);
+        double focalY = rawFocalY is null ? centerY : ParseAxis(rawFocalY);
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
-        return new SvgRadialTemplate(centerX, centerY, radius, isUserSpace, units is not null, spreadMethod, spread is not null, href, vectorCount, rawCenterX is not null, rawCenterY is not null, rawRadius is not null);
+        return new SvgRadialTemplate(centerX, centerY, radius, focalX, focalY, isUserSpace, units is not null, spreadMethod, spread is not null, href, vectorCount, rawCenterX is not null, rawCenterY is not null, rawRadius is not null, rawFocalX is not null, rawFocalY is not null);
     }
 
     private static SvgGradientTransform ParseGradientTransform(string? value)
@@ -264,7 +263,7 @@ internal static class SvgGradientSyntax
         return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, fill, fillOpacity, painted ? stroke : null));
     }
 
-    /// <summary>Lowers one concentric radial-gradient-filled rectangle with an optional solid stroke.</summary>
+    /// <summary>Lowers one radial-gradient-filled rectangle with an optional solid stroke.</summary>
     internal static SvgGeometry LowerRadialRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
@@ -402,16 +401,17 @@ internal static class SvgGradientSyntax
         return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2 };
     }
 
-    /// <summary>Maps one userSpaceOnUse radial circle through the referencing transform under uniform scaling.</summary>
+    /// <summary>Maps one userSpaceOnUse radial circle and its focal point through the referencing transform under uniform scaling.</summary>
     internal static SvgRadialGradient MapUserSpaceRadial(AxisTransform transform, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
         if (!gradient.IsUserSpace) return gradient;
         if (Math.Abs(transform.ScaleX) != Math.Abs(transform.ScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform userSpaceOnUse gradient transforms are not implemented.");
         if (frame is not null && (frame.Value.OffsetX != 0 || frame.Value.OffsetY != 0 || frame.Value.ViewportWidth is not null || frame.Value.ViewportHeight is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "userSpaceOnUse gradients inside transformed viewports are not implemented.");
         (double mappedX, double mappedY) = transform.ApplyToUserPoint(gradient.CenterX, gradient.CenterY);
+        (double mappedFocalX, double mappedFocalY) = transform.ApplyToUserPoint(gradient.FocalX, gradient.FocalY);
         double mappedRadius = gradient.Radius * Math.Abs(transform.ScaleX);
-        if (!double.IsFinite(mappedRadius)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the radial gradient coordinate range.");
-        return gradient with { CenterX = mappedX, CenterY = mappedY, Radius = mappedRadius };
+        if (!double.IsFinite(mappedRadius) || !double.IsFinite(mappedFocalX) || !double.IsFinite(mappedFocalY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the radial gradient coordinate range.");
+        return gradient with { CenterX = mappedX, CenterY = mappedY, Radius = mappedRadius, FocalX = mappedFocalX, FocalY = mappedFocalY };
     }
 
     /// <summary>Mirrors one objectBoundingBox gradient vector when the referencing transform reflects its axis.</summary>

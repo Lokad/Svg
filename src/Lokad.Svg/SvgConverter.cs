@@ -624,21 +624,52 @@ public static class SvgConverter
                 double verticalCoverage = Math.Clamp(Math.Min(areaBottom, y + 1) - Math.Max(areaTop, y), 0, 1);
                 double horizontalCoverage = Math.Clamp(Math.Min(areaRight, x + 1) - Math.Max(areaLeft, x), 0, 1);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
-                double distanceX;
-                double distanceY;
+                double sampleX;
+                double sampleY;
+                double focalX;
+                double focalY;
+                double circleX;
+                double circleY;
                 if (definition.IsUserSpace)
                 {
-                    distanceX = deviceX - definition.CenterX;
-                    distanceY = deviceY - definition.CenterY;
+                    sampleX = deviceX;
+                    sampleY = deviceY;
+                    focalX = definition.FocalX;
+                    focalY = definition.FocalY;
+                    circleX = definition.CenterX;
+                    circleY = definition.CenterY;
                 }
                 else
                 {
-                    double normalizedX = (deviceX - box.X) / box.Width;
-                    double normalizedY = (deviceY - box.Y) / box.Height;
-                    distanceX = normalizedX - definition.CenterX;
-                    distanceY = normalizedY - definition.CenterY;
+                    sampleX = (deviceX - box.X) / box.Width;
+                    sampleY = (deviceY - box.Y) / box.Height;
+                    focalX = definition.FocalX;
+                    focalY = definition.FocalY;
+                    circleX = definition.CenterX;
+                    circleY = definition.CenterY;
                 }
-                double position = Math.Sqrt(distanceX * distanceX + distanceY * distanceY) / definition.Radius;
+                double offsetX = circleX - focalX;
+                double offsetY = circleY - focalY;
+                double rayX = sampleX - focalX;
+                double rayY = sampleY - focalY;
+                double position;
+                if (offsetX == 0 && offsetY == 0)
+                {
+                    position = Math.Sqrt(rayX * rayX + rayY * rayY) / definition.Radius;
+                }
+                else if (rayX == 0 && rayY == 0)
+                {
+                    position = 0;
+                }
+                else
+                {
+                    double dot = rayX * offsetX + rayY * offsetY;
+                    double raySquared = rayX * rayX + rayY * rayY;
+                    double discriminant = dot * dot + raySquared * (definition.Radius * definition.Radius - offsetX * offsetX - offsetY * offsetY);
+                    if (discriminant < 0) discriminant = 0;
+                    position = raySquared / (dot + Math.Sqrt(discriminant));
+                }
+                if (position < 0) position = 0;
                 if (position > 1) position = 1;
                 double dither = GradientDither[x & 7, y & 7] / 64d;
                 SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);

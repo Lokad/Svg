@@ -254,10 +254,18 @@ internal static class SvgDefinitionParser
         SvgRadialTemplate template = state.RadialGradient ?? throw new InvalidOperationException("Radial gradient registration requires gradient dimensions.");
         if (state.GradientStops.Count != 0 && (state.GradientStops.Count > SvgGradientSyntax.MaximumGradientStops)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only empty or one-to-eight-stop radial gradients are implemented.");
         if (template.Href is not null && template.VectorCount > 0 && template.VectorCount < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
+        if (template.Href is not null && template.VectorCount == 0 && (template.HasFocalX || template.HasFocalY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
         if (template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial unit overrides without vector overrides are not implemented.");
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveRadialStops(state, template);
-        (double centerX, double centerY, double radius, bool isUserSpace, SvgGradientSpread spread) = ResolveRadialVector(template, state);
-        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, offset1, offset2, isEmpty, isUserSpace, spread, stops);
+        (double centerX, double centerY, double radius, double focalX, double focalY, bool isUserSpace, SvgGradientSpread spread) = ResolveRadialVector(template, state);
+        double focalDeltaX = focalX - centerX;
+        double focalDeltaY = focalY - centerY;
+        if (radius == 0)
+        {
+            if (focalDeltaX != 0 || focalDeltaY != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Offset radial foci outside the gradient circle are not implemented.");
+        }
+        else if (focalDeltaX * focalDeltaX + focalDeltaY * focalDeltaY >= radius * radius) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Offset radial foci outside the gradient circle are not implemented.");
+        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, focalX, focalY, offset1, offset2, isEmpty, isUserSpace, spread, stops);
         string retainedId = state.Strings.Copy(state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier."));
         if (state.Gradients.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
         if (!state.RadialGradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
@@ -271,14 +279,14 @@ internal static class SvgDefinitionParser
         return (parent.Start, parent.End, parent.Offset1, parent.Offset2, parent.IsEmpty, parent.Stops);
     }
 
-    private static (double CenterX, double CenterY, double Radius, bool IsUserSpace, SvgGradientSpread Spread) ResolveRadialVector(SvgRadialTemplate template, SvgDocumentState state)
+    private static (double CenterX, double CenterY, double Radius, double FocalX, double FocalY, bool IsUserSpace, SvgGradientSpread Spread) ResolveRadialVector(SvgRadialTemplate template, SvgDocumentState state)
     {
         double centerX = template.CenterX;
         double centerY = template.CenterY;
         double radius = template.Radius;
         bool isUserSpace = template.IsUserSpace;
         SvgGradientSpread spread = template.Spread;
-        if (template.Href is not null && template.VectorCount == 0)
+        if (template.Href is not null && template.VectorCount == 0 && !template.HasFocalX && !template.HasFocalY)
         {
             if (!state.RadialGradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgRadialGradient parent)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local radial gradient references are implemented.");
             centerX = parent.CenterX;
@@ -286,8 +294,11 @@ internal static class SvgDefinitionParser
             radius = parent.Radius;
             if (!template.HasSpread) spread = parent.Spread;
             if (!template.HasUnits) isUserSpace = parent.IsUserSpace;
+            return (centerX, centerY, radius, parent.FocalX, parent.FocalY, isUserSpace, spread);
         }
-        return (centerX, centerY, radius, isUserSpace, spread);
+        double focalX = template.HasFocalX ? template.FocalX : centerX;
+        double focalY = template.HasFocalY ? template.FocalY : centerY;
+        return (centerX, centerY, radius, focalX, focalY, isUserSpace, spread);
     }
 
     private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveGradientStops(SvgDocumentState state, SvgGradientTemplate template)
