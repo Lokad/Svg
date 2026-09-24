@@ -13,7 +13,7 @@ public sealed class SvgPolygonFillTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] ends = [3];
         RenderBudget budget = new(long.MaxValue);
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, false, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.QuarterEdges, null, budget);
 
         SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
 
@@ -24,7 +24,7 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
         Assert.True(geometry.Polygon.HasFill);
         Assert.False(geometry.Polygon.IsEvenOdd);
-        Assert.False(geometry.Polygon.HasCurves);
+        Assert.Equal(SvgPolygonMapping.QuarterEdges, geometry.Polygon.Mapping);
         Assert.Null(geometry.Polygon.Clip);
         Assert.Throws<InvalidOperationException>(() => _ = SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null)).Polygon);
         Assert.Throws<InvalidOperationException>(() => _ = default(SvgGeometry).Polygon);
@@ -190,6 +190,65 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 7));
         Assert.Equal(4084, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Fractional_square_renders_analytic_coverage()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L4.5,0.5 L4.5,4.5 L0.5,4.5 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 2, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 8, 0, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 8, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 7));
+        Assert.Equal(4087, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Fractional_triangle_renders_analytic_coverage()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L4.5,0.5 L0.5,4.5 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 8, 3, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 32), Pixel(pixels, 8, 0, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 32), Pixel(pixels, 8, 4, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 3, 3));
+        Assert.Equal(2045, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Fractional_viewBox_matches_integer_rendering()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 4 4'><path d='M0.5,0.5 L3.5,0.5 L0.5,3.5 Z' fill='red'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M1,1 L7,1 L1,7 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
+    public void Fractional_open_stroke_makes_band()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L4.5,0.5 L7.5,0.5' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 8, 4, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 8, 0, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 2));
+        Assert.Equal(2682, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Fractional_bowtie_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L7.5,7.5 L7.5,0.5 L0.5,7.5 Z' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)

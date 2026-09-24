@@ -86,6 +86,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 21,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 32,
+      "alphaChangedPixelCount": 21,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 7,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-triangle-fractional-8x8.png",
         "referenceSha256": "bee46b4e55a89b9fdbf0c801a2cc888bd4b98851ddf3137108964e5a051b3bb7",
@@ -112,6 +122,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 22,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 23,
+      "alphaChangedPixelCount": 22,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 7,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-triangle-half-grid-8x8.png",
         "referenceSha256": "acb37b75bc3f19fd9ad580ec4a8ed15246de3d345ce4dc1ed9b30250e2543ce3",
@@ -138,6 +158,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 34,
+      "maximumChannelError": 34,
+      "maximumAlphaError": 28,
+      "alphaChangedPixelCount": 34,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 7,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-overlap-8x8.png",
         "referenceSha256": "8f9e97f1c412de27ad9a7664fa17c7ec0ed59dd658d08f58c5cc8a9d8a8b0a8b",
@@ -164,6 +194,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 33,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 22,
+      "alphaChangedPixelCount": 33,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 7,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-overlap-half-grid-8x8.png",
         "referenceSha256": "4729358f75abccc014b2cf66b2e9fa34732c9eb7d63049d66b55571a540f76f2",
@@ -190,6 +230,16 @@
       "width": 16,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 43,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 16,
+      "alphaChangedPixelCount": 43,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 14,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-layer-opacity-16x8.png",
         "referenceSha256": "5a950a21def082b1cc1205b40edb0cc003f97018848763667c8c5e9b3120592d",
@@ -216,6 +266,16 @@
       "width": 16,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 44,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 12,
+      "alphaChangedPixelCount": 44,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 14,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-layer-opacity-half-grid-16x8.png",
         "referenceSha256": "7ebc094784c0e8803734273547b3d42044a76a2b38464df083e7d3942e16ee3a",
@@ -540,6 +600,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 22,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 24,
+      "alphaChangedPixelCount": 22,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-blue-apex-8x8.png",
         "referenceSha256": "30651c09e38a0ccf54a23f3c0702db35847611ec947bf090bf2c87d60b136d6f",
@@ -566,6 +636,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 19,
+      "maximumChannelError": 26,
+      "maximumAlphaError": 26,
+      "alphaChangedPixelCount": 19,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 4,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-shallow-apex-8x8.png",
         "referenceSha256": "dd7cbcb023ee64b28d0b139ae454efbf9b096f78fd5674576528d85df5119a5d",
@@ -592,6 +672,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 22,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 24,
+      "alphaChangedPixelCount": 22,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-switch-225-8x8.png",
         "referenceSha256": "1ad0fc91190ca07f81f78e295fc4aa40585223e104f89ecfe2fb7b0d9f22963c",
@@ -618,6 +708,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 21,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 25,
+      "alphaChangedPixelCount": 21,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-switch-275-8x8.png",
         "referenceSha256": "e9cd63e8ce50da751665238930d07e6a3c5a09dadec021739d77b21f7c0d0dc5",
@@ -644,6 +744,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 19,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 17,
+      "alphaChangedPixelCount": 19,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-switch-200-8x8.png",
         "referenceSha256": "bfb9874d6f6f7c42f658cd4c098251ea5e64985ba9f245239dea236339d547ed",
@@ -670,6 +780,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 18,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 18,
+      "alphaChangedPixelCount": 18,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-switch-225b-8x8.png",
         "referenceSha256": "708d125f6b4e2343062efff7b0afa1662463783bf94c8dc0698dea6987db9c8c",
@@ -696,6 +816,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 18,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 18,
+      "alphaChangedPixelCount": 18,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-switch-250b-8x8.png",
         "referenceSha256": "ef1e226874ed45e40d6557e9342a52892dab20f801a46b134350c1ca42037560",
@@ -722,6 +852,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 16,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 18,
+      "alphaChangedPixelCount": 16,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-switch-275b-8x8.png",
         "referenceSha256": "1f95041c1b2922111573d06d9e9946ac857059ed1f4e95327e4fd38f144a583f",
@@ -748,6 +888,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 21,
+      "maximumChannelError": 255,
+      "maximumAlphaError": 25,
+      "alphaChangedPixelCount": 21,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-switch-300-8x8.png",
         "referenceSha256": "1607374f6c0301ec2919129ba4d9f9af2b560159af0dd48fc41e0db1dde8f382",
@@ -774,6 +924,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 20,
+      "maximumChannelError": 24,
+      "maximumAlphaError": 24,
+      "alphaChangedPixelCount": 20,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-slope-06-8x8.png",
         "referenceSha256": "ddf24d4e21866d8ad9fd28a60d64ebbd7909dba08a26dd64b96268533b68bc05",
@@ -800,6 +960,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 22,
+      "maximumChannelError": 24,
+      "maximumAlphaError": 24,
+      "alphaChangedPixelCount": 22,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-slope-08-8x8.png",
         "referenceSha256": "6d35915aed04a454c4c61a813230d26933116f408d5d0dc36fb825d299b6199e",
@@ -826,6 +996,16 @@
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 22,
+      "maximumChannelError": 24,
+      "maximumAlphaError": 24,
+      "alphaChangedPixelCount": 22,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/diagonal-slope-11-8x8.png",
         "referenceSha256": "16edd0a8a86ddfc8014f4c02f5ff1527d469611a97ebdbf924d855701523b410",

@@ -219,6 +219,17 @@ internal readonly struct SvgGeometry
     }
 }
 
+/// <summary>Selects the output-mapping discipline for one polygon fill.</summary>
+internal enum SvgPolygonMapping
+{
+    /// <summary>Straight integer geometry under the rectangle quarter-pixel discipline.</summary>
+    QuarterEdges,
+    /// <summary>Straight fractional geometry mapped finite, exact under any output transform.</summary>
+    FiniteEdges,
+    /// <summary>Flattened or offset content needing uniform output mapping.</summary>
+    FlattenedCurves,
+}
+
 /// <summary>Retains one admitted diagonal solid polygon with separated simple contours and its scene-memory reservation until the scene is disposed.</summary>
 /// <remarks>
 /// <para>Points are device-space doubles with the caller transform and viewport shift applied; contour ends
@@ -233,7 +244,7 @@ internal sealed class SvgPolygonFill : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
 
-    private SvgPolygonFill(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, bool hasCurves, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
+    private SvgPolygonFill(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
     {
         Points = points;
         ContourEnds = contourEnds;
@@ -241,7 +252,7 @@ internal sealed class SvgPolygonFill : IDisposable
         Color = color;
         HasFill = hasFill;
         IsEvenOdd = isEvenOdd;
-        HasCurves = hasCurves;
+        Mapping = mapping;
         Clip = clip;
         _reservation = reservation;
     }
@@ -258,11 +269,11 @@ internal sealed class SvgPolygonFill : IDisposable
 
     internal bool IsEvenOdd { get; }
 
-    internal bool HasCurves { get; }
+    internal SvgPolygonMapping Mapping { get; }
 
     internal SvgClipBox? Clip { get; }
 
-    internal static SvgPolygonFill Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, bool hasCurves, SvgClipBox? clip, RenderBudget budget)
+    internal static SvgPolygonFill Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
@@ -272,7 +283,7 @@ internal sealed class SvgPolygonFill : IDisposable
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length))); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
         RenderBudget.BudgetReservation? reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
-        return new SvgPolygonFill(points, contourEnds, signs, color, hasFill, isEvenOdd, hasCurves, clip, reservation);
+        return new SvgPolygonFill(points, contourEnds, signs, color, hasFill, isEvenOdd, mapping, clip, reservation);
     }
 
     public void Dispose()

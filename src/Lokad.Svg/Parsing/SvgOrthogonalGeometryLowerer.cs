@@ -183,7 +183,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             contourStart = contourEnd;
         }
 
-        return FinishPolygonFill(mapped, ends, color, hasFill, false, frame, budget);
+        return FinishPolygonFill(mapped, ends, color, hasFill, SvgPolygonMapping.QuarterEdges, frame, budget);
     }
 
     private static SvgDevicePoint ShiftVertex(SvgViewportFrame? viewport, double x, double y)
@@ -250,7 +250,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
         else ends = [];
 
-        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, true, frame, budget);
+        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
     }
 
     /// <summary>Lowers one axis-aligned rounded rectangle to a sampled polygon fill.</summary>
@@ -274,14 +274,14 @@ internal ref struct SvgOrthogonalGeometryLowering
             ends[contour] = mapped.Count;
         }
 
-        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, true, frame, budget);
+        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
     }
 
-    /// <summary>Lowers integer-coordinate curved path data through affine flattening into one polygon fill.</summary>
-    internal SvgParsedGeometry LowerCurveFill(string d, int commandCount, bool hasArc, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
+    /// <summary>Lowers device-space path data through affine flattening into one polygon fill with the caller mapping discipline.</summary>
+    internal SvgParsedGeometry LowerDeviceFill(string d, int commandCount, bool hasArc, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path curve command count exceeds the configured path-command limit.");
+        if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured path-command limit.");
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
         if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
         SvgFlattenPolicy flattenPolicy = new(FlattenFlatness, FlattenMaxDepth, CurveSegmentsPerCommand);
@@ -302,7 +302,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             ends[contour] = mapped.Count;
         }
 
-        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, true, frame, budget);
+        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
     }
 
     /// <summary>Strokes one integer point contour with butt caps and miter joins into one nonzero outline fill.</summary>
@@ -329,11 +329,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgContourBuilder outlines = new(pointCapacity, closed ? 2 : 1);
         if (closed) SvgStrokeOutline.StrokeClosedPolyline(mapped.AsSpan(), deviceWidth, miterLimit, outlines, _cancellationToken);
         else SvgStrokeOutline.StrokeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, outlines, _cancellationToken);
-        return FinishStrokeFill(outlines, color, hasFill, frame, budget) with { ElementCount = points.Count + 1 };
+        return FinishStrokeFill(outlines, color, hasFill, false, frame, budget) with { ElementCount = points.Count + 1 };
     }
 
     /// <summary>Strokes device-space contours with butt caps and miter joins into one nonzero outline fill.</summary>
-    internal SvgParsedGeometry LowerStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, AxisTransform transform, int width, double miterLimit, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, AxisTransform transform, int width, double miterLimit, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(budget);
@@ -358,7 +358,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             else SvgStrokeOutline.StrokeOpenPolyline(source.GetContour(contour), deviceWidth, miterLimit, outlines, _cancellationToken);
         }
 
-        return FinishStrokeFill(outlines, color, hasFill, frame, budget);
+        return FinishStrokeFill(outlines, color, hasFill, hasCurves, frame, budget);
     }
 
     private double StrokeDeviceWidth(int width, AxisTransform transform, SvgViewportFrame? frame)
@@ -372,7 +372,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes path data with butt caps and miter joins into one nonzero outline fill, tracking explicit closepath seals.</summary>
-    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasArc, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasArc, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, int width, double miterLimit, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke command count exceeds the configured path-command limit.");
@@ -390,37 +390,38 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgContourBuilder builder = new(pointCapacity, contourCapacity);
         using BudgetedParserList<bool> closedEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, closedEnds);
-        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds.AsSpan(), element.Transform, width, miterLimit, color, hasFill, frame, budget);
+        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, color, hasFill, frame, budget);
         return stroked with { ElementCount = commandCount + 1 };
     }
 
     /// <summary>Retains stroke outline loops as one nonzero fill without structure validation, which spike retraces would false-positive.</summary>
-    private SvgParsedGeometry FinishStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    private SvgParsedGeometry FinishStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, bool flattenedCenterline, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(outlines);
         ArgumentNullException.ThrowIfNull(budget);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = new int[outlines.ContourCount];
-        bool hasCurves = false;
+        bool fractionalVertices = false;
         for (int contour = 0; contour < outlines.ContourCount; contour++)
         {
             foreach (SvgDevicePoint vertex in outlines.GetContour(contour))
             {
                 _workCounter.Consume(_cancellationToken);
                 mapped.Add(vertex);
-                if (Math.Abs(vertex.X * 4 - Math.Round(vertex.X * 4, MidpointRounding.AwayFromZero)) > 0.000000001 || Math.Abs(vertex.Y * 4 - Math.Round(vertex.Y * 4, MidpointRounding.AwayFromZero)) > 0.000000001) hasCurves = true;
+                if (Math.Abs(vertex.X * 4 - Math.Round(vertex.X * 4, MidpointRounding.AwayFromZero)) > 0.000000001 || Math.Abs(vertex.Y * 4 - Math.Round(vertex.Y * 4, MidpointRounding.AwayFromZero)) > 0.000000001) fractionalVertices = true;
             }
 
             ends[contour] = mapped.Count;
         }
 
+        SvgPolygonMapping mapping = flattenedCenterline ? SvgPolygonMapping.FlattenedCurves : fractionalVertices ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.QuarterEdges;
         SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
         ValidateDeviceRange(retained);
-        return RetainPolygonFill(retained, ends, null, color, hasFill, false, hasCurves, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+        return RetainPolygonFill(retained, ends, null, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
     }
 
     /// <summary>Validates separated device contours once and retains one polygon fill with scene-owned storage.</summary>
-    private SvgParsedGeometry FinishPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgColor color, bool hasFill, bool hasCurves, SvgViewportFrame? frame, RenderBudget budget)
+    private SvgParsedGeometry FinishPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgColor color, bool hasFill, SvgPolygonMapping mapping, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(ends);
@@ -437,7 +438,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
         }
 
-        return RetainPolygonFill(retained, ends, signs, color, hasFill, _isEvenOdd, hasCurves, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+        return RetainPolygonFill(retained, ends, signs, color, hasFill, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
 
         static void ChargePairs(ParserWorkCounter workCounter, long pairs, CancellationToken cancellationToken)
         {
@@ -453,12 +454,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
     }
 
-    private SvgParsedGeometry RetainPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, bool hasCurves, SvgClipBox? clip, RenderBudget budget)
+    private SvgParsedGeometry RetainPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(retained);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
-        SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, isEvenOdd, hasCurves, clip, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, isEvenOdd, mapping, clip, budget);
         _geometries.Add(SvgGeometry.FromPolygonFill(fill));
         _geometryElementCount++;
         return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);

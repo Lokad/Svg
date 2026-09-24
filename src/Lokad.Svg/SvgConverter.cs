@@ -188,7 +188,7 @@ public static class SvgConverter
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 if (geometry.Kind == SvgGeometryKind.PatternFill) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
-                if (horizontalScale != verticalScale && geometry.Kind == SvgGeometryKind.PolygonFill && geometry.Polygon.HasCurves) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon curve fills under non-uniform viewBox or output scaling are not implemented.");
+                if (horizontalScale != verticalScale && geometry.Kind == SvgGeometryKind.PolygonFill && geometry.Polygon.Mapping == SvgPolygonMapping.FlattenedCurves) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon curve fills under non-uniform viewBox or output scaling are not implemented.");
             }
         }
         RenderBudget.BudgetReservation surface = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
@@ -311,8 +311,8 @@ public static class SvgConverter
             double bottom = double.NegativeInfinity;
             for (int index = 0; index < polygon.Points.Length; index++)
             {
-                double edgeX = polygon.HasCurves ? MapEdge(polygon.Points[index].X, horizontalScale, horizontalOffset) : MapStraightPolygonEdge(polygon.Points[index].X, horizontalScale, horizontalOffset);
-                double edgeY = polygon.HasCurves ? MapEdge(polygon.Points[index].Y, verticalScale, verticalOffset) : MapStraightPolygonEdge(polygon.Points[index].Y, verticalScale, verticalOffset);
+                double edgeX = polygon.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(polygon.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(polygon.Points[index].X, horizontalScale, horizontalOffset);
+                double edgeY = polygon.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(polygon.Points[index].Y, verticalScale, verticalOffset) : MapEdge(polygon.Points[index].Y, verticalScale, verticalOffset);
                 mapped[index] = new SvgDevicePoint(edgeX, edgeY);
                 if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
                 if (edgeX < left) left = edgeX;

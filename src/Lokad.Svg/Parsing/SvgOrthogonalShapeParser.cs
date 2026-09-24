@@ -16,18 +16,29 @@ internal static class SvgOrthogonalShapeParser
         }
         string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
         (int commandCount, bool hasCurve, bool hasArc) = ScanPathCommands(d, context.WorkCounter, context.CancellationToken);
+        bool hasFractional = d.Contains('.') || d.Contains('e') || d.Contains('E');
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
         if (hasCurve)
         {
-            if (d.Contains('.') || d.Contains('e') || d.Contains('E')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer path coordinates are implemented; fractional and scientific notation stay unsupported.");
+            if (hasFractional) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer path coordinates are implemented; fractional and scientific notation stay unsupported.");
             shape = context.ResolveShape(style, reader, true);
             bool curveEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, "path", true, curveEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            SvgParsedGeometry curved = curveLowering.LowerCurveFill(d, commandCount, hasArc, shape, frame, budget);
+            SvgParsedGeometry curved = curveLowering.LowerDeviceFill(d, commandCount, hasArc, SvgPolygonMapping.FlattenedCurves, shape, frame, budget);
             filled = curved with { ElementCount = commandCount + 1 };
+        }
+        else if (hasFractional)
+        {
+            shape = context.ResolveShape(style, reader, true);
+            bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+            using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noFractionEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering fractionalLowering = new(noFractionPoints, noFractionEnds, "path", true, fractionalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            SvgParsedGeometry fractional = fractionalLowering.LowerDeviceFill(d, commandCount, false, SvgPolygonMapping.FiniteEdges, shape, frame, budget);
+            filled = fractional with { ElementCount = commandCount + 1 };
         }
         else
         {
@@ -59,7 +70,7 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, "path", true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, shape, stroke.Value.Color, shape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, frame, budget);
+            stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, shape, stroke.Value.Color, shape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, frame, budget);
         }
         catch { filled.Dispose(); throw; }
         return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
