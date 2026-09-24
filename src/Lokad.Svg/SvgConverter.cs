@@ -655,19 +655,31 @@ public static class SvgConverter
                 double position;
                 if (offsetX == 0 && offsetY == 0)
                 {
-                    position = Math.Sqrt(rayX * rayX + rayY * rayY) / definition.Radius;
+                    position = (Math.Sqrt(rayX * rayX + rayY * rayY) - definition.FocalRadius) / (definition.Radius - definition.FocalRadius);
                 }
                 else if (rayX == 0 && rayY == 0)
                 {
                     position = 0;
                 }
-                else
+                else if (definition.FocalRadius == 0)
                 {
                     double dot = rayX * offsetX + rayY * offsetY;
                     double raySquared = rayX * rayX + rayY * rayY;
                     double discriminant = dot * dot + raySquared * (definition.Radius * definition.Radius - offsetX * offsetX - offsetY * offsetY);
                     if (discriminant < 0) discriminant = 0;
                     position = raySquared / (dot + Math.Sqrt(discriminant));
+                }
+                else
+                {
+                    double span = definition.Radius - definition.FocalRadius;
+                    double dot = rayX * offsetX + rayY * offsetY;
+                    double raySquared = rayX * rayX + rayY * rayY;
+                    double linear = dot + definition.FocalRadius * span;
+                    double quadratic = offsetX * offsetX + offsetY * offsetY - span * span;
+                    double constant = raySquared - definition.FocalRadius * definition.FocalRadius;
+                    double discriminant = linear * linear - quadratic * constant;
+                    if (discriminant < 0) discriminant = 0;
+                    position = (linear - Math.Sqrt(discriminant)) / quadratic;
                 }
                 if (definition.Spread == SvgGradientSpread.Repeat) position -= Math.Floor(position);
                 else if (definition.Spread == SvgGradientSpread.Reflect)
