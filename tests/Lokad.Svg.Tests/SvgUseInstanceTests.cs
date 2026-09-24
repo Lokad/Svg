@@ -342,6 +342,24 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
 
+    [Fact]
+    public void Symbol_stroked_polygon_matches_direct()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+        byte[] symbol = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red' stroke='blue' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
+
+        Assert.Equal(direct, symbol);
+    }
+
+    [Fact]
+    public void Scaled_symbol_stroked_polygon_matches_direct()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' stroke='blue' stroke-width='4'/></svg>", out _, out _);
+        byte[] symbol = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 4 4'><polygon points='0,0 4,0 0,4' fill='red' stroke='blue' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
+
+        Assert.Equal(direct, symbol);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
