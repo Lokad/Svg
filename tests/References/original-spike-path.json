@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-spike-path",
+  "referencePng": "original-spike-path.png",
+  "referenceSha256": "7d4d741562d28dce9fa36f7ae893ff9663418aa69de680286b0ae9982daef5e1",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 4, "height": 4, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "admittedAt": "2026-09-24",
+  "candidateSha256": "1284b3c3991161f10af007e4b890476cf4f356e3021ea927b037c2f01b24952f",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

@@ -90,22 +90,25 @@ internal ref struct SvgOrthogonalGeometryLowering
                 contourStart = contourEnd;
             }
             _intersections.Sort(_workCounter, _cancellationToken);
-            for (int intersectionIndex = 1; intersectionIndex < _intersections.Count; intersectionIndex++)
-            {
-                if (_intersections[intersectionIndex].X == _intersections[intersectionIndex - 1].X) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
-            }
             if (_intersections.Count == 0) continue;
             if (_isEvenOdd)
             {
-                if (_intersections.Count % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
-                for (int intersectionIndex = 0; intersectionIndex < _intersections.Count; intersectionIndex += 2)
+                int intersectionIndex = 0;
+                while (intersectionIndex < _intersections.Count)
                 {
+                    if (intersectionIndex + 1 < _intersections.Count && _intersections[intersectionIndex].X == _intersections[intersectionIndex + 1].X)
+                    {
+                        intersectionIndex += 2;
+                        continue;
+                    }
+                    if (intersectionIndex + 1 >= _intersections.Count) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
                     int left = _intersections[intersectionIndex].X; int right = _intersections[intersectionIndex + 1].X;
                     if (right <= left) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
                     if (_geometryElementCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path rectangle-band count exceeds the configured path-command limit." : _elementName + " rectangle-band count exceeds the configured path-command limit.");
                     SvgRectangle band = transform.ApplyOrthogonalRectangle(left, top, (long)right - left, (long)bottom - top, color, hasFill);
                     _geometries.Add(SvgGeometry.FromOrthogonalBand(frame is null ? band : frame.Value.ClipShifted(band)));
                     _geometryElementCount++;
+                    intersectionIndex += 2;
                 }
             }
             else
@@ -161,7 +164,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 if (!EdgesIntersect(firstStart, firstEnd, firstHorizontal, secondStart, secondEnd, secondHorizontal)) continue;
                 bool adjacent = secondIndex == firstIndex + 1 || (firstIndex == 0 && secondIndex == points.Count - 1);
                 SvgPoint shared = secondIndex == firstIndex + 1 ? firstEnd : firstStart;
-                if (adjacent && (firstHorizontal == secondHorizontal || (firstHorizontal ? new SvgPoint(secondStart.X, firstStart.Y) : new SvgPoint(firstStart.X, secondStart.Y)) != shared)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " contours are implemented.");
+                if (adjacent && firstHorizontal != secondHorizontal && (firstHorizontal ? new SvgPoint(secondStart.X, firstStart.Y) : new SvgPoint(firstStart.X, secondStart.Y)) != shared) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " contours are implemented.");
             }
         }
     }
@@ -203,7 +206,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 if (!EdgesIntersect(firstStart, firstEnd, firstHorizontal, secondStart, secondEnd, secondHorizontal)) continue;
                 bool adjacent = secondIndex == firstIndex + 1 || (firstIndex == contourStart && secondIndex == contourEnd - 1);
                 SvgPoint shared = secondIndex == firstIndex + 1 ? firstEnd : firstStart;
-                if (adjacent && (firstHorizontal == secondHorizontal || (firstHorizontal ? new SvgPoint(secondStart.X, firstStart.Y) : new SvgPoint(firstStart.X, secondStart.Y)) != shared)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " contours are implemented.");
+                if (adjacent && firstHorizontal != secondHorizontal && (firstHorizontal ? new SvgPoint(secondStart.X, firstStart.Y) : new SvgPoint(firstStart.X, secondStart.Y)) != shared) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " contours are implemented.");
             }
         }
     }

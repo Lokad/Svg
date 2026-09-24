@@ -1707,14 +1707,91 @@ public sealed class SvgRootParserTests
             band => Assert.Equal(new SvgRectangle(3, 5, 2, 3, new SvgColor(255, 0, 0, 255), true, null), band));
     }
 
-    [Theory]
-    [InlineData("M0,0 H4 V4 H0 Z M4,0 H8 V4 H4 Z")]
-    [InlineData("M0,0 H4 V4 H0 V0 H4 Z")]
-    public void Rejects_coincident_edge_contours(string data)
+    [Fact]
+    public void Lowers_abutting_rect_contours_to_adjacent_bands()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path d='" + data + "' fill='red'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M4,0 H8 V4 H4 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Collection(root.Rectangles,
+            band => Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band),
+            band => Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+    }
+
+    [Fact]
+    public void Lowers_abutting_rect_contours_with_evenodd_pairing()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M4,0 H8 V4 H4 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            band => Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band),
+            band => Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+    }
+
+    [Fact]
+    public void Lowers_opposite_orientation_abut_to_adjacent_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M8,0 H4 V4 H8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            band => Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band),
+            band => Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+    }
+
+    [Fact]
+    public void Lowers_retraced_edge_contour_to_a_single_band()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 V0 H4 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            band => Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+    }
+
+    [Fact]
+    public void Lowers_vertical_spike_contour_by_cancellation()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V4 V0 H4 V4 H0 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            band => Assert.Equal(new SvgRectangle(0, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null), band),
+            band => Assert.Equal(new SvgRectangle(2, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+    }
+
+    [Fact]
+    public void Lowers_vertical_spike_contour_with_nonzero_sweep()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V4 V0 H4 V4 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            band => Assert.Equal(new SvgRectangle(0, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null), band),
+            band => Assert.Equal(new SvgRectangle(2, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+    }
+
+    [Fact]
+    public void Lowers_nested_touching_hole_with_evenodd_pairing()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H10 V10 H0 Z M6,4 H10 V6 H6 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            band => Assert.Equal(new SvgRectangle(0, 0, 10, 4, new SvgColor(255, 0, 0, 255), true, null), band),
+            band => Assert.Equal(new SvgRectangle(0, 4, 6, 2, new SvgColor(255, 0, 0, 255), true, null), band),
+            band => Assert.Equal(new SvgRectangle(0, 6, 10, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+    }
+
+    [Fact]
+    public void Lowers_stacked_identical_contours_to_empty_with_evenodd()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M0,0 H4 V4 H0 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Empty(root.Rectangles);
+    }
+
+    [Fact]
+    public void Lowers_triple_covered_bands_with_nonzero_sweep()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V4 H0 Z M0,0 H2 V4 H0 Z M0,0 H2 V4 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Collection(root.Rectangles,
+            band => Assert.Equal(new SvgRectangle(0, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null), band));
     }
 
     [Fact]
