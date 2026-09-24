@@ -36,7 +36,8 @@ internal static class SvgReferenceResolver
         {
             applied[index] = sources[index].Kind switch
             {
-                SvgGeometryKind.Rectangle or SvgGeometryKind.OrthogonalBand => SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)),
+                SvgGeometryKind.Rectangle => ClipStrokedInstance(ApplyRectangle(sources[index].Rectangle, reference), frame),
+                SvgGeometryKind.OrthogonalBand => SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)),
                 SvgGeometryKind.AxisAlignedLine => ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame),
                 SvgGeometryKind.PolygonFill => ApplyPolygon(sources[index].Polygon, reference, frame, state),
                 SvgGeometryKind.GradientFill => LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame),
@@ -54,6 +55,18 @@ internal static class SvgReferenceResolver
             SvgRectangle placement = InstancePlacement(band.Fill, instance);
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
             return LowerInstancePatternFill(tile, placement, composed, viewportFrame);
+        }
+
+        static SvgGeometry ClipStrokedInstance(SvgRectangle rectangle, SvgViewportFrame? frame)
+        {
+            if (frame is null) return SvgGeometry.FromRectangle(rectangle);
+            if (rectangle.Stroke is SvgStroke stroke)
+            {
+                SvgRectangle shifted = frame.Value.Shift(rectangle);
+                double halfWidth = stroke.Width / 2d;
+                if (!frame.Value.Clip.Contains(shifted.X - halfWidth, shifted.Y - halfWidth, shifted.X + shifted.Width + halfWidth, shifted.Y + shifted.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
+            }
+            return SvgGeometry.FromRectangle(frame.Value.ClipShifted(rectangle));
         }
 
         static SvgGeometry LowerEmbeddedInstanceGradientFill(SvgGradientGeometry band, SvgUseReference instance, SvgViewportFrame? viewportFrame)
@@ -367,9 +380,20 @@ internal static class SvgReferenceResolver
 
     private static SvgRectangle ApplyRectangle(SvgRectangle rectangle, SvgUseReference reference)
     {
-        if (rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
+        SvgStroke? stroke = MapInstanceStroke(rectangle.Stroke, reference);
         SvgRectangle transformed = reference.Transform.Apply(rectangle with { X = rectangle.X + reference.X, Y = rectangle.Y + reference.Y });
-        return transformed with { Color = new SvgColor(transformed.Color.Red, transformed.Color.Green, transformed.Color.Blue, MultiplyAlpha(transformed.Color.Alpha, reference.Opacity)), HasFill = transformed.HasFill && reference.IsPainted };
+        return transformed with { Color = new SvgColor(transformed.Color.Red, transformed.Color.Green, transformed.Color.Blue, MultiplyAlpha(transformed.Color.Alpha, reference.Opacity)), HasFill = transformed.HasFill && reference.IsPainted, Stroke = reference.IsPainted ? stroke : null };
+
+        static SvgStroke? MapInstanceStroke(SvgStroke? stroke, SvgUseReference reference)
+        {
+            if (stroke is null) return null;
+            if (Math.Abs(reference.Transform.ScaleX) != Math.Abs(reference.Transform.ScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
+            int width;
+            try { width = checked(stroke.Value.Width * Math.Abs(reference.Transform.ScaleX)); }
+            catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+            SvgColor color = stroke.Value.Color;
+            return new SvgStroke(new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, reference.Opacity)), width);
+        }
     }
 
     private static SvgAxisAlignedLine ApplyAxisAlignedLine(SvgAxisAlignedLine line, SvgUseReference reference)

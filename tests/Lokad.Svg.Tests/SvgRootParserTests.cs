@@ -2661,6 +2661,21 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(new SvgRectangle(18, 18, 4, 4, new SvgColor(255, 0, 0, 255), true, new SvgStroke(new SvgColor(0, 0, 255, 255), 2)), Assert.Single(root.Rectangles));
     }
+    [Fact]
+    public void Keeps_a_stroked_rect_use_fully_inside_its_nested_viewport()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='10' y='10' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></defs><svg x='8' y='8' width='32' height='32'><use href='#r'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(18, 18, 4, 4, new SvgColor(255, 0, 0, 255), true, new SvgStroke(new SvgColor(0, 0, 255, 255), 2)), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Rejects_a_stroked_rect_use_crossing_a_nested_viewport_boundary()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></defs><svg x='8' y='8' width='4' height='4'><use href='#r'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
 
     [Fact]
     public void Rejects_a_stroked_rectangle_crossing_a_nested_viewport_boundary()
