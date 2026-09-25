@@ -68,8 +68,8 @@ internal static class SvgOrthogonalShapeParser
         SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke;
         SvgParsedGeometry stroked;
         bool isStraightPath = !hasCurve && !hasFractional;
-        bool paintPathOutline = paintOutline && (outlineCandidate.IsUserSpace || isStraightPath);
-        bool paintPathRadial = paintRadialOutline && (outlineRadialCandidate.IsUserSpace || isStraightPath);
+        bool paintPathOutline = paintOutline;
+        bool paintPathRadial = paintRadialOutline;
         bool paintPathPattern = paintPatternOutline && !hasFractional;
         SvgLinearGradient pathGradient = default;
         SvgRadialGradient pathCircle = default;
@@ -92,9 +92,50 @@ internal static class SvgOrthogonalShapeParser
         {
             bool needsFillBox = (paintPathOutline && !outlineCandidate.IsUserSpace) || (paintPathRadial && !outlineRadialCandidate.IsUserSpace);
             if (!needsFillBox) return default;
-            using BudgetedParserList<int> boxEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            using BudgetedParserList<SvgPoint> boxPoints = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, boxEnds);
-            return SvgGradientSyntax.BoxFromGradientBands(boxPoints, shape.Transform, frame, context);
+            if (isStraightPath)
+            {
+                using BudgetedParserList<int> boxEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                using BudgetedParserList<SvgPoint> boxPoints = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, boxEnds);
+                return SvgGradientSyntax.BoxFromGradientBands(boxPoints, shape.Transform, frame, context);
+            }
+            return BoxFromFilledOutlineBounds();
+        }
+
+        SvgRectangle BoxFromFilledOutlineBounds()
+        {
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            foreach (SvgGeometry existing in filled.Geometries)
+            {
+                switch (existing.Kind)
+                {
+                    case SvgGeometryKind.Rectangle:
+                    case SvgGeometryKind.OrthogonalBand:
+                        left = Math.Min(left, existing.Rectangle.X);
+                        top = Math.Min(top, existing.Rectangle.Y);
+                        right = Math.Max(right, existing.Rectangle.X + existing.Rectangle.Width);
+                        bottom = Math.Max(bottom, existing.Rectangle.Y + existing.Rectangle.Height);
+                        break;
+                    case SvgGeometryKind.PolygonFill:
+                        int vertexIndex = 0;
+                        foreach (SvgDevicePoint vertex in existing.Polygon.Points)
+                        {
+                            if ((vertexIndex & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
+                            vertexIndex++;
+                            left = Math.Min(left, vertex.X);
+                            top = Math.Min(top, vertex.Y);
+                            right = Math.Max(right, vertex.X);
+                            bottom = Math.Max(bottom, vertex.Y);
+                        }
+                        break;
+                    default:
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box gradient strokes on this path fill are not implemented.");
+                }
+            }
+            if (!(left <= right) || !(top <= bottom)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box gradient strokes on empty path fills are not implemented.");
+            return new SvgRectangle(left, top, right - left, bottom - top, default, true, null);
         }
 
         try

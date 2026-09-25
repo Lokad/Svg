@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-gradient-curved-outline-bbox-mark",
+  "referencePng": "original-logo-gradient-curved-outline-bbox-mark.png",
+  "referenceSha256": "0393e7c3d9eec6ff4d3c7017a76bb38e81a6caa96be72241f3daf576f46fe3b5",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "4b54e03dccd654ef01419cfd860ca3ccc7ce05ffb1edf9e429f60dd7fafc75b0",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 264,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 106,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

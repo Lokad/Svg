@@ -4854,15 +4854,55 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[1].Kind);
         Assert.False(root.Geometries[1].Polygon.HasFill);
     }
-    [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0.5,0 L8,0 L0,8 Z' fill='none' stroke='url(#g)' stroke-width='2'/></svg>")]
-    public void Bounding_box_gradient_strokes_on_curved_or_fractional_paths_stay_unsupported(string svg)
+    [Fact]
+    public void Lowers_bounding_box_gradient_strokes_on_curved_paths_as_outlines()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.True(root.Geometries.Length >= 2);
+        Assert.All(root.Geometries.Skip(1), outline => Assert.Equal(SvgGeometryKind.GradientPolygon, outline.Kind));
+        Assert.All(root.Geometries.Skip(1), outline => Assert.True(outline.GradientPolygon.HasFill));
+        SvgRectangle fillBox = FillBounds(root.Geometries[0]);
+        Assert.All(root.Geometries.Skip(1), outline => Assert.Equal(fillBox, outline.GradientPolygon.Box));
+    }
+
+    [Fact]
+    public void Lowers_bounding_box_radial_strokes_on_curved_paths_as_outlines()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.True(root.Geometries.Length >= 2);
+        Assert.All(root.Geometries.Skip(1), outline => Assert.Equal(SvgGeometryKind.RadialPolygon, outline.Kind));
+        Assert.All(root.Geometries.Skip(1), outline => Assert.True(outline.RadialPolygon.HasFill));
+    }
+
+    [Fact]
+    public void Lowers_bounding_box_gradient_strokes_on_fractional_paths_as_outlines()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0.5,0 L8,0 L0,8 Z' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
+        Assert.True(root.Geometries[1].GradientPolygon.HasFill);
+        Assert.Equal(FillBounds(root.Geometries[0]), root.Geometries[1].GradientPolygon.Box);
+    }
+
+    private static SvgRectangle FillBounds(SvgGeometry fill)
+    {
+        Assert.Equal(SvgGeometryKind.PolygonFill, fill.Kind);
+        double left = double.PositiveInfinity;
+        double top = double.PositiveInfinity;
+        double right = double.NegativeInfinity;
+        double bottom = double.NegativeInfinity;
+        foreach (SvgDevicePoint vertex in fill.Polygon.Points)
+        {
+            left = Math.Min(left, vertex.X);
+            top = Math.Min(top, vertex.Y);
+            right = Math.Max(right, vertex.X);
+            bottom = Math.Max(bottom, vertex.Y);
+        }
+        return new SvgRectangle(left, top, right - left, bottom - top, default, true, null);
     }
     [Fact]
     public void Applies_a_white_mask_to_a_circle_without_changing_content()
