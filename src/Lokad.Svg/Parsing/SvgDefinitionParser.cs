@@ -198,15 +198,31 @@ internal static class SvgDefinitionParser
             double? baseHeight = parentFrame?.ViewportHeight ?? root.Height;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
             if (SvgMaskSyntax.HasCustomRegion(reader, state)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on use instances are not implemented.");
-            SvgViewportFrame? useFrame = ResolveUseClipFrame(reader, reference, state);
-            if (useFrame is not null && useFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
+            SvgDeferredObbClip? deferredClip = ResolveForwardObbClip(reader, reference, state);
+            SvgViewportFrame? useFrame;
+            if (deferredClip is null)
+            {
+                useFrame = ResolveUseClipFrame(reader, reference, state);
+                if (useFrame is not null && useFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
+            }
+            else useFrame = deferredClip.Value.Parent;
             string? maskAttribute = reader.GetAttribute("mask");
-            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, SvgMaskSyntax.ResolveOptionalMask(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), state, workCounter, cancellationToken);
+            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, SvgMaskSyntax.ResolveOptionalMask(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), deferredClip, state, workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
             return true;
         }
         return false;
+
+        static SvgDeferredObbClip? ResolveForwardObbClip(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)
+        {
+            string? clipAttribute = useReader.GetAttribute("clip-path");
+            if (clipAttribute is null) return null;
+            string clipId = SvgClipPathSyntax.ParseClipId(clipAttribute);
+            if (!document.ObjectClips.TryGetValue(clipId, out _)) return null;
+            if (document.Definitions.TryGetValue(useReference.Id, out _)) return null;
+            return new SvgDeferredObbClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
+        }
 
         static SvgViewportFrame? ResolveUseClipFrame(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)
         {

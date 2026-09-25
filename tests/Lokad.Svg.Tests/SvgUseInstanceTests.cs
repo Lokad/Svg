@@ -350,6 +350,24 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Forward_object_bounding_box_clipped_use_matches_backward()
+    {
+        byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='1'/></clipPath></defs><use href='#r' clip-path='url(#window)'/></svg>", out _, out _);
+        byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='1'/></clipPath></defs><use href='#r' clip-path='url(#window)'/><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/></defs></svg>", out _, out _);
+
+        Assert.Equal(backward, forward);
+    }
+
+    [Fact]
+    public void Forward_object_bounding_box_clipped_symbol_matches_backward()
+    {
+        byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><symbol id='s' viewBox='0 0 8 8'><rect x='0' y='0' width='8' height='8' fill='red'/></symbol></defs><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='1'/></clipPath></defs><use href='#s' width='8' height='8' clip-path='url(#window)'/></svg>", out _, out _);
+        byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='1'/></clipPath></defs><use href='#s' width='8' height='8' clip-path='url(#window)'/><defs><symbol id='s' viewBox='0 0 8 8'><rect x='0' y='0' width='8' height='8' fill='red'/></symbol></defs></svg>", out _, out _);
+
+        Assert.Equal(backward, forward);
+    }
+
+    [Fact]
     public void Symbol_gradient_use_matches_direct_use()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#g)'/></defs><use href='#p'/></svg>", out _, out _);
