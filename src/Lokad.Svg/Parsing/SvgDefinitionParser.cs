@@ -207,7 +207,7 @@ internal static class SvgDefinitionParser
             }
             else useFrame = deferredClip.Value.Parent;
             string? maskAttribute = reader.GetAttribute("mask");
-            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, SvgMaskSyntax.ResolveOptionalMask(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), deferredClip, state, workCounter, cancellationToken);
+            SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, ResolveDeferredMaskValue(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), deferredClip, state, workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
             return true;
@@ -224,6 +224,14 @@ internal static class SvgDefinitionParser
             if (definitionKnown && clipKnown) return null;
             if (!clipKnown) return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
             if (document.ObjectClips.TryGetValue(clipId, out _)) return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
+            return null;
+        }
+
+        static byte? ResolveDeferredMaskValue(XmlReader useReader, SvgDocumentState document)
+        {
+            string? maskAttribute = useReader.GetAttribute("mask");
+            if (maskAttribute is null) return null;
+            if (document.Masks.TryGetValue(SvgMaskSyntax.ParseMaskId(maskAttribute), out byte value)) return value;
             return null;
         }
 
