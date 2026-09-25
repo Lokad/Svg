@@ -3789,6 +3789,7 @@ public sealed class SvgRootParserTests
         Assert.All(root.Geometries.Skip(1), band => Assert.True(band.Pattern.Fill.HasFill));
     }
 
+
     [Fact]
     public void Lowers_pattern_strokes_on_lines_as_tile_bands()
     {
@@ -3797,6 +3798,29 @@ public sealed class SvgRootParserTests
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
         Assert.Equal(new SvgRectangle(0, 3, 8, 2, default, true, null), geometry.Pattern.Fill);
+    }
+
+    [Fact]
+    public void Lowers_gradient_fills_with_pattern_strokes_as_fill_plus_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#g)' stroke='url(#p)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(5, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.GradientFill, root.Geometries[0].Kind);
+        Assert.True(root.Geometries[0].Gradient.Fill.HasFill);
+        Assert.All(root.Geometries.Skip(1), band => Assert.Equal(SvgGeometryKind.PatternFill, band.Kind));
+        Assert.All(root.Geometries.Skip(1), band => Assert.True(band.Pattern.Fill.HasFill));
+    }
+
+    [Fact]
+    public void Lowers_radial_fills_with_pattern_strokes_as_fill_plus_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='f' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#f)' stroke='url(#p)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(5, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.RadialGradient, root.Geometries[0].Kind);
+        Assert.True(root.Geometries[0].Radial.Fill.HasFill);
+        Assert.All(root.Geometries.Skip(1), band => Assert.Equal(SvgGeometryKind.PatternFill, band.Kind));
     }
 
     [Fact]

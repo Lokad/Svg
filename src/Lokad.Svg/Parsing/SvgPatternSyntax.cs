@@ -147,12 +147,47 @@ internal static class SvgPatternSyntax
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
-        SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.NamedColors);
+        SvgLinearGradient fillGradient = default;
+        SvgRadialGradient fillCircle = default;
+        bool hasLinearFill = false;
+        bool hasRadialFill = false;
+        if (SvgGradientSyntax.IsGradientFill(style.Fill))
+        {
+            string fillId = SvgGradientSyntax.ParseGradientId(style.Fill);
+            if (state.Gradients.TryGetValue(fillId, out SvgLinearGradient resolvedFill))
+            {
+                fillGradient = SvgGradientSyntax.MapUserSpaceVector(transform, resolvedFill, frame);
+                fillGradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, fillGradient);
+                hasLinearFill = true;
+            }
+            else if (state.RadialGradients.TryGetValue(fillId, out SvgRadialGradient resolvedCircle))
+            {
+                fillCircle = SvgGradientSyntax.MapUserSpaceRadial(transform, resolvedCircle, frame);
+                hasRadialFill = true;
+            }
+            else if (state.Patterns.TryGetValue(fillId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills with pattern strokes are not implemented.");
+            else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
+        }
+        bool combined = hasLinearFill || hasRadialFill;
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
-        bool painted = presentation.IsPainted;
-        byte opacity = presentation.Opacity;
-        SvgColor fillColor = SvgPaintResolver.ResolveFillColor(presentation.Paint, opacity);
-        bool hasFill = presentation.Paint.HasFill && painted;
+        bool painted;
+        byte opacity;
+        SvgColor fillColor = default;
+        bool hasFill;
+        if (combined)
+        {
+            painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+            opacity = SvgColorParser.ParseOpacity(style.Opacity);
+            hasFill = painted;
+        }
+        else
+        {
+            SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.NamedColors);
+            painted = presentation.IsPainted;
+            opacity = presentation.Opacity;
+            fillColor = SvgPaintResolver.ResolveFillColor(presentation.Paint, opacity);
+            hasFill = presentation.Paint.HasFill && painted;
+        }
         SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
         if (probe is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width pattern strokes no larger than the rectangle dimensions are implemented.");
         double halfWidth = probe.Value.Width / 2d;
@@ -161,12 +196,18 @@ internal static class SvgPatternSyntax
         SvgRectangle bottom = new(placement.X - halfWidth, placement.Y + placement.Height - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
         SvgRectangle left = new(placement.X - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
         SvgRectangle right = new(placement.X + placement.Width - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
-        SvgRectangle fill = placement with { Color = fillColor, HasFill = hasFill };
+        byte fillOpacity = combined ? SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.FillOpacity)) : opacity;
+        bool fillHasFill = hasFill;
+        if (hasLinearFill) fillHasFill = hasFill && !fillGradient.IsEmpty;
+        else if (hasRadialFill) fillHasFill = hasFill && !fillCircle.IsEmpty;
+        SvgRectangle box = placement;
+        SvgRectangle fill = placement with { Color = fillColor, HasFill = fillHasFill };
         if (frame is not null)
         {
             if (!frame.Value.Clip.Contains(placement.X - halfWidth, placement.Y - halfWidth, placement.X + placement.Width + halfWidth, placement.Y + placement.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
             SvgRectangle shifted = frame.Value.Shift(placement);
-            fill = frame.Value.Clip.ClipRectangle(shifted) with { Color = fillColor, HasFill = hasFill };
+            fill = frame.Value.Clip.ClipRectangle(shifted) with { Color = fillColor, HasFill = fillHasFill };
+            box = frame.Value.Shift(box);
             top = frame.Value.Clip.ClipRectangle(frame.Value.Shift(top));
             bottom = frame.Value.Clip.ClipRectangle(frame.Value.Shift(bottom));
             left = frame.Value.Clip.ClipRectangle(frame.Value.Shift(left));
@@ -176,7 +217,9 @@ internal static class SvgPatternSyntax
         bool paintBands = painted && tile.TileWidth != 0 && tile.TileHeight != 0 && tileContent.HasValue;
         SvgRectangle content = tileContent.HasValue ? tileContent.Value.Rectangle : default;
         using BudgetedParserList<SvgGeometry> stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        stroked.Add(SvgGeometry.FromRectangle(fill));
+        if (hasLinearFill) stroked.Add(SvgGradientSyntax.LowerLinearFillGeometry(fillGradient, box, fill, fillHasFill, fillOpacity));
+        else if (hasRadialFill) stroked.Add(SvgGradientSyntax.LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity));
+        else stroked.Add(SvgGeometry.FromRectangle(fill));
         stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, top with { HasFill = paintBands }, opacity, null)));
         stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bottom with { HasFill = paintBands }, opacity, null)));
         stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, left with { HasFill = paintBands }, opacity, null)));

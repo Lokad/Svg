@@ -14,6 +14,7 @@ internal static class SvgLeafParser
         AxisTransform earlyTransform = context.ResolveTransform(reader);
         SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgViewportFrame? effectiveFrame = SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, frame, earlyPlacement);
+        if (SvgPatternSyntax.IsPatternStroke(patternStyle.Stroke, state)) return SvgPatternSyntax.LowerPatternStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke) && SvgGradientSyntax.IsGradientFill(patternStyle.Fill))
         {
             string fillId = SvgGradientSyntax.ParsePaintId(patternStyle.Fill);
@@ -21,7 +22,6 @@ internal static class SvgLeafParser
         }
         if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill)) return RetainSingleGeometry(LowerPaintServerRect(reader, context, patternStyle, state, effectiveFrame), state, context);
         if (SvgGradientSyntax.IsGradientFill(patternStyle.Fill)) return RetainSingleGeometry(SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, effectiveFrame), state, context);
-        if (SvgPatternSyntax.IsPatternStroke(patternStyle.Stroke, state) && !SvgGradientSyntax.IsGradientFill(patternStyle.Fill)) return SvgPatternSyntax.LowerPatternStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke)) return SvgGradientSyntax.LowerGradientStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
         double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;

@@ -445,17 +445,19 @@ internal static class SvgGradientSyntax
         bool hasRadialFill = false;
         if (IsGradientFill(style.Fill))
         {
-            if (state.Gradients.TryGetValue(ParseGradientId(style.Fill), out SvgLinearGradient resolvedFill))
+            string fillId = ParseGradientId(style.Fill);
+            if (state.Gradients.TryGetValue(fillId, out SvgLinearGradient resolvedFill))
             {
                 fillGradient = MapUserSpaceVector(transform, resolvedFill, frame);
                 fillGradient = MirrorBoundingBoxVector(transform, fillGradient);
                 hasLinearFill = true;
             }
-            else if (state.RadialGradients.TryGetValue(ParseGradientId(style.Fill), out SvgRadialGradient resolvedCircle))
+            else if (state.RadialGradients.TryGetValue(fillId, out SvgRadialGradient resolvedCircle))
             {
                 fillCircle = MapUserSpaceRadial(transform, resolvedCircle, frame);
                 hasRadialFill = true;
             }
+            else if (state.Patterns.TryGetValue(fillId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills with gradient strokes are not implemented.");
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         }
         bool combined = hasLinearFill || hasRadialFill;
@@ -536,17 +538,19 @@ internal static class SvgGradientSyntax
         bool hasRadialFill = false;
         if (IsGradientFill(style.Fill))
         {
-            if (state.Gradients.TryGetValue(ParseGradientId(style.Fill), out SvgLinearGradient resolvedFill))
+            string fillId = ParseGradientId(style.Fill);
+            if (state.Gradients.TryGetValue(fillId, out SvgLinearGradient resolvedFill))
             {
                 fillGradient = MapUserSpaceVector(transform, resolvedFill, frame);
                 fillGradient = MirrorBoundingBoxVector(transform, fillGradient);
                 hasLinearFill = true;
             }
-            else if (state.RadialGradients.TryGetValue(ParseGradientId(style.Fill), out SvgRadialGradient resolvedCircle))
+            else if (state.RadialGradients.TryGetValue(fillId, out SvgRadialGradient resolvedCircle))
             {
                 fillCircle = MapUserSpaceRadial(transform, resolvedCircle, frame);
                 hasRadialFill = true;
             }
+            else if (state.Patterns.TryGetValue(fillId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills with gradient strokes are not implemented.");
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         }
         bool combined = hasLinearFill || hasRadialFill;
@@ -680,7 +684,7 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Lowers one linear gradient fill rectangle shared by combined fill-and-stroke lowerings, mirroring the fill-only lowering.</summary>
-    private static SvgGeometry LowerLinearFillGeometry(SvgLinearGradient fillGradient, SvgRectangle box, SvgRectangle fill, bool fillHasFill, byte fillOpacity)
+    internal static SvgGeometry LowerLinearFillGeometry(SvgLinearGradient fillGradient, SvgRectangle box, SvgRectangle fill, bool fillHasFill, byte fillOpacity)
     {
         if (fillGradient.Stops.Length == 1) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillGradient.End, fillOpacity), HasFill = fillHasFill });
         if (fillGradient.X1 == fillGradient.X2 && fillGradient.Y1 == fillGradient.Y2 && !fillGradient.IsEmpty)
@@ -692,7 +696,7 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Lowers one radial gradient fill rectangle shared by combined fill-and-stroke lowerings, mirroring the fill-only lowering.</summary>
-    private static SvgGeometry LowerRadialFillGeometry(SvgRadialGradient fillCircle, SvgRectangle box, SvgRectangle fill, bool fillHasFill, byte fillOpacity)
+    internal static SvgGeometry LowerRadialFillGeometry(SvgRadialGradient fillCircle, SvgRectangle box, SvgRectangle fill, bool fillHasFill, byte fillOpacity)
     {
         if (fillCircle.Stops.Length == 1) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillCircle.End, fillOpacity), HasFill = fillHasFill });
         if (fillCircle.Radius == 0 && !fillCircle.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillCircle.End, fillOpacity), HasFill = fillHasFill });

@@ -507,7 +507,7 @@ internal static class SvgDefinitionParser
     {
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle");
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state) && !SvgGradientSyntax.IsGradientFill(style.Fill)) return new SvgDefinition(RetainParsedGeometries(SvgPatternSyntax.LowerPatternStrokeRect(reader, context, style, state, null)), false, symbolViewBox);
+        if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return new SvgDefinition(RetainParsedGeometries(SvgPatternSyntax.LowerPatternStrokeRect(reader, context, style, state, null)), false, symbolViewBox);
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return new SvgDefinition(RetainParsedGeometries(SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null)), false, symbolViewBox);
         SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
         return new SvgDefinition([parsed.Geometry], parsed.Geometry.Rectangle.HasFill && parsed.Style == default, symbolViewBox);
