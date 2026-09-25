@@ -574,7 +574,15 @@ public static class SvgConverter
                 double horizontalCoverage = Math.Clamp(Math.Min(areaRight, x + 1) - Math.Max(areaLeft, x), 0, 1);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double position;
-                if (definition.IsUserSpace) position = ((deviceX - definition.X1) * directionX + (deviceY - definition.Y1) * directionY) / denominator;
+                if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
+                {
+                    double relativeX = (deviceX - definition.X1) / definition.ReferenceScaleX;
+                    double relativeY = (deviceY - definition.Y1) / definition.ReferenceScaleY;
+                    double axisX = directionX / definition.ReferenceScaleX;
+                    double axisY = directionY / definition.ReferenceScaleY;
+                    position = (relativeX * axisX + relativeY * axisY) / (axisX * axisX + axisY * axisY);
+                }
+                else if (definition.IsUserSpace) position = ((deviceX - definition.X1) * directionX + (deviceY - definition.Y1) * directionY) / denominator;
                 else
                 {
                     double normalizedX = (deviceX - box.X) / box.Width;

@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-gradient-anisotropic-mark",
+  "referencePng": "original-logo-gradient-anisotropic-mark.png",
+  "referenceSha256": "60b53195b24b9db543c2952f85fad76ead0975ea683a9c5240e3cfd2b1abfe93",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 32, "height": 16, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "14cd5a82a8a0ab4c2452c12f85b85d273339f702d13cd03d68124a869b8e32d1",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 9,
+    "maximumChannelError": 1,
+    "maximumAlphaError": 0,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

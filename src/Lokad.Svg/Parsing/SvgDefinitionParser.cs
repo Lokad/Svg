@@ -292,8 +292,8 @@ internal static class SvgDefinitionParser
             if (template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient unit overrides without vector overrides are not implemented.");
         }
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveGradientStops(state, template);
-        (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread) = ResolveGradientVector(template, state);
-        SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops);
+        (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY) = ResolveGradientVector(template, state);
+        SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY);
         string retainedId = state.Strings.Copy(state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier."));
         if (!state.Gradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
     }
@@ -394,13 +394,15 @@ internal static class SvgDefinitionParser
         return (clamped[0].Color, clamped[^1].Color, clamped[0].Offset, clamped[^1].Offset, false, clamped);
     }
 
-    private static (double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientSpread Spread) ResolveGradientVector(SvgGradientTemplate template, SvgDocumentState state)
+    private static (double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientSpread Spread, double ReferenceScaleX, double ReferenceScaleY) ResolveGradientVector(SvgGradientTemplate template, SvgDocumentState state)
     {
         double x1 = template.X1;
         double y1 = template.Y1;
         double x2 = template.X2;
         double y2 = template.Y2;
         bool isUserSpace = template.IsUserSpace;
+        double referenceScaleX = 1;
+        double referenceScaleY = 1;
         SvgGradientSpread spread = template.Spread;
         if (template.Href is not null && template.VectorCount < 4)
         {
@@ -411,13 +413,20 @@ internal static class SvgDefinitionParser
             y2 = template.HasY2 ? template.Y2 : parent.Y2;
             if (!template.HasUnits) isUserSpace = parent.IsUserSpace;
             if (!template.HasSpread) spread = parent.Spread;
+            referenceScaleX = parent.ReferenceScaleX;
+            referenceScaleY = parent.ReferenceScaleY;
         }
         if (template.HasTransform)
         {
             (x1, y1) = template.Transform.Apply(x1, y1);
             (x2, y2) = template.Transform.Apply(x2, y2);
+            if (isUserSpace)
+            {
+                referenceScaleX *= template.Transform.ScaleX;
+                referenceScaleY *= template.Transform.ScaleY;
+            }
         }
-        return (x1, y1, x2, y2, isUserSpace, spread);
+        return (x1, y1, x2, y2, isUserSpace, spread, referenceScaleX, referenceScaleY);
 
     }
 

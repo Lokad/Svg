@@ -308,14 +308,14 @@ public sealed class RenderBudgetTests
 
     private static SvgGeometry GradientFill(SvgGradientStop[] stops, double x)
     {
-        SvgLinearGradient gradient = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, stops);
+        SvgLinearGradient gradient = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, stops, 1, 1);
         SvgRectangle box = new(x, 0, 2, 2, default, true, null);
         return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, box, 255, null));
     }
 
     private static SvgGeometry EmptyGradientFill()
     {
-        SvgLinearGradient gradient = new(default, default, 0, 0, 1, 0, 0, 1, true, false, SvgGradientSpread.Pad, Array.Empty<SvgGradientStop>());
+        SvgLinearGradient gradient = new(default, default, 0, 0, 1, 0, 0, 1, true, false, SvgGradientSpread.Pad, Array.Empty<SvgGradientStop>(), 1, 1);
         SvgRectangle box = new(8, 0, 2, 2, default, true, null);
         return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, box, 255, null));
     }

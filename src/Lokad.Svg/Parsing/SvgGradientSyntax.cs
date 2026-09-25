@@ -4,8 +4,9 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Retains one admitted one-to-eight-stop linear gradient with its bounding-box vector.</summary>
-internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops);
+/// <summary>Retains one admitted one-to-eight-stop linear gradient with its vector and referencing scale record.</summary>
+/// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored endpoints after the local vector definition, so raster evaluation inverts the exact paint map.</remarks>
+internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY);
 
 /// <summary>Identifies the admitted stop-range extension rule.</summary>
 internal enum SvgGradientSpread { Pad, Repeat, Reflect }
@@ -397,11 +398,10 @@ internal static class SvgGradientSyntax
     internal static SvgLinearGradient MapUserSpaceVector(AxisTransform transform, SvgLinearGradient gradient, SvgViewportFrame? frame)
     {
         if (!gradient.IsUserSpace) return gradient;
-        if (Math.Abs(transform.ScaleX) != Math.Abs(transform.ScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform userSpaceOnUse gradient transforms are not implemented.");
         if (frame is not null && (frame.Value.OffsetX != 0 || frame.Value.OffsetY != 0 || frame.Value.ViewportWidth is not null || frame.Value.ViewportHeight is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "userSpaceOnUse gradients inside transformed viewports are not implemented.");
         (double mappedX1, double mappedY1) = transform.ApplyToUserPoint(gradient.X1, gradient.Y1);
         (double mappedX2, double mappedY2) = transform.ApplyToUserPoint(gradient.X2, gradient.Y2);
-        return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2 };
+        return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2, ReferenceScaleX = gradient.ReferenceScaleX * transform.ScaleX, ReferenceScaleY = gradient.ReferenceScaleY * transform.ScaleY };
     }
 
     /// <summary>Maps one userSpaceOnUse radial circle and its focal point through the referencing transform under uniform scaling.</summary>
