@@ -21,6 +21,7 @@ internal static class SvgLeafParser
         }
         if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill)) return RetainSingleGeometry(LowerPaintServerRect(reader, context, patternStyle, state, effectiveFrame), state, context);
         if (SvgGradientSyntax.IsGradientFill(patternStyle.Fill)) return RetainSingleGeometry(SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, effectiveFrame), state, context);
+        if (SvgPatternSyntax.IsPatternStroke(patternStyle.Stroke, state) && !SvgGradientSyntax.IsGradientFill(patternStyle.Fill)) return SvgPatternSyntax.LowerPatternStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke)) return SvgGradientSyntax.LowerGradientStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
         double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
@@ -199,6 +200,7 @@ internal static class SvgLeafParser
         SvgLineSyntax syntax = SvgLineSyntax.Parse(reader);
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "line");
         SvgComputedStyle style = context.ResolveStyle(reader);
+        if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return SvgPatternSyntax.LowerPatternStrokeLine(reader, context, style, syntax, state, frame);
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return SvgGradientSyntax.LowerGradientStrokeLine(reader, context, style, syntax, state, frame);
         SvgResolvedPaintableElement element = context.ResolveShape(style, reader, true);
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");

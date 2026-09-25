@@ -3778,11 +3778,25 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_pattern_strokes()
+    public void Lowers_pattern_strokes_as_tile_bands()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='red' stroke='url(#tiles)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='red' stroke='url(#tiles)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(5, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.Rectangle, root.Geometries[0].Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries[0].Rectangle.Color);
+        Assert.All(root.Geometries.Skip(1), band => Assert.Equal(SvgGeometryKind.PatternFill, band.Kind));
+        Assert.All(root.Geometries.Skip(1), band => Assert.True(band.Pattern.Fill.HasFill));
+    }
+
+    [Fact]
+    public void Lowers_pattern_strokes_on_lines_as_tile_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><line x1='0' y1='4' x2='8' y2='4' stroke='url(#tiles)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
+        Assert.Equal(new SvgRectangle(0, 3, 8, 2, default, true, null), geometry.Pattern.Fill);
     }
 
     [Fact]

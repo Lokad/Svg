@@ -130,4 +130,77 @@ internal static class SvgPatternSyntax
         if (parsed != Math.Truncate(parsed)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer pattern grid dimensions are implemented.");
         return (int)parsed;
     }
+
+    /// <summary>Reports whether a stroke references a locally defined pattern tile.</summary>
+    internal static bool IsPatternStroke(string? stroke, SvgDocumentState state)
+    {
+        if (stroke is null || !stroke.StartsWith("url(", StringComparison.Ordinal)) return false;
+        return state.Patterns.TryGetValue(ParsePatternId(stroke), out _);
+    }
+
+    /// <summary>Lowers one pattern-stroked rectangle into one solid fill plus four pattern-evaluated stroke bands sharing the tile grid.</summary>
+    internal static SvgParsedGeometry LowerPatternStrokeRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
+    {
+        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle");
+        if (!state.Patterns.TryGetValue(ParsePatternId(style.Stroke), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
+        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        AxisTransform transform = context.ResolveTransform(reader);
+        SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
+        SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.NamedColors);
+        SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
+        bool painted = presentation.IsPainted;
+        byte opacity = presentation.Opacity;
+        SvgColor fillColor = SvgPaintResolver.ResolveFillColor(presentation.Paint, opacity);
+        bool hasFill = presentation.Paint.HasFill && painted;
+        SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
+        if (probe is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width pattern strokes no larger than the rectangle dimensions are implemented.");
+        double halfWidth = probe.Value.Width / 2d;
+        int strokeWidth = probe.Value.Width;
+        SvgRectangle top = new(placement.X - halfWidth, placement.Y - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
+        SvgRectangle bottom = new(placement.X - halfWidth, placement.Y + placement.Height - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
+        SvgRectangle left = new(placement.X - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
+        SvgRectangle right = new(placement.X + placement.Width - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
+        SvgRectangle fill = placement with { Color = fillColor, HasFill = hasFill };
+        if (frame is not null)
+        {
+            if (!frame.Value.Clip.Contains(placement.X - halfWidth, placement.Y - halfWidth, placement.X + placement.Width + halfWidth, placement.Y + placement.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
+            SvgRectangle shifted = frame.Value.Shift(placement);
+            fill = frame.Value.Clip.ClipRectangle(shifted) with { Color = fillColor, HasFill = hasFill };
+            top = frame.Value.Clip.ClipRectangle(frame.Value.Shift(top));
+            bottom = frame.Value.Clip.ClipRectangle(frame.Value.Shift(bottom));
+            left = frame.Value.Clip.ClipRectangle(frame.Value.Shift(left));
+            right = frame.Value.Clip.ClipRectangle(frame.Value.Shift(right));
+        }
+        SvgGeometry? tileContent = tile.Content;
+        bool paintBands = painted && tile.TileWidth != 0 && tile.TileHeight != 0 && tileContent.HasValue;
+        SvgRectangle content = tileContent.HasValue ? tileContent.Value.Rectangle : default;
+        using BudgetedParserList<SvgGeometry> stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        stroked.Add(SvgGeometry.FromRectangle(fill));
+        stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, top with { HasFill = paintBands }, opacity, null)));
+        stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bottom with { HasFill = paintBands }, opacity, null)));
+        stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, left with { HasFill = paintBands }, opacity, null)));
+        stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, right with { HasFill = paintBands }, opacity, null)));
+        return new SvgParsedGeometry(stroked.Detach(), 0);
+    }
+
+    /// <summary>Lowers one pattern-stroked axis-aligned line into a pattern-evaluated stroke band.</summary>
+    internal static SvgGeometry LowerPatternStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
+    {
+        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "line");
+        AxisTransform transform = context.ResolveTransform(reader);
+        if (transform != AxisTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
+        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
+        if ((syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
+        int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
+        if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
+        if (!state.Patterns.TryGetValue(ParsePatternId(style.Stroke), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
+        bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
+        byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
+        if (frame is not null) band = frame.Value.ClipShifted(band);
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromOrthogonalBand(band with { HasFill = false });
+        SvgRectangle content = tile.Content.Value.Rectangle;
+        return SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, band, opacity, null));
+    }
 }
