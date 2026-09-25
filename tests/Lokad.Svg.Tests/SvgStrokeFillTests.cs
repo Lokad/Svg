@@ -599,6 +599,15 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, gradient);
     }
 
+    [Fact]
+    public void Gradient_outline_paints_stroke_coverage()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(255, Pixel(pixels, 8, 4, 0).Alpha);
+        Assert.Equal(0, Pixel(pixels, 8, 7, 7).Alpha);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

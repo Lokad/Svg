@@ -117,6 +117,8 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePointList(XmlReader reader, string elementName, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
+        bool paintOutline = TryResolveOutlineGradient(style, state, out SvgLinearGradient outlineCandidate);
+        SvgComputedStyle fillStyle = paintOutline ? style with { Stroke = "none" } : style;
         if (SvgGradientSyntax.IsGradientFill(style.Fill))
         {
             if (state.Patterns.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out _)) return SvgPatternSyntax.LowerPatternBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
@@ -151,7 +153,7 @@ internal static class SvgOrthogonalShapeParser
         contourEnds.Add(points.Count);
         if (HasDiagonalContour(points, contourEnds))
         {
-            shape = context.ResolveShape(style, reader, true);
+            shape = context.ResolveShape(fillStyle, reader, true);
             bool diagonalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using SvgOrthogonalGeometryLowering diagonalLowering = new(points, contourEnds, elementName, false, diagonalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             filled = diagonalLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
@@ -159,7 +161,7 @@ internal static class SvgOrthogonalShapeParser
         else
         {
             SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, elementName, context.WorkCounter, context.CancellationToken);
-            shape = context.ResolveShape(style, reader, true);
+            shape = context.ResolveShape(fillStyle, reader, true);
             bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, false, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             filled = lowering.Lower(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame);
@@ -167,17 +169,40 @@ internal static class SvgOrthogonalShapeParser
 
         SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke;
         SvgParsedGeometry stroked;
+        SvgLinearGradient outlineGradient = default;
+        SvgComputedStyle strokeStyle = style;
+        SvgResolvedPaintableElement strokeShape = shape;
+        if (paintOutline)
+        {
+            outlineGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
+            // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
+            strokeStyle = style with { Stroke = "#ffffff" };
+            strokeShape = context.ResolveShape(strokeStyle, reader, true);
+        }
         try
         {
-            stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, shape, elementName);
+            stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, strokeStyle, strokeShape, elementName);
             if (stroke is null) return filled;
             using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, false, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            stroked = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", shape.Transform, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, shape.Presentation.IsPainted, frame, budget);
+            stroked = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", strokeShape.Transform, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, strokeShape.Presentation.IsPainted, frame, budget);
+            if (paintOutline) stroked = RepaintOutlinesAsGradient(stroked, outlineGradient, strokeShape.Presentation.Opacity, budget);
         }
         catch { filled.Dispose(); throw; }
         return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
+
+        SvgParsedGeometry RepaintOutlinesAsGradient(SvgParsedGeometry white, SvgLinearGradient paint, byte opacity, RenderBudget budget)
+        {
+            using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            foreach (SvgGeometry existing in white.Geometries)
+            {
+                SvgPolygonFill solid = existing.Polygon;
+                repainted.Add(SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, default, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget)));
+            }
+            white.Dispose();
+            return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
+        }
     }
 
     private static SvgParsedGeometry ConcatParsedGeometries(SvgParsedGeometry first, SvgParsedGeometry second, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -199,6 +224,18 @@ internal static class SvgOrthogonalShapeParser
             second.Dispose();
             throw;
         }
+    }
+
+    /// <summary>Resolves a userSpaceOnUse linear-gradient stroke for outline repainting, leaving all other strokes to the solid path.</summary>
+    private static bool TryResolveOutlineGradient(SvgComputedStyle style, SvgDocumentState state, out SvgLinearGradient gradient)
+    {
+        gradient = default;
+        string? strokePaint = style.Stroke;
+        return strokePaint is not null
+            && SvgGradientSyntax.IsGradientStrokeUrl(strokePaint)
+            && SvgLocalUrl.TryParseId(strokePaint, out string outlinePaintId)
+            && state.Gradients.TryGetValue(outlinePaintId, out gradient)
+            && gradient.IsUserSpace;
     }
 
     internal static bool HasDiagonalContour(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds)
