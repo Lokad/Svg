@@ -59,9 +59,21 @@ internal static class SvgRenderedLeafParser
                 }
                 return true;
             case "line":
-                SvgGeometry line = SvgLeafParser.ParseLine(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state);
-                SvgMaskSyntax.ValidateMaskScopes(state, line);
-                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, line));
+                using (SvgParsedGeometry line = SvgLeafParser.ParseLine(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))
+                {
+                    if (line.Geometries.Length == 1)
+                    {
+                        SvgGeometry single = line.Geometries[0];
+                        SvgMaskSyntax.ValidateMaskScopes(state, single);
+                        state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, single));
+                    }
+                    else
+                    {
+                        SvgMaskSyntax.ApplyMaskToBands(reader, state, line.Storage.Items);
+                        SvgMaskSyntax.ValidateMaskScopeBands(state, line.Storage.Items);
+                        state.Scene.AddGeometries(line.Geometries);
+                    }
+                }
                 return true;
             case "circle":
                 using (SvgParsedGeometry circle = SvgLeafParser.ParseCircle(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))

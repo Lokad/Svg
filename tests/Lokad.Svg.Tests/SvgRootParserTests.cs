@@ -3819,6 +3819,39 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_dashed_lines_as_run_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.OrthogonalBand, root.Geometries[0].Kind);
+        Assert.Equal(new SvgRectangle(0, 3, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[0].Rectangle);
+        Assert.Equal(new SvgRectangle(8, 3, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[1].Rectangle);
+    }
+
+    [Fact]
+    public void Dashed_line_offsets_shift_run_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-dashoffset='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(3, root.Geometries.Length);
+        Assert.Equal(new SvgRectangle(0, 3, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[0].Rectangle);
+        Assert.Equal(new SvgRectangle(6, 3, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[1].Rectangle);
+        Assert.Equal(new SvgRectangle(14, 3, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[2].Rectangle);
+    }
+
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-linecap='square' stroke-dasharray='4 4'/></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' pathLength='16'/></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-dasharray='4 4'/></svg>")]
+    public void Rejects_unsupported_dashed_line_forms(string svg)
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Lowers_gradient_fills_with_pattern_strokes_as_fill_plus_bands()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#g)' stroke='url(#p)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

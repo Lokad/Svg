@@ -630,6 +630,7 @@ internal static class SvgGradientSyntax
         if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
         if (style.Stroke is not null && state.RadialGradients.TryGetValue(ParseGradientId(style.Stroke), out _)) return LowerRadialStrokeLine(reader, context, style, syntax, state, frame);
         if (SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) == SvgStrokeCap.Square) syntax = syntax.WithSquareCaps(strokeWidth);
+        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed paint-server line strokes are not implemented.");
         if (!state.Gradients.TryGetValue(ParseGradientId(style.Stroke), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         gradient = MapUserSpaceVector(transform, gradient, frame);
         if (!gradient.IsUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse gradient strokes on lines are implemented.");
@@ -663,6 +664,7 @@ internal static class SvgGradientSyntax
         int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
         if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
         if (SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) == SvgStrokeCap.Square) syntax = syntax.WithSquareCaps(strokeWidth);
+        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed paint-server line strokes are not implemented.");
         if (state.Patterns.TryGetValue(ParseGradientId(style.Stroke), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern strokes are not implemented.");
         if (!state.RadialGradients.TryGetValue(ParseGradientId(style.Stroke), out SvgRadialGradient circle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         circle = MapUserSpaceRadial(transform, circle, frame);

@@ -316,6 +316,7 @@ internal static class SvgPatternSyntax
         int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
         if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
         if (SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) == SvgStrokeCap.Square) syntax = syntax.WithSquareCaps(strokeWidth);
+        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed paint-server line strokes are not implemented.");
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Stroke), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);

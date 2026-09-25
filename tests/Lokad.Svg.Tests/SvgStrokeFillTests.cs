@@ -405,13 +405,18 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Dasharray_on_line_stroke_stays_unsupported()
+    public void Dasharray_on_line_stroke_renders_runs()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></svg>");
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 0, 3));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 2, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 3, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 3));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 5, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 4));
     }
 
     [Fact]
@@ -563,6 +568,15 @@ public sealed class SvgStrokeFillTests
         byte[] butt = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='1' y1='4' x2='7' y2='4' stroke='red' stroke-width='2'/></svg>", out _, out _);
 
         Assert.Equal(butt, square);
+    }
+
+    [Fact]
+    public void Full_dash_line_matches_solid_line()
+    {
+        byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='16'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(solid, dashed);
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)
