@@ -4723,6 +4723,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_diagonal_radial_polygons_as_radial_fills()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialPolygon, geometry.Kind);
+        Assert.True(geometry.RadialPolygon.HasFill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.RadialPolygon.Box);
+    }
+
+    [Fact]
     public void Lowers_userspace_gradient_strokes_on_polygons_as_outlines()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-radial-polygon-mark",
+  "referencePng": "original-logo-radial-polygon-mark.png",
+  "referenceSha256": "9cde69978353722c7ed94827cfc0ee8a91519a5a6e954b8499683c90882f21d8",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "c6bcd26e4521aef516295be8820600ed4f2b1b592863b5075624fe709ca9e934",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 37,
+    "maximumChannelError": 1,
+    "maximumAlphaError": 0,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

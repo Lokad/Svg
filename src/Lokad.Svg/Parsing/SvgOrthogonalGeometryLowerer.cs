@@ -166,6 +166,15 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishGradientPolygonFill(mapped, ends, gradient, box, hasFill, opacity, SvgPolygonMapping.QuarterEdges, frame, budget);
     }
 
+    /// <summary>Lowers diagonal radial-gradient polygons with separated simple contours to retained device points with their paint box.</summary>
+    internal SvgParsedGeometry LowerRadialPolygonFill(SvgRadialGradient gradient, SvgRectangle box, bool hasFill, byte opacity, AxisTransform transform, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        int[] ends = MapDiagonalContours(transform, frame, mapped);
+        return FinishRadialPolygonFill(mapped, ends, gradient, box, hasFill, opacity, SvgPolygonMapping.QuarterEdges, frame, budget);
+    }
+
     private int[] MapDiagonalContours(AxisTransform transform, SvgViewportFrame? frame, BudgetedParserList<SvgDevicePoint> mapped)
     {
         ArgumentNullException.ThrowIfNull(mapped);
@@ -957,6 +966,38 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         SvgGradientPolygon fill = SvgGradientPolygon.Create(retained, ends, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, budget);
         _geometries.Add(SvgGeometry.FromGradientPolygon(fill));
+        _geometryElementCount++;
+        return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
+    }
+
+    /// <summary>Validates separated device contours once and retains one radial polygon fill with scene-owned storage.</summary>
+    private SvgParsedGeometry FinishRadialPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, byte opacity, SvgPolygonMapping mapping, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(mapped);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(budget);
+        SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
+        ValidateDeviceRange(retained);
+        ChargePairs(_workCounter, (long)retained.Length * (retained.Length - 1) / 2, _cancellationToken);
+        if (SvgContourStructure.ClassifySet(retained, ends, _cancellationToken) != SvgContourFlags.None) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+        int[]? signs = null;
+        if (_isEvenOdd)
+        {
+            signs = new int[ends.Length];
+            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
+        }
+
+        return RetainRadialPolygonFill(retained, ends, signs, gradient, box, hasFill, opacity, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+    }
+
+    private SvgParsedGeometry RetainRadialPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, byte opacity, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(retained);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(budget);
+        SvgRadialPolygon fill = SvgRadialPolygon.Create(retained, ends, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, budget);
+        _geometries.Add(SvgGeometry.FromRadialPolygon(fill));
         _geometryElementCount++;
         return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
     }
