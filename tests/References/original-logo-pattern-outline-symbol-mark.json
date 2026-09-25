@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-pattern-outline-symbol-mark",
+  "referencePng": "original-logo-pattern-outline-symbol-mark.png",
+  "referenceSha256": "c9c20970fc92178e6b1331172db8004768262703a76db9ad0c838ac2e26b5a08",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "2191b5ada44fc2593229819c8ebe4c5885d45a42a529d122405be8fb04717caa",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 106,
+    "maximumChannelError": 9,
+    "maximumAlphaError": 9,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

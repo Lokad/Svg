@@ -389,6 +389,7 @@ internal static class SvgReferenceResolver
                     SvgGeometryKind.GradientStroke => ApplySymbolGradientStroke(sources[index].GradientStroke, symbolBox, reference, frame, state),
                     SvgGeometryKind.GradientPolygon => ApplySymbolGradientPolygon(sources[index].GradientPolygon, symbolBox, reference, frame, state),
                     SvgGeometryKind.RadialPolygon => ApplySymbolRadialPolygon(sources[index].RadialPolygon, symbolBox, reference, frame, state),
+                    SvgGeometryKind.PatternPolygon => ApplySymbolPatternPolygon(sources[index].PatternPolygon, symbolBox, reference, frame, state),
                     _ => ApplySymbolInstance(sources[index], symbolBox, reference, frame, state),
                 });
             }
@@ -569,6 +570,61 @@ internal static class SvgReferenceResolver
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
             return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, source.ContourEnds, source.Signs, circle, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, document.Budget));
+        }
+
+        static SvgGeometry ApplySymbolPatternPolygon(SvgPatternPolygon source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
+        {
+            ArgumentNullException.ThrowIfNull(document);
+            if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
+            if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            if (viewportFrame is not null && viewportFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
+            SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
+            for (int index = 0; index < mapped.Length; index++)
+            {
+                double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
+                double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
+                double placedX = instance.Transform.ScaleX * contentX + instance.Transform.OffsetX;
+                double placedY = instance.Transform.ScaleY * contentY + instance.Transform.OffsetY;
+                if (viewportFrame is not null)
+                {
+                    placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
+                    placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                }
+                if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                mapped[index] = new SvgDevicePoint(placedX, placedY);
+            }
+            double gridOriginX = source.OriginX * scaleX + offsetX;
+            double gridOriginY = source.OriginY * scaleY + offsetY;
+            double gridTileWidth = source.TileWidth * scaleX;
+            double gridTileHeight = source.TileHeight * scaleY;
+            double gridContentX = source.Content.X * scaleX + offsetX;
+            double gridContentY = source.Content.Y * scaleY + offsetY;
+            double gridContentWidth = source.Content.Width * scaleX;
+            double gridContentHeight = source.Content.Height * scaleY;
+            if (!IsIntegerGrid(gridOriginX) || !IsIntegerGrid(gridOriginY) || !IsIntegerGrid(gridTileWidth) || !IsIntegerGrid(gridTileHeight) || !IsIntegerGrid(gridContentX) || !IsIntegerGrid(gridContentY) || !IsIntegerGrid(gridContentWidth) || !IsIntegerGrid(gridContentHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped symbol-held pattern tiles are implemented.");
+            SvgRectangle content = new(gridContentX, gridContentY, gridContentWidth, gridContentHeight, source.Content.Color, source.Content.HasFill, source.Content.Stroke);
+            SvgClipBox viewport = instance.Transform.Apply(new SvgClipBox(instance.X, instance.Y, instance.Width.Value, instance.Height.Value));
+            if (viewportFrame is not null)
+            {
+                viewport = new SvgClipBox(viewport.X + viewportFrame.Value.OffsetX, viewport.Y + viewportFrame.Value.OffsetY, viewport.Width, viewport.Height);
+                viewport = viewport.Intersect(viewportFrame.Value.Clip);
+            }
+            SvgClipBox clip;
+            if (source.Clip is null) clip = viewport;
+            else
+            {
+                SvgClipBox shiftedSource = source.Clip.Value;
+                SvgClipBox shifted = new(shiftedSource.X * scaleX + offsetX + instance.X, shiftedSource.Y * scaleY + offsetY + instance.Y, shiftedSource.Width * scaleX, shiftedSource.Height * scaleY);
+                SvgClipBox placed = instance.Transform.Apply(shifted);
+                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height);
+                clip = placed.Intersect(viewport);
+            }
+            byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
+            return SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, source.ContourEnds, source.Signs, content, (int)gridOriginX, (int)gridOriginY, (int)gridTileWidth, (int)gridTileHeight, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, document.Budget));
+
+            static bool IsIntegerGrid(double value)
+                => double.IsFinite(value) && value == Math.Truncate(value) && value >= int.MinValue && value <= int.MaxValue;
         }
 
         static SvgGeometry ApplySymbolGradientStroke(SvgGradientStrokeGeometry stroke, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
