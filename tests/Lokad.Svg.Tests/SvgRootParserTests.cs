@@ -3909,6 +3909,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Instances_gradient_fill_with_pattern_stroke_definitions()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern><rect id='r' width='8' height='8' fill='url(#g)' stroke='url(#p)' stroke-width='2'/></defs><use href='#r'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(5, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.GradientFill, root.Geometries[0].Kind);
+        Assert.All(root.Geometries.Skip(1), band => Assert.Equal(SvgGeometryKind.PatternFill, band.Kind));
+    }
+
+    [Fact]
     public void Applies_a_gray_mask_to_gradient_stroke_geometry()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><mask id='m'><rect x='0' y='0' width='64' height='64' fill='#808080'/></mask></defs><rect x='16' y='16' width='32' height='32' fill='#00ff00' stroke='url(#g)' stroke-width='8' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
