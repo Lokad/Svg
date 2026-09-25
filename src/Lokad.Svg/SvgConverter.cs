@@ -557,13 +557,13 @@ public static class SvgConverter
             double directionY = definition.Y2 - definition.Y1;
             double denominator = directionX * directionX + directionY * directionY;
             double offsetSpan = definition.Offset2 - definition.Offset1;
-            if (paint && offsetSpan <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
+            if (paint && offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
             bool transparentStops = false;
             foreach (SvgGradientStop stop in definition.Stops)
             {
                 if (stop.Color.Alpha != 255) { transparentStops = true; break; }
             }
-            if (paint && denominator != 0)
+            if (paint && (denominator != 0 || definition.Stops.Length == 1))
             for (int y = startY; y < endY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
@@ -589,7 +589,7 @@ public static class SvgConverter
                     double normalizedY = (deviceY - box.Y) / box.Height;
                     position = ((normalizedX - definition.X1) * directionX + (normalizedY - definition.Y1) * directionY) / denominator;
                 }
-                double local = (position - definition.Offset1) / offsetSpan;
+                double local = definition.Stops.Length == 1 ? 0 : (position - definition.Offset1) / offsetSpan;
                 if (definition.Spread == SvgGradientSpread.Repeat) local -= Math.Floor(local);
                 else if (definition.Spread == SvgGradientSpread.Reflect)
                 {
@@ -639,7 +639,7 @@ public static class SvgConverter
             long coverage = (long)(endY - startY) * (endX - startX);
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Radial fill raster work exceeds the configured limit.");
             workUnits += coverage;
-            if (paint && definition.Radius <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
+            if (paint && (definition.Radius <= 0 && definition.Stops.Length != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
             bool transparentStops = false;
             foreach (SvgGradientStop stop in definition.Stops)
             {
@@ -684,6 +684,8 @@ public static class SvgConverter
                 double rayX = sampleX - focalX;
                 double rayY = sampleY - focalY;
                 double position;
+                if (definition.Stops.Length == 1) position = 0;
+                else
                 if (offsetX == 0 && offsetY == 0)
                 {
                     position = (Math.Sqrt(rayX * rayX + rayY * rayY) - definition.FocalRadius) / (definition.Radius - definition.FocalRadius);

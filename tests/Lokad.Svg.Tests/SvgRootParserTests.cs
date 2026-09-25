@@ -1685,19 +1685,24 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_single_stop_gradient_stroke_rects()
+    public void Lowers_single_stop_gradient_strokes_as_constant_bands()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='red' stroke='url(#g)' stroke-width='2'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='red' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientStroke, geometry.Kind);
+        Assert.True(geometry.GradientStroke.HasStroke);
+        Assert.Equal(new SvgRectangle(1, 1, 6, 6, new SvgColor(255, 0, 0, 255), true, null), geometry.GradientStroke.Fill);
     }
 
     [Fact]
-    public void Rejects_single_stop_gradient_stroke_lines()
+    public void Lowers_single_stop_gradient_strokes_on_lines_as_solid_bands()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><line x1='0' y1='4' x2='8' y2='4' stroke='url(#g)' stroke-width='2'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><line x1='0' y1='4' x2='8' y2='4' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(new SvgRectangle(0, 3, 8, 2, default, true, null), geometry.Gradient.Fill);
     }
 
     [Theory]
@@ -4271,11 +4276,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_single_stop_radial_strokes()
+    public void Lowers_single_stop_radial_strokes_as_constant_bands()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0.3' stop-color='#ff0000'/></radialGradient></defs><rect width='8' height='8' fill='red' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0.3' stop-color='#ff0000'/></radialGradient></defs><rect width='8' height='8' fill='red' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(5, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.Rectangle, root.Geometries[0].Kind);
+        Assert.All(root.Geometries.Skip(1), band => Assert.Equal(SvgGeometryKind.RadialGradient, band.Kind));
     }
 
     [Fact]

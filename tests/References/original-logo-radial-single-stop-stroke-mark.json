@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-radial-single-stop-stroke-mark",
+  "referencePng": "original-logo-radial-single-stop-stroke-mark.png",
+  "referenceSha256": "ad67b2b37b6634b6a1ac684b60235745fb1c6b445219fa4ff8b47c187318817d",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "97394d57010bc755841381f3594b13fddb1b55a0263a7e64559170457ed79a2c",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-25"
+}

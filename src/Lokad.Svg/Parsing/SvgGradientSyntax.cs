@@ -439,7 +439,6 @@ internal static class SvgGradientSyntax
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceVector(transform, gradient, frame);
-        if (gradient.Stops.Length == 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Single-stop gradient strokes are not implemented.");
         if (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate linear gradient strokes are not implemented.");
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.NamedColors);
@@ -485,7 +484,6 @@ internal static class SvgGradientSyntax
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
         circle = MapUserSpaceRadial(transform, circle, frame);
-        if (circle.Stops.Length == 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Single-stop radial gradient strokes are not implemented.");
         if (circle.Radius == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate radial gradient strokes are not implemented.");
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.NamedColors);
@@ -541,7 +539,6 @@ internal static class SvgGradientSyntax
         gradient = MirrorBoundingBoxVector(transform, gradient);
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
-        if (gradient.Stops.Length == 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Single-stop gradient strokes are not implemented.");
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         SvgRectangle box = band;
         if (frame is not null)
@@ -574,7 +571,6 @@ internal static class SvgGradientSyntax
         if (!circle.IsUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse gradient strokes on lines are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
-        if (circle.Stops.Length == 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Single-stop radial gradient strokes are not implemented.");
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         SvgRectangle box = band;
         if (frame is not null)
