@@ -291,6 +291,7 @@ internal static class SvgReferenceResolver
                 applied.Add(sources[index].Kind switch
                 {
                     SvgGeometryKind.GradientFill => ApplySymbolGradientFill(sources[index].Gradient, symbolBox, reference, frame, state),
+                    SvgGeometryKind.PatternFill => ApplySymbolPatternFill(sources[index].Pattern, symbolBox, reference, frame, state),
                     SvgGeometryKind.RadialGradient => ApplySymbolRadialFill(sources[index].Radial, symbolBox, reference, frame, state),
                     SvgGeometryKind.GradientStroke => ApplySymbolGradientStroke(sources[index].GradientStroke, symbolBox, reference, frame, state),
                     _ => ApplySymbolInstance(sources[index], symbolBox, reference, frame, state),
@@ -339,6 +340,28 @@ internal static class SvgReferenceResolver
             SvgLinearGradient vector = band.Gradient;
             if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y };
             return LowerPlacedGradientFill(vector, fill, box, MultiplyAlpha(band.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame);
+        }
+        static SvgGeometry ApplySymbolPatternFill(SvgPatternGeometry band, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
+        {
+            if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
+            SvgRectangle fill = ApplySymbolInstance(SvgGeometry.FromRectangle(band.Fill), viewBox, instance, viewportFrame, document).Rectangle;
+            double originX = band.OriginX * scaleX + offsetX;
+            double originY = band.OriginY * scaleY + offsetY;
+            double tileWidth = band.TileWidth * scaleX;
+            double tileHeight = band.TileHeight * scaleY;
+            double contentX = band.Content.X * scaleX + offsetX;
+            double contentY = band.Content.Y * scaleY + offsetY;
+            double contentWidth = band.Content.Width * scaleX;
+            double contentHeight = band.Content.Height * scaleY;
+            if (!IsIntegerGrid(originX) || !IsIntegerGrid(originY) || !IsIntegerGrid(tileWidth) || !IsIntegerGrid(tileHeight) || !IsIntegerGrid(contentX) || !IsIntegerGrid(contentY) || !IsIntegerGrid(contentWidth) || !IsIntegerGrid(contentHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped symbol-held pattern tiles are implemented.");
+            SvgRectangle content = new(contentX, contentY, contentWidth, contentHeight, band.Content.Color, band.Content.HasFill, band.Content.Stroke);
+            SvgPatternTile tile = new(SvgGeometry.FromRectangle(content), (int)originX, (int)originY, (int)tileWidth, (int)tileHeight, 0, 0);
+            SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
+            return LowerInstancePatternFill(tile, fill, composed, viewportFrame);
+
+            static bool IsIntegerGrid(double value)
+                => double.IsFinite(value) && value == Math.Truncate(value) && value >= int.MinValue && value <= int.MaxValue;
         }
 
         static SvgGeometry ApplySymbolRadialFill(SvgRadialGeometry radial, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)

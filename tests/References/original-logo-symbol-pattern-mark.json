@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-symbol-pattern-mark",
+  "referencePng": "original-logo-symbol-pattern-mark.png",
+  "referenceSha256": "d8326fa74199697677f78d8a7416c79240876e78f5185aac89ad60d402a3896f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "88935760b3e432212eed43ce5b6af92f4716a12f6fe56264dd338f7d149d68bd",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-25"
+}
