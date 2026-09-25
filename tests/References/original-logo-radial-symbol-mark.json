@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-radial-symbol-mark",
+  "referencePng": "original-logo-radial-symbol-mark.png",
+  "referenceSha256": "120c5f2f8e0e6fbd01d5d01c90fa7e3e91b0674e725a903cf9a2bf0562033177",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 32, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "dd93e6c305f3e0fcf5812a54af1fcfaa6017e5625b48e6eef697b0c8df14c968",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 21,
+    "maximumChannelError": 1,
+    "maximumAlphaError": 0,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

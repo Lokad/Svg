@@ -703,6 +703,18 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Nonuniform_symbol_radial_bands_record_viewbox_scales()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><symbol id='s' viewBox='0 0 8 8' preserveAspectRatio='none'><polygon points='0,0 8,0 8,8 0,8' fill='url(#g)'/></symbol></defs><use href='#s' width='16' height='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.True(root.Geometries.Length >= 1);
+        Assert.Equal(SvgGeometryKind.RadialGradient, root.Geometries[0].Kind);
+        Assert.Equal(2, root.Geometries[0].Radial.Gradient.ReferenceScaleX);
+        Assert.Equal(1, root.Geometries[0].Radial.Gradient.ReferenceScaleY);
+        Assert.Equal(8, root.Geometries[0].Radial.Gradient.CenterX);
+    }
+
+    [Fact]
     public void Scaled_symbol_pattern_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#p)'/></svg>", out _, out _);
