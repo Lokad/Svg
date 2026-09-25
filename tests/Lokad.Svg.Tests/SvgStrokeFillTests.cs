@@ -579,6 +579,26 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, dashed);
     }
 
+    [Fact]
+    public void Diagonal_gradient_polygon_paints_coverage()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.Equal(255, Pixel(pixels, 8, 0, 0).Alpha);
+        Assert.Equal(255, Pixel(pixels, 8, 1, 1).Alpha);
+        Assert.Equal(0, Pixel(pixels, 8, 7, 7).Alpha);
+        Assert.Equal(0, Pixel(pixels, 8, 4, 4).Alpha);
+    }
+
+    [Fact]
+    public void Single_stop_diagonal_gradient_matches_solid_fill()
+    {
+        byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(solid, gradient);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

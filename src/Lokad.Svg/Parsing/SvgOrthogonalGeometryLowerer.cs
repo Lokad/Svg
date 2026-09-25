@@ -152,9 +152,25 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerPolygonFill(SvgColor color, bool hasFill, AxisTransform transform, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        int[] ends = MapDiagonalContours(transform, frame, mapped);
+        return FinishPolygonFill(mapped, ends, color, hasFill, SvgPolygonMapping.QuarterEdges, frame, budget);
+    }
+
+    /// <summary>Lowers diagonal linear-gradient polygons with separated simple contours to retained device points with their paint box.</summary>
+    internal SvgParsedGeometry LowerGradientPolygonFill(SvgLinearGradient gradient, SvgRectangle box, bool hasFill, byte opacity, AxisTransform transform, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        int[] ends = MapDiagonalContours(transform, frame, mapped);
+        return FinishGradientPolygonFill(mapped, ends, gradient, box, hasFill, opacity, SvgPolygonMapping.QuarterEdges, frame, budget);
+    }
+
+    private int[] MapDiagonalContours(AxisTransform transform, SvgViewportFrame? frame, BudgetedParserList<SvgDevicePoint> mapped)
+    {
+        ArgumentNullException.ThrowIfNull(mapped);
         if (_contourEnds.Count == 0 || _contourEnds[_contourEnds.Count - 1] != _points.Count) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
         if (_geometryElementCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path polygon point count exceeds the configured path-command limit." : _elementName + " polygon point count exceeds the configured path-command limit.");
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = new int[_contourEnds.Count];
         int contourStart = 0;
         for (int contour = 0; contour < _contourEnds.Count; contour++)
@@ -183,7 +199,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             contourStart = contourEnd;
         }
 
-        return FinishPolygonFill(mapped, ends, color, hasFill, SvgPolygonMapping.QuarterEdges, frame, budget);
+        return ends;
     }
 
     private static SvgDevicePoint ShiftVertex(SvgViewportFrame? viewport, double x, double y)
@@ -887,11 +903,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
 
         return RetainPolygonFill(retained, ends, signs, color, hasFill, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+    }
 
-        static void ChargePairs(ParserWorkCounter workCounter, long pairs, CancellationToken cancellationToken)
-        {
-            for (long charged = 0; charged < pairs; charged += ParserWorkCounter.ByteCheckpointSize) workCounter.Consume(cancellationToken);
-        }
+    private static void ChargePairs(ParserWorkCounter workCounter, long pairs, CancellationToken cancellationToken)
+    {
+        for (long charged = 0; charged < pairs; charged += ParserWorkCounter.ByteCheckpointSize) workCounter.Consume(cancellationToken);
     }
 
     private static void ValidateDeviceRange(SvgDevicePoint[] retained)
@@ -909,6 +925,38 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, isEvenOdd, mapping, clip, budget);
         _geometries.Add(SvgGeometry.FromPolygonFill(fill));
+        _geometryElementCount++;
+        return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
+    }
+
+    /// <summary>Validates separated device contours once and retains one gradient polygon fill with scene-owned storage.</summary>
+    private SvgParsedGeometry FinishGradientPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, byte opacity, SvgPolygonMapping mapping, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(mapped);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(budget);
+        SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
+        ValidateDeviceRange(retained);
+        ChargePairs(_workCounter, (long)retained.Length * (retained.Length - 1) / 2, _cancellationToken);
+        if (SvgContourStructure.ClassifySet(retained, ends, _cancellationToken) != SvgContourFlags.None) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+        int[]? signs = null;
+        if (_isEvenOdd)
+        {
+            signs = new int[ends.Length];
+            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
+        }
+
+        return RetainGradientPolygonFill(retained, ends, signs, gradient, box, hasFill, opacity, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+    }
+
+    private SvgParsedGeometry RetainGradientPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, byte opacity, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(retained);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(budget);
+        SvgGradientPolygon fill = SvgGradientPolygon.Create(retained, ends, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, budget);
+        _geometries.Add(SvgGeometry.FromGradientPolygon(fill));
         _geometryElementCount++;
         return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
     }

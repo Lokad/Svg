@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-gradient-polygon-userspace-mark",
+  "referencePng": "original-logo-gradient-polygon-userspace-mark.png",
+  "referenceSha256": "aea38a92c449510ab1703d85ef6e239ad3511149427b209c6b39732935846174",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "71541e8758deabc2f78a48b8889e384b254b0e4579665a45963bcf241d02c30d",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 42,
+    "maximumChannelError": 1,
+    "maximumAlphaError": 0,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

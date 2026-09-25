@@ -288,6 +288,9 @@ public static class SvgConverter
                 case SvgGeometryKind.PolygonFill:
                     RasterizePolygonFill(geometry.Polygon, destination);
                     return;
+                case SvgGeometryKind.GradientPolygon:
+                    RasterizeGradientPolygon(geometry.GradientPolygon, destination);
+                    return;
                 default:
                     throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains invalid geometry.");
             }
@@ -354,6 +357,103 @@ public static class SvgConverter
                     int offset = (y * outputWidth + x) * 4;
                     BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
                 }
+            }
+        }
+        void RasterizeGradientPolygon(SvgGradientPolygon outline, byte[] destination)
+        {
+            if (!outline.HasFill || outline.Points.Length < 3) return;
+            SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
+            bool hasFractionalEdge = false;
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            for (int index = 0; index < outline.Points.Length; index++)
+            {
+                double edgeX = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(outline.Points[index].X, horizontalScale, horizontalOffset);
+                double edgeY = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].Y, verticalScale, verticalOffset) : MapEdge(outline.Points[index].Y, verticalScale, verticalOffset);
+                mapped[index] = new SvgDevicePoint(edgeX, edgeY);
+                if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
+                if (edgeX < left) left = edgeX;
+                if (edgeY < top) top = edgeY;
+                if (edgeX > right) right = edgeX;
+                if (edgeY > bottom) bottom = edgeY;
+            }
+            int startY = ClampFloor(top, outputHeight);
+            int endY = ClampCeiling(bottom, outputHeight);
+            int startX = ClampFloor(left, outputWidth);
+            int endX = ClampCeiling(right, outputWidth);
+            if (outline.Clip is SvgClipBox clip)
+            {
+                startY = Math.Max(startY, ClampFloor(clip.Y, outputHeight));
+                endY = Math.Min(endY, ClampCeiling(clip.Bottom, outputHeight));
+                startX = Math.Max(startX, ClampFloor(clip.X, outputWidth));
+                endX = Math.Min(endX, ClampCeiling(clip.Right, outputWidth));
+            }
+            if (endY <= startY || endX <= startX) return;
+            long coverage = (long)(endY - startY) * (endX - startX);
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
+            workUnits += coverage;
+            SvgLinearGradient definition = outline.Gradient;
+            SvgRectangle box = outline.Box;
+            double directionX = definition.X2 - definition.X1;
+            double directionY = definition.Y2 - definition.Y1;
+            double denominator = directionX * directionX + directionY * directionY;
+            double offsetSpan = definition.Offset2 - definition.Offset1;
+            if (offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
+            bool transparentStops = false;
+            foreach (SvgGradientStop stop in definition.Stops)
+            {
+                if (stop.Color.Alpha != 255) { transparentStops = true; break; }
+            }
+            ReadOnlySpan<int> contourEnds = outline.ContourEnds;
+            ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
+            if (denominator != 0 || definition.Stops.Length == 1)
+            for (int y = startY; y < endY; y++)
+            {
+            cancellationToken.ThrowIfCancellationRequested();
+            double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
+            for (int x = startX; x < endX; x++)
+            {
+                double pixelCoverage = outline.IsEvenOdd
+                    ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
+                    : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
+                double position;
+                if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
+                {
+                    double relativeX = (deviceX - definition.X1) / definition.ReferenceScaleX;
+                    double relativeY = (deviceY - definition.Y1) / definition.ReferenceScaleY;
+                    double axisX = directionX / definition.ReferenceScaleX;
+                    double axisY = directionY / definition.ReferenceScaleY;
+                    position = (relativeX * axisX + relativeY * axisY) / (axisX * axisX + axisY * axisY);
+                }
+                else if (definition.IsUserSpace) position = ((deviceX - definition.X1) * directionX + (deviceY - definition.Y1) * directionY) / denominator;
+                else
+                {
+                    double normalizedX = (deviceX - box.X) / box.Width;
+                    double normalizedY = (deviceY - box.Y) / box.Height;
+                    position = ((normalizedX - definition.X1) * directionX + (normalizedY - definition.Y1) * directionY) / denominator;
+                }
+                double local = definition.Stops.Length == 1 ? 0 : (position - definition.Offset1) / offsetSpan;
+                if (definition.Spread == SvgGradientSpread.Repeat) local -= Math.Floor(local);
+                else if (definition.Spread == SvgGradientSpread.Reflect)
+                {
+                    double cycle = local - 2 * Math.Floor(local / 2);
+                    local = cycle > 1 ? 2 - cycle : cycle;
+                }
+                else
+                {
+                    if (local < 0) local = 0;
+                    if (local > 1) local = 1;
+                }
+                position = local;
+                double dither = GradientDither[x & 7, y & 7] / 64d;
+                SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
+                SvgColor color = WithCoverage(tileColor, pixelCoverage);
+                int offset = (y * outputWidth + x) * 4;
+                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+            }
             }
         }
 

@@ -4712,6 +4712,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_diagonal_gradient_polygons_as_gradient_fills()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
+        Assert.True(geometry.GradientPolygon.HasFill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.GradientPolygon.Box);
+    }
+
+    [Fact]
     public void Applies_a_white_mask_to_a_circle_without_changing_content()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='32' height='32' fill='#ffffff'/></mask></defs><circle cx='16' cy='16' r='8' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

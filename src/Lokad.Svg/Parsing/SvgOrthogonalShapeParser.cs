@@ -93,7 +93,7 @@ internal static class SvgOrthogonalShapeParser
         }
     }
 
-    internal static BudgetedParserList<SvgPoint> TokenizeBands(XmlReader reader, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgPaintableElementContext context, BudgetedParserList<int> contourEnds)
+    internal static BudgetedParserList<SvgPoint> TokenizeBands(XmlReader reader, string elementName, bool isPath, bool allowDiagonal, int maximumGeometryElements, RenderBudget budget, SvgPaintableElementContext context, BudgetedParserList<int> contourEnds)
     {
         if (isPath)
         {
@@ -107,7 +107,7 @@ internal static class SvgOrthogonalShapeParser
         BudgetedParserList<SvgPoint> pointList = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         try
         {
-            SvgOrthogonalGeometryLowering.ValidateSimpleContour(pointList, elementName, context.WorkCounter, context.CancellationToken);
+            if (!allowDiagonal) SvgOrthogonalGeometryLowering.ValidateSimpleContour(pointList, elementName, context.WorkCounter, context.CancellationToken);
             contourEnds.Add(pointList.Count);
         }
         catch { pointList.Dispose(); throw; }
@@ -201,7 +201,7 @@ internal static class SvgOrthogonalShapeParser
         }
     }
 
-    private static bool HasDiagonalContour(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds)
+    internal static bool HasDiagonalContour(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds)
     {
         if (contourEnds.Count == 0 || contourEnds[contourEnds.Count - 1] != points.Count) return false;
         ReadOnlySpan<SvgPoint> span = points.AsSpan();
