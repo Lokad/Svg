@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-radial-outline-symbol-mark",
+  "referencePng": "original-logo-radial-outline-symbol-mark.png",
+  "referenceSha256": "c072c40ea936ceb0f367105ebd2683a75b7447266a627e32cc91b5cd34b74485",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "e2a781c4a338930fc33adbaea02987b390b0d094d2690851a4a2a22f489703a4",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 227,
+    "maximumChannelError": 9,
+    "maximumAlphaError": 9,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

@@ -388,6 +388,7 @@ internal static class SvgReferenceResolver
                     SvgGeometryKind.RadialGradient => ApplySymbolRadialFill(sources[index].Radial, symbolBox, reference, frame, state),
                     SvgGeometryKind.GradientStroke => ApplySymbolGradientStroke(sources[index].GradientStroke, symbolBox, reference, frame, state),
                     SvgGeometryKind.GradientPolygon => ApplySymbolGradientPolygon(sources[index].GradientPolygon, symbolBox, reference, frame, state),
+                    SvgGeometryKind.RadialPolygon => ApplySymbolRadialPolygon(sources[index].RadialPolygon, symbolBox, reference, frame, state),
                     _ => ApplySymbolInstance(sources[index], symbolBox, reference, frame, state),
                 });
             }
@@ -521,6 +522,53 @@ internal static class SvgReferenceResolver
                 circle = circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX) };
             }
             return LowerPlacedRadialFill(circle, fill, box, MultiplyAlpha(radial.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame);
+        }
+
+        static SvgGeometry ApplySymbolRadialPolygon(SvgRadialPolygon source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
+        {
+            ArgumentNullException.ThrowIfNull(document);
+            if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
+            if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
+            for (int index = 0; index < mapped.Length; index++)
+            {
+                double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
+                double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
+                double placedX = instance.Transform.ScaleX * contentX + instance.Transform.OffsetX;
+                double placedY = instance.Transform.ScaleY * contentY + instance.Transform.OffsetY;
+                if (viewportFrame is not null)
+                {
+                    placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
+                    placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                }
+                if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                mapped[index] = new SvgDevicePoint(placedX, placedY);
+            }
+            SvgRadialGradient circle = source.Gradient;
+            if (circle.IsUserSpace) circle = circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX) };
+            SvgRectangle contentBox = source.Box;
+            SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
+            if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
+            circle = SvgGradientSyntax.MapUserSpaceRadial(instance.Transform, circle, viewportFrame);
+            SvgClipBox viewport = instance.Transform.Apply(new SvgClipBox(instance.X, instance.Y, instance.Width.Value, instance.Height.Value));
+            if (viewportFrame is not null)
+            {
+                viewport = new SvgClipBox(viewport.X + viewportFrame.Value.OffsetX, viewport.Y + viewportFrame.Value.OffsetY, viewport.Width, viewport.Height);
+                viewport = viewport.Intersect(viewportFrame.Value.Clip);
+            }
+            SvgClipBox clip;
+            if (source.Clip is null) clip = viewport;
+            else
+            {
+                SvgClipBox content = source.Clip.Value;
+                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY);
+                SvgClipBox placed = instance.Transform.Apply(shifted);
+                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height);
+                clip = placed.Intersect(viewport);
+            }
+            byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
+            return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, source.ContourEnds, source.Signs, circle, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, document.Budget));
         }
 
         static SvgGeometry ApplySymbolGradientStroke(SvgGradientStrokeGeometry stroke, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
