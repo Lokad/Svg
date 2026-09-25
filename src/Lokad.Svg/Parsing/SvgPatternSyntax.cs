@@ -321,11 +321,11 @@ internal static class SvgPatternSyntax
             if (dashEntries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed line strokes are not implemented.");
             syntax = syntax.WithSquareCaps(strokeWidth);
         }
-        if (reader.GetAttribute("pathLength") is not null && dashEntries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Path lengths with dashed line strokes are not implemented.");
+        double? pathLength = dashEntries is null ? null : SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Stroke), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
-        if (dashEntries is not null) return LowerDashedPatternStrokeLine(syntax, strokeWidth, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), tile, painted, opacity, frame, state, context);
+        if (dashEntries is not null) return LowerDashedPatternStrokeLine(syntax, strokeWidth, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), pathLength, tile, painted, opacity, frame, state, context);
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         if (frame is not null) band = frame.Value.ClipShifted(band);
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return RetainSingleBand(SvgGeometry.FromOrthogonalBand(band with { HasFill = false }), state, context);
@@ -334,10 +334,10 @@ internal static class SvgPatternSyntax
     }
 
     /// <summary>Lowers one dashed pattern-tile line stroke into one tile-evaluated band per dash run.</summary>
-    private static SvgParsedGeometry LowerDashedPatternStrokeLine(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, SvgPatternTile tile, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    private static SvgParsedGeometry LowerDashedPatternStrokeLine(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, double? pathLength, SvgPatternTile tile, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
     {
         using BudgetedParserList<SvgRectangle> runRects = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        bool paintsAny = SvgLeafParser.AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
+        bool paintsAny = SvgLeafParser.AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, pathLength, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
         using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         for (int runIndex = 0; runIndex < runRects.Count; runIndex++)
         {

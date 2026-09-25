@@ -652,14 +652,14 @@ internal static class SvgGradientSyntax
             if (dashEntries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed line strokes are not implemented.");
             syntax = syntax.WithSquareCaps(strokeWidth);
         }
-        if (reader.GetAttribute("pathLength") is not null && dashEntries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Path lengths with dashed line strokes are not implemented.");
+        double? pathLength = dashEntries is null ? null : SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
         if (!state.Gradients.TryGetValue(ParseGradientId(style.Stroke), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         gradient = MapUserSpaceVector(transform, gradient, frame);
         if (!gradient.IsUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse gradient strokes on lines are implemented.");
         gradient = MirrorBoundingBoxVector(transform, gradient);
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
-        if (dashEntries is not null) return LowerDashedGradientStrokeLine(syntax, strokeWidth, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), gradient, painted, opacity, frame, state, context);
+        if (dashEntries is not null) return LowerDashedGradientStrokeLine(syntax, strokeWidth, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), pathLength, gradient, painted, opacity, frame, state, context);
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         SvgRectangle box = band;
         if (frame is not null)
@@ -677,10 +677,10 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Lowers one dashed linear-gradient line stroke into one gradient-evaluated band per dash run.</summary>
-    private static SvgParsedGeometry LowerDashedGradientStrokeLine(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, SvgLinearGradient gradient, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    private static SvgParsedGeometry LowerDashedGradientStrokeLine(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, double? pathLength, SvgLinearGradient gradient, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
     {
         using BudgetedParserList<SvgRectangle> runRects = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        bool paintsAny = SvgLeafParser.AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
+        bool paintsAny = SvgLeafParser.AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, pathLength, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
         using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         bool degenerate = gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty;
         if (degenerate && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
@@ -717,14 +717,14 @@ internal static class SvgGradientSyntax
             if (dashEntries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed line strokes are not implemented.");
             syntax = syntax.WithSquareCaps(strokeWidth);
         }
-        if (reader.GetAttribute("pathLength") is not null && dashEntries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Path lengths with dashed line strokes are not implemented.");
+        double? pathLength = dashEntries is null ? null : SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
         if (state.Patterns.TryGetValue(ParseGradientId(style.Stroke), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern strokes are not implemented.");
         if (!state.RadialGradients.TryGetValue(ParseGradientId(style.Stroke), out SvgRadialGradient circle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         circle = MapUserSpaceRadial(transform, circle, frame);
         if (!circle.IsUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse gradient strokes on lines are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
-        if (dashEntries is not null) return LowerDashedRadialStrokeLine(syntax, strokeWidth, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), circle, painted, opacity, frame, state, context);
+        if (dashEntries is not null) return LowerDashedRadialStrokeLine(syntax, strokeWidth, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), pathLength, circle, painted, opacity, frame, state, context);
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         SvgRectangle box = band;
         if (frame is not null)
@@ -742,10 +742,10 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Lowers one dashed radial-gradient line stroke into one radial-evaluated band per dash run.</summary>
-    private static SvgParsedGeometry LowerDashedRadialStrokeLine(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, SvgRadialGradient circle, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    private static SvgParsedGeometry LowerDashedRadialStrokeLine(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, double? pathLength, SvgRadialGradient circle, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
     {
         using BudgetedParserList<SvgRectangle> runRects = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        bool paintsAny = SvgLeafParser.AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
+        bool paintsAny = SvgLeafParser.AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, pathLength, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
         using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         bool degenerate = circle.Radius == 0 && !circle.IsEmpty;
         if (degenerate && circle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");

@@ -218,14 +218,14 @@ internal static class SvgLeafParser
             return RetainSingleGeometry(frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line), state, context);
         }
         if (SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed line strokes are not implemented.");
-        if (reader.GetAttribute("pathLength") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Path lengths with dashed line strokes are not implemented.");
         double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset"));
+        double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
         return LowerDashedLine();
 
         SvgParsedGeometry LowerDashedLine()
         {
             using BudgetedParserList<SvgRectangle> runRects = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            bool paintsAny = AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
+            bool paintsAny = AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, pathLength, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
             using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             for (int runIndex = 0; runIndex < runRects.Count; runIndex++) runs.Add(SvgGeometry.FromOrthogonalBand(runRects[runIndex] with { Color = color, HasFill = paintsAny && painted }));
             return new SvgParsedGeometry(runs.Detach(), 0);
@@ -234,19 +234,29 @@ internal static class SvgLeafParser
 
     /// <summary>Appends one clipped rectangle per dash-pattern on-run along a horizontal or vertical line, reporting whether any run paints.</summary>
     /// <remarks><para>Callers paint over the returned rectangles and leave the single quiet rectangle unpainted, sharing the solid phase convention across paints.</para></remarks>
-    internal static bool AppendLineDashRunRects(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, SvgViewportFrame? frame, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<SvgRectangle> runs)
+    internal static bool AppendLineDashRunRects(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, double? pathLength, SvgViewportFrame? frame, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<SvgRectangle> runs)
     {
         ArgumentNullException.ThrowIfNull(dashes);
         ArgumentNullException.ThrowIfNull(budget);
         ArgumentNullException.ThrowIfNull(workCounter);
         ArgumentNullException.ThrowIfNull(runs);
-        double total = 0;
-        foreach (double patternEntry in dashes) total += patternEntry;
         bool horizontal = syntax.X1 != syntax.X2;
         double origin = horizontal ? Math.Min(syntax.X1, syntax.X2) : Math.Min(syntax.Y1, syntax.Y2);
         double length = horizontal ? Math.Abs(syntax.X2 - syntax.X1) : Math.Abs(syntax.Y2 - syntax.Y1);
         double halfWidth = strokeWidth / 2d;
         double fixedAxis = horizontal ? syntax.Y1 : syntax.X1;
+        if (pathLength == 0)
+        {
+            SvgRectangle pinned = horizontal
+                ? new SvgRectangle(origin, fixedAxis - halfWidth, length, strokeWidth, default, true, null)
+                : new SvgRectangle(fixedAxis - halfWidth, origin, strokeWidth, length, default, true, null);
+            runs.Add(frame is null ? pinned : frame.Value.ClipShifted(pinned));
+            return true;
+        }
+        double[] pattern = (double[])dashes.Clone();
+        double dashFactor = SvgOrthogonalGeometryLowering.RescaleDashPattern(pattern, length, pathLength);
+        double total = 0;
+        foreach (double patternEntry in pattern) total += patternEntry;
         if (!(total > 0))
         {
             SvgRectangle quiet = horizontal
@@ -255,23 +265,24 @@ internal static class SvgLeafParser
             runs.Add(frame is null ? quiet : frame.Value.ClipShifted(quiet));
             return false;
         }
-        if (!double.IsFinite(dashOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Dashed line strokes exceed the admitted numeric range.");
-        double phase = dashOffset - Math.Floor(dashOffset / total) * total;
+        double scaledOffset = dashOffset * dashFactor;
+        if (!double.IsFinite(scaledOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Dashed line strokes exceed the admitted numeric range.");
+        double phase = scaledOffset - Math.Floor(scaledOffset / total) * total;
         if (phase < 0) phase = 0;
         else if (phase >= total) phase = 0;
         int entry = 0;
         double entered = 0;
-        while (entered + dashes[entry] <= phase)
+        while (entered + pattern[entry] <= phase)
         {
-            entered += dashes[entry];
-            entry = (entry + 1) % dashes.Length;
+            entered += pattern[entry];
+            entry = (entry + 1) % pattern.Length;
         }
-        double remaining = entered + dashes[entry] - phase;
+        double remaining = entered + pattern[entry] - phase;
         while (remaining == 0)
         {
-            entry = (entry + 1) % dashes.Length;
+            entry = (entry + 1) % pattern.Length;
             entered = phase;
-            remaining = dashes[entry];
+            remaining = pattern[entry];
         }
         bool onEntry = (entry & 1) == 0;
         double cursor = 0;
@@ -289,14 +300,14 @@ internal static class SvgLeafParser
             }
             workCounter.Consume(cancellationToken);
             cursor += take;
-            entry = (entry + 1) % dashes.Length;
+            entry = (entry + 1) % pattern.Length;
             onEntry = (entry & 1) == 0;
-            remaining = dashes[entry];
+            remaining = pattern[entry];
             while (remaining == 0)
             {
-                entry = (entry + 1) % dashes.Length;
+                entry = (entry + 1) % pattern.Length;
                 onEntry = (entry & 1) == 0;
-                remaining = dashes[entry];
+                remaining = pattern[entry];
             }
             produced++;
         }

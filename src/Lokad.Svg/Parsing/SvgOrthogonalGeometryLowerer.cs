@@ -558,7 +558,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Rescales device-space dash entries by the path-length factor, reporting the applied factor.</summary>
-    private static double RescaleDashPattern(double[] pattern, double userLength, double? pathLength)
+    internal static double RescaleDashPattern(double[] pattern, double userLength, double? pathLength)
     {
         ArgumentNullException.ThrowIfNull(pattern);
         if (pathLength is null || !(userLength > 0)) return 1;

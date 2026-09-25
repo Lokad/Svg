@@ -571,6 +571,24 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Path_length_scaled_dash_line_matches_manual_dashes()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 2' pathLength='8'/></svg>", out _, out _);
+        byte[] manual = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='8 4'/></svg>", out _, out _);
+
+        Assert.Equal(manual, scaled);
+    }
+
+    [Fact]
+    public void Path_length_scaled_gradient_dash_line_matches_manual_dashes()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-dasharray='4 2' pathLength='8'/></svg>", out _, out _);
+        byte[] manual = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-dasharray='8 4'/></svg>", out _, out _);
+
+        Assert.Equal(manual, scaled);
+    }
+
+    [Fact]
     public void Solid_tile_dashed_pattern_line_matches_dashed_solid_line()
     {
         byte[] pattern = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#p)' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
