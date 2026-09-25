@@ -645,6 +645,28 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(direct, symbol);
     }
 
+    [Theory]
+    [InlineData("<defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' transform='scale(2,1)'/>")]
+    [InlineData("<defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' transform='scale(2,1)'/>")]
+    [InlineData("<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></defs><use href='#q' transform='scale(2,1)'/>")]
+    public void Non_uniformly_scaled_outline_uses_stay_unsupported(string body)
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("<defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' transform='scale(2,1)'/>")]
+    [InlineData("<defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' transform='scale(2,1)'/>")]
+    [InlineData("<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' transform='scale(2,1)'/>")]
+    public void Non_uniformly_scaled_symbol_outline_uses_stay_unsupported(string body)
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
     [Fact]
     public void Lowers_symbol_pattern_outline_uses_through_viewbox_mapping()
     {

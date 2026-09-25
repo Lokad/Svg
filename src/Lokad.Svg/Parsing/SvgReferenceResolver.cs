@@ -33,6 +33,7 @@ internal static class SvgReferenceResolver
     {
         if (definition.SymbolViewBox is SvgViewBox symbolBox) return ApplySymbol(definition, symbolBox, reference, frame, state);
         if (reference.PaintServerId is not null) return [LowerDirectInstancePaintFill(definition, reference, frame, state)];
+        RequireUniformOutlineScales(definition, reference);
         SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
         SvgGeometry[] applied = new SvgGeometry[sources.Length];
         for (int index = 0; index < sources.Length; index++)
@@ -226,6 +227,16 @@ internal static class SvgReferenceResolver
         return SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, outline.ContourEnds, outline.Signs, outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, state.Budget));
     }
 
+    /// <summary>Rejects non-uniformly scaled outline strokes on use instances, whose pre-scale miters would silently distort.</summary>
+    private static void RequireUniformOutlineScales(SvgDefinition definition, SvgUseReference reference)
+    {
+        if ((long)reference.Transform.ScaleX == (long)reference.Transform.ScaleY || (long)reference.Transform.ScaleX == -(long)reference.Transform.ScaleY) return;
+        foreach (SvgGeometry source in definition.Geometries)
+        {
+            if (source.Kind is SvgGeometryKind.GradientPolygon or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled outline strokes on use instances are implemented.");
+        }
+    }
+
     private static SvgGeometry ApplySymbolInstance(SvgGeometry geometry, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
     {
         if (geometry.Kind == SvgGeometryKind.PolygonFill) return ApplySymbolPolygon(geometry.Polygon, symbolBox, reference, frame, state);
@@ -379,6 +390,7 @@ internal static class SvgReferenceResolver
     {
         if (reference.PaintServerId is null)
         {
+            RequireUniformOutlineScales(definition, reference);
             SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
             List<SvgGeometry> applied = new(sources.Length);
             for (int index = 0; index < sources.Length; index++)
@@ -409,7 +421,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double _, double _) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of rectangle strokes is not implemented.");
-            if (Math.Abs(instance.Transform.ScaleX) != Math.Abs(instance.Transform.ScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
+            if ((long)instance.Transform.ScaleX != (long)instance.Transform.ScaleY && (long)instance.Transform.ScaleX != -(long)instance.Transform.ScaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
             double scaledWidth = (double)sourceStroke.Width * Math.Abs(scaleX) * Math.Abs(instance.Transform.ScaleX);
             SvgRectangle mapped = MapSymbolBox(source, viewBox, instance.Width.Value, instance.Height.Value);
             SvgRectangle placed = mapped with { X = mapped.X + instance.X, Y = mapped.Y + instance.Y };
@@ -779,7 +791,7 @@ internal static class SvgReferenceResolver
         static SvgStroke? MapInstanceStroke(SvgStroke? stroke, SvgUseReference reference)
         {
             if (stroke is null) return null;
-            if (Math.Abs(reference.Transform.ScaleX) != Math.Abs(reference.Transform.ScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
+            if ((long)reference.Transform.ScaleX != (long)reference.Transform.ScaleY && (long)reference.Transform.ScaleX != -(long)reference.Transform.ScaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
             int width;
             try { width = checked(stroke.Value.Width * Math.Abs(reference.Transform.ScaleX)); }
             catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
