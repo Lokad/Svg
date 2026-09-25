@@ -3230,6 +3230,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Applies_forward_clips_with_forward_masks_on_groups()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#c)' mask='url(#m)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgDrawCommand begin = Assert.Single(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        Assert.Equal(128, begin.Opacity);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.EndGroup);
+    }
+
+    [Fact]
     public void Clips_a_group_to_its_clip_path_box()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window'><rect x='4' y='4' width='8' height='8'/></clipPath></defs><g clip-path='url(#window)'><rect width='16' height='16' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
