@@ -198,7 +198,7 @@ internal static class SvgDefinitionParser
             double? baseHeight = parentFrame?.ViewportHeight ?? root.Height;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
             if (SvgMaskSyntax.HasCustomRegion(reader, state)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on use instances are not implemented.");
-            SvgDeferredObbClip? deferredClip = ResolveForwardObbClip(reader, reference, state);
+            SvgDeferredClip? deferredClip = ResolveDeferredClip(reader, reference, state);
             SvgViewportFrame? useFrame;
             if (deferredClip is null)
             {
@@ -214,14 +214,17 @@ internal static class SvgDefinitionParser
         }
         return false;
 
-        static SvgDeferredObbClip? ResolveForwardObbClip(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)
+        static SvgDeferredClip? ResolveDeferredClip(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)
         {
             string? clipAttribute = useReader.GetAttribute("clip-path");
             if (clipAttribute is null) return null;
             string clipId = SvgClipPathSyntax.ParseClipId(clipAttribute);
-            if (!document.ObjectClips.TryGetValue(clipId, out _)) return null;
-            if (document.Definitions.TryGetValue(useReference.Id, out _)) return null;
-            return new SvgDeferredObbClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
+            bool clipKnown = document.Clips.TryGetValue(clipId, out _) || document.ObjectClips.TryGetValue(clipId, out _);
+            bool definitionKnown = document.Definitions.TryGetValue(useReference.Id, out _);
+            if (definitionKnown && clipKnown) return null;
+            if (!clipKnown) return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
+            if (document.ObjectClips.TryGetValue(clipId, out _)) return new SvgDeferredClip(document.Strings.Copy(clipId), document.EffectiveFrame, useReader.Depth);
+            return null;
         }
 
         static SvgViewportFrame? ResolveUseClipFrame(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)

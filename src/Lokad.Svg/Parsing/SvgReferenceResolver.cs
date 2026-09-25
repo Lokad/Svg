@@ -5,20 +5,20 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Represents a parsed direct local use reference before its target is resolved.</summary>
 internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, AxisTransform Transform, AxisTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId);
 
-/// <summary>Retains one objectBoundingBox clip reference whose instance box needs its definition.</summary>
-internal readonly record struct SvgDeferredObbClip(string ClipId, SvgViewportFrame? Parent, int Depth);
+/// <summary>Retains one clip-path reference whose box needs a forward definition or clip-path definition.</summary>
+internal readonly record struct SvgDeferredClip(string ClipId, SvgViewportFrame? Parent, int Depth);
 
 /// <summary>Records the placeholders that must be replaced when a forward local use reference resolves.</summary>
-internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame, byte? Mask, string? MaskReference, int MaskScopeStart, int MaskScopeCount, SvgDeferredObbClip? DeferredClip);
+internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Reference, SvgViewportFrame? Frame, byte? Mask, string? MaskReference, int MaskScopeStart, int MaskScopeCount, SvgDeferredClip? DeferredClip);
 
 /// <summary>Applies typed local references through their geometry-specific supported transforms.</summary>
 internal static class SvgReferenceResolver
 {
     /// <summary>Resolves an already parsed local reference immediately or retains its typed placeholder for document-end resolution.</summary>
-    internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDeferredObbClip? deferredClip, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDeferredClip? deferredClip, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
-        if (definitions.TryGetValue(reference.Id, out SvgDefinition definition))
+        if (deferredClip is null && definitions.TryGetValue(reference.Id, out SvgDefinition definition))
         {
             foreach (SvgGeometry geometry in ApplyMask(definition, reference, frame, mask, maskReference, state)) scene.AddGeometry(geometry);
         }
@@ -560,17 +560,26 @@ internal static class SvgReferenceResolver
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
             SvgViewportFrame? frame = pendingUse.Frame;
-            if (pendingUse.DeferredClip is SvgDeferredObbClip deferred) frame = ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state);
+            if (pendingUse.DeferredClip is SvgDeferredClip deferred) frame = ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state);
             if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
             SvgGeometry[] applied = ApplyMask(definition, pendingUse.Reference, frame, pendingUse.Mask, pendingUse.MaskReference, state);
             if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
             commandShift += scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = pendingUse.Slot.CommandIndex + commandShift }, applied);
         }
 
-        static SvgViewportFrame ResolveDeferredClipFrame(SvgDefinition definition, SvgUseReference reference, SvgDeferredObbClip deferred, SvgDocumentState document)
+        static SvgViewportFrame ResolveDeferredClipFrame(SvgDefinition definition, SvgUseReference reference, SvgDeferredClip deferred, SvgDocumentState document)
         {
             ArgumentNullException.ThrowIfNull(document);
-            if (!document.ObjectClips.TryGetValue(deferred.ClipId, out SvgClipBox fractions)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
+            if (!document.ObjectClips.TryGetValue(deferred.ClipId, out SvgClipBox fractions))
+            {
+                if (document.Clips.TryGetValue(deferred.ClipId, out SvgClipBox box))
+                {
+                    if (deferred.Parent is not null && deferred.Parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
+                    SvgClipBox userClip = deferred.Parent is null ? box : deferred.Parent.Value.Clip.Intersect(box);
+                    return new SvgViewportFrame(deferred.Parent?.OffsetX ?? 0, deferred.Parent?.OffsetY ?? 0, deferred.Parent?.ScaleX ?? 1, deferred.Parent?.ScaleY ?? 1, deferred.Parent?.ViewportWidth, deferred.Parent?.ViewportHeight, userClip, deferred.Depth);
+                }
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
+            }
             if (deferred.Parent is not null && deferred.Parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
             SvgRectangle instanceBox;
             if (definition.SymbolViewBox is SvgViewBox symbolBox)
