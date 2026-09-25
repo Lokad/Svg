@@ -4735,6 +4735,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_userspace_gradient_strokes_on_curved_paths_as_outlines()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.True(root.Geometries.Length >= 2);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
+        Assert.All(root.Geometries.Skip(1), outline => Assert.Equal(SvgGeometryKind.GradientPolygon, outline.Kind));
+        Assert.All(root.Geometries.Skip(1), outline => Assert.True(outline.GradientPolygon.HasFill));
+    }
+
+    [Fact]
     public void Lowers_bounding_box_gradient_strokes_on_polygons_as_outlines()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

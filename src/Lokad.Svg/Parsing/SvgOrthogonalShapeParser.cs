@@ -9,6 +9,8 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePath(XmlReader reader, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
+        bool paintOutline = TryResolveOutlineGradient(style, state, out SvgLinearGradient outlineCandidate) && outlineCandidate.IsUserSpace;
+        SvgComputedStyle fillStyle = paintOutline ? style with { Stroke = "none" } : style;
         if (SvgGradientSyntax.IsGradientFill(style.Fill))
         {
             if (state.Patterns.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out _)) return SvgPatternSyntax.LowerPatternBands(reader, context, style, state, "path", true, maximumGeometryElements, budget, frame);
@@ -22,7 +24,7 @@ internal static class SvgOrthogonalShapeParser
         if (hasCurve)
         {
             if (hasFractional) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer path coordinates are implemented; fractional and scientific notation stay unsupported.");
-            shape = context.ResolveShape(style, reader, true);
+            shape = context.ResolveShape(fillStyle, reader, true);
             bool curveEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -32,7 +34,7 @@ internal static class SvgOrthogonalShapeParser
         }
         else if (hasFractional)
         {
-            shape = context.ResolveShape(style, reader, true);
+            shape = context.ResolveShape(fillStyle, reader, true);
             bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noFractionEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -46,7 +48,7 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds);
             if (HasDiagonalContour(points, contourEnds))
             {
-                shape = context.ResolveShape(style, reader, true);
+                shape = context.ResolveShape(fillStyle, reader, true);
                 bool diagonalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
                 using SvgOrthogonalGeometryLowering diagonalLowering = new(points, contourEnds, "path", true, diagonalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
                 filled = diagonalLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
@@ -54,7 +56,7 @@ internal static class SvgOrthogonalShapeParser
             else
             {
                 SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, "path", context.WorkCounter, context.CancellationToken);
-                shape = context.ResolveShape(style, reader, true);
+                shape = context.ResolveShape(fillStyle, reader, true);
                 bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
                 using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
                 filled = lowering.Lower(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame);
@@ -63,14 +65,32 @@ internal static class SvgOrthogonalShapeParser
 
         SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke;
         SvgParsedGeometry stroked;
+        bool paintPathOutline = paintOutline && outlineCandidate.IsUserSpace;
+        SvgLinearGradient pathGradient = default;
+        SvgComputedStyle pathStrokeStyle = style;
+        SvgResolvedPaintableElement pathStrokeShape = shape;
+        if (paintPathOutline)
+        {
+            pathGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
+            // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
+            pathStrokeStyle = style with { Stroke = "#ffffff" };
+            pathStrokeShape = context.ResolveShape(pathStrokeStyle, reader, true);
+        }
         try
         {
-            stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, shape, "path");
+            stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, pathStrokeStyle, pathStrokeShape, "path");
             if (stroke is null) return filled;
             using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, "path", true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, shape, stroke.Value.Color, shape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
+            stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, pathStrokeShape, stroke.Value.Color, pathStrokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
+            if (paintPathOutline)
+            {
+                using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                foreach (SvgGeometry existing in stroked.Geometries) repainted.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, pathGradient, default, pathStrokeShape.Presentation.Opacity, budget));
+                stroked.Dispose();
+                stroked = new SvgParsedGeometry(repainted.Detach(), stroked.ElementCount);
+            }
         }
         catch { filled.Dispose(); throw; }
         return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
@@ -130,7 +150,7 @@ internal static class SvgOrthogonalShapeParser
         bool hasFractional = pointsValue.Contains('.') || pointsValue.Contains('e') || pointsValue.Contains('E');
         if (hasFractional)
         {
-            shape = context.ResolveShape(style, reader, true);
+            shape = context.ResolveShape(fillStyle, reader, true);
             bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using BudgetedParserList<SvgFractionalPoint> fractionalPoints = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -195,24 +215,8 @@ internal static class SvgOrthogonalShapeParser
 
         SvgParsedGeometry RepaintOutlinesAsGradient(SvgParsedGeometry white, SvgLinearGradient paint, SvgRectangle box, byte opacity, RenderBudget budget)
         {
-            if (paint.Stops.Length == 1 || (paint.X1 == paint.X2 && paint.Y1 == paint.Y2 && !paint.IsEmpty))
-            {
-                if (paint.Stops.Length > 1 && paint.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are implemented.");
-                using BudgetedParserList<SvgGeometry> solid = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                foreach (SvgGeometry existing in white.Geometries)
-                {
-                    SvgPolygonFill outline = existing.Polygon;
-                    solid.Add(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(outline.Points, outline.ContourEnds, outline.Signs, SvgPaintResolver.ApplyOpacity(paint.End, opacity), outline.HasFill, outline.IsEvenOdd, outline.Mapping, outline.Clip, budget)));
-                }
-                white.Dispose();
-                return new SvgParsedGeometry(solid.Detach(), white.ElementCount);
-            }
             using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            foreach (SvgGeometry existing in white.Geometries)
-            {
-                SvgPolygonFill solid = existing.Polygon;
-                repainted.Add(SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget)));
-            }
+            foreach (SvgGeometry existing in white.Geometries) repainted.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, paint, box, opacity, budget));
             white.Dispose();
             return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
         }

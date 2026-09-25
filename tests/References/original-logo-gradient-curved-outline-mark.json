@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-gradient-curved-outline-mark",
+  "referencePng": "original-logo-gradient-curved-outline-mark.png",
+  "referenceSha256": "381fef944a4ba3fc65638c03266e79ad1d3e9950710cd0e99034d6c1e65ac9db",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "8bb005efedf1cae013ae6a8825733cde7adbc59edc75b2113e07723170ac2223",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 254,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 106,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}
