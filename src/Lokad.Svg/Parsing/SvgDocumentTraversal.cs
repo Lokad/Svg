@@ -264,6 +264,7 @@ internal static class SvgDocumentTraversal
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);
+                    SvgMaskSyntax.ResolvePendingLeafMasks(state, workCounter, cancellationToken);
                     if (root.Opacity != 255) state.Scene.EndOpacityScope();
                     SvgSceneStorage sceneStorage = state.Scene.Build();
                     try

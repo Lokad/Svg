@@ -43,9 +43,12 @@ internal static class SvgRenderedLeafParser
         {
             case "rect":
                 string? deferredRectClip = SvgClipPathSyntax.PendingClipId(reader, state);
-                bool deferRectClip = deferredRectClip is not null && reader.GetAttribute("mask") is null;
+                string? deferredRectMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                bool deferRectMask = deferredRectMask is not null;
+                bool deferRectClip = deferredRectClip is not null && (reader.GetAttribute("mask") is null || deferRectMask);
                 int rectFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferRectClip;
+                state.DeferringLeafMask = deferRectMask;
                 try
                 {
                     using (SvgParsedGeometry rectangle = SvgLeafParser.ParseRectangle(reader, context, state.EffectiveFrame, state))
@@ -54,24 +57,28 @@ internal static class SvgRenderedLeafParser
                         {
                             SvgGeometry single = rectangle.Geometries[0];
                             SvgMaskSyntax.ValidateMaskScopes(state, single);
-                            state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, single));
+                            state.Scene.AddGeometry(state.DeferringLeafMask ? single : SvgMaskSyntax.ApplyMaskedLeaf(reader, state, single));
                         }
                         else
                         {
-                            SvgMaskSyntax.ApplyMaskToBands(reader, state, rectangle.Storage.Items);
+                            if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, rectangle.Storage.Items);
                             SvgMaskSyntax.ValidateMaskScopeBands(state, rectangle.Storage.Items);
                             state.Scene.AddGeometries(rectangle.Geometries);
                         }
                     }
                 }
-                finally { state.DeferringLeafClip = false; }
+                finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
                 if (deferRectClip && deferredRectClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectClip, state.EffectiveFrame, true));
+                if (deferRectMask && deferredRectMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectMask, state.EffectiveFrame));
                 return true;
             case "line":
                 string? deferredLineClip = SvgClipPathSyntax.PendingClipId(reader, state);
-                bool deferLineClip = deferredLineClip is not null && reader.GetAttribute("mask") is null;
+                string? deferredLineMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                bool deferLineMask = deferredLineMask is not null;
+                bool deferLineClip = deferredLineClip is not null && (reader.GetAttribute("mask") is null || deferLineMask);
                 int lineFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferLineClip;
+                state.DeferringLeafMask = deferLineMask;
                 try
                 {
                     using (SvgParsedGeometry line = SvgLeafParser.ParseLine(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))
@@ -80,24 +87,28 @@ internal static class SvgRenderedLeafParser
                         {
                             SvgGeometry single = line.Geometries[0];
                             SvgMaskSyntax.ValidateMaskScopes(state, single);
-                            state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, single));
+                            state.Scene.AddGeometry(state.DeferringLeafMask ? single : SvgMaskSyntax.ApplyMaskedLeaf(reader, state, single));
                         }
                         else
                         {
-                            SvgMaskSyntax.ApplyMaskToBands(reader, state, line.Storage.Items);
+                            if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, line.Storage.Items);
                             SvgMaskSyntax.ValidateMaskScopeBands(state, line.Storage.Items);
                             state.Scene.AddGeometries(line.Geometries);
                         }
                     }
                 }
-                finally { state.DeferringLeafClip = false; }
+                finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
                 if (deferLineClip && deferredLineClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineClip, state.EffectiveFrame, false));
+                if (deferLineMask && deferredLineMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineMask, state.EffectiveFrame));
                 return true;
             case "circle":
                 string? deferredCircleClip = SvgClipPathSyntax.PendingClipId(reader, state);
-                bool deferCircleClip = deferredCircleClip is not null && reader.GetAttribute("mask") is null;
+                string? deferredCircleMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                bool deferCircleMask = deferredCircleMask is not null;
+                bool deferCircleClip = deferredCircleClip is not null && (reader.GetAttribute("mask") is null || deferCircleMask);
                 int circleFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferCircleClip;
+                state.DeferringLeafMask = deferCircleMask;
                 try
                 {
                     using (SvgParsedGeometry circle = SvgLeafParser.ParseCircle(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))
@@ -106,24 +117,28 @@ internal static class SvgRenderedLeafParser
                         {
                             SvgGeometry single = circle.Geometries[0];
                             SvgMaskSyntax.ValidateMaskScopes(state, single);
-                            state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, single));
+                            state.Scene.AddGeometry(state.DeferringLeafMask ? single : SvgMaskSyntax.ApplyMaskedLeaf(reader, state, single));
                         }
                         else
                         {
-                            SvgMaskSyntax.ApplyMaskToBands(reader, state, circle.Storage.Items);
+                            if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, circle.Storage.Items);
                             SvgMaskSyntax.ValidateMaskScopeBands(state, circle.Storage.Items);
                             state.Scene.AddGeometries(circle.Geometries);
                         }
                     }
                 }
-                finally { state.DeferringLeafClip = false; }
+                finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
                 if (deferCircleClip && deferredCircleClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleClip, state.EffectiveFrame, false));
+                if (deferCircleMask && deferredCircleMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleMask, state.EffectiveFrame));
                 return true;
             case "ellipse":
                 string? deferredEllipseClip = SvgClipPathSyntax.PendingClipId(reader, state);
-                bool deferEllipseClip = deferredEllipseClip is not null && reader.GetAttribute("mask") is null;
+                string? deferredEllipseMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                bool deferEllipseMask = deferredEllipseMask is not null;
+                bool deferEllipseClip = deferredEllipseClip is not null && (reader.GetAttribute("mask") is null || deferEllipseMask);
                 int ellipseFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferEllipseClip;
+                state.DeferringLeafMask = deferEllipseMask;
                 try
                 {
                     using (SvgParsedGeometry ellipse = SvgLeafParser.ParseEllipse(reader, context, SvgClipPathSyntax.ResolveLeafClip(reader, state), state))
@@ -132,71 +147,84 @@ internal static class SvgRenderedLeafParser
                         {
                             SvgGeometry single = ellipse.Geometries[0];
                             SvgMaskSyntax.ValidateMaskScopes(state, single);
-                            state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, single));
+                            state.Scene.AddGeometry(state.DeferringLeafMask ? single : SvgMaskSyntax.ApplyMaskedLeaf(reader, state, single));
                         }
                         else
                         {
-                            SvgMaskSyntax.ApplyMaskToBands(reader, state, ellipse.Storage.Items);
+                            if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, ellipse.Storage.Items);
                             SvgMaskSyntax.ValidateMaskScopeBands(state, ellipse.Storage.Items);
                             state.Scene.AddGeometries(ellipse.Geometries);
                         }
                     }
                 }
-                finally { state.DeferringLeafClip = false; }
+                finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
                 if (deferEllipseClip && deferredEllipseClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseClip, state.EffectiveFrame, false));
+                if (deferEllipseMask && deferredEllipseMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseMask, state.EffectiveFrame));
                 return true;
             case "path":
                 string? deferredPathClip = SvgClipPathSyntax.PendingClipId(reader, state);
-                bool deferPathClip = deferredPathClip is not null && reader.GetAttribute("mask") is null;
+                string? deferredPathMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                bool deferPathMask = deferredPathMask is not null;
+                bool deferPathClip = deferredPathClip is not null && (reader.GetAttribute("mask") is null || deferPathMask);
                 int pathFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferPathClip;
+                state.DeferringLeafMask = deferPathMask;
                 try
                 {
                     using (SvgParsedGeometry path = SvgOrthogonalShapeParser.ParsePath(reader, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, ResolveShapeClipFrame(reader, "path", true, state, limits, budget, context), state))
                     {
                         state.GeometryElementCount += path.ElementCount;
-                        SvgMaskSyntax.ApplyMaskToBands(reader, state, path.Storage.Items);
+                        if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, path.Storage.Items);
                         SvgMaskSyntax.ValidateMaskScopeBands(state, path.Storage.Items);
                         state.Scene.AddGeometries(path.Geometries);
                     }
                 }
-                finally { state.DeferringLeafClip = false; }
+                finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
                 if (deferPathClip && deferredPathClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathClip, state.EffectiveFrame, true));
+                if (deferPathMask && deferredPathMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathMask, state.EffectiveFrame));
                 return true;
             case "polygon" or "polyline":
                 string? deferredPointListClip = SvgClipPathSyntax.PendingClipId(reader, state);
-                bool deferPointListClip = deferredPointListClip is not null && reader.GetAttribute("mask") is null;
+                string? deferredPointListMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                bool deferPointListMask = deferredPointListMask is not null;
+                bool deferPointListClip = deferredPointListClip is not null && (reader.GetAttribute("mask") is null || deferPointListMask);
                 int pointListFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferPointListClip;
+                state.DeferringLeafMask = deferPointListMask;
                 try
                 {
                     using (SvgParsedGeometry pointList = SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, limits.MaximumPathCommands - state.GeometryElementCount, budget, ResolveShapeClipFrame(reader, reader.LocalName, false, state, limits, budget, context), state))
                     {
                         state.GeometryElementCount += pointList.ElementCount;
-                        SvgMaskSyntax.ApplyMaskToBands(reader, state, pointList.Storage.Items);
+                        if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, pointList.Storage.Items);
                         SvgMaskSyntax.ValidateMaskScopeBands(state, pointList.Storage.Items);
                         state.Scene.AddGeometries(pointList.Geometries);
                     }
                 }
-                finally { state.DeferringLeafClip = false; }
+                finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
                 if (deferPointListClip && deferredPointListClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListClip, state.EffectiveFrame, true));
+                if (deferPointListMask && deferredPointListMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListMask, state.EffectiveFrame));
                 return true;
             case "image":
             {
                 string? deferredImageClip = SvgClipPathSyntax.PendingClipId(reader, state);
-                bool deferImageClip = deferredImageClip is not null && reader.GetAttribute("mask") is null;
+                string? deferredImageMask = SvgMaskSyntax.PendingMaskId(reader, state);
+                bool deferImageMask = deferredImageMask is not null;
+                bool deferImageClip = deferredImageClip is not null && (reader.GetAttribute("mask") is null || deferImageMask);
                 int imageFirstGeometry = state.Scene.GeometryCount;
                 state.DeferringLeafClip = deferImageClip;
+                state.DeferringLeafMask = deferImageMask;
                 try
                 {
                     SvgViewportFrame? imageFrame = SvgClipPathSyntax.ResolveLeafClip(reader, state);
                     SvgViewportFrame? imageParent = state.EffectiveFrame;
                     SvgGeometry image = SvgLeafParser.ParseImage(reader, context, imageFrame, imageParent?.ViewportWidth ?? root.Width, imageParent?.ViewportHeight ?? root.Height, limits, budget);
                     SvgMaskSyntax.ValidateMaskScopes(state, image);
-                    state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, image));
+                    state.Scene.AddGeometry(state.DeferringLeafMask ? image : SvgMaskSyntax.ApplyMaskedLeaf(reader, state, image));
                 }
-                finally { state.DeferringLeafClip = false; }
+                finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
                 if (deferImageClip && deferredImageClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageClip, state.EffectiveFrame, false));
+                if (deferImageMask && deferredImageMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageMask, state.EffectiveFrame));
                 return true;
             }
             case "text":

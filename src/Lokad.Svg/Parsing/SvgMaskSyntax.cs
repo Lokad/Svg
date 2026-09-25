@@ -5,6 +5,9 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Parses the bounded mask definition syntax and applies retained mask values to lowered geometry.</summary>
+/// <summary>Retains one direct leaf geometry range whose mask reference resolves at document end.</summary>
+internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int GeometryCount, string MaskId, SvgViewportFrame? Parent);
+
 internal static class SvgMaskSyntax
 {
     /// <summary>Parses an explicit userSpaceOnUse mask region, returning null for the default region.</summary>
@@ -72,6 +75,18 @@ internal static class SvgMaskSyntax
         return id;
     }
 
+    /// <summary>Reports the unknown mask reference of one direct leaf for end-of-document resolution, or nothing when absent or already defined.</summary>
+    internal static string? PendingMaskId(XmlReader reader, SvgDocumentState state)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        ArgumentNullException.ThrowIfNull(state);
+        string? reference = reader.GetAttribute("mask");
+        if (reference is null) return null;
+        string id = ParseMaskId(reference);
+        if (state.Masks.TryGetValue(id, out _)) return null;
+        return state.Strings.Copy(id);
+    }
+
     /// <summary>Interprets one opaque mask paint value under its mask type.</summary>
     internal static byte InterpretValue(SvgColor color, bool isAlpha)
     {
@@ -123,6 +138,63 @@ internal static class SvgMaskSyntax
         for (int index = 0; index < geometries.Length; index++) geometries[index] = ApplyMask(geometries[index], value, region);
     }
 
+    /// <summary>Applies deferred mask values and regions to direct leaf geometry ranges at document end, after clip resolution.</summary>
+    internal static void ResolvePendingLeafMasks(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        for (int pendingIndex = 0; pendingIndex < state.PendingLeafMasks.Count; pendingIndex++)
+        {
+            workCounter.Consume(cancellationToken);
+            PendingLeafMask pending = state.PendingLeafMasks[pendingIndex];
+            if (!state.Masks.TryGetValue(pending.MaskId, out byte value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+            if (pending.GeometryCount == 0) continue;
+            SvgRectangle fallback = UnionBounds(state, pending, workCounter, cancellationToken);
+            if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
+            SvgClipBox region = ResolveDeferredRegion(state, pending, fallback);
+            for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
+            {
+                workCounter.Consume(cancellationToken);
+                state.Scene.ReplaceGeometry(geometryIndex, ApplyMask(state.Scene.GeometryAt(geometryIndex), value, region));
+            }
+        }
+
+        static SvgRectangle UnionBounds(SvgDocumentState state, PendingLeafMask pending, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgRectangle bounds = BoundingBox(state.Scene.GeometryAt(geometryIndex));
+                if (bounds.X < left) left = bounds.X;
+                if (bounds.Y < top) top = bounds.Y;
+                if (bounds.X + bounds.Width > right) right = bounds.X + bounds.Width;
+                if (bounds.Y + bounds.Height > bottom) bottom = bounds.Y + bounds.Height;
+            }
+            return new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, false, null);
+        }
+
+        static SvgClipBox ResolveDeferredRegion(SvgDocumentState state, PendingLeafMask pending, SvgRectangle fallback)
+        {
+            SvgViewportFrame? parent = pending.Parent;
+            if (state.MaskRegions.TryGetValue(pending.MaskId, out SvgClipBox custom))
+            {
+                if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
+                return custom;
+            }
+            if (state.MaskFractionRegions.TryGetValue(pending.MaskId, out SvgClipBox fractions))
+            {
+                if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
+                SvgClipBox resolved = new(fallback.X + fractions.X * fallback.Width, fallback.Y + fractions.Y * fallback.Height, fractions.Width * fallback.Width, fractions.Height * fallback.Height);
+                if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox cover) && !cover.Contains(resolved.X, resolved.Y, resolved.X + resolved.Width, resolved.Y + resolved.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
+                return resolved;
+            }
+            return MaskRegion(fallback);
+        }
+    }
     /// <summary>Requires retained mask content to cover the masked geometry bounding box.</summary>
     internal static void ValidateMaskCoverage(string reference, SvgDocumentState state, SvgRectangle fallback)
     {
