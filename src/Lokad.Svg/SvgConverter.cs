@@ -294,6 +294,9 @@ public static class SvgConverter
                 case SvgGeometryKind.RadialPolygon:
                     RasterizeRadialPolygon(geometry.RadialPolygon, destination);
                     return;
+                case SvgGeometryKind.PatternPolygon:
+                    RasterizePatternPolygon(geometry.PatternPolygon, destination);
+                    return;
                 default:
                     throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains invalid geometry.");
             }
@@ -586,6 +589,70 @@ public static class SvgConverter
                 }
                 double dither = GradientDither[x & 7, y & 7] / 64d;
                 SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
+                SvgColor color = WithCoverage(tileColor, pixelCoverage);
+                int offset = (y * outputWidth + x) * 4;
+                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+            }
+            }
+        }
+
+        void RasterizePatternPolygon(SvgPatternPolygon outline, byte[] destination)
+        {
+            if (!outline.HasFill || outline.Points.Length < 3) return;
+            SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
+            bool hasFractionalEdge = false;
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            for (int index = 0; index < outline.Points.Length; index++)
+            {
+                double edgeX = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(outline.Points[index].X, horizontalScale, horizontalOffset);
+                double edgeY = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].Y, verticalScale, verticalOffset) : MapEdge(outline.Points[index].Y, verticalScale, verticalOffset);
+                mapped[index] = new SvgDevicePoint(edgeX, edgeY);
+                if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
+                if (edgeX < left) left = edgeX;
+                if (edgeY < top) top = edgeY;
+                if (edgeX > right) right = edgeX;
+                if (edgeY > bottom) bottom = edgeY;
+            }
+            int startY = ClampFloor(top, outputHeight);
+            int endY = ClampCeiling(bottom, outputHeight);
+            int startX = ClampFloor(left, outputWidth);
+            int endX = ClampCeiling(right, outputWidth);
+            if (outline.Clip is SvgClipBox clip)
+            {
+                startY = Math.Max(startY, ClampFloor(clip.Y, outputHeight));
+                endY = Math.Min(endY, ClampCeiling(clip.Bottom, outputHeight));
+                startX = Math.Max(startX, ClampFloor(clip.X, outputWidth));
+                endX = Math.Min(endX, ClampCeiling(clip.Right, outputWidth));
+            }
+            if (endY <= startY || endX <= startX) return;
+            long coverage = (long)(endY - startY) * (endX - startX);
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
+            workUnits += coverage;
+            SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null);
+            if (!TryMapPatternTile(source, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
+            SvgPatternGeometry tile = mappedTile ?? source;
+            long tilePixels = (long)tile.TileWidth * tile.TileHeight;
+            if (tilePixels <= 0 || tilePixels > options.Limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile surface exceeds the configured pixel limit.");
+            using RenderBudget.BudgetReservation tileReservation = budget.Reserve(checked(tilePixels * 4), SvgMemoryCategory.Surface);
+            byte[] blitted = new byte[(int)tilePixels * 4];
+            BlitPatternTile(tile, blitted);
+            ReadOnlySpan<int> contourEnds = outline.ContourEnds;
+            ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
+            for (int y = startY; y < endY; y++)
+            {
+            cancellationToken.ThrowIfCancellationRequested();
+            for (int x = startX; x < endX; x++)
+            {
+                double pixelCoverage = outline.IsEvenOdd
+                    ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
+                    : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                int tileX = PositiveModulo(x - tile.OriginX, tile.TileWidth);
+                int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
+                int tileOffset = (tileY * tile.TileWidth + tileX) * 4;
+                SvgColor tileColor = new(blitted[tileOffset], blitted[tileOffset + 1], blitted[tileOffset + 2], MultiplyAlpha(blitted[tileOffset + 3], tile.Opacity));
                 SvgColor color = WithCoverage(tileColor, pixelCoverage);
                 int offset = (y * outputWidth + x) * 4;
                 BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);

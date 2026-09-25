@@ -37,7 +37,7 @@ internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double 
     }
 }
 
-internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill, GradientFill, GradientStroke, PolygonFill, RadialGradient, GradientPolygon, RadialPolygon }
+internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill, GradientFill, GradientStroke, PolygonFill, RadialGradient, GradientPolygon, RadialPolygon, PatternPolygon }
 
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
 internal readonly struct SvgGeometry
@@ -53,6 +53,7 @@ internal readonly struct SvgGeometry
     private readonly SvgPolygonFill? _polygon;
     private readonly SvgGradientPolygon? _gradientPolygon;
     private readonly SvgRadialPolygon? _radialPolygon;
+    private readonly SvgPatternPolygon? _patternPolygon;
 
     private SvgGeometry(SvgGeometryKind kind, SvgRectangle rectangle)
     {
@@ -67,6 +68,7 @@ internal readonly struct SvgGeometry
         _polygon = null;
         _gradientPolygon = null;
         _radialPolygon = null;
+        _patternPolygon = null;
     }
 
     private SvgGeometry(SvgAxisAlignedLine axisAlignedLine)
@@ -82,6 +84,7 @@ internal readonly struct SvgGeometry
         _polygon = null;
         _gradientPolygon = null;
         _radialPolygon = null;
+        _patternPolygon = null;
     }
 
     private SvgGeometry(SvgGlyphGeometry glyph)
@@ -98,6 +101,7 @@ internal readonly struct SvgGeometry
         _polygon = null;
         _gradientPolygon = null;
         _radialPolygon = null;
+        _patternPolygon = null;
     }
 
     private SvgGeometry(SvgPatternGeometry pattern)
@@ -114,6 +118,7 @@ internal readonly struct SvgGeometry
         _polygon = null;
         _gradientPolygon = null;
         _radialPolygon = null;
+        _patternPolygon = null;
     }
 
     private SvgGeometry(SvgGradientGeometry gradient)
@@ -130,6 +135,7 @@ internal readonly struct SvgGeometry
         _polygon = null;
         _gradientPolygon = null;
         _radialPolygon = null;
+        _patternPolygon = null;
     }
 
     private SvgGeometry(SvgGradientStrokeGeometry gradientStroke)
@@ -145,6 +151,7 @@ internal readonly struct SvgGeometry
         _polygon = null;
         _gradientPolygon = null;
         _radialPolygon = null;
+        _patternPolygon = null;
     }
 
     private SvgGeometry(SvgRadialGeometry radial)
@@ -161,6 +168,7 @@ internal readonly struct SvgGeometry
         _polygon = null;
         _gradientPolygon = null;
         _radialPolygon = null;
+        _patternPolygon = null;
     }
 
     private SvgGeometry(SvgPolygonFill polygon)
@@ -177,6 +185,7 @@ internal readonly struct SvgGeometry
         _polygon = polygon;
         _gradientPolygon = null;
         _radialPolygon = null;
+        _patternPolygon = null;
     }
 
     private SvgGeometry(SvgGradientPolygon polygon)
@@ -193,6 +202,7 @@ internal readonly struct SvgGeometry
         _polygon = null;
         _gradientPolygon = polygon;
         _radialPolygon = null;
+        _patternPolygon = null;
     }
 
     private SvgGeometry(SvgRadialPolygon polygon)
@@ -209,6 +219,25 @@ internal readonly struct SvgGeometry
         _polygon = null;
         _gradientPolygon = null;
         _radialPolygon = polygon;
+        _patternPolygon = null;
+    }
+
+    private SvgGeometry(SvgPatternPolygon polygon)
+    {
+        ArgumentNullException.ThrowIfNull(polygon);
+        _kind = SvgGeometryKind.PatternPolygon;
+        _rectangle = default;
+        _axisAlignedLine = default;
+        _glyph = null;
+        _pattern = null;
+        _gradient = null;
+        _gradientStroke = null;
+        _radial = null;
+        _polygon = null;
+        _gradientPolygon = null;
+        _radialPolygon = null;
+        _patternPolygon = null;
+        _patternPolygon = polygon;
     }
 
     internal SvgGeometryKind Kind => _kind;
@@ -250,6 +279,8 @@ internal readonly struct SvgGeometry
 
     internal static SvgGeometry FromRadialPolygon(SvgRadialPolygon polygon) => new(polygon);
 
+    internal static SvgGeometry FromPatternPolygon(SvgPatternPolygon polygon) => new(polygon);
+
     internal SvgGradientGeometry Gradient
         => _kind == SvgGeometryKind.GradientFill
             ? _gradient ?? throw new InvalidOperationException("This SVG geometry does not contain gradient stops.")
@@ -285,6 +316,11 @@ internal readonly struct SvgGeometry
             ? _radialPolygon ?? throw new InvalidOperationException("This SVG geometry does not contain radial polygon contours.")
             : throw new InvalidOperationException("This SVG geometry does not contain radial polygon contours.");
 
+    internal SvgPatternPolygon PatternPolygon
+        => _kind == SvgGeometryKind.PatternPolygon
+            ? _patternPolygon ?? throw new InvalidOperationException("This SVG geometry does not contain pattern polygon contours.")
+            : throw new InvalidOperationException("This SVG geometry does not contain pattern polygon contours.");
+
     internal void Dispose()
     {
         if (_kind == SvgGeometryKind.GlyphContours) _glyph?.Dispose();
@@ -294,6 +330,7 @@ internal readonly struct SvgGeometry
         if (_kind == SvgGeometryKind.PolygonFill) _polygon?.Dispose();
         if (_kind == SvgGeometryKind.GradientPolygon) _gradientPolygon?.Dispose();
         if (_kind == SvgGeometryKind.RadialPolygon) _radialPolygon?.Dispose();
+        if (_kind == SvgGeometryKind.PatternPolygon) _patternPolygon?.Dispose();
         if (_kind == SvgGeometryKind.RadialGradient) _radial?.Dispose();
     }
 
@@ -528,6 +565,82 @@ internal sealed class SvgRadialPolygon : IDisposable
     {
         if (paint.Stops.Length == 1 || (paint.Radius == 0 && !paint.IsEmpty)) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, budget));
         return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
+    }
+
+    public void Dispose()
+    {
+        _reservation?.Dispose();
+        _reservation = null;
+    }
+}
+
+/// <summary>Owns retained pattern-tile polygon contour arrays with their integer tile grid and scene-memory reservation until the scene is disposed.</summary>
+internal sealed class SvgPatternPolygon : IDisposable
+{
+    private RenderBudget.BudgetReservation? _reservation;
+
+    private SvgPatternPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRectangle content, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
+    {
+        Points = points;
+        ContourEnds = contourEnds;
+        Signs = signs;
+        Content = content;
+        OriginX = originX;
+        OriginY = originY;
+        TileWidth = tileWidth;
+        TileHeight = tileHeight;
+        HasFill = hasFill;
+        IsEvenOdd = isEvenOdd;
+        Opacity = opacity;
+        Mapping = mapping;
+        Clip = clip;
+        _reservation = reservation;
+    }
+
+    internal SvgDevicePoint[] Points { get; }
+
+    internal int[] ContourEnds { get; }
+
+    internal int[]? Signs { get; }
+
+    internal SvgRectangle Content { get; }
+
+    internal int OriginX { get; }
+
+    internal int OriginY { get; }
+
+    internal int TileWidth { get; }
+
+    internal int TileHeight { get; }
+
+    internal bool HasFill { get; }
+
+    internal bool IsEvenOdd { get; }
+
+    internal byte Opacity { get; }
+
+    internal SvgPolygonMapping Mapping { get; }
+
+    internal SvgClipBox? Clip { get; }
+
+    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRectangle content, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(contourEnds);
+        ArgumentNullException.ThrowIfNull(budget);
+        if (isEvenOdd) ArgumentNullException.ThrowIfNull(signs);
+        long bytes;
+        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length))); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
+        RenderBudget.BudgetReservation? reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
+        return new SvgPatternPolygon(points, contourEnds, signs, content, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
+    }
+
+    /// <summary>Repaints one solid outline as a pattern-tile outline, rendering empty tiles as unpainted fills. Callers admit the paint once for identical errors.</summary>
+    internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgPatternTile tile, byte opacity, RenderBudget budget)
+    {
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, budget));
+        return SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
     }
 
     public void Dispose()

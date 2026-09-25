@@ -4812,6 +4812,48 @@ public sealed class SvgRootParserTests
         Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), root.Geometries[1].RadialPolygon.Box);
     }
 
+    [Fact]
+    public void Lowers_pattern_strokes_on_polygons_as_outlines()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, root.Geometries[1].Kind);
+        Assert.True(root.Geometries[1].PatternPolygon.HasFill);
+    }
+
+    [Fact]
+    public void Lowers_pattern_strokes_on_paths_as_outlines()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><path d='M0,0 L8,0 L0,8 Z' fill='none' stroke='url(#p)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, root.Geometries[1].Kind);
+        Assert.True(root.Geometries[1].PatternPolygon.HasFill);
+    }
+
+    [Fact]
+    public void Lowers_pattern_strokes_on_curved_paths_as_outlines()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#p)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.True(root.Geometries.Length >= 2);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
+        Assert.All(root.Geometries.Skip(1), outline => Assert.Equal(SvgGeometryKind.PatternPolygon, outline.Kind));
+        Assert.All(root.Geometries.Skip(1), outline => Assert.True(outline.PatternPolygon.HasFill));
+    }
+
+    [Fact]
+    public void Empty_pattern_tiles_leave_outlines_unpainted()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='e' width='8' height='8' patternUnits='userSpaceOnUse'></pattern></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#e)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[1].Kind);
+        Assert.False(root.Geometries[1].Polygon.HasFill);
+    }
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>")]
