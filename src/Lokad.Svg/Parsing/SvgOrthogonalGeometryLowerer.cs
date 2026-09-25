@@ -15,11 +15,11 @@ internal readonly record struct SvgOrthogonalEdgeIntersection(int X, int Winding
 /// <summary>Owns temporary orthogonal-contour lowering storage until retained rectangle bands detach.</summary>
 internal ref struct SvgOrthogonalGeometryLowering
 {
-    private const double FlattenFlatness = 0.25;
-    private const int FlattenMaxDepth = 64;
-    private const int CurveSegmentsPerCommand = 1024;
+    internal const double FlattenFlatness = 0.25;
+    internal const int FlattenMaxDepth = 64;
+    internal const int CurveSegmentsPerCommand = 1024;
     private const int ShapeSegmentsPerShape = 4096;
-    private const int MaximumFlattenedContourPoints = 65536;
+    internal const int MaximumFlattenedContourPoints = 65536;
 
     private readonly BudgetedParserList<SvgPoint> _points;
     private readonly BudgetedParserList<int> _contourEnds;

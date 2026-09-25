@@ -174,23 +174,92 @@ internal static class SvgRenderedLeafParser
             string? reference = reader.GetAttribute("clip-path");
             if (reference is null) return SvgClipPathSyntax.ResolveLeafClip(reader, state);
             if (!state.ObjectClips.TryGetValue(SvgClipPathSyntax.ParseClipId(reference), out _)) return SvgClipPathSyntax.ResolveLeafClip(reader, state);
-            using BudgetedParserList<SvgPoint> points = TokenizeShapePoints(reader, elementName, isPath, limits.MaximumPathCommands - state.GeometryElementCount, budget, context);
-            int minimumX = points[0].X;
-            int minimumY = points[0].Y;
-            int maximumX = points[0].X;
-            int maximumY = points[0].Y;
-            for (int pointIndex = 1; pointIndex < points.Count; pointIndex++)
+            double minimumX;
+            double minimumY;
+            double maximumX;
+            double maximumY;
+            try
             {
-                if ((pointIndex & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
-                SvgPoint vertex = points[pointIndex];
-                if (vertex.X < minimumX) minimumX = vertex.X;
-                if (vertex.Y < minimumY) minimumY = vertex.Y;
-                if (vertex.X > maximumX) maximumX = vertex.X;
-                if (vertex.Y > maximumY) maximumY = vertex.Y;
+                using BudgetedParserList<SvgPoint> points = TokenizeShapePoints(reader, elementName, isPath, limits.MaximumPathCommands - state.GeometryElementCount, budget, context);
+                minimumX = points[0].X;
+                minimumY = points[0].Y;
+                maximumX = points[0].X;
+                maximumY = points[0].Y;
+                for (int pointIndex = 1; pointIndex < points.Count; pointIndex++)
+                {
+                    if ((pointIndex & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
+                    SvgPoint vertex = points[pointIndex];
+                    if (vertex.X < minimumX) minimumX = vertex.X;
+                    if (vertex.Y < minimumY) minimumY = vertex.Y;
+                    if (vertex.X > maximumX) maximumX = vertex.X;
+                    if (vertex.Y > maximumY) maximumY = vertex.Y;
+                }
+            }
+            catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnsupportedFeature)
+            {
+                (minimumX, minimumY, maximumX, maximumY) = FlattenedShapeBounds(reader, elementName, isPath, limits.MaximumPathCommands - state.GeometryElementCount, budget, context);
             }
             AxisTransform transform = context.ResolveTransform(reader);
-            SvgRectangle placement = transform.Apply(new SvgRectangle(minimumX, minimumY, (double)maximumX - minimumX, (double)maximumY - minimumY, default, true, null));
+            SvgRectangle placement = transform.Apply(new SvgRectangle(minimumX, minimumY, maximumX - minimumX, maximumY - minimumY, default, true, null));
             return SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, state.EffectiveFrame, placement);
+
+            static (double MinimumX, double MinimumY, double MaximumX, double MaximumY) FlattenedShapeBounds(XmlReader shape, string name, bool pathData, int maximumGeometryElements, RenderBudget geometryBudget, SvgPaintableElementContext shapeContext)
+            {
+                if (pathData)
+                {
+                    string d = shape.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
+                    long wantedPoints = (long)maximumGeometryElements * (SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand + 1);
+                    int pointCapacity = wantedPoints > SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints ? SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints : (int)wantedPoints;
+                    int contourCapacity = pointCapacity < maximumGeometryElements ? pointCapacity : maximumGeometryElements;
+                    long scratchBytes;
+                    try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)); }
+                    catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported expansion range."); }
+                    using RenderBudget.BudgetReservation scratch = geometryBudget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
+                    SvgContourBuilder builder = new(pointCapacity, contourCapacity);
+                    SvgPathDataParser.ParsePath(d, SvgAffineTransform.Identity, builder, new SvgFlattenPolicy(SvgOrthogonalGeometryLowering.FlattenFlatness, SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), maximumGeometryElements, shapeContext.WorkCounter, shapeContext.CancellationToken, null);
+                    if (builder.ContourCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on curved or fractional contours are not implemented.");
+                    return FlattenedContourBounds(builder, shapeContext.CancellationToken);
+                }
+                string pointsValue = shape.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, name + " points are required.");
+                using BudgetedParserList<SvgFractionalPoint> fractional = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(pointsValue, name, maximumGeometryElements, geometryBudget, shapeContext.WorkCounter, shapeContext.CancellationToken);
+                if (fractional.Count == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths on curved or fractional contours are not implemented.");
+                double left = fractional[0].X;
+                double top = fractional[0].Y;
+                double right = fractional[0].X;
+                double bottom = fractional[0].Y;
+                for (int vertexIndex = 1; vertexIndex < fractional.Count; vertexIndex++)
+                {
+                    if ((vertexIndex & 4095) == 0) shapeContext.CancellationToken.ThrowIfCancellationRequested();
+                    SvgFractionalPoint vertex = fractional[vertexIndex];
+                    if (vertex.X < left) left = vertex.X;
+                    if (vertex.Y < top) top = vertex.Y;
+                    if (vertex.X > right) right = vertex.X;
+                    if (vertex.Y > bottom) bottom = vertex.Y;
+                }
+                return (left, top, right, bottom);
+            }
+
+            static (double MinimumX, double MinimumY, double MaximumX, double MaximumY) FlattenedContourBounds(SvgContourBuilder builder, CancellationToken cancellationToken)
+            {
+                double left = double.PositiveInfinity;
+                double top = double.PositiveInfinity;
+                double right = double.NegativeInfinity;
+                double bottom = double.NegativeInfinity;
+                int vertexIndex = 0;
+                for (int contour = 0; contour < builder.ContourCount; contour++)
+                {
+                    foreach (SvgDevicePoint vertex in builder.GetContour(contour))
+                    {
+                        if ((vertexIndex & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        vertexIndex++;
+                        if (vertex.X < left) left = vertex.X;
+                        if (vertex.Y < top) top = vertex.Y;
+                        if (vertex.X > right) right = vertex.X;
+                        if (vertex.Y > bottom) bottom = vertex.Y;
+                    }
+                }
+                return (left, top, right, bottom);
+            }
 
             static BudgetedParserList<SvgPoint> TokenizeShapePoints(XmlReader shape, string name, bool pathData, int maximumGeometryElements, RenderBudget geometryBudget, SvgPaintableElementContext shapeContext)
             {
