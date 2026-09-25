@@ -3755,11 +3755,26 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_gradient_fills_with_gradient_strokes()
+    public void Lowers_gradient_fills_with_gradient_strokes_as_fill_plus_bands()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='h'><stop offset='0' stop-color='#00ff00'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' stroke='url(#h)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='h'><stop offset='0' stop-color='#00ff00'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' stroke='url(#h)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.GradientFill, root.Geometries[0].Kind);
+        Assert.True(root.Geometries[0].Gradient.Fill.HasFill);
+        Assert.Equal(SvgGeometryKind.GradientStroke, root.Geometries[1].Kind);
+        Assert.False(root.Geometries[1].GradientStroke.Fill.HasFill);
+        Assert.True(root.Geometries[1].GradientStroke.HasStroke);
+    }
+
+    [Fact]
+    public void Lowers_radial_fills_with_radial_strokes_as_fill_plus_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='f' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient><radialGradient id='s' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#00ff00'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#f)' stroke='url(#s)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(5, root.Geometries.Length);
+        Assert.All(root.Geometries, band => Assert.Equal(SvgGeometryKind.RadialGradient, band.Kind));
+        Assert.True(root.Geometries[0].Radial.Fill.HasFill);
     }
 
     [Fact]
