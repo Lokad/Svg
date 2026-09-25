@@ -556,6 +556,15 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, pattern);
     }
 
+    [Fact]
+    public void Square_cap_line_matches_extended_butt_line()
+    {
+        byte[] square = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='2' y1='4' x2='6' y2='4' stroke='red' stroke-width='2' stroke-linecap='square'/></svg>", out _, out _);
+        byte[] butt = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='1' y1='4' x2='7' y2='4' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(butt, square);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

@@ -3801,6 +3801,24 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Extends_square_cap_lines_by_half_width()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='8' y1='4' x2='16' y2='4' stroke='red' stroke-width='4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
+        Assert.Equal(new SvgAxisAlignedLine(6, 4, 18, 4, new SvgColor(255, 0, 0, 255), true, 4), geometry.AxisAlignedLine);
+    }
+
+    [Fact]
+    public void Rejects_round_cap_lines()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='8' y1='4' x2='16' y2='4' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Lowers_gradient_fills_with_pattern_strokes_as_fill_plus_bands()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#g)' stroke='url(#p)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
