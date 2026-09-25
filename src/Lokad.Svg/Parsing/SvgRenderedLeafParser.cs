@@ -183,11 +183,20 @@ internal static class SvgRenderedLeafParser
                 return true;
             case "image":
             {
-                SvgViewportFrame? imageFrame = SvgClipPathSyntax.ResolveLeafClip(reader, state);
-                SvgViewportFrame? imageParent = state.EffectiveFrame;
-                SvgGeometry image = SvgLeafParser.ParseImage(reader, context, imageFrame, imageParent?.ViewportWidth ?? root.Width, imageParent?.ViewportHeight ?? root.Height, limits, budget);
-                SvgMaskSyntax.ValidateMaskScopes(state, image);
-                state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, image));
+                string? deferredImageClip = SvgClipPathSyntax.PendingClipId(reader, state);
+                bool deferImageClip = deferredImageClip is not null && reader.GetAttribute("mask") is null;
+                int imageFirstGeometry = state.Scene.GeometryCount;
+                state.DeferringLeafClip = deferImageClip;
+                try
+                {
+                    SvgViewportFrame? imageFrame = SvgClipPathSyntax.ResolveLeafClip(reader, state);
+                    SvgViewportFrame? imageParent = state.EffectiveFrame;
+                    SvgGeometry image = SvgLeafParser.ParseImage(reader, context, imageFrame, imageParent?.ViewportWidth ?? root.Width, imageParent?.ViewportHeight ?? root.Height, limits, budget);
+                    SvgMaskSyntax.ValidateMaskScopes(state, image);
+                    state.Scene.AddGeometry(SvgMaskSyntax.ApplyMaskedLeaf(reader, state, image));
+                }
+                finally { state.DeferringLeafClip = false; }
+                if (deferImageClip && deferredImageClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageClip, state.EffectiveFrame, false));
                 return true;
             }
             case "text":

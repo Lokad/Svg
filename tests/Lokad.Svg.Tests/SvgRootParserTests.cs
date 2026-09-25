@@ -360,6 +360,22 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Clips_forward_clip_path_definitions_on_embedded_images()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' clip-path='url(#later)'/><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Rejects_forward_bounding_box_clips_on_embedded_images()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' clip-path='url(#later)'/><defs><clipPath id='later' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Applies_masks_to_embedded_images_without_changing_solid_content()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
