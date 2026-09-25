@@ -3644,11 +3644,18 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_user_space_gradients_inside_transformed_viewports()
+    public void Admits_user_space_gradients_inside_offset_viewports()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><svg x='8' y='8' width='16' height='16'><rect x='0' y='0' width='8' height='8' fill='url(#g)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><svg x='8' y='8' width='16' height='16'><rect x='0' y='0' width='8' height='8' fill='url(#g)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(8, geometry.Gradient.Gradient.X1);
+        Assert.Equal(8, geometry.Gradient.Gradient.Y1);
+        Assert.Equal(16, geometry.Gradient.Gradient.X2);
+        Assert.Equal(8, geometry.Gradient.Gradient.Y2);
+        Assert.Equal(1, geometry.Gradient.Gradient.ReferenceScaleX);
+        Assert.Equal(1, geometry.Gradient.Gradient.ReferenceScaleY);
     }
 
     [Fact]
@@ -4266,11 +4273,30 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_userspace_radial_in_transformed_viewport()
+    public void Admits_userspace_gradients_inside_scaled_viewports()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><svg x='8' y='0' width='16' height='16'><rect width='8' height='8' fill='url(#g)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><svg x='0' y='0' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><rect width='8' height='8' fill='url(#g)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(0, geometry.Gradient.Gradient.X1);
+        Assert.Equal(16, geometry.Gradient.Gradient.X2);
+        Assert.Equal(2, geometry.Gradient.Gradient.ReferenceScaleX);
+        Assert.Equal(1, geometry.Gradient.Gradient.ReferenceScaleY);
+    }
+
+    [Fact]
+    public void Admits_userspace_radial_inside_offset_viewports()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><svg x='8' y='0' width='16' height='16'><rect width='8' height='8' fill='url(#g)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
+        Assert.Equal(12, geometry.Radial.Gradient.CenterX);
+        Assert.Equal(4, geometry.Radial.Gradient.CenterY);
+        Assert.Equal(4, geometry.Radial.Gradient.Radius);
+        Assert.Equal(1, geometry.Radial.Gradient.ReferenceScaleX);
+        Assert.Equal(1, geometry.Radial.Gradient.ReferenceScaleY);
     }    [Fact]
     public void Lowers_repeat_spread_radial_gradients_with_retained_spread()
     {

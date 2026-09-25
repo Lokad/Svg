@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-viewport-gradient-mark",
+  "referencePng": "original-logo-viewport-gradient-mark.png",
+  "referenceSha256": "9f7fc75c2f3a67aa4b3302c87b6627f5ed11ec644647d250623ed3394472f07a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "97b25646b64b66bcf73e86865619577b098d29ef41e37368245e8522e1440d4c",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 64,
+    "maximumChannelError": 1,
+    "maximumAlphaError": 0,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

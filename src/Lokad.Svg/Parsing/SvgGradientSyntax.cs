@@ -416,23 +416,46 @@ internal static class SvgGradientSyntax
     internal static SvgLinearGradient MapUserSpaceVector(AxisTransform transform, SvgLinearGradient gradient, SvgViewportFrame? frame)
     {
         if (!gradient.IsUserSpace) return gradient;
-        if (frame is not null && (frame.Value.OffsetX != 0 || frame.Value.OffsetY != 0 || frame.Value.ViewportWidth is not null || frame.Value.ViewportHeight is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "userSpaceOnUse gradients inside transformed viewports are not implemented.");
         (double mappedX1, double mappedY1) = transform.ApplyToUserPoint(gradient.X1, gradient.Y1);
         (double mappedX2, double mappedY2) = transform.ApplyToUserPoint(gradient.X2, gradient.Y2);
-        return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2, ReferenceScaleX = gradient.ReferenceScaleX * transform.ScaleX, ReferenceScaleY = gradient.ReferenceScaleY * transform.ScaleY };
+        double referenceScaleX = transform.ScaleX;
+        double referenceScaleY = transform.ScaleY;
+        if (frame is not null)
+        {
+            mappedX1 = mappedX1 * frame.Value.ScaleX + frame.Value.OffsetX;
+            mappedY1 = mappedY1 * frame.Value.ScaleY + frame.Value.OffsetY;
+            mappedX2 = mappedX2 * frame.Value.ScaleX + frame.Value.OffsetX;
+            mappedY2 = mappedY2 * frame.Value.ScaleY + frame.Value.OffsetY;
+            referenceScaleX *= frame.Value.ScaleX;
+            referenceScaleY *= frame.Value.ScaleY;
+        }
+        if (!double.IsFinite(mappedX1) || !double.IsFinite(mappedY1) || !double.IsFinite(mappedX2) || !double.IsFinite(mappedY2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported viewport map exceeds the gradient coordinate range.");
+        return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2, ReferenceScaleX = gradient.ReferenceScaleX * referenceScaleX, ReferenceScaleY = gradient.ReferenceScaleY * referenceScaleY };
     }
 
     /// <summary>Maps one userSpaceOnUse radial circle and its focal point through the referencing transform, recording scales for inverse evaluation.</summary>
     internal static SvgRadialGradient MapUserSpaceRadial(AxisTransform transform, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
         if (!gradient.IsUserSpace) return gradient;
-        if (frame is not null && (frame.Value.OffsetX != 0 || frame.Value.OffsetY != 0 || frame.Value.ViewportWidth is not null || frame.Value.ViewportHeight is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "userSpaceOnUse gradients inside transformed viewports are not implemented.");
         (double mappedX, double mappedY) = transform.ApplyToUserPoint(gradient.CenterX, gradient.CenterY);
         (double mappedFocalX, double mappedFocalY) = transform.ApplyToUserPoint(gradient.FocalX, gradient.FocalY);
         double mappedRadius = gradient.Radius * Math.Abs(transform.ScaleX);
         double mappedFocalRadius = gradient.FocalRadius * Math.Abs(transform.ScaleX);
-        if (!double.IsFinite(mappedRadius) || !double.IsFinite(mappedFocalRadius) || !double.IsFinite(mappedFocalX) || !double.IsFinite(mappedFocalY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the radial gradient coordinate range.");
-        return gradient with { CenterX = mappedX, CenterY = mappedY, Radius = mappedRadius, FocalX = mappedFocalX, FocalY = mappedFocalY, FocalRadius = mappedFocalRadius, ReferenceScaleX = gradient.ReferenceScaleX * transform.ScaleX, ReferenceScaleY = gradient.ReferenceScaleY * transform.ScaleY };
+        double referenceScaleX = transform.ScaleX;
+        double referenceScaleY = transform.ScaleY;
+        if (frame is not null)
+        {
+            mappedX = mappedX * frame.Value.ScaleX + frame.Value.OffsetX;
+            mappedY = mappedY * frame.Value.ScaleY + frame.Value.OffsetY;
+            mappedFocalX = mappedFocalX * frame.Value.ScaleX + frame.Value.OffsetX;
+            mappedFocalY = mappedFocalY * frame.Value.ScaleY + frame.Value.OffsetY;
+            mappedRadius *= Math.Abs(frame.Value.ScaleX);
+            mappedFocalRadius *= Math.Abs(frame.Value.ScaleX);
+            referenceScaleX *= frame.Value.ScaleX;
+            referenceScaleY *= frame.Value.ScaleY;
+        }
+        if (!double.IsFinite(mappedRadius) || !double.IsFinite(mappedFocalRadius) || !double.IsFinite(mappedFocalX) || !double.IsFinite(mappedFocalY) || !double.IsFinite(mappedX) || !double.IsFinite(mappedY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported viewport map exceeds the radial gradient coordinate range.");
+        return gradient with { CenterX = mappedX, CenterY = mappedY, Radius = mappedRadius, FocalX = mappedFocalX, FocalY = mappedFocalY, FocalRadius = mappedFocalRadius, ReferenceScaleX = gradient.ReferenceScaleX * referenceScaleX, ReferenceScaleY = gradient.ReferenceScaleY * referenceScaleY };
     }
 
     /// <summary>Mirrors one objectBoundingBox gradient vector when the referencing transform reflects its axis.</summary>
