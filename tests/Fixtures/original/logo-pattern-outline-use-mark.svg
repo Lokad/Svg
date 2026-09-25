@@ -1,0 +1,10 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <pattern id="p" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="8" height="4" fill="#ff0000"/>
+    </pattern>
+    <polygon id="t" points="0,0 32,0 0,32" fill="#00ff00" stroke="url(#p)" stroke-width="8"/>
+  </defs>
+  <use href="#t" x="16" y="16"/>
+</svg>
