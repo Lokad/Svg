@@ -264,6 +264,7 @@ internal static class SvgReferenceResolver
         SvgRectangle clipped = viewport.ClipRectangle(transformed);
         return isBand ? SvgGeometry.FromOrthogonalBand(clipped) : SvgGeometry.FromRectangle(clipped);
 
+
         static SvgGeometry ApplySymbolPolygon(SvgPolygonFill source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
         {
             ArgumentNullException.ThrowIfNull(document);
@@ -386,6 +387,7 @@ internal static class SvgReferenceResolver
                     SvgGeometryKind.PatternFill => ApplySymbolPatternFill(sources[index].Pattern, symbolBox, reference, frame, state),
                     SvgGeometryKind.RadialGradient => ApplySymbolRadialFill(sources[index].Radial, symbolBox, reference, frame, state),
                     SvgGeometryKind.GradientStroke => ApplySymbolGradientStroke(sources[index].GradientStroke, symbolBox, reference, frame, state),
+                    SvgGeometryKind.GradientPolygon => ApplySymbolGradientPolygon(sources[index].GradientPolygon, symbolBox, reference, frame, state),
                     _ => ApplySymbolInstance(sources[index], symbolBox, reference, frame, state),
                 });
             }
@@ -421,6 +423,53 @@ internal static class SvgReferenceResolver
             return expanded;
         }
 
+        static SvgGeometry ApplySymbolGradientPolygon(SvgGradientPolygon source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
+        {
+            ArgumentNullException.ThrowIfNull(document);
+            if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
+            if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
+            for (int index = 0; index < mapped.Length; index++)
+            {
+                double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
+                double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
+                double placedX = instance.Transform.ScaleX * contentX + instance.Transform.OffsetX;
+                double placedY = instance.Transform.ScaleY * contentY + instance.Transform.OffsetY;
+                if (viewportFrame is not null)
+                {
+                    placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
+                    placedY = placedY * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+                }
+                if (!double.IsFinite(placedX) || !double.IsFinite(placedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                mapped[index] = new SvgDevicePoint(placedX, placedY);
+            }
+            SvgLinearGradient vector = source.Gradient;
+            if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y, ReferenceScaleX = vector.ReferenceScaleX * scaleX, ReferenceScaleY = vector.ReferenceScaleY * scaleY };
+            SvgRectangle contentBox = source.Box;
+            SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
+            if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
+            vector = SvgGradientSyntax.MapUserSpaceVector(instance.Transform, vector, viewportFrame);
+            vector = SvgGradientSyntax.MirrorBoundingBoxVector(instance.Transform, vector);
+            SvgClipBox viewport = instance.Transform.Apply(new SvgClipBox(instance.X, instance.Y, instance.Width.Value, instance.Height.Value));
+            if (viewportFrame is not null)
+            {
+                viewport = new SvgClipBox(viewport.X + viewportFrame.Value.OffsetX, viewport.Y + viewportFrame.Value.OffsetY, viewport.Width, viewport.Height);
+                viewport = viewport.Intersect(viewportFrame.Value.Clip);
+            }
+            SvgClipBox clip;
+            if (source.Clip is null) clip = viewport;
+            else
+            {
+                SvgClipBox content = source.Clip.Value;
+                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY);
+                SvgClipBox placed = instance.Transform.Apply(shifted);
+                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height);
+                clip = placed.Intersect(viewport);
+            }
+            byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
+            return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, source.ContourEnds, source.Signs, vector, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, document.Budget));
+        }
         static SvgGeometry ApplySymbolGradientFill(SvgGradientGeometry band, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document)
         {
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");

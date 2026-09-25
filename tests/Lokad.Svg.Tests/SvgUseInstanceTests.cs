@@ -592,6 +592,43 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Symbol_gradient_outline_use_matches_direct()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+        byte[] symbol = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8'/></svg>", out _, out _);
+
+        Assert.Equal(direct, symbol);
+    }
+
+    [Fact]
+    public void Scaled_symbol_gradient_outline_matches_direct()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='0,0 16,0 0,16' fill='none' stroke='url(#g)' stroke-width='4'/></svg>", out _, out _);
+        byte[] symbol = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='16' height='16'/></svg>", out _, out _);
+
+        Assert.Equal(direct, symbol);
+    }
+
+    [Fact]
+    public void Lowers_symbol_gradient_outline_uses_through_viewbox_mapping()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='16' height='16'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
+        Assert.Equal(0, root.Geometries[1].GradientPolygon.Gradient.X1);
+        Assert.Equal(16, root.Geometries[1].GradientPolygon.Gradient.X2);
+    }
+
+    [Fact]
+    public void Non_uniform_symbol_outline_uses_stay_unsupported()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 8 8' preserveAspectRatio='none'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='16' height='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Scaled_symbol_pattern_matches_direct()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#p)'/></svg>", out _, out _);
