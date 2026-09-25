@@ -1007,6 +1007,18 @@ internal sealed class SvgSceneBuilder : IDisposable
         _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255));
     }
 
+    internal int GeometryCount => _geometries.Count;
+
+    internal SvgGeometry GeometryAt(int index) => _geometries[index];
+
+    /// <summary>Replaces one retained scene geometry with its clipped successor, keeping commands and releasing replaced storage.</summary>
+    internal void ReplaceGeometry(int index, SvgGeometry geometry)
+    {
+        ReserveGradientStops(geometry);
+        _geometries[index].Dispose();
+        _geometries[index] = geometry;
+    }
+
     /// <summary>Transfers one scene-owned reservation per distinct retained gradient stop array.</summary>
     internal void ReserveGradientStops(SvgGeometry geometry)
     {
