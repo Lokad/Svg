@@ -9,8 +9,8 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePath(XmlReader reader, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        bool paintOutline = TryResolveOutlineGradient(style, state, out SvgLinearGradient outlineCandidate) && outlineCandidate.IsUserSpace;
-        bool paintRadialOutline = TryResolveOutlineRadial(style, state, out SvgRadialGradient outlineRadialCandidate) && outlineRadialCandidate.IsUserSpace;
+        bool paintOutline = TryResolveOutlineGradient(style, state, out SvgLinearGradient outlineCandidate);
+        bool paintRadialOutline = TryResolveOutlineRadial(style, state, out SvgRadialGradient outlineRadialCandidate);
         SvgComputedStyle fillStyle = (paintOutline || paintRadialOutline) ? style with { Stroke = "none" } : style;
         if (SvgGradientSyntax.IsGradientFill(style.Fill))
         {
@@ -66,20 +66,35 @@ internal static class SvgOrthogonalShapeParser
 
         SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke;
         SvgParsedGeometry stroked;
-        bool paintPathOutline = paintOutline && outlineCandidate.IsUserSpace;
-        bool paintPathRadial = paintRadialOutline && outlineRadialCandidate.IsUserSpace;
+        bool isStraightPath = !hasCurve && !hasFractional;
+        bool paintPathOutline = paintOutline && (outlineCandidate.IsUserSpace || isStraightPath);
+        bool paintPathRadial = paintRadialOutline && (outlineRadialCandidate.IsUserSpace || isStraightPath);
         SvgLinearGradient pathGradient = default;
         SvgRadialGradient pathCircle = default;
         SvgComputedStyle pathStrokeStyle = style;
         SvgResolvedPaintableElement pathStrokeShape = shape;
         if (paintPathOutline || paintPathRadial)
         {
-            if (paintPathOutline) pathGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
+            if (paintPathOutline)
+            {
+                pathGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
+                pathGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, pathGradient);
+            }
             else pathCircle = SvgGradientSyntax.MapUserSpaceRadial(shape.Transform, outlineRadialCandidate, frame);
             // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
             pathStrokeStyle = style with { Stroke = "#ffffff" };
             pathStrokeShape = context.ResolveShape(pathStrokeStyle, reader, true);
         }
+
+        SvgRectangle ResolveBoundingBoxOutlineBox()
+        {
+            bool needsFillBox = (paintPathOutline && !outlineCandidate.IsUserSpace) || (paintPathRadial && !outlineRadialCandidate.IsUserSpace);
+            if (!needsFillBox) return default;
+            using BudgetedParserList<int> boxEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<SvgPoint> boxPoints = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, boxEnds);
+            return SvgGradientSyntax.BoxFromGradientBands(boxPoints, shape.Transform, frame, context);
+        }
+
         try
         {
             stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, pathStrokeStyle, pathStrokeShape, "path");
@@ -90,11 +105,12 @@ internal static class SvgOrthogonalShapeParser
             stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, pathStrokeShape, stroke.Value.Color, pathStrokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
             if (paintPathOutline || paintPathRadial)
             {
+                SvgRectangle pathBox = ResolveBoundingBoxOutlineBox();
                 using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 foreach (SvgGeometry existing in stroked.Geometries)
                 {
-                    if (paintPathOutline) repainted.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, pathGradient, default, pathStrokeShape.Presentation.Opacity, budget));
-                    else repainted.Add(SvgRadialPolygon.RepaintOutline(existing.Polygon, pathCircle, default, pathStrokeShape.Presentation.Opacity, budget));
+                    if (paintPathOutline) repainted.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, pathGradient, pathBox, pathStrokeShape.Presentation.Opacity, budget));
+                    else repainted.Add(SvgRadialPolygon.RepaintOutline(existing.Polygon, pathCircle, pathBox, pathStrokeShape.Presentation.Opacity, budget));
                 }
                 stroked.Dispose();
                 stroked = new SvgParsedGeometry(repainted.Detach(), stroked.ElementCount);
