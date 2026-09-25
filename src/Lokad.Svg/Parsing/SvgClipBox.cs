@@ -7,6 +7,9 @@ internal readonly record struct SvgClipBox(double X, double Y, double Width, dou
 
     internal double Bottom => Y + Height;
 
+    /// <summary>Gets the finite passthrough box that clips nothing inside deferred scopes.</summary>
+    internal static SvgClipBox Unbounded { get; } = new(-1e18, -1e18, 2e18, 2e18);
+
     /// <summary>Intersects two clip boxes, normalizing empty results to zero area.</summary>
     internal SvgClipBox Intersect(SvgClipBox other)
     {

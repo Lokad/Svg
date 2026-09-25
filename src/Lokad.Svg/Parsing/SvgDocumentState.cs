@@ -34,6 +34,7 @@ internal sealed class SvgDocumentState : IDisposable
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLeafClips = new BudgetedParserList<PendingLeafClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        PendingGroupClips = new BudgetedParserList<PendingGroupClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopeSnapshots = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }
@@ -84,9 +85,13 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<PendingLeafClip> PendingLeafClips { get; }
 
+    internal BudgetedParserList<PendingGroupClip> PendingGroupClips { get; }
+
     internal int GeometryElementCount { get; set; }
 
     internal bool DeferringLeafClip { get; set; }
+
+    internal int ScaledViewportPushes { get; set; }
 
     internal int NodeCount { get; set; }
 
@@ -162,6 +167,7 @@ internal sealed class SvgDocumentState : IDisposable
     {
         PendingUses.Dispose();
         PendingLeafClips.Dispose();
+        PendingGroupClips.Dispose();
         Definitions.Dispose();
         Clips.Dispose();
         ObjectClips.Dispose();

@@ -822,7 +822,23 @@ internal static class SvgReferenceResolver
             if (pendingUse.MaskReference is not null && mask is null) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
             SvgGeometry[] applied = ApplyMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference, state);
             if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
-            commandShift += scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = pendingUse.Slot.CommandIndex + commandShift }, applied);
+            int adjustedCommand = pendingUse.Slot.CommandIndex + commandShift;
+            int insertedCommands = scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = adjustedCommand }, applied);
+            commandShift += insertedCommands;
+            ShiftPendingGroupRanges(state, adjustedCommand + 1, insertedCommands, workCounter, cancellationToken);
+        }
+
+        static void ShiftPendingGroupRanges(SvgDocumentState state, int insertPosition, int insertedCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            if (insertedCount == 0) return;
+            for (int groupIndex = 0; groupIndex < state.PendingGroupClips.Count; groupIndex++)
+            {
+                workCounter.Consume(cancellationToken);
+                PendingGroupClip group = state.PendingGroupClips[groupIndex];
+                int first = group.FirstCommandIndex > insertPosition ? group.FirstCommandIndex + insertedCount : group.FirstCommandIndex;
+                int end = group.EndCommandIndex >= insertPosition ? group.EndCommandIndex + insertedCount : group.EndCommandIndex;
+                state.PendingGroupClips[groupIndex] = group with { FirstCommandIndex = first, EndCommandIndex = end };
+            }
         }
 
         static byte ResolveDeferredMaskValue(string maskReference, SvgDocumentState document)

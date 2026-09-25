@@ -1011,6 +1011,10 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal SvgGeometry GeometryAt(int index) => _geometries[index];
 
+    internal int CommandCount => _commands.Count;
+
+    internal SvgDrawCommand CommandAt(int index) => _commands[index];
+
     /// <summary>Replaces one retained scene geometry with its clipped successor, keeping commands and releasing replaced storage.</summary>
     internal void ReplaceGeometry(int index, SvgGeometry geometry)
     {

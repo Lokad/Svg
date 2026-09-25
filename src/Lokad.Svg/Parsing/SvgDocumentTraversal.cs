@@ -107,6 +107,7 @@ internal static class SvgDocumentTraversal
                     }
                     SvgClipBox box = new(clipOriginX, clipOriginY, viewport.Width * clipScaleX, viewport.Height * clipScaleY);
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
+                    if (!reader.IsEmptyElement && (composedScaleX != 1 || composedScaleY != 1)) state.ScaledViewportPushes++;
                     if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, viewport.Width, viewport.Height, box, reader.Depth));
                     byte viewportOpacity = SvgColorParser.ParseOpacity(reader.GetAttribute("opacity"));
                     if (viewportOpacity != 255)
@@ -139,12 +140,31 @@ internal static class SvgDocumentTraversal
                         string? clipReference = reader.GetAttribute("clip-path");
                         if (clipReference is not null)
                         {
-                            if (!state.Clips.TryGetValue(SvgClipPathSyntax.ParseClipId(clipReference), out SvgClipBox clipBox)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
-                            SvgViewportFrame? clipParent = state.EffectiveFrame;
-                            SvgClipBox clip = clipParent is null ? clipBox : clipParent.Value.Clip.Intersect(clipBox);
-                            if (clipParent?.IsScaled ?? false) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
-                            state.Viewports.Add(new SvgViewportFrame(clipParent?.OffsetX ?? 0, clipParent?.OffsetY ?? 0, clipParent?.ScaleX ?? 1, clipParent?.ScaleY ?? 1, clipParent?.ViewportWidth, clipParent?.ViewportHeight, clip, reader.Depth));
-                            state.ClipDepths.Add(reader.Depth);
+                            string groupClipId = SvgClipPathSyntax.ParseClipId(clipReference);
+                            if (state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox))
+                            {
+                                SvgViewportFrame? clipParent = state.EffectiveFrame;
+                                SvgClipBox clip = clipParent is null ? clipBox : clipParent.Value.Clip.Intersect(clipBox);
+                                if (clipParent?.IsScaled ?? false) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
+                                state.Viewports.Add(new SvgViewportFrame(clipParent?.OffsetX ?? 0, clipParent?.OffsetY ?? 0, clipParent?.ScaleX ?? 1, clipParent?.ScaleY ?? 1, clipParent?.ViewportWidth, clipParent?.ViewportHeight, clip, reader.Depth));
+                                state.ClipDepths.Add(reader.Depth);
+                            }
+                            else if (state.ObjectClips.TryGetValue(groupClipId, out _))
+                            {
+                                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
+                            }
+                            else if (parsedGroup.Scope.HasMaskScope)
+                            {
+                                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Forward clip-path definitions on masked groups are not implemented.");
+                            }
+                            else
+                            {
+                                SvgViewportFrame? groupParent = state.EffectiveFrame;
+                                state.PendingGroupClips.Add(new PendingGroupClip(state.Strings.Copy(groupClipId), groupParent, state.Scene.CommandCount, -1, reader.Depth, state.ScaledViewportPushes, -1));
+                                SvgClipBox passthrough = groupParent?.Clip ?? SvgClipBox.Unbounded;
+                                state.Viewports.Add(new SvgViewportFrame(groupParent?.OffsetX ?? 0, groupParent?.OffsetY ?? 0, groupParent?.ScaleX ?? 1, groupParent?.ScaleY ?? 1, groupParent?.ViewportWidth, groupParent?.ViewportHeight, passthrough, reader.Depth));
+                                state.ClipDepths.Add(reader.Depth);
+                            }
                         }
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
                         if (parsedGroup.Scope.IsolatesOpacity)
@@ -223,6 +243,16 @@ internal static class SvgDocumentTraversal
                     state.Groups.RemoveLast();
                     if (group.HasMaskScope) state.MaskScopes.RemoveLast();
                     if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;
+                    for (int pendingGroupIndex = state.PendingGroupClips.Count - 1; pendingGroupIndex >= 0; pendingGroupIndex--)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        PendingGroupClip pendingGroup = state.PendingGroupClips[pendingGroupIndex];
+                        if (pendingGroup.Depth == reader.Depth && pendingGroup.EndCommandIndex < 0)
+                        {
+                            state.PendingGroupClips[pendingGroupIndex] = pendingGroup with { EndCommandIndex = state.Scene.CommandCount, ScaledPushesAtClose = state.ScaledViewportPushes };
+                            break;
+                        }
+                    }
                     if (group.IsolatesOpacity)
                     {
                         state.Scene.EndOpacityScope();
@@ -233,6 +263,7 @@ internal static class SvgDocumentTraversal
                 {
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
+                    SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);
                     if (root.Opacity != 255) state.Scene.EndOpacityScope();
                     SvgSceneStorage sceneStorage = state.Scene.Build();
                     try

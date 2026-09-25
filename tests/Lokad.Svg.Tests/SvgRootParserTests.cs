@@ -3163,11 +3163,70 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_forward_clip_paths_on_groups()
+    public void Clips_forward_clip_paths_on_groups()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#later)'><rect width='16' height='16' fill='red'/></g><defs><clipPath id='later'><rect x='4' y='4' width='8' height='8'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#later)'><rect width='16' height='16' fill='red'/></g><rect x='0' y='0' width='2' height='2' fill='blue'/><defs><clipPath id='later'><rect x='4' y='4' width='8' height='8'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[0].Rectangle);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(0, 0, 255, 255), true, null), root.Geometries[1].Rectangle);
+    }
+
+    [Fact]
+    public void Clips_forward_clip_paths_on_nested_groups()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#later)'><g><rect width='16' height='16' fill='red'/></g></g><defs><clipPath id='later'><rect x='4' y='4' width='8' height='8'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Rejects_never_defined_clip_paths_on_groups()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#missing)'><rect width='16' height='16' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+    [Fact]
+    public void Rejects_forward_bounding_box_clips_on_groups()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#later)'><rect width='16' height='16' fill='red'/></g><defs><clipPath id='later' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_forward_clips_on_masked_groups()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='16' height='16' fill='#ffffff'/></mask></defs><g mask='url(#fade)' clip-path='url(#later)'><rect width='16' height='16' fill='red'/></g><defs><clipPath id='later'><rect x='4' y='4' width='8' height='8'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_forward_clips_on_groups_in_scaled_viewports()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><svg x='0' y='0' width='16' height='16' viewBox='0 0 8 8'><g clip-path='url(#later)'><rect width='8' height='8' fill='red'/></g></svg><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+    [Fact]
+    public void Rejects_forward_clips_on_groups_containing_scaled_viewports()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g clip-path='url(#later)'><svg x='0' y='0' width='16' height='16' viewBox='0 0 8 8'><rect width='8' height='8' fill='red'/></svg></g><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Clips_forward_clip_paths_on_groups_with_use_instances()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#c)'><use href='#p'/></g><rect x='0' y='0' width='2' height='2' fill='blue'/><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(3, root.Geometries.Length);
+        Assert.Equal(new SvgRectangle(2, 2, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[0].Rectangle);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(0, 0, 255, 255), true, null), root.Geometries[1].Rectangle);
+        Assert.Equal(new SvgRectangle(2, 4, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[2].Rectangle);
     }
 
     [Fact]
