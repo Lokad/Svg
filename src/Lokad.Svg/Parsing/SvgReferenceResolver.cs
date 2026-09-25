@@ -43,6 +43,7 @@ internal static class SvgReferenceResolver
                 SvgGeometryKind.OrthogonalBand => SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)),
                 SvgGeometryKind.AxisAlignedLine => ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame),
                 SvgGeometryKind.PolygonFill => ApplyPolygon(sources[index].Polygon, reference, frame, state),
+                SvgGeometryKind.GradientPolygon => ApplyGradientPolygon(sources[index].GradientPolygon, reference, frame, state),
                 SvgGeometryKind.GradientFill => LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame),
                 SvgGeometryKind.RadialGradient => LowerEmbeddedInstanceRadialFill(sources[index].Radial, reference, frame),
                 SvgGeometryKind.PatternFill => LowerEmbeddedInstancePatternFill(sources[index].Pattern, reference, frame),
@@ -143,6 +144,34 @@ internal static class SvgReferenceResolver
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         SvgColor color = new(polygon.Color.Red, polygon.Color.Green, polygon.Color.Blue, MultiplyAlpha(polygon.Color.Alpha, reference.Opacity));
         return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, state.Budget));
+    }
+
+    private static SvgGeometry ApplyGradientPolygon(SvgGradientPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
+        SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
+        for (int index = 0; index < mapped.Length; index++)
+        {
+            SvgDevicePoint placed = instanceMap.Apply(outline.Points[index].X + reference.X, outline.Points[index].Y + reference.Y);
+            if (frame is not null)
+            {
+                double shiftedX = placed.X * frame.Value.ScaleX + frame.Value.OffsetX;
+                double shiftedY = placed.Y * frame.Value.ScaleY + frame.Value.OffsetY;
+                if (!double.IsFinite(shiftedX) || !double.IsFinite(shiftedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+                placed = new SvgDevicePoint(shiftedX, shiftedY);
+            }
+            mapped[index] = placed;
+        }
+        SvgLinearGradient vector = outline.Gradient;
+        if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 + reference.X, Y1 = vector.Y1 + reference.Y, X2 = vector.X2 + reference.X, Y2 = vector.Y2 + reference.Y };
+        SvgRectangle box = InstanceBox(outline.Box, reference, frame);
+        vector = SvgGradientSyntax.MapUserSpaceVector(reference.Transform, vector, frame);
+        vector = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, vector);
+        SvgClipBox? clip = outline.Clip;
+        if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
+        byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
+        return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, outline.ContourEnds, outline.Signs, vector, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, state.Budget));
     }
 
     private static SvgGeometry ApplySymbolInstance(SvgGeometry geometry, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
