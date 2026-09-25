@@ -93,7 +93,7 @@ public sealed class SvgStrokeFillTests
 
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-linejoin='bevel'/></svg>")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-miterlimit='0.5'/></svg>")]
     public void Non_admitted_stroke_styles_stay_unsupported(string svg)
     {
@@ -606,6 +606,15 @@ public sealed class SvgStrokeFillTests
 
         Assert.Equal(255, Pixel(pixels, 8, 4, 0).Alpha);
         Assert.Equal(0, Pixel(pixels, 8, 7, 7).Alpha);
+    }
+
+    [Fact]
+    public void Single_stop_outline_matches_solid_outline()
+    {
+        byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0.3' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(solid, gradient);
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)

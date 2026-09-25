@@ -382,24 +382,26 @@ internal static class SvgGradientSyntax
             bands[bandIndex] = SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, bands[bandIndex].Rectangle, opacity, null));
         }
         return solid;
-        static SvgRectangle BoxFromGradientBands(BudgetedParserList<SvgPoint> points, AxisTransform transform, SvgViewportFrame? frame, SvgPaintableElementContext context)
+    }
+
+    /// <summary>Computes the device paint box from retained contour points for bounding-box evaluation.</summary>
+    internal static SvgRectangle BoxFromGradientBands(BudgetedParserList<SvgPoint> points, AxisTransform transform, SvgViewportFrame? frame, SvgPaintableElementContext context)
+    {
+        int minimumX = points[0].X;
+        int minimumY = points[0].Y;
+        int maximumX = points[0].X;
+        int maximumY = points[0].Y;
+        for (int pointIndex = 1; pointIndex < points.Count; pointIndex++)
         {
-            int minimumX = points[0].X;
-            int minimumY = points[0].Y;
-            int maximumX = points[0].X;
-            int maximumY = points[0].Y;
-            for (int pointIndex = 1; pointIndex < points.Count; pointIndex++)
-            {
-                if ((pointIndex & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
-                SvgPoint point = points[pointIndex];
-                if (point.X < minimumX) minimumX = point.X;
-                if (point.Y < minimumY) minimumY = point.Y;
-                if (point.X > maximumX) maximumX = point.X;
-                if (point.Y > maximumY) maximumY = point.Y;
-            }
-            SvgRectangle box = transform.Apply(new SvgRectangle(minimumX, minimumY, (double)maximumX - minimumX, (double)maximumY - minimumY, default, true, null));
-            return frame is null ? box : frame.Value.Shift(box);
+            if ((pointIndex & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
+            SvgPoint point = points[pointIndex];
+            if (point.X < minimumX) minimumX = point.X;
+            if (point.Y < minimumY) minimumY = point.Y;
+            if (point.X > maximumX) maximumX = point.X;
+            if (point.Y > maximumY) maximumY = point.Y;
         }
+        SvgRectangle box = transform.Apply(new SvgRectangle(minimumX, minimumY, (double)maximumX - minimumX, (double)maximumY - minimumY, default, true, null));
+        return frame is null ? box : frame.Value.Shift(box);
     }
 
     internal static bool IsGradientStrokeUrl(string? stroke)

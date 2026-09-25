@@ -4735,6 +4735,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_bounding_box_gradient_strokes_on_polygons_as_outlines()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
+        Assert.True(root.Geometries[1].GradientPolygon.HasFill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), root.Geometries[1].GradientPolygon.Box);
+    }
+
+    [Fact]
     public void Applies_a_white_mask_to_a_circle_without_changing_content()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='32' height='32' fill='#ffffff'/></mask></defs><circle cx='16' cy='16' r='8' fill='#ff0000' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

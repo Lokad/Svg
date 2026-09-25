@@ -175,6 +175,7 @@ internal static class SvgOrthogonalShapeParser
         if (paintOutline)
         {
             outlineGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
+            outlineGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, outlineGradient);
             // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
             strokeStyle = style with { Stroke = "#ffffff" };
             strokeShape = context.ResolveShape(strokeStyle, reader, true);
@@ -187,18 +188,30 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, false, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             stroked = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", strokeShape.Transform, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, strokeShape.Presentation.IsPainted, frame, budget);
-            if (paintOutline) stroked = RepaintOutlinesAsGradient(stroked, outlineGradient, strokeShape.Presentation.Opacity, budget);
+            if (paintOutline) stroked = RepaintOutlinesAsGradient(stroked, outlineGradient, SvgGradientSyntax.BoxFromGradientBands(points, shape.Transform, frame, context), strokeShape.Presentation.Opacity, budget);
         }
         catch { filled.Dispose(); throw; }
         return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
 
-        SvgParsedGeometry RepaintOutlinesAsGradient(SvgParsedGeometry white, SvgLinearGradient paint, byte opacity, RenderBudget budget)
+        SvgParsedGeometry RepaintOutlinesAsGradient(SvgParsedGeometry white, SvgLinearGradient paint, SvgRectangle box, byte opacity, RenderBudget budget)
         {
+            if (paint.Stops.Length == 1 || (paint.X1 == paint.X2 && paint.Y1 == paint.Y2 && !paint.IsEmpty))
+            {
+                if (paint.Stops.Length > 1 && paint.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are implemented.");
+                using BudgetedParserList<SvgGeometry> solid = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                foreach (SvgGeometry existing in white.Geometries)
+                {
+                    SvgPolygonFill outline = existing.Polygon;
+                    solid.Add(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(outline.Points, outline.ContourEnds, outline.Signs, SvgPaintResolver.ApplyOpacity(paint.End, opacity), outline.HasFill, outline.IsEvenOdd, outline.Mapping, outline.Clip, budget)));
+                }
+                white.Dispose();
+                return new SvgParsedGeometry(solid.Detach(), white.ElementCount);
+            }
             using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             foreach (SvgGeometry existing in white.Geometries)
             {
                 SvgPolygonFill solid = existing.Polygon;
-                repainted.Add(SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, default, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget)));
+                repainted.Add(SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget)));
             }
             white.Dispose();
             return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
@@ -226,7 +239,7 @@ internal static class SvgOrthogonalShapeParser
         }
     }
 
-    /// <summary>Resolves a userSpaceOnUse linear-gradient stroke for outline repainting, leaving all other strokes to the solid path.</summary>
+    /// <summary>Resolves a linear-gradient stroke for outline repainting, leaving all other strokes to the solid path.</summary>
     private static bool TryResolveOutlineGradient(SvgComputedStyle style, SvgDocumentState state, out SvgLinearGradient gradient)
     {
         gradient = default;
@@ -234,8 +247,7 @@ internal static class SvgOrthogonalShapeParser
         return strokePaint is not null
             && SvgGradientSyntax.IsGradientStrokeUrl(strokePaint)
             && SvgLocalUrl.TryParseId(strokePaint, out string outlinePaintId)
-            && state.Gradients.TryGetValue(outlinePaintId, out gradient)
-            && gradient.IsUserSpace;
+            && state.Gradients.TryGetValue(outlinePaintId, out gradient);
     }
 
     internal static bool HasDiagonalContour(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds)
