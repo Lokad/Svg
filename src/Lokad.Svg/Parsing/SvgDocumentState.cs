@@ -26,6 +26,7 @@ internal sealed class SvgDocumentState : IDisposable
         ObjectClips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Masks = new BudgetedParserDictionary<string, byte>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         MaskRegions = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
+        MaskFractionRegions = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         MaskContentBoxes = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Patterns = new BudgetedParserDictionary<string, SvgPatternTile>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
         Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
@@ -65,6 +66,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserDictionary<string, byte> Masks { get; }
 
     internal BudgetedParserDictionary<string, SvgClipBox> MaskRegions { get; }
+
+    internal BudgetedParserDictionary<string, SvgClipBox> MaskFractionRegions { get; }
 
     internal BudgetedParserDictionary<string, SvgClipBox> MaskContentBoxes { get; }
 
@@ -136,6 +139,8 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal SvgClipBox? MaskCustomRegion { get; set; }
 
+    internal SvgClipBox? MaskFractionRegion { get; set; }
+
     internal SvgClipBox? MaskContentBox { get; set; }
 
     internal string? ClipPathId { get; set; }
@@ -156,6 +161,7 @@ internal sealed class SvgDocumentState : IDisposable
         ObjectClips.Dispose();
         Masks.Dispose();
         MaskRegions.Dispose();
+        MaskFractionRegions.Dispose();
         MaskContentBoxes.Dispose();
         Patterns.Dispose();
         Gradients.Dispose();

@@ -198,6 +198,7 @@ internal static class SvgDocumentTraversal
                     state.MaskIsAlpha = false;
                     state.MaskValue = null;
                     state.MaskCustomRegion = null;
+                    state.MaskFractionRegion = null;
                 }
                 if (reader.Depth == state.ClipPathDepth)
                 {

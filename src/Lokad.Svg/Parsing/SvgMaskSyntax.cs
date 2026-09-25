@@ -1,4 +1,5 @@
 using System.Xml;
+using System.Globalization;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -29,6 +30,33 @@ internal static class SvgMaskSyntax
         double regionHeight = SvgGeometrySyntax.ParseRectangleCoordinate(height);
         if (regionWidth < 0 || regionHeight < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Mask region dimensions cannot be negative.");
         return new SvgClipBox(regionX, regionY, regionWidth, regionHeight);
+    }
+
+    /// <summary>Parses explicit objectBoundingBox mask region fractions with specification defaults, returning null unless bounding-box units carry explicit attributes.</summary>
+    internal static SvgClipBox? ParseMaskFractionRegion(XmlReader reader)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        string? units = reader.GetAttribute("maskUnits");
+        if (units is not null && !units.Equals("objectBoundingBox", StringComparison.Ordinal)) return null;
+        string? x = reader.GetAttribute("x");
+        string? y = reader.GetAttribute("y");
+        string? width = reader.GetAttribute("width");
+        string? height = reader.GetAttribute("height");
+        if (x is null && y is null && width is null && height is null) return null;
+        double regionX = x is null ? -0.1 : ParseMaskFraction(x);
+        double regionY = y is null ? -0.1 : ParseMaskFraction(y);
+        double regionWidth = width is null ? 1.2 : ParseMaskFraction(width);
+        double regionHeight = height is null ? 1.2 : ParseMaskFraction(height);
+        if (regionWidth < 0 || regionHeight < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Mask region dimensions cannot be negative.");
+        return new SvgClipBox(regionX, regionY, regionWidth, regionHeight);
+    }
+
+    private static double ParseMaskFraction(string value)
+    {
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Mask region values exceed the configured syntax limit.");
+        if (token.Length == 0 || !double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number mask region fractions are implemented.");
+        return result;
     }
     internal static bool ParseMaskType(string? value)
     {
@@ -150,7 +178,7 @@ internal static class SvgMaskSyntax
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(state);
         string? reference = reader.GetAttribute("mask");
-        return reference is not null && state.MaskRegions.TryGetValue(ParseMaskId(reference), out _);
+        return reference is not null && (state.MaskRegions.TryGetValue(ParseMaskId(reference), out _) || state.MaskFractionRegions.TryGetValue(ParseMaskId(reference), out _));
     }
 
     /// <summary>Resolves the explicit mask region or falls back to the default bounding-box region.</summary>
@@ -163,6 +191,13 @@ internal static class SvgMaskSyntax
         {
             if (state.EffectiveFrame is not null && !state.EffectiveFrame.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
             return custom;
+        }
+        if (reference is not null && state.MaskFractionRegions.TryGetValue(ParseMaskId(reference), out SvgClipBox fractions))
+        {
+            if (state.EffectiveFrame is not null && !state.EffectiveFrame.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
+            SvgClipBox resolved = new(fallback.X + fractions.X * fallback.Width, fallback.Y + fractions.Y * fallback.Height, fractions.Width * fallback.Width, fractions.Height * fallback.Height);
+            if (state.MaskContentBoxes.TryGetValue(ParseMaskId(reference), out SvgClipBox cover) && !cover.Contains(resolved.X, resolved.Y, resolved.X + resolved.Width, resolved.Y + resolved.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
+            return resolved;
         }
         return MaskRegion(fallback);
     }

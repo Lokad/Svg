@@ -795,6 +795,15 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, grouped);
     }
 
+    [Fact]
+    public void Bounding_box_mask_region_matches_userspace_region()
+    {
+        byte[] boxed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m' x='0.25' y='0.25' width='0.5' height='0.5'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>", out _, out _);
+        byte[] userSpace = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m' maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>", out _, out _);
+
+        Assert.Equal(userSpace, boxed);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
