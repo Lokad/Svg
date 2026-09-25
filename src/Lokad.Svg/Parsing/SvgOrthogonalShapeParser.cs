@@ -102,41 +102,7 @@ internal static class SvgOrthogonalShapeParser
         }
 
         SvgRectangle BoxFromFilledOutlineBounds()
-        {
-            double left = double.PositiveInfinity;
-            double top = double.PositiveInfinity;
-            double right = double.NegativeInfinity;
-            double bottom = double.NegativeInfinity;
-            foreach (SvgGeometry existing in filled.Geometries)
-            {
-                switch (existing.Kind)
-                {
-                    case SvgGeometryKind.Rectangle:
-                    case SvgGeometryKind.OrthogonalBand:
-                        left = Math.Min(left, existing.Rectangle.X);
-                        top = Math.Min(top, existing.Rectangle.Y);
-                        right = Math.Max(right, existing.Rectangle.X + existing.Rectangle.Width);
-                        bottom = Math.Max(bottom, existing.Rectangle.Y + existing.Rectangle.Height);
-                        break;
-                    case SvgGeometryKind.PolygonFill:
-                        int vertexIndex = 0;
-                        foreach (SvgDevicePoint vertex in existing.Polygon.Points)
-                        {
-                            if ((vertexIndex & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
-                            vertexIndex++;
-                            left = Math.Min(left, vertex.X);
-                            top = Math.Min(top, vertex.Y);
-                            right = Math.Max(right, vertex.X);
-                            bottom = Math.Max(bottom, vertex.Y);
-                        }
-                        break;
-                    default:
-                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box gradient strokes on this path fill are not implemented.");
-                }
-            }
-            if (!(left <= right) || !(top <= bottom)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box gradient strokes on empty path fills are not implemented.");
-            return new SvgRectangle(left, top, right - left, bottom - top, default, true, null);
-        }
+            => BoxFromFilledGeometryBounds(filled, context.CancellationToken);
 
         try
         {
@@ -229,11 +195,41 @@ internal static class SvgOrthogonalShapeParser
             filled = fractionalLowering.LowerFractionalPointList(fractionalPoints, SvgPolygonMapping.FiniteEdges, shape, frame, budget) with { ElementCount = fractionalPoints.Count + 1 };
             SvgStrokeStyleSyntax.SvgAdmittedStroke? fractionalStroke;
             SvgParsedGeometry fractionalStroked;
+            SvgLinearGradient fractionalGradient = default;
+            SvgRadialGradient fractionalCircle = default;
+            SvgComputedStyle fractionalStrokeStyle = style;
+            SvgResolvedPaintableElement fractionalStrokeShape = shape;
+            if (paintOutline || paintRadialOutline || paintPatternOutline)
+            {
+                if (paintOutline)
+                {
+                    fractionalGradient = SvgGradientSyntax.MapUserSpaceVector(shape.Transform, outlineCandidate, frame);
+                    fractionalGradient = SvgGradientSyntax.MirrorBoundingBoxVector(shape.Transform, fractionalGradient);
+                }
+                else if (paintRadialOutline) fractionalCircle = SvgGradientSyntax.MapUserSpaceRadial(shape.Transform, outlineRadialCandidate, frame);
+                // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
+                fractionalStrokeStyle = style with { Stroke = "#ffffff" };
+                fractionalStrokeShape = context.ResolveShape(fractionalStrokeStyle, reader, true);
+            }
             try
             {
-                fractionalStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, shape, elementName);
+                fractionalStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, fractionalStrokeStyle, fractionalStrokeShape, elementName);
                 if (fractionalStroke is null) return filled;
-                fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", shape, fractionalStroke.Value.Color, shape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, fractionalStroke.Value.Cap, fractionalStroke.Value.Join, fractionalStroke.Value.DashPattern, fractionalStroke.Value.DashOffset, fractionalStroke.Value.PathLength, fractionalStroke.Value.NonScalingStroke, frame, budget);
+                fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", fractionalStrokeShape, fractionalStroke.Value.Color, fractionalStrokeShape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, fractionalStroke.Value.Cap, fractionalStroke.Value.Join, fractionalStroke.Value.DashPattern, fractionalStroke.Value.DashOffset, fractionalStroke.Value.PathLength, fractionalStroke.Value.NonScalingStroke, frame, budget);
+                if (paintOutline || paintRadialOutline || paintPatternOutline)
+                {
+                    bool needsFractionalBox = (paintOutline && !outlineCandidate.IsUserSpace) || (paintRadialOutline && !outlineRadialCandidate.IsUserSpace);
+                    SvgRectangle fractionalBox = needsFractionalBox ? BoxFromFilledGeometryBounds(filled, context.CancellationToken) : default;
+                    using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                    foreach (SvgGeometry existing in fractionalStroked.Geometries)
+                    {
+                        if (paintOutline) repainted.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, fractionalGradient, fractionalBox, fractionalStrokeShape.Presentation.Opacity, budget));
+                        else if (paintRadialOutline) repainted.Add(SvgRadialPolygon.RepaintOutline(existing.Polygon, fractionalCircle, fractionalBox, fractionalStrokeShape.Presentation.Opacity, budget));
+                        else repainted.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, fractionalStrokeShape.Presentation.Opacity, budget));
+                    }
+                    fractionalStroked.Dispose();
+                    fractionalStroked = new SvgParsedGeometry(repainted.Detach(), fractionalStroked.ElementCount);
+                }
             }
             catch { filled.Dispose(); throw; }
             return ConcatParsedGeometries(filled, fractionalStroked, budget, context.WorkCounter, context.CancellationToken);
@@ -345,6 +341,44 @@ internal static class SvgOrthogonalShapeParser
             && SvgGradientSyntax.IsGradientStrokeUrl(strokePaint)
             && SvgLocalUrl.TryParseId(strokePaint, out string outlinePaintId)
             && state.RadialGradients.TryGetValue(outlinePaintId, out circle);
+    }
+
+    /// <summary>Reads output-space fill-geometry bounds for bounding-box outline paints, sharing one helper across path and fractional lowerings.</summary>
+    private static SvgRectangle BoxFromFilledGeometryBounds(SvgParsedGeometry filled, CancellationToken cancellationToken)
+    {
+        double left = double.PositiveInfinity;
+        double top = double.PositiveInfinity;
+        double right = double.NegativeInfinity;
+        double bottom = double.NegativeInfinity;
+        foreach (SvgGeometry existing in filled.Geometries)
+        {
+            switch (existing.Kind)
+            {
+                case SvgGeometryKind.Rectangle:
+                case SvgGeometryKind.OrthogonalBand:
+                    left = Math.Min(left, existing.Rectangle.X);
+                    top = Math.Min(top, existing.Rectangle.Y);
+                    right = Math.Max(right, existing.Rectangle.X + existing.Rectangle.Width);
+                    bottom = Math.Max(bottom, existing.Rectangle.Y + existing.Rectangle.Height);
+                    break;
+                case SvgGeometryKind.PolygonFill:
+                    int vertexIndex = 0;
+                    foreach (SvgDevicePoint vertex in existing.Polygon.Points)
+                    {
+                        if ((vertexIndex & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        vertexIndex++;
+                        left = Math.Min(left, vertex.X);
+                        top = Math.Min(top, vertex.Y);
+                        right = Math.Max(right, vertex.X);
+                        bottom = Math.Max(bottom, vertex.Y);
+                    }
+                    break;
+                default:
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box gradient strokes on this fill are not implemented.");
+            }
+        }
+        if (!(left <= right) || !(top <= bottom)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box gradient strokes on empty fills are not implemented.");
+        return new SvgRectangle(left, top, right - left, bottom - top, default, true, null);
     }
 
     /// <summary>Resolves a pattern-tile stroke for outline repainting, leaving all other strokes to the solid path.</summary>
