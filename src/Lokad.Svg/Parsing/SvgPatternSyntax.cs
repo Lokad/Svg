@@ -89,6 +89,13 @@ internal static class SvgPatternSyntax
         return solid;
     }
 
+    /// <summary>Lowers one pattern fill region shared by fill-only and fill-plus-stroke lowerings.</summary>
+    internal static SvgGeometry LowerPatternFillGeometry(SvgPatternTile tile, SvgRectangle fill, bool fillHasFill, byte fillOpacity, SvgStroke? stroke)
+    {
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromOrthogonalBand(new SvgRectangle(fill.X, fill.Y, fill.Width, fill.Height, SvgColor.Transparent, false, null));
+        return SvgGeometry.FromPatternFill(new SvgPatternGeometry(tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill with { HasFill = fillHasFill }, fillOpacity, stroke));
+    }
+
     internal static SvgParsedGeometry LowerPatternRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
     {
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Fill), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
@@ -146,8 +153,7 @@ internal static class SvgPatternSyntax
         }
         bool combined = hasLinearStroke || hasRadialStroke;
         using BudgetedParserList<SvgGeometry> lowered = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) lowered.Add(SvgGeometry.FromOrthogonalBand(new SvgRectangle(placement.X, placement.Y, placement.Width, placement.Height, SvgColor.Transparent, false, null)));
-        else lowered.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, placement with { HasFill = painted }, fillOpacity, combined ? null : (painted ? stroke : null))));
+        lowered.Add(LowerPatternFillGeometry(tile, placement, painted, fillOpacity, combined ? null : (painted ? stroke : null)));
         if (combined)
         {
             SvgRectangle area = placement with { HasFill = false };
@@ -214,8 +220,10 @@ internal static class SvgPatternSyntax
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgLinearGradient fillGradient = default;
         SvgRadialGradient fillCircle = default;
+        SvgPatternTile fillPatternTile = default;
         bool hasLinearFill = false;
         bool hasRadialFill = false;
+        bool hasPatternFill = false;
         if (SvgGradientSyntax.IsGradientFill(style.Fill))
         {
             string fillId = SvgGradientSyntax.ParseGradientId(style.Fill);
@@ -230,10 +238,14 @@ internal static class SvgPatternSyntax
                 fillCircle = SvgGradientSyntax.MapUserSpaceRadial(transform, resolvedCircle, frame);
                 hasRadialFill = true;
             }
-            else if (state.Patterns.TryGetValue(fillId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills with pattern strokes are not implemented.");
+            else if (state.Patterns.TryGetValue(fillId, out SvgPatternTile fillTile))
+            {
+                fillPatternTile = fillTile;
+                hasPatternFill = true;
+            }
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         }
-        bool combined = hasLinearFill || hasRadialFill;
+        bool combined = hasLinearFill || hasRadialFill || hasPatternFill;
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool painted;
         byte opacity;
@@ -284,6 +296,7 @@ internal static class SvgPatternSyntax
         using BudgetedParserList<SvgGeometry> stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         if (hasLinearFill) stroked.Add(SvgGradientSyntax.LowerLinearFillGeometry(fillGradient, box, fill, fillHasFill, fillOpacity));
         else if (hasRadialFill) stroked.Add(SvgGradientSyntax.LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity));
+        else if (hasPatternFill) stroked.Add(LowerPatternFillGeometry(fillPatternTile, fill, fillHasFill, fillOpacity, null));
         else stroked.Add(SvgGeometry.FromRectangle(fill));
         stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, top with { HasFill = paintBands }, opacity, null)));
         stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bottom with { HasFill = paintBands }, opacity, null)));

@@ -547,6 +547,15 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, gradient);
     }
 
+    [Fact]
+    public void Pattern_fill_with_pattern_stroke_matches_solid_pair()
+    {
+        byte[] pattern = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='f' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='#ff0000'/></pattern><pattern id='s' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='#0000ff'/></pattern></defs><rect x='1' y='1' width='6' height='6' fill='url(#f)' stroke='url(#s)' stroke-width='2'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='f' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='#ff0000'/></pattern><pattern id='s' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='#0000ff'/></pattern></defs><rect x='1' y='1' width='6' height='6' fill='url(#f)' stroke='#0000ff' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(solid, pattern);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
