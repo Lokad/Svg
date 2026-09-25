@@ -187,7 +187,7 @@ public static class SvgConverter
             foreach (SvgGeometry geometry in root.Geometries)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                if (geometry.Kind == SvgGeometryKind.PatternFill) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
+                if (geometry.Kind == SvgGeometryKind.PatternFill && !TryMapPatternTile(geometry.Pattern, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
                 if (horizontalScale != verticalScale && geometry.Kind == SvgGeometryKind.PolygonFill && geometry.Polygon.Mapping == SvgPolygonMapping.FlattenedCurves) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon curve fills under non-uniform viewBox or output scaling are not implemented.");
             }
         }
@@ -357,16 +357,39 @@ public static class SvgConverter
             }
         }
 
+        bool TryMapPatternTile(SvgPatternGeometry pattern, out SvgPatternGeometry? mapped)
+        {
+            mapped = null;
+            if (horizontalScale == 1 && verticalScale == 1 && horizontalOffset == 0 && verticalOffset == 0) return true;
+            if (pattern.Content.Stroke is not null) return false;
+            double originX = pattern.OriginX * horizontalScale + horizontalOffset;
+            double originY = pattern.OriginY * verticalScale + verticalOffset;
+            double tileWidth = pattern.TileWidth * horizontalScale;
+            double tileHeight = pattern.TileHeight * verticalScale;
+            double contentX = pattern.Content.X * horizontalScale + horizontalOffset;
+            double contentY = pattern.Content.Y * verticalScale + verticalOffset;
+            double contentWidth = pattern.Content.Width * horizontalScale;
+            double contentHeight = pattern.Content.Height * verticalScale;
+            if (!IsDeviceInteger(originX) || !IsDeviceInteger(originY) || !IsDeviceInteger(tileWidth) || !IsDeviceInteger(tileHeight) || !IsDeviceInteger(contentX) || !IsDeviceInteger(contentY) || !IsDeviceInteger(contentWidth) || !IsDeviceInteger(contentHeight)) return false;
+            mapped = new SvgPatternGeometry(new SvgRectangle(contentX, contentY, contentWidth, contentHeight, pattern.Content.Color, pattern.Content.HasFill, null), (int)originX, (int)originY, (int)tileWidth, (int)tileHeight, pattern.Fill, pattern.Opacity, pattern.Stroke);
+            return true;
+
+            static bool IsDeviceInteger(double value)
+                => double.IsFinite(value) && value == Math.Truncate(value) && value >= int.MinValue && value <= int.MaxValue;
+        }
+
         void RasterizePatternFill(SvgPatternGeometry pattern, byte[] destination)
         {
             if (!pattern.Fill.HasFill && pattern.Stroke is null) return;
-            long tilePixels = (long)pattern.TileWidth * pattern.TileHeight;
+            if (!TryMapPatternTile(pattern, out SvgPatternGeometry? mapped)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
+            SvgPatternGeometry source = mapped ?? pattern;
+            long tilePixels = (long)source.TileWidth * source.TileHeight;
             if (tilePixels <= 0 || tilePixels > options.Limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile surface exceeds the configured pixel limit.");
             using RenderBudget.BudgetReservation tileReservation = budget.Reserve(checked(tilePixels * 4), SvgMemoryCategory.Surface);
             byte[] tile = new byte[(int)tilePixels * 4];
-            BlitPatternTile(pattern, tile);
-            if (pattern.Fill.HasFill) StampPatternFill(pattern, tile, destination);
-            if (pattern.Stroke is SvgStroke stroke) RasterizePatternStroke(pattern, stroke, destination);
+            BlitPatternTile(source, tile);
+            if (source.Fill.HasFill) StampPatternFill(source, tile, destination);
+            if (source.Stroke is SvgStroke stroke) RasterizePatternStroke(source, stroke, destination);
         }
 
         void BlitPatternTile(SvgPatternGeometry pattern, byte[] tile)

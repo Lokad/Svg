@@ -1297,14 +1297,47 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_pattern_fills_under_viewBox_scaling()
+    public void Admits_integer_mapped_pattern_tiles_under_viewBox_scaling()
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 32 32'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='8' fill='#ff0000'/></pattern></defs><rect x='0' y='0' width='32' height='32' fill='url(#p)'/></svg>"u8.ToArray();
+        byte[] png = Lokad.Svg.SvgConverter.ConvertToPng(svg, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        Assert.Equal(64, System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(16, 4)));
+        Assert.Equal(64, System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(png.AsSpan(20, 4)));
+    }
+
+    [Fact]
+    public void Rejects_fractional_pattern_tiles_under_viewBox_scaling()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 16 16'><defs><pattern id='p' x='1' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='#ff0000'/></pattern></defs><rect x='0' y='0' width='16' height='16' fill='url(#p)'/></svg>"u8.ToArray();
 
         SvgException exception = Assert.Throws<SvgException>(() => Lokad.Svg.SvgConverter.ConvertToPng(svg, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+    [Fact]
+    public void Rejects_pattern_content_strokes_under_viewBox_scaling()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 4 4'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect x='2' y='2' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></pattern></defs><rect x='0' y='0' width='4' height='4' fill='url(#p)'/></svg>"u8.ToArray();
+
+        SvgException exception = Assert.Throws<SvgException>(() => Lokad.Svg.SvgConverter.ConvertToPng(svg, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Scaled_pattern_output_scale_matches_doubled_rendering()
+    {
+        byte[] small = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' ><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><rect x='0' y='0' width='8' height='8' fill='url(#p)'/></svg>"u8.ToArray();
+        byte[] big = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><rect x='0' y='0' width='16' height='16' fill='url(#p)'/></svg>"u8.ToArray();
+
+        Lokad.Svg.SvgRenderOptions scaled = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default);
+        byte[] doubled = Lokad.Svg.SvgConverter.ConvertToPng(small, scaled, CancellationToken.None).ToArray();
+        byte[] reference = Lokad.Svg.SvgConverter.ConvertToPng(big, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None).ToArray();
+
+        Assert.Equal(reference, doubled);
+    }
+
     [Fact]
     public void Preserves_the_full_extent_of_extreme_axis_aligned_line_coordinates()
     {

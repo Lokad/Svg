@@ -178,7 +178,7 @@ viewBox, gradientTransform, patternTransform, referencing transforms and use.
 Test direct versus referenced geometry, diagonal ramps, anisotropic scale,
 translation, reflection, nonzero viewBox origin, output scale and clipping.
 Prefer a bounded explicit rejection until fixed over a silently wrong admitted
-combination. Do not solve this with per-fixture offsets or another shape kind. Status 2026-09-24: R28 cases retained as rejects-pinned fixtures (original-logo-pattern-viewbox-mark, original-logo-gradient-anisotropic-mark; three identical pinned-Chrome captures each, candidate gates from b1c968f); exact paint maps remain S13 work.
+combination. Do not solve this with per-fixture offsets or another shape kind. Status 2026-09-24: R28 cases retained as rejects-pinned fixtures (original-logo-pattern-viewbox-mark, original-logo-gradient-anisotropic-mark; three identical pinned-Chrome captures each, candidate gates from b1c968f); exact paint maps remain S13 work. Status 2026-09-25: pattern tiles map through the root viewBox and output device transform with integer-grid gating (uniform, non-uniform and offset probes each renderer byte-exact against three identical pinned-Chrome captures; fractional tile maps and stroked tile content under scaling stay explicitly gated; 1 converted admission plus fractional, content-stroke and output-scale equivalence tests, 4 end-to-end tests); the R28 pattern-viewbox fixture promotes to an exact oracle entry while the gradient-anisotropic case remains S13 work.
 
 ### R29 / P0 — New paint/image paths bypass storage/work obligations
 
