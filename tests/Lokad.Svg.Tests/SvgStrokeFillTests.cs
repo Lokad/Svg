@@ -502,6 +502,15 @@ public sealed class SvgStrokeFillTests
 
         Assert.Equal(solid, gradient);
     }
+    [Fact]
+    public void Degenerate_gradient_stroke_matches_end_stop_solid_stroke()
+    {
+        byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='1' y1='1' x2='1' y2='1'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='1' y='1' width='6' height='6' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(solid, gradient);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

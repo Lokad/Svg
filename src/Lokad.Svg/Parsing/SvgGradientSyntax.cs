@@ -439,7 +439,6 @@ internal static class SvgGradientSyntax
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceVector(transform, gradient, frame);
-        if (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate linear gradient strokes are not implemented.");
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.NamedColors);
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
@@ -469,6 +468,14 @@ internal static class SvgGradientSyntax
             right = frame.Value.Clip.ClipRectangle(frame.Value.Shift(right));
         }
         using BudgetedParserList<SvgGeometry> stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        if (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
+        {
+            if (gradient.Stops.Length > 1 && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are implemented.");
+            SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), strokeWidth);
+            using BudgetedParserList<SvgGeometry> solid = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            solid.Add(SvgGeometry.FromRectangle(fill with { Stroke = painted ? solidStroke : null }));
+            return new SvgParsedGeometry(solid.Detach(), 0);
+        }
         stroked.Add(SvgGeometry.FromGradientStroke(new SvgGradientStrokeGeometry(fill, top, bottom, left, right, gradient, box, opacity, painted)));
         return new SvgParsedGeometry(stroked.Detach(), 0);
     }
@@ -484,7 +491,6 @@ internal static class SvgGradientSyntax
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         AxisTransform transform = context.ResolveTransform(reader);
         circle = MapUserSpaceRadial(transform, circle, frame);
-        if (circle.Radius == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate radial gradient strokes are not implemented.");
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.NamedColors);
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
@@ -512,6 +518,14 @@ internal static class SvgGradientSyntax
             bottom = frame.Value.Clip.ClipRectangle(frame.Value.Shift(bottom));
             left = frame.Value.Clip.ClipRectangle(frame.Value.Shift(left));
             right = frame.Value.Clip.ClipRectangle(frame.Value.Shift(right));
+        }
+        if (circle.Radius == 0 && !circle.IsEmpty)
+        {
+            if (circle.Stops.Length > 1 && circle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");
+            SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(circle.End, opacity), strokeWidth);
+            using BudgetedParserList<SvgGeometry> solid = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            solid.Add(SvgGeometry.FromRectangle(fill with { Stroke = painted ? solidStroke : null }));
+            return new SvgParsedGeometry(solid.Detach(), 0);
         }
         bool paintBands = painted && !circle.IsEmpty;
         using BudgetedParserList<SvgGeometry> stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
