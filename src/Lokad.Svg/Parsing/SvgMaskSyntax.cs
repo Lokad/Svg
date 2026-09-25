@@ -192,24 +192,27 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.GradientFill => geometry.Gradient.Fill,
             SvgGeometryKind.RadialGradient => geometry.Radial.Fill,
             SvgGeometryKind.GradientStroke => geometry.GradientStroke.OuterBox(),
-            SvgGeometryKind.PolygonFill => PolygonBounds(geometry.Polygon),
+            SvgGeometryKind.PolygonFill => PolygonBounds(geometry.Polygon.Points, geometry.Polygon.Color, geometry.Polygon.HasFill),
+            SvgGeometryKind.GradientPolygon => PolygonBounds(geometry.GradientPolygon.Points, default, geometry.GradientPolygon.HasFill),
+            SvgGeometryKind.RadialPolygon => PolygonBounds(geometry.RadialPolygon.Points, default, geometry.RadialPolygon.HasFill),
+            SvgGeometryKind.PatternPolygon => PolygonBounds(geometry.PatternPolygon.Points, default, geometry.PatternPolygon.HasFill),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")
         };
 
-        static SvgRectangle PolygonBounds(SvgPolygonFill polygon)
+        static SvgRectangle PolygonBounds(SvgDevicePoint[] points, SvgColor color, bool hasFill)
         {
             double left = double.PositiveInfinity;
             double top = double.PositiveInfinity;
             double right = double.NegativeInfinity;
             double bottom = double.NegativeInfinity;
-            foreach (SvgDevicePoint vertex in polygon.Points)
+            foreach (SvgDevicePoint vertex in points)
             {
                 left = Math.Min(left, vertex.X);
                 top = Math.Min(top, vertex.Y);
                 right = Math.Max(right, vertex.X);
                 bottom = Math.Max(bottom, vertex.Y);
             }
-            return new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), polygon.Color, polygon.HasFill, null);
+            return new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), color, hasFill, null);
         }
     }
 
@@ -264,6 +267,9 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.RadialGradient => ApplyRadialMask(geometry.Radial, value, region),
             SvgGeometryKind.GradientStroke => ApplyGradientStrokeMask(geometry.GradientStroke, value, region),
             SvgGeometryKind.PolygonFill => SvgGeometry.FromPolygonFill(geometry.Polygon.Stamped(value, region)),
+            SvgGeometryKind.GradientPolygon => SvgGeometry.FromGradientPolygon(geometry.GradientPolygon.Stamped(value, region)),
+            SvgGeometryKind.RadialPolygon => SvgGeometry.FromRadialPolygon(geometry.RadialPolygon.Stamped(value, region)),
+            SvgGeometryKind.PatternPolygon => SvgGeometry.FromPatternPolygon(geometry.PatternPolygon.Stamped(value, region)),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")
         };
     }

@@ -500,6 +500,17 @@ internal sealed class SvgGradientPolygon : IDisposable
         return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
     }
 
+    /// <summary>Stamps one gradient polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
+    /// <remarks><para>Contour storage is shared with the source outline and the source reservation transfers to the result. The caller drops the source without disposing it; disposing the dropped source stays a safe no-op.</para></remarks>
+    internal SvgGradientPolygon Stamped(byte value, SvgClipBox region)
+    {
+        byte stamped = SvgReferenceResolver.MultiplyAlpha(Opacity, value);
+        SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
+        RenderBudget.BudgetReservation? reservation = _reservation;
+        _reservation = null;
+        return new SvgGradientPolygon(Points, ContourEnds, Signs, Gradient, Box, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
+    }
+
     public void Dispose()
     {
         _reservation?.Dispose();
@@ -565,6 +576,17 @@ internal sealed class SvgRadialPolygon : IDisposable
     {
         if (paint.Stops.Length == 1 || (paint.Radius == 0 && !paint.IsEmpty)) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, budget));
         return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
+    }
+
+    /// <summary>Stamps one radial polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
+    /// <remarks><para>Contour storage is shared with the source outline and the source reservation transfers to the result. The caller drops the source without disposing it; disposing the dropped source stays a safe no-op.</para></remarks>
+    internal SvgRadialPolygon Stamped(byte value, SvgClipBox region)
+    {
+        byte stamped = SvgReferenceResolver.MultiplyAlpha(Opacity, value);
+        SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
+        RenderBudget.BudgetReservation? reservation = _reservation;
+        _reservation = null;
+        return new SvgRadialPolygon(Points, ContourEnds, Signs, Gradient, Box, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
     }
 
     public void Dispose()
@@ -641,6 +663,17 @@ internal sealed class SvgPatternPolygon : IDisposable
     {
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, budget));
         return SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
+    }
+
+    /// <summary>Stamps one pattern polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
+    /// <remarks><para>Contour storage is shared with the source outline and the source reservation transfers to the result. The caller drops the source without disposing it; disposing the dropped source stays a safe no-op.</para></remarks>
+    internal SvgPatternPolygon Stamped(byte value, SvgClipBox region)
+    {
+        byte stamped = SvgReferenceResolver.MultiplyAlpha(Opacity, value);
+        SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
+        RenderBudget.BudgetReservation? reservation = _reservation;
+        _reservation = null;
+        return new SvgPatternPolygon(Points, ContourEnds, Signs, Content, OriginX, OriginY, TileWidth, TileHeight, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
     }
 
     public void Dispose()
