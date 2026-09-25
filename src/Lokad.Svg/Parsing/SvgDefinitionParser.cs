@@ -197,7 +197,6 @@ internal static class SvgDefinitionParser
             double? baseWidth = parentFrame?.ViewportWidth ?? root.Width;
             double? baseHeight = parentFrame?.ViewportHeight ?? root.Height;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
-            if (SvgMaskSyntax.HasCustomRegion(reader, state)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on use instances are not implemented.");
             SvgDeferredClip? deferredClip = ResolveDeferredClip(reader, reference, state);
             SvgViewportFrame? useFrame;
             if (deferredClip is null)

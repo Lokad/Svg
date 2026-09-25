@@ -4593,9 +4593,37 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_custom_mask_regions_on_use_instances()
+    public void Clips_masked_use_content_to_explicit_regions()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='8' height='8' fill='red'/><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1' width='2' height='2'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><use href='#tile' mask='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='8' height='8' fill='red'/><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1' width='2' height='2'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><use href='#tile' mask='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(1, 1, 2, 2, new SvgColor(255, 0, 0, 128), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Clips_masked_symbol_content_to_explicit_regions()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='red'/></symbol></defs><use href='#s' width='8' height='8' mask='url(#m)'/><defs><mask id='m' maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 128), geometry.Polygon.Color);
+        Assert.True(geometry.Polygon.Clip.HasValue);
+        Assert.Equal(new SvgClipBox(2, 2, 4, 4), geometry.Polygon.Clip.Value);
+    }
+
+    [Fact]
+    public void Applies_forward_custom_region_masks_to_use_instances()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><use href='#tile' mask='url(#m)'/><defs><mask id='m' maskUnits='userSpaceOnUse' x='1' y='1' width='2' height='2'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(1, 1, 2, 2, new SvgColor(255, 0, 0, 128), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Rejects_custom_mask_regions_on_viewport_use_instances()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#808080'/></mask></defs><svg x='8' y='8' width='48' height='48'><use href='#r' mask='url(#m)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }

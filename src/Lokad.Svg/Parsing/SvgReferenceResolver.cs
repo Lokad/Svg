@@ -244,13 +244,24 @@ internal static class SvgReferenceResolver
             {
                 SvgRectangle box = SvgMaskSyntax.BoundingBox(sources[index]);
                 if (maskReference is not null) SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, box);
-                applied[index] = SvgMaskSyntax.ApplyMask(sources[index], mask.Value, SvgMaskSyntax.MaskRegion(box));
+                applied[index] = SvgMaskSyntax.ApplyMask(sources[index], mask.Value, ResolveInstanceMaskRegion(maskReference, frame, state, box));
             }
         }
 
         return applied;
     }
 
+
+        static SvgClipBox ResolveInstanceMaskRegion(string? maskReference, SvgViewportFrame? frame, SvgDocumentState document, SvgRectangle fallback)
+        {
+            ArgumentNullException.ThrowIfNull(document);
+            if (maskReference is not null && document.MaskRegions.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out SvgClipBox custom))
+            {
+                if (frame is not null && !frame.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
+                return custom;
+            }
+            return SvgMaskSyntax.MaskRegion(fallback);
+        }
     private static SvgRectangle ClipRectangle(SvgRectangle rectangle, SvgViewportFrame? frame) => frame is null ? rectangle : frame.Value.ClipShifted(rectangle);
 
     private static SvgGeometry ClipLine(SvgAxisAlignedLine line, SvgViewportFrame? frame) => frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line);
@@ -573,7 +584,6 @@ internal static class SvgReferenceResolver
         {
             ArgumentNullException.ThrowIfNull(document);
             string maskId = SvgMaskSyntax.ParseMaskId(maskReference);
-            if (document.MaskRegions.TryGetValue(maskId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on use instances are not implemented.");
             if (!document.Masks.TryGetValue(maskId, out byte value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
             return value;
         }
