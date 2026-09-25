@@ -3824,6 +3824,30 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_pattern_fills_with_gradient_strokes_as_fill_plus_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><linearGradient id='g'><stop offset='0' stop-color='#00ff00'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#p)' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PatternFill, root.Geometries[0].Kind);
+        Assert.True(root.Geometries[0].Pattern.Fill.HasFill);
+        Assert.Equal(SvgGeometryKind.GradientStroke, root.Geometries[1].Kind);
+        Assert.False(root.Geometries[1].GradientStroke.Fill.HasFill);
+        Assert.True(root.Geometries[1].GradientStroke.HasStroke);
+    }
+
+    [Fact]
+    public void Lowers_pattern_fills_with_radial_strokes_as_fill_plus_bands()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><radialGradient id='s' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#00ff00'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#p)' stroke='url(#s)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(5, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PatternFill, root.Geometries[0].Kind);
+        Assert.True(root.Geometries[0].Pattern.Fill.HasFill);
+        Assert.All(root.Geometries.Skip(1), band => Assert.Equal(SvgGeometryKind.RadialGradient, band.Kind));
+    }
+
+    [Fact]
     public void Applies_a_gray_mask_to_gradient_stroke_geometry()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><mask id='m'><rect x='0' y='0' width='64' height='64' fill='#808080'/></mask></defs><rect x='16' y='16' width='32' height='32' fill='#00ff00' stroke='url(#g)' stroke-width='8' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

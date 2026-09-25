@@ -538,6 +538,15 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(solid, pattern);
     }
 
+    [Fact]
+    public void Pattern_fill_with_single_stop_stroke_matches_solid_pair()
+    {
+        byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='#ff0000'/></pattern><linearGradient id='s'><stop offset='0.3' stop-color='#00ff00'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='url(#p)' stroke='url(#s)' stroke-width='2'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='#ff0000'/></pattern><linearGradient id='s'><stop offset='0.3' stop-color='#00ff00'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='url(#p)' stroke='#00ff00' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(solid, gradient);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

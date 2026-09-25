@@ -89,7 +89,7 @@ internal static class SvgPatternSyntax
         return solid;
     }
 
-    internal static SvgGeometry LowerPatternRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
+    internal static SvgParsedGeometry LowerPatternRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
     {
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Fill), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
@@ -100,12 +100,77 @@ internal static class SvgPatternSyntax
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         byte fillOpacity = SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.FillOpacity));
-        SvgStroke? stroke = ParsePatternStroke(reader, style, context, transform, placement, opacity, painted);
-        if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
-        SvgRectangle fill = placement with { HasFill = painted };
-        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromOrthogonalBand(new SvgRectangle(fill.X, fill.Y, fill.Width, fill.Height, SvgColor.Transparent, false, null));
-        SvgRectangle content = tile.Content.Value.Rectangle;
-        return SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill, fillOpacity, painted ? stroke : null));
+        SvgLinearGradient strokeGradient = default;
+        SvgRadialGradient strokeCircle = default;
+        bool hasLinearStroke = false;
+        bool hasRadialStroke = false;
+        int strokeWidth = 0;
+        double halfWidth = 0;
+        SvgRectangle top = default;
+        SvgRectangle bottom = default;
+        SvgRectangle left = default;
+        SvgRectangle right = default;
+        SvgRectangle box = placement;
+        SvgStroke? stroke = null;
+        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke))
+        {
+            if (state.RadialGradients.TryGetValue(SvgGradientSyntax.ParseGradientId(style.Stroke), out SvgRadialGradient resolvedCircle))
+            {
+                strokeCircle = SvgGradientSyntax.MapUserSpaceRadial(transform, resolvedCircle, frame);
+                hasRadialStroke = true;
+            }
+            else if (state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientId(style.Stroke), out SvgLinearGradient resolvedGradient))
+            {
+                strokeGradient = SvgGradientSyntax.MapUserSpaceVector(transform, resolvedGradient, frame);
+                hasLinearStroke = true;
+            }
+            else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+            SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
+            if (probe is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width gradient strokes no larger than the rectangle dimensions are implemented.");
+            halfWidth = probe.Value.Width / 2d;
+            strokeWidth = probe.Value.Width;
+            top = new(placement.X - halfWidth, placement.Y - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
+            bottom = new(placement.X - halfWidth, placement.Y + placement.Height - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
+            left = new(placement.X - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
+            right = new(placement.X + placement.Width - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
+        }
+        else stroke = ParsePatternStroke(reader, style, context, transform, placement, opacity, painted);
+        if (frame is not null)
+        {
+            placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
+            box = frame.Value.Shift(box);
+            top = frame.Value.Clip.ClipRectangle(frame.Value.Shift(top));
+            bottom = frame.Value.Clip.ClipRectangle(frame.Value.Shift(bottom));
+            left = frame.Value.Clip.ClipRectangle(frame.Value.Shift(left));
+            right = frame.Value.Clip.ClipRectangle(frame.Value.Shift(right));
+        }
+        bool combined = hasLinearStroke || hasRadialStroke;
+        using BudgetedParserList<SvgGeometry> lowered = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) lowered.Add(SvgGeometry.FromOrthogonalBand(new SvgRectangle(placement.X, placement.Y, placement.Width, placement.Height, SvgColor.Transparent, false, null)));
+        else lowered.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, placement with { HasFill = painted }, fillOpacity, combined ? null : (painted ? stroke : null))));
+        if (combined)
+        {
+            SvgRectangle area = placement with { HasFill = false };
+            bool solidRing = (hasLinearStroke && (strokeGradient.Stops.Length == 1 || (strokeGradient.X1 == strokeGradient.X2 && strokeGradient.Y1 == strokeGradient.Y2 && !strokeGradient.IsEmpty))) || (hasRadialStroke && (strokeCircle.Stops.Length == 1 || (strokeCircle.Radius == 0 && !strokeCircle.IsEmpty)));
+            if (hasLinearStroke && strokeGradient.Stops.Length > 1 && strokeGradient.X1 == strokeGradient.X2 && strokeGradient.Y1 == strokeGradient.Y2 && strokeGradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are implemented.");
+            if (hasRadialStroke && strokeCircle.Stops.Length > 1 && strokeCircle.Radius == 0 && strokeCircle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");
+            if (solidRing)
+            {
+                SvgColor ringColor = hasLinearStroke ? strokeGradient.End : strokeCircle.End;
+                SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(ringColor, opacity), strokeWidth);
+                lowered.Add(SvgGeometry.FromRectangle(area with { Stroke = painted ? solidStroke : null }));
+            }
+            else if (hasLinearStroke) lowered.Add(SvgGeometry.FromGradientStroke(new SvgGradientStrokeGeometry(area, top, bottom, left, right, strokeGradient, box, opacity, painted)));
+            else
+            {
+                bool paintBands = painted && !strokeCircle.IsEmpty;
+                lowered.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(strokeCircle, box, top with { HasFill = paintBands }, opacity, null)));
+                lowered.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(strokeCircle, box, bottom with { HasFill = paintBands }, opacity, null)));
+                lowered.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(strokeCircle, box, left with { HasFill = paintBands }, opacity, null)));
+                lowered.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(strokeCircle, box, right with { HasFill = paintBands }, opacity, null)));
+            }
+        }
+        return new SvgParsedGeometry(lowered.Detach(), 0);
     }
 
     private static SvgStroke? ParsePatternStroke(XmlReader reader, SvgComputedStyle style, SvgPaintableElementContext context, AxisTransform transform, SvgRectangle placement, byte opacity, bool painted)

@@ -20,7 +20,7 @@ internal static class SvgLeafParser
             string fillId = SvgGradientSyntax.ParsePaintId(patternStyle.Fill);
             if (!state.Patterns.TryGetValue(fillId, out _)) return SvgGradientSyntax.LowerGradientStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         }
-        if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill)) return RetainSingleGeometry(LowerPaintServerRect(reader, context, patternStyle, state, effectiveFrame), state, context);
+        if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill)) return LowerPaintServerRect(reader, context, patternStyle, state, effectiveFrame);
         if (SvgGradientSyntax.IsGradientFill(patternStyle.Fill)) return RetainSingleGeometry(SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, effectiveFrame), state, context);
         if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke)) return SvgGradientSyntax.LowerGradientStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
@@ -78,11 +78,11 @@ internal static class SvgLeafParser
     private static SvgColor StampOpacity(SvgColor color, byte opacity)
         => new(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, opacity));
 
-    private static SvgGeometry LowerPaintServerRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle patternStyle, SvgDocumentState state, SvgViewportFrame? frame)
+    private static SvgParsedGeometry LowerPaintServerRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle patternStyle, SvgDocumentState state, SvgViewportFrame? frame)
     {
         string paintId = SvgGradientSyntax.ParsePaintId(patternStyle.Fill);
         if (state.Patterns.TryGetValue(paintId, out _)) return SvgPatternSyntax.LowerPatternRect(reader, context, patternStyle, state, frame);
-        return SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, frame);
+        return RetainSingleGeometry(SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, frame), state, context);
     }
 
     /// <summary>Parses one rectangle definition with inherited presentation but the element-local transform only; use clones exclude definition ancestors.</summary>
