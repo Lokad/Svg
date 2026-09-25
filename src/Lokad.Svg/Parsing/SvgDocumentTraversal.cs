@@ -167,6 +167,7 @@ internal static class SvgDocumentTraversal
                             }
                         }
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
+                        if (parsedGroup.DeferredMask is not null) state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, parsedGroup.Opacity, state.Scene.CommandCount, -1, reader.Depth));
                         if (parsedGroup.Scope.IsolatesOpacity)
                         {
                             state.Scene.BeginOpacityScope(parsedGroup.Opacity);
@@ -253,6 +254,16 @@ internal static class SvgDocumentTraversal
                             break;
                         }
                     }
+                    for (int pendingMaskIndex = state.PendingGroupMasks.Count - 1; pendingMaskIndex >= 0; pendingMaskIndex--)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        PendingGroupMask pendingMask = state.PendingGroupMasks[pendingMaskIndex];
+                        if (pendingMask.Depth == reader.Depth && pendingMask.EndCommandIndex < 0)
+                        {
+                            state.PendingGroupMasks[pendingMaskIndex] = pendingMask with { EndCommandIndex = state.Scene.CommandCount };
+                            break;
+                        }
+                    }
                     if (group.IsolatesOpacity)
                     {
                         state.Scene.EndOpacityScope();
@@ -265,6 +276,7 @@ internal static class SvgDocumentTraversal
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);
                     SvgMaskSyntax.ResolvePendingLeafMasks(state, workCounter, cancellationToken);
+                    SvgMaskSyntax.ResolvePendingGroupMasks(state, workCounter, cancellationToken);
                     if (root.Opacity != 255) state.Scene.EndOpacityScope();
                     SvgSceneStorage sceneStorage = state.Scene.Build();
                     try

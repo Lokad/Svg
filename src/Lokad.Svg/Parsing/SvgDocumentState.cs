@@ -36,6 +36,7 @@ internal sealed class SvgDocumentState : IDisposable
         PendingLeafClips = new BudgetedParserList<PendingLeafClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingGroupClips = new BudgetedParserList<PendingGroupClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLeafMasks = new BudgetedParserList<PendingLeafMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        PendingGroupMasks = new BudgetedParserList<PendingGroupMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopeSnapshots = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }
@@ -89,6 +90,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserList<PendingGroupClip> PendingGroupClips { get; }
 
     internal BudgetedParserList<PendingLeafMask> PendingLeafMasks { get; }
+
+    internal BudgetedParserList<PendingGroupMask> PendingGroupMasks { get; }
 
     internal int GeometryElementCount { get; set; }
 
@@ -174,6 +177,7 @@ internal sealed class SvgDocumentState : IDisposable
         PendingLeafClips.Dispose();
         PendingGroupClips.Dispose();
         PendingLeafMasks.Dispose();
+        PendingGroupMasks.Dispose();
         Definitions.Dispose();
         Clips.Dispose();
         ObjectClips.Dispose();

@@ -8,6 +8,9 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Retains one direct leaf geometry range whose mask reference resolves at document end.</summary>
 internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int GeometryCount, string MaskId, SvgViewportFrame? Parent);
 
+/// <summary>Retains one masked group command range whose mask reference resolves at document end.</summary>
+internal readonly record struct PendingGroupMask(string MaskId, byte Opacity, int FirstCommandIndex, int EndCommandIndex, int Depth);
+
 internal static class SvgMaskSyntax
 {
     /// <summary>Parses an explicit userSpaceOnUse mask region, returning null for the default region.</summary>
@@ -288,6 +291,57 @@ internal static class SvgMaskSyntax
         return value;
     }
 
+    /// <summary>Resolves deferred group masks at document end, rewriting or inserting isolation scopes after use expansion.</summary>
+    internal static void ResolvePendingGroupMasks(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        for (int pendingIndex = 0; pendingIndex < state.PendingGroupMasks.Count; pendingIndex++)
+        {
+            workCounter.Consume(cancellationToken);
+            PendingGroupMask pending = state.PendingGroupMasks[pendingIndex];
+            if (!state.Masks.TryGetValue(pending.MaskId, out byte value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+            if (state.MaskRegions.TryGetValue(pending.MaskId, out _) || state.MaskFractionRegions.TryGetValue(pending.MaskId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on masked groups are not implemented.");
+            byte combined = SvgReferenceResolver.MultiplyAlpha(pending.Opacity, value);
+            if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content)) ValidateGroupMaskCoverage(state, pending, content, workCounter, cancellationToken);
+            if (pending.Opacity != 255) RewriteGroupMaskScope(state, pending, combined);
+            else if (combined != 255) InsertGroupMaskScope(state, pending, combined, workCounter, cancellationToken);
+        }
+
+        static void ValidateGroupMaskCoverage(SvgDocumentState state, PendingGroupMask pending, SvgClipBox content, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
+                if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
+                if (geometry.Kind == SvgGeometryKind.GlyphContours) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
+                SvgRectangle box = CoverageBox(geometry);
+                if (!content.Contains(box.X, box.Y, box.X + box.Width, box.Y + box.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering masked group children is implemented.");
+            }
+        }
+
+        static void RewriteGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte combined)
+        {
+            SvgDrawCommand scope = state.Scene.CommandAt(pending.FirstCommandIndex);
+            if (scope.Kind != SvgDrawCommandKind.BeginGroup) throw new InvalidOperationException("Deferred group mask resolution requires its isolation scope.");
+            state.Scene.ReplaceCommand(pending.FirstCommandIndex, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, combined));
+        }
+
+        static void InsertGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte combined, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
+            {
+                workCounter.Consume(cancellationToken);
+                if (state.Scene.CommandAt(commandIndex).Kind == SvgDrawCommandKind.BeginGroup) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
+            }
+            state.Scene.InsertCommands(pending.EndCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255)]);
+            state.Scene.InsertCommands(pending.FirstCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, combined)]);
+            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.FirstCommandIndex, 1, workCounter, cancellationToken);
+            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.EndCommandIndex + 1, 1, workCounter, cancellationToken);
+        }
+    }
     internal static SvgRectangle BoundingBox(SvgGeometry geometry)
     {
         return geometry.Kind switch

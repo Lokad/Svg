@@ -825,21 +825,9 @@ internal static class SvgReferenceResolver
             int adjustedCommand = pendingUse.Slot.CommandIndex + commandShift;
             int insertedCommands = scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = adjustedCommand }, applied);
             commandShift += insertedCommands;
-            ShiftPendingGroupRanges(state, adjustedCommand + 1, insertedCommands, workCounter, cancellationToken);
+            ShiftPendingCommandRanges(state, adjustedCommand + 1, insertedCommands, workCounter, cancellationToken);
         }
 
-        static void ShiftPendingGroupRanges(SvgDocumentState state, int insertPosition, int insertedCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        {
-            if (insertedCount == 0) return;
-            for (int groupIndex = 0; groupIndex < state.PendingGroupClips.Count; groupIndex++)
-            {
-                workCounter.Consume(cancellationToken);
-                PendingGroupClip group = state.PendingGroupClips[groupIndex];
-                int first = group.FirstCommandIndex > insertPosition ? group.FirstCommandIndex + insertedCount : group.FirstCommandIndex;
-                int end = group.EndCommandIndex >= insertPosition ? group.EndCommandIndex + insertedCount : group.EndCommandIndex;
-                state.PendingGroupClips[groupIndex] = group with { FirstCommandIndex = first, EndCommandIndex = end };
-            }
-        }
 
         static byte ResolveDeferredMaskValue(string maskReference, SvgDocumentState document)
         {
@@ -905,6 +893,30 @@ internal static class SvgReferenceResolver
             SvgClipBox resolved = new(instanceBox.X + fractions.X * instanceBox.Width, instanceBox.Y + fractions.Y * instanceBox.Height, fractions.Width * instanceBox.Width, fractions.Height * instanceBox.Height);
             SvgClipBox clip = deferred.Parent is null ? resolved : deferred.Parent.Value.Clip.Intersect(resolved);
             return new SvgViewportFrame(deferred.Parent?.OffsetX ?? 0, deferred.Parent?.OffsetY ?? 0, deferred.Parent?.ScaleX ?? 1, deferred.Parent?.ScaleY ?? 1, deferred.Parent?.ViewportWidth, deferred.Parent?.ViewportHeight, clip, deferred.Depth);
+        }
+    }
+
+    /// <summary>Shifts retained command ranges right after scene insertions, keeping deferred group clips and masks aligned.</summary>
+    internal static void ShiftPendingCommandRanges(SvgDocumentState state, int insertPosition, int insertedCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (insertedCount == 0) return;
+        for (int groupIndex = 0; groupIndex < state.PendingGroupClips.Count; groupIndex++)
+        {
+            workCounter.Consume(cancellationToken);
+            PendingGroupClip group = state.PendingGroupClips[groupIndex];
+            int first = group.FirstCommandIndex > insertPosition ? group.FirstCommandIndex + insertedCount : group.FirstCommandIndex;
+            int end = group.EndCommandIndex >= insertPosition ? group.EndCommandIndex + insertedCount : group.EndCommandIndex;
+            state.PendingGroupClips[groupIndex] = group with { FirstCommandIndex = first, EndCommandIndex = end };
+        }
+        for (int maskIndex = 0; maskIndex < state.PendingGroupMasks.Count; maskIndex++)
+        {
+            workCounter.Consume(cancellationToken);
+            PendingGroupMask mask = state.PendingGroupMasks[maskIndex];
+            int first = mask.FirstCommandIndex > insertPosition ? mask.FirstCommandIndex + insertedCount : mask.FirstCommandIndex;
+            int end = mask.EndCommandIndex >= insertPosition ? mask.EndCommandIndex + insertedCount : mask.EndCommandIndex;
+            state.PendingGroupMasks[maskIndex] = mask with { FirstCommandIndex = first, EndCommandIndex = end };
         }
     }
 
