@@ -4525,6 +4525,40 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Admits_nonuniform_radial_gradient_transforms_through_recorded_scales()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' gradientTransform='scale(2,1)' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
+        Assert.Equal(8, geometry.Radial.Gradient.CenterX);
+        Assert.Equal(4, geometry.Radial.Gradient.CenterY);
+        Assert.Equal(8, geometry.Radial.Gradient.Radius);
+        Assert.Equal(2, geometry.Radial.Gradient.ReferenceScaleX);
+        Assert.Equal(1, geometry.Radial.Gradient.ReferenceScaleY);
+    }
+
+    [Fact]
+    public void Validates_offset_focal_before_radial_transform_application()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' gradientTransform='scale(1,2)' cx='4' cy='4' r='4' fx='4' fy='7.9'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
+        Assert.Equal(4, geometry.Radial.Gradient.CenterX);
+        Assert.Equal(8, geometry.Radial.Gradient.CenterY);
+        Assert.Equal(4, geometry.Radial.Gradient.Radius);
+    }
+
+    [Fact]
+    public void Rejects_on_circle_focal_with_nonuniform_radial_transform()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' gradientTransform='scale(2,1)' cx='4' cy='4' r='4' fx='4' fy='8'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Rejects_nonuniform_scale_radial_transforms()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientTransform='scale(2, 1)' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));

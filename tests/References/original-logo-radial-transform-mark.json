@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-radial-transform-mark",
+  "referencePng": "original-logo-radial-transform-mark.png",
+  "referenceSha256": "95c68dc5886fa035b3b485353858984fb95f66e13e1196b32383d934097de1ea",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "a4337f18a1fb5c0c809f5f00f33fa8933641e9ec57fb1a7e4fffa0c78de31ab4",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 28,
+    "maximumChannelError": 1,
+    "maximumAlphaError": 0,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

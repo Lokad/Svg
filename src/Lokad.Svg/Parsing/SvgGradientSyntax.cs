@@ -79,7 +79,7 @@ internal static class SvgGradientSyntax
         SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
         string? transformValue = reader.GetAttribute("gradientTransform");
         SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue);
-        if (gradientTransform.ScaleX != gradientTransform.ScaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform radial gradient transforms are not implemented.");
+        if (gradientTransform.ScaleX != gradientTransform.ScaleY && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform radial gradient transforms are not implemented.");
         string? rawFocalRadius = reader.GetAttribute("fr");
         string? rawCenterX = reader.GetAttribute("cx");
         string? rawCenterY = reader.GetAttribute("cy");
