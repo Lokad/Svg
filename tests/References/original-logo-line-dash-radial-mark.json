@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-line-dash-radial-mark",
+  "referencePng": "original-logo-line-dash-radial-mark.png",
+  "referenceSha256": "5ba7b2447f28fceda6510a6d070839690f9b854e25a3366ff191b31a919ffcf9",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "65de598b42e0793c9dc053d485c820ad85395954a1fcb3e365bf3999cfee6733",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 6,
+    "maximumChannelError": 1,
+    "maximumAlphaError": 0,
+    "exact": false
+  },
+  "admittedAt": "2026-09-25"
+}

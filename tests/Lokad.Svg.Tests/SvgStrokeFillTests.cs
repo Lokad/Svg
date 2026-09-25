@@ -571,6 +571,33 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Solid_tile_dashed_pattern_line_matches_dashed_solid_line()
+    {
+        byte[] pattern = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#p)' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
+
+        Assert.Equal(solid, pattern);
+    }
+
+    [Fact]
+    public void Single_stop_dashed_gradient_line_matches_dashed_solid_line()
+    {
+        byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
+
+        Assert.Equal(solid, gradient);
+    }
+
+    [Fact]
+    public void Single_stop_dashed_radial_line_matches_dashed_solid_line()
+    {
+        byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='8' cy='4' r='8'><stop offset='0.3' stop-color='#ff0000'/></radialGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
+
+        Assert.Equal(solid, gradient);
+    }
+
+    [Fact]
     public void Full_dash_line_matches_solid_line()
     {
         byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='16'/></svg>", out _, out _);

@@ -200,8 +200,8 @@ internal static class SvgLeafParser
         SvgLineSyntax syntax = SvgLineSyntax.Parse(reader);
         SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line");
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return RetainSingleGeometry(SvgPatternSyntax.LowerPatternStrokeLine(reader, context, style, syntax, state, frame), state, context);
-        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return RetainSingleGeometry(SvgGradientSyntax.LowerGradientStrokeLine(reader, context, style, syntax, state, frame), state, context);
+        if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return SvgPatternSyntax.LowerPatternStrokeLine(reader, context, style, syntax, state, frame);
+        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return SvgGradientSyntax.LowerGradientStrokeLine(reader, context, style, syntax, state, frame);
         SvgResolvedPaintableElement element = context.ResolveShape(style, reader, true);
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgColor? strokeColor = element.Presentation.StrokeColor;
@@ -224,68 +224,83 @@ internal static class SvgLeafParser
 
         SvgParsedGeometry LowerDashedLine()
         {
-            double total = 0;
-            foreach (double patternEntry in dashes) total += patternEntry;
-            bool horizontal = syntax.X1 != syntax.X2;
-            double origin = horizontal ? Math.Min(syntax.X1, syntax.X2) : Math.Min(syntax.Y1, syntax.Y2);
-            double length = horizontal ? Math.Abs(syntax.X2 - syntax.X1) : Math.Abs(syntax.Y2 - syntax.Y1);
-            double halfWidth = strokeWidth / 2d;
-            double fixedAxis = horizontal ? syntax.Y1 : syntax.X1;
-            if (!(total > 0))
+            using BudgetedParserList<SvgRectangle> runRects = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            bool paintsAny = AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
+            using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            for (int runIndex = 0; runIndex < runRects.Count; runIndex++) runs.Add(SvgGeometry.FromOrthogonalBand(runRects[runIndex] with { Color = color, HasFill = paintsAny && painted }));
+            return new SvgParsedGeometry(runs.Detach(), 0);
+        }
+    }
+
+    /// <summary>Appends one clipped rectangle per dash-pattern on-run along a horizontal or vertical line, reporting whether any run paints.</summary>
+    /// <remarks><para>Callers paint over the returned rectangles and leave the single quiet rectangle unpainted, sharing the solid phase convention across paints.</para></remarks>
+    internal static bool AppendLineDashRunRects(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, SvgViewportFrame? frame, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<SvgRectangle> runs)
+    {
+        ArgumentNullException.ThrowIfNull(dashes);
+        ArgumentNullException.ThrowIfNull(budget);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        ArgumentNullException.ThrowIfNull(runs);
+        double total = 0;
+        foreach (double patternEntry in dashes) total += patternEntry;
+        bool horizontal = syntax.X1 != syntax.X2;
+        double origin = horizontal ? Math.Min(syntax.X1, syntax.X2) : Math.Min(syntax.Y1, syntax.Y2);
+        double length = horizontal ? Math.Abs(syntax.X2 - syntax.X1) : Math.Abs(syntax.Y2 - syntax.Y1);
+        double halfWidth = strokeWidth / 2d;
+        double fixedAxis = horizontal ? syntax.Y1 : syntax.X1;
+        if (!(total > 0))
+        {
+            SvgRectangle quiet = horizontal
+                ? new SvgRectangle(origin, fixedAxis - halfWidth, length, strokeWidth, default, false, null)
+                : new SvgRectangle(fixedAxis - halfWidth, origin, strokeWidth, length, default, false, null);
+            runs.Add(frame is null ? quiet : frame.Value.ClipShifted(quiet));
+            return false;
+        }
+        if (!double.IsFinite(dashOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Dashed line strokes exceed the admitted numeric range.");
+        double phase = dashOffset - Math.Floor(dashOffset / total) * total;
+        if (phase < 0) phase = 0;
+        else if (phase >= total) phase = 0;
+        int entry = 0;
+        double entered = 0;
+        while (entered + dashes[entry] <= phase)
+        {
+            entered += dashes[entry];
+            entry = (entry + 1) % dashes.Length;
+        }
+        double remaining = entered + dashes[entry] - phase;
+        while (remaining == 0)
+        {
+            entry = (entry + 1) % dashes.Length;
+            entered = phase;
+            remaining = dashes[entry];
+        }
+        bool onEntry = (entry & 1) == 0;
+        double cursor = 0;
+        int produced = 0;
+        while (cursor < length)
+        {
+            if ((produced & 127) == 0) cancellationToken.ThrowIfCancellationRequested();
+            double take = Math.Min(remaining, length - cursor);
+            if (onEntry && take > 0)
             {
-                SvgRectangle quiet = horizontal
-                    ? new SvgRectangle(origin, fixedAxis - halfWidth, length, strokeWidth, color, false, null)
-                    : new SvgRectangle(fixedAxis - halfWidth, origin, strokeWidth, length, color, false, null);
-                return RetainSingleGeometry(SvgGeometry.FromOrthogonalBand(quiet), state, context);
+                SvgRectangle run = horizontal
+                    ? new SvgRectangle(origin + cursor, fixedAxis - halfWidth, take, strokeWidth, default, true, null)
+                    : new SvgRectangle(fixedAxis - halfWidth, origin + cursor, strokeWidth, take, default, true, null);
+                runs.Add(frame is null ? run : frame.Value.ClipShifted(run));
             }
-            if (!double.IsFinite(dashOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Dashed line strokes exceed the admitted numeric range.");
-            double phase = dashOffset - Math.Floor(dashOffset / total) * total;
-            if (phase < 0) phase = 0;
-            else if (phase >= total) phase = 0;
-            int entry = 0;
-            double entered = 0;
-            while (entered + dashes[entry] <= phase)
-            {
-                entered += dashes[entry];
-                entry = (entry + 1) % dashes.Length;
-            }
-            double remaining = entered + dashes[entry] - phase;
+            workCounter.Consume(cancellationToken);
+            cursor += take;
+            entry = (entry + 1) % dashes.Length;
+            onEntry = (entry & 1) == 0;
+            remaining = dashes[entry];
             while (remaining == 0)
             {
                 entry = (entry + 1) % dashes.Length;
-                entered = phase;
-                remaining = dashes[entry];
-            }
-            bool onEntry = (entry & 1) == 0;
-            using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            double cursor = 0;
-            int produced = 0;
-            while (cursor < length)
-            {
-                if ((produced & 127) == 0) context.CancellationToken.ThrowIfCancellationRequested();
-                double take = Math.Min(remaining, length - cursor);
-                if (onEntry && take > 0)
-                {
-                    SvgRectangle run = horizontal
-                        ? new SvgRectangle(origin + cursor, fixedAxis - halfWidth, take, strokeWidth, color, painted, null)
-                        : new SvgRectangle(fixedAxis - halfWidth, origin + cursor, strokeWidth, take, color, painted, null);
-                    runs.Add(SvgGeometry.FromOrthogonalBand(frame is null ? run : frame.Value.ClipShifted(run)));
-                }
-                context.WorkCounter.Consume(context.CancellationToken);
-                cursor += take;
-                entry = (entry + 1) % dashes.Length;
                 onEntry = (entry & 1) == 0;
                 remaining = dashes[entry];
-                while (remaining == 0)
-                {
-                    entry = (entry + 1) % dashes.Length;
-                    onEntry = (entry & 1) == 0;
-                    remaining = dashes[entry];
-                }
-                produced++;
             }
-            return new SvgParsedGeometry(runs.Detach(), 0);
+            produced++;
         }
+        return true;
     }
 
     private static SvgRectangle ClipStrokedRectangle(SvgRectangle rectangle, SvgStroke? stroke, SvgViewportFrame frame)

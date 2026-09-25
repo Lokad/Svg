@@ -306,7 +306,7 @@ internal static class SvgPatternSyntax
     }
 
     /// <summary>Lowers one pattern-stroked axis-aligned line into a pattern-evaluated stroke band.</summary>
-    internal static SvgGeometry LowerPatternStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
+    internal static SvgParsedGeometry LowerPatternStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
     {
         SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line");
         AxisTransform transform = context.ResolveTransform(reader);
@@ -315,15 +315,44 @@ internal static class SvgPatternSyntax
         if ((syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
         if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
-        if (SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) == SvgStrokeCap.Square) syntax = syntax.WithSquareCaps(strokeWidth);
-        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed paint-server line strokes are not implemented.");
+        double[]? dashEntries = SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray"));
+        if (SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) == SvgStrokeCap.Square)
+        {
+            if (dashEntries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed line strokes are not implemented.");
+            syntax = syntax.WithSquareCaps(strokeWidth);
+        }
+        if (reader.GetAttribute("pathLength") is not null && dashEntries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Path lengths with dashed line strokes are not implemented.");
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Stroke), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        if (dashEntries is not null) return LowerDashedPatternStrokeLine(syntax, strokeWidth, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), tile, painted, opacity, frame, state, context);
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         if (frame is not null) band = frame.Value.ClipShifted(band);
-        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromOrthogonalBand(band with { HasFill = false });
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return RetainSingleBand(SvgGeometry.FromOrthogonalBand(band with { HasFill = false }), state, context);
         SvgRectangle content = tile.Content.Value.Rectangle;
-        return SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, band, opacity, null));
+        return RetainSingleBand(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, band, opacity, null)), state, context);
+    }
+
+    /// <summary>Lowers one dashed pattern-tile line stroke into one tile-evaluated band per dash run.</summary>
+    private static SvgParsedGeometry LowerDashedPatternStrokeLine(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, SvgPatternTile tile, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    {
+        using BudgetedParserList<SvgRectangle> runRects = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        bool paintsAny = SvgLeafParser.AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
+        using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        for (int runIndex = 0; runIndex < runRects.Count; runIndex++)
+        {
+            SvgRectangle run = runRects[runIndex];
+            if (tile.Content is not SvgGeometry tileContent || tile.TileWidth == 0 || tile.TileHeight == 0) runs.Add(SvgGeometry.FromOrthogonalBand(run with { HasFill = false }));
+            else runs.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(tileContent.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, run with { HasFill = paintsAny && painted }, opacity, null)));
+        }
+        return new SvgParsedGeometry(runs.Detach(), 0);
+    }
+
+    private static SvgParsedGeometry RetainSingleBand(SvgGeometry geometry, SvgDocumentState state, SvgPaintableElementContext context)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        using BudgetedParserList<SvgGeometry> retained = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        retained.Add(geometry);
+        return new SvgParsedGeometry(retained.Detach(), 0);
     }
 }
