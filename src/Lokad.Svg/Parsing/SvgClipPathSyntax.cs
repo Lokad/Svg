@@ -3,7 +3,7 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one direct leaf geometry range whose userSpace clip-path reference resolves at document end.</summary>
-internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent);
+internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, bool AdmitsBoundingBox);
 
 /// <summary>Parses the bounded clip-path reference syntax shared by clipped containers and leaves.</summary>
 internal static class SvgClipPathSyntax
@@ -73,19 +73,44 @@ internal static class SvgClipPathSyntax
         {
             workCounter.Consume(cancellationToken);
             PendingLeafClip pending = state.PendingLeafClips[pendingIndex];
-            if (!state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
-            {
-                if (state.ObjectClips.TryGetValue(pending.ClipId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Forward bounding-box clip-path definitions on direct leaves are not implemented.");
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
-            }
             SvgViewportFrame? parent = pending.Parent;
             if (parent is not null && parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
-            SvgClipBox clip = parent is null ? box : parent.Value.Clip.Intersect(box);
+            SvgClipBox clip;
+            if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
+            {
+                clip = parent is null ? box : parent.Value.Clip.Intersect(box);
+            }
+            else if (state.ObjectClips.TryGetValue(pending.ClipId, out SvgClipBox fractions))
+            {
+                if (!pending.AdmitsBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths are only implemented on rectangles, bands and straight contours.");
+                if (pending.GeometryCount == 0) continue;
+                clip = BoundingBoxClip(state, pending, fractions, parent, workCounter, cancellationToken);
+            }
+            else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
             for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
             {
                 workCounter.Consume(cancellationToken);
                 state.Scene.ReplaceGeometry(geometryIndex, ApplyLeafClip(state.Scene.GeometryAt(geometryIndex), clip));
             }
+        }
+
+        static SvgClipBox BoundingBoxClip(SvgDocumentState state, PendingLeafClip pending, SvgClipBox fractions, SvgViewportFrame? parent, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgRectangle bounds = SvgMaskSyntax.BoundingBox(state.Scene.GeometryAt(geometryIndex));
+                if (bounds.X < left) left = bounds.X;
+                if (bounds.Y < top) top = bounds.Y;
+                if (bounds.X + bounds.Width > right) right = bounds.X + bounds.Width;
+                if (bounds.Y + bounds.Height > bottom) bottom = bounds.Y + bounds.Height;
+            }
+            SvgClipBox resolved = new(left + fractions.X * (right - left), top + fractions.Y * (bottom - top), fractions.Width * (right - left), fractions.Height * (bottom - top));
+            return parent is null ? resolved : parent.Value.Clip.Intersect(resolved);
         }
 
         static SvgGeometry ApplyLeafClip(SvgGeometry geometry, SvgClipBox clip)

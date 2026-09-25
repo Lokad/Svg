@@ -65,7 +65,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferRectClip && deferredRectClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectClip, state.EffectiveFrame));
+                if (deferRectClip && deferredRectClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectClip, state.EffectiveFrame, true));
                 return true;
             case "line":
                 string? deferredLineClip = SvgClipPathSyntax.PendingClipId(reader, state);
@@ -91,7 +91,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferLineClip && deferredLineClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineClip, state.EffectiveFrame));
+                if (deferLineClip && deferredLineClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineClip, state.EffectiveFrame, false));
                 return true;
             case "circle":
                 string? deferredCircleClip = SvgClipPathSyntax.PendingClipId(reader, state);
@@ -117,7 +117,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferCircleClip && deferredCircleClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleClip, state.EffectiveFrame));
+                if (deferCircleClip && deferredCircleClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleClip, state.EffectiveFrame, false));
                 return true;
             case "ellipse":
                 string? deferredEllipseClip = SvgClipPathSyntax.PendingClipId(reader, state);
@@ -143,7 +143,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferEllipseClip && deferredEllipseClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseClip, state.EffectiveFrame));
+                if (deferEllipseClip && deferredEllipseClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseClip, state.EffectiveFrame, false));
                 return true;
             case "path":
                 string? deferredPathClip = SvgClipPathSyntax.PendingClipId(reader, state);
@@ -161,7 +161,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferPathClip && deferredPathClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathClip, state.EffectiveFrame));
+                if (deferPathClip && deferredPathClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathClip, state.EffectiveFrame, true));
                 return true;
             case "polygon" or "polyline":
                 string? deferredPointListClip = SvgClipPathSyntax.PendingClipId(reader, state);
@@ -179,7 +179,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; }
-                if (deferPointListClip && deferredPointListClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListClip, state.EffectiveFrame));
+                if (deferPointListClip && deferredPointListClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListClip, state.EffectiveFrame, true));
                 return true;
             case "image":
             {

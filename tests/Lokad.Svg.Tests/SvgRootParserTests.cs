@@ -3461,13 +3461,35 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_forward_bounding_box_clips_on_direct_leaves()
+    public void Clips_forward_bounding_box_clips_on_direct_rects()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' fill='red' clip-path='url(#later)'/><defs><clipPath id='later' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' fill='red' clip-path='url(#later)'/><defs><clipPath id='later' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Clips_forward_bounding_box_clips_on_direct_paths()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 8 V 8 H 0 Z' fill='red' clip-path='url(#later)'/><defs><clipPath id='later' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries).Rectangle);
+    }
+    [Fact]
+    public void Rejects_forward_bounding_box_clips_on_direct_lines()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='0' x2='8' y2='0' stroke='red' stroke-width='2' clip-path='url(#later)'/><defs><clipPath id='later' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
+    [Fact]
+    public void Rejects_forward_bounding_box_clips_on_direct_circles()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><circle cx='4' cy='4' r='4' fill='red' clip-path='url(#later)'/><defs><clipPath id='later' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
     [Fact]
     public void Rejects_masked_forward_clip_paths_on_direct_leaves()
     {
