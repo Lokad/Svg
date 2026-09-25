@@ -541,6 +541,19 @@ public static class SvgConverter
                     circleX = definition.CenterX;
                     circleY = definition.CenterY;
                 }
+                double radius = definition.Radius;
+                double focalRadius = definition.FocalRadius;
+                if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
+                {
+                    sampleX = (sampleX - circleX) / definition.ReferenceScaleX;
+                    sampleY = (sampleY - circleY) / definition.ReferenceScaleY;
+                    focalX = (focalX - circleX) / definition.ReferenceScaleX;
+                    focalY = (focalY - circleY) / definition.ReferenceScaleY;
+                    circleX = 0;
+                    circleY = 0;
+                    radius = definition.Radius / Math.Abs(definition.ReferenceScaleX);
+                    focalRadius = definition.FocalRadius / Math.Abs(definition.ReferenceScaleX);
+                }
                 double offsetX = circleX - focalX;
                 double offsetY = circleY - focalY;
                 double rayX = sampleX - focalX;
@@ -550,28 +563,28 @@ public static class SvgConverter
                 else
                 if (offsetX == 0 && offsetY == 0)
                 {
-                    position = (Math.Sqrt(rayX * rayX + rayY * rayY) - definition.FocalRadius) / (definition.Radius - definition.FocalRadius);
+                    position = (Math.Sqrt(rayX * rayX + rayY * rayY) - focalRadius) / (radius - focalRadius);
                 }
                 else if (rayX == 0 && rayY == 0)
                 {
                     position = 0;
                 }
-                else if (definition.FocalRadius == 0)
+                else if (focalRadius == 0)
                 {
                     double dot = rayX * offsetX + rayY * offsetY;
                     double raySquared = rayX * rayX + rayY * rayY;
-                    double discriminant = dot * dot + raySquared * (definition.Radius * definition.Radius - offsetX * offsetX - offsetY * offsetY);
+                    double discriminant = dot * dot + raySquared * (radius * radius - offsetX * offsetX - offsetY * offsetY);
                     if (discriminant < 0) discriminant = 0;
                     position = raySquared / (dot + Math.Sqrt(discriminant));
                 }
                 else
                 {
-                    double span = definition.Radius - definition.FocalRadius;
+                    double span = radius - focalRadius;
                     double dot = rayX * offsetX + rayY * offsetY;
                     double raySquared = rayX * rayX + rayY * rayY;
-                    double linear = dot + definition.FocalRadius * span;
+                    double linear = dot + focalRadius * span;
                     double quadratic = offsetX * offsetX + offsetY * offsetY - span * span;
-                    double constant = raySquared - definition.FocalRadius * definition.FocalRadius;
+                    double constant = raySquared - focalRadius * focalRadius;
                     double discriminant = linear * linear - quadratic * constant;
                     if (discriminant < 0) discriminant = 0;
                     position = (linear - Math.Sqrt(discriminant)) / quadratic;
@@ -982,6 +995,19 @@ public static class SvgConverter
                     circleX = definition.CenterX;
                     circleY = definition.CenterY;
                 }
+                double radius = definition.Radius;
+                double focalRadius = definition.FocalRadius;
+                if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
+                {
+                    sampleX = (sampleX - circleX) / definition.ReferenceScaleX;
+                    sampleY = (sampleY - circleY) / definition.ReferenceScaleY;
+                    focalX = (focalX - circleX) / definition.ReferenceScaleX;
+                    focalY = (focalY - circleY) / definition.ReferenceScaleY;
+                    circleX = 0;
+                    circleY = 0;
+                    radius = definition.Radius / Math.Abs(definition.ReferenceScaleX);
+                    focalRadius = definition.FocalRadius / Math.Abs(definition.ReferenceScaleX);
+                }
                 double offsetX = circleX - focalX;
                 double offsetY = circleY - focalY;
                 double rayX = sampleX - focalX;
@@ -991,28 +1017,28 @@ public static class SvgConverter
                 else
                 if (offsetX == 0 && offsetY == 0)
                 {
-                    position = (Math.Sqrt(rayX * rayX + rayY * rayY) - definition.FocalRadius) / (definition.Radius - definition.FocalRadius);
+                    position = (Math.Sqrt(rayX * rayX + rayY * rayY) - focalRadius) / (radius - focalRadius);
                 }
                 else if (rayX == 0 && rayY == 0)
                 {
                     position = 0;
                 }
-                else if (definition.FocalRadius == 0)
+                else if (focalRadius == 0)
                 {
                     double dot = rayX * offsetX + rayY * offsetY;
                     double raySquared = rayX * rayX + rayY * rayY;
-                    double discriminant = dot * dot + raySquared * (definition.Radius * definition.Radius - offsetX * offsetX - offsetY * offsetY);
+                    double discriminant = dot * dot + raySquared * (radius * radius - offsetX * offsetX - offsetY * offsetY);
                     if (discriminant < 0) discriminant = 0;
                     position = raySquared / (dot + Math.Sqrt(discriminant));
                 }
                 else
                 {
-                    double span = definition.Radius - definition.FocalRadius;
+                    double span = radius - focalRadius;
                     double dot = rayX * offsetX + rayY * offsetY;
                     double raySquared = rayX * rayX + rayY * rayY;
-                    double linear = dot + definition.FocalRadius * span;
+                    double linear = dot + focalRadius * span;
                     double quadratic = offsetX * offsetX + offsetY * offsetY - span * span;
-                    double constant = raySquared - definition.FocalRadius * definition.FocalRadius;
+                    double constant = raySquared - focalRadius * focalRadius;
                     double discriminant = linear * linear - quadratic * constant;
                     if (discriminant < 0) discriminant = 0;
                     position = (linear - Math.Sqrt(discriminant)) / quadratic;

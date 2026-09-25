@@ -30,7 +30,7 @@ public sealed class SvgGradientPolygonTests
     {
         RenderBudget budget = new(1_000);
         SvgGradientStop[] stops = [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
-        SvgRadialGradient circle = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, stops);
+        SvgRadialGradient circle = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, stops, 1, 1);
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] ends = [3];
         SvgRectangle box = new(0, 0, 8, 8, default, true, null);

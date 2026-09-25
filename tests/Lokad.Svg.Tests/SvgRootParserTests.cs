@@ -4132,7 +4132,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        AssertEqualRadial(new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(0.5, new SvgColor(0, 255, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Radial.Gradient);
+        AssertEqualRadial(new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(0.5, new SvgColor(0, 255, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1), geometry.Radial.Gradient);
     }
 
     [Fact]
@@ -4154,7 +4154,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        AssertEqualRadial(new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.25, 0.25, 0.75, 0.25, 0.25, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Radial.Gradient);
+        AssertEqualRadial(new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.25, 0.25, 0.75, 0.25, 0.25, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1), geometry.Radial.Gradient);
     }
 
     [Fact]
@@ -4164,7 +4164,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
-        AssertEqualRadial(new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 4, 4, 4, 4, 4, 0, 0, 1, false, true, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Radial.Gradient);
+        AssertEqualRadial(new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 4, 4, 4, 4, 4, 0, 0, 1, false, true, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1), geometry.Radial.Gradient);
     }
     [Fact]
     public void Maps_userspace_radial_circle_through_uniform_transform()
@@ -4199,9 +4199,35 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
     [Fact]
-    public void Rejects_nonuniform_userspace_radial_transforms()
+    public void Admits_nonuniform_userspace_radial_fills_through_recorded_scales()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><g transform='scale(2,1)'><rect width='8' height='8' fill='url(#g)'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><g transform='scale(2,1)'><rect width='8' height='8' fill='url(#g)'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
+        Assert.Equal(8, geometry.Radial.Gradient.CenterX);
+        Assert.Equal(4, geometry.Radial.Gradient.CenterY);
+        Assert.Equal(8, geometry.Radial.Gradient.Radius);
+        Assert.Equal(2, geometry.Radial.Gradient.ReferenceScaleX);
+        Assert.Equal(1, geometry.Radial.Gradient.ReferenceScaleY);
+    }
+
+    [Fact]
+    public void Admits_nonuniform_userspace_radial_polygon_fills_through_recorded_scales()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><g transform='scale(2,1)'><polygon points='0,0 8,0 0,8' fill='url(#g)'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialPolygon, geometry.Kind);
+        Assert.True(geometry.RadialPolygon.HasFill);
+        Assert.Equal(2, geometry.RadialPolygon.Gradient.ReferenceScaleX);
+        Assert.Equal(1, geometry.RadialPolygon.Gradient.ReferenceScaleY);
+    }
+
+    [Fact]
+    public void Rejects_nonuniform_kernel_strokes_with_radial_paint()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><g transform='scale(2,1)'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
@@ -4560,7 +4586,7 @@ public sealed class SvgRootParserTests
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
         Assert.Equal(new SvgRectangle(4, 0, 4, 8, default, true, null), geometry.Radial.Fill);
-        AssertEqualRadial(new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }), geometry.Radial.Gradient);
+        AssertEqualRadial(new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1), geometry.Radial.Gradient);
     }
 
     [Fact]
@@ -5369,5 +5395,7 @@ public sealed class SvgRootParserTests
         Assert.Equal(expected.IsUserSpace, actual.IsUserSpace);
         Assert.Equal(expected.Spread, actual.Spread);
         Assert.Equal(expected.Stops, actual.Stops);
+        Assert.Equal(expected.ReferenceScaleX, actual.ReferenceScaleX);
+        Assert.Equal(expected.ReferenceScaleY, actual.ReferenceScaleY);
     }
 }

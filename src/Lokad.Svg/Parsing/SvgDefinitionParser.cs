@@ -307,7 +307,7 @@ internal static class SvgDefinitionParser
         if (template.Href is not null && template.VectorCount == 0 && (template.HasFocalX || template.HasFocalY || template.HasFocalRadius)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial radial vector overrides are not implemented.");
         if (template.HasUnits && template.VectorCount == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Radial unit overrides without vector overrides are not implemented.");
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveRadialStops(state, template);
-        (double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius, bool isUserSpace, SvgGradientSpread spread) = ResolveRadialVector(template, state);
+        (double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY) = ResolveRadialVector(template, state);
         double focalDeltaX = focalX - centerX;
         double focalDeltaY = focalY - centerY;
         if (radius == 0)
@@ -319,7 +319,7 @@ internal static class SvgDefinitionParser
             double inner = radius - focalRadius;
             if (inner <= 0 || focalDeltaX * focalDeltaX + focalDeltaY * focalDeltaY >= inner * inner) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Offset radial foci outside the gradient circle are not implemented.");
         }
-        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, focalX, focalY, focalRadius, offset1, offset2, isEmpty, isUserSpace, spread, stops);
+        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, focalX, focalY, focalRadius, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY);
         string retainedId = state.Strings.Copy(state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier."));
         if (state.Gradients.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
         if (!state.RadialGradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
@@ -333,13 +333,15 @@ internal static class SvgDefinitionParser
         return (parent.Start, parent.End, parent.Offset1, parent.Offset2, parent.IsEmpty, parent.Stops);
     }
 
-    private static (double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientSpread Spread) ResolveRadialVector(SvgRadialTemplate template, SvgDocumentState state)
+    private static (double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientSpread Spread, double ReferenceScaleX, double ReferenceScaleY) ResolveRadialVector(SvgRadialTemplate template, SvgDocumentState state)
     {
         double centerX = template.CenterX;
         double centerY = template.CenterY;
         double radius = template.Radius;
         double focalRadius = template.FocalRadius;
         bool isUserSpace = template.IsUserSpace;
+        double referenceScaleX = 1;
+        double referenceScaleY = 1;
         SvgGradientSpread spread = template.Spread;
         double focalX;
         double focalY;
@@ -354,6 +356,8 @@ internal static class SvgDefinitionParser
             focalX = parent.FocalX;
             focalY = parent.FocalY;
             focalRadius = parent.FocalRadius;
+            referenceScaleX = parent.ReferenceScaleX;
+            referenceScaleY = parent.ReferenceScaleY;
         }
         else
         {
@@ -366,8 +370,13 @@ internal static class SvgDefinitionParser
             (focalX, focalY) = template.Transform.Apply(focalX, focalY);
             radius *= template.Transform.ScaleX;
             focalRadius *= template.Transform.ScaleX;
+            if (isUserSpace)
+            {
+                referenceScaleX *= template.Transform.ScaleX;
+                referenceScaleY *= template.Transform.ScaleY;
+            }
         }
-        return (centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, spread);
+        return (centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, spread, referenceScaleX, referenceScaleY);
     }
 
     private static (SvgColor Start, SvgColor End, double Offset1, double Offset2, bool IsEmpty, SvgGradientStop[] Stops) ResolveGradientStops(SvgDocumentState state, SvgGradientTemplate template)

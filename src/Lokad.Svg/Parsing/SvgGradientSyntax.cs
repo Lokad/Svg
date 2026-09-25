@@ -17,8 +17,9 @@ internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);
 /// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2);
 
-/// <summary>Retains one admitted one-to-eight-stop radial gradient with a strictly inside focal point and contained focal circle.</summary>
-internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops);
+/// <summary>Retains one admitted one-to-eight-stop radial gradient with a strictly inside focal point, contained focal circle and referencing scale record.</summary>
+/// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored circle after the local definition, so raster evaluation inverts the exact paint map under non-uniform referencing transforms.</remarks>
+internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY);
 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius, bool HasFocalX, bool HasFocalY, bool HasFocalRadius);
@@ -421,18 +422,17 @@ internal static class SvgGradientSyntax
         return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2, ReferenceScaleX = gradient.ReferenceScaleX * transform.ScaleX, ReferenceScaleY = gradient.ReferenceScaleY * transform.ScaleY };
     }
 
-    /// <summary>Maps one userSpaceOnUse radial circle and its focal point through the referencing transform under uniform scaling.</summary>
+    /// <summary>Maps one userSpaceOnUse radial circle and its focal point through the referencing transform, recording scales for inverse evaluation.</summary>
     internal static SvgRadialGradient MapUserSpaceRadial(AxisTransform transform, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
         if (!gradient.IsUserSpace) return gradient;
-        if (Math.Abs(transform.ScaleX) != Math.Abs(transform.ScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform userSpaceOnUse gradient transforms are not implemented.");
         if (frame is not null && (frame.Value.OffsetX != 0 || frame.Value.OffsetY != 0 || frame.Value.ViewportWidth is not null || frame.Value.ViewportHeight is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "userSpaceOnUse gradients inside transformed viewports are not implemented.");
         (double mappedX, double mappedY) = transform.ApplyToUserPoint(gradient.CenterX, gradient.CenterY);
         (double mappedFocalX, double mappedFocalY) = transform.ApplyToUserPoint(gradient.FocalX, gradient.FocalY);
         double mappedRadius = gradient.Radius * Math.Abs(transform.ScaleX);
         double mappedFocalRadius = gradient.FocalRadius * Math.Abs(transform.ScaleX);
         if (!double.IsFinite(mappedRadius) || !double.IsFinite(mappedFocalRadius) || !double.IsFinite(mappedFocalX) || !double.IsFinite(mappedFocalY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the radial gradient coordinate range.");
-        return gradient with { CenterX = mappedX, CenterY = mappedY, Radius = mappedRadius, FocalX = mappedFocalX, FocalY = mappedFocalY, FocalRadius = mappedFocalRadius };
+        return gradient with { CenterX = mappedX, CenterY = mappedY, Radius = mappedRadius, FocalX = mappedFocalX, FocalY = mappedFocalY, FocalRadius = mappedFocalRadius, ReferenceScaleX = gradient.ReferenceScaleX * transform.ScaleX, ReferenceScaleY = gradient.ReferenceScaleY * transform.ScaleY };
     }
 
     /// <summary>Mirrors one objectBoundingBox gradient vector when the referencing transform reflects its axis.</summary>
