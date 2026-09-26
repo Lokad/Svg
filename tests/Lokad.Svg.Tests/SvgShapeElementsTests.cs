@@ -232,6 +232,24 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Dashed_ellipse_use_matches_direct()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><ellipse id='e' cx='8' cy='8' rx='6' ry='4' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/></defs><use href='#e'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Dashed_ellipse_symbol_matches_direct()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><symbol id='s' viewBox='0 0 16 16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/></symbol></defs><use href='#s' width='16' height='16'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
     public void Offset_dashed_circle_sized_ellipse_matches_dashed_circle()
     {
         byte[] ellipse = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='6' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='4 2' stroke-dashoffset='2'/></svg>", out _, out _);
