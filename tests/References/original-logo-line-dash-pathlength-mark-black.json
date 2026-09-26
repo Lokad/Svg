@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-line-dash-pathlength-mark-black",
+  "referencePng": "original-logo-line-dash-pathlength-mark-black.png",
+  "referenceSha256": "5065dd690473456df4c7ff9b39e63199115f98384284ebe6c05eaffe114418af",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "e933833c26c02f65baaf8dbdfa9b63a39aa892d7e82a084732c6e6a8f1f93144",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
