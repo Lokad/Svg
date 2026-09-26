@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples stable for batch 3 (3/3 byte-identical each; per-entry hashes below). Batch 4 selected 2026-09-26: 2 documents (inv-013..inv-014), both renderer-probed 2026-09-26; oracle triples stable for batch 4 (3/3 byte-identical each; per-entry hashes below). Batch 5 selected 2026-09-26: 2 documents (inv-015..inv-016), both renderer-probed 2026-09-26; oracle triples stable for batch 5 (3/3 byte-identical each; per-entry hashes below). Batch 6 selected 2026-09-26: 2 documents (inv-017..inv-018), the first renderable candidates; oracle triples stable for batch 6 (3/3 byte-identical each; per-entry hashes below). Batch 7 selected 2026-09-26: 2 documents (inv-019..inv-020), both renderer-probed 2026-09-26; oracle triples stable for batch 7 (3/3 byte-identical each; per-entry hashes below). All 20 initial-target documents are now inventoried, probed and tripled. Upstream SHA-1 verification 2026-09-26: all 20 local blobs are byte-identical to their recorded Commons source files (size and SHA-1 match via API), all LicenseShortName=Public domain against the true file pages. Batch 8 selected 2026-09-26: 2 documents (inv-021..inv-022), national flags as real-export primitive coverage; inv-021 is the first exact inventory document. Oracle triples stable for batch 8 (3/3 byte-identical each; per-entry hashes below). The 20-document R26 initial target is met. No live mask element has been sourced yet despite title-text leads (Artsy-logo-mask carries no mask element); masks, filters and renderable rect/line/polyline primitives remain recorded gaps. A staged USGov candidate (Joint Typhoon Warning Center logo, PD, pt units, feGaussianBlur filter) was excluded: it carries live text elements, which the selection rules keep out of scope (fonts); filter primitives remain a genuine gap. A third staged file (4-set Venn, PD) was held back as a redundant fourth DTD rejection; it can backfill later if the rejects path needs volume.
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples stable for batch 3 (3/3 byte-identical each; per-entry hashes below). Batch 4 selected 2026-09-26: 2 documents (inv-013..inv-014), both renderer-probed 2026-09-26; oracle triples stable for batch 4 (3/3 byte-identical each; per-entry hashes below). Batch 5 selected 2026-09-26: 2 documents (inv-015..inv-016), both renderer-probed 2026-09-26; oracle triples stable for batch 5 (3/3 byte-identical each; per-entry hashes below). Batch 6 selected 2026-09-26: 2 documents (inv-017..inv-018), the first renderable candidates; oracle triples stable for batch 6 (3/3 byte-identical each; per-entry hashes below). Batch 7 selected 2026-09-26: 2 documents (inv-019..inv-020), both renderer-probed 2026-09-26; oracle triples stable for batch 7 (3/3 byte-identical each; per-entry hashes below). All 20 initial-target documents are now inventoried, probed and tripled. Upstream SHA-1 verification 2026-09-26: all 20 local blobs are byte-identical to their recorded Commons source files (size and SHA-1 match via API), all LicenseShortName=Public domain against the true file pages. Batch 8 selected 2026-09-26: 2 documents (inv-021..inv-022), national flags as real-export primitive coverage; inv-021 is the first exact inventory document. Oracle triples stable for batch 8 (3/3 byte-identical each; per-entry hashes below). Batch 9 selected 2026-09-26: 3 documents (inv-023..inv-025); inv-023 and inv-024 are exact, inv-025 traces an intrinsic-sizing divergence on a viewBox-only file. Oracle triples stable for batch 9 (3/3 byte-identical each; per-entry hashes below). A staged fourth file (Flag of Germany, PD) was held back as a redundant fifth DTD rejection. The 20-document R26 initial target is met. No live mask element has been sourced yet despite title-text leads (Artsy-logo-mask carries no mask element); masks, filters and renderable rect/line/polyline primitives remain recorded gaps. A staged USGov candidate (Joint Typhoon Warning Center logo, PD, pt units, feGaussianBlur filter) was excluded: it carries live text elements, which the selection rules keep out of scope (fonts); filter primitives remain a genuine gap. A third staged file (4-set Venn, PD) was held back as a redundant fourth DTD rejection; it can backfill later if the rejects path needs volume.
 
 ## Purpose and non-goals
 
@@ -354,3 +354,43 @@ Public-domain SVGs sourced from Wikimedia Commons (both LicenseShortName=Public 
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: known-difference (renders; VisualDiff vs 900x600 oracle SHA-256 71d69eef9ca01eb71412611722a43861953684c98dcfab5a4d0652bd034833da: changedPixelCount 1446, maximumChannelError 87, maximumAlphaError 0, mismatch boxed to disc region x270-629 y120-479; candidate identity SHA-256 8381c343369c5308551bd0e9c73d06f31af2d8dc24ac3071579475c6d9cad52e).
 - reference: exploratory oracle triple 2026-09-26, 900x600 transparent, 3/3 byte-identical (hash in status line), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+
+## Selected documents (batch 9, 2026-09-26)
+
+Public-domain state-symbol SVGs from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, size and SHA-1 byte-identical to local blobs, 2026-09-26). inv-023 confirms viewBox-scaled rects byte-identical at 500x; inv-024 plain integer bands exact. inv-025 (viewBox-only 10x6, fractional-center circle) renders at the default 300x150 while Chrome lays the same file out from intrinsic dimensions, so the oracle triple is pinned at the renderer-default 300x150 viewport and the mismatch is recorded as an intrinsic-sizing divergence, not a paint defect. Files live in tests/Fixtures/candidates/ with provenance; no CC0 SPDX headers; never copied into tests/Fixtures/original/.
+
+### inv-023 — Flag of Italy
+
+- file: tests/Fixtures/candidates/inv-023.svg (SHA-256 C939E50605C5A08DF1AAF19818F74D2919A9D3C3B7AA7CD90520B8BFC9C5DDDC)
+- source: Wikimedia Commons, File:Flag of Italy.svg. Retrieval 2026-09-26.
+- license: PD (Commons, state symbol).
+- retrievalDate: 2026-09-26.
+- archetypes: viewBox-scaled integer rects at 500x, no DTD.
+- content: 3 rects.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: exact (renders byte-identical; VisualDiff vs 1500x1000 oracle SHA-256 f00425e3f50040e5131f805bc0301bef49e7dee3ce9b6c4b4103da9c5364efbe: changedPixelCount 0; candidate identity SHA-256 75853a107335f3643e9d242359f7e0e2507302323d66a0a4b50c4c4b18464487).
+- reference: exploratory oracle triple 2026-09-26, 1500x1000 transparent, 3/3 byte-identical (hash in status line), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+
+### inv-024 — Flag of Ukraine
+
+- file: tests/Fixtures/candidates/inv-024.svg (SHA-256 77E3EB29BBC7D4BAE51F2E959D4EF4656EB1E34484CF772B4081A22F4AF5256B)
+- source: Wikimedia Commons, File:Flag of Ukraine.svg. Retrieval 2026-09-26.
+- license: PD (Commons, state symbol).
+- retrievalDate: 2026-09-26.
+- archetypes: integer rect bands, no viewBox, no DTD.
+- content: 2 rects.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: exact (renders byte-identical; VisualDiff vs 1200x800 oracle SHA-256 f71abe9353d250021ba83d868c6cccb195f68217f70d8699c76171e3059007cf: changedPixelCount 0; candidate identity SHA-256 92957fc680ecd7c478c90d95443dfc3eb84b36c08784e3b5e6576a6b12424e69).
+- reference: exploratory oracle triple 2026-09-26, 1200x800 transparent, 3/3 byte-identical (hash in status line), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+
+### inv-025 — Flag of Bangladesh
+
+- file: tests/Fixtures/candidates/inv-025.svg (SHA-256 453B90FEE62DF5770D9610E8BA99E047F63F986A027CC071F2A90D79C8012150)
+- source: Wikimedia Commons, File:Flag of Bangladesh.svg. Retrieval 2026-09-26.
+- license: PD (Commons, state symbol).
+- retrievalDate: 2026-09-26.
+- archetypes: viewBox-only viewport, fractional-center circle; intrinsic-sizing divergence exhibit.
+- content: 1 rect, 1 circle.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: known-difference (renders at default 300x150; VisualDiff vs 300x150 oracle SHA-256 0e88a41004c83ae73e21c855bf2e43cb8196bb6c59670957ce1b669bef521a90: changedPixelCount 12007, maximumChannelError 255, maximumAlphaError 255, whole-image bbox; candidate identity SHA-256 1725b71abdeb201654de6fa8fd5def7dca301a48d4232795d06f54fae28303dd).
+- reference: exploratory oracle triple 2026-09-26, 300x150 transparent, 3/3 byte-identical (hash in status line), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
