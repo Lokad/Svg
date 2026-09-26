@@ -320,6 +320,7 @@ public static class SvgConverter
             double bottom = double.NegativeInfinity;
             for (int index = 0; index < polygon.Points.Length; index++)
             {
+                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                 double edgeX = polygon.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(polygon.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(polygon.Points[index].X, horizontalScale, horizontalOffset);
                 double edgeY = polygon.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(polygon.Points[index].Y, verticalScale, verticalOffset) : MapEdge(polygon.Points[index].Y, verticalScale, verticalOffset);
                 mapped[index] = new SvgDevicePoint(edgeX, edgeY);
@@ -375,6 +376,7 @@ public static class SvgConverter
             double bottom = double.NegativeInfinity;
             for (int index = 0; index < outline.Points.Length; index++)
             {
+                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                 double edgeX = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(outline.Points[index].X, horizontalScale, horizontalOffset);
                 double edgeY = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].Y, verticalScale, verticalOffset) : MapEdge(outline.Points[index].Y, verticalScale, verticalOffset);
                 mapped[index] = new SvgDevicePoint(edgeX, edgeY);
@@ -475,6 +477,7 @@ public static class SvgConverter
             double bottom = double.NegativeInfinity;
             for (int index = 0; index < outline.Points.Length; index++)
             {
+                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                 double edgeX = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(outline.Points[index].X, horizontalScale, horizontalOffset);
                 double edgeY = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].Y, verticalScale, verticalOffset) : MapEdge(outline.Points[index].Y, verticalScale, verticalOffset);
                 mapped[index] = new SvgDevicePoint(edgeX, edgeY);
@@ -625,6 +628,7 @@ public static class SvgConverter
             double bottom = double.NegativeInfinity;
             for (int index = 0; index < outline.Points.Length; index++)
             {
+                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                 double edgeX = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(outline.Points[index].X, horizontalScale, horizontalOffset);
                 double edgeY = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].Y, verticalScale, verticalOffset) : MapEdge(outline.Points[index].Y, verticalScale, verticalOffset);
                 mapped[index] = new SvgDevicePoint(edgeX, edgeY);

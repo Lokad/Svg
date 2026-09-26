@@ -387,6 +387,26 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Polygon_rasterization_observes_cancellation_during_vertex_mapping()
+    {
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] points = [new(100, 100), new(108, 100), new(100, 108)];
+        int[] ends = [3];
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        try
+        {
+            SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
+            using SvgRoot root = new(8, 8, null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255)], false, 0, null);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            using CancellationTokenSource cancellation = new();
+            cancellation.Cancel();
+            Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, cancellation.Token));
+        }
+        finally { fill.Dispose(); }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
     public void Polygon_rasterization_denies_before_mapping_work_exceeds_the_limit()
     {
         RenderBudget budget = new(100_000);
