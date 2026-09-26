@@ -249,7 +249,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 
 ### inv-015 — BSicon numN040
 
-- file: tests/Fixtures/candidates/inv-015.svg (SHA-256 567063C92D30993E824E1B8CF48310B0F1211FA8CA8DAA79732436E48CF617B5)
+- file: tests/Fixtures/candidates/inv-015.svg (SHA-256 2899EB4875969BE73B21382B4CBA37892BB938F450C8F34043279ABBB4EC29AC)
 - source: Wikimedia Commons, File:BSicon numN040.svg. Retrieval 2026-09-26.
 - license: PD-shape (Commons).
 - retrievalDate: 2026-09-26.
