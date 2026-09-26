@@ -22,8 +22,8 @@ is not a general pixel-fidelity claim.
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms aggregate into at-most-64 KiB `IDAT` chunks under a budgeted 64 KiB cap with byte-identical output across all four forms, while memory forms accumulate budgeted segments without geometric copies; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and one hundred eighteen stable references |
-| Fixture corpus | One hundred fifty-three original CC0 probes with verified hashes; the manifest gate renders and compares all one hundred eleven exact entries exactly and locks all forty-two unsupported entries to their observed render-or-reject behavior with categorized rejection codes, and the four renderable entries carry retained pinned-Chrome references with ratcheted decoded-RGBA mismatch measures |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and one hundred nineteen stable references |
+| Fixture corpus | One hundred fifty-four original CC0 probes with verified hashes; the manifest gate renders and compares all one hundred eleven exact entries exactly and locks all forty-three unsupported entries to their observed render-or-reject behavior with categorized rejection codes, and the four renderable entries carry retained pinned-Chrome references with ratcheted decoded-RGBA mismatch measures |
 
 ### Experimental supplied-font text
 
