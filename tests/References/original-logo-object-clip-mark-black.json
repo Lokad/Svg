@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-object-clip-mark-black",
+  "referencePng": "original-logo-object-clip-mark-black.png",
+  "referenceSha256": "d8a1cdfdde43c4f12f2da3924b516af84980d7abc800a0b4dd86069eb180247f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "9b0d8d141c9202e9509ad9057a05562cf68e26c7d8fda2517ade14d84ac1f6e9",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
