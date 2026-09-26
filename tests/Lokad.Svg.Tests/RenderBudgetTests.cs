@@ -294,6 +294,24 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Many_curves_fit_linear_scratch_budget()
+    {
+        string curve = "<path d='M0,4 C2,2 6,2 8,4 Z' fill='red'/>";
+        System.Text.StringBuilder manyDocument = new("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>");
+        for (int index = 0; index < 20; index++) manyDocument.Append(curve);
+        manyDocument.Append("</svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget singleBudget = new(limits.MaximumAccountedBytes);
+        using (SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" + curve + "</svg>"), limits, singleBudget, CancellationToken.None)) { }
+        long singlePeak = singleBudget.Snapshot().PeakBytes;
+        RenderBudget manyBudget = new(limits.MaximumAccountedBytes);
+        using (SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(manyDocument.ToString()), limits, manyBudget, CancellationToken.None)) { }
+        long manyPeak = manyBudget.Snapshot().PeakBytes;
+        Assert.True(manyPeak < 500_000, "Twenty curves must not reserve global-maximum scratch.");
+        Assert.True(manyPeak - singlePeak < 100_000, "Per-curve incremental cost must stay flat; scratch must be released between lowerings.");
+    }
+
+    [Fact]
     public void Curved_clip_bounds_fit_small_scratch_budget()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs><path d='M0,8 Q4,-4 8,8' fill='red' clip-path='url(#window)'/></svg>");
