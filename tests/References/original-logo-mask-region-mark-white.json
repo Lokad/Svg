@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-mask-region-mark-white",
+  "referencePng": "original-logo-mask-region-mark-white.png",
+  "referenceSha256": "d8ee8cba05501bdfb8c71bd9331fd6c77ba708c511fecbeea2044bdd1a1a215a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "e432286e66abdbfdd2cb9128dffc375e2faf22481d2b349953a427cd881b8ac1",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
