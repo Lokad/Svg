@@ -525,7 +525,7 @@ Public-domain state-symbol SVG from Wikimedia Commons (LicenseShortName=Public d
 - archetypes: integer circle primitive, solid rect ground, explicit viewport, no viewBox.
 - content: 1 rect, 1 circle.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: known-difference (renders, 11105-byte candidate via Release SvgRenderOptions.Default; VisualDiff vs 900x600 oracle SHA-256 71d69eef9ca01eb71412611722a43861953684c98dcf9d597b7bee4c1370daf7e14686f: changedPixelCount 1446, maximumChannelError 87, maximumAlphaError 0, circle-edge bbox x270-629 y120-479; candidate identity SHA-256 8381c343369c5308551bd0e9c73d06f31af2d8dc24ac3071579475c6d9cad52e; a single white-background exploratory capture hashed identically, fully opaque, no white triple claimed). Batch 15 selected 2026-09-26: 1 document (inv-034), Flag of Denmark: integer-geometry open stroked cross over a closed ground; rejects on open contours, isolating openness from the fractional (inv-028) and overlay (inv-029) confounds. Oracle triple stable at native viewport (3/3 byte-identical; hash below).
+- status: known-difference (renders, 11105-byte candidate via Release SvgRenderOptions.Default; VisualDiff vs 900x600 oracle SHA-256 71d69eef9ca01eb71412611722a43861953684c98dcf9d597b7bee4c1370daf7e14686f: changedPixelCount 1446, maximumChannelError 87, maximumAlphaError 0, circle-edge bbox x270-629 y120-479; candidate identity SHA-256 8381c343369c5308551bd0e9c73d06f31af2d8dc24ac3071579475c6d9cad52e; a single white-background exploratory capture hashed identically, fully opaque, no white triple claimed). Batch 15 selected 2026-09-26: 1 document (inv-034), Flag of Denmark: integer-geometry open stroked cross over a closed ground; rejects on open contours, isolating openness from the fractional (inv-028) and overlay (inv-029) confounds. Oracle triple stable at native viewport (3/3 byte-identical; hash below). Batch 16 selected 2026-09-26: 1 document (inv-035), Early Intersex Flag: striped ground with a translucent-stop radial gradient reached through xlink:href; rejects on radial xlink:href, a new gate (linear href inheritance is admitted, radial xlink:href is not), with radial rendering, transparent stops, fractional userSpace matrix and viewBox-only sizing layered behind. Oracle triple stable at intrinsic size (3/3 byte-identical; hash below).
 - reference: exploratory oracle triple 2026-09-26, 900x600 transparent, 3/3 byte-identical (hash in status line), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ## Selected documents (batch 15, 2026-09-26)
@@ -543,3 +543,19 @@ Public-domain state-symbol SVG from Wikimedia Commons (LicenseShortName=Public d
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented; Release SvgRenderOptions.Default probe 2026-09-26, no candidate render).
 - reference: exploratory oracle triple 2026-09-26, native 37x28 transparent, 3/3 byte-identical SHA-256 2502e5492fc3c300f82ddc6667a8a318bd520f1c1f40d6ecdf9e313238f7b751, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+
+## Selected documents (batch 16, 2026-09-26)
+
+Public-domain SVG from Wikimedia Commons (LicenseShortName=Public domain per Commons API extmetadata, size and SHA-1 byte-identical to local blob, 2026-09-26), found through a Commons content search for stop-opacity in logos. inv-035 is striped paths plus a radial gradient whose stops (including a transparent stop) arrive via xlink:href: the first translucent-gradient real export and the first xlink rejection gate. File lives in tests/Fixtures/candidates/ with provenance; no CC0 SPDX header; never copied into tests/Fixtures/original/.
+
+### inv-035 — Early Intersex Flag
+
+- file: tests/Fixtures/candidates/inv-035.svg (SHA-256 5E7158377184AB03BDBF190EA82C3D9555708389984FCEE8594195AB65DD5297)
+- source: Wikimedia Commons, File:Early Intersex Flag.svg. Retrieval 2026-09-26. Upstream verification 2026-09-26 via Commons API: size 815 and SHA-1 44b9085b9df4a229bff6da13ea2c8131e728200c match local bytes; LicenseShortName=Public domain.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: striped paths, radial gradient, href-inherited stops, transparent stop, fractional userSpace matrix, xlink namespace, viewBox-only viewport.
+- content: 6 stripe paths, 1 radial-gradient paint via xlink:href with 2 inherited stops.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Radial gradient attribute xlink:href is not implemented; Release SvgRenderOptions.Default probe 2026-09-26, no candidate render). Layered behind the gate: radial rendering, transparent-stop evaluation, fractional gradientTransform matrix, viewBox-only intrinsic sizing.
+- reference: exploratory oracle triple 2026-09-26, intrinsic 800x600 transparent, 3/3 byte-identical SHA-256 9275512856134cb2b11e0987956493b9a5268e67c4517017e0f00bca355e594e, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
