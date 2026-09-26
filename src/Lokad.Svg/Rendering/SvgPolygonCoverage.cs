@@ -138,6 +138,7 @@ internal static class SvgPolygonCoverage
 
     private static double FanSignedArea(ReadOnlySpan<SvgDevicePoint> contour, int start, int end, int pixelX, int pixelY, CancellationToken cancellationToken)
     {
+        SvgPolygonCoverageProbe.FanEvaluated();
         double left = pixelX;
         double top = pixelY;
         double signedArea = 0;

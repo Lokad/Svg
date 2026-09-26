@@ -425,6 +425,27 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Polygon_rasterization_fans_every_covered_pixel_per_contour()
+    {
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
+        int[] ends = [3];
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        try
+        {
+            SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
+            using SvgRoot root = new(8, 8, null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255)], false, 0, null);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100_000);
+            int fanEvaluations = 0;
+            using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
+            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
+            Assert.Equal(64, fanEvaluations);
+        }
+        finally { fill.Dispose(); }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
     public void Polygon_rasterization_denies_before_mapping_work_exceeds_the_limit()
     {
         RenderBudget budget = new(100_000);
