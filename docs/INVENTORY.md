@@ -84,7 +84,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: text-as-paths outlined wordmark.
 - content: 2 paths, inkscape metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: SVG root attribute x is not implemented).
+- status: unsupported (rejects:UnsupportedFeature: SVG root attribute xml:space is not implemented) [inv-002; root x/y admitted 2026-09-26].
 - reference: none yet. [exploratory oracle triple 2026-09-26, 500x200 transparent, 3/3 byte-identical SHA-256 723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-003 — SDL logo
@@ -108,7 +108,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: path mark.
 - content: 6 paths, inkscape metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: SVG root attribute x is not implemented).
+- status: unsupported (rejects:UnsupportedFeature: SVG root attribute enable-background is not implemented) [inv-004; root x/y admitted 2026-09-26].
 - reference: none yet. [exploratory oracle triple 2026-09-26, 595x740 transparent, 3/3 byte-identical SHA-256 7db3cdfce75d6906ddd36dca06bb8e5b52102a5a5701c677f734194adbc303d9, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-005 — SimpleX.chat logo

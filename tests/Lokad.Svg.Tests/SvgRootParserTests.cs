@@ -6579,4 +6579,36 @@ public sealed class SvgRootParserTests
         Assert.Equal(expected.ReferenceScaleX, actual.ReferenceScaleX);
         Assert.Equal(expected.ReferenceScaleY, actual.ReferenceScaleY);
     }
+
+    [Fact]
+    public void Admits_zero_exporter_root_positions()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='12' height='7'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(12, root.Width);
+        Assert.Equal(7, root.Height);
+        Assert.Single(root.Rectangles);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Ignores_outermost_root_positions_when_rendering()
+    {
+        // SVG 1.1 gives x and y no effect on the outermost svg element.
+        byte[] plain = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+        byte[] offset = "<svg xmlns='http://www.w3.org/2000/svg' x='8' y='4' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> offsetPng = SvgConverter.ConvertToPng(offset, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(plainPng.Span.SequenceEqual(offsetPng.Span));
+    }
+
+    [Fact]
+    public void Rejects_percentage_root_positions()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' x='50%'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
 }
