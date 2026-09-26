@@ -61,11 +61,11 @@ when rejected, retained reference with measured mismatch when renderable but wro
 
 ## Selected documents (batch 1, 2026-09-26)
 
-Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, 2026-09-26; no Trademarked template on file pages; trusted revisions). Commons PD tags state copyright status; depicted marks may carry trademark considerations, recorded here rather than hidden. Files live in tests/Fixtures/candidates/ with provenance; third-party files carry no CC0 SPDX header and are never copied into tests/Fixtures/original/.
+Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, 2026-09-26; no Trademarked template on file pages; trusted revisions). Commons PD tags state copyright status; depicted marks may carry trademark considerations, recorded here rather than hidden. Files live in tests/Fixtures/candidates/ with provenance; third-party files carry no CC0 SPDX header and are never copied into tests/Fixtures/original/. Repo policy (*.svg text eol=lf) normalizes line endings on commit: recorded hashes identify the canonical LF blob bytes, which is what any fresh checkout materializes. (XML parsing normalizes line endings before parsing, so oracle captures and renderer probes are unaffected.)
 
 ### inv-001 — SimpleLogin logo
 
-- file: tests/Fixtures/candidates/inv-001.svg (SHA-256 292BB12AFD92929CC51372C651B221770B65461331E839187F83FC582D60E710)
+- file: tests/Fixtures/candidates/inv-001.svg (SHA-256 BFF82F97D7A113BA10B4DEF3341BD2D5FD43FF3E5BAD648157708F27A1BFDD6B)
 - source: Wikimedia Commons, File:SimpleLogin logo. Retrieval 2026-09-26.
 - license: PD-logo (simplelogin.io/press via Commons).
 - retrievalDate: 2026-09-26.
@@ -141,7 +141,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 
 ### inv-007 — Zeppelin logo
 
-- file: tests/Fixtures/candidates/inv-007.svg (SHA-256 90009E03C20B43565A4D2E4903A9F07402FE07D37E3EC0F66184E4286D6E6AC5)
+- file: tests/Fixtures/candidates/inv-007.svg (SHA-256 DD9881FB39562630E4C13C97D8CF78C905F456D5461C77DF8B18C91DD521658C)
 - source: Wikimedia Commons, File:Zeppelin logo.svg. Retrieval 2026-09-26.
 - license: PD (Commons).
 - retrievalDate: 2026-09-26.
