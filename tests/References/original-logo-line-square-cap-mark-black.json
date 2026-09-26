@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-line-square-cap-mark-black",
+  "referencePng": "original-logo-line-square-cap-mark-black.png",
+  "referenceSha256": "0a8d838f638cddfea35626ad7d326f027c7ca8ce4e5ad117e01aac32e8552edd",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "c6afe602da1fcd7f51427e42cfecfbc57b773957e38fe7239664ac30eff63198",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
