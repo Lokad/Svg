@@ -758,9 +758,31 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_bevel_joins_on_rounded_rectangles()
+    public void Bevel_joins_render_on_rounded_rectangles()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linejoin=\"bevel\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linejoin=\"bevel\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[1].Kind);
+    }
+
+    [Fact]
+    public void Bevel_joins_render_differently_from_miter_on_rounded_rectangles()
+    {
+        byte[] miter = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\"/></svg>");
+        byte[] bevel = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linejoin=\"bevel\"/></svg>");
+
+        ReadOnlyMemory<byte> miterPng = SvgConverter.ConvertToPng(miter, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> bevelPng = SvgConverter.ConvertToPng(bevel, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.False(bevelPng.Span.SequenceEqual(miterPng.Span));
+    }
+
+    [Fact]
+    public void Rejects_bevel_joins_on_sharp_rectangles()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linejoin=\"bevel\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }

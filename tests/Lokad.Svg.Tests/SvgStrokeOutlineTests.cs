@@ -95,6 +95,24 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    public void Sharp_turn_bevels_with_bevel_join()
+    {
+        SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(5, 0), new SvgDevicePoint(1, 3)];
+        SvgContourBuilder builder = new(16, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Bevel, builder, CancellationToken.None);
+
+        ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
+        Assert.Equal(1, builder.ContourCount);
+        Assert.True(contour.Length == 8, "Bevel joins cut the outer corner like the miter-limit fallback.");
+        Assert.Equal(new SvgDevicePoint(0, 1), contour[0]);
+        Assert.Equal(new SvgDevicePoint(5, 1), contour[1]);
+        Assert.Equal(4.4, contour[2].X, 9);
+        Assert.Equal(-0.8, contour[2].Y, 9);
+        Assert.Equal(new SvgDevicePoint(0, -1), contour[7]);
+    }
+
+    [Fact]
     public void Sharp_turn_miters_within_limit_four()
     {
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(5, 0), new SvgDevicePoint(1, 3)];

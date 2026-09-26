@@ -38,6 +38,9 @@ internal enum SvgStrokeJoin
 
     /// <summary>Arc joins on the outer side with a plain inner corner.</summary>
     Round,
+
+    /// <summary>Flat joins cutting the outer corner between the two offset points.</summary>
+    Bevel,
 }
 
 internal static class SvgStrokeOutline
@@ -257,6 +260,12 @@ internal static class SvgStrokeOutline
         double outgoingNormalX = -outgoing.Y;
         double outgoingNormalY = outgoing.X;
         double cross = incoming.X * outgoing.Y - incoming.Y * outgoing.X;
+        if (join == SvgStrokeJoin.Bevel)
+        {
+            builder.AddLine(new SvgDevicePoint(RequireFinite(vertex.X + halfWidth * (-incoming.Y)), RequireFinite(vertex.Y + halfWidth * incoming.X)));
+            builder.AddLine(new SvgDevicePoint(RequireFinite(vertex.X + halfWidth * outgoingNormalX), RequireFinite(vertex.Y + halfWidth * outgoingNormalY)));
+            return;
+        }
         if (join == SvgStrokeJoin.Round && denominator > 0 && cross > 0)
         {
             EmitArcFan(builder, vertex, halfWidth, (-incoming.Y, incoming.X), (-incoming.Y + outgoingNormalX, incoming.X + outgoingNormalY), (outgoingNormalX, outgoingNormalY), cancellationToken);

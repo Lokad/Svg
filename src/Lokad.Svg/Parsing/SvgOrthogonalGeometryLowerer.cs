@@ -490,7 +490,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (dashes is null)
         {
             long wantedPoints = 4L * mapped.Count + 8;
-            if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join != SvgStrokeJoin.Miter)
+            if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join == SvgStrokeJoin.Round)
             {
                 int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
                 try { wantedPoints = checked(4L * mapped.Count * (fanSegments + 1) + 32); }
@@ -804,7 +804,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         double deviceWidth = StrokeDeviceWidth(width, transform, frame, nonScaling);
         if (dashes is not null) return LowerDashedStrokeContours(source, closedEnds, hasCurves, transform, deviceWidth, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget);
         long wantedPoints = 4L * source.PointCount + 8;
-        if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join != SvgStrokeJoin.Miter)
+        if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join == SvgStrokeJoin.Round)
         {
             int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
             try { wantedPoints = checked(4L * source.PointCount * (fanSegments + 1) + 32); }

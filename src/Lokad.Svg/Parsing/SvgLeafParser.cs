@@ -159,7 +159,7 @@ internal static class SvgLeafParser
         {
             SvgComputedStyle whiteStyle = fillElement.Style with { Stroke = "#ffffff" };
             SvgResolvedPaintableElement whiteShape = context.ResolveShape(whiteStyle, reader, true);
-            SvgStrokeStyleSyntax.SvgAdmittedStroke? admitted = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, whiteStyle, whiteShape, "rect");
+            SvgStrokeStyleSyntax.SvgAdmittedStroke? admitted = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, whiteStyle, whiteShape, "rect", false);
             if (admitted is null) return filled;
             if (admitted.Value.Cap != SvgStrokeCap.Butt && admitted.Value.DashPattern is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented on rectangle strokes.");
             if (admitted.Value.Join != SvgStrokeJoin.Miter && admitted.Value.Join != SvgStrokeJoin.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter and round stroke linejoins are implemented on rectangle strokes.");
@@ -215,10 +215,10 @@ internal static class SvgLeafParser
         }
         static SvgStrokeStyleSyntax.SvgAdmittedStroke? ResolveRoundedStroke(XmlReader reader, SvgResolvedPaintableElement element, SvgGeometry fill)
         {
-            SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, element.Style, element, "rect");
+            SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, element.Style, element, "rect", true);
             if (stroke is null) return null;
             if (stroke.Value.Cap != SvgStrokeCap.Butt && stroke.Value.DashPattern is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented on rectangle strokes.");
-            if (stroke.Value.Join != SvgStrokeJoin.Miter && stroke.Value.Join != SvgStrokeJoin.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter and round stroke linejoins are implemented on rectangle strokes.");
+            if (stroke.Value.Join != SvgStrokeJoin.Miter && stroke.Value.Join != SvgStrokeJoin.Round && stroke.Value.Join != SvgStrokeJoin.Bevel) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter, round and bevel stroke linejoins are implemented on rectangle strokes.");
             if (stroke.Value.DashPattern is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed strokes on rounded rectangles are not implemented.");
             if (fill.Polygon.HasFill && stroke.Value.Color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent strokes on filled rounded rectangles are not implemented.");
             return stroke;
