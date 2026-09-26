@@ -343,6 +343,42 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Fills_rounded_rectangles_with_linear_gradients()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='0' y='0' width='8' height='8' rx='2' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
+    }
+
+    [Fact]
+    public void Fills_rounded_rectangles_with_radial_gradients()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='s' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='8' height='8' rx='2' fill='url(#s)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialPolygon, geometry.Kind);
+    }
+
+    [Fact]
+    public void Fills_rounded_rectangles_with_bounding_box_gradients()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='0' y='0' width='8' height='8' rx='2' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.GradientPolygon.Box);
+    }
+
+    [Fact]
+    public void Rejects_undefined_gradients_on_rounded_rectangles()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' rx='2' fill='url(#missing)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Accepts_noop_stroke_styles_on_stroked_leaves()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='1' y='1' width='4' height='4' fill='red' stroke='blue' stroke-width='2' stroke-linecap='butt' stroke-linejoin='miter' stroke-dasharray='none'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

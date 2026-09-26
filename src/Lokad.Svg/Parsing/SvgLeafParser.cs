@@ -14,18 +14,19 @@ internal static class SvgLeafParser
         AxisTransform earlyTransform = context.ResolveTransform(reader);
         SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgViewportFrame? effectiveFrame = SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, frame, earlyPlacement);
-        if (SvgPatternSyntax.IsPatternStroke(patternStyle.Stroke, state)) return SvgPatternSyntax.LowerPatternStrokeRect(reader, context, patternStyle, state, effectiveFrame);
-        if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke) && SvgGradientSyntax.IsGradientFill(patternStyle.Fill))
+        double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
+        double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
+        bool rounded = cornerX != 0 || cornerY != 0;
+        if (SvgPatternSyntax.IsPatternStroke(patternStyle.Stroke, state) && !rounded) return SvgPatternSyntax.LowerPatternStrokeRect(reader, context, patternStyle, state, effectiveFrame);
+        if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke) && SvgGradientSyntax.IsGradientFill(patternStyle.Fill) && !rounded)
         {
             string fillId = SvgGradientSyntax.ParsePaintId(patternStyle.Fill);
             if (!state.Patterns.TryGetValue(fillId, out _)) return SvgGradientSyntax.LowerGradientStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         }
-        if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill)) return LowerPaintServerRect(reader, context, patternStyle, state, effectiveFrame);
-        if (SvgGradientSyntax.IsGradientFill(patternStyle.Fill)) return RetainSingleGeometry(SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, effectiveFrame), state, context);
-        if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke)) return SvgGradientSyntax.LowerGradientStrokeRect(reader, context, patternStyle, state, effectiveFrame);
-        double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
-        double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
-        if (cornerX != 0 || cornerY != 0) return RetainSingleGeometry(LowerRoundedRect(reader, context, syntax, cornerX, cornerY, effectiveFrame, state), state, context);
+        if (SvgPatternSyntax.IsPatternFill(patternStyle.Fill) && !rounded) return LowerPaintServerRect(reader, context, patternStyle, state, effectiveFrame);
+        if (SvgGradientSyntax.IsGradientFill(patternStyle.Fill) && !rounded) return RetainSingleGeometry(SvgGradientSyntax.LowerGradientRect(reader, context, patternStyle, state, effectiveFrame), state, context);
+        if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke) && !rounded) return SvgGradientSyntax.LowerGradientStrokeRect(reader, context, patternStyle, state, effectiveFrame);
+        if (rounded) return RetainSingleGeometry(LowerRoundedRect(reader, context, syntax, cornerX, cornerY, effectiveFrame, state), state, context);
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
         SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, syntax.StrokeWidth, element.Transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
@@ -89,15 +90,51 @@ internal static class SvgLeafParser
     private static SvgGeometry LowerRoundedRect(XmlReader reader, SvgPaintableElementContext context, SvgRectangleSyntax syntax, double cornerX, double cornerY, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgPatternSyntax.IsPatternFill(style.Fill)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills on rounded rectangles are not implemented.");
-        if (SvgGradientSyntax.IsGradientFill(style.Fill)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient fills on rounded rectangles are not implemented.");
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient strokes on rounded rectangles are not implemented.");
-        SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
+        bool paintPattern = SvgPatternSyntax.IsPatternFill(style.Fill) && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(style.Fill), out _);
+        if (paintPattern) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills on rounded rectangles are not implemented.");
+        bool paintGradient = SvgGradientSyntax.IsGradientFill(style.Fill) && !paintPattern;
+        SvgComputedStyle fillStyle = paintGradient ? style with { Fill = "#ffffff" } : style;
+        SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, false);
+        AxisTransform transform = context.ResolveTransform(reader);
+        SvgLinearGradient linear = default;
+        SvgRadialGradient radial = default;
+        bool isLinear = false;
+        byte opacity = 255;
+        SvgRectangle box = default;
+        if (paintGradient)
+        {
+            string paintId = SvgGradientSyntax.ParsePaintId(style.Fill);
+            if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient foundLinear))
+            {
+                linear = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame));
+                isLinear = true;
+            }
+            else if (!state.RadialGradients.TryGetValue(paintId, out radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+            else radial = SvgGradientSyntax.MapUserSpaceRadial(transform, radial, frame);
+            opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
+            SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
+            box = frame is null ? placement : frame.Value.Shift(placement);
+        }
         using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "rect", false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
-        using SvgParsedGeometry parsed = lowering.LowerRoundedRectFill(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, element, frame, state.Budget);
-        return parsed.Geometries[0];
+        SvgParsedGeometry parsed = lowering.LowerRoundedRectFill(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, element, frame, state.Budget);
+        if (!paintGradient)
+        {
+            SvgGeometry single = parsed.Geometries[0];
+            parsed.Dispose();
+            return single;
+        }
+        try
+        {
+            SvgGeometry repainted = isLinear
+                ? SvgGradientPolygon.RepaintOutline(parsed.Geometries[0].Polygon, linear, box, opacity, state.Budget)
+                : SvgRadialPolygon.RepaintOutline(parsed.Geometries[0].Polygon, radial, box, opacity, state.Budget);
+            parsed.Dispose();
+            return repainted;
+        }
+        catch { parsed.Dispose(); throw; }
     }
 
     internal static SvgParsedRectangle ParseRectangleWithStyle(XmlReader reader, SvgPaintableElementContext context)
