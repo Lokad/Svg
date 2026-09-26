@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-stroke-square-mark-white",
+  "referencePng": "original-logo-stroke-square-mark-white.png",
+  "referenceSha256": "ace1ac5f0afa95326d734abe6d5b809a9826e6fc113e171b1e25018d33f2cb3a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "5bd377ed55548078e55a1358e9af6a44c4d9ae5d5ea91ca89194591b48225280",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
