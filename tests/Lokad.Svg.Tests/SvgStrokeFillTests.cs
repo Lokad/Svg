@@ -160,6 +160,15 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(butt, 16, 1, 4));
     }
     [Fact]
+    public void Negative_dash_offset_wraps_phase()
+    {
+        byte[] negative = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-dashoffset='-2'/></svg>", out _, out _);
+        byte[] wrapped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-dashoffset='6'/></svg>", out _, out _);
+
+        Assert.Equal(wrapped, negative);
+    }
+
+    [Fact]
     public void Dashed_open_polyline_paints_runs()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4'/></svg>", out _, out _);
