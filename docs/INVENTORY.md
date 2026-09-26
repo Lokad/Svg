@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Zero documents selected. Sourcing input pending.
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005), all status untested.
 
 ## Purpose and non-goals
 
@@ -58,3 +58,67 @@ the denominator to improve the score, and freeze the inventory and target before
 any most-logos claim per S17. Entry counts must not stand in for all-variant success.
 Render every entry through the manifest-style gate: asserted rejection with category
 when rejected, retained reference with measured mismatch when renderable but wrong.
+
+## Selected documents (batch 1, 2026-09-26)
+
+Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, 2026-09-26; no Trademarked template on file pages; trusted revisions). Commons PD tags state copyright status; depicted marks may carry trademark considerations, recorded here rather than hidden. Files live in tests/Fixtures/candidates/ with provenance; third-party files carry no CC0 SPDX header and are never copied into tests/Fixtures/original/.
+
+### inv-001 — SimpleLogin logo
+
+- file: tests/Fixtures/candidates/inv-001.svg (SHA-256 292BB12AFD92929CC51372C651B221770B65461331E839187F83FC582D60E710)
+- source: Wikimedia Commons, File:SimpleLogin logo. Retrieval 2026-09-26.
+- license: PD-logo (simplelogin.io/press via Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: flat mark, linear gradient (2 stops).
+- content: 8 paths.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: untested.
+- reference: none yet.
+
+### inv-002 — Ford simple text logo
+
+- file: tests/Fixtures/candidates/inv-002.svg (SHA-256 67459A7C7D446E6CD54C8B4ECA5A994908EC2D9A51F75406BF669B810D905F84)
+- source: Wikimedia Commons, File:Ford simple text logo. Retrieval 2026-09-26.
+- license: PD-textlogo (ford.es via Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: text-as-paths outlined wordmark.
+- content: 2 paths, inkscape metadata.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: untested.
+- reference: none yet.
+
+### inv-003 — SDL logo
+
+- file: tests/Fixtures/candidates/inv-003.svg (SHA-256 A0B8CFEFBF49BE3B5D2E25F06F7592EF6249FA5D225A9843FDD37FF5C7450F1F)
+- source: Wikimedia Commons, File:SDL logo. Retrieval 2026-09-26.
+- license: PD-textlogo (vectorised by uploader via Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: flat mark, radial gradient.
+- content: 4 paths.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: untested.
+- reference: none yet.
+
+### inv-004 — UAAR logo 2012
+
+- file: tests/Fixtures/candidates/inv-004.svg (SHA-256 BD196823376965820189695EE07A6EC6BCB792564653EF1D66BAD5B2142DC5F5)
+- source: Wikimedia Commons, File:UAAR logo 2012. Retrieval 2026-09-26.
+- license: PD-TextLogo (vectorialized from PNG via Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: path mark.
+- content: 6 paths, inkscape metadata.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: untested.
+- reference: none yet.
+
+### inv-005 — SimpleX.chat logo
+
+- file: tests/Fixtures/candidates/inv-005.svg (SHA-256 1F631699B6559197BF7A1163546388DD095F84E2B2E77A47A4DC2703B6C628B6)
+- source: Wikimedia Commons, File:SimpleX.chat logo. Retrieval 2026-09-26.
+- license: PD-text-logo (github simplex-chat via Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: clipped composition.
+- content: 3 paths, clipPath, rect.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: untested.
+- reference: none yet.
