@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-viewbox-alignment-black",
+  "referencePng": "original-viewbox-alignment-black.png",
+  "referenceSha256": "df4b9c212cfec31c2c0cd6a1291ca3b08b25af04efb0323832ee9de21db85393",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 4,
+    "height": 4,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "80cbcad3f86d9541050358b7b77b6fef00c91af5ef7e64182d208f2e9d081034",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
