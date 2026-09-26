@@ -214,9 +214,36 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Dashed_ellipse_stroke_stays_unsupported()
+    public void Dasharray_on_ellipse_strokes_paints_runs()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></svg>");
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='red'/></svg>", out _, out _);
+        byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/></svg>", out _, out _);
+
+        Assert.NotEqual(plain, dashed);
+    }
+
+    [Fact]
+    public void Circle_sized_dashed_ellipse_matches_dashed_circle()
+    {
+        byte[] ellipse = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='6' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='4,2'/></svg>", out _, out _);
+        byte[] circle = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><circle cx='8' cy='8' r='6' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='4,2'/></svg>", out _, out _);
+
+        Assert.Equal(circle, ellipse);
+    }
+
+    [Fact]
+    public void Offset_dashed_circle_sized_ellipse_matches_dashed_circle()
+    {
+        byte[] ellipse = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='6' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='4 2' stroke-dashoffset='2'/></svg>", out _, out _);
+        byte[] circle = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><circle cx='8' cy='8' r='6' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='4 2' stroke-dashoffset='2'/></svg>", out _, out _);
+
+        Assert.Equal(circle, ellipse);
+    }
+
+    [Fact]
+    public void Non_uniform_dashed_ellipse_stroke_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='scale(2,1)'><ellipse cx='8' cy='8' rx='6' ry='4' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></g></svg>");
 
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 
