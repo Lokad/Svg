@@ -504,6 +504,41 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Round_and_square_caps_render_identical_to_butt_on_solid_rectangles()
+    {
+        byte[] butt = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"1\" y=\"1\" width=\"6\" height=\"6\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\"/></svg>");
+        byte[] round = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"1\" y=\"1\" width=\"6\" height=\"6\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>");
+        byte[] square = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"1\" y=\"1\" width=\"6\" height=\"6\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linecap=\"square\"/></svg>");
+
+        ReadOnlyMemory<byte> buttPng = SvgConverter.ConvertToPng(butt, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> roundPng = SvgConverter.ConvertToPng(round, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> squarePng = SvgConverter.ConvertToPng(square, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(roundPng.Span.SequenceEqual(buttPng.Span));
+        Assert.True(squarePng.Span.SequenceEqual(buttPng.Span));
+    }
+
+    [Fact]
+    public void Round_caps_render_identical_to_butt_on_solid_rounded_rectangles()
+    {
+        byte[] butt = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\"/></svg>");
+        byte[] round = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>");
+
+        ReadOnlyMemory<byte> buttPng = SvgConverter.ConvertToPng(butt, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> roundPng = SvgConverter.ConvertToPng(round, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(roundPng.Span.SequenceEqual(buttPng.Span));
+    }
+
+    [Fact]
+    public void Rejects_round_caps_on_dashed_rounded_rectangles()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-dasharray=\"2 2\" stroke-linecap=\"round\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Strokes_solid_strokes_on_rounded_rectangles()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' rx='2' fill='red' stroke='blue' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -516,11 +551,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_non_butt_strokes_on_rounded_rectangles()
+    public void Admits_square_caps_on_solid_rounded_rectangles()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' rx='2' fill='red' stroke='blue' stroke-width='2' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linecap=\"square\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[1].Kind);
     }
 
     [Fact]

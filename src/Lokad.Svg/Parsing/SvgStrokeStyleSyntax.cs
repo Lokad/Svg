@@ -16,25 +16,27 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Validates one stroke style attribute value, admitting round and square caps and round joins on kernel-stroked shapes.</summary>
     internal static void ValidateAttribute(string localName, string value, bool allowNonButt)
     {
-        ValidateAttribute(localName, value, allowNonButt, false);
+        ValidateAttribute(localName, value, allowNonButt, false, false);
     }
 
     /// <summary>Validates one stroke style attribute value, additionally admitting square caps on band-stroked lines.</summary>
-    internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap)
+    internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps)
     {
-        if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan(), allowNonButt, allowSquareCap);
+        if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan(), allowNonButt, allowSquareCap, allowClosedLoopCaps);
         else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan(), allowNonButt);
         else if (localName == "stroke-dasharray") ValidateDasharray(value.AsSpan(), allowNonButt);
         else if (localName == "stroke-dashoffset") ValidateDashoffset(value.AsSpan());
     }
 
-    private static void ValidateLinecap(ReadOnlySpan<char> value, bool allowNonButt, bool allowSquareCap)
+    private static void ValidateLinecap(ReadOnlySpan<char> value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps)
     {
         if (value.Trim().Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
         if (allowNonButt && value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
         if ((allowNonButt || allowSquareCap) && value.Trim().Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (allowClosedLoopCaps && (value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase) || value.Trim().Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase))) return;
         if (allowNonButt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt, round and square stroke linecaps are implemented.");
         if (allowSquareCap) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt and square stroke linecaps are implemented.");
+        if (allowClosedLoopCaps) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt, square and round stroke linecaps are implemented.");
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented.");
     }
 
@@ -212,10 +214,11 @@ internal static class SvgStrokeStyleSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter and round stroke linejoins are implemented.");
     }
 
-    /// <summary>Rejects non-butt caps and non-miter joins where strokes lower to fixed bands.</summary>
+    /// <summary>Rejects non-butt caps on dashed strokes and non-miter joins where strokes lower to fixed bands; round and square caps on solid closed loops are spec no-ops and lower as butt.</summary>
     internal static void RequireButtCapJoin(XmlReader reader, string elementName)
     {
-        RequireBandCapJoin(reader, elementName, false, false);
+        bool solid = ParseDasharray(reader.GetAttribute("stroke-dasharray")) is null;
+        RequireBandCapJoin(reader, elementName, solid, solid);
     }
 
     /// <summary>Rejects round caps and non-miter joins where strokes lower to fixed bands with square tip extension.</summary>

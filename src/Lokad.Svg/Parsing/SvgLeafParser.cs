@@ -161,7 +161,7 @@ internal static class SvgLeafParser
             SvgResolvedPaintableElement whiteShape = context.ResolveShape(whiteStyle, reader, true);
             SvgStrokeStyleSyntax.SvgAdmittedStroke? admitted = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, whiteStyle, whiteShape, "rect");
             if (admitted is null) return filled;
-            if (admitted.Value.Cap != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented on rectangle strokes.");
+            if (admitted.Value.Cap != SvgStrokeCap.Butt && admitted.Value.DashPattern is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented on rectangle strokes.");
             if (admitted.Value.Join != SvgStrokeJoin.Miter) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter stroke linejoins are implemented on rectangle strokes.");
             if (admitted.Value.DashPattern is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed strokes on rounded rectangles are not implemented.");
             byte strokeOpacity = whiteShape.Presentation.Opacity;
@@ -217,7 +217,7 @@ internal static class SvgLeafParser
         {
             SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, element.Style, element, "rect");
             if (stroke is null) return null;
-            if (stroke.Value.Cap != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented on rectangle strokes.");
+            if (stroke.Value.Cap != SvgStrokeCap.Butt && stroke.Value.DashPattern is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented on rectangle strokes.");
             if (stroke.Value.Join != SvgStrokeJoin.Miter) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter stroke linejoins are implemented on rectangle strokes.");
             if (stroke.Value.DashPattern is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed strokes on rounded rectangles are not implemented.");
             if (fill.Polygon.HasFill && stroke.Value.Color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent strokes on filled rounded rectangles are not implemented.");
