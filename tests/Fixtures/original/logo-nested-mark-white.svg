@@ -1,0 +1,10 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <a href="#nested">
+    <g transform="translate(8, 8)">
+      <rect x="0" y="0" width="32" height="32" fill="#ff0000"/>
+      <rect x="16" y="16" width="32" height="32" fill="#0000ff"/>
+    </g>
+  </a>
+  <rect x="8" y="48" width="48" height="8" fill="#000000"/>
+</svg>

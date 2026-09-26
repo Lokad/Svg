@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-nested-mark-white",
+  "referencePng": "original-logo-nested-mark-white.png",
+  "referenceSha256": "ff583b52c8045e6c704629abf2d528a8a4f7e8c304c0466960a2b4902f166c74",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "f578be3ce05f41d0c87183da4dea34de12569d0393b00d6c71a8f0ab83348da1",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
