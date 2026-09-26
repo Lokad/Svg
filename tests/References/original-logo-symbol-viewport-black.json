@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-symbol-viewport-black",
+  "referencePng": "original-logo-symbol-viewport-black.png",
+  "referenceSha256": "afc39b88db43143b2776f0572e683ed5dc0e60cb62d2e41231016b457ff9993c",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "266a433e26128fa7e7fb7217ad10cf70afe9f8f07a9da0ebf367b5a79c642951",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
