@@ -51,6 +51,17 @@ corpus CC0 SPDX declaration convention. Restricted assets stay private: they are
 never committed, never embedded in fixtures, and any local-only overlay directory
 remains untracked. Do not simplify logos or redraw them to fit the renderer.
 
+## Operating notes
+
+Procedures established sourcing batches 1-11; follow them for later batches.
+
+- Sourcing: verify LicenseShortName=Public domain via the Commons API extmetadata against the true file page (titles from memory go stale; confirm size and SHA-1 against local bytes before recording). Record trademark disclosure where depicted marks suggest it. Hold back redundant same-category rejects once a category has several data points.
+- Isolation: candidates parse as XML with no script/foreignObject/animate/image/use-external content and no http hrefs; they live only in tests/Fixtures/candidates/ with provenance, carry no CC0 SPDX header, never enter tests/Fixtures/original/, and must stay unreferenced by project files and the NuGet package (verify with a pack listing zero .svg).
+- Hashes: record the canonical LF blob SHA-256 (repo policy normalizes line endings on commit, so working-copy hashes of CRLF upstream files go stale; always re-verify against git show after committing).
+- Oracle triples: one Chrome capture per turn via capture-chrome.ps1 with absolute paths (pwsh, not powershell -File); three fresh-process runs must be byte-identical before recording; record viewport, hash and the full pin identity (Chrome for Testing 153.0.8010.52, Chromium 1681091, capture recipe 3, win64).
+- Known differences: reproduce the VisualDiff numbers from committed bytes and retain candidate identity hashes per variant (R27: the tuple alone is not identity).
+- After any admission commit, re-run the attribute scan (root x/y, xml:space, enable-background, root class, defs attributes, shape clip-rule) over candidates/ and re-probe exactly the files carrying newly admitted attributes; update their statuses. Feature commits update docs/SUPPORT_MATRIX.md in the same commit.
+
 ## Coverage accounting
 
 Apply the R27 lessons: aggregate exactness over every declared variant, never simplify
