@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-symbol-clip-mark-black",
+  "referencePng": "original-logo-symbol-clip-mark-black.png",
+  "referenceSha256": "952597b809b560a89985fa5736ed24241c01a49c8c5aca78674518c7b693a9cd",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "cf42bbde5e2d39507db7a83c9b6a6e0691b53d85a4fd44521114280b27427411",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
