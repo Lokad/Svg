@@ -1,0 +1,5 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <g clip-path="url(#later)"><rect x="8" y="8" width="48" height="48" fill="#ff0000"/></g>
+  <defs><clipPath id="later"><rect x="16" y="16" width="32" height="32"/></clipPath></defs>
+</svg>
