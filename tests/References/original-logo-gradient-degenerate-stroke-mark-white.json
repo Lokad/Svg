@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-gradient-degenerate-stroke-mark-white",
+  "referencePng": "original-logo-gradient-degenerate-stroke-mark-white.png",
+  "referenceSha256": "42a78bc449bba9bc0d32d6a913e841599cb9727d72e2c1900d14b7620c208249",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "2a6ca463d404efff9d76ab855e4111dfa363a1bca72af7edb36f087b85c11607",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
