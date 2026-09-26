@@ -184,6 +184,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - retrievalDate: 2026-09-26.
 - archetypes: dashed stroke.
 - content: 1 path, stroke-width 56, stroke-dasharray 56,8.
+- diagnosis 2026-09-26 (exploratory scratch probes, ignored artifacts/inventory/pq-*.svg, never committed): open subpaths reject with Only closed axis-aligned integer paths with solid and dashed strokes alike; a closed dashed rect renders. Dashes are therefore reachable on paths, but open path subpaths are not (same contour-loop consolidation as inv-008).
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical SHA-256 c7d0d6be3c4aa195fdb9e58ae84603d5bd5fd057587a05b4630c5d4804b4f1c1, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
