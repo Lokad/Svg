@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triple stable for inv-001 (3/3 byte-identical, 59x58); triples pending for inv-002..005.
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for all five (3/3 byte-identical each; per-entry hashes below).
 
 ## Purpose and non-goals
 
@@ -121,4 +121,4 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - content: 3 paths, clipPath, rect.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Path attribute clip-rule is not implemented).
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 815x233 transparent, 3/3 byte-identical SHA-256 d6bf022775737d415fd76ce5e40c5022d0c792c05c9188ed3e779f0135201d58, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
