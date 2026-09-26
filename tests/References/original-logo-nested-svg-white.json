@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-nested-svg-white",
+  "referencePng": "original-logo-nested-svg-white.png",
+  "referenceSha256": "484fd1f8b328a65c1932e754f251abd679a5f2ca77095a06dfa7a4422f9500ef",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "e46a2a22a57ba98d480e9e4d23d05e8a7deec089909bdc163a8cb14bf2222781",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
