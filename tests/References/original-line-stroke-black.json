@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-line-stroke-black",
+  "referencePng": "original-line-stroke-black.png",
+  "referenceSha256": "419da17de710525d89da219a2ba1b34a8afe2b1a268feea5df3655b5e43ab22f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 6,
+    "height": 6,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "337a4fbca2aac45759c009b2054980082d6f2d724e29265875b045a0004975bd",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
