@@ -475,6 +475,34 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
 
+    [Fact]
+    public void Disjoint_opposite_contours_ignore_reversal()
+    {
+        byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .6 .9 L .9 .6 Z' fill='red'/></svg>", out _, out _);
+        byte[] reversed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .9 .6 L .6 .9 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(forward, reversed);
+        Assert.True(Pixel(forward, 8, 0, 0).Alpha > 0);
+    }
+
+    [Fact]
+    public void Evenodd_counter_hole_stays_transparent()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 H0 Z M2,2 H6 V6 H2 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 4));
+    }
+
+    [Fact]
+    public void Nonzero_nested_contour_paints_interior()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 H0 Z M2,2 H6 V6 H2 Z' fill='red' fill-rule='nonzero'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
+    }
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
