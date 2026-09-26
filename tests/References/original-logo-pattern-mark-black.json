@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-pattern-mark-black",
+  "referencePng": "original-logo-pattern-mark-black.png",
+  "referenceSha256": "ea0fb925983985aba880a6ae2a153751faaeb553888b3a990bdbb4c86f8a54d4",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "a188779acba50550b6373efc879c5a9bacd8e7bd44e50e37fff9c00f5cc69542",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
