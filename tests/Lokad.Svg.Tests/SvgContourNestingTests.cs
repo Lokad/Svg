@@ -79,10 +79,101 @@ public sealed class SvgContourNestingTests
         return ParitySigns(contours.Points, contours.Ends);
     }
 
+    [Fact]
+    public void Disjoint_opposite_contours_share_positive_roles()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0.1, 0.1), new SvgDevicePoint(0.4, 0.1), new SvgDevicePoint(0.1, 0.4), new SvgDevicePoint(0.6, 0.6), new SvgDevicePoint(0.6, 0.9), new SvgDevicePoint(0.9, 0.6)];
+
+        Assert.Equal([1, 1], WindingRoles(points, [3, 6]));
+    }
+
+    [Fact]
+    public void Contour_reversal_keeps_roles()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0.1, 0.1), new SvgDevicePoint(0.4, 0.1), new SvgDevicePoint(0.1, 0.4), new SvgDevicePoint(0.6, 0.6), new SvgDevicePoint(0.9, 0.6), new SvgDevicePoint(0.6, 0.9)];
+
+        Assert.Equal([1, 1], WindingRoles(points, [3, 6]));
+    }
+
+    [Fact]
+    public void Nested_opposite_hole_subtracts()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(2, 6), new SvgDevicePoint(6, 6), new SvgDevicePoint(6, 2)];
+
+        Assert.Equal([1, -1], WindingRoles(points, [4, 8]));
+    }
+
+    [Fact]
+    public void Same_wound_nesting_adds_nothing()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];
+
+        Assert.Equal([1, 0], WindingRoles(points, [4, 8]));
+    }
+
+    [Fact]
+    public void Island_hole_triple_resolves_through_winding()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(1, 1), new SvgDevicePoint(7, 1), new SvgDevicePoint(7, 7), new SvgDevicePoint(1, 7), new SvgDevicePoint(2, 2), new SvgDevicePoint(2, 6), new SvgDevicePoint(6, 6), new SvgDevicePoint(6, 2)];
+
+        Assert.Equal([1, 0, 0], WindingRoles(points, [4, 8, 12]));
+    }
+
+    [Fact]
+    public void Hole_island_triple_repaints()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(2, 6), new SvgDevicePoint(6, 6), new SvgDevicePoint(6, 2), new SvgDevicePoint(3, 3), new SvgDevicePoint(7, 3), new SvgDevicePoint(7, 7), new SvgDevicePoint(3, 7)];
+
+        Assert.Equal([1, -1, 1], WindingRoles(points, [4, 8, 12]));
+    }
+
+    [Fact]
+    public void Single_clockwise_contour_paints()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(0, 8), new SvgDevicePoint(8, 0)];
+
+        Assert.Equal([1], WindingRoles(points, [3]));
+    }
+
+    [Fact]
+    public void Degenerate_contour_scores_zero_role()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 4), new SvgDevicePoint(5, 5)];
+
+        Assert.Equal([1, 0], WindingRoles(points, [4, 6]));
+    }
+
+    [Fact]
+    public void Winding_roles_reject_mismatched_shapes()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+        int[] roles = new int[1];
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeWindingRoles(points, [2], roles, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeWindingRoles(points, [3], new int[2], CancellationToken.None));
+    }
+
+    [Fact]
+    public void Winding_precancelled_token_throws()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+        using CancellationTokenSource cancelled = new();
+        cancelled.Cancel();
+
+        Assert.Throws<OperationCanceledException>(() => SvgContourNesting.ComputeWindingRoles(points, [3], new int[1], cancelled.Token));
+    }
+
     private static int[] ParitySigns(SvgDevicePoint[] points, int[] ends)
     {
         int[] signs = new int[ends.Length];
         SvgContourNesting.ComputeParitySigns(points, ends, signs, CancellationToken.None);
         return signs;
+    }
+
+    private static int[] WindingRoles(SvgDevicePoint[] points, int[] ends)
+    {
+        int[] roles = new int[ends.Length];
+        SvgContourNesting.ComputeWindingRoles(points, ends, roles, CancellationToken.None);
+        return roles;
     }
 }

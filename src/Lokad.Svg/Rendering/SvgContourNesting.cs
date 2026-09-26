@@ -38,6 +38,61 @@ internal static class SvgContourNesting
         cancellationToken.ThrowIfCancellationRequested();
     }
 
+    /// <summary>Writes nonzero-fill roles per contour into the caller roles span.</summary>
+    /// <remarks>
+    /// <para>Each contour scores plus one when its interior newly paints, minus one when it newly erases, and zero when the enclosing winding already decides the region: top-level contours always paint regardless of orientation, opposite-wound holes subtract, same-wound islands add nothing, and deeper stacks resolve through accumulated container orientations. Roles therefore make contour reversal unobservable while preserving holes, unlike raw signed accumulation, which cancels disjoint opposite contours sharing a pixel.</para>
+    /// <para>Like parity signs this runs once per contour set, not per pixel: the wiring level resolves roles, then the coverage kernel applies them to unsigned fan areas. Containment reuses the same first-vertex test, so touching or coincident contours stay outside the admitted family. Degenerate contours score zero. Callers charge one nesting work unit per contour pair; this resolver holds no budget itself and allocates nothing.</para>
+    /// </remarks>
+    internal static void ComputeWindingRoles(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, Span<int> roles, CancellationToken cancellationToken)
+    {
+        SvgPolygonCoverage.ValidateContourEnds(points, contourEnds);
+        if (roles.Length != contourEnds.Length) throw new ArgumentOutOfRangeException(nameof(roles));
+        for (int contour = 0; contour < contourEnds.Length; contour++)
+        {
+            if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+            int start = contour == 0 ? 0 : contourEnds[contour - 1];
+            int end = contourEnds[contour];
+            if (start >= points.Length)
+            {
+                roles[contour] = 0;
+                continue;
+            }
+
+            int orientation = FullOrientation(points, start, end);
+            int winding = 0;
+            for (int other = 0; other < contourEnds.Length; other++)
+            {
+                if (other == contour) continue;
+                int otherStart = other == 0 ? 0 : contourEnds[other - 1];
+                int otherEnd = contourEnds[other];
+                if (otherEnd - otherStart < 3) continue;
+                if (ContainsPoint(points, otherStart, otherEnd, points[start].X, points[start].Y)) winding += FullOrientation(points, otherStart, otherEnd);
+            }
+
+            roles[contour] = Painted(winding + orientation) - Painted(winding);
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+    }
+
+    private static int Painted(int winding) => winding != 0 ? 1 : 0;
+
+    private static int FullOrientation(ReadOnlySpan<SvgDevicePoint> points, int start, int end)
+    {
+        if (end - start < 3) return 0;
+        double twice = 0;
+        for (int index = start; index < end; index++)
+        {
+            SvgDevicePoint current = points[index];
+            SvgDevicePoint next = index + 1 < end ? points[index + 1] : points[start];
+            twice += current.X * next.Y - next.X * current.Y;
+        }
+
+        if (twice > 0) return 1;
+        if (twice < 0) return -1;
+        return 0;
+    }
+
     private static bool ContainsPoint(ReadOnlySpan<SvgDevicePoint> points, int start, int end, double x, double y)
     {
         bool inside = false;

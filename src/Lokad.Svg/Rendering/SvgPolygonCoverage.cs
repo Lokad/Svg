@@ -92,6 +92,30 @@ internal static class SvgPolygonCoverage
     /// SvgContourNesting); zero masks a contour out, and any other value is rejected. Exactness needs
     /// separated contour boundaries within the pixel, matching the winding contract.</para>
     /// </remarks>
+    /// <summary>Returns the nonzero-fill coverage of the pixel square across spatially resolved contour roles.</summary>
+    /// <remarks>
+    /// <para>Each contour contributes its unsigned fan area times its caller role, so top-level contours paint regardless of orientation, opposite-wound holes subtract and same-wound islands add nothing: disjoint opposite contours sharing a pixel add instead of cancelling. Roles come from SvgContourNesting in one wiring pass; zero masks a contour out, and any other value is rejected. Exactness needs separated contour boundaries within the pixel, matching the signed contract.</para>
+    /// </remarks>
+    internal static double GetWindingCoverage(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, ReadOnlySpan<int> roles, int pixelX, int pixelY, CancellationToken cancellationToken)
+    {
+        ValidateContourEnds(points, contourEnds);
+        if (roles.Length != contourEnds.Length) throw new ArgumentOutOfRangeException(nameof(roles));
+        double total = 0;
+        int start = 0;
+        for (int contour = 0; contour < contourEnds.Length; contour++)
+        {
+            if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+            int end = contourEnds[contour];
+            int role = roles[contour];
+            if (role is not (-1 or 0 or 1)) throw new ArgumentOutOfRangeException(nameof(roles));
+            if (end - start >= 3 && role != 0) total += role * Math.Abs(FanSignedArea(points, start, end, pixelX, pixelY, cancellationToken));
+            start = end;
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        return Math.Clamp(total, 0, 1);
+    }
+
     internal static double GetEvenOddCoverage(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, ReadOnlySpan<int> signs, int pixelX, int pixelY, CancellationToken cancellationToken)
     {
         ValidateContourEnds(points, contourEnds);

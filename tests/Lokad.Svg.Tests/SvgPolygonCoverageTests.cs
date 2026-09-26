@@ -206,6 +206,40 @@ public sealed class SvgPolygonCoverageTests
     }
 
     [Fact]
+    public void Disjoint_opposite_contours_add_unsigned_role_areas()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0.1, 0.1), new SvgDevicePoint(0.4, 0.1), new SvgDevicePoint(0.1, 0.4), new SvgDevicePoint(0.6, 0.6), new SvgDevicePoint(0.6, 0.9), new SvgDevicePoint(0.9, 0.6)];
+
+        Assert.Equal(0.09, SvgPolygonCoverage.GetWindingCoverage(points, [3, 6], [1, 1], 0, 0, CancellationToken.None), precision: 10);
+    }
+
+    [Fact]
+    public void Reversed_contours_keep_role_coverage()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0.1, 0.1), new SvgDevicePoint(0.4, 0.1), new SvgDevicePoint(0.1, 0.4), new SvgDevicePoint(0.6, 0.6), new SvgDevicePoint(0.9, 0.6), new SvgDevicePoint(0.6, 0.9)];
+
+        Assert.Equal(0.09, SvgPolygonCoverage.GetWindingCoverage(points, [3, 6], [1, 1], 0, 0, CancellationToken.None), precision: 10);
+    }
+
+    [Fact]
+    public void Hole_roles_subtract()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(2, 6), new SvgDevicePoint(6, 6), new SvgDevicePoint(6, 2)];
+
+        Assert.Equal(0, SvgPolygonCoverage.GetWindingCoverage(points, [4, 8], [1, -1], 4, 4, CancellationToken.None), precision: 10);
+        Assert.Equal(1, SvgPolygonCoverage.GetWindingCoverage(points, [4, 8], [1, -1], 1, 1, CancellationToken.None), precision: 10);
+    }
+
+    [Fact]
+    public void Roles_reject_mismatched_shapes()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [3], [1, 1], 0, 0, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgPolygonCoverage.GetWindingCoverage(points, [3], [2], 0, 0, CancellationToken.None));
+    }
+
+    [Fact]
     public void Short_and_empty_contours_contribute_zero()
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
