@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-rectangle-stroke-black",
+  "referencePng": "original-rectangle-stroke-black.png",
+  "referenceSha256": "bb55ff6d631c0722b7a067a3f66f8a31fa199f389e9c06e2f146d064a3f06a72",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 6,
+    "height": 6,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "94af739eae4708e6a324863b149ca01f79a289fc29d5474ddbfc6b18852d386e",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
