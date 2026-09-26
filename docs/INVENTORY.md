@@ -159,6 +159,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - retrievalDate: 2026-09-26.
 - archetypes: stroked axis-aligned polyline.
 - content: 1 path, stroke-width 2.
+- diagnosis 2026-09-26 (exploratory scratch probes, ignored artifacts/inventory/pv-*.svg, never committed): closed orthogonal subpath renders with and without fill; adding the open subpaths rejects with Only closed axis-aligned integer paths. An equivalent open orthogonal polyline with butt stroke renders, so the capability exists in polyline lowering but path band lowering does not share it (contour-loop consolidation pending in the geometry workstream).
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 72x72 transparent, 3/3 byte-identical SHA-256 8808db0d924ba280fa602b09e7c07c6f304d43d3dcd1826f78c80da42f1ea312, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
