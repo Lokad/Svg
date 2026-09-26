@@ -442,3 +442,43 @@ Public-domain SVG from Wikimedia Commons (LicenseShortName=Public domain per Com
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Inline style property width is not implemented) [inv-027; root class admitted 2026-09-26].
 - reference: none yet. [exploratory oracle triple 2026-09-26, 572x400 transparent, 3/3 byte-identical SHA-256 b85f8f983fd6b761f1d256ff4f770bf14021bff7974e7781262a8aabb8dba31e, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+
+## Selected documents (batch 12, 2026-09-26)
+
+Public-domain state-symbol SVGs from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, size and SHA-1 byte-identical to local blobs, 2026-09-26). inv-028 exercises default-width open strokes with fractional coordinates; inv-029 an outlined-cross stroke overlay technique with title element (viewBox-only); inv-030 closed integer cross polygons (exact). Files live in tests/Fixtures/candidates/ with provenance; no CC0 SPDX headers; never copied into tests/Fixtures/original/.
+
+### inv-028 — Flag of Sweden
+
+- file: tests/Fixtures/candidates/inv-028.svg (SHA-256 350FA9D5023DE2ED2FD7FD0F9D0DE04E25551D6154AAB859949BB7C81543F10B)
+- source: Wikimedia Commons, File:Flag of Sweden.svg. Retrieval 2026-09-26.
+- license: PD (Commons, state symbol).
+- retrievalDate: 2026-09-26.
+- archetypes: open stroked subpaths, default stroke width, fractional coordinate, viewBox-mapped.
+- content: 2 paths.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer path contours are implemented).
+- reference: exploratory oracle triple 2026-09-26, 1600x1000 transparent, 3/3 byte-identical (hash in status line for inv-030; Sweden af44aa8311e1c0a612f7a6292fbc3e401a2675880e421bc27cc6e2feb31130e9, Norway c41155bf1e7b50b9390bfc96a9980b4f1e583ef8b0439c448106eb107636da4d), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+
+### inv-029 — Flag of Norway
+
+- file: tests/Fixtures/candidates/inv-029.svg (SHA-256 BE906B906B9063A909154D9BAE757EF6AA5927C67F678200D4E846101B1ADC09)
+- source: Wikimedia Commons, File:Flag of Norway.svg. Retrieval 2026-09-26.
+- license: PD (Commons, state symbol).
+- retrievalDate: 2026-09-26.
+- archetypes: outlined-cross stroke overlay, title element, viewBox-only viewport.
+- content: 1 rect, 2 stroked paths.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer path contours are implemented).
+- reference: exploratory oracle triple 2026-09-26, 300x150 transparent, 3/3 byte-identical (hash in status line for inv-030; Sweden af44aa8311e1c0a612f7a6292fbc3e401a2675880e421bc27cc6e2feb31130e9, Norway c41155bf1e7b50b9390bfc96a9980b4f1e583ef8b0439c448106eb107636da4d), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+
+### inv-030 — Flag of Switzerland
+
+- file: tests/Fixtures/candidates/inv-030.svg (SHA-256 900A0BEFB655721C1B52B5EC2754F2F553F52B230443AAF016CC224E6A0707CE)
+- source: Wikimedia Commons, File:Flag of Switzerland.svg. Retrieval 2026-09-26.
+- license: PD (Commons, state symbol).
+- retrievalDate: 2026-09-26.
+- archetypes: closed integer cross polygons.
+- content: 2 paths.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: exact (renders byte-identical; VisualDiff vs 512x512 oracle SHA-256 e464837f0f9357929902e16122513a8092c799718e960460460f8b59ef8560c3c1a: changedPixelCount 0; candidate identity SHA-256 052278f77fdaaebf8c28967795dadef710b60af9c39103cc0f88a610f2685a7c).
+- reference: exploratory oracle triple 2026-09-26, 512x512 transparent, 3/3 byte-identical (hash in status line for inv-030; Sweden af44aa8311e1c0a612f7a6292fbc3e401a2675880e421bc27cc6e2feb31130e9, Norway c41155bf1e7b50b9390bfc96a9980b4f1e583ef8b0439c448106eb107636da4d), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
