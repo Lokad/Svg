@@ -1,0 +1,9 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <pattern id="tiles" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="#ff0000"/>
+    </pattern>
+  </defs>
+  <rect x="8" y="8" width="48" height="48" fill="url(#tiles)"/>
+</svg>
