@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-pattern-line-stroke-mark-black",
+  "referencePng": "original-logo-pattern-line-stroke-mark-black.png",
+  "referenceSha256": "31fad7688ae2c26303e82815c681d9786241c750fb16a5d5bdfd702a4f9ad56e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "f93f98b3b078cfeeef40d252092055675493757f9af61e68505100869e920c09",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
