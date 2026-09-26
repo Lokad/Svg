@@ -73,7 +73,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - content: 8 paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature; first blocker: Only integer rectangle coordinates are implemented).
-- reference: none yet. [inv-001 only: exploratory oracle triple 2026-09-26, 59x58 transparent, 3/3 byte-identical SHA-256 cc74b32530f588d8c5bf2f708250a826024163c74f978fe1536309d2a848d294, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [inv-001 only: exploratory oracle triple 2026-09-26, 59x58 transparent, 3/3 byte-identical SHA-256 cc74b32530f588d8c5bf2f708250a826024163c74f978fe1536309d2a848d294, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-002 — Ford simple text logo
 
@@ -85,7 +85,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - content: 2 paths, inkscape metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only bare-number, px, in, cm, mm, pt, and pc root dimensions are implemented) [inv-002; root x/y and xml:space admitted 2026-09-26].
-- reference: none yet. [exploratory oracle triple 2026-09-26, 500x200 transparent, 3/3 byte-identical SHA-256 723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 500x200 transparent, 3/3 byte-identical SHA-256 723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-003 — SDL logo
 
@@ -97,7 +97,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - content: 4 paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only positive axis-aligned matrix() gradient transforms are implemented).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 738x371 transparent, 3/3 byte-identical SHA-256 a941550faea36541a0656296ba5b8ece0cf0cc947311a0ebff739fa32cb90161, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 738x371 transparent, 3/3 byte-identical SHA-256 a941550faea36541a0656296ba5b8ece0cf0cc947311a0ebff739fa32cb90161, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-004 — UAAR logo 2012
 
@@ -109,7 +109,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - content: 6 paths, inkscape metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only integer rectangle coordinates are implemented) [inv-004; root x/y, xml:space, enable-background and id-only defs admitted 2026-09-26].
-- reference: none yet. [exploratory oracle triple 2026-09-26, 595x740 transparent, 3/3 byte-identical SHA-256 7db3cdfce75d6906ddd36dca06bb8e5b52102a5a5701c677f734194adbc303d9, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 595x740 transparent, 3/3 byte-identical SHA-256 7db3cdfce75d6906ddd36dca06bb8e5b52102a5a5701c677f734194adbc303d9, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-005 — SimpleX.chat logo
 
@@ -121,7 +121,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - content: 3 paths, clipPath, rect.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Path attribute clip-rule is not implemented).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 815x233 transparent, 3/3 byte-identical SHA-256 d6bf022775737d415fd76ce5e40c5022d0c792c05c9188ed3e779f0135201d58, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 815x233 transparent, 3/3 byte-identical SHA-256 d6bf022775737d415fd76ce5e40c5022d0c792c05c9188ed3e779f0135201d58, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ## Selected documents (batch 2, 2026-09-26)
 
@@ -137,7 +137,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 2 paths, sodipodi metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only integer rectangle coordinates are implemented) [inv-006; id-only defs admitted 2026-09-26].
-- reference: none yet. [exploratory oracle triple 2026-09-26, 57x23 transparent, 3/3 byte-identical SHA-256 8dd0e9e4f9b990e7a17e36658c411cecd4bbf37fffa84294ca2babee2a9ec534, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 57x23 transparent, 3/3 byte-identical SHA-256 8dd0e9e4f9b990e7a17e36658c411cecd4bbf37fffa84294ca2babee2a9ec534, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-007 — Zeppelin logo
 
@@ -149,7 +149,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 4 paths, 3 transforms, DOCTYPE present.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 500x143 transparent, 3/3 byte-identical SHA-256 aabc201800a4fa1aaa7d187667252c2a0e978664633566dd2210302f19dcb8d3, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 500x143 transparent, 3/3 byte-identical SHA-256 aabc201800a4fa1aaa7d187667252c2a0e978664633566dd2210302f19dcb8d3, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-008 — Eisenbahn und Häfen logo
 
@@ -161,7 +161,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 1 path, stroke-width 2.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 72x72 transparent, 3/3 byte-identical SHA-256 8808db0d924ba280fa602b09e7c07c6f304d43d3dcd1826f78c80da42f1ea312, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 72x72 transparent, 3/3 byte-identical SHA-256 8808db0d924ba280fa602b09e7c07c6f304d43d3dcd1826f78c80da42f1ea312, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-009 — Rede Manchete
 
@@ -173,7 +173,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 3 paths, stroke-widths 36/98, stroke-linecap round.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only non-painting stroke none is implemented).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 500x500 transparent, 3/3 byte-identical SHA-256 2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 500x500 transparent, 3/3 byte-identical SHA-256 2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-010 — ROC HCVS logo
 
@@ -185,7 +185,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 1 path, stroke-width 56, stroke-dasharray 56,8.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical SHA-256 c7d0d6be3c4aa195fdb9e58ae84603d5bd5fd057587a05b4630c5d4804b4f1c1, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical SHA-256 c7d0d6be3c4aa195fdb9e58ae84603d5bd5fd057587a05b4630c5d4804b4f1c1, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ## Selected documents (batch 3, 2026-09-26)
 
@@ -201,7 +201,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 3 paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; fractional and scientific notation stay unsupported).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 512x500 transparent, 3/3 byte-identical SHA-256 44f537838d608edfcbc3e3291482ef2484d82e8c759b47354317fb3708197849, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 512x500 transparent, 3/3 byte-identical SHA-256 44f537838d608edfcbc3e3291482ef2484d82e8c759b47354317fb3708197849, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-012 — SG Rotation Leipzig
 
@@ -213,7 +213,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 26 paths, 1 ellipse, 6 groups.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 396x403 transparent, 3/3 byte-identical SHA-256 c9abedd317b8eb2708852ae5ed8603d8e5dc39f66ebda5d49b47c073be949211, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 396x403 transparent, 3/3 byte-identical SHA-256 c9abedd317b8eb2708852ae5ed8603d8e5dc39f66ebda5d49b47c073be949211, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ## Selected documents (batch 4, 2026-09-26)
 
@@ -229,7 +229,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 5 paths, root fill-rule/clip-rule evenodd, opacity .25.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: SVG root attribute fill-rule is not implemented) [inv-013; root x/y and xml:space admitted 2026-09-26].
-- reference: none yet. [exploratory oracle triple 2026-09-26, 1000x800 transparent, 3/3 byte-identical SHA-256 d5bf3f1f2a5232c767bb4302be338e1b8cc92d349e172f7b96181fe87ec11dfc, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 1000x800 transparent, 3/3 byte-identical SHA-256 d5bf3f1f2a5232c767bb4302be338e1b8cc92d349e172f7b96181fe87ec11dfc, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-014 — Blank 6 circle Venn rotated view
 
@@ -241,7 +241,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 6 paths, defs, opacity on all paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 1000x800 transparent, 3/3 byte-identical SHA-256 f73c86a3289d7cb7ab70ca5b6a4928b9a2439b9d14e6b6078fff161668e99965, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 1000x800 transparent, 3/3 byte-identical SHA-256 f73c86a3289d7cb7ab70ca5b6a4928b9a2439b9d14e6b6078fff161668e99965, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ## Selected documents (batch 5, 2026-09-26)
 
@@ -257,7 +257,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 1 path, style fill/stroke presentation.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; fractional and scientific notation stay unsupported).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 500x500 transparent, 3/3 byte-identical SHA-256 7a15317790a5ab36ae4b4b90967aa759a0d248fb91515f5a6b1baecfc9f9d4bb, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 500x500 transparent, 3/3 byte-identical SHA-256 7a15317790a5ab36ae4b4b90967aa759a0d248fb91515f5a6b1baecfc9f9d4bb, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-016 — Location pin icon
 
@@ -269,7 +269,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 2 paths, 2 transforms.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; fractional and scientific notation stay unsupported).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 318x400 transparent, 3/3 byte-identical SHA-256 855db4f88bb8a1c1432ebd626594f38a98dc92400ac5db73d16235c756b8b73d, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 318x400 transparent, 3/3 byte-identical SHA-256 855db4f88bb8a1c1432ebd626594f38a98dc92400ac5db73d16235c756b8b73d, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ## Selected documents (batch 6, 2026-09-26)
 
@@ -285,7 +285,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 1 circle.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: known-difference (renders; VisualDiff vs 200x200 oracle SHA-256 2b79a788d03f53f1e1cd8a87a52577f586874b9a0c757e1db1483bbef1581f19: changedPixelCount 1220, maximumChannelError 255, maximumAlphaError 24; white-background variant 200x200 oracle triple 2026-09-26 3/3 byte-identical SHA-256 26043a176afd0445853cf891a6fbcbbdff1e5ffb9b77db9068af6426c26bbc87, candidate rendered with white background: changedPixelCount 1223, maximumChannelError 24, maximumAlphaError 0; black-background variant 200x200 oracle triple 2026-09-26 3/3 byte-identical SHA-256 c2aa2dc1a9f124fadb392e450e6c80ed6fb8888163bac2fc611342767708235e, candidate rendered with black background: changedPixelCount 1220, maximumChannelError 24, maximumAlphaError 0; candidate identity SHA-256 per background (rendered from committed bytes, SvgRenderOptions.Default scale 1): transparent 8c31f7822daf238902895e58f5a2b308d396cdffb4359ab1158abff6b49c0ddc, white 9ca5ed1c38803d0f54d7265a0e5cd084516d023ffbf6318ec8798fde13a58e53, black 4142e3d7965523bbb1d91d6e20fae6485209fa5a432e4e6fb588487b7a341a89).
-- reference: exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical (hash in status line), staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+- reference: exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical (hash in status line), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ### inv-018 — Cercle rouge 100%
 
@@ -297,7 +297,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 1 circle.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: known-difference (renders; VisualDiff vs 200x200 oracle SHA-256 3032d48eaf4e52c7db5c2fd6289339e1089a0a7799fc7d0c98a058a501c9c083: changedPixelCount 1294, maximumChannelError 255, maximumAlphaError 50; white-background variant 200x200 oracle triple 2026-09-26 3/3 byte-identical SHA-256 b1a8a2bc3625a6d406a9036d042aeb24706aab96eec1e7135ac381923d629765, candidate rendered with white background: changedPixelCount 1301, maximumChannelError 50, maximumAlphaError 0; black-background variant 200x200 oracle triple 2026-09-26 3/3 byte-identical SHA-256 a6c10aba9c8802bc985ea77156f130dcc057d44a2b20df3257db4819aeea623f, candidate rendered with black background: changedPixelCount 1294, maximumChannelError 50, maximumAlphaError 0; candidate identity SHA-256 per background (rendered from committed bytes, SvgRenderOptions.Default scale 1): transparent 8aa05aaae31d9e27b779267ebb762d8d4e18291e845a7d9b04c664e0a17fc77e, white c48c95d68b424347cc4846b9506b5d3e909b53e70c40611c2c4aac9b3133396c, black 2edc0b8cb3040a30631141c65bcf7fedd97389ceb228f65e131e438c55890ba0).
-- reference: exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical (hash in status line), staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+- reference: exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical (hash in status line), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ## Selected documents (batch 7, 2026-09-26)
 
@@ -313,7 +313,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 1 rect, 5 circles, 4 uses.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Inline style property stroke-width is not implemented).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 400x400 transparent, 3/3 byte-identical SHA-256 c108ab22d2bc4dbe05c01ae5df5d5a8cfaf48b8255c9e5db39845f75ac753f2e, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 400x400 transparent, 3/3 byte-identical SHA-256 c108ab22d2bc4dbe05c01ae5df5d5a8cfaf48b8255c9e5db39845f75ac753f2e, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-020 — Artsy-logo-mask
 
@@ -325,4 +325,4 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: paths, 1092x1093 viewport at origin (698,220).
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
-- reference: none yet. [exploratory oracle triple 2026-09-26, 1093x1094 transparent, 3/3 byte-identical SHA-256 b8a8eb885c49d1adcaa2a6fbdebb17d5ae96f92fb107b491b47b4fe9a45f1290, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+- reference: none yet. [exploratory oracle triple 2026-09-26, 1093x1094 transparent, 3/3 byte-identical SHA-256 b8a8eb885c49d1adcaa2a6fbdebb17d5ae96f92fb107b491b47b4fe9a45f1290, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
