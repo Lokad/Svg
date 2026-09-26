@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below).
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples pending.
 
 ## Purpose and non-goals
 
@@ -186,3 +186,31 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical SHA-256 c7d0d6be3c4aa195fdb9e58ae84603d5bd5fd057587a05b4630c5d4804b4f1c1, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+
+## Selected documents (batch 3, 2026-09-26)
+
+Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, 2026-09-26). Same trademark disclosure as batches 1-2. Batch 3 adds a viewBox-only viewport and a many-contour wordmark with an ellipse primitive (unrenderable here: second DTD security rejection). Cross-inventory live-attribute census 2026-09-26 (parsed attributes, not metadata text): the only live fill-rule evenodd is inv-005 (3 paths); inv-003/inv-007 evenodd strings sit in gradient-stop/CSS style text, not live attributes. The opacity strings in inv-002/inv-004/inv-006 are Inkscape borderopacity/pageopacity document metadata, not rendering opacity. Confirmed genuine gaps: group/paint opacity, mask elements, rotations, renderable ellipse/circle/rect-with-geometry. Files live in tests/Fixtures/candidates/ with provenance; no CC0 SPDX headers; never copied into tests/Fixtures/original/.
+
+### inv-011 — Logo of Indonesian Red Cross
+
+- file: tests/Fixtures/candidates/inv-011.svg (SHA-256 2BE4865EAAC5F4D128A6CF60DCC4F4F05E77939F96CDA398EBF190E3F3190570)
+- source: Wikimedia Commons, File:Logo of Indonesian Red Cross.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: viewBox-only viewport (no width/height), fractional coordinates.
+- content: 3 paths.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; fractional and scientific notation stay unsupported).
+- reference: none yet.
+
+### inv-012 — SG Rotation Leipzig
+
+- file: tests/Fixtures/candidates/inv-012.svg (SHA-256 2D65278FECBD7325BA26120123E61A588364E0314DD89A41F548B92CCDF2FF97)
+- source: Wikimedia Commons, File:SG Rotation Leipzig.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: many-contour wordmark, ellipse primitive, px units (unrenderable: DOCTYPE present).
+- content: 26 paths, 1 ellipse, 6 groups.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
+- reference: none yet.
