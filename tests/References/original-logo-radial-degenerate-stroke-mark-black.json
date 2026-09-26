@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-radial-degenerate-stroke-mark-black",
+  "referencePng": "original-logo-radial-degenerate-stroke-mark-black.png",
+  "referenceSha256": "96418cda6815cc2e70c209c4c08fba2f6988a49ee739250d172a5f077491fa67",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "ae6970f012fdd3fef16ed780a4ba02317c671706c2770adeca90c4b068dfd3be",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
