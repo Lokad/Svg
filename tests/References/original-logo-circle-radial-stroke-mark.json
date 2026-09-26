@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-circle-radial-stroke-mark",
+  "referencePng": "original-logo-circle-radial-stroke-mark.png",
+  "referenceSha256": "de8048afa16f5fe2677e836092c85e46fff20ab8e5ff473e4f33d1a46efc1954",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "4202b57a5d53f774a2d615a4f28ee180fd10314e4df7471462ede0dc17d5fb45",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 299,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 43,
+    "exact": false
+  },
+  "admittedAt": "2026-09-26"
+}
