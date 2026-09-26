@@ -1,0 +1,12 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <mask id="fade" mask-type="luminance">
+      <rect x="0" y="0" width="64" height="64" fill="#808080"/>
+    </mask>
+  </defs>
+  <g opacity="0.5" mask="url(#fade)">
+    <rect x="8" y="8" width="32" height="32" fill="#ff0000"/>
+    <rect x="24" y="24" width="32" height="32" fill="#0000ff"/>
+  </g>
+</svg>
