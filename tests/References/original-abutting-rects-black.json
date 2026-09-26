@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-abutting-rects-black",
+  "referencePng": "original-abutting-rects-black.png",
+  "referenceSha256": "58a448c5eb0c101fe0b5a80dd6261d61ce3d16d2f48787f9af897fc109bc2ef6",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "86eb08c071aef02beab43ca14f53eb76fdeabb4a17ce102a3900f21973b85c97",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
