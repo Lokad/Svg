@@ -1,435 +1,398 @@
-# Lokad.Svg — review and corporate-logo delivery plan
+# Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Reviewed 2026-09-23 against **cd0e352**. This replaces the accumulated status
-journal with one current assessment and an ordered implementation queue.
-R01–R25 and S1–S17 retain their identities; R26–R32 are new review findings.
-Historical reproductions/commit-by-commit notes remain in Git history at cd0e352,
-[benchmarks](docs/BENCHMARKS.md) and [raster research](docs/RASTERIZATION_DESIGN.md).
+Reviewed 2026-09-26 against d7fddbf, reconciled through paused HEAD d561e6e and
+the existing uncommitted dashed-ellipse use/symbol tests. This replaces the
+accumulated status journal with current evidence and an ordered queue.
+R01–R32 and S1–S17 retain their identities; R33–R39 record the new review defects.
 
 **Objective:** render most ordinary, static, self-contained corporate SVG logos,
 including outlined wordmarks, pixel-exact against the pinned browser oracle.
-“Most” is document coverage, not permission for pixel tolerance. General filled
-paths and calibrated coverage are the critical path. Live-font support, pattern
-elaboration and filters must not hold up path-only logos.
+“Most” is document coverage, never permission for pixel tolerance. Do not drift
+into an approximate tier, a native dependency, or a browser rendering service.
 
-Only PLAN.md is changed by this review. Verification used an isolated LF source
-archive, not the other agent's uncommitted work. At review time that work touches
-mask/clip context in traversal, groups, rendered leaves and references, with tests.
-Finish/reconcile that in-flight slice before taking the queue; do not overwrite it.
-The shared HEAD remained cd0e352 during verification.
+The immediate critical path is correct shared coverage and final device mapping.
+General curves have been implemented experimentally, but “returns PNG” is not
+exact admission. Live fonts, exhaustive stroke/paint combinations, patterns and
+filters must not delay path-only logos.
 
 ## 1. Current assessment and verification
 
-There is a useful engineering foundation and genuine recent feature progress,
-but **not yet a general corporate-logo renderer**. A curved or rotated flat mark
-can still be rejected, and admitted pattern/gradient combinations can silently
-render incorrectly. Passing tiny orthogonal examples is not a coverage estimate.
+The agent has made substantial progress: typed contours, full-command path
+parsing, affine/curve/arc kernels, winding/nesting, shared stroke outlines,
+paint/reference combinations, retained oracle evidence and resource repairs.
+However, **general corporate-logo usability remains unproven**. Independent
+probes found scaled clipping, winding, flattening and CSS-stroke errors;
+fractional curves and arbitrary public transforms still reject ordinary exports.
 
-### Fresh evidence
+### Revision-scoped evidence
 
-| Check at cd0e352, Windows x64 / .NET 10.0.12 | Result and boundary |
+| Check | Result and boundary |
 | --- | --- |
-| Locked Release solution build | Pass, zero warnings/errors; all nine projects build. |
-| Full test run | 1,318 core + 88 visual-project + 6 FontProbe = **1,412 passed**, zero failed/skipped. Runner counts are not independent image counts. |
-| Retained exact corpus | **83 exact entries** pass their retained decoded-RGBA comparisons. Browser regeneration of the full corpus was not run. |
-| Census | 92 entries; 83 labelled exact, 9 labelled unsupported; 14 variants, hence 78 base documents. All 92 are contributor-created CC0 inputs with no external source URL. Only 49 entries carry the logo tag: 35 base logo documents + 14 variants. The other 43 are microprobes. |
-| Unsupported-entry diagnostic | Four of the nine “unsupported” entries actually return PNG successfully; five reject. The four are already documented as pixel mismatches, not missing syntax (R27). |
-| Fresh pinned browser checks | Chrome 153.0.8010.52 win64, cached pin verified offline, existing SVG-image capture implementation/background/scale-one recipe. Three fresh-process captures per new case were decoded-pixel identical. Pattern/viewBox case: **2,048/4,096** pixels differ, max channel error 255. Nonuniform gradient case: **512/512**, max error 73 (R28). |
-| Fresh embedded-PNG diagnostics | CRC-valid damaged zlib escapes as raw InvalidDataException; unknown chunk criticality is reversed for two discriminating vectors (R32). One-row solid images at widths 1 and 16,384 both consume **5 decoder work units** (R29). |
-| Fresh resource tool | All **25** child-process scenarios pass, including three runs per XML shape, five discovery-ledger scenarios, two embedded-image conversion scenarios and two pattern tile scenarios. Run ID ef8d7d3b28a448b0bc433a157509df26. |
-| Fresh validator negatives | test-validate-ci-artifacts.ps1 passes; run ID 6836595ddad44945a2606e8b14f9ab7d. This is local validation-tool evidence, not proof of a remote CI run. |
-| Not rerun | Linux, remote CI, package/installed-consumer smoke, throughput/GC benchmarks, private font acquisition and intended-font browser comparisons. Historical results are not fresh evidence. |
+| d7fddbf isolated build | All nine Release projects build, zero warnings/errors, locked restore. |
+| d7fddbf isolated tests | 2,285 pass / 1 stale dashed-circle rejection failure. Not current failure status. |
+| 264099f isolated follow-up | All 2,288 pass; the agent repaired the stale test during review. |
+| d561e6e + current tooling repair + two pre-existing uncommitted ellipse tests | Fresh locked Release solution build succeeds; full suite 2,202 core + 100 visual-project + 6 FontProbe = **2,308 pass**, zero failed/skipped. Includes the paused agent's two tests; runner counts are not image counts. |
+| Current retained census | **193 entries: 117 exact, 76 labelled unsupported.** Of the latter, 71 return PNG with retained known differences, five reject. 14 variants / 179 base documents; 147 logo-tag entries. All are contributor-created CC0 inputs, no external source URL. |
+| Independent representative inventory | docs/INVENTORY.md defines the framework; **zero documents selected**. No real-logo coverage percentage or defensible ETA exists. |
+| Fresh independent oracle probes at d7fddbf | Nine rendered cases, each with three identical decoded fresh-process captures. Wrong scaled clips, disjoint contour cancellation, scale-dependent circles and ignored CSS stroke settings reproduced (R33–R36). Three further ordinary inputs rejected (R37). |
+| Fresh allocation observations at d7fddbf | Tiny rectangle 13,312 bytes; circle 1,065,899; twenty circles 21,077,202; fractional triangle path 1,588,656 versus polygon 14,088 (R38). Warmed cumulative managed allocations, not live/ledger/process memory. |
+| Other isolated d7fddbf checks | All 25 memory scenarios, artifact-validator negatives, font-host synthetic smoke, package creation and installed-consumer checks pass. They do not exercise the new curve-heavy hot path. |
+| Windows Chrome repair | Hash-verified installer provisions Chrome-specific sandbox RX capabilities; fresh/cached/offline cases, launch stderr health/timing, cleanup and negative validation are exercised. See R31a and docs/ORACLE.md for the final repair evidence. |
+| Not fresh evidence | Linux, remote CI, full corpus browser regeneration, BenchmarkDotNet throughput, private fonts and intended-font pixel comparisons were not rerun in this review. |
 
-Reproduction in an isolated archive (git archive with core.autocrlf=false):
+The browser remains Chrome 153.0.8010.52 win64, Chromium revision 1681091,
+recipe 3. No pin, reference PNG, GPU/headless/security flag or pixel policy changed.
+Earlier review results at cd0e352 are historical, not current status.
 
-```powershell
-dotnet test Lokad.Svg.slnx -c Release -p:RestoreLockedMode=true --verbosity minimal
-dotnet build Lokad.Svg.slnx -c Release -p:RestoreLockedMode=true --verbosity minimal
-./tools/census-report.ps1
-./tools/test-memory-probe.ps1 -ResultsDirectory artifacts/review/memory
-./tools/test-validate-ci-artifacts.ps1 -ResultsDirectory artifacts/review/validator
-dotnet run --project artifacts/review/Review.csproj -c Release
-```
+README.md still has blanket unsupported statements for gradients/images/general
+paths despite their limited experimental implementation. Reconcile it with the
+support matrix and exactness boundaries in the next relevant implementation slice;
+do not replace stale negatives with unqualified positive support claims.
 
-The last command is a temporary diagnostic, not a tracked checkout prerequisite.
-Its source and generated images remain under
-%TEMP%/svg-logo-review-1d47bd48fb204266866f5f60a85e7d4c/source/artifacts/review/.
-Promote the decisive inputs into tracked regressions with the fixes; do not depend
-on temporary artifacts for ongoing validation. No private assets were used.
+### Progress assessment
 
-### Is the other agent progressing reasonably?
+cd0e352..d7fddbf contained 221 commits and 415 changed files. New kernels are
+real progress, not merely documentation. But the latest 20 commits ending at
+d7fddbf contained three production changes, six test/proof additions, ten retained
+fixture/reference additions and one inventory framework; all also edited PLAN.
+They concentrated on paint-server round caps, circle/ellipse strokes and dashes.
 
-The latest 20 commits contain **10 production/test changes and 10 PLAN-only
-updates**, unlike the earlier low-yield matrix-row expansion. They add image
-aspect/composition, viewport opacity, translucent lines, pattern transforms/band
-fills, gradient line strokes, multiple stops, use paint servers and the R25 repair.
-This is real progress, with small buildable changes and useful reuse of existing
-viewBox/style/placement code.
+Six subsequent commits through d561e6e added bevel ring declarations, ellipse
+dashes/offsets and rounded-rectangle bevels. The paused agent also left two
+uncommitted dashed-ellipse use/symbol twins and their support-matrix note:
+they prove equivalence with direct rendering, not a new independent oracle result.
+Those edits are preserved; the retained ellipse-dash differences still apply.
 
-The priority balance is nevertheless wrong for general logos: most of these
-extend rectangle/band special cases while S10/S11 remain the central gap.
-Several changes have parse-level tests and scratch browser comparisons but no
-retained visual regression for the newly admitted interaction. “Exact by
-construction” is insufficient when transforms, paint units, clipping or alpha
-change. R28 demonstrates why. Pairing every implementation with a separate
-journal commit also leaves stale summary tables; update the current status in
-the same tested change instead.
+Since cd0e352, exact entries rose from 83 to 117 while known-difference renders
+rose from four to 71. These changing synthetic denominators are not a success-rate
+trend. Retaining mismatches is useful evidence, not completion of logo families.
+Prioritize defects closed and independently selected documents made exact,
+not commit/test/accepted-syntax counts.
 
-Do not extrapolate an ETA or “90% of logos” from these totals. Pixel-exact
-non-orthogonal coverage remains a material technical uncertainty, not a short
-list of parser cases. Measure progress as new document families rendered exactly,
-reproduced defects closed, and decisive calibration hypotheses resolved.
+## 2. Ordered execution queue
 
-## 2. What is actually implemented
+Take this queue before another peripheral shape/paint/definition combination.
 
-[SUPPORT_MATRIX.md](docs/SUPPORT_MATRIX.md) remains the detailed grammar contract;
-its positive claims need the R27/R28 qualifications below.
-
-| Area | Present foundation | Important remaining boundary |
+| Order | Deliverable | Required exit evidence |
 | --- | --- | --- |
-| API/output | Pure-managed dependency-free net10.0 SVG-to-PNG; owned/caller memory and stream, sync/async; prepared documents and supplied-font snapshots; cancellation, limits, overlap and lifetime tests. | Resource accounting is not a process-memory limit; new image/paint paths have gaps. Async does not supply another rendering backend. |
-| Geometry | Rectangles, axis-aligned even-width lines/strokes, orthogonal paths/polygons/polylines lowered to rectangle bands, relative m/l/h/v/z and repeats, multiple contours/fill rules, selected orthogonal crossings, and coincident vertical edges (abutting/spike/touching-hole regressions 2026-09-24; degenerate pairs still gate). | No general diagonals, C/S/Q/T/A curves, circles/ellipses, rounded corners, arbitrary fractional geometry or rotate/skew/full affine mapping. Degenerate coincident pairs still gate. |
-| Coordinates/structure | Root and restricted nested viewports, viewBox/aspect mapping, selected percentage dimensions, integer axis transforms/reflections, groups/links, local use and restricted symbols/definitions. | Per-feature viewport/transform restrictions, limited definition/reference graph and style inheritance. R25 fixed definition ancestor transforms, not all definition presentation semantics. |
-| Paint/composition | Solid colors/opacity; restricted isolated groups, rectangular clips and simple masks; two-to-eight opaque-stop linear gradients, selected paint-server strokes, single-rectangle pattern tiles and solid-color PNG images. | Not general clipping/masking/images/patterns. No radial/transparent-stop gradients; paint-coordinate defects and alpha/dither residuals remain. An accepted fill is not automatically exact under another transform/background. |
-| Export/CSS | Shared inheritance and per-property precedence; one early root stylesheet with restricted selectors, inline/presentation styles, selected no-op defaults and local references. | Not a general static-export cascade; group paint-server inheritance, reference combinations, stylesheets/units and useful spellings remain restricted. Prioritize observed exporter blockers, not arbitrary CSS completeness. |
-| Text | Manifest/catalog/async acquisition, bounded snapshot and prepared lifetime, selected TrueType face-0 outlines, whitespace/spans/spacing, limited kern/GPOS pair positioning and synthetic-font tests/benchmarks. | Ordinary supplied-font pixel fidelity unvalidated; fixed 4×4/eight-subdivision glyph rasterizer is not the general-path solution. No implicit machine fallback. Outlined wordmarks need no fonts. |
+| 0 — completed enabling repair | R31a Windows Chrome setup/diagnostics repaired without weakening the sandbox. Preserve the gates; start implementation at rows 1–2. | Fresh/cached/offline permission checks, bounded failures, healthy exact smoke captures, retained diagnostics, no unrelated ACL/process changes. Keep the full suite green. |
+| 1 — representative direction | Populate the first 5–10 independent legal exports, then the planned 20–30. Freeze declared size/scale/background variants; include failures unchanged. | Real source/provenance records and exact/known-difference/rejection/oracle-failure outcomes. Ask a specific asset question if needed; “sourcing pending” is not inventory completion. |
+| 2 — repair shared geometry | R33 scaled clips, R34 spatial winding, R35 final-device flattening; consolidate the duplicated coverage loop while fixing R38/R39 allocation/work accounting. | Retained adversarial/browser cases across paint kinds, transforms and output scales; bounded memory/work/cancellation. No shape-specific offset patches. |
+| 3 — critical path S10/S11 | Resolve exact non-orthogonal coverage, fractional/scientific curved paths, public affine mapping and compound contours. | Independent flat curved marks and outlined wordmarks with counters, exact across every declared variant. Parsing a command or preserving a known difference does not close this step. |
+| 4 — practical exports | Fix R36 computed stroke style; complete shared strokes/caps/joins and required dashes, local references, arbitrary path clips and group opacity. | Independent exporter and mixed fill/stroke/clip/style cases, not only twins through the same renderer. |
+| 5 — common paints/composition | Complete reusable linear/radial paint maps, transparent/multiple stops, nested layers and required masks. | Exact transformed/clipped/alpha families; no new per-paint geometry hierarchy. |
+| 6 — coverage-driven completion | Add images/patterns/markers/effects and later live text only for measured inventory blockers. Run package/platform/resource checks throughout. | Agreed frozen exact-document coverage target; categorized residual gaps and fresh platform evidence. |
 
-## 3. Open review findings
+The first useful milestone is outlined wordmarks plus flat curved marks.
+Do not complete every S9/S12/S13 permutation before attempting that milestone.
+Do not trade the exactness criterion for quicker apparent coverage.
 
-P0 means an existing resource/error contract cannot be relied on; P1 blocks
-trustworthy rendering or delivery prioritization; P2 is targeted tooling/design/
-performance work. Delivery order is in section 5: do not turn every P2 observation
-into a prerequisite to general paths.
+## 3. Active findings and concrete repairs
 
-### R26 / P1 — The census does not establish representative logo coverage
+### R26 / P1 — Representative coverage is still unmeasured
 
-**Fresh census + source inspection:** census-report.ps1 counts manifest labels;
-it does not render. Its 78 “distinct documents” combine 43 microprobes with 35
-synthetic logo bases. All inputs are original contributor work, mostly constructed
-around the admitted orthogonal subset. Separate research includes curves and the
-path-heavy Tiger illustration, but those are not representative brand coverage.
+The 193-entry synthetic corpus and its logo tags do not establish real-export
+coverage. Keep docs/INVENTORY.md's selection/provenance/legal rules; populate it
+now, beginning with a small independently selected set. Restricted inputs remain
+private. Never redraw/simplify difficult logos or drop failing variants.
+Count a document exact only when all declared variants are exact. Live text may
+remain outside the first path-only denominator, with S7/S15 explicitly separate.
 
-The former claim that 67 documents already satisfied S8 breadth was incorrect.
-Also, base documents can have unsupported size/background variants while their
-other entries count exact. Entry counts must not stand in for all-variant success.
+### R27 / P1 — Original manifest gate repaired; fidelity admission still needs discipline
 
-**Next:** establish a separate, versioned representative inventory, initially
-20–30 independently selected real export documents to steer implementation,
-growing to the planned 50–100 without delaying the first path slice. Track legal
-provenance; restricted assets stay private. Include curves/outlined wordmarks,
-holes, rotations, thin strokes, gradients and clipped/translucent combinations,
-including failures. Keep synthetic probes in their own count. Validate variant
-parents/duplicates/cycles and aggregate exactness over every declared variant.
-Freeze the inventory/target before a “most logos” claim; never simplify logos or
-change the denominator to improve the score. Selection can be local/offline. Status 2026-09-26: inventory framework recorded in docs/INVENTORY.md (selection rules, record schema, legal handling with private restricted assets, R27-style aggregation); zero documents selected, sourcing input pending.
+The original missing unsupported branch is closed: FixtureManifestTests renders
+every entry, asserts categorized rejection or measured mismatch, verifies variant
+parents, compares exact pixels and requires graduation when a known difference
+becomes exact. Preserve these tests.
 
-### R27 / P1 — “Unsupported” is not enforced, and known differences escape the gate
+Remaining work:
 
-**Fresh reproduction + source inspection:**
-FixtureManifestTests validates hashes/metadata for every entry, but only invokes
-the renderer and compares pixels for expectedSupport=exact. The unsupported branch
-only validates labels/reasons and forbids oracleIdentity/referenceSha256.
+- Separate implemented/rejected behavior from exact/known-difference/oracle-failure
+  outcomes in reporting. Default conversion still returns PNG for 71 inexact
+  entries without a per-result fidelity status. Do not call these delivered exact
+  support, or add an approximate tier without user direction.
+- The known-difference tuple (changed pixels / max channel / max alpha) is not
+  full candidate identity: a different error layout can retain the same maxima.
+  Retain decoded candidate identity or complete diff evidence when ratcheting
+  intentional failures; allow reviewed improvements and graduation.
+- Validate reference browser/recipe/platform identity against the appropriate
+  historical/current allowed pin. A PNG hash alone is not oracle provenance.
+- The 14 variants have not grown with the new curve families. Add phase, size,
+  fractional outputScale and transparent/white/dark background variants.
+- Report all-variant outcomes per independent document, not only entry counts.
 
-The current public renderer successfully returns PNG for these four entries:
+Known examples remain substantial: circle 145 wrong pixels / max alpha 63;
+cubic 97 / 29; dashed circle 114 of 256 / 240. RGB error 255 on a faint sliver
+can exaggerate appearance, but these alpha/extent errors are not all tiny slivers.
+Retained known differences are not passing exactness gates.
 
-| Fixture | Existing manifest's mismatch evidence (historical, not recaptured here) |
+### R28 / P1 — Original paint-map defects partly repaired, exactness incomplete
+
+The original pattern/root-viewBox case now maps on its admitted integer tile grid
+and has exact evidence. Preserve that fix. Nonuniform userSpace linear gradients
+now use recorded inverse maps, but the original gradient case still has a retained
+nine-pixel / max-error-one difference; its stroke companion has four.
+Treat remaining paint/dither/alpha calibration as S11/S13, not an exact admission.
+Do not reintroduce the original wrong coordinate mapping or mark all R28 closed.
+
+### R30 / P1 design, P2 GC — Consolidate geometry, paint and ownership when fixing defects
+
+SvgGeometry now has 13 kinds including Invalid and nine nullable reference
+payload fields. Solid/linear/radial/pattern polygons repeat points, ends, signs,
+mapping, clip, storage ownership and stamping. SvgConverter repeats four
+mapping/bounds/clipping/coverage loops; reference and leaf lowering multiply
+the same shape/paint cases. R33/R35 demonstrate real inconsistency.
+
+Use one owned contour geometry, a typed paint binding/evaluator and one coverage
+path. Preserve calibrated rectangle fast paths. Distinguish user/document/device
+coordinates and geometry/stroke/paint bounds: “DevicePoint” currently precedes
+the root/output map. Reconcile AxisTransform with the general affine kernel.
+Retain computed stroke values instead of raw strings/boolean capability clusters;
+avoid repeated dash parsing/array allocation. Encapsulate shared arrays and
+reservation transfer instead of duplicating mutable ownership conventions.
+
+This is a bounded consolidation around correctness/resource fixes, not a
+repository-wide scene-graph or naming rewrite.
+
+### R31 / P2 — Delivery-workflow gaps after the repaired CI hook
+
+The validator negative suite is now wired into Windows/Linux CI with artifacts.
+Preserve this repair and the new startup-health validation.
+
+The capture-chrome.ps1 parent-deadline/stream-drain gap is repaired in this change:
+concurrent drains, an overall capture deadline, owned-process cleanup, retained
+stderr and atomic publication now preserve an existing output on failure.
+Still open: one opt-in manifest-compatible corpus capture/compare/report workflow;
+changing only the browser screenshot viewport does not scale a fixed-size SVG image.
+
+Add curve-heavy logos, many-contour wordmarks, mixed paints/clips and isolated
+opacity to existing benchmark/probe families. Existing rectangle/text/font/PNG
+benchmarks and 25 resource scenarios do not characterize the new hot path.
+Do not turn a small enabling tooling repair into another tooling campaign.
+
+#### R31a / P1 — Windows Chrome sandbox startup repair (completed locally)
+
+Implemented in this change:
+
+- tools/setup-chrome.ps1 validates strict cache/install path containment and
+  rejects reparse-point traversal before acting. Archive, executable and
+  setup.exe are authenticated; the latter is compared with the verified archive.
+- The pinned installer runs only --configure-browser-in-directory for the browser
+  directory, with hidden/no-shell execution and a 30-second deadline. Chromium
+  success status 78 is handled explicitly; other failure codes are actionable.
+- Fresh, cached and offline installations receive the same idempotent setup.
+  Verify both Chrome-specific capability RX rules throughout files/resources;
+  reject missing/denied/protected-inheritance cases without broadening access.
+  Preserve all pre-existing ACLs. No repo/home/cache-root grants, Everyone or
+  all-application fallback, no sandbox-disabling flags.
+- ChromeProcess drains stdout and stderr independently; retains at most 32 KiB
+  of stderr, detects sandbox failures and repeated network-service crashes even
+  beyond truncation, and emits redacted per-launch JSON on stderr, never PNG stdout.
+  Reports include executable name, launch/ready timings and profile cleanup.
+- Validate startup health through shutdown before returning screenshot bytes.
+  Retry locked/partially written DevToolsActivePort inside the startup deadline.
+  Existing cancellation and owned-process/profile cleanup remain bounded.
+- The three-capture smoke retains hashed diagnostic files; Chrome fingerprint
+  schema 4 and the artifact validator distinguish configured sandbox policy
+  from observed startup health. Old schema-3 smoke artifacts do not prove health.
+- Unit/setup/validator regressions cover chunk-split/late errors, bounded retention,
+  benign stderr, repeated crashes, redaction, partial port files, cancellation,
+  path escapes/junctions, denied permissions, exit codes and forged/missing health.
+- capture-chrome.ps1 retains the same per-launch diagnostic beside its PNG, drains
+  streams concurrently and applies a parent deadline; child-failure/forced-timeout
+  smoke controls preserve an existing destination and remove only their partial file.
+
+Fresh cached-install smoke: three exact, stable captures; zero sandbox failures,
+zero network crashes; all profiles cleaned. Chrome lifetimes 1,243 / 1,342 /
+1,390 ms; DevTools ready in 311 / 318 / 349 ms. These are local observations,
+not a throughput promise or a matched before/after benchmark. The old trace
+established an intermittent failure, not a controlled pre-repair timing baseline.
+Fresh extraction/offline reuse and parent-ACL checks are separately exercised;
+final results and reproduction commands belong in docs/ORACLE.md.
+
+Do not infer that every stderr message is fatal. A successful PNG alone, or the
+literal sandbox='enabled' policy field, is insufficient health evidence.
+
+### R33 / P1 — Scaled polygon clips use the wrong coordinate space
+
+SvgConverter.cs maps polygon vertices through root viewBox/outputScale but
+intersects polygon.Clip directly with output pixel bounds. The shared defect
+must be repaired across solid/linear/radial/pattern paths. Fractional clipping
+also needs coverage intersection, not just rounded bounding extents.
+
+Independent 32x32 repro, three identical browser captures:
+
+~~~xml
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16">
+  <defs><clipPath id="c"><rect width="8" height="16"/></clipPath></defs>
+  <polygon points="0,0 16,0 0,16" fill="red" clip-path="url(#c)"/>
+</svg>
+~~~
+
+264/1,024 pixels differ, maximum alpha error 255. Replacing clipPath with a nested
+8x16 SVG viewport gives the same failure. Map geometry and clips once into the
+same final space; regress root offsets/scales, outputScale, nested viewports and paints.
+
+### R34 / P1 — Signed area accumulation is not spatial nonzero fill
+
+SvgPolygonCoverage.GetWindingCoverage sums signed contour/pixel areas before
+SvgConverter takes abs/clamp. Disjoint shapes of opposite orientation in one
+pixel can cancel, although both should paint.
+
+In an 8x8 SVG, fill red:
+
+~~~xml
+<path d="M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .6 .9 L .9 .6 Z"/>
+~~~
+
+Browser alpha (0,0)=37, candidate=0. Reversing the second contour to
+M .6 .6 L .9 .6 L .6 .9 Z leaves the browser identical but candidate alpha=23.
+Three stable captures per variant. This is semantic, not only one-step AA drift.
+
+Integrate spatial winding/parity membership before pixel coverage. Test disjoint
+opposite contours, same-wound nesting, holes/small counters, contour reversal,
+touching/self-intersections and overlapping stroke outlines. A comment requiring
+separated boundaries is not an enforced public gate.
+
+### R35 / P1 — Flattening happens before the final device transform
+
+SvgOrthogonalGeometryLowerer's fixed flatness 0.25 and BuildDeviceMap omit the
+root viewBox/outputScale subsequently applied by SvgConverter. A small user-space
+curve can therefore magnify a nominal quarter-pixel error many times.
+
+Equivalent 128x128 red circles: viewBox 0 0 8 8 with cx=cy=4,r=3 versus no viewBox
+with cx=cy=64,r=48. Browser outputs are identical; candidates differ at 1,028
+pixels. Against Chrome: scaled input 1,042 wrong pixels / max alpha 255; direct
+input 372 / 74. Three stable captures each.
+
+Flatten under the complete device map or derive a conservative tolerance from it.
+The nonuniform-root guard currently checks only PolygonFill, not paint variants.
+Regress fills, strokes, paints and prepared output. Correct subdivision alone
+does not establish Chrome-exact AA. Also test collinear control overshoot/reversal:
+the kernel's infinite-chord-line flatness test can miss an excursion.
+
+### R36 / P1 — Validated CSS stroke declarations are discarded
+
+SvgInlineStyleParser validates stroke-linecap/linejoin/dasharray/dashoffset but
+does not retain them in SvgComputedStyle. Leaf lowering reads attributes instead.
+
+Fresh 16x16 red-line cases, three stable captures each:
+
+| Settings | Wrong pixels / max alpha error |
 | --- | --- |
-| original-logo-translucent-mark | 376 differing pixels, maximum error 1 after R24's channel-wrap fix. |
-| original-logo-viewbox-mark-24 | 28 edge pixels differ by 1 at 0.75× viewBox mapping. |
-| original-logo-use-fade-mark | 256 pixels differ by 1. |
-| original-logo-group-fade-mark-white | 1,792 pixels differ by 1 RGB step, alpha exact; other backgrounds pass. |
+| x1=4,y1=y2=8,x2=12,width=4, square cap attribute + style stroke-linecap:butt | 16 / 255 |
+| x1=2,y1=y2=8,x2=14,width=2, dasharray="4 4" + style stroke-dasharray:none | 8 / 255 |
+| Same dashed line + style stroke-dashoffset:3 | 18 / 255 |
 
-**Next:** separate syntax/runtime support, fidelity (exact / known-difference /
-oracle-failure), and release admission. A metadata label is not a runtime guard.
-Exercise every inventory entry: asserted rejection/category when rejected;
-retained reference/diff and measured mismatch when currently renderable-but-wrong.
-Repair or explicitly gate the affected semantic domain before claiming it exact;
-do not implement a filename allowlist. Keep known differences visible without
-tolerance admission or silently blessing current output as expected pixels.
+Retain typed specified/computed stroke values and use one cascade/inheritance path
+for attributes, inline/embedded CSS, !important and references. Defaults cannot
+be discarded when they override non-default attributes. Reject unsupported
+semantics until honored; validation is not implementation.
 
-Promote decisive scratch captures into the appropriate exact or research suite.
-Add CI failures for an exact entry drifting, an unsupported case starting to
-render without review, a missing known-difference capture, or a variant omitted
-from the coverage report. Existing research-rejection tests are useful but do not
-cover these nine census entries. R24's wrap defect stays closed; its residual
-rounding is an S11 blocker, not evidence that overlaps are generally admitted. Status 2026-09-26: unsupported-branch gate verified closed at HEAD (FixtureManifestTests renders every entry: exact entries compared pixel-exact, renders entries requiring known-difference captures with ratcheted dimensions and mismatch triple plus graduate-on-exact failure, rejects entries asserting categorized throws; all four named fixtures carry knownDifferenceIdentity; variant parents validated).
+### R37 / P1 — Kernel grammar/affine support is not public export support
 
-### R28 / P1 — Paint coordinate systems are wrong under admitted transforms
+SvgOrthogonalShapeParser rejects any decimal point/exponent in curved paths:
+even numerically integral C 3.0 10.0 10.0 3.0 12.0 12.0 is rejected. Public
+AxisTransform still uses integer scale/translation; rotate/skew and general
+affine input are not wired through the new affine kernel. Touching/self-crossing
+fills remain gated. A fill=none reversing cubic stroke is rejected by fill-first
+lowering as needing a closed axis-aligned contour.
 
-**Fresh three-capture browser reproductions**, ordinary valid inputs:
+Prioritize finite decimal/exponent curves, transform composition and stroke-only
+paths through the common representation. Add lexical/transform/equivalent-shape
+tests backed by independent pixels. Do not advertise “full paths” from command
+enumeration while ordinary exporter spelling fails.
 
-1. A 64×64 SVG with viewBox="0 0 32 32", an 8×8 userSpaceOnUse pattern containing
-   a red 4×8 rectangle, and a 32×32 filled rectangle: half the output differs.
-   SvgConverter.StampPatternFill indexes device x/y modulo user-space tile width/
-   height/origin. Root viewBox/output scale and referencing placement are not
-   carried into tile sampling. At scale 2 Chrome stripes are eight pixels wide;
-   the renderer still paints four-pixel stripes.
-2. A 32×16 SVG, diagonal userSpaceOnUse linear gradient (0,0)→(16,16), opaque
-   red/blue stops, and a 16×16 rectangle in g transform="scale(2 1)": every pixel
-   differs, maximum error 73. SvgGradientSyntax.MapUserSpaceVector transforms
-   endpoints, then the renderer projects in the transformed Euclidean metric.
-   Nonuniform scaling requires evaluation through the inverse paint map; endpoint
-   transformation alone does not preserve that gradient field.
+### R38 / P1 scalability — Maximum scratch buffers for tiny geometry
 
-**Next:** retain these two self-contained cases immediately. Introduce explicit
-object/user/device/paint maps and keep unclipped object bounds distinct from
-coverage bounds. Evaluate paint in its own coordinates; share composition with
-viewBox, gradientTransform, patternTransform, referencing transforms and use.
-Test direct versus referenced geometry, diagonal ramps, anisotropic scale,
-translation, reflection, nonzero viewBox origin, output scale and clipping.
-Prefer a bounded explicit rejection until fixed over a silently wrong admitted
-combination. Do not solve this with per-fixture offsets or another shape kind. Status 2026-09-24: R28 cases retained as rejects-pinned fixtures (original-logo-pattern-viewbox-mark, original-logo-gradient-anisotropic-mark; three identical pinned-Chrome captures each, candidate gates from b1c968f); exact paint maps remain S13 work. Status 2026-09-25: pattern tiles map through the root viewBox and output device transform with integer-grid gating (uniform, non-uniform and offset probes each renderer byte-exact against three identical pinned-Chrome captures; fractional tile maps and stroked tile content under scaling stay explicitly gated; 1 converted admission plus fractional, content-stroke and output-scale equivalence tests, 4 end-to-end tests); the R28 pattern-viewbox fixture promotes to an exact oracle entry while the gradient-anisotropic case remains S13 work. Status 2026-09-25: non-uniform userSpaceOnUse linear-gradient fields evaluate through the recorded inverse referencing map (per-copy reference scales composed from gradientTransform, referencing and symbol viewBox maps with uniform rendering bit-identical on the legacy path; converted gate plus scale-record, use and band equivalences, 4 end-to-end tests; R28 fill probe renders with measured oracle delta of 9 pixels at maximum channel error 1 and a stroke-composition probe with 4 pixels at maximum channel error 1 across three identical pinned-Chrome captures per probe, the same one-step family as the radial entries); the R28 gradient case graduates to a measured known-difference entry with a stroke-composition companion entry, and radial non-uniformity stays explicitly gated.
+Ellipse/circle/rounded lowerers allocate 65,536 SvgDevicePoint slots (~1 MiB)
+per tiny shape. LowerDeviceFill/LowerStrokePath choose capacity from the configured
+global command limit, not actual commands; even a fractional straight triangle
+allocates about 1.5 MiB versus 14 KiB for the equivalent polygon.
 
-### R29 / P0 — New paint/image paths bypass storage/work obligations
+Use budgeted actual-size/growing or bounded reusable scratch, count real
+commands/contours, bypass curve buffers for straight segments, and avoid repeated
+builder/list/retained/mapped copies. Pooling is not automatically a fix: account
+retained pool storage. Add allocation checks for one curve, many curves and an
+outlined wordmark. Keep cumulative allocated bytes distinct from peak memory.
 
-**Source inspection, plus a fresh work-counter reproduction:**
+### R39 / P1 resources — Polygon mapping/work bypasses the contract
 
-- SvgLeafParser.DecodeImage allocates a base64 substring and decoded byte array
-  before reserving the decoded storage. PngImageDecoder copies IDAT data into
-  an unbudgeted growing MemoryStream and makes palette/transparency copies.
-  Transparency length validation follows its allocation. XML workspace allowance
-  does not replace ownership/accounting for these additional buffers.
-- PNG CRC loops, unfiltering and per-pixel uniformity scans have no byte/pixel
-  work charges or inside-row cancellation checkpoints. A 1×1 and a 16,384×1
-  all-white PNG each consume five decoder units; accounted decode peaks are
-  13 and 196,609 bytes respectively. Pixel/dimension limits bound absolute size,
-  but MaximumWorkUnits does not bound the proportional decode work.
-- RasterizePatternFill allocates/renders the whole tile separately for each
-  geometry/band/use. Its tile storage is reserved, but BlitPatternBox's content
-  pixel loop is not charged; only destination stamping charges coverage.
-- SvgPatternGeometry, SvgGradientGeometry and SvgGradientStrokeGeometry allocate
-  per-instance/per-band wrapper objects without reservations. Their IDisposable
-  methods are empty. Gradient stop arrays are covered by a parser-dictionary
-  allowance while parsing, then remain reachable from scene geometry after the
-  parser dictionary releases that allowance; no reservation transfers with them.
+Each polygon rasterizer allocates an unreserved mapped-point array. Lowering
+creates retained/end/sign arrays before SvgPolygonFill.Create reserves scene
+storage, missing transient overlap and allowing allocations before denial.
 
-**Next bounded repairs:** reserve before decode/copy/growth, validate lengths first,
-charge/check cancellation in bounded chunks, and transfer one explicitly owned
-paint resource/reservation into the scene. Define shared-resource accounting so
-multiple bands do not either hide storage or count the same stops repeatedly.
-Test one-byte/one-work-unit denial, cancellation during CRC/unfilter/tile work,
-cleanup after partial construction and retained prepared scenes. Add these workloads
-to the existing probe instead of creating another resource tool. Explicitly gate
-an affected feature if a safe short repair is unavailable; do not expand its syntax
-while its resource contract is false. This is new code, not reopening the repaired
-R04/R17 glyph/discovery defects.
-Status 2026-09-24: retained gradient stop arrays transfer one scene-owned reservation per distinct array at scene-add time (shared href and band references counted once, empty arrays skipped), with scene-builder accounting, retained-scene, and budget-denial regressions. Per-wrapper object bytes remain unreserved, matching the existing glyph-wrapper granularity. Status 2026-09-26: decoder-side remainder verified repaired at HEAD (reserve-before-copy WorkingStorage with length-first validation, per-chunk and per-row work charges with row cancellation checkpoints, categorized zlib failures, work-bounded tile blits; regressed by storage-denial, exhausted-work, cancellation, wider-rows-consume-more-work and tight-budget transparency tests, all passing); remaining accepted items are per-wrapper bytes at glyph granularity and lenient late tRNS.
+Raster work is charged per bounding-box pixel while each pixel scans all vertices
+and clips fan triangles: actual work grows with pixels times geometry.
+Contour classification is pairwise; ChargePairs amortizes a unit across a byte
+checkpoint-sized group. Define and enforce the real unit across these algorithms.
+Inner cancellation exists; this is not a claim it is wholly absent.
 
-### R30 / P1 design, P2 GC — Geometry, paint and ownership are becoming entangled
+Reserve before allocation/copy, explicitly transfer ownership, charge mapping and
+edge/coverage work, avoid full fan scans for every pixel, and test tight remaining
+budgets plus cancellation during curve-heavy work. Add cases to the existing probe,
+not a new resource-tool project.
 
-**Source inspection; performance impact not yet benchmarked:**
+## 4. Completed repairs and retained boundaries
 
-| Duplication / weak invariant | Targeted direction |
+Do not reopen a repaired original reproduction because its old paragraph said
+“still missing”. Preserve regressions; new defects have their own IDs.
+
+| Stable IDs / stages | Disposition |
 | --- | --- |
-| Geometry kind encodes GradientFill, PatternFill and GradientStroke; rectangle/line/band lowering, clipping, alpha stamping and stroke-band logic recur for each paint. Each added combination needs more branches. | Shared contour/shape geometry + typed paint + transform + clip/layer state. Introduce this through the first general-path vertical slice, preserving exact rectangle fast paths; no big-bang scene rewrite. |
-| Per-band paint wrapper allocations; ClipTo/Stamped allocate more wrappers; every pattern band rerenders the same tile. | Scene-owned immutable paint resources referenced by typed IDs, per-conversion bounded tile reuse or direct solid-tile evaluation where equivalent. Benchmark many bands/uses and repeated/distinct paints before choosing a cache. |
-| AxisTransform and bare doubles/rectangles mix original boxes, mapped geometry and device/paint coordinates; paint declarations stay strings across repeated resolution; masks spread related state over parallel dictionaries. | Validated affine value and explicit coordinate/bounds roles; cohesive typed mask/clip definitions. R28 is a concrete consequence, not just naming preference. Reconcile the concurrent mask work first. |
-| Copyable scene views coexist with disposal authority; draw commands still carry sentinel indexes and variant fields. | One owner with borrowed views, variant factories and builder-validated handles. Preserve the R21 release repair and type-derived array sizes; avoid per-edge heap objects. |
-| Discovery/lowering separately traverse XML and orchestrate some eligibility; property/paint parsing can repeat during lowering. | Share policy and resolved state where it prevents disagreement. Two passes for async font acquisition are intentional; do not merge the entire walkers or create one walker per feature. |
-| Raw/budgeted glyph inspection paths and PNG sync/async sinks retain related decoding/framing logic. | Preserve already shared kernels and cross-path error/byte tests. Only extract further when the touched slice benefits; do not route production through unbudgeted inspection helpers. |
+| R01/R02 | Visible glyph/contour, sibling/CDATA/empty-text and XML-tail fixes retained. |
+| R03/R08/R10 | Shared style/admission and selected text/outline semantics repaired for the declared subset. Wider spans/fallback/GPOS remain S7/S15. |
+| R04/R12; S1–S5 | Original type sizing, surface cleanup, glyph ownership, numeric/aggregate work and XML workspace/copy/membership repairs retained. New polygon gaps are R38/R39. |
+| R05/R06/R07/R09/R10/R11/R16 | Original matrix/cmap/face/identity/lifetime/diagnostic repairs retained. Ordinary-font fidelity remains separate. |
+| R13; S7 | Intended-font metrics/pixel evidence still open; synthetic glyphs/source access do not close it. |
+| R14/R15/R19 | Several sharing/cache/typed-size/allocation repairs complete. Remaining bounded consolidation is R30/R38. |
+| R17/R18 | Discovery reservation/probes and original root-count/eligibility parity repaired; retain parity without open-ended row enumeration. |
+| R20/R21 | First-write IDAT/output-limit repair, common PNG kernels and prepared-scene detachment/consumption fixes retained. |
+| R22/R23 | Original portable provenance/pixel comparison and CDP transport/cleanup repairs retained. Launch health and wrapper deadlines/publication are repaired here; the remaining corpus workflow is R31. |
+| R24 | Impossible channel wrap repaired; remaining one-step coverage/composition is S11, not tolerance. |
+| R25 | Definition-ancestor transform fault repaired; wider inherited presentation still bounded. |
+| R27 original branch | Every manifest entry now executed and classified; remaining reporting/identity work above. |
+| R29 original decoder/tile/stops | Reserve-before-copy decoder storage, proportional chunk/row/tile work, cancellation and scene-owned shared gradient stops repaired. Per-wrapper object granularity and lenient late tRNS remain explicitly accepted limits. Do not treat new polygon omissions as those original bugs. |
+| R31 CI hook / R32 PNG errors | Validator negatives wired to both CI platforms; categorized corrupt-zlib errors and critical-chunk policy repaired. |
+| Review stale dashed-circle test | Repaired by 264099f; full suite reverified. Keep full-suite checks on support-boundary changes. |
 
-Measured earlier, not rerun: transformed glyph contour copies cost 688 B for the
-triangle benchmark; snapshot setup about 30 µs/32 KB versus about 300 µs end to end.
-These were reasonably deferred. The 16-entry cmap/advance cache, consecutive-glyph
-outline reuse, cached SFNT ranges, single preparation hash and shared output scope
-already exist; do not schedule their implementation again. AcquireAsync has a
-documented point-in-time verification contract, with snapshot re-verification and
-mutation regression; this is not an accidental missing global cache.
+The fresh full-suite result is green but preserves known bad pixels intentionally.
+A positive test asserting “stroke changes output” does not establish correct dash
+placement. Twin renders can share a bug; combine semantics tests with oracle cases.
 
-Also inspect full-viewport opacity surfaces/scans and the orthogonal band builder's
-repeated all-edge intersection sorting on actual logo workloads. Limit layer
-bounds/tile work only after exact clipping/composition tests. Report allocated
-bytes/GC, live accounted peaks and working set separately. Avoid speculative
-pooling or process-wide caches to make the ledger look better.
+S6's disposable single-use prepared scene and S7's generic opt-in local/stdin/HTTP
+font host exist. Keep private acquisition/metrics/pixel validation separate from
+the path-only logo milestone. The user-authorized font/privacy contract below is
+retained unchanged.
 
-### R31 / P2 — Oracle/tooling tests need to cover the delivery workflow
+## 5. S10/S11 execution and decision discipline
 
-**Source inspection; existing validator tests pass freshly:**
+1. Establish one final device map, contour representation and spatial fill rule.
+   Retain R33–R35 and unseen variants as regressions with their fixes.
+2. Calibrate a non-orthogonal solid-fill family across phases, slopes, scales,
+   clipping, opacity and backgrounds; separate geometry from AA/composition.
+3. Extend the same path to fractional Béziers/arcs, compound contours and complete
+   affine input; share stroke outlines/paints instead of adding parallel engines.
+4. Reach the outlined-wordmark checkpoint on independent exports with counters
+   and many contours at small/intended/large sizes and every declared background.
 
-- capture-chrome.ps1 writes stdin, drains stdout, then stderr synchronously and
-  waits without a parent timeout/tree kill. The CLI has its own cancellation,
-  but that does not bound every pipe/parent failure. Use concurrent draining,
-  bounded termination and failure cleanup; test a silent/flooding child.
-- Capture width/height currently change the screenshot viewport, not the img's
-  displayed size or device scale. There is no OutputScale-equivalent argument.
-  Size-specific SVG variants are valid evidence for those changed inputs, but
-  do not prove SvgRenderOptions.OutputScale equivalence on unchanged input.
-  Pin explicit sizing/scale behavior and verify actual image bounds; capture
-  same-input fractional-scale variants with complete provenance.
-- Windows/Linux CI already builds/tests, runs memory/Chrome/font smoke, validates
-  artifacts and tests packaging. Do not list these as absent. It does not invoke
-  test-validate-ci-artifacts.ps1's negative suite; wire the existing suite in. Status 2026-09-24: repaired stale validator tables for the fresh-process image and pattern probe workloads (25-report outcomes, LimitExceeded codes, input hashes, success-PNG allowance) with updated self-test counts, verified by a full local 25-scenario run, and wired the suite into CI on both platforms with artifact upload.
-  The browser smoke covers a fixed tiny fixture, not representative corpus
-  regeneration. Add a reproducible opt-in corpus validation command/report.
-- Many recent tests inspect lowered values or compare two paths through the same
-  renderer. Those are useful semantics tests, not independent pixel truth.
-  For each new output-affecting combination retain one discriminating oracle
-  case; replace repetitive eligibility rows with a missing boundary/mechanism.
-- No benchmark family yet characterizes curve-heavy logos, many bands/paints,
-  clipped opacity layers or embedded image work. Add a small representative
-  family with the relevant feature, not a benchmark project rewrite.
+Reuse the existing negative research: pixel-centre/uniform supersampling, exact
+continuous area and partial snapping models have already failed. Record one
+discriminating hypothesis before each experiment, then its complete outcome on
+training and held-out cases. A pinned source revision is not proof of the runtime
+raster route. Do not tune individual pixels or repeat eliminated hypotheses.
 
-R22's portable hashes/provenance and R23's CDP cleanup/event repairs stay closed
-for their original scope. This finding concerns the remaining wrapper/workflow.
+If two successive iterations make no cross-family progress, write the eliminated
+hypotheses and make an explicit investigation/architecture decision. Preserve
+pixel exactness and dependency restrictions; surface feasibility uncertainty
+rather than diverting into easy pattern/cap/reference admissions indefinitely.
 
-#### R31a / P1 — Repair Windows Chrome sandbox setup before further capture batches
-
-**User trace and read-only diagnosis, 2026-09-23:** repeated Chrome messages
-`Sandbox cannot access executable` followed by network-service restart messages
-point to restricted child-process startup, not SVG rasterization. The cached
-chrome.exe and its directory lack explicit AppContainer access grants;
-tools/setup-chrome.ps1 extracts/verifies Chrome but only configures executable
-permissions on non-Windows platforms. This matches the documented
-[Windows Chrome sandbox permission problem](https://pptr.dev/troubleshooting#chrome-reports-sandbox-errors-on-windows).
-The likely diagnosis is permissions, not yet a demonstrated before/after repair.
-A separate fresh capture completed in 10.93 seconds, exited zero and matched the
-2x2 reference exactly, without these messages in captured stderr. Thus the trace
-does not itself prove a hung agent or invalid pixels. Different browser PIDs can
-be successive intentional fresh-process captures; DevTools readiness alone does
-not establish successful capture or healthy child-process startup.
-
-**Next concrete tooling change (bounded; do not interrupt another agent's process):**
-
-1. In tools/setup-chrome.ps1, add an idempotent Windows permission setup/check
-   for both newly extracted and already cached installations, including -Offline.
-   Resolve the installation from the pin; validate its absolute path is inside
-   the explicitly selected Chrome cache before changing any ACL. Verify pinned
-   hashes first. Inspect the executable, required DLL/resources and relevant
-   directory access under the actual account/environment launching captures.
-2. Use the pinned Chrome installer's documented sandbox ACL mechanism or its
-   specific application/capability identity where available. If using the
-   documented ALL APPLICATION PACKAGES fallback (S-1-15-2-1), grant only inherited
-   read/execute (OI)(CI)(RX) on that resolved Chrome installation, not write/full
-   control. Preserve existing ACLs; check command exit codes and effective access.
-   Do not reset permissions, modify the repo/home/TEMP roots, grant Everyone access,
-   or add --no-sandbox / disable the network-service sandbox. If the required
-   narrow ACL cannot be set, stop with an actionable error rather than retrying
-   captures indefinitely. Keep Linux behavior and setup's executable-path-only
-   stdout contract unchanged.
-3. In ChromeProcess and tools/test-chrome.ps1, retain bounded per-launch Chrome
-   stderr (not merely the outer dotnet wrapper), drained asynchronously and kept
-   separate from binary PNG stdout. Surface sandbox access failures and repeated
-   child-service crashes with the executable identity and elapsed time; redact
-   private paths/input data where applicable. Do not treat every benign stderr
-   message as failure. A successful PNG or the hard-coded sandbox='enabled'
-   fingerprint must not conceal these startup errors. Keep the existing timeout,
-   owned-process-tree cleanup and profile cleanup; never kill unrelated Chrome.
-4. Test fresh extraction, cache reuse and offline reuse, denied ACL changes,
-   bounded failure, and stderr/stdout separation. From the agent's actual launch
-   environment, run three fresh-process pinned smoke captures: no sandbox access
-   failures/restart loop, exact retained RGBA, normal completion and no orphan
-   process/profile. Recheck representative captures without regenerating their
-   references. Preserve hashes/recipe/security flags; report observed startup
-   health separately from configured sandbox policy. Record before/after timings
-   and sanitized diagnostics in docs/ORACLE.md and update this finding in place.
-
-This is one setup/observability repair, not a browser upgrade or raster-recipe
-change. No ACLs, launcher code or other agent processes were modified by this review.
-
-### R32 / P1 — Embedded PNG decoding violates categorized errors and chunk policy
-
-**Fresh public conversion reproductions:** a PNG with a damaged zlib header but
-recomputed correct chunk CRC throws InvalidDataException outside SvgException.
-Inserting an unknown CRC-valid critical ABCa chunk succeeds; inserting ancillary
-abCD is rejected as an unrecognized critical chunk.
-
-PngImageDecoder.IsCritical tests type[3]; the ancillary/critical bit belongs to
-the first byte, while the fourth is safe-to-copy
-([PNG chunk naming](https://www.w3.org/TR/png-3/#5Chunk-naming-conventions)).
-This is not a reason to implement general image formats now.
-
-**Next:** fix the bit, categorize compression/structure failures at the decoder
-boundary without swallowing cancellation/limit exceptions, and add independent
-CRC-valid corrupt-compression/chunk-order/truncation cases across public output
-forms. Keep destinations untouched for parse failures. Pair with R29's decoder
-repair; keep multi-color image/resampling expansion deferred to measured demand. Status 2026-09-24: bit fix and pixel categorization already landed (26ba8fa); this turn adds a programmatic PNG builder with CRC self-check plus order/truncation negatives (IDAT-before-PLTE, missing/trailing/second-IHDR, truncated header, overlong length, empty stream, post-IEND guard) and a four-input six-forms failure matrix with destination-untouched asserts. Late tRNS stays lenient (existing vectors, harmless).
-
-## 4. Completed repairs and deferred text work
-
-Do not reassign closed findings because an old paragraph said “still missing”.
-The original reproductions remain in history; keep their regression coverage.
-
-| Stable IDs / stages | Current disposition |
-| --- | --- |
-| R01/R02 | Original visible-glyph/contour, sibling/CDATA/empty-text and XML-tail repairs retained. |
-| R03/R08/R10 | Shared style/admission and selected text/outline semantics repaired for the declared subset. Wider span/font/fallback/GPOS behavior remains S7/S15 work, not a shape-logo prerequisite. |
-| R04/R12; S1–S5 | Original type sizing, surface cleanup, glyph sampling/decoder ownership, numeric boundaries, aggregate work, XML workspace/copy/membership charges repaired. Preserve phase-denial/cancellation tests. New paint/image gaps are R29. |
-| R05/R06/R07/R09/R10/R11/R16 | Original matrix/cmap/face/identity/lifetime/diagnostic defects have retained fixes. Wider ordinary-font fidelity and sanitized diagnostic coverage remain separate requirements. |
-| R13; S7 | Ordinary-font pixel/metrics evidence remains open. Synthetic glyph tests and successful private source access do not close it. |
-| R14/R15/R19 | Several sharing/cache/typed-sizing repairs and allocation baselines completed. Remaining scoped duplication/GC work is R30, not an unlimited cleanup milestone. |
-| R17 | Discovery collection reservations and fresh-process probes closed. |
-| R18 | Original root-count/eligibility divergences repaired; retain discovery/lowering parity and add only discriminating new boundaries. Stop open-ended row enumeration. |
-| R20 | First-write-dependent IDAT buffering/output-limit repair closed; common CRC/filter kernels shared. Preserve high-entropy and six-output equivalence tests. |
-| R21 | Prepared-scene detachment after disposal/consumption repaired; borrowed-memory lifetime rules still apply. |
-| R22 | Portable fixture bytes, pixel-vs-PNG-byte comparisons and provenance validation repaired. |
-| R23 | Original bounded CDP/event/cleanup defects repaired; remaining capture wrapper is R31. |
-| R24 | Impossible channel wrap fixed by 476fd00. Remaining one-step alpha/RGB differences are unresolved S11 fidelity work; see R27. |
-| R25 | Definition ancestor-transform fault fixed by bb63df3; inherited definition presentation is not thereby fully solved. |
-
-S6's single-use prepared scene and shared preparation-through-output accounting
-exist. S7's generic opt-in font host exists, with local/stdin/HTTP/lazy/retry and
-bounded-cache tests. The remaining S7 step is actual intended-font inventory,
-metrics and pixel validation under section 6. No new private-source authorization
-is needed, but no private lookup is needed to deliver outlined wordmarks either.
-
-## 5. Ordered implementation queue — take this before peripheral extensions
-
-Keep one active delivery slice plus its necessary correctness blockers. P0 safety
-issues can interrupt it; unrelated font hardening or arbitrary feature combinations
-cannot. Section 8 is a requirements checklist, **not ten serial prerequisite
-projects**. S9 need not be complete before S10/S11 starts.
-
-Before another large Windows oracle batch, take the bounded R31a sandbox setup
-repair above; avoid repeated failed browser launches, then resume the active
-general-path slice. This does not reopen the broader tooling backlog as a gate.
-
-| Order | Bounded work package | Exit / next handoff |
-| --- | --- | --- |
-| 0 — finish the in-flight slice | Reconcile current mask/context edits and tests; incorporate any changed evidence here. Preserve R25 and exact references. | Clean, buildable change; no unrelated audit rewrites or additional mask features. |
-| 1 — make current results trustworthy | Retain R28 cases; fix or gate the bad paint maps. Fix R29/R32's newly introduced resource/error violations. Split actual support/fidelity in the corpus and run every entry (R27). Begin representative inventory (R26). | Known mismatches cannot masquerade as unsupported-but-safe or exact. Each repaired semantic domain has an independent regression and bounded cleanup/work proof. This is a finite repair pass, not a new hardening campaign. |
-| 2 — **critical path: general filled paths** | Deliver S10/S11 together through the vertical slices below, with only the shared style/paint-map support needed by each. Use existing negative research instead of restarting supersampling experiments. | Exact non-orthogonal flat marks and outlined wordmarks across fractional coordinates, transforms, holes and output scales. This is the first useful logo milestone. |
-| 3 — common stroke/export combinations | General stroke outlines/caps/joins, then corpus-required dashes/non-scaling behavior (S12); practical cascade/local use/symbol support and arbitrary path clips (S9/S14). | Independent exporter examples and mixed fill/stroke/clip/group-opacity cases, not only isolated syntax. |
-| 4 — complete common paints/composition | Correct reusable linear gradients, transparent/multiple stops and radial gradients; nested clips/groups and corpus-required masks (S13/S14). | Exact transformed/clipped/alpha cases across frozen document variants. Do not extend the current per-paint geometry hierarchy. |
-| 5 — coverage-driven completion | Live-font wordmarks (S7/S15) and images/patterns/markers/filters (S16), ordered by measured blockers. Package/platform/resource report (S17) runs throughout and closes the milestone. | Agreed exact document-coverage target achieved; categorized residual gaps and Windows/Linux evidence. |
-
-### S10/S11 vertical slices and decision points
-
-1. **Characterize the raster route and compositor.** Retain the existing
-   integer/fractional/half-grid triangles, overlaps, circle and cubic references.
-   Add a small hold-out family spanning phase, orientation, size, opacity and
-   background. Establish which browser raster/compositing mechanisms explain the
-   observations; source revision alone does not prove the executed backend.
-   Record the hypothesis before implementation and its complete result afterward.
-   Resolve the R24/R27 alpha cases here with general rules, not fixture-specific
-   branches. A mechanism that fails the hold-out is not an admission candidate. Status 2026-09-24: the hold-out gains two apex partial-row probes (diagonal-blue-apex-8x8 promotes the blue-alone residual configuration to retained evidence; diagonal-shallow-apex-8x8 isolates a two-edge fractional apex); both show the same directional analytic-deviation family with repeated +19/+11 absolute left-edge offsets. The exact replica remainder is still open; the diagonal gate stays held. 2026-09-24 variant round: exact-subdivision, partial-HALF-gating, tops-bare and acc-carry-removal eliminated with 14-harness evidence; row-2 grid maps the solution manifold but needed values are overconstrained under verified formulas. Gate still held; next is goY and joint-switch transcription. 2026-09-24 header round: pinned SkAnalyticEdge.h fetched read-only; goY, SkFixed semantics, inverse table (0 diffs), branches and convex HALF handling all match the replica; grid manifold refined with FAM-A minimal solution; overlap rows 3-4 reframed as compositing follow-up. Next is a switch-vertex micro-probe family. 2026-09-24 switch family: 2/5/0 mismatches across switch snaps 2.25/2.5/2.75 (275 exactly clean); yShift clamp refuted (breaks 6 exact); five input variants byte-identical (inputs faithful). Next is a denser same-bucket pair sweep. 2026-09-24 joint-continuity round: five input variants byte-identical (inputs faithful); needed row-2 values reframed as joint-local shift of dying and birthing edges with surviving edges fixed; uniform families stay eliminated. 2026-09-24 dense sweep: 0/2/0/5/0/0/0/0 across eight switch positions; same-bucket pairs diverge (exact-geometry tracking, buckets dead); kMaxAbsA confirms table path everywhere; five probes retained manifest-gated. 2026-09-24 slope family: identical five-pixel residuals (plus 1/3/2/3) across left slopes 0.6/0.8/1.0/1.1; deltas constant while absolutes move; three probes retained. 2026-09-24 joint-switch round: handoff traces show carried equals fresh fX at every switch top; V6 fresh-fX is bit-identical on all eight singles, V7/V8 span-formula routing is load-bearing elsewhere but blue-invariant, V9 birth-phase freedom breaks twelve probes while blue stays at 5; gate held, next is continuing-acc masking or R2 dispatch. 2026-09-24 onset mapping round: residual switches off discontinuously between A.y 2.40625 (5) and 2.4375 (0) with intermediates clean; branch paths identical across the boundary, only strip-2 row-2 ll differs by one quantum (81920 versus 86016) from dx64 table entries 320 versus 318; gate held, next is unmasked-operand branches or table-entry rounding. 2026-09-24 rational audit round: exact nL sits on the snap boundary (86016) with replica one below; pinned quick_div confirms the table path so dx is dead at source level; swap grids prove no nearby inputs reach oracle row 2 (structural gap, not parametric); gate held, next is narrow-span micro-probes or blitter selection re-read. 2026-09-24 blitter re-read round: pinned dispatch, swaps, joins, narrow-span selection and both alpha primitives all match the transcription for blue inputs (one real but unfired collapse-formula divergence); transcription verified twice, promoting rev-versus-backend mismatch to prime suspect; gate held, next is narrow-span micro-probes. 2026-09-24 attribution grid round: row-2 split into strip parts shows (ul 49152, ll 77824) nails x=0,1 exactly but x=2,3 need an incompatible strip-1 lDY; 340-combo grid never reaches oracle row; input-side search exhausted, structural difference confirmed; gate held. 2026-09-24 translation round: rigid plus-one-pixel translation keeps replica identical (0 shifted diffs) but oracle goes from 5 mismatches to fully exact; backend absolute-position dependence proven with confounds ruled out; position-independent formula theories reframed as suspect; gate held, next is fixed-position micro-probes. 2026-09-24 position-map round: seven rigid x-translations show the residual at exactly one absolute x (narrower than plus-or-minus 1/16px), plus-1 y preserves all five values shifted, RGB pure blue; x-singular y-invariant alpha-only defect outside modeled fixed-point math; gate held, next is Blink-side or backend-selection evidence. 2026-09-24 paint-independence round: red and green variants show byte-identical alphas to blue (residual included) with exact paint RGB; coverage factorization holds, residual purely geometric and any fix paint-universal; gate held. 2026-09-24 compositing closure round: harness composite rule with true blue masks closes all five overlap pixels exactly (alpha and RGB, zero free parameters); overlap independently confirms blue solo values; compositing exonerated, full residual in coverage; gate held. 2026-09-24 render-entry audit round: mask-plus-convex path verified for small probes, snapAlpha refuted behaviorally, bounds/fLeft/composition exact; today blue captures byte-identical to March reference (oracle stable across sessions, position effect is input-driven); gate held. 2026-09-24 audit-scares-clean round: swap-grid lDY values re-verified direct from Edge2 (blue 10922, on 10979 stand); dy dispatch keys on computed dx magnitude; three hand-arithmetic slips caught before the record; gate held. 2026-09-24 split-necessity round: integer-switch probe still shows seven oracle-above mismatches (splits unnecessary); sliver shortfall identical across partial and full rows with same span inputs (row-kind independent); wide-span control clean; gate held. 2026-09-24 cross-version round: Chrome 132 renders blue byte-identically to 153 (recent regression dead); identity-transform byte-identical (CTM clean); smooth-jump verified non-firing; gate held, next is fixed-position micro-probes. 2026-09-24 interaction-table round: real 225 rerun confirms two mismatches (wrong-triangle five-diff run discarded); mismatch iff pixel 0 meets first 12288 or 28672 with T1 pixel-1 control; src-over eliminated by direction; strip inversion rejected as geometrically absurd; gate held. 2026-09-24 toolchain audit round: ffmpeg agrees byte-for-byte with the harness reader; residual fires iff apex-x is 0.78125 (m1/m2/slopes) with an invariant exact sliver doubling (8 versus 4) and pure-blue RGB; no single input tweak reaches oracle values under verified rules; gate held.
-2. **First non-orthogonal end-to-end slice.** Typed contour buffer + full affine
-   mapping + solid fill + bounded coverage for a diagonal closed polygon.
-   Separate geometry expectations from oracle coverage; include rotations,
-   reflection, fractional phases, clipped/off-canvas edges and output scaling.
-   Integrate through the public renderer, preserving rectangle equivalence. Status 2026-09-24: pure-geometry affine kernel landed (SvgAffineTransform: matrix/translate/scale/rotate-about-center/skew composition with LimitExceeded on non-finite Apply, 18 unit tests); no renderer wiring and no admitted-syntax change; contour buffer chaining affine/flatten/arc-sampling landed (SvgContourBuilder with fixed explicitly owned storage plus SvgEllipticalArc.Sample, 17 unit tests); still no renderer wiring and no admitted-syntax change. Status 2026-09-24: first renderer wiring landed for solid single-contour diagonal polygon/polyline/path fills (SvgPolygonFill through winding/evenodd coverage under the rectangle quarter-pixel output discipline, 12 end-to-end tests); multi-contour, curved and hole wiring still open. Status 2026-09-24: multi-contour holes wired (retained contour ends plus even-odd nesting signs, opposite-wound nonzero and nested even-odd holes with analytic alpha sums, touching contacts still rejected, 17 end-to-end tests); curved fills still open. Status 2026-09-24: curved fills wired (integer C/S/Q/T plus uniform-positive arcs through affine flattening at quarter-pixel flatness into the shared polygon machinery with finite vertex mapping, anisotropic output/distortion guards and bounded expansion, 12 end-to-end tests); slice 3 geometry complete except touching admissions and element-level shapes. Status 2026-09-24: element shapes wired (circle/ellipse elements plus nonzero-rx/ry rectangles through sampled outlines with quarter-discipline coordinates, paint-server and stroke combinations explicitly rejected, 18 end-to-end tests); remaining slice-3 work is touching admissions, anisotropic arcs and text. Status 2026-09-24: fractional path coordinates wired (straight fractional paths through the full-parser device pipeline with finite output mapping, integer paths unchanged on the exact pipeline, 5 end-to-end tests; 18 diagonal research probes promoted to measured known-differences with oracle references retained); fractional curves stay explicitly rejected pending calibration closure. Status 2026-09-24: fractional point lists wired (lexical routing shared with fractional paths, double-precision tokenizing with path-mirrored malformed taxonomy, device-mapped fills plus device-contour strokes through the shared polygon machinery, 3 cross-element equivalences byte-exact plus malformed/degenerate negatives, 7 end-to-end tests). Status 2026-09-24: empty and whitespace-only transforms lower as identity across element, gradient and pattern transforms (3 end-to-end tests).
-3. **Compound and curved fills.** Extend the same representation to multiple
-   contours, nonzero/evenodd, touching/coincident/self-intersections; quadratic/
-   cubic curves and smooth commands; then elliptical arcs and normalized circles,
-   ellipses/rounded rectangles. Use bounded device-space subdivision/edge work.
-   Admit each family only when its full oracle family is exact; do not publish
-   parser-only completion as rendering support. Status 2026-09-24: pure-geometry elliptical-arc normalization kernel landed (SvgEllipticalArc: endpoint-to-center conversion with radii correction, rotation, large-arc/sweep selection and line degeneracies, LimitExceeded on overflow, 14 unit tests); no parser/renderer wiring and no admitted-syntax change. Status 2026-09-24: nonzero winding coverage landed (SvgPolygonCoverage.GetWindingCoverage: signed multi-contour sums over flat points plus explicit ends, opposite-wound holes subtract, 8 unit tests); evenodd nesting still open, still no renderer wiring. Status 2026-09-24: evenodd nesting landed (SvgContourNesting parity signs plus SvgPolygonCoverage.GetEvenOddCoverage: orientation-free holes, 15 unit tests); touching/coincident contours still excluded, still no renderer wiring. Status 2026-09-24: contour structure classification landed (SvgContourStructure: zero-length/crossing/coincident/touch flags within and between contours with strict nonzero-sign crossing test, 12 unit tests); touching family detected but unadmitted, still no renderer wiring. Status 2026-09-24: line path-data parser landed (SvgPathDataParser: M/L/H/V/Z with repeats, implicit lineto, compact decimals/exponents/sign-abutment, MalformedInput versus UnsupportedFeature taxonomy, command/work/point budgets, 19 unit tests); curves still unadmitted, still no renderer wiring. Status 2026-09-24: full path-data commands landed (SvgPathDataParser.ParsePath: C/S/Q/T with reflected controls, A with strict flags, eager flattening through the contour buffer, 13 curve tests); arc radii pass in the device frame, still no renderer wiring. Status 2026-09-24: pure-geometry quadratic/cubic flattening kernel landed (SvgCurveFlatten: adaptive device-space midpoint subdivision with explicit flatness/depth/expansion policy, LimitExceeded on depth/exhaustion/overflow, 20 unit tests); no parser/renderer wiring and no admitted-syntax change. Status 2026-09-24: closed-curve shapes landed (SvgEllipticalArc.SampleFull full-ellipse loops plus SvgContourBuilder.AddEllipse/AddRoundedRect with clamping and sharp fallback, 14 unit tests); element-attribute parsing deferred to wiring, still no renderer wiring.
-4. **Outlined-wordmark checkpoint.** Retain independently selected outlined text
-   logos with counters and many contours, plus flat curved marks, at intended,
-   small and large sizes. Run all backgrounds/scales declared for each document.
-   Report which earlier inventory blockers disappeared and which remain.
-
-Limit each calibration iteration to one new discriminating mechanism and a
-written exact result. If two successive iterations make no cross-family progress,
-record the eliminated hypotheses and a new investigation/architecture decision;
-do not divert into another week of easy pattern/attribute admissions. Keep
-pixel-exactness and dependency constraints unchanged. Escalate genuine backend/
-feasibility uncertainty rather than implying that adding more tests removes it.
-
-Every implementation change includes its regression, relevant support docs and
-actual verification. Tests should demonstrate a new semantic boundary, resource
-failure or independently checked image—not merely add another spelling to a
-large acceptance matrix. Update status/next action in place, not another “Landed”
-paragraph. Keep this plan free of contradictory dates and obsolete totals.
+Every implementation slice includes tests, relevant support documentation and
+actual verification. Update current status in place in the same small buildable
+commit. Detailed history belongs in Git, docs/RASTERIZATION_DESIGN.md and
+docs/BENCHMARKS.md, not another multi-page “Status” paragraph here.
+Report newly exact independent documents, important defects closed, dominant
+remaining blockers and evidence revision—not activity totals.
 
 ## 6. Font, text and host requirements retained
 
@@ -614,7 +577,7 @@ and borrowed-byte validity have their separate documented lifetimes.
 
 | Existing default | Value / interpretation |
 | --- | --- |
-| Accounted renderer storage | 256 MiB; renderer-owned accounting, not process/host memory. New gaps: R29. |
+| Accounted renderer storage | 256 MiB; renderer-owned accounting, not process/host memory. Polygon gaps: R38/R39. |
 | SVG input / encoded PNG | 16 MiB / 128 MiB. |
 | Output | 16,384 per axis; 16,777,216 pixels. |
 | Nodes / cumulative path commands | 100,000 / 1,000,000. |
@@ -653,23 +616,20 @@ No release claim depends on private fonts, a sibling checkout or a browser runti
 
 ## 8. Pixel-exact corporate-logo requirements and stage status
 
-This section preserves the broader scope; **section 5 determines execution order**.
-Existing narrow support is partial implementation, not completion of a stage.
-A path-only logo must work without a font provider. “Good enough” means enough
-documents supported exactly, not approximate output for every SVG.
-
-| Stage | Current status | Remaining decisive result |
+| Stage | Current state | Exit |
 | --- | --- | --- |
-| S8 — representative inventory/oracle | Synthetic census and retained oracle mechanism exist; representativeness incomplete (R26/R27). | Independent logo-export inventory, honest per-document/all-variant outcomes and agreed target. |
-| S9 — static export/style/reference handling | Partial restricted shared resolver, nested viewports/use/symbols/CSS. | Practical exporter combinations with a coherent typed paint/reference model. |
-| S10 — general geometry/coordinates | Orthogonal bands only; integer axis transforms. | Complete planned paths/basic shapes, compound contours, fractional coordinates and affine maps. |
-| S11 — exact coverage/composition | Rectangle fast paths and substantial negative calibration evidence; general solution missing. | Cross-phase/scale/alpha exact coverage and source-over for general contours. Critical path. |
-| S12 — strokes | Restricted even-width orthogonal bands and no-op default declarations. | Shared outline coverage, caps/joins/fractional widths and corpus-required dashes/transforms. |
-| S13 — paint servers | Restricted 2–8-stop opaque linear gradients and paint-server strokes; R28 defects. | Correct paint maps, alpha/stops/radial gradients, reuse and interaction coverage. |
-| S14 — clips/masks/layers | Restricted rectangle clips/masks/isolated opacity; concurrent mask work. | Arbitrary clip paths, nested composition and corpus-required general masks. |
-| S15 — live text | Font infrastructure and experimental synthetic text; S7 oracle incomplete. | Same verified intended-font layout/pixels integrated with shared geometry/paint. |
-| S16 — extensions | Narrow single-rect patterns and solid-PNG-as-rectangle support. | Only extensions justified by measured document blockers; no general image/effect claim. |
-| S17 — logo milestone validation | Strong component/engineering tests; representative milestone unproven. | Frozen coverage target, all variants exact for admitted documents, package/platform/resource evidence. |
+| S8 — inventory/oracle | Honest synthetic exact/known-difference gate; real inventory empty. | Frozen independent inventory, variants and agreed exact-document target. |
+| S9 — static exports/style/references | Limited cascade, defs/use/symbol and forward references; CSS stroke defect R36. | Practical exporter semantics and bounded reusable resolution. |
+| S10 — geometry/coordinates | Curves/basic shapes and contour/affine kernels implemented experimentally; fractional curves/general public affine/complex contours still incomplete. | Complete required geometry/maps with independent semantics and S11 pixels. |
+| S11 — coverage/composition | Shared analytic polygon work exists; general Chrome-exact solution missing, with R33–R35 defects and known alpha residuals. | Exact held-out cross-phase/scale/alpha families. Critical path. |
+| S12 — strokes | Outline kernels, caps/joins/dashes and limited shape/paint instancing exist; many curved outputs inexact. | Correct shared fractional/transformed strokes and inventory-required variants. |
+| S13 — paints | Limited linear/radial stops, alpha, spread and inverse maps implemented; exactness/interaction gaps persist. | Reusable correct paint maps and exact mixed-feature evidence. |
+| S14 — clips/masks/layers | Restricted rectangles, constant masks, opacity and forward resolution; R33 device clipping defect. | Arbitrary path clips and corpus-required nested composition. |
+| S7/S15 — live text | Supplied-font preparation/host exists; ordinary-font fidelity unproven. | Same-font metrics/pixels under section 6, separate from outlined logos. |
+| S16 — extensions | Uniform PNG and narrow patterns exist; other features inventory-driven. | Only measured blockers, no detours. |
+| S17 — logo validation | Component tests green; representative milestone not demonstrated. | Agreed all-variant exact coverage with fresh platform/package/resource evidence. |
+
+The requirements below are targets, not blanket current-support claims.
 
 ### S8 — Inventory and measurable completion
 
@@ -724,7 +684,6 @@ Do not infer coverage or a date from unit-test totals.
 Exit: independently expected cascade/reference/viewport results, shared numeric
 and eligibility boundaries, plus representative exporter documents. General CSS,
 scripting, events, external-document retrieval and animation are not prerequisites.
-Status 2026-09-24: direct local use of polygon/polyline/path/circle/ellipse fills wired (list-holding definitions with transform/placement/opacity/clip composition, backward and forward references, 13 end-to-end tests); forward multi-geometry references wired (in-place placeholder expansion preserving paint order, 2 end-to-end tests); solid-fill use instancing complete, paint-server instances stay rectangle-only. Status 2026-09-24: definition-embedded linear-gradient bands instance per band through the shared vector and opacity mapping (3 end-to-end tests including a pattern boundary negative); pattern-filled definitions stay explicitly unsupported. Status 2026-09-24: symbol-held linear-gradient bands wired through viewBox composition into the shared instance lowerer (2 end-to-end tests). Status 2026-09-24: definition-embedded pattern bands instance per band through lossless tile synthesis (2 end-to-end tests); symbol-held pattern content stays explicitly unsupported. Status 2026-09-24: stroked-rectangle definitions instance through direct local use (uniform width scaling, multiplied opacity and viewport containment, 7 end-to-end tests including non-uniform, symbol and boundary negatives); symbol-held strokes stay explicitly unsupported. Status 2026-09-24: symbol-held fill-plus-stroke polygon pairs admitted with uniform outline scaling (2 end-to-end tests, no production change required). Status 2026-09-24: gradient-stroke rectangle definitions route through the stroke lowerer and instance with mapped bands, with line instances locked equivalent (3 end-to-end tests). Status 2026-09-24: symbol-held gradient-stroke rectangles wired through viewBox composition into the shared stroke lowerer (2 end-to-end tests). Status 2026-09-24: repaired the missing nested-viewport frame shift on direct polygon-use instances (points now compose exactly like rectangles, lines and bands; the silently-wrong offset is closed with 2 end-to-end tests). Status 2026-09-24: symbol-held polygon and band fills wired through uniform viewBox maps (per-point and per-band mapping with placement/transform/opacity/viewport-clip composition, backward and forward references, 9 end-to-end tests); non-uniform symbol polygon maps stay explicitly unsupported. Status 2026-09-24: masked polygon fills wired through shared contour storage with ownership transfer (direct, stroked-pair, circle and use-instance masks, 6 end-to-end tests). Status 2026-09-24: fill overrides on unstyled single-geometry polygon and band definitions wired (4 end-to-end tests). Status 2026-09-24: forward-expansion hardening (two interleaved multi-geometry forwards preserving order, paint-by-forward equivalence, masked-group scope expansion, 3 end-to-end tests, no production change required). Status 2026-09-24: reference-boundary hardening (non-geometry definitions stay inert with explicit use failures, masked forward references resolve identically, 2 end-to-end tests, no production change required). Status 2026-09-24: ordered early root stylesheets accumulate with document-order cascade (3 end-to-end tests plus the reshaped late-sheet gate theory). Status 2026-09-24: symbol-held solid rectangle strokes wired through uniform viewBox maps as fill plus four viewport-clipped stroke bands (uniform-scale even widths, integer-mapped geometry, paint order preserved; 2 direct-equivalence, 1 viewport-clip and 3 boundary negatives, superseding the earlier symbol-stroke gate); non-uniform symbol/instance scales and fractionally-mapped strokes stay explicitly unsupported. Status 2026-09-25: symbol-held pattern bands wired through viewBox composition into the shared instance lowerer (tile origin, dimensions and content mapped through the viewBox with integer-grid gating; identity and scaled direct-equivalences plus non-integer tile gate and forward/backward equivalence, 4 end-to-end tests; scaled 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-symbol-pattern-mark).
 
 ### S10 — General filled geometry and transforms
 
@@ -735,7 +694,7 @@ Status 2026-09-24: direct local use of polygon/polyline/path/circle/ellipse fill
 - Preserve multiple contours/holes, either orientation, touching/coincident and
   self-intersecting contours under nonzero/evenodd. Distinguish implicit fill
   closure from explicit stroke closure.
-  Status 2026-09-24: integer straight-path fills seal every unclosed subpath implicitly (plus explicit return-to-start), lowering identically to the closed form and matching the general curved-path parser; stroke keeps explicit-closure tracking.
+
 - Normalize circles, ellipses, rounded rectangles, lines, polygons and polylines
   to shared geometry; retain independent equivalent-shape tests.
 - Support fractional coordinates, relevant units/percentages and all viewBox
@@ -797,7 +756,6 @@ half-coverage differences and double-composited band corners are unresolved, not
 permission to admit an approximation. Test acute miters, round tangencies, hairlines,
 dash seams, open/closed/degenerate paths, self-overlap and transformed strokes.
 Bounds/expansion/work denial tests are independent of pixel success.
-Status 2026-09-24: polyline-subset kernel landed (SvgStrokeOutline: butt caps, miter/bevel joins, open/closed/degenerate paths, 13 kernel tests); curves, round caps/joins, dashes and renderer wiring remain open. Status 2026-09-24: admitted-subset stroke wiring landed (solid even-width butt/miter polygon/polyline/path strokes with per-subpath closure tracking, uniform-scale gating and nonzero outline fills, 17 end-to-end tests); round/square caps, round/bevel joins, dashes, odd widths, shape strokes and non-uniform scales remain open. Status 2026-09-24: solid circle strokes wired as opposite-wound sampled ring fills through the shared polygon machinery (positive widths, validated-only miterlimit, fill-plus-stroke paint order, definition/use/mask composition; renders with measured oracle delta, 267 pixels with maximum channel error 255 on faint slivers and maximum alpha error 46, retained as known-difference census entry original-logo-circle-stroke-mark mirroring the circle-fill standing; 13 end-to-end tests); non-uniform ellipse stroke maps stay explicitly unsupported. Status 2026-09-25: solid ellipse strokes wired as opposite-wound sampled ring fills through the shared polygon machinery (uniform-positive scales keeping width exact, validated-only miterlimit, circle-sized ellipses collapsing byte-exactly onto circle strokes, dashed ellipse strokes gated; renders with measured oracle delta, 235 pixels with maximum channel error 255 on faint slivers and maximum alpha error 63, retained as known-difference census entry original-logo-ellipse-stroke-mark mirroring the circle-fill standing). Status 2026-09-26: paint-server strokes admitted on circles and ellipses through white ring lowering with shared repaint (linear, radial and pattern admissions with opaque-only gates, dashed and undefined gates, 5 end-to-end tests; bounding-box linear circle 64x64 probe renders with measured oracle delta of 286 pixels at maximum channel error 169 and maximum alpha error 43 on ring fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-circle-gradient-stroke-mark in the ring-fringe family with ramp dither). Status 2026-09-26: radial paint strokes on circles share the admitted white ring lowering (no production change; concentric 64x64 probe renders with measured oracle delta of 299 pixels at maximum channel error 255 and maximum alpha error 43 on ring fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-circle-radial-stroke-mark in the ring-fringe family with cone dither). Status 2026-09-26: pattern paint strokes on circles share the admitted white ring lowering with a byte-identical candidate to the solid stroke (no production change; solid-tile 64x64 probe renders with measured oracle delta of 291 pixels at maximum channel error 255 and maximum alpha error 43 on ring fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-circle-pattern-stroke-mark, completing the circle-stroke paint matrix). Status 2026-09-26: paint-stroke circle definitions and stroked circle symbols render byte-identical to direct play through retained ring geometries (two twin tests; no production change was needed and no oracle probe this slice, the ring deltas transferring through the twins). Status 2026-09-26: bevel joins admitted on circles and ellipses as smooth-ring no-ops with byte-identical twins (no lowering change was needed; dashed-circle stale gate converted to admission; two twin tests plus conversions, clean-binary full core 2189 green). Status 2026-09-26: paint-stroke ellipse definitions and stroked ellipse symbols render byte-identical to direct play through the same retained ring path (two twin tests; no production change was needed and no oracle probe this slice). Status 2026-09-26: paint-stroke rounded symbols proven byte-identical to direct play with translucent paint-stroke definitions honestly gated (twin plus gate tests; no production change was needed and no oracle probe this slice). Status 2026-09-26: linear paint strokes on ellipses share the admitted white ring lowering through the ellipse branch (no production change; rx-20 ry-12 64x64 probe renders with measured oracle delta of 247 pixels at maximum channel error 255 and maximum alpha error 70 on ring fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-ellipse-gradient-stroke-mark in the ellipse ring-fringe family). Status 2026-09-26: radial paint strokes on ellipses share the admitted white ring lowering through the ellipse branch (no production change; concentric rx-20 ry-12 64x64 probe renders with measured oracle delta of 256 pixels at maximum channel error 255 and maximum alpha error 70 on ring fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-ellipse-radial-stroke-mark in the ellipse ring-fringe family with cone dither). Status 2026-09-26: pattern paint strokes on ellipses share the admitted white ring lowering with a byte-identical candidate to the solid stroke (no production change; solid-tile rx-20 ry-12 64x64 probe renders with measured oracle delta of 249 pixels at maximum channel error 255 and maximum alpha error 70 on ring fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-ellipse-pattern-stroke-mark, completing the ellipse-stroke paint matrix). Status 2026-09-26: ellipse paint-stroke parse coverage completed (linear and radial admissions with solid-tile twin plus translucent and undefined gates, 5 end-to-end tests; radial ellipse oracle still pending). Status 2026-09-24: round caps and round joins wired through the shared stroke outline kernel as flatness-bounded arc fans (outer arcs with plain inner corners, semicircle reversal tips, presentation-attribute cap/join threading with butt/miter defaults; 3 kernel geometry tests plus 6 end-to-end tests with band-stroke butt gates on rectangle, line, gradient and symbol-rectangle strokes); renders with measured oracle delta, 78 pixels with maximum channel error 59 and maximum alpha error 59, retained as known-difference census entry original-logo-stroke-round-mark; square caps, dashes and round caps on band strokes stay explicitly unsupported. Status 2026-09-25: square caps wired through the shared stroke outline kernel as half-width tip extensions (butt outline with extended tips, closed contours provably unaffected, presentation-attribute threading; 1 kernel geometry test plus 3 end-to-end tests with a square-cap band-stroke gate; renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-stroke-square-mark). Status 2026-09-25: dashes wired through the lowerer as device-space pattern runs sharing one nonzero outline fill (bare-number/px entries with at most eight, odd-doubling, negative rejected as malformed, all-zero patterns painting no stroke, zero-length dashes gated with round/square caps, seam-touching runs on closed loops merged preserving joins; an initial split-at-seam formulation mismatched the closed oracle by 4 pixels at the seam miter and an unconditional merge now matches byte-exactly including pattern-aligned seams; butt-offset probes byte-exact pinning the phase convention while round-cap dash ends carry the standing round-fan residual; 8 parse plus 7 pixel tests with band/circle/inline dash gates; retained as exact oracle entries original-logo-stroke-dash-mark and original-logo-stroke-dash-closed-mark). Status 2026-09-25: pathLength normalization admitted scaling dash patterns by computed over asserted length across whole elements (zero pinning a solid stroke, negative rejected as malformed, inline path lengths gated; an initial inverted factor mismatched by 78 pixels and the corrected direction matches with cut-edge-only residuals; multi-subpath totals byte-exact; 3 parse plus 3 pixel tests; single-subpath probe renders with measured oracle delta, 5 pixels with maximum channel error 102, retained as known-difference census entry original-logo-stroke-pathlength-mark). Status 2026-09-25: non-scaling-stroke admitted on kernel and ring strokes with fixed width through element transforms including non-uniform ones (uniformity still required for ring geometry and scaled viewports; dashes keep scaling normally with non-uniform dashed strokes gated; band strokes and stylesheet/inline/inherited vector effects stay explicitly gated; uniform, non-uniform, dashed and circle equivalences byte-exact across 7 pixel tests with unknown-value and band gates; non-uniform 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-stroke-nonscaling-mark). Status 2026-09-25: pattern-url strokes admitted on rectangles and lines through shared tile-grid evaluation (solid fill plus four tile bands on rectangles, single tile band on lines; even widths, butt caps, unscaled viewports, pattern dispatch in direct, definition and line paths with fill combinations still gated; converted rect rejection plus line admission and solid-tile equivalence, 3 end-to-end tests; half-tile rect and line 64x64 probes each renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entries original-logo-pattern-stroke-mark and original-logo-pattern-line-stroke-mark). Status 2026-09-25: gradient fills pair with pattern-evaluated stroke bands through the shared fill helpers (pattern-stroke lowering resolves linear and radial fills with categorized pattern-fill and missing-reference gates, pattern dispatch ordered before the syntactic gradient dispatch, presentation bypass for url fills; linear and radial admissions plus a solid-pair plumbing equivalence, 3 end-to-end tests; linear 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-gradient-pattern-stroke-mark, while the radial probe renders with measured oracle delta of 6 pixels at maximum channel error 1 and maximum alpha error 0, retained as known-difference census entry original-logo-radial-pattern-stroke-mark in the standing one-step family; pattern fills with gradient or pattern strokes stay explicitly gated). Status 2026-09-25: pattern fills pair with gradient-evaluated stroke bands through fill-plus-band geometries (pattern lowering resolves linear and radial stroke gradients with degenerate and single-stop solid rings, multi-geometry return unwrapped through the paint-server funnel, categorized pattern and missing-reference gates; linear and radial admissions plus a solid-pair plumbing equivalence, 3 end-to-end tests; pattern-fill linear 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-pattern-fill-gradient-stroke-mark, while the radial probe renders with measured oracle delta of 3 pixels at maximum channel error 1 and maximum alpha error 0, retained as known-difference census entry original-logo-pattern-fill-radial-stroke-mark in the standing one-step family; pattern fills with pattern strokes stay explicitly gated). Status 2026-09-25: pattern fills pair with pattern-evaluated stroke bands through the shared fill helper (pattern-stroke lowering resolves pattern fills with the fill-only path refactored onto the helper, fill-plus-band geometries; admission plus a solid-pair plumbing equivalence, 2 end-to-end tests; two-tile 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-pattern-fill-pattern-stroke-mark, completing the rectangle fill-by-stroke paint matrix). Status 2026-09-25: square caps admitted on axis-aligned line bands through endpoint extension (half-width tip growth in all four line lowerings with a shared gate and attribute-policy allowance, round caps still gated; extension parse plus extended-butt pixel equivalence, 3 end-to-end tests; solid 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-line-square-cap-mark). Status 2026-09-25: solid butt-capped dashed lines admitted as dash-run bands through the outline phase convention in one dimension (multi-geometry line lowering with traversal and definition support, offsets, all-zero no-paint, square caps, path lengths and paint-server dashes gated; run and offset admissions plus full-dash equivalence and converted render, 6 end-to-end tests; solid 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-line-dash-mark). Status 2026-09-25: dashed linear-, radial- and pattern-paint line strokes admitted as per-run evaluated dash bands through dash-run computation shared with the solid path (identical phase, offsets and quiet bands with single-stop and degenerate solids per run, square caps and path lengths with dashes still gated; run admission plus offset, gate and solid-equivalence tests, 9 end-to-end tests; dashed 64x64 line probes render with measured oracle deltas of 8 pixels for the linear probe and 6 pixels for the radial probe, both at maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures per probe, retained as known-difference census entries original-logo-line-dash-gradient-mark and original-logo-line-dash-radial-mark in the standing one-step family; dashed pattern lines ride a solid-tile equivalence with zero added paint error). Status 2026-09-26: solid-tile pattern dash lines on the shared run computation render byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-line-dash-pattern-mark, closing the solid-tile equivalence with oracle proof. Status 2026-09-25: pathLength normalization admitted on solid and paint-server dashed lines through the shared dash-run computation (computed-over-asserted scaling with the outline dash factor, zero pinning a solid line, negative rejected as malformed, square caps with dashes still gated; scaling, pinning, malformed and manual-dash equivalence tests, 6 end-to-end tests; solid 64x64 pathLength line probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-line-dash-pathlength-mark). Status 2026-09-26: square caps admitted on solid and paint-server dashed lines through per-dash tip extension in the shared run computation (phase computed on the unextended path, solid path extension preserved for dash-less lines; run-position, single-dash solid equivalence, tip-pixel, three paint-variant admissions and a converted gradient admission, 7 end-to-end tests; 64x64 square-dash line probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-line-dash-square-mark). Status 2026-09-26: solid strokes admitted on rounded rectangles as fill plus fractional outline bands with butt and miter gating (fresh user-space contour build with shared flattening, converted solid-stroke gate; fill-plus-stroke structure, fill-plus-stroke structure and three restriction gates, 4 end-to-end tests; fill-plus-blue-stroke 64x64 probe renders with measured oracle delta of 182 pixels at maximum channel error 255 and maximum alpha error 71 on stroke fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-rounded-stroke-mark). Status 2026-09-26: round caps admitted on solid opaque lines as a band plus two sampled tip discs with a circle-element byte-identical twin (translucent, dashed and paint-server round caps staying explicitly unsupported; structure, twin and three gate tests plus a converted round-line gate, 5 end-to-end tests; 64x64 round-line probe renders with measured oracle delta of 28 pixels with byte-identical RGB and maximum alpha error 52 on arc fringes (maximum channel error 52 including alpha) across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-line-round-mark). Status 2026-09-26: square-capped dashed lines stay opaque-only with nonzero dashes (overlapping extended runs would double-blend translucent paint where the oracle single-blends, measured 96 pixels at alpha error 63 on a half-opacity probe; zero-length square dashes would drop dots; both gated per paint with opacity and stop-alpha checks, 7 end-to-end tests). Status 2026-09-25: linear-gradient outline strokes admitted in direct use instances through contour and paint placement mapping (instance-shifted userSpace vectors with transform and reflection mapping shared with fills, instance-mapped paint boxes, composed opacity and paintedness, masked uses through the shared mask switches; placement, box, masked-use and shifted-direct twin tests, 4 end-to-end tests; offset-triangle 64x64 use probe renders with measured oracle delta of 117 pixels at maximum channel error 15 and maximum alpha error 15 across three identical pinned-Chrome captures with a byte-identical direct twin, retained as known-difference census entry original-logo-gradient-outline-use-mark; radial and pattern outline uses stay explicitly gated). Status 2026-09-25: radial-gradient outline strokes admitted in direct use instances through contour and paint placement mapping with focal shift (instance-mapped circles and boxes with uniform-scale mapping shared with fills, masked uses through the shared mask switches; placement, box, masked-use and shifted-direct twin tests, 4 end-to-end tests; offset-triangle 64x64 use probe renders with measured oracle delta of 121 pixels at maximum channel error 15 and maximum alpha error 15 across three identical pinned-Chrome captures with a byte-identical direct twin, retained as known-difference census entry original-logo-radial-outline-use-mark; pattern outline uses stay explicitly gated). Status 2026-09-25: pattern-tile outline strokes admitted in direct use instances through contour placement with output-anchored tile evaluation (tile grid shared with fills, masked uses through the shared mask switches; shifted-direct twin, placement and masked-use tests, 3 end-to-end tests; half-tile 64x64 use probe renders with measured oracle delta of 51 pixels at maximum channel error 15 and maximum alpha error 15 across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-pattern-outline-use-mark, completing direct use-instance composition for all three outline paints). Status 2026-09-25: linear-gradient outline strokes admitted in symbol use instances through viewBox contour and paint mapping (uniform viewBox scaling with non-uniform gating shared with polygon content, userSpace vectors with reference-scale mapping, instance-mapped paint boxes and viewport clips; symbol, scaled-symbol, placement and non-uniform-gate tests, 4 end-to-end tests; scaled 64x64 symbol use probe renders with measured oracle delta of 260 pixels at maximum channel error 9 and maximum alpha error 9 across three identical pinned-Chrome captures with a byte-identical direct twin, retained as known-difference census entry original-logo-gradient-outline-symbol-mark). Status 2026-09-25: radial-gradient outline strokes admitted in symbol use instances through viewBox contour and circle mapping (uniform viewBox scaling with non-uniform gating shared with polygon content, userSpace circles with reference-scale mapping, instance-mapped paint boxes; symbol, scaled-symbol, placement and non-uniform-gate tests, 4 end-to-end tests; scaled 64x64 symbol use probe renders with measured oracle delta of 227 pixels at maximum channel error 9 and maximum alpha error 9 across three identical pinned-Chrome captures with a byte-identical direct twin, retained as known-difference census entry original-logo-radial-outline-symbol-mark). Status 2026-09-25: pattern-tile outline strokes admitted in symbol use instances through viewBox contour mapping with integer-mapped tile evaluation (uniform viewBox scaling with non-uniform gating shared with polygon content, tile grid mapping shared with pattern bands, scaled-viewport gating shared with fills; symbol, scaled-symbol, placement and non-uniform-gate tests, 4 end-to-end tests; half-tile scaled 64x64 symbol use probe renders with measured oracle delta of 106 pixels at maximum channel error 9 and maximum alpha error 9 across three identical pinned-Chrome captures with a byte-identical direct twin, retained as known-difference census entry original-logo-pattern-outline-symbol-mark, completing symbol use-instance composition for all three outline paints). Status 2026-09-26: non-uniformly scaled outline strokes gated on direct and symbol use instances through definition-kind scanning (pre-scale miters would silently distort, measured at 187 pixels with maximum channel error 24 against the oracle on a scale(2,1) probe; uniform scales, translations and reflections unaffected; solid fills keep flowing; 6 end-to-end gate tests. The same change repairs two latent Math.Abs(int.MinValue) overflow escapes into raw OverflowException on extreme use transforms, now categorized rejections.) Status 2026-09-25: userSpaceOnUse linear-gradient strokes admitted on straight polygon/polyline outlines through solid-lowering repaint (shared contour mapping and paint-box geometry reused, honest switch defaults for use and masks, bbox/radial/pattern/curved outlines still gated; admission plus coverage tests, 2 end-to-end tests; a solid-twin experiment proves the 186-pixel at maximum channel error 15 and maximum alpha error 9 delta lives entirely in the shared outline path with zero added paint error, pinning a previously unrecorded solid-outline gap alongside; gradient and solid 64x64 triangle probes each render with that measured delta across three identical pinned-Chrome captures per probe, retained as known-difference census entries original-logo-gradient-outline-mark and original-logo-solid-outline-mark). Status 2026-09-25: bounding-box linear-gradient strokes admitted on straight polygon/polyline outlines through shared fill-bounds paint evaluation (promoted box helper reused, single-stop and degenerate solids through recoloring, userSpace twin probes byte-identical across paint spaces confirming the fill-bounds hypothesis; admission plus solid-equivalence tests; 64x64 probe renders with the same measured 186-pixel at maximum channel error 15 and maximum alpha error 9 delta across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-gradient-outline-bbox-mark). Status 2026-09-25: userSpaceOnUse linear-gradient strokes admitted on curved path outlines through the shared repaint helper (path fill branches neutralized, conversion loop with default paint box, radial/bbox/pattern path strokes still gated; curved admission plus diagonal-path coverage tests; solid-twin experiment proves the 254-pixel at maximum channel error 255 and maximum alpha error 107 delta lives entirely in the shared flattening path with zero added paint error; gradient and solid 64x64 arch probes each render with that measured delta across three identical pinned-Chrome captures per probe, retained as known-difference census entries original-logo-gradient-curved-outline-mark and original-logo-solid-curved-outline-mark, the latter pinning a previously unrecorded curve-flattening gap). Status 2026-09-25: userSpaceOnUse radial-gradient strokes admitted on straight outlines and curved paths through shared repaint helpers (radial resolution with uniform-scale mapping, single-stop and degenerate solids through recoloring, bounding-box radial outlines on straight contours with fill-bounds paint; admission plus solid-equivalence tests; concentric 64x64 triangle probe renders with measured oracle delta of 192 pixels at maximum channel error 15 and maximum alpha error 9 across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-radial-outline-mark combining the shared outline path with radial dither). Status 2026-09-25: bounding-box linear- and radial-gradient strokes admitted on straight path outlines through fill-bounds paint evaluation (re-tokenized straight-contour box with userSpace and reflection mapping shared with point lists, single-stop and degenerate solids through recoloring, curved and fractional bounding-box path strokes explicitly gated; admission plus twin and solid-equivalence tests, 8 end-to-end tests; bounding-box 64x64 triangle-path probe renders with measured oracle delta of 186 pixels at maximum channel error 15 and maximum alpha error 9 across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-gradient-path-outline-bbox-mark, the same standing as the polygon-outline companions; radial bounding-box paths share the box and the proven repaint with byte-identical userSpace twins). Status 2026-09-25: pattern-tile strokes admitted on straight polygon/polyline outlines and straight/curved path outlines through solid-lowering repaint with tile-grid evaluation (new PatternPolygon kind with contour storage and coverage-times-tile rasterization reusing the fill tile mapping, empty tiles lowering to unpainted fills, fractional contours explicitly gated; admission plus solid-tile and empty-tile equivalence tests, 6 end-to-end tests; half-tile 64x64 triangle probe renders with measured oracle delta of 88 pixels at maximum channel error 15 and maximum alpha error 9 across three identical pinned-Chrome captures with the changed set proven inside the standing solid-outline 186-pixel set, retained as known-difference census entry original-logo-pattern-outline-mark). Status 2026-09-25: bounding-box linear- and radial-gradient strokes admitted on curved and fractional path outlines through fill-geometry-bounds paint evaluation (straight paths keep the re-tokenized box, lower bounds read off the lowered fill geometries in output space, curved and fractional userSpace twins byte-identical, radial sharing the box and the proven repaint; admission plus twin tests, 5 end-to-end tests; vertical-ramp 64x64 arch probe renders with measured oracle delta of 264 pixels at maximum channel error 255 and maximum alpha error 106 across three identical pinned-Chrome captures with the changed set proven a strict superset of the standing horizontal 254-pixel set at dither-level-only extras, retained as known-difference census entry original-logo-gradient-curved-outline-bbox-mark). Status 2026-09-25: linear-, radial- and pattern-paint strokes admitted on fractional point-list outlines through white-solid lowering with shared fill-geometry-bounds repaint (shared static box helper across path and fractional lowerings, single-stop and empty-tile solids through recoloring; admission plus twin and solid-equivalence tests, 5 end-to-end tests; bounding-box 64x64 half-pixel-triangle probe renders with measured oracle delta of 254 pixels at maximum channel error 17 and maximum alpha error 9 across three identical pinned-Chrome captures with the changed set proven exactly equal to its solid companion, retained as known-difference census entries original-logo-gradient-fractional-outline-mark and original-logo-solid-fractional-outline-mark, the latter pinning a previously unrecorded fractional-coverage gap). Status 2026-09-25: single-value masks admitted on linear-, radial- and pattern-gradient outline strokes through shared bounding-box and stamped-morph evaluation (contour bounds plus opacity-multiplying stamps with reservation transfer and clip intersection, direct leaves, bands and masked groups through the same switches; gray-value and white-mask equivalences, 5 end-to-end tests; no new raster math, so no oracle probe this slice. Oracle probing instead surfaced three pre-existing cross-cutting mask-fidelity gaps, all reproducible on non-outline paint and left explicitly uncalibrated: non-white masks on overlapping fill-plus-stroke paint evaluate per geometry rather than per element (911-pixel structural delta on a gray-masked fill-plus-stroke triangle), translucent-mask dither order deviates at plus-or-minus one level across masked gradients, and stroke-fringe mask-region edges diverge where Chrome clips to fill-derived regions). Status 2026-09-26: dashed circle strokes probed through centerline sampling with the shared closed-loop dash kernel (renders, 3 gate tests pin butt, round and square cap rejections); oracle comparison shows a structural dash-phase rotation that crude pixel protractors cannot resolve to start-offset versus chord-drift, so the admission was reverted and the honest gate restored pending sub-pixel metrology. Status 2026-09-26: resolved by dash-run angular metrology on a 512px 64-gon control (all seven run centers identical to 0.5 degrees between candidate and oracle): phase was never wrong, the small-probe mosaic was subpixel edge quantization; admission re-applied with structure and cap-gate tests, oracle triple pending. Status 2026-09-26: dashed butt-capped circle 16x16 probe renders with measured oracle delta of 114 pixels at maximum channel error 255 and maximum alpha error 240 (fringe-dominated at this size) across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-circle-dash-mark. Status 2026-09-26: offset dashed circle 16x16 probe renders with measured oracle delta of 113 pixels at maximum channel error 255 and maximum alpha error 234 across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-circle-dash-offset-mark, proving dash phase control end to end. Status 2026-09-26: dash offsets and pathLength normalization proven flowing through dashed circle strokes (two plumbing tests; exactness still oracle-pending). Status 2026-09-26: dashed butt-capped ellipse 16x16 probe renders with measured oracle delta of 88 pixels at maximum channel error 255 and maximum alpha error 223 (fringe-dominated at this size with zero-shift angular run-center metrology) across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-ellipse-dash-mark. Status 2026-09-26: offset dashed ellipse 16x16 probe renders with measured oracle delta of 86 pixels at maximum channel error 255 and maximum alpha error 226 across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-ellipse-dash-offset-mark, proving dash phase control end to end. Status 2026-09-26: bevel joins admitted on solid rounded-rectangle outlines through the shared stroke kernel as unconditional miter-fallback cuts (kernel Bevel branch coinciding with the long-standing limit-fallback geometry by sharp-corner test, rounded-only parse/policy/gate threading mirroring round joins, sharp-rectangle and polygon bevel staying gated; 1 kernel plus 2 parse plus 1 pixel test with bevel provably cutting tessellation joints: 4 pixels at maximum channel error 15 from miter at 8x8 and 44 pixels at maximum channel error 24 from round at 64x64, so no twin transfers and a dedicated oracle bevel probe is queued next). Status 2026-09-26: bevel-join 64x64 probe renders with measured oracle delta of 184 pixels at maximum channel error 255 and maximum alpha error 71 on stroke fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-bevel-join-rounded-stroke-mark with a byte-identical oracle to the round-join probe. Status 2026-09-26: dashed ellipse strokes admitted through the shared centerline kernel with circle-branch radii generalized (round/square cap gates, offset/pathLength/miterlimit plumbing and uniform-scale gating mirroring circles; circle-sized dashed ellipses byte-identical to dashed circles with and without offsets; 4 pixel plus 5 parse tests; oracle run-center metrology and census retention still pending).
 
 ### S13 — Paint servers
 
@@ -816,7 +774,7 @@ evaluation; both gradients together should not require a new geometry variant.
 Exit: independent coordinate/stop expectations and exact size/phase/color/alpha
 oracle families, including diagonal ramps under nonuniform/rotated transforms,
 clipped/instanced shapes and combined gradient fills/strokes. Validate dithering/
-interpolation across unseen colors/slopes, not just a four-pixel red-blue ramp. Status 2026-09-24: fill opacity composes onto gradient and pattern fills while solid strokes keep element opacity (7 end-to-end tests with opacity-transitive equivalence). Status 2026-09-24: single-stop linear gradients render their stop color as a solid, bypassing dithered interpolation (6 end-to-end tests); single-stop gradient strokes stay explicitly unsupported. Status 2026-09-24: translucent gradient stops admitted through the calibrated interpolation rule (undithered linear alpha, premultiplied-quantized dithered RGB; 4 end-to-end tests with stop-opacity and rgba equivalence, opaque suite proving identity). Status 2026-09-24: translucent fades compose through direct, forward, symbol, masked and nested-viewport paths identically (5 end-to-end tests, no production change required). Status 2026-09-24: fade probe promoted to a ratcheted known-difference census entry (original-logo-gradient-fade-mark, 62 pixels, max channel 128 at near-zero alpha, max alpha 0, three identical captures retained). Status 2026-09-24: transparent-stop interpolation calibrated offline against three byte-identical pinned captures (straight sRGB ramp, undithered linear alpha, premultiplied-quantized dithered RGB reducing to the current rule at full opacity; 962/1024 exact with boundary-only residuals, recorded in RASTERIZATION_DESIGN.md). Status 2026-09-24: duplicate/falling stop offsets admitted as hard edges (offsets rise to the previous stop, later stop wins at the shared offset; zero clamped ranges stay unsupported) with segment-walk later-wins evaluation; 3 parse tests plus an analytic even-width pixel test and a retained exact oracle entry (original-logo-gradient-duplicate-mark, 9x2 odd-width exact-hit, three identical captures, renderer byte-exact). Status 2026-09-24: concentric objectBoundingBox radial gradients wired end to end (dedicated parse/template/registration parallel to linear with shared stop scratch and clamp-up ordering, new radial geometry kind with shared scene stop reservations, shared stop-interpolation ramp with linear, normalized-space evaluation on rects and orthogonal bands; 15 parse, 6 pixel and 1 budget tests (12 boundary negatives); renders with measured oracle delta, 51 pixels with maximum channel error 1 and maximum alpha error 0, retained as known-difference census entry original-logo-radial-mark; research-radial-concentric-64x64 graduated to measured rendering in place; 8-bit blend-quantum hypothesis for the one-step residual refuted by 2116-pixel recomputation; spreads, foci, transforms, strokes, masks and uses stay explicitly gated). Status 2026-09-24: userSpaceOnUse radial circles wired through the referencing transform (uniform-scale gating, percentage and transformed-viewport rejection, href units inheritance, no reflection mirroring needed; bounding-box equivalence, scaled-mapping, reflection-invariance and href-units equivalences byte-exact, 3 parse plus 4 pixel tests with 3 boundary negatives). Status 2026-09-24: offset radial foci strictly inside the circle admitted (focal defaulting to the center, registration-time inside-circle check, href focal inheritance with partial-override gating, userSpace focal mapping, ray-circle evaluation with a concentric fast path; focal-at-center, band, href and userspace-mapping equivalences byte-exact plus an analytic focal-pixel test, 8 parse plus 6 pixel tests; offset 64x64 probe renders with measured oracle delta, 56 pixels with maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures, the same one-step residual family as the concentric entry; on-or-outside-circle foci, focal radii, spreads, transforms, strokes, masks and uses stay explicitly gated). Status 2026-09-24: radial repeat/reflect spreads admitted on the circle parameter with href spread inheritance and overriding (pad clamping preserved; pairwise spread renders differ, repeat band and spread-href equivalences byte-exact, analytic wrap tests prove repeat returns to the start stop at the circle edge and both wraps return two radii out; 64x64 repeat and reflect probes each render with measured oracle delta, 65 pixels with maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures per probe, the same one-step residual family as the concentric entry; focal radii, radial transforms, strokes, masks and uses stay explicitly gated). Status 2026-09-24: radial gradientTransform admitted for finite translate, uniform positive scale and uniform positive axis-aligned matrix forms composed eagerly into the circle at registration (center, focal point and radius; inherited circles included) with rotated, skewed, non-uniform, non-positive and non-finite forms gated; translate/scale/matrix, band and transform-href equivalences byte-exact, 7 parse plus 4 pixel tests; translate and scale 64x64 probes each render with measured oracle delta, 51 pixels with maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures per probe, exactly the concentric-entry residual; escaping focal circles, strokes, masks and uses stay explicitly gated). Status 2026-09-24: contained focal radii admitted through two-circle cone evaluation (radius defaulting to zero with negative rejected as malformed, strict focal-circle containment validated at registration, href inheritance with partial-override gating, gradient-transform and userSpace scaling; concentric and offset bands plus focal-radius href equivalences byte-exact with an analytic focal-circle-edge test; an initial distance-ratio formulation for offset circles mismatched the oracle by 1769 pixels at max channel error 4 and was replaced by the cone root, after which concentric and offset 64x64 probes render with measured oracle deltas of 43 and 51 pixels with maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures per probe, the same one-step residual family; 9 parse plus 5 pixel tests; gradient fills with gradient strokes, single-stop and degenerate radial strokes, bounding-box line strokes and pattern strokes stay explicitly gated while radial use, symbol and mask composition is admitted (direct and symbol instances with bounding-box and userSpace placement, paint-server fills, single-value masks on rects and bands exactly like linear fills with non-uniform userSpace symbol scaling gated; use, symbol, paint-server, white-mask and masked-use equivalences byte-exact across 4 parse plus 7 pixel tests; white-masked and twin-instance use 64x64 probes render with measured oracle deltas of 51 and 54 pixels with maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures per probe, the same one-step residual family). Status 2026-09-24: radial strokes admitted as shared fill-kind evaluation with no new geometry variant (rectangle strokes lower to one solid fill plus four radial-evaluated bands sharing the placement box through the widened multi-geometry rectangle funnel; line strokes lower to one radial-evaluated band and require userSpaceOnUse exactly like linear lines after the oracle rejected bounding-box line bands by 384 pixels at max channel error 255 over the degenerate zero-height line box; butt caps/joins, even widths, unscaled viewports and definition/use/symbol/mask composition free; band-equality, href and stroke-use equivalences byte-exact across 5 parse plus 4 pixel tests; rectangle and userSpace line 64x64 probes render with measured oracle deltas of 3 and 5 pixels with maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures per probe). Status 2026-09-25: single-stop linear and radial gradient strokes render as solid stop-color bands through raster-side constant evaluation (opaque stops provably dither-neutral; 3 converted admissions plus a solid-stroke pixel equivalence; rectangle 64x64 linear and radial probes each renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entries original-logo-gradient-single-stop-stroke-mark and original-logo-radial-single-stop-stroke-mark); degenerate multi-stop strokes stay explicitly unsupported. Status 2026-09-25: degenerate pad-spread gradient strokes lower to solid end-stop rings exactly like degenerate fills (rect sites mirroring the admitted line lowerings, non-pad degenerate still gated; 2 converted admissions plus an end-stop pixel equivalence; red-to-blue linear and radial 64x64 probes each renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entries original-logo-gradient-degenerate-stroke-mark and original-logo-radial-degenerate-stroke-mark). Status 2026-09-25: gradient fills pair with gradient-evaluated stroke bands through fill-plus-band geometries sharing the placement box (stroke methods own combined lowerings with fill helpers mirroring fill-only semantics, fill-less stroke placeholders preventing double-painting, presentation bypass for url fills; converted rejection plus radial and plumbing equivalences, 4 end-to-end tests; linear 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-gradient-fill-stroke-mark, while the radial probe renders with measured oracle delta of 9 pixels at maximum channel error 1 and maximum alpha error 0, retained as known-difference census entry original-logo-radial-fill-stroke-mark in the standing one-step family). Status 2026-09-25: linear-gradient fills admitted on diagonal polygon outlines through paint-box geometry (shared contour mapping extracted for reuse, diagonal branch in band lowering with diagonal-tolerant tokenizing, single-stop and degenerate solids through the diagonal solid path; construction, admission, coverage and solid-equivalence tests, 4 end-to-end tests; bounding-box and userSpace 64x64 triangle probes each render with measured oracle delta of 42 pixels at maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures per probe, retained as known-difference census entries original-logo-gradient-polygon-mark and original-logo-gradient-polygon-userspace-mark in the standing one-step family; radial fills and gradient strokes on outlines stay explicitly gated). Status 2026-09-25: radial-gradient fills admitted on diagonal polygon outlines through paint-box geometry with a dedicated coverage-times-cone raster loop (shared contour mapping and lowering twins, single-stop and degenerate solids through the diagonal solid path, diagonal-tolerant tokenizing only on the linear and radial paths; construction, admission, coverage and solid-equivalence tests, 4 end-to-end tests; concentric 64x64 triangle probe renders with measured oracle delta of 37 pixels at maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-radial-polygon-mark in the standing one-step family). Status 2026-09-25: non-uniform userSpaceOnUse radial-gradient fields admitted through the recorded inverse referencing map (reference scales recorded from gradientTransform and every referencing map with href inheritance, telescoping-exact radii, normalized cone evaluation in both fill and outline raster loops with the uniform legacy path bit-identical, kernel and ring strokes staying gated by their own uniformity rules; scale admission plus diagonal-fill and kernel-gate tests, 3 end-to-end tests; non-uniform 64x32 R28-mirror probe renders with measured oracle delta of 21 pixels at maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-radial-anisotropic-mark, graduating the radial half of R28 to measured rendering). Status 2026-09-25: non-uniform positive scale and matrix radial gradientTransforms admitted for userSpace circles through recorded inverse-map scales with pre-transform focal validation (validation moved before transform application so distorted-space checks can neither false-reject valid offset foci nor false-accept on-circle foci into a divide-by-zero; bounding-box non-uniform transforms staying gated; scale admission plus validation-direction distinguisher tests, 3 end-to-end tests; offset-focal 64x64 transform probe renders with measured oracle delta of 28 pixels at maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-radial-transform-mark). Status 2026-09-25: non-uniform symbol viewBox scales recorded into radial reference scales for bands and paint-server fills (mirroring the linear recording path, contours staying gated by the polygon uniformity rule; scale admission test; non-uniform 64x32 symbol probe renders with measured oracle delta of 21 pixels at maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures with pixels byte-identical to the anisotropic entry, retained as known-difference census entry original-logo-radial-symbol-mark). Status 2026-09-25: userSpace gradient paints admitted inside transformed viewports through viewport-composed paint maps (viewport scale and offset composed in both linear and radial referencing maps with recorded scales and a finiteness guard, offset viewports byte-exact with zero added error proven by direct twins; converted gates plus scaled admission and twin tests, 6 end-to-end tests; offset plus non-uniform-scale 64x64 viewport probe renders with measured oracle delta of 64 pixels at maximum channel error 1 and maximum alpha error 0, all inside the scaled half, across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-viewport-gradient-mark). Status 2026-09-26: linear- and radial-gradient fills admitted on rounded rectangles through solid-contour repaint with placement-box evaluation (shared repaint pattern with single-stop and degenerate solids, userSpace mapping plus bounding-box mirroring, pattern fills and gradient strokes staying explicitly rejected; linear, radial, bounding-box and undefined-gradient tests, 4 end-to-end tests; bounding-box 64x64 probe renders with measured oracle delta of 94 pixels at maximum channel error 255 and maximum alpha error 65 on arc fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-gradient-rounded-mark). Status 2026-09-26: pattern-tile fills admitted on rounded rectangles through the same solid-contour repaint with shared tile evaluation (scaled-viewport and reflection gates mirroring bands, converted pattern gate; tile admission plus two gate tests; 64x64 probe renders with measured oracle delta of 93 pixels at maximum channel error 255 and maximum alpha error 65 on arc fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-pattern-rounded-mark). Status 2026-09-26: linear- and radial-gradient fills admitted on circles and ellipses through solid-contour repaint with placement-box evaluation (registry discrimination with painted-stroke gate, circle-element byte-identical twin; linear, radial, stroke-gate and undefined-gradient tests plus a converted circle-gradient gate with ramp rendering, 5 end-to-end tests; concentric radial 64x64 probe renders with measured oracle delta of 202 pixels with byte-near-exact RGB at maximum error 1 and maximum alpha error 27 on arc fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-radial-circle-mark). Status 2026-09-26: pattern-tile fills admitted on circles and ellipses through the same solid-contour repaint with shared tile evaluation (scaled-viewport and reflection gates mirroring bands; tile admission plus two gate tests; 64x64 probe renders with measured oracle delta of 176 pixels with byte-exact RGB and maximum alpha error 27 on arc fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-pattern-circle-mark). Status 2026-09-26: linear-, radial- and pattern-paint strokes admitted on rounded rectangles through white-solid lowering with shared outline repaint (opaque-only with stop and tile alpha gates, butt and miter caps, dash and undefined-reference gates; linear, radial and pattern admissions plus translucent and undefined gates, 5 end-to-end tests; bounding-box linear 64x64 probe renders with measured oracle delta of 182 pixels at maximum channel error 255 and maximum alpha error 71 on stroke fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-gradient-rounded-stroke-mark sharing the solid rounded-stroke fringe set). Status 2026-09-26: radial paint strokes on rounded rectangles share the admitted white-solid lowering with placement-box circle evaluation (no production change; concentric probe renders with measured oracle delta of 185 pixels at maximum channel error 255 and maximum alpha error 71 on stroke fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-radial-rounded-stroke-mark, the solid fringe set plus one-step radial dither). Status 2026-09-26: pattern paint strokes on rounded rectangles share the admitted white-solid lowering with shared tile evaluation (no production change; solid-tile probe renders with measured oracle delta of 182 pixels at maximum channel error 255 and maximum alpha error 71 on stroke fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-pattern-rounded-stroke-mark with a byte-identical candidate to the solid stroke, completing the rounded-rectangle stroke paint matrix). Status 2026-09-26: rounded rectangles admitted in definitions through the shared fill-plus-outline lowering with direct use-instance mapping (solid and stroked admissions with byte-identical direct twins plus a dashed-definition gate, 3 end-to-end tests; no new raster math so no oracle probe this slice, the direct-play oracle deltas transferring through the twins). Status 2026-09-26: round and square caps admitted on solid closed rectangle strokes as butt no-ops (band, gradient-band and symbol paths with dashed strokes keeping the butt-only gate; round/square-versus-butt twins byte-identical on sharp, rounded, gradient and symbol rectangles plus converted admissions and a dashed rounded gate, 8 end-to-end tests; no new raster math so no oracle probe this slice). Status 2026-09-26: clip paths admitted on rounded rectangles in both unit systems through the shared leaf-clip frame (userSpace and bounding-box clip-box assertions, 2 end-to-end tests; 64x64 clipped rounded probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-clipped-rounded-mark). Status 2026-09-26: single-value masks admitted on rounded leaves with zero added error (white-mask pass-through twin byte-identical to the unmasked render; white-masked 64x64 probe renders with measured oracle delta of 94 pixels at maximum channel error 255 and maximum alpha error 64 on arc fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-mask-rounded-mark in the standing rounded-fill fringe set). Status 2026-09-26: round joins admitted on rounded-rectangle outlines through the shared stroke kernel with corner-aware policy gating (sharp-rectangle round joins and bevel joins staying gated; admission plus two gate tests, 3 end-to-end tests; round-join 64x64 probe renders with measured oracle delta of 182 pixels at maximum channel error 255 and maximum alpha error 71 on stroke fringes across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-round-join-rounded-stroke-mark with a byte-identical oracle to the miter probe). Status 2026-09-26: paint-server round caps admitted on lines through white band-plus-discs lowering with shared repaint (linear, radial and pattern admissions with opaque-only stop and tile alpha gates, degenerate solid handling mirroring the band lowerings, converted vector-mapping admission, translucent gate and solid-tile equivalence, 6 end-to-end tests; userSpace linear 16x8 probe renders with measured oracle delta of 4 pixels at maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-line-round-gradient-mark in the standing one-step dither family). Status 2026-09-26: radial paint-server round caps share the admitted white band-plus-discs lowering (no production change; concentric userSpace 16x8 probe renders with measured oracle delta of 3 pixels at maximum channel error 1 and maximum alpha error 0 across three identical pinned-Chrome captures, retained as known-difference census entry original-logo-line-round-radial-mark in the standing one-step dither family). Status 2026-09-26: pattern paint-server round caps share the admitted white band-plus-discs lowering with a solid-tile probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-line-round-pattern-mark, completing the line round-cap paint matrix with the solid-tile equivalence already proven by twin. Status 2026-09-26: paint-stroke rounded definitions, symbol-held rounded rectangles and white-masked rounded strokes all render byte-identical to direct play through shared lowering, mapping and stamping (three twin tests; no new raster math so no oracle probe this slice, the direct-play oracle deltas transferring through the twins). Status 2026-09-26: forward userSpace clips proven on rounded rectangles with clip-box assertion and a byte-identical backward twin (2 end-to-end tests; the matrix already admitted this combination, now with regression proof transferring the retained backward exact entry). Status 2026-09-26: round and square caps with round joins proven byte-identical to butt/miter on circle and ellipse strokes (two twin tests; no production change was needed since the ring lowering never consults caps or joins; no oracle probe this slice, the ring-stroke deltas transferring through the twins). Status 2026-09-26: integral-scale viewBox maps proven byte-identical to direct rendering on solid rounded rectangles (scaled twin test; no new raster math so no oracle probe this slice).
+interpolation across unseen colors/slopes, not just a four-pixel red-blue ramp.
 
 ### S14 — Clips, masks, groups and operation order
 
@@ -837,7 +795,7 @@ Keep related definition state coherent rather than separate nullable lookups.
 
 Exit: mixed fill/stroke/gradient, transform/use, nested viewport, clip/mask and
 opacity cases on transparent/white/dark backgrounds with independent expected
-operation order, exact pixels and bounded intermediate lifetime/work. Status 2026-09-24: masked groups admit polygon-fill children (white pass-through, gray isolation with combined factors, forward-use integration, 4 end-to-end tests). Status 2026-09-24: objectBoundingBox clip fractions resolve per referencing band and straight-contour polygon fill through pre-tokenized bounds (5 end-to-end tests); curved contours stay explicitly unsupported. Status 2026-09-24: objectBoundingBox clips on direct use instances resolve per mapped definition box (4 end-to-end tests). Status 2026-09-25: objectBoundingBox clips on symbol instances resolve through the viewBox-mapped content box clipped to the use viewport, with plain symbols reusing the direct union path and sizeless symbol uses gated (fractional resolution, symbol/direct equivalence and half-render pixel tests, 3 parse plus 2 pixel tests; 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-symbol-clip-mark); forward references stay explicitly unsupported. Status 2026-09-25: objectBoundingBox clips on forward use references resolve at document end through the same direct-union and symbol viewBox-mapped boxes, carrying the clip id with its parent frame and use depth on the pending use (2 parse plus 2 pixel tests with forward/backward equivalences byte-exact); forward clip-path definitions stay explicitly unsupported. Status 2026-09-25: forward clip-path definitions admitted on use and symbol instances by deferring clip-box resolution to document end through the same direct-union, symbol viewBox-mapped and userSpace boxes (unknown clip references force deferral even when the definition is known; 3 parse plus 2 pixel tests with forward/backward equivalences byte-exact plus never-defined and direct-leaf gates); forward clip-path definitions on direct leaves, groups and viewports stay explicitly unsupported. Status 2026-09-25: objectBoundingBox clip fractions admitted on curved contours and fractional point lists through flatten-bounds evaluation (shared flatten policy with budgeted scratch reservation, integer path untouched, fractional curves staying gated; curved, fractional and fractional-curve-gate tests plus a full-fraction twin, 5 end-to-end tests; clipped-arch 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-curved-clip-mark). Status 2026-09-25: forward mask definitions admitted on use and symbol instances by deferring mask-value resolution to document end through the same mask values, regions and coverage checks (unknown masks force deferral even when the definition is known, with custom-region gates re-checked at resolve time; 3 parse plus 2 pixel tests with forward/backward equivalences byte-exact plus never-defined and direct-leaf gates); forward mask definitions on direct leaves, groups and viewports stay explicitly unsupported. Status 2026-09-25: explicit objectBoundingBox mask regions admitted on direct leaves and use instances through fraction parsing with specification defaults and per-use box resolution with content-coverage policy (parallel fraction state and dictionaries, userSpace regions untouched, group targets staying gated; region, partial, malformed, group-gate, use and cross-units equivalence tests, 6 end-to-end tests; bounding-box 64x64 use probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-use-mask-region-bbox-mark). Status 2026-09-25: explicit userSpaceOnUse mask regions admitted on use and symbol instances through the shared instance mask lowerer with the registered region replacing the default bounding-box region under the established viewport gate (converted custom-region gate test plus symbol, forward and viewport-gate tests and forward/backward pixel equivalence, 4 parse plus 1 pixel test; 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-use-mask-region-mark). Status 2026-09-26: forward userSpaceOnUse clip-path definitions admitted on direct rect/line/circle/ellipse/path/polygon leaves by deferring geometry-range clipping to document end through the same userSpace boxes with the established scaled-viewport gate (unknown clips force deferral even when the definition is known; masked leaves keep the immediate gate, bounding-box forwards and group/viewport targets stay explicitly rejected; rect/path admissions, forward/backward pixel equivalence, never-defined, bounding-box-forward, masked-forward and group gates, 7 end-to-end tests; 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-forward-clip-leaf-mark). Status 2026-09-26: forward objectBoundingBox clip-path definitions admitted on direct rect/path/polygon leaves by resolving fractions against the retained union bounds of each leaf geometry range through the same placement math with the established scaled-viewport and instant-mask gates (bounding-box forwards on lines and circles keep the verbatim rectangles-bands-and-straight-contours rejection with backward gate precedence, groups and viewports stay explicitly rejected; rect/path admissions, line/circle gates, orthogonal-polygon and curved-path forward/backward pixel equivalences, 6 end-to-end tests; 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-forward-bbox-leaf-mark). Status 2026-09-26: forward userSpaceOnUse clip-path definitions admitted on embedded image leaves through the same deferred geometry-range path (single clipped rectangle with the established gates, bounding-box forwards keeping the contours rejection; admission plus bounding-box gate, 2 end-to-end tests, no new rendering mechanism beyond the twice oracle-proven rectangle branch, so no new census entry). Status 2026-09-26: forward userSpaceOnUse clip-path definitions admitted on direct groups by deferring command-range clipping to document end after use expansion, with a passthrough viewport frame preserving nested-viewport traversal, use-expansion range shifting, and conservative scaled-viewport rejection for scopes containing scaled pushes (masked groups, bounding-box forwards and never-defined ids staying rejected; group/nested admissions, use-in-group shift proof, five gates and a forward/backward pixel equivalence, 8 end-to-end tests; 64x64 probe renderer byte-exact against three identical pinned-Chrome captures, retained as exact oracle entry original-logo-forward-group-clip-mark). Status 2026-09-26: forward mask definitions admitted on direct rect/line/circle/ellipse/path/polygon/image leaves by deferring value and region resolution to document end against retained union bounds (clips resolve first preserving backward clip-then-mask order, so doubly-forward pairs compose exactly while known-mask plus forward-clip keeps the immediate gate; default, userSpaceOnUse and bounding-box regions with the established viewport and coverage gates; rect/path admissions, both region admissions, composition equivalences, never-defined and viewport gates plus gray-mask and custom-region forward/backward pixel equivalences, 10 end-to-end tests, no new rendering mechanism beyond the shared stamping path with zero forward-specific delta proven by twins, so no new census entry). Status 2026-09-26: forward mask definitions admitted on direct groups by rewriting or inserting the isolation scope at document end after use expansion (recorded opacity decides rewrite versus insert with retained command ranges shifted on every insertion, coverage validated against retained content boxes with the text-specific rejection, custom regions and nested inserted scopes staying rejected; white pass-through, gray isolation, opacity combination, never-defined, uncovered-child, text, custom-region and both nested-opacity gates plus a gray-mask forward/backward pixel equivalence proving identical isolated-surface command streams, 10 end-to-end tests, no new rendering mechanism, so no new census entry).
+operation order, exact pixels and bounded intermediate lifetime/work.
 
 ### S15 — Live-text wordmarks (not a prerequisite for outlined text)
 
@@ -858,8 +816,8 @@ regressions or authorize publication of private fonts/assets.
 
 | Feature | Only pursue when it blocks the representative target |
 | --- | --- |
-| Embedded raster images | Bounded real multi-color decoding, data/reference policy, intrinsic sizing, transforms, resampling, alpha and color/orientation metadata. The current uniform-PNG-to-rectangle feature does not cover this. Repair R29/R32 without expanding formats now. |
-| Patterns | Reusable multi-element tile scenes, patternUnits/contentUnits, viewBox/aspect, transform, clipping/overflow and alpha through shared scene/paint evaluation. First repair R28 and repeated tile work; no separate pattern-only renderer. |
+| Embedded raster images | Bounded real multi-color decoding, data/reference policy, intrinsic sizing, transforms, resampling, alpha and color/orientation metadata. The current uniform-PNG-to-rectangle feature does not cover this. Preserve R29/R32's repairs; broaden formats only for measured blockers. |
+| Patterns | Reusable multi-element tile scenes, patternUnits/contentUnits, viewBox/aspect, transform, clipping/overflow and alpha through shared scene/paint evaluation. Preserve corrected tile work/ownership; resolve remaining paint-map fidelity without a pattern-only renderer. |
 | Markers | Start/mid/end placement, tangents/orientation, units, local viewports/context paint, degeneracies and bounded expansion. |
 | Effects/blending | Only corpus-required shadows/blur/offset/flood/composite/merge or feDropShadow first; filter regions/units, color space, edge extension, graph/surface/kernel limits and isolation/blending explicitly tested. |
 | Remaining export syntax | Static selectors/variables/conditional content and geometry/transform declarations evidenced in S8; add semantics before accepting formerly rejected spellings. |
