@@ -333,7 +333,7 @@ Public-domain SVGs sourced from Wikimedia Commons (both LicenseShortName=Public 
 
 ### inv-021 — Flag of France
 
-- file: tests/Fixtures/candidates/inv-021.svg (SHA-256 E949902C7677422D88137D385B9EDBE91323470C7933824CC968ACA3965FC37C)
+- file: tests/Fixtures/candidates/inv-021.svg (SHA-256 CC2E836F9221588F17AF7C1C2332E8E1AE991B49E0A672FDF1F62A0909369F41)
 - source: Wikimedia Commons, File:Flag of France.svg. Retrieval 2026-09-26.
 - license: PD (Commons, state symbol).
 - retrievalDate: 2026-09-26.
@@ -345,7 +345,7 @@ Public-domain SVGs sourced from Wikimedia Commons (both LicenseShortName=Public 
 
 ### inv-022 — Flag of Japan
 
-- file: tests/Fixtures/candidates/inv-022.svg (SHA-256 35E785339E19D1EC1987CB9C3D8E66FC97F29A287DB0B0B590B8DFDD96D4766B)
+- file: tests/Fixtures/candidates/inv-022.svg (SHA-256 FAF1E9B91A9F0F8F9B9A9963E4530426A7E754D60CA24BBD7A6668ABBA02D8AF)
 - source: Wikimedia Commons, File:Flag of Japan.svg. Retrieval 2026-09-26.
 - license: PD (Commons, state symbol).
 - retrievalDate: 2026-09-26.
