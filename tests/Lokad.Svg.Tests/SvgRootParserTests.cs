@@ -4343,11 +4343,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_round_cap_lines()
+    public void Lowers_round_capped_lines_as_band_with_tip_discs()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='8' y1='4' x2='16' y2='4' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='8' y1='4' x2='16' y2='4' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(3, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.AxisAlignedLine, root.Geometries[0].Kind);
+        Assert.Equal(new SvgAxisAlignedLine(8, 4, 16, 4, new SvgColor(255, 0, 0, 255), true, 4), root.Geometries[0].AxisAlignedLine);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[1].Kind);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[2].Kind);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[1].Kind);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[2].Kind);
     }
 
     [Fact]
@@ -4362,6 +4368,28 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Rejects_translucent_round_capped_lines()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' opacity='0.5' stroke-width='2' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_round_caps_with_dashed_lines()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_round_caps_on_gradient_lines()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='s' gradientUnits='userSpaceOnUse' x1='0' y1='4' x2='16' y2='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#s)' stroke-width='2' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }    [Fact]
     public void Dashed_line_offsets_shift_run_bands()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-dashoffset='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

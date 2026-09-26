@@ -215,22 +215,28 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Rejects non-butt caps and non-miter joins where strokes lower to fixed bands.</summary>
     internal static void RequireButtCapJoin(XmlReader reader, string elementName)
     {
-        RequireBandCapJoin(reader, elementName, false);
+        RequireBandCapJoin(reader, elementName, false, false);
     }
 
     /// <summary>Rejects round caps and non-miter joins where strokes lower to fixed bands with square tip extension.</summary>
-    internal static void RequireButtOrSquareCapJoin(XmlReader reader, string elementName)
+    internal static void RequireLineCapJoin(XmlReader reader, string elementName)
     {
-        RequireBandCapJoin(reader, elementName, true);
+        RequireBandCapJoin(reader, elementName, true, true);
     }
 
-    private static void RequireBandCapJoin(XmlReader reader, string elementName, bool allowSquare)
+    internal static void RequireButtOrSquareCapJoin(XmlReader reader, string elementName)
+    {
+        RequireBandCapJoin(reader, elementName, true, false);
+    }
+
+    private static void RequireBandCapJoin(XmlReader reader, string elementName, bool allowSquare, bool allowRound)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string? cap = reader.GetAttribute("stroke-linecap");
         bool butt = cap is null || cap.AsSpan().Trim().Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool square = allowSquare && cap is not null && cap.AsSpan().Trim().Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        if (!butt && !square) throw new SvgException(SvgErrorCode.UnsupportedFeature, allowSquare ? "Only butt and square stroke linecaps are implemented on " + elementName + " strokes." : "Only butt stroke linecaps are implemented on " + elementName + " strokes.");
+        bool round = allowRound && cap is not null && cap.AsSpan().Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase);
+        if (!butt && !square && !round) throw new SvgException(SvgErrorCode.UnsupportedFeature, allowRound ? "Only butt, square and round stroke linecaps are implemented on " + elementName + " strokes." : allowSquare ? "Only butt and square stroke linecaps are implemented on " + elementName + " strokes." : "Only butt stroke linecaps are implemented on " + elementName + " strokes.");
         string? join = reader.GetAttribute("stroke-linejoin");
         if (join is not null && !join.AsSpan().Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter stroke linejoins are implemented on " + elementName + " strokes.");
     }

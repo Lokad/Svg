@@ -169,6 +169,18 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Round_capped_line_matches_line_with_circle_tips()
+    {
+        byte[] round = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='2' y1='4' x2='14' y2='4' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>", out _, out _);
+        byte[] composed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='2' y1='4' x2='14' y2='4' stroke='red' stroke-width='4'/><circle cx='2' cy='4' r='2' fill='red'/><circle cx='14' cy='4' r='2' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(composed, round);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(round, 16, 2, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(round, 16, 14, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(round, 16, 8, 4));
+    }
+
+    [Fact]
     public void Dashed_open_polyline_paints_runs()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4'/></svg>", out _, out _);

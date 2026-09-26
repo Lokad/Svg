@@ -198,7 +198,7 @@ internal static class SvgLeafParser
     internal static SvgParsedGeometry ParseLine(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgLineSyntax syntax = SvgLineSyntax.Parse(reader);
-        SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line");
+        SvgStrokeStyleSyntax.RequireLineCapJoin(reader, "line");
         SvgComputedStyle style = context.ResolveStyle(reader);
         if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return SvgPatternSyntax.LowerPatternStrokeLine(reader, context, style, syntax, state, frame);
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return SvgGradientSyntax.LowerGradientStrokeLine(reader, context, style, syntax, state, frame);
@@ -215,13 +215,38 @@ internal static class SvgLeafParser
         bool painted = element.Presentation.IsPainted;
         if (dashes is null)
         {
+            if (linecap == SvgStrokeCap.Round)
+            {
+                if (color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent round-capped lines are not implemented.");
+                return LowerRoundCapLine();
+            }
             SvgAxisAlignedLine line = new(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth);
             return RetainSingleGeometry(frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line), state, context);
         }
+        if (linecap == SvgStrokeCap.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round caps with dashed lines are not implemented.");
         double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset"));
         double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
         if (linecap == SvgStrokeCap.Square && color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         return LowerDashedLine();
+
+        SvgParsedGeometry LowerRoundCapLine()
+        {
+            SvgAxisAlignedLine line = new(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth);
+            SvgGeometry band = frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line);
+            SvgPaint discPaint = new(color, true, 255, color, false);
+            SvgResolvedPaintableElement discElement = element with { Presentation = new SvgResolvedShapePresentation(discPaint, color, null, 255, painted) };
+            double radius = strokeWidth / 2d;
+            using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "line", false, false, int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
+            using SvgParsedGeometry first = lowering.LowerEllipseFill(syntax.X1, syntax.Y1, radius, radius, discElement, frame, state.Budget);
+            using SvgParsedGeometry second = lowering.LowerEllipseFill(syntax.X2, syntax.Y2, radius, radius, discElement, frame, state.Budget);
+            using BudgetedParserList<SvgGeometry> all = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            all.Add(band);
+            all.AddRange(first.Geometries);
+            all.AddRange(second.Geometries);
+            return new(all.Detach(), first.ElementCount + second.ElementCount);
+        }
 
         SvgParsedGeometry LowerDashedLine()
         {
