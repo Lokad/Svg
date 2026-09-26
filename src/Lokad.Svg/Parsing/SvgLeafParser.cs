@@ -246,6 +246,15 @@ internal static class SvgLeafParser
         }
     }
 
+    /// <summary>Lowers one rounded-rectangle definition through the shared fill-plus-outline path with no viewport frame; use instances map the retained geometries.</summary>
+    internal static SvgParsedGeometry ParseRoundedRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
+    {
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
+        double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
+        return LowerRoundedRect(reader, context, syntax, cornerX, cornerY, null, state);
+    }
+
     internal static SvgParsedRectangle ParseRectangleWithStyle(XmlReader reader, SvgPaintableElementContext context)
     {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);

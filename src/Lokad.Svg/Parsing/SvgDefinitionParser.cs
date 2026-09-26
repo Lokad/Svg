@@ -492,6 +492,7 @@ internal static class SvgDefinitionParser
             "path" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePath(reader, context, int.MaxValue, state.Budget, null, state)),
             "circle" => RetainCircleGeometries(SvgLeafParser.ParseCircle(reader, context, null, state)),
             "ellipse" => RetainParsedGeometries(SvgLeafParser.ParseEllipse(reader, context, null, state)),
+            "rect" => RetainParsedGeometries(SvgLeafParser.ParseRoundedRectangleDefinition(reader, context, state)),
             _ => throw new InvalidOperationException("Unsupported definition leaf reached shape lowering."),
         };
         if (geometries.Length > 0) state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Scene);
@@ -524,6 +525,8 @@ internal static class SvgDefinitionParser
     private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle");
+        SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader);
+        if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox);
         SvgComputedStyle style = context.ResolveStyle(reader);
         if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return new SvgDefinition(RetainParsedGeometries(SvgPatternSyntax.LowerPatternStrokeRect(reader, context, style, state, null)), false, symbolViewBox);
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return new SvgDefinition(RetainParsedGeometries(SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null)), false, symbolViewBox);
