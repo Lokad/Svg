@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-gradient-offset-mark-white",
+  "referencePng": "original-logo-gradient-offset-mark-white.png",
+  "referenceSha256": "bdda46d4fc29a4cdaf0bc65395fa3695a064d67b9ea669060f4f1a24c4a5766e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "4fb80068841b04e7595c76f5b6840f9e5daf8f162d2b99eb018d722b24a4575f",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
