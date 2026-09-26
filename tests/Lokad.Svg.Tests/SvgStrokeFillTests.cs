@@ -953,6 +953,32 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, nested);
     }
 
+    [Fact]
+    public void Inline_style_linecap_overrides_cap_attribute()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='4' y1='8' x2='12' y2='8' stroke='red' stroke-width='4' stroke-linecap='square' style='stroke-linecap:butt'/></svg>", out _, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='4' y1='8' x2='12' y2='8' stroke='red' stroke-width='4' stroke-linecap='butt'/></svg>", out _, out _);
+
+        Assert.Equal(plain, styled);
+    }
+
+    [Fact]
+    public void Inline_style_dasharray_none_overrides_dash_attribute()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4' style='stroke-dasharray:none'/></svg>", out _, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(plain, styled);
+    }
+
+    [Fact]
+    public void Inline_style_dashoffset_overrides_offset_attribute()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4' style='stroke-dashoffset:3'/></svg>", out _, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-dashoffset='3'/></svg>", out _, out _);
+
+        Assert.Equal(plain, styled);
+    }
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
