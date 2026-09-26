@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg"
+fill="none" stroke-width="16" viewBox="-100 -100 200 200">
+<radialGradient id="rg">
+ <stop stop-color="lime" offset="0"/>
+ <stop stop-color="#CCC" offset="1"/>
+</radialGradient>
+
+<switch>
+ <circle systemLanguage="bleu" r="88" stroke="#2F8CC2"/>
+ <circle systemLanguage="brown" r="88" stroke="#8B4513"/>
+ <circle systemLanguage="whit" r="88" stroke="#FFF"/>
+ <circle systemLanguage="blue" r="88" stroke="#00F"/>
+ 
+ <circle systemLanguage="yello" r="88" stroke="#FF0"/>
+ <circle systemLanguage="black" r="88" stroke="#000"/>
+ <circle systemLanguage="red " r="88" stroke="#F00"/>
+ <circle systemLanguage="aqua" r="88" stroke="#0FF"/>
+ 
+ <circle systemLanguage="lime" r="88" stroke="#0F0"/>
+ <circle systemLanguage="fuchs" r="88" stroke="#F0F"/>
+ <circle systemLanguage="green" r="88" stroke="#8ABF3C"/>
+ <circle systemLanguage="orang" r="88" stroke="#FF7F00"/>
+ 
+ <circle systemLanguage="purple" r="88" stroke="#5F0E78"/>
+ <circle systemLanguage="dark" r="88" stroke="#FD0000"/>
+ <circle systemLanguage="gold" r="88" stroke="#E9C91E"/>
+ <circle systemLanguage="grey" r="88" stroke="#CCC"/>
+ <circle r="96" fill="url(#rg)"/>
+</switch>
+</svg>
