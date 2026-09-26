@@ -296,7 +296,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - archetypes: stroked circle primitive, integer geometry, opaque.
 - content: 1 circle.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: known-difference (renders; VisualDiff vs 200x200 oracle SHA-256 3032d48eaf4e52c7db5c2fd6289339e1089a0a7799fc7d0c98a058a501c9c083: changedPixelCount 1294, maximumChannelError 255, maximumAlphaError 50).
+- status: known-difference (renders; VisualDiff vs 200x200 oracle SHA-256 3032d48eaf4e52c7db5c2fd6289339e1089a0a7799fc7d0c98a058a501c9c083: changedPixelCount 1294, maximumChannelError 255, maximumAlphaError 50; white-background variant 200x200 oracle triple 2026-09-26 3/3 byte-identical SHA-256 b1a8a2bc3625a6d406a9036d042aeb24706aab96eec1e7135ac381923d629765, candidate rendered with white background: changedPixelCount 1301, maximumChannelError 50, maximumAlphaError 0).
 - reference: exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical (hash in status line), staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ## Selected documents (batch 7, 2026-09-26)
