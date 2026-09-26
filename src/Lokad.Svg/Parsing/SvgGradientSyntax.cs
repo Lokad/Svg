@@ -698,7 +698,7 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Reports whether one linear-gradient line stroke paints fully opaque runs.</summary>
-    private static bool IsOpaqueGradientStroke(SvgLinearGradient gradient, byte opacity)
+    internal static bool IsOpaqueGradientStroke(SvgLinearGradient gradient, byte opacity)
     {
         if (opacity != 255 || gradient.Start.Alpha != 255 || gradient.End.Alpha != 255) return false;
         foreach (SvgGradientStop stop in gradient.Stops) if (stop.Color.Alpha != 255) return false;
@@ -769,7 +769,7 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Reports whether one radial-gradient line stroke paints fully opaque runs.</summary>
-    private static bool IsOpaqueRadialStroke(SvgRadialGradient circle, byte opacity)
+    internal static bool IsOpaqueRadialStroke(SvgRadialGradient circle, byte opacity)
     {
         if (opacity != 255 || circle.Start.Alpha != 255 || circle.End.Alpha != 255) return false;
         foreach (SvgGradientStop stop in circle.Stops) if (stop.Color.Alpha != 255) return false;

@@ -90,11 +90,17 @@ internal static class SvgLeafParser
     private static SvgParsedGeometry LowerRoundedRect(XmlReader reader, SvgPaintableElementContext context, SvgRectangleSyntax syntax, double cornerX, double cornerY, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient strokes on rounded rectangles are not implemented.");
+        SvgLinearGradient strokeGradient = default;
+        SvgRadialGradient strokeCircle = default;
+        SvgPatternTile strokeTile = default;
+        bool paintStrokeLinear = SvgOrthogonalShapeParser.TryResolveOutlineGradient(style, state, out strokeGradient);
+        bool paintStrokeRadial = SvgOrthogonalShapeParser.TryResolveOutlineRadial(style, state, out strokeCircle);
+        bool paintStrokePattern = SvgOrthogonalShapeParser.TryResolveOutlinePattern(style, state, out strokeTile);
+        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke) && !paintStrokeLinear && !paintStrokeRadial && !paintStrokePattern) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient strokes on rounded rectangles are not implemented.");
         SvgPatternTile tile = default;
         bool paintPattern = SvgPatternSyntax.IsPatternFill(style.Fill) && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(style.Fill), out tile);
         bool paintGradient = SvgGradientSyntax.IsGradientFill(style.Fill) && !paintPattern;
-        SvgComputedStyle fillStyle = paintGradient || paintPattern ? style with { Fill = "#ffffff" } : style;
+        SvgComputedStyle fillStyle = paintGradient || paintPattern ? style with { Fill = "#ffffff" } : (paintStrokeLinear || paintStrokeRadial || paintStrokePattern) ? style with { Stroke = "none" } : style;
         SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, !paintGradient && !paintPattern);
         AxisTransform transform = context.ResolveTransform(reader);
         if (paintPattern)
@@ -127,6 +133,10 @@ internal static class SvgLeafParser
         SvgParsedGeometry parsed = lowering.LowerRoundedRectFill(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, element, frame, state.Budget);
         if (!paintGradient && !paintPattern)
         {
+            if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern)
+            {
+                return LowerPaintedRoundedStroke(reader, context, syntax, cornerX, cornerY, element, parsed, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, frame, state);
+            }
             SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = ResolveRoundedStroke(reader, element, parsed.Geometries[0]);
             if (stroke is null) return parsed;
             SvgParsedGeometry stroked;
@@ -145,6 +155,64 @@ internal static class SvgLeafParser
             return RetainSingleGeometry(repainted, state, context);
         }
         catch { parsed.Dispose(); throw; }
+        static SvgParsedGeometry LowerPaintedRoundedStroke(XmlReader reader, SvgPaintableElementContext context, SvgRectangleSyntax syntax, double cornerX, double cornerY, SvgResolvedPaintableElement fillElement, SvgParsedGeometry filled, SvgLinearGradient outlineGradient, SvgRadialGradient outlineCircle, SvgPatternTile outlineTile, bool useLinear, bool useRadial, SvgViewportFrame? frame, SvgDocumentState state)
+        {
+            SvgComputedStyle whiteStyle = fillElement.Style with { Stroke = "#ffffff" };
+            SvgResolvedPaintableElement whiteShape = context.ResolveShape(whiteStyle, reader, true);
+            SvgStrokeStyleSyntax.SvgAdmittedStroke? admitted = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, whiteStyle, whiteShape, "rect");
+            if (admitted is null) return filled;
+            if (admitted.Value.Cap != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented on rectangle strokes.");
+            if (admitted.Value.Join != SvgStrokeJoin.Miter) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter stroke linejoins are implemented on rectangle strokes.");
+            if (admitted.Value.DashPattern is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed strokes on rounded rectangles are not implemented.");
+            byte strokeOpacity = whiteShape.Presentation.Opacity;
+            if (strokeOpacity != 255
+                || (useLinear && !SvgGradientSyntax.IsOpaqueGradientStroke(outlineGradient, 255))
+                || (useRadial && !SvgGradientSyntax.IsOpaqueRadialStroke(outlineCircle, 255))
+                || (!useLinear && !useRadial && outlineTile.Content is SvgGeometry paintContent && paintContent.Rectangle.Color.Alpha != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent paint strokes on rounded rectangles are not implemented.");
+            SvgLinearGradient mappedLinear = default;
+            SvgRadialGradient mappedCircle = default;
+            if (useLinear)
+            {
+                mappedLinear = SvgGradientSyntax.MapUserSpaceVector(whiteShape.Transform, outlineGradient, frame);
+                mappedLinear = SvgGradientSyntax.MirrorBoundingBoxVector(whiteShape.Transform, mappedLinear);
+            }
+            else if (useRadial)
+            {
+                mappedCircle = SvgGradientSyntax.MapUserSpaceRadial(whiteShape.Transform, outlineCircle, frame);
+            }
+            bool needsStrokeBox = (useLinear && !outlineGradient.IsUserSpace) || (useRadial && !outlineCircle.IsUserSpace);
+            SvgRectangle strokeBox = default;
+            if (needsStrokeBox)
+            {
+                SvgRectangle strokePlacement = whiteShape.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
+                strokeBox = frame is null ? strokePlacement : frame.Value.Shift(strokePlacement);
+            }
+            SvgParsedGeometry white;
+            try { white = LowerRoundedStroke(reader, context, syntax, cornerX, cornerY, whiteShape, admitted.Value, frame, state); }
+            catch { filled.Dispose(); throw; }
+            bool whiteReleased = false;
+            try
+            {
+                using BudgetedParserList<SvgGeometry> repaintList = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                foreach (SvgGeometry existing in white.Geometries)
+                {
+                    if (useLinear) repaintList.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, mappedLinear, strokeBox, strokeOpacity, state.Budget));
+                    else if (useRadial) repaintList.Add(SvgRadialPolygon.RepaintOutline(existing.Polygon, mappedCircle, strokeBox, strokeOpacity, state.Budget));
+                    else repaintList.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, state.Budget));
+                }
+                int whiteCount = white.ElementCount;
+                white.Dispose();
+                whiteReleased = true;
+                SvgParsedGeometry painted = new(repaintList.Detach(), whiteCount);
+                return SvgOrthogonalShapeParser.ConcatParsedGeometries(filled, painted, state.Budget, context.WorkCounter, context.CancellationToken);
+            }
+            catch
+            {
+                if (!whiteReleased) white.Dispose();
+                filled.Dispose();
+                throw;
+            }
+        }
         static SvgStrokeStyleSyntax.SvgAdmittedStroke? ResolveRoundedStroke(XmlReader reader, SvgResolvedPaintableElement element, SvgGeometry fill)
         {
             SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, element.Style, element, "rect");

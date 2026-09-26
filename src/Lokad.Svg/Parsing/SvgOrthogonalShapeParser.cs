@@ -333,7 +333,7 @@ internal static class SvgOrthogonalShapeParser
     }
 
     /// <summary>Resolves a linear-gradient stroke for outline repainting, leaving all other strokes to the solid path.</summary>
-    private static bool TryResolveOutlineRadial(SvgComputedStyle style, SvgDocumentState state, out SvgRadialGradient circle)
+    internal static bool TryResolveOutlineRadial(SvgComputedStyle style, SvgDocumentState state, out SvgRadialGradient circle)
     {
         circle = default;
         string? strokePaint = style.Stroke;
@@ -382,7 +382,7 @@ internal static class SvgOrthogonalShapeParser
     }
 
     /// <summary>Resolves a pattern-tile stroke for outline repainting, leaving all other strokes to the solid path.</summary>
-    private static bool TryResolveOutlinePattern(SvgComputedStyle style, SvgDocumentState state, out SvgPatternTile tile)
+    internal static bool TryResolveOutlinePattern(SvgComputedStyle style, SvgDocumentState state, out SvgPatternTile tile)
     {
         tile = default;
         string? strokePaint = style.Stroke;
@@ -391,7 +391,7 @@ internal static class SvgOrthogonalShapeParser
             && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(strokePaint), out tile);
     }
 
-    private static bool TryResolveOutlineGradient(SvgComputedStyle style, SvgDocumentState state, out SvgLinearGradient gradient)
+    internal static bool TryResolveOutlineGradient(SvgComputedStyle style, SvgDocumentState state, out SvgLinearGradient gradient)
     {
         gradient = default;
         string? strokePaint = style.Stroke;
