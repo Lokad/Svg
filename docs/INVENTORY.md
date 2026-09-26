@@ -84,7 +84,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: text-as-paths outlined wordmark.
 - content: 2 paths, inkscape metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: SVG root attribute xml:space is not implemented) [inv-002; root x/y admitted 2026-09-26].
+- status: unsupported (rejects:UnsupportedFeature: Only bare-number, px, in, cm, mm, pt, and pc root dimensions are implemented) [inv-002; root x/y and xml:space admitted 2026-09-26].
 - reference: none yet. [exploratory oracle triple 2026-09-26, 500x200 transparent, 3/3 byte-identical SHA-256 723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-003 — SDL logo
@@ -228,7 +228,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - archetypes: live even-odd fill and clip rules, per-path opacity, fractional stroke width (first blocker: root xml:space).
 - content: 5 paths, root fill-rule/clip-rule evenodd, opacity .25.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: SVG root attribute xml:space is not implemented).
+- status: unsupported (rejects:UnsupportedFeature: SVG root attribute fill-rule is not implemented) [inv-013; root x/y and xml:space admitted 2026-09-26].
 - reference: none yet. [exploratory oracle triple 2026-09-26, 1000x800 transparent, 3/3 byte-identical SHA-256 d5bf3f1f2a5232c767bb4302be338e1b8cc92d349e172f7b96181fe87ec11dfc, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-014 — Blank 6 circle Venn rotated view

@@ -6611,4 +6611,34 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+    [Fact]
+    public void Admits_preserve_root_xml_space()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' width='12' height='7'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(12, root.Width);
+        Assert.Equal(7, root.Height);
+        Assert.Single(root.Rectangles);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Ignores_root_xml_space_when_rendering_without_text()
+    {
+        byte[] plain = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+        byte[] spaced = "<svg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> spacedPng = SvgConverter.ConvertToPng(spaced, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(plainPng.Span.SequenceEqual(spacedPng.Span));
+    }
+
+    [Fact]
+    public void Rejects_unknown_root_xml_space()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xml:space='bogus'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+    }
 }
