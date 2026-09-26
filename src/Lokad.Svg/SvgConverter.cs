@@ -308,6 +308,7 @@ public static class SvgConverter
         void RasterizePolygonFill(SvgPolygonFill polygon, byte[] destination)
         {
             if (!polygon.HasFill || polygon.Points.Length < 3) return;
+            using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Surface);
             SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
             bool hasFractionalEdge = false;
             double left = double.PositiveInfinity;
@@ -360,6 +361,7 @@ public static class SvgConverter
         void RasterizeGradientPolygon(SvgGradientPolygon outline, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
+            using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Surface);
             SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
             bool hasFractionalEdge = false;
             double left = double.PositiveInfinity;
@@ -456,6 +458,7 @@ public static class SvgConverter
         void RasterizeRadialPolygon(SvgRadialPolygon outline, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
+            using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Surface);
             SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
             bool hasFractionalEdge = false;
             double left = double.PositiveInfinity;
@@ -602,6 +605,7 @@ public static class SvgConverter
         void RasterizePatternPolygon(SvgPatternPolygon outline, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
+            using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Surface);
             SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
             bool hasFractionalEdge = false;
             double left = double.PositiveInfinity;

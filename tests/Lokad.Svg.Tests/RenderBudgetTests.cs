@@ -320,6 +320,19 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Polygon_rasterization_denies_and_releases_when_mapped_points_exceed_the_remaining_budget()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
+        RenderBudget rasterBudget = new(300);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Gradient_parse_denies_and_releases_when_stops_exceed_the_remaining_budget()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(EightStopGradientSvg());
