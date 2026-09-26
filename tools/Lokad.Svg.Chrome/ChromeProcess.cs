@@ -2,30 +2,53 @@ using System.Diagnostics;
 
 namespace Lokad.Svg.Chrome;
 
-/// <summary>Owns one headless Chrome process and its isolated debugging profile.</summary>
+/// <summary>Owns one headless Chrome process, bounded diagnostics and an isolated debugging profile.</summary>
 internal sealed class ChromeProcess : IAsyncDisposable
 {
     private const int ProfileCleanupRetryCount = 50;
     private static readonly TimeSpan ProfileCleanupRetryDelay = TimeSpan.FromMilliseconds(100);
     private readonly Process _process;
     private readonly string _profileDirectory;
+    private readonly string _executableName;
+    private readonly ChromeDiagnostics _diagnostics = new();
+    private readonly CancellationTokenSource _drainCancellation = new();
+    private readonly Task _stderrDrain;
+    private readonly Task _stdoutDrain;
+    private readonly Stopwatch _clock = Stopwatch.StartNew();
+    private long _debuggerReadyMilliseconds = -1;
+    private bool _disposed;
 
-    private ChromeProcess(Process process, string profileDirectory, string debuggerAddress)
+    private ChromeProcess(Process process, string profileDirectory)
     {
         _process = process;
         _profileDirectory = profileDirectory;
-        DebuggerAddress = debuggerAddress;
+        _executableName = Path.GetFileName(process.StartInfo.FileName);
+        _stderrDrain = _diagnostics.DrainAsync(process.StandardError, _drainCancellation.Token);
+        _stdoutDrain = DrainOutputAsync(process.StandardOutput, _drainCancellation.Token);
+
+        static async Task DrainOutputAsync(TextReader reader, CancellationToken token)
+        {
+            char[] buffer = new char[4096];
+            while (await reader.ReadAsync(buffer.AsMemory(), token) != 0) { }
+        }
     }
 
-    internal string DebuggerAddress { get; }
+    internal string DebuggerAddress { get; private set; } = "";
 
     internal static async Task<ChromeProcess> LaunchAsync(string executable, CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(executable);
+        cancellationToken.ThrowIfCancellationRequested();
         if (!File.Exists(executable)) throw new FileNotFoundException("Pinned Chrome executable was not found.", executable);
         string profile = Path.Combine(Path.GetTempPath(), "lokad-svg-chrome-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(profile);
-        ProcessStartInfo startInfo = new(executable) { UseShellExecute = false, CreateNoWindow = true };
+        ProcessStartInfo startInfo = new(executable)
+        {
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
+        };
         startInfo.ArgumentList.Add("--headless=new");
         startInfo.ArgumentList.Add("--disable-gpu");
         startInfo.ArgumentList.Add("--remote-debugging-address=127.0.0.1");
@@ -35,50 +58,101 @@ internal sealed class ChromeProcess : IAsyncDisposable
         startInfo.ArgumentList.Add("--user-data-dir=" + profile);
         Process process;
         try { process = Process.Start(startInfo) ?? throw new InvalidOperationException("Chrome process could not be started."); }
-        catch { Directory.Delete(profile, true); throw; }
-        try { return new ChromeProcess(process, profile, await WaitForDebuggerAddressAsync(profile, process, cancellationToken)); }
-        catch { if (!process.HasExited) process.Kill(true); process.Dispose(); Directory.Delete(profile, true); throw; }
+        catch { await DeleteProfileAsync(profile); throw; }
+        ChromeProcess chrome = new(process, profile);
+        try
+        {
+            using CancellationTokenSource startup = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            startup.CancelAfter(TimeSpan.FromSeconds(30));
+            chrome.DebuggerAddress = await chrome.WaitForDebuggerAddressAsync(startup.Token);
+            chrome._debuggerReadyMilliseconds = chrome._clock.ElapsedMilliseconds;
+            return chrome;
+        }
+        catch
+        {
+            await chrome.DisposeAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+            throw;
+        }
     }
+
+    internal void ThrowIfUnhealthy() => _diagnostics.ThrowIfUnhealthy();
 
     public async ValueTask DisposeAsync()
     {
-        if (!_process.HasExited)
+        if (_disposed) return;
+        _disposed = true;
+        bool profileCleaned = false;
+        try
         {
-            Task exit = _process.WaitForExitAsync();
-            if (await Task.WhenAny(exit, Task.Delay(TimeSpan.FromMilliseconds(500))) != exit)
+            if (!_process.HasExited)
             {
-                _process.Kill(true);
-                await exit;
+                Task exit = _process.WaitForExitAsync();
+                if (await Task.WhenAny(exit, Task.Delay(500)) != exit) _process.Kill(true);
+                await exit.WaitAsync(TimeSpan.FromSeconds(5));
+            }
+            // Descendants must not keep inherited pipe handles open indefinitely.
+            try { await Task.WhenAll(_stderrDrain, _stdoutDrain).WaitAsync(TimeSpan.FromSeconds(5)); }
+            catch (TimeoutException)
+            {
+                _drainCancellation.Cancel();
+                throw new IOException("Chrome diagnostic pipes did not close after process shutdown.");
             }
         }
-        _process.Dispose();
-        await DeleteProfileAsync(_profileDirectory);
+        finally
+        {
+            _drainCancellation.Cancel();
+            _process.Dispose();
+            try
+            {
+                await DeleteProfileAsync(_profileDirectory);
+                profileCleaned = true;
+            }
+            finally
+            {
+                _drainCancellation.Dispose();
+                Console.Error.WriteLine(_diagnostics.CreateReport(_executableName, _clock.ElapsedMilliseconds, _debuggerReadyMilliseconds, profileCleaned));
+            }
+        }
     }
 
     private static async Task DeleteProfileAsync(string profileDirectory)
     {
         for (int attempt = 0; ; attempt++)
         {
-            try
-            {
-                Directory.Delete(profileDirectory, true);
-                return;
-            }
+            try { Directory.Delete(profileDirectory, true); return; }
             catch (UnauthorizedAccessException) when (attempt < ProfileCleanupRetryCount) { await Task.Delay(ProfileCleanupRetryDelay); }
             catch (IOException) when (attempt < ProfileCleanupRetryCount) { await Task.Delay(ProfileCleanupRetryDelay); }
         }
     }
 
-    private static async Task<string> WaitForDebuggerAddressAsync(string profile, Process process, CancellationToken cancellationToken)
+    private async Task<string> WaitForDebuggerAddressAsync(CancellationToken cancellationToken)
     {
-        string activePort = Path.Combine(profile, "DevToolsActivePort");
-        while (!File.Exists(activePort))
+        string activePort = Path.Combine(_profileDirectory, "DevToolsActivePort");
+        while (true)
         {
-            if (process.HasExited) throw new InvalidOperationException("Chrome exited before DevTools became available.");
+            _diagnostics.ThrowIfUnhealthy();
+            if (_process.HasExited) throw new InvalidOperationException("Chrome exited before DevTools became available; inspect the chromeLaunch stderr report.");
+            string? address = await TryReadDebuggerAddressAsync(activePort, cancellationToken);
+            if (address is not null) return address;
             await Task.Delay(25, cancellationToken);
         }
-        string[] lines = await File.ReadAllLinesAsync(activePort, cancellationToken);
-        if (lines.Length < 1 || !int.TryParse(lines[0], out int port) || port is <= 0 or > 65535) throw new InvalidDataException("Chrome emitted an invalid debugging port.");
-        return "127.0.0.1:" + port;
+    }
+
+    /// <summary>Reads bounded port-file bytes, treating concurrent creation/partial writes as not ready.</summary>
+    internal static async Task<string?> TryReadDebuggerAddressAsync(string activePort, CancellationToken cancellationToken)
+    {
+        try
+        {
+            using FileStream file = new(activePort, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete, 256, true);
+            byte[] bytes = new byte[256];
+            int length = await file.ReadAsync(bytes, cancellationToken);
+            string text = System.Text.Encoding.ASCII.GetString(bytes, 0, length);
+            int newline = text.IndexOf('\n');
+            if (newline < 0 || !text[(newline + 1)..].StartsWith("/devtools/browser/", StringComparison.Ordinal)) return null;
+            if (!int.TryParse(text[..newline].Trim(), out int port) || port is <= 0 or > 65535) throw new InvalidDataException("Chrome emitted an invalid debugging port.");
+            return "127.0.0.1:" + port;
+        }
+        catch (IOException error) when ((error.HResult & 0xffff) is 2 or 3 or 32 or 33) { return null; }
     }
 }

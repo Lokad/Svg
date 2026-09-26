@@ -29,7 +29,8 @@ tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifac
 ```
 
 The smoke command requires exactly three fresh-process captures; use
-`capture-chrome.ps1` for an individual exploratory capture.
+`capture-chrome.ps1` for an individual exploratory capture. It also checks that
+child failure and a forced parent timeout do not replace an existing output.
 
 On Linux, pass its explicit pin instead:
 
@@ -48,18 +49,27 @@ or changing research-oracle metadata.
 
 Each smoke output directory receives three independent fresh-process PNG captures,
 each exact against the stored smoke reference and byte-identical to the other two,
-plus a JSON runtime fingerprint. The fingerprint records the capture count and
+plus redacted per-launch stderr files and a JSON runtime fingerprint. The fingerprint records the capture count and
 each candidate hash as well as the pin JSON, archive and executable hashes, the
 newline-normalized smoke/setup script source hashes and capture/comparison-tool binary hashes, executable file
 version when exposed by the platform, input/reference hashes,
 OS/architecture/runtime, locale, time zone, recipe, actual capture deadline and
-headless/GPU/sandbox/viewport policy. It also states the resource,
+headless/GPU/sandbox/viewport policy. Schema 4 additionally hashes each retained
+stderr file and records parent capture time. Its child report records Chrome's
+lifetime/DevTools-ready time, sandbox-access failures, network-service crashes,
+bounded stderr/truncation and profile cleanup. Configured sandbox policy is not
+observed startup health: a sandbox-access failure or repeated service crash fails
+capture even if Chrome could produce a screenshot. Benign messages do not fail it.
+It also states the resource,
 color-space and font policy: the smoke has no text; Chrome captures its
 browser-default PNG output without a DevTools color-space override; and the page
 uses data URLs while HTTP(S), file, FTP and WebSocket URL patterns are blocked
-through the DevTools Network domain. Each capture CLI has a 120-second deadline by
-default (`-CaptureTimeoutMilliseconds` changes it) and is terminated with its
-child process tree on timeout.
+through the DevTools Network domain. The capture CLI has a 30-second cancellation
+deadline; the smoke and interactive wrappers impose a 120-second parent deadline
+by default (`-CaptureTimeoutMilliseconds` changes it) and terminate their owned
+child process tree on timeout. They drain child streams concurrently. Interactive
+capture retains a PNG-adjacent .stderr.txt report and publishes through a unique
+temporary file, preserving an existing destination on failure.
 CI uploads this controlled, fixed-fixture directory on every completed Windows and
 Linux job so successful smoke provenance can be reviewed; the broader diagnostic
 artifact remains failure-only. No arbitrary user SVG is uploaded.
@@ -79,15 +89,71 @@ report/input pair. It checks artifact consistency, not GitHub provenance: record
 the successful workflow URL, commit and job conclusion separately before calling
 the captures remote evidence or admitting a Linux baseline.
 
-Chrome fingerprint and memory-summary schema version 2 define the
-newline-normalized script-source hashes. Version 1 artifacts use raw working-tree
-script bytes and are not comparable across checkout line-ending policies.
+Chrome fingerprint schema 4 requires the startup-health diagnostics; the memory
+summary remains schema 3. Both retain newline-normalized script hashes introduced
+in schema 2. Version 1 raw working-tree script hashes are not portable across
+checkout line-ending policies. Old Chrome schema-3 fingerprints do not establish
+observed sandbox health and are rejected by the current validator.
 
 The setup script refuses an archive or extracted executable whose SHA-256 differs
 from the pin; `-Offline` also refuses a cache miss rather than downloading. The
 smoke command performs that cache-only verification before capture. This is only browser provisioning; a reviewed canonical reference
 still requires the full recipe metadata, repeated-capture stability checks, and
 fixture admission.
+
+## Windows sandbox permissions and launch health
+
+Setup uses the pinned Chrome installer's
+[`--configure-browser-in-directory` operation](https://chromium.googlesource.com/chromium/src/+/d1e2de40efe0ac0ca9b5c05b76ea1288fd4fc0f6),
+also used by [Puppeteer's Windows provisioning](https://pptr.dev/troubleshooting#chrome-reports-sandbox-errors-on-windows).
+It configures the supplied browser directory without a normal browser installation.
+Chromium's CONFIGURE_APP_CONTAINER_SANDBOX_SUCCESS status is 78 (not just zero).
+
+The script verifies the archive and chrome.exe pins, authenticates cached setup.exe
+against that archive, rejects path escapes and junction/symlink traversal, and
+uses a bounded hidden process to configure only the resolved browser directory.
+It checks the Chrome-specific chromeInstallFiles and lpacChromeInstallFiles
+read/execute capability rules on the directory and all resources after setup.
+The same checks run for fresh, cached and offline use. Existing ACLs and parent
+directories are preserved; denied access/protected inheritance is reported rather
+than reset or worked around with broad grants. No Everyone/ALL APPLICATION
+PACKAGES grant, sandbox-disable flag, network-service bypass or pin change is used.
+
+Native Chrome stdout is drained separately from the PNG transport. At most
+32 KiB of child stderr is retained; error recognition continues after truncation
+and across read boundaries. Data/remote URLs and local user/temp prefixes are
+redacted. After shutdown, the capture must have healthy startup diagnostics and
+successful profile cleanup before screenshot bytes are returned. DevTools port
+file creation, sharing locks and partial writes are retried inside the deadline.
+Only owned processes/profiles are cleaned; unrelated browsers are untouched.
+
+After building, run the setup boundary/permission scenarios and the real smoke:
+
+```powershell
+tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests
+tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke
+tools/test-validate-ci-artifacts.ps1 -Platform Windows -ResultsDirectory artifacts/validator-selftest
+```
+
+Repair validation on 2026-09-26, Windows x64:
+
+- Fresh extraction from the verified cached archive, offline reuse and repeated
+  setup passed; browser ACLs were idempotent and the cache-parent ACL was unchanged.
+- Three cached-install smoke captures and three fresh-install captures were exact
+  against the existing red reference, with zero sandbox failures/network crashes
+  and successful profile cleanup. Cached Chrome lifetimes were 1,243/1,342/1,390 ms
+  (ready in 311/318/349 ms); fresh lifetimes 1,925/1,458/1,546 ms
+  (ready in 929/336/487 ms). These are local observations, not matched before/after
+  benchmarks or Linux/remote-CI evidence.
+- Setup tests cover escapes/junctions, missing/denied RX and installer failure codes.
+  C# tests cover bounded/chunk-split/post-truncation diagnostics, benign output,
+  repeated crashes, redaction, cancellation and partial port files. Validator
+  negatives reject missing/forged health, crashes, leaked profiles and bad timings.
+- No existing SVG/reference pixels or capture recipe were changed.
+- The circle and symbol-pattern logo references were independently recaptured
+  three times each and remained exact, with no new profile directories. This
+  checks oracle stability, not the candidate renderer's known circle mismatch.
+
 The current capture recipe is revision 3. It first creates a blank target,
 configures page/network blocking, emulation and the page background, transparent by
 default with explicit white/black inputs (capture-chrome.ps1 -Background white|black, recorded

@@ -48,6 +48,9 @@ internal static class ChromeSvgCapture
             }
             await browser.SendAsync("Browser.close", "{}", cancellationToken);
         }
+        // Drain diagnostics through shutdown before a PNG can escape a failed sandbox launch.
+        await chrome.DisposeAsync();
+        chrome.ThrowIfUnhealthy();
         return screenshot;
     }
 

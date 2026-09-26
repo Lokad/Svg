@@ -47,6 +47,7 @@ function Invoke-ChromeCapture {
 
     $start = [System.Diagnostics.ProcessStartInfo]::new('dotnet')
     $start.UseShellExecute = $false
+    $start.CreateNoWindow = $true
     $start.RedirectStandardInput = $true
     $start.RedirectStandardOutput = $true
     $start.RedirectStandardError = $true
@@ -56,11 +57,12 @@ function Invoke-ChromeCapture {
     $start.ArgumentList.Add('2')
     $process = [System.Diagnostics.Process]::Start($start)
     if ($null -eq $process) { throw 'Chrome capture process could not be started.' }
+    $captureClock = [Diagnostics.Stopwatch]::StartNew()
+    $standardErrorTask = $process.StandardError.ReadToEndAsync()
     try {
         $output = [System.IO.File]::Create($Candidate)
         try {
             $outputTask = $process.StandardOutput.BaseStream.CopyToAsync($output)
-            $standardErrorTask = $process.StandardError.ReadToEndAsync()
             $input = [System.IO.File]::OpenRead($fixture)
             try { $input.CopyTo($process.StandardInput.BaseStream) }
             finally { $input.Dispose(); $process.StandardInput.Close() }
@@ -71,12 +73,26 @@ function Invoke-ChromeCapture {
             }
             [void]$outputTask.GetAwaiter().GetResult()
             $standardError = $standardErrorTask.GetAwaiter().GetResult()
+            $stderrPath = $Candidate + '.stderr.txt'
+            [IO.File]::WriteAllText($stderrPath, $standardError)
             if ($process.ExitCode -ne 0) { throw "Pinned Chrome capture failed: $standardError" }
+            $report = $standardError.Trim() | ConvertFrom-Json
+            $launch = $report.chromeLaunch
+            if ($null -eq $launch -or $launch.schemaVersion -ne 1 -or $launch.startupHealth -ne 'healthy' -or
+                $launch.sandboxAccessFailures -ne 0 -or $launch.networkServiceCrashes -ge 2 -or -not $launch.profileCleaned) {
+                throw 'Pinned Chrome capture did not report healthy sandbox startup and profile cleanup.'
+            }
+            return [PSCustomObject]@{
+                stderrFile = [IO.Path]::GetFileName($stderrPath)
+                stderrSha256 = (Get-FileHash -LiteralPath $stderrPath -Algorithm SHA256).Hash.ToLowerInvariant()
+                captureElapsedMilliseconds = $captureClock.ElapsedMilliseconds
+            }
         }
         finally { $output.Dispose() }
     }
     catch {
         if (-not $process.HasExited) { $process.Kill($true) }
+        if ($standardErrorTask.Wait(5000)) { [IO.File]::WriteAllText(($Candidate + '.stderr.txt'), $standardErrorTask.GetAwaiter().GetResult()) }
         throw
     }
     finally { $process.Dispose() }
@@ -85,10 +101,12 @@ function Invoke-ChromeCapture {
 $captureId = [Guid]::NewGuid().ToString('N')
 $candidates = [System.Collections.Generic.List[string]]::new()
 $candidateHashes = [System.Collections.Generic.List[string]]::new()
+$captureDiagnostics = [System.Collections.Generic.List[object]]::new()
+$profilesBefore = [Collections.Generic.HashSet[string]]::new([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-chrome-*'), [StringComparer]::Ordinal)
 for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
 {
     $candidate = Join-Path $ResultsDirectory "pinned-chrome-smoke-$captureId-$attempt.png"
-    Invoke-ChromeCapture -Candidate $candidate -TimeoutMilliseconds $CaptureTimeoutMilliseconds
+    $captureDiagnostics.Add((Invoke-ChromeCapture -Candidate $candidate -TimeoutMilliseconds $CaptureTimeoutMilliseconds))
     & dotnet $diffTool $reference $candidate
     if ($LASTEXITCODE -ne 0) { throw "Pinned Chrome smoke capture $attempt differs from its reference." }
     $candidateHash = (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -98,7 +116,7 @@ for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
 }
 
 $fingerprint = [ordered]@{
-    schemaVersion = 3
+    schemaVersion = 4
     pinSha256 = (Get-FileHash -LiteralPath $PinPath -Algorithm SHA256).Hash.ToLowerInvariant()
     pinVersion = $pin.version
     chromiumRevision = $pin.chromiumRevision
@@ -132,6 +150,28 @@ $fingerprint = [ordered]@{
     captureTimeoutMilliseconds = $CaptureTimeoutMilliseconds
     candidatePngs = @($candidates | ForEach-Object { [IO.Path]::GetFileName($_) })
     candidateSha256 = @($candidateHashes)
+    captureDiagnostics = @($captureDiagnostics)
 }
 $fingerprintPath = Join-Path $ResultsDirectory "pinned-chrome-smoke-$captureId.json"
-$fingerprint | ConvertTo-Json | Set-Content -LiteralPath $fingerprintPath -NoNewline -Encoding utf8
+
+# Exercise the interactive wrapper's failure/timeout publication contract as well.
+$wrapperDirectory = Join-Path $ResultsDirectory ('wrapper-' + $captureId)
+New-Item -ItemType Directory -Path $wrapperDirectory | Out-Null
+$wrapperOutput = Join-Path $wrapperDirectory 'preserved.png'
+Copy-Item -LiteralPath $reference -Destination $wrapperOutput
+$preservedHash = (Get-FileHash -LiteralPath $wrapperOutput -Algorithm SHA256).Hash
+$captureScript = Join-Path $PSScriptRoot 'capture-chrome.ps1'
+try {
+    & $captureScript -InputPath $fixture -OutputPath $wrapperOutput -Width 100000 -Height 100000 -CacheDirectory $CacheDirectory -PinPath $PinPath
+    throw 'Wrapper unexpectedly accepted excessive dimensions.'
+}
+catch { if ($_.Exception.Message -notlike '*2-million-pixel transport limit*') { throw } }
+try {
+    & $captureScript -InputPath $fixture -OutputPath $wrapperOutput -Width 2 -Height 2 -CacheDirectory $CacheDirectory -PinPath $PinPath -CaptureTimeoutMilliseconds 1
+    throw 'Wrapper unexpectedly completed inside the forced deadline.'
+}
+catch { if ($_.Exception.Message -notmatch 'deadline|timed out') { throw } }
+if ((Get-FileHash -LiteralPath $wrapperOutput -Algorithm SHA256).Hash -cne $preservedHash) { throw 'Failed capture replaced the existing destination.' }
+if (@(Get-ChildItem -LiteralPath $wrapperDirectory -Filter '*.tmp').Count -ne 0) { throw 'Failed capture left partial publication files.' }
+if (-not $profilesBefore.SetEquals([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-chrome-*'))) { throw 'Chrome smoke or wrapper controls leaked a profile; pre-existing profiles were not modified.' }
+$fingerprint | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $fingerprintPath -NoNewline -Encoding utf8

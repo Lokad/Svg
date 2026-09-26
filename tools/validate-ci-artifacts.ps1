@@ -72,7 +72,7 @@ function Test-ChromeArtifact
     $pin = Get-Content -LiteralPath $pinPath -Raw | ConvertFrom-Json
     $fingerprintFile = Get-SingleFile $ChromeDirectory 'pinned-chrome-smoke-*.json' 'Chrome smoke artifact'
     $fingerprint = Get-Content -LiteralPath $fingerprintFile.FullName -Raw | ConvertFrom-Json
-    Assert-Equal 3 (Get-RequiredProperty $fingerprint 'schemaVersion' 'Chrome fingerprint') 'Chrome fingerprint schema version'
+    Assert-Equal 4 (Get-RequiredProperty $fingerprint 'schemaVersion' 'Chrome fingerprint') 'Chrome fingerprint schema version'
     Assert-Hash (Get-RequiredProperty $fingerprint 'pinSha256' 'Chrome fingerprint') (Get-Hash $pinPath) 'Chrome pin hash'
     foreach ($name in @('version', 'chromiumRevision', 'platform', 'archiveSha256', 'executableSha256', 'captureRecipeRevision'))
     {
@@ -120,6 +120,8 @@ function Test-ChromeArtifact
     $candidateHashes = @($fingerprint.candidateSha256)
     if ($candidateNames.Count -ne 3 -or $candidateHashes.Count -ne 3) { Fail 'Chrome fingerprint must list exactly three candidates and hashes.' }
     $stableHash = $null
+    $diagnostics = @(Get-RequiredProperty $fingerprint 'captureDiagnostics' 'Chrome fingerprint')
+    if ($diagnostics.Count -ne 3) { Fail 'Chrome fingerprint must list exactly three capture diagnostics.' }
     for ($index = 0; $index -lt 3; $index++)
     {
         $candidateName = [string]$candidateNames[$index]
@@ -131,6 +133,26 @@ function Test-ChromeArtifact
         elseif ($candidateHash -cne $stableHash) { Fail "Chrome candidate $candidateName is not byte-identical to the first fresh-process capture." }
         & dotnet $comparisonTool $reference $candidatePath
         if ($LASTEXITCODE -ne 0) { Fail "Chrome candidate $candidateName differs from its reference pixels." }
+        $diagnostic = $diagnostics[$index]
+        $stderrName = [string](Get-RequiredProperty $diagnostic 'stderrFile' 'Chrome diagnostic')
+        if ($stderrName -cne ($candidateName + '.stderr.txt')) { Fail 'Chrome diagnostic filename does not match its candidate.' }
+        $stderrPath = Join-Path $ChromeDirectory $stderrName
+        Assert-Hash (Get-RequiredProperty $diagnostic 'stderrSha256' 'Chrome diagnostic') (Get-Hash $stderrPath) 'Chrome stderr hash'
+        if ((Get-Item -LiteralPath $stderrPath).Length -gt 262144) { Fail 'Chrome stderr exceeds the retained diagnostic bound.' }
+        $launch = (Get-Content -LiteralPath $stderrPath -Raw | ConvertFrom-Json).chromeLaunch
+        Assert-Equal 1 (Get-RequiredProperty $launch 'schemaVersion' 'Chrome launch') 'Chrome launch schema'
+        Assert-Equal 'healthy' (Get-RequiredProperty $launch 'startupHealth' 'Chrome launch') 'Chrome startup health'
+        Assert-Equal 0 (Get-RequiredProperty $launch 'sandboxAccessFailures' 'Chrome launch') 'Chrome sandbox access failures'
+        Assert-Equal True (Get-RequiredProperty $launch 'profileCleaned' 'Chrome launch') 'Chrome profile cleanup'
+        Assert-Equal ([IO.Path]::GetFileName($pin.executableRelativePath)) (Get-RequiredProperty $launch 'executableName' 'Chrome launch') 'Chrome executable identity'
+        $crashes = [long](Get-RequiredProperty $launch 'networkServiceCrashes' 'Chrome launch')
+        if ($crashes -lt 0 -or $crashes -ge 2) { Fail 'Chrome network service repeatedly crashed.' }
+        $elapsed = [long](Get-RequiredProperty $launch 'elapsedMilliseconds' 'Chrome launch')
+        $ready = [long](Get-RequiredProperty $launch 'debuggerReadyMilliseconds' 'Chrome launch')
+        $captureElapsed = [long](Get-RequiredProperty $diagnostic 'captureElapsedMilliseconds' 'Chrome diagnostic')
+        if ($ready -lt 0 -or $elapsed -lt $ready -or $captureElapsed -lt $elapsed -or $captureElapsed -gt $fingerprint.captureTimeoutMilliseconds) { Fail 'Chrome diagnostic timings are inconsistent.' }
+        if ($null -eq $launch.PSObject.Properties['stderr'] -or $null -eq $launch.PSObject.Properties['stderrTruncated']) { Fail 'Chrome launch is missing bounded stderr.' }
+        if ($launch.stderr -match 'Sandbox cannot access executable' -or [regex]::Matches($launch.stderr, 'Network service crashed or was terminated').Count -ge 2) { Fail 'Chrome stderr contradicts healthy startup.' }
     }
 }
 

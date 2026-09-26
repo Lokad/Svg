@@ -23,6 +23,8 @@ jobs:
       - run: dotnet test Lokad.Svg.slnx -c Release --no-build
       - shell: pwsh
         run: tools/test-memory-probe.ps1 -ResultsDirectory artifacts/memory-probe
+      - shell: pwsh
+        run: tools/test-chrome-setup.ps1 -ResultsDirectory artifacts/chrome-setup-tests
       - if: runner.os == 'Windows'
         shell: pwsh
         run: tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke

@@ -41,8 +41,19 @@ if ($hostDotnetRuntimes.Count -eq 0) { throw 'The dotnet host reported no .NETCo
 
 function Write-Fingerprint([string] $Directory, [string] $RunId, [string[]] $CandidateNames, [string[]] $CandidateHashes) {
     $pin = Get-Content -LiteralPath $pinPath -Raw | ConvertFrom-Json
+    $diagnostics = @()
+    foreach ($candidateName in $CandidateNames) {
+        $stderrName = $candidateName + '.stderr.txt'
+        $stderrPath = Join-Path $Directory $stderrName
+        @{ chromeLaunch = @{
+            schemaVersion = 1; executableName = [IO.Path]::GetFileName($pin.executableRelativePath)
+            elapsedMilliseconds = 20; debuggerReadyMilliseconds = 10; sandboxAccessFailures = 0
+            networkServiceCrashes = 0; stderrTruncated = $false; stderr = ''; profileCleaned = $true; startupHealth = 'healthy'
+        } } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $stderrPath -Encoding utf8
+        $diagnostics += @{ stderrFile = $stderrName; stderrSha256 = (Get-FileHash -LiteralPath $stderrPath -Algorithm SHA256).Hash.ToLowerInvariant(); captureElapsedMilliseconds = 30 }
+    }
     $fingerprint = [ordered]@{
-        schemaVersion = 3
+        schemaVersion = 4
         pinSha256 = (Get-FileHash -LiteralPath $pinPath -Algorithm SHA256).Hash.ToLowerInvariant()
         pinVersion = $pin.version
         chromiumRevision = $pin.chromiumRevision
@@ -75,8 +86,9 @@ function Write-Fingerprint([string] $Directory, [string] $RunId, [string[]] $Can
         captureTimeoutMilliseconds = 120000
         candidatePngs = @($CandidateNames)
         candidateSha256 = @($CandidateHashes)
+        captureDiagnostics = $diagnostics
     }
-    $fingerprint | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $Directory "pinned-chrome-smoke-$RunId.json") -NoNewline -Encoding utf8
+    $fingerprint | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $Directory "pinned-chrome-smoke-$RunId.json") -NoNewline -Encoding utf8
 }
 
 function Invoke-Validator([string] $ChromeDirectory, [string] $MemoryDirectory) {
@@ -215,6 +227,7 @@ Assert-ValidatorRejects $schemaChrome $memoryDirectory '*schema version*' 'a bad
 function Copy-ChromeFingerprint([string] $Destination) {
     New-Item -ItemType Directory -Force -Path $Destination | Out-Null
     foreach ($name in $goodNames) { Copy-Item -LiteralPath (Join-Path $goodDirectory $name) -Destination (Join-Path $Destination $name) }
+    foreach ($name in $goodNames) { Copy-Item -LiteralPath (Join-Path $goodDirectory ($name + '.stderr.txt')) -Destination (Join-Path $Destination ($name + '.stderr.txt')) }
     $fingerprints = @(Get-ChildItem -LiteralPath $goodDirectory -File -Filter '*.json')
     if ($fingerprints.Count -ne 1) { throw "Good chrome directory does not contain exactly one fingerprint: $goodDirectory" }
     Copy-Item -LiteralPath $fingerprints[0].FullName -Destination (Join-Path $Destination $fingerprints[0].Name)
@@ -241,6 +254,30 @@ $chromeHostEdited = Get-Content -LiteralPath $chromeHostFingerprint -Raw | Conve
 $chromeHostEdited.hostRuntimeFramework = '.NET 0.0.0'
 $chromeHostEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $chromeHostFingerprint -NoNewline -Encoding utf8
 Assert-ValidatorRejects $chromeHost $memoryDirectory '*host runtime framework*' 'a mismatched chrome host runtime'
+foreach ($case in @('sandbox-failure', 'network-crash', 'profile-leak', 'bad-timing', 'lying-stderr')) {
+    $caseDirectory = Join-Path $runDirectory ('chrome-' + $case)
+    $caseFingerprint = Copy-ChromeFingerprint $caseDirectory
+    $edited = Get-Content -LiteralPath $caseFingerprint -Raw | ConvertFrom-Json
+    $stderrPath = Join-Path $caseDirectory $edited.captureDiagnostics[0].stderrFile
+    $stderr = Get-Content -LiteralPath $stderrPath -Raw | ConvertFrom-Json
+    switch ($case) {
+        'sandbox-failure' { $stderr.chromeLaunch.sandboxAccessFailures = 1; $reason = '*sandbox access failures*' }
+        'network-crash' { $stderr.chromeLaunch.networkServiceCrashes = 2; $reason = '*network service repeatedly crashed*' }
+        'profile-leak' { $stderr.chromeLaunch.profileCleaned = $false; $reason = '*profile cleanup*' }
+        'bad-timing' { $stderr.chromeLaunch.debuggerReadyMilliseconds = 200; $reason = '*timings are inconsistent*' }
+        'lying-stderr' { $stderr.chromeLaunch.stderr = 'Sandbox cannot access executable'; $reason = '*contradicts healthy startup*' }
+    }
+    $stderr | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $stderrPath -Encoding utf8
+    $edited.captureDiagnostics[0].stderrSha256 = (Get-FileHash -LiteralPath $stderrPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    $edited | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $caseFingerprint -Encoding utf8
+    Assert-ValidatorRejects $caseDirectory $memoryDirectory $reason $case
+}
+$missingDiagnosticDirectory = Join-Path $runDirectory 'chrome-missing-diagnostics'
+$missingDiagnosticFingerprint = Copy-ChromeFingerprint $missingDiagnosticDirectory
+$missingDiagnostic = Get-Content -LiteralPath $missingDiagnosticFingerprint -Raw | ConvertFrom-Json
+$missingDiagnostic.PSObject.Properties.Remove('captureDiagnostics')
+$missingDiagnostic | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $missingDiagnosticFingerprint -Encoding utf8
+Assert-ValidatorRejects $missingDiagnosticDirectory $memoryDirectory '*missing captureDiagnostics*' 'missing launch diagnostics'
 function Copy-MemorySummary([string] $Destination) {
     Copy-Item -Recurse -LiteralPath $memoryDirectory -Destination $Destination
     $summaries = @(Get-ChildItem -LiteralPath $Destination -File -Filter '*-summary.json')

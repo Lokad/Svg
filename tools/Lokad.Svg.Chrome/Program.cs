@@ -18,15 +18,23 @@ internal static class Program
             return 2;
         }
 
-        using CancellationTokenSource cancellation = new(TimeSpan.FromSeconds(30));
-        byte[] svg = await ChromeSvgCapture.ReadSvgAsync(Console.OpenStandardInput(), cancellation.Token);
-        ChromeSvgCapture.CaptureBackground background = ChromeSvgCapture.CaptureBackground.Transparent;
-        if (arguments.Length == 4)
+        try
         {
-            background = arguments[3] == "black" ? ChromeSvgCapture.CaptureBackground.Black : ChromeSvgCapture.CaptureBackground.White;
+            using CancellationTokenSource cancellation = new(TimeSpan.FromSeconds(30));
+            byte[] svg = await ChromeSvgCapture.ReadSvgAsync(Console.OpenStandardInput(), cancellation.Token);
+            ChromeSvgCapture.CaptureBackground background = ChromeSvgCapture.CaptureBackground.Transparent;
+            if (arguments.Length == 4)
+            {
+                background = arguments[3] == "black" ? ChromeSvgCapture.CaptureBackground.Black : ChromeSvgCapture.CaptureBackground.White;
+            }
+            byte[] png = await ChromeSvgCapture.CaptureAsync(arguments[0], svg, width, height, background, cancellation.Token);
+            await Console.OpenStandardOutput().WriteAsync(png, cancellation.Token);
+            return 0;
         }
-        byte[] png = await ChromeSvgCapture.CaptureAsync(arguments[0], svg, width, height, background, cancellation.Token);
-        await Console.OpenStandardOutput().WriteAsync(png, cancellation.Token);
-        return 0;
+        catch (Exception error)
+        {
+            Console.Error.WriteLine(ChromeDiagnostics.Redact(error.Message));
+            return error is OperationCanceledException ? 3 : 1;
+        }
     }
 }
