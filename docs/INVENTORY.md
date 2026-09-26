@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005), all status untested.
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triple stable for inv-001 (3/3 byte-identical, 59x58); triples pending for inv-002..005.
 
 ## Purpose and non-goals
 
@@ -72,8 +72,8 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: flat mark, linear gradient (2 stops).
 - content: 8 paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: untested.
-- reference: none yet.
+- status: unsupported (rejects:UnsupportedFeature; first blocker: Only integer rectangle coordinates are implemented).
+- reference: none yet. [inv-001 only: exploratory oracle triple 2026-09-26, 59x58 transparent, 3/3 byte-identical SHA-256 cc74b32530f588d8c5bf2f708250a826024163c74f978fe1536309d2a848d294, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-002 — Ford simple text logo
 
@@ -84,7 +84,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: text-as-paths outlined wordmark.
 - content: 2 paths, inkscape metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: untested.
+- status: unsupported (rejects:UnsupportedFeature: SVG root attribute x is not implemented).
 - reference: none yet.
 
 ### inv-003 — SDL logo
@@ -96,7 +96,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: flat mark, radial gradient.
 - content: 4 paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: untested.
+- status: unsupported (rejects:UnsupportedFeature: Only positive axis-aligned matrix() gradient transforms are implemented).
 - reference: none yet.
 
 ### inv-004 — UAAR logo 2012
@@ -108,7 +108,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: path mark.
 - content: 6 paths, inkscape metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: untested.
+- status: unsupported (rejects:UnsupportedFeature: SVG root attribute x is not implemented).
 - reference: none yet.
 
 ### inv-005 — SimpleX.chat logo
@@ -120,5 +120,5 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: clipped composition.
 - content: 3 paths, clipPath, rect.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: untested.
+- status: unsupported (rejects:UnsupportedFeature: Path attribute clip-rule is not implemented).
 - reference: none yet.
