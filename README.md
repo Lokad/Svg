@@ -4,13 +4,15 @@ Lokad.Svg is a pure-managed .NET SVG-to-PNG renderer being built in staged,
 explicitly supported subsets. The current subset renders explicitly sized empty
 SVGs; integer or quarter-pixel `rect` layers; bounded axis-aligned `line`, closed
 orthogonal `path`, `polygon` and filled `polyline` geometry; and direct local
-`use` instances of supported definitions. It has bounded root/group/link
+`use` instances of supported definitions, together with the matrix-documented diagonal,
+curved-shape, gradient, pattern, image, clip and mask subsets. It has bounded root/group/link
 structure, inherited paint/visibility/display, limited element/group opacity,
 source-over composition, caller-provided backgrounds, and managed PNG output to
 owned memory, caller memory or a writable stream. Presentation attributes, inline
 styles and a deliberately narrow ordered root stylesheet cover the documented
 subset. Gradients, images, filters, general CSS and general path geometry remain
-unsupported. An experimental supplied-font direct-text path is deliberately not an
+supported only inside the narrow admitted subsets the support matrix documents;
+everything outside those subsets stays explicitly unsupported. An experimental supplied-font direct-text path is deliberately not an
 admitted text-support claim; see the support matrix for its exact narrow syntax and
 failure behavior.
 The prototype also retains documented accepted-input contract gaps, so rejected
