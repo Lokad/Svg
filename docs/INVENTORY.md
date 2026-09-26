@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples stable for batch 3 (3/3 byte-identical each; per-entry hashes below). Batch 4 selected 2026-09-26: 2 documents (inv-013..inv-014), both renderer-probed 2026-09-26; oracle triples stable for batch 4 (3/3 byte-identical each; per-entry hashes below). Batch 5 selected 2026-09-26: 2 documents (inv-015..inv-016), both renderer-probed 2026-09-26; oracle triples stable for batch 5 (3/3 byte-identical each; per-entry hashes below). Batch 6 selected 2026-09-26: 2 documents (inv-017..inv-018), the first renderable candidates; oracle triples stable for batch 6 (3/3 byte-identical each; per-entry hashes below). A staged USGov candidate (Joint Typhoon Warning Center logo, PD, pt units, feGaussianBlur filter) was excluded: it carries live text elements, which the selection rules keep out of scope (fonts); filter primitives remain a genuine gap. A third staged file (4-set Venn, PD) was held back as a redundant fourth DTD rejection; it can backfill later if the rejects path needs volume.
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples stable for batch 3 (3/3 byte-identical each; per-entry hashes below). Batch 4 selected 2026-09-26: 2 documents (inv-013..inv-014), both renderer-probed 2026-09-26; oracle triples stable for batch 4 (3/3 byte-identical each; per-entry hashes below). Batch 5 selected 2026-09-26: 2 documents (inv-015..inv-016), both renderer-probed 2026-09-26; oracle triples stable for batch 5 (3/3 byte-identical each; per-entry hashes below). Batch 6 selected 2026-09-26: 2 documents (inv-017..inv-018), the first renderable candidates; oracle triples stable for batch 6 (3/3 byte-identical each; per-entry hashes below). Batch 7 selected 2026-09-26: 2 documents (inv-019..inv-020), both renderer-probed 2026-09-26; oracle triples pending. The 20-document R26 initial target is met. No live mask element has been sourced yet despite title-text leads (Artsy-logo-mask carries no mask element); masks, filters and renderable rect/line/polyline primitives remain recorded gaps. A staged USGov candidate (Joint Typhoon Warning Center logo, PD, pt units, feGaussianBlur filter) was excluded: it carries live text elements, which the selection rules keep out of scope (fonts); filter primitives remain a genuine gap. A third staged file (4-set Venn, PD) was held back as a redundant fourth DTD rejection; it can backfill later if the rejects path needs volume.
 
 ## Purpose and non-goals
 
@@ -298,3 +298,31 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: known-difference (renders; VisualDiff vs 200x200 oracle SHA-256 3032d48eaf4e52c7db5c2fd6289339e1089a0a7799fc7d0c98a058a501c9c083: changedPixelCount 1294, maximumChannelError 255, maximumAlphaError 50).
 - reference: exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical (hash in status line), staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+
+## Selected documents (batch 7, 2026-09-26)
+
+Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, 2026-09-26). Batch 7 adds use-element instancing and an Illustrator export profile with a nonzero viewBox origin. Files live in tests/Fixtures/candidates/ with provenance; no CC0 SPDX headers; never copied into tests/Fixtures/original/.
+
+### inv-019 — Tokyo Tsukurou
+
+- file: tests/Fixtures/candidates/inv-019.svg (SHA-256 469234ACFDB4870E675BC2AD23ED8BF84A60F6A536D15CB5BB55DCF6943F15C1)
+- source: Wikimedia Commons, File:Tokyo Tsukurou.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: use-element instancing with transforms, circle primitives, sodipodi metadata.
+- content: 1 rect, 5 circles, 4 uses.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Inline style property stroke-width is not implemented).
+- reference: none yet.
+
+### inv-020 — Artsy-logo-mask
+
+- file: tests/Fixtures/candidates/inv-020.svg (SHA-256 8A899BE3B4FBEDF1FC81C8E3F315278D0BA250496968DFB01FCD75E72AE0410F)
+- source: Wikimedia Commons, File:Artsy-logo-mask.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: Illustrator export profile, nonzero viewBox origin, version/enable-background/xml:space attributes (unrenderable: DOCTYPE present; no mask element despite title).
+- content: paths, 1092x1093 viewport at origin (698,220).
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
+- reference: none yet.
