@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-stylesheet-mark-black",
+  "referencePng": "original-logo-stylesheet-mark-black.png",
+  "referenceSha256": "08f3b912abe2d5f32297dc0ba1ba70389af5e00a3e4ea40f30c514576cf3afed",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "5abf47fee3c60bf01469927e507b53e68aecc46f742b3adf2f09f33f49eb0df3",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}

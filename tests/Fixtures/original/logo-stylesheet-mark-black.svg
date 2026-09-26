@@ -1,0 +1,9 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <style>.frame { fill: #ff0000; } .core { fill: #0000ff; }</style>
+  <rect x="8" y="8" width="48" height="8" class="frame"/>
+  <rect x="8" y="48" width="48" height="8" class="frame"/>
+  <rect x="8" y="8" width="8" height="48" class="frame"/>
+  <rect x="48" y="8" width="8" height="48" class="frame"/>
+  <rect x="24" y="24" width="16" height="16" class="core"/>
+</svg>
