@@ -284,7 +284,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - archetypes: stroked circle primitive, opacity .5, named color, fill none.
 - content: 1 circle.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: known-difference (renders; VisualDiff vs 200x200 oracle SHA-256 2b79a788d03f53f1e1cd8a87a52577f586874b9a0c757e1db1483bbef1581f19: changedPixelCount 1220, maximumChannelError 255, maximumAlphaError 24).
+- status: known-difference (renders; VisualDiff vs 200x200 oracle SHA-256 2b79a788d03f53f1e1cd8a87a52577f586874b9a0c757e1db1483bbef1581f19: changedPixelCount 1220, maximumChannelError 255, maximumAlphaError 24; white-background variant 200x200 oracle triple 2026-09-26 3/3 byte-identical SHA-256 26043a176afd0445853cf891a6fbcbbdff1e5ffb9b77db9068af6426c26bbc87, candidate rendered with white background: changedPixelCount 1223, maximumChannelError 24, maximumAlphaError 0).
 - reference: exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical (hash in status line), staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ### inv-018 — Cercle rouge 100%
