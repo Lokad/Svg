@@ -29,6 +29,14 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Viewport_rounded_gradient_matches_direct_rendering()
+    {
+        byte[] viewport = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><svg x='8' y='0' width='8' height='8'><rect x='0' y='0' width='8' height='8' rx='2' fill='url(#g)'/></svg></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='8' y='0' width='8' height='8' rx='2' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.Equal(direct, viewport);
+    }
+    [Fact]
     public void Rounded_rectangle_cuts_corners()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect x='8' y='8' width='48' height='48' rx='8' ry='8' fill='red'/></svg>", out _, out _);
