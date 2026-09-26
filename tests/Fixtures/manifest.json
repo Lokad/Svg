@@ -41,6 +41,7 @@
       "oracleIdentity": "tests/References/original-fractional-overlap.json",
       "referenceSha256": "8e2faa670552a1578dc7bc775711f535a8262d1d9eb20432842a31576a7d810b"
     },
+    {"id":"original-fractional-overlap-white","path":"original/fractional-overlap-white.svg","variantOf":"original-fractional-overlap","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-26","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"5846ead74a5a70e5eb28fb2327a421cac4055aba8e25c1d5a88a2003574f24e8","materializedSha256":"5846ead74a5a70e5eb28fb2327a421cac4055aba8e25c1d5a88a2003574f24e8","featureTags":["shape","fractional-coordinates","source-over","transparency","background-variant"],"width":8,"height":8,"scale":1,"background":"white","expectedSupport":"unsupported","expectedFidelity":"unsupported","observedBehavior":"renders","knownDifferenceIdentity":"tests/References/original-fractional-overlap-white.json","unsupportedReason":"Fractional coverage over white drifts by at most one RGB step (16 pixels boxed 2-5, alpha exact) while transparent admits exactly; background-dependent rounding, S11 calibration, not admitted."},
     {
       "id": "original-integer-alpha-overlap",
       "path": "original/integer-alpha-overlap.svg",
