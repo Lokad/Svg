@@ -414,4 +414,4 @@ Public-domain SVG from Wikimedia Commons (LicenseShortName=Public domain per Com
 - content: 19 paths, 12 groups, sodipodi metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only integer rectangle coordinates are implemented).
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 543x149 transparent, 3/3 byte-identical SHA-256 826fc626a84a21945425934eca291517ee5dda87a9dea7e8cfc62e8b6a266a40, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
