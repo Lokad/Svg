@@ -289,7 +289,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 
 ### inv-018 — Cercle rouge 100%
 
-- file: tests/Fixtures/candidates/inv-018.svg (SHA-256 5F096A0419FB21988E8DAFF679CD9CEA83FD7BA8EF011A9CE64B3B5564BF8D31)
+- file: tests/Fixtures/candidates/inv-018.svg (SHA-256 C965252DFA52D34A0B625850AC293CE21E7BC4795CCE1F0DF3D8C632EF08A9CC)
 - source: Wikimedia Commons, File:Cercle rouge 100%.svg. Retrieval 2026-09-26.
 - license: PD-shape (Commons).
 - retrievalDate: 2026-09-26.
