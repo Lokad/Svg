@@ -95,6 +95,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - retrievalDate: 2026-09-26.
 - archetypes: flat mark, radial gradient.
 - content: 4 paths.
+- diagnosis 2026-09-26: the blocking gradientTransform is matrix(-4.228 -8.251 14.01 -7.18 5688 455.1) on a userSpaceOnUse radial gradient, combining rotation, skew and negative/non-uniform scales. Squarely inside the support matrix explicitly-unsupported class; no narrower gate to split.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only positive axis-aligned matrix() gradient transforms are implemented).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 738x371 transparent, 3/3 byte-identical SHA-256 a941550faea36541a0656296ba5b8ece0cf0cc947311a0ebff739fa32cb90161, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
