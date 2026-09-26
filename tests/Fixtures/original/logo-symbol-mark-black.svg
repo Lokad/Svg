@@ -1,0 +1,11 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <symbol id="redq"><rect width="16" height="16" fill="#ff0000"/></symbol>
+    <symbol id="blueq"><rect width="16" height="16" fill="#0000ff"/></symbol>
+  </defs>
+  <use href="#redq" x="16" y="16"/>
+  <use href="#blueq" x="32" y="16"/>
+  <use href="#blueq" x="16" y="32"/>
+  <use href="#redq" x="32" y="32"/>
+</svg>
