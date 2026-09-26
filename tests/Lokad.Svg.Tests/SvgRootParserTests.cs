@@ -221,6 +221,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Square_dash_with_path_length_scales_runs()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='8 8' pathLength='32' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(new SvgRectangle(-1, 3, 6, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[0].Rectangle);
+        Assert.Equal(new SvgRectangle(7, 3, 6, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[1].Rectangle);
+    }
+
+    [Fact]
     public void Square_dash_offset_keeps_butt_phase()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-dashoffset='2' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
