@@ -220,6 +220,7 @@ internal static class SvgLeafParser
         }
         double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset"));
         double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
+        if (linecap == SvgStrokeCap.Square && color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         return LowerDashedLine();
 
         SvgParsedGeometry LowerDashedLine()
@@ -257,6 +258,7 @@ internal static class SvgLeafParser
         double[] pattern = (double[])dashes.Clone();
         double dashFactor = SvgOrthogonalGeometryLowering.RescaleDashPattern(pattern, length, pathLength);
         double total = 0;
+        if (squareCaps) for (int entryIndex = 0; entryIndex < pattern.Length; entryIndex += 2) if (pattern[entryIndex] == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Zero-length square-capped dashes are not implemented.");
         foreach (double patternEntry in pattern) total += patternEntry;
         if (!(total > 0))
         {

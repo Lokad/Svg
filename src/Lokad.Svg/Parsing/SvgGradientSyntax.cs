@@ -679,6 +679,7 @@ internal static class SvgGradientSyntax
         gradient = MirrorBoundingBoxVector(transform, gradient);
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        if (dashLinecap == SvgStrokeCap.Square && dashEntries is not null && !IsOpaqueGradientStroke(gradient, opacity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         if (dashEntries is not null) return LowerDashedGradientStrokeLine(syntax, strokeWidth, dashLinecap == SvgStrokeCap.Square, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), pathLength, gradient, painted, opacity, frame, state, context);
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         SvgRectangle box = band;
@@ -694,6 +695,14 @@ internal static class SvgGradientSyntax
             return RetainSingleBand(SvgGeometry.FromOrthogonalBand(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, opacity) }), state, context);
         }
         return RetainSingleBand(SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, fill, opacity, null)), state, context);
+    }
+
+    /// <summary>Reports whether one linear-gradient line stroke paints fully opaque runs.</summary>
+    private static bool IsOpaqueGradientStroke(SvgLinearGradient gradient, byte opacity)
+    {
+        if (opacity != 255 || gradient.Start.Alpha != 255 || gradient.End.Alpha != 255) return false;
+        foreach (SvgGradientStop stop in gradient.Stops) if (stop.Color.Alpha != 255) return false;
+        return true;
     }
 
     /// <summary>Lowers one dashed linear-gradient line stroke into one gradient-evaluated band per dash run.</summary>
@@ -741,6 +750,7 @@ internal static class SvgGradientSyntax
         if (!circle.IsUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse gradient strokes on lines are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        if (dashLinecap == SvgStrokeCap.Square && dashEntries is not null && !IsOpaqueRadialStroke(circle, opacity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         if (dashEntries is not null) return LowerDashedRadialStrokeLine(syntax, strokeWidth, dashLinecap == SvgStrokeCap.Square, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), pathLength, circle, painted, opacity, frame, state, context);
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         SvgRectangle box = band;
@@ -756,6 +766,14 @@ internal static class SvgGradientSyntax
             return RetainSingleBand(SvgGeometry.FromOrthogonalBand(fill with { Color = SvgPaintResolver.ApplyOpacity(circle.End, opacity) }), state, context);
         }
         return RetainSingleBand(SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, box, fill, opacity, null)), state, context);
+    }
+
+    /// <summary>Reports whether one radial-gradient line stroke paints fully opaque runs.</summary>
+    private static bool IsOpaqueRadialStroke(SvgRadialGradient circle, byte opacity)
+    {
+        if (opacity != 255 || circle.Start.Alpha != 255 || circle.End.Alpha != 255) return false;
+        foreach (SvgGradientStop stop in circle.Stops) if (stop.Color.Alpha != 255) return false;
+        return true;
     }
 
     /// <summary>Lowers one dashed radial-gradient line stroke into one radial-evaluated band per dash run.</summary>
