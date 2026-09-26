@@ -551,6 +551,32 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Round_joins_render_on_rounded_rectangles()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[1].Kind);
+    }
+
+    [Fact]
+    public void Rejects_bevel_joins_on_rounded_rectangles()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linejoin=\"bevel\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_round_joins_on_sharp_rectangles()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Admits_square_caps_on_solid_rounded_rectangles()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linecap=\"square\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

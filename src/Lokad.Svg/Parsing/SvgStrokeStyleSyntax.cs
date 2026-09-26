@@ -22,8 +22,14 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Validates one stroke style attribute value, additionally admitting square caps on band-stroked lines.</summary>
     internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps)
     {
+        ValidateAttribute(localName, value, allowNonButt, allowSquareCap, allowClosedLoopCaps, false);
+    }
+
+    /// <summary>Validates one stroke style attribute value, additionally admitting round joins on rounded rectangles.</summary>
+    internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps, bool allowRoundJoin)
+    {
         if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan(), allowNonButt, allowSquareCap, allowClosedLoopCaps);
-        else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan(), allowNonButt);
+        else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan(), allowNonButt || allowRoundJoin);
         else if (localName == "stroke-dasharray") ValidateDasharray(value.AsSpan(), allowNonButt);
         else if (localName == "stroke-dashoffset") ValidateDashoffset(value.AsSpan());
     }
@@ -218,21 +224,21 @@ internal static class SvgStrokeStyleSyntax
     internal static void RequireButtCapJoin(XmlReader reader, string elementName)
     {
         bool solid = ParseDasharray(reader.GetAttribute("stroke-dasharray")) is null;
-        RequireBandCapJoin(reader, elementName, solid, solid);
+        RequireBandCapJoin(reader, elementName, solid, solid, solid && SvgElementAttributePolicy.HasNonzeroRoundedCorners(reader));
     }
 
     /// <summary>Rejects round caps and non-miter joins where strokes lower to fixed bands with square tip extension.</summary>
     internal static void RequireLineCapJoin(XmlReader reader, string elementName)
     {
-        RequireBandCapJoin(reader, elementName, true, true);
+        RequireBandCapJoin(reader, elementName, true, true, false);
     }
 
     internal static void RequireButtOrSquareCapJoin(XmlReader reader, string elementName)
     {
-        RequireBandCapJoin(reader, elementName, true, false);
+        RequireBandCapJoin(reader, elementName, true, false, false);
     }
 
-    private static void RequireBandCapJoin(XmlReader reader, string elementName, bool allowSquare, bool allowRound)
+    private static void RequireBandCapJoin(XmlReader reader, string elementName, bool allowSquare, bool allowRound, bool allowRoundJoin)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string? cap = reader.GetAttribute("stroke-linecap");
@@ -241,7 +247,7 @@ internal static class SvgStrokeStyleSyntax
         bool round = allowRound && cap is not null && cap.AsSpan().Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase);
         if (!butt && !square && !round) throw new SvgException(SvgErrorCode.UnsupportedFeature, allowRound ? "Only butt, square and round stroke linecaps are implemented on " + elementName + " strokes." : allowSquare ? "Only butt and square stroke linecaps are implemented on " + elementName + " strokes." : "Only butt stroke linecaps are implemented on " + elementName + " strokes.");
         string? join = reader.GetAttribute("stroke-linejoin");
-        if (join is not null && !join.AsSpan().Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter stroke linejoins are implemented on " + elementName + " strokes.");
+        bool roundJoin = allowRoundJoin && join is not null && join.AsSpan().Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase);        if (join is not null && !join.AsSpan().Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase) && !roundJoin) throw new SvgException(SvgErrorCode.UnsupportedFeature, allowRoundJoin ? "Only miter and round stroke linejoins are implemented on " + elementName + " strokes." : "Only miter stroke linejoins are implemented on " + elementName + " strokes.");
     }
 
     /// <summary>Parses a miter limit of at least one, defaulting to four like SVG.</summary>

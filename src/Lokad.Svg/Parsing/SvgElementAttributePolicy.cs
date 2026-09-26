@@ -59,7 +59,7 @@ internal static class SvgElementAttributePolicy
             workCounter.Consume(cancellationToken);
             if (IsAllowed(reader, kind))
             {
-                if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line, kind == SvgElementKind.Line, kind == SvgElementKind.Rectangle);
+                if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line, kind == SvgElementKind.Line, kind == SvgElementKind.Rectangle, reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader));
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "font-variant") SvgTextFontSyntax.ValidateFontVariant(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "color-interpolation") SvgGradientSyntax.ValidateColorInterpolation(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow") SvgNestedViewportSyntax.ValidateOverflow(reader.Value.AsSpan());
@@ -106,6 +106,17 @@ internal static class SvgElementAttributePolicy
         if (allowed && reader.LocalName is ("id" or "class") && reader.Value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
         if (allowed && IsScalarValueAttribute(reader.LocalName) && reader.Value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG scalar attribute values exceed the configured syntax limit.");
         return allowed;
+    }
+
+    /// <summary>Reports whether a rectangle element carries nonzero rounded corners, gating round joins to the outline lowering path.</summary>
+    internal static bool HasNonzeroRoundedCorners(XmlReader reader)
+    {
+        return IsNonzeroCornerRadius(reader.GetAttribute("rx")) || IsNonzeroCornerRadius(reader.GetAttribute("ry"));
+    }
+
+    private static bool IsNonzeroCornerRadius(string? value)
+    {
+        return value is not null && SvgGeometrySyntax.ParseRectangleCoordinate(value) != 0;
     }
 
     private static bool IsScalarValueAttribute(string name) => name is "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-width" or "stroke-miterlimit" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "vector-effect" or "clip-rule" or "opacity" or "display" or "visibility" or "version" or "baseProfile" or "focusable" or "target" or "rel" or "hreflang" or "download" or "type" or "clip-path" or "clipPathUnits" or "mask" or "mask-type" or "patternUnits" or "patternContentUnits" or "x1" or "y1" or "x2" or "y2" or "offset" or "stop-color" or "stop-opacity" or "gradientUnits" or "spreadMethod" or "cx" or "cy" or "r" or "fx" or "fy" or "fr" or "x" or "y" or "dx" or "dy" or "x1" or "y1" or "x2" or "y2" or "width" or "height" or "rx" or "ry" or "viewBox" or "preserveAspectRatio" or "overflow" or "text-anchor" or "font-family" or "font-weight" or "font-style" or "font-size" or "letter-spacing" or "space";
