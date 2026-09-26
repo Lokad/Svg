@@ -121,7 +121,7 @@ holes, rotations, thin strokes, gradients and clipped/translucent combinations,
 including failures. Keep synthetic probes in their own count. Validate variant
 parents/duplicates/cycles and aggregate exactness over every declared variant.
 Freeze the inventory/target before a “most logos” claim; never simplify logos or
-change the denominator to improve the score. Selection can be local/offline.
+change the denominator to improve the score. Selection can be local/offline. Status 2026-09-26: inventory framework recorded in docs/INVENTORY.md (selection rules, record schema, legal handling with private restricted assets, R27-style aggregation); zero documents selected, sourcing input pending.
 
 ### R27 / P1 — “Unsupported” is not enforced, and known differences escape the gate
 
