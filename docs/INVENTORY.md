@@ -313,7 +313,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 1 rect, 5 circles, 4 uses.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Inline style property stroke-width is not implemented).
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 400x400 transparent, 3/3 byte-identical SHA-256 c108ab22d2bc4dbe05c01ae5df5d5a8cfaf48b8255c9e5db39845f75ac753f2e, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-020 — Artsy-logo-mask
 
