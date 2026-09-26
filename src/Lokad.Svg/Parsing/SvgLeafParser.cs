@@ -208,16 +208,16 @@ internal static class SvgLeafParser
         if (element.Transform != AxisTransform.Identity || strokeColor is null || (syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
         if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
-        if (SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) == SvgStrokeCap.Square) syntax = syntax.WithSquareCaps(strokeWidth);
+        SvgStrokeCap linecap = SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap"));
+        double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray"));
+        if (linecap == SvgStrokeCap.Square && dashes is null) syntax = syntax.WithSquareCaps(strokeWidth);
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor.Value, element.Presentation.Opacity);
         bool painted = element.Presentation.IsPainted;
-        double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray"));
         if (dashes is null)
         {
             SvgAxisAlignedLine line = new(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth);
             return RetainSingleGeometry(frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line), state, context);
         }
-        if (SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed line strokes are not implemented.");
         double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset"));
         double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
         return LowerDashedLine();
@@ -225,7 +225,7 @@ internal static class SvgLeafParser
         SvgParsedGeometry LowerDashedLine()
         {
             using BudgetedParserList<SvgRectangle> runRects = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            bool paintsAny = AppendLineDashRunRects(syntax, strokeWidth, dashes, dashOffset, pathLength, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
+            bool paintsAny = AppendLineDashRunRects(syntax, strokeWidth, linecap == SvgStrokeCap.Square, dashes, dashOffset, pathLength, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
             using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             for (int runIndex = 0; runIndex < runRects.Count; runIndex++) runs.Add(SvgGeometry.FromOrthogonalBand(runRects[runIndex] with { Color = color, HasFill = paintsAny && painted }));
             return new SvgParsedGeometry(runs.Detach(), 0);
@@ -234,7 +234,7 @@ internal static class SvgLeafParser
 
     /// <summary>Appends one clipped rectangle per dash-pattern on-run along a horizontal or vertical line, reporting whether any run paints.</summary>
     /// <remarks><para>Callers paint over the returned rectangles and leave the single quiet rectangle unpainted, sharing the solid phase convention across paints.</para></remarks>
-    internal static bool AppendLineDashRunRects(SvgLineSyntax syntax, int strokeWidth, double[] dashes, double dashOffset, double? pathLength, SvgViewportFrame? frame, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<SvgRectangle> runs)
+    internal static bool AppendLineDashRunRects(SvgLineSyntax syntax, int strokeWidth, bool squareCaps, double[] dashes, double dashOffset, double? pathLength, SvgViewportFrame? frame, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<SvgRectangle> runs)
     {
         ArgumentNullException.ThrowIfNull(dashes);
         ArgumentNullException.ThrowIfNull(budget);
@@ -245,11 +245,12 @@ internal static class SvgLeafParser
         double length = horizontal ? Math.Abs(syntax.X2 - syntax.X1) : Math.Abs(syntax.Y2 - syntax.Y1);
         double halfWidth = strokeWidth / 2d;
         double fixedAxis = horizontal ? syntax.Y1 : syntax.X1;
+        double capExtension = squareCaps ? halfWidth : 0;
         if (pathLength == 0)
         {
             SvgRectangle pinned = horizontal
-                ? new SvgRectangle(origin, fixedAxis - halfWidth, length, strokeWidth, default, true, null)
-                : new SvgRectangle(fixedAxis - halfWidth, origin, strokeWidth, length, default, true, null);
+                ? new SvgRectangle(origin - capExtension, fixedAxis - halfWidth, length + 2 * capExtension, strokeWidth, default, true, null)
+                : new SvgRectangle(fixedAxis - halfWidth, origin - capExtension, strokeWidth, length + 2 * capExtension, default, true, null);
             runs.Add(frame is null ? pinned : frame.Value.ClipShifted(pinned));
             return true;
         }
@@ -260,8 +261,8 @@ internal static class SvgLeafParser
         if (!(total > 0))
         {
             SvgRectangle quiet = horizontal
-                ? new SvgRectangle(origin, fixedAxis - halfWidth, length, strokeWidth, default, false, null)
-                : new SvgRectangle(fixedAxis - halfWidth, origin, strokeWidth, length, default, false, null);
+                ? new SvgRectangle(origin - capExtension, fixedAxis - halfWidth, length + 2 * capExtension, strokeWidth, default, false, null)
+                : new SvgRectangle(fixedAxis - halfWidth, origin - capExtension, strokeWidth, length + 2 * capExtension, default, false, null);
             runs.Add(frame is null ? quiet : frame.Value.ClipShifted(quiet));
             return false;
         }
@@ -294,8 +295,8 @@ internal static class SvgLeafParser
             if (onEntry && take > 0)
             {
                 SvgRectangle run = horizontal
-                    ? new SvgRectangle(origin + cursor, fixedAxis - halfWidth, take, strokeWidth, default, true, null)
-                    : new SvgRectangle(fixedAxis - halfWidth, origin + cursor, strokeWidth, take, default, true, null);
+                    ? new SvgRectangle(origin + cursor - capExtension, fixedAxis - halfWidth, take + 2 * capExtension, strokeWidth, default, true, null)
+                    : new SvgRectangle(fixedAxis - halfWidth, origin + cursor - capExtension, strokeWidth, take + 2 * capExtension, default, true, null);
                 runs.Add(frame is null ? run : frame.Value.ClipShifted(run));
             }
             workCounter.Consume(cancellationToken);

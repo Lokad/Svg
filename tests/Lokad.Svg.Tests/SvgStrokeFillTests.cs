@@ -142,6 +142,24 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Single_square_dash_matches_solid_square_line()
+    {
+        byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-dasharray='8' stroke-linecap='square'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-linecap='square'/></svg>", out _, out _);
+
+        Assert.Equal(solid, dashed);
+    }
+
+    [Fact]
+    public void Square_dash_extends_past_butt_tip()
+    {
+        byte[] square = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='2' y1='4' x2='14' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-linecap='square'/></svg>", out _, out _);
+        byte[] butt = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='2' y1='4' x2='14' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(square, 16, 1, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(butt, 16, 1, 4));
+    }
+    [Fact]
     public void Dashed_open_polyline_paints_runs()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polyline points='2,2 12,2 12,6' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4'/></svg>", out _, out _);
