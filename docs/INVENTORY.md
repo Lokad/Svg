@@ -173,7 +173,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 3 paths, stroke-widths 36/98, stroke-linecap round.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only non-painting stroke none is implemented).
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 500x500 transparent, 3/3 byte-identical SHA-256 2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-010 — ROC HCVS logo
 
