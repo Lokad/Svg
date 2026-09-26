@@ -6641,4 +6641,34 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
+    [Fact]
+    public void Admits_illustrator_root_enable_background()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' enable-background='new 0 0 595.28 841.89' width='12' height='7'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(12, root.Width);
+        Assert.Equal(7, root.Height);
+        Assert.Single(root.Rectangles);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Ignores_root_enable_background_when_rendering()
+    {
+        byte[] plain = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+        byte[] transparent = "<svg xmlns='http://www.w3.org/2000/svg' enable-background='new' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> backdropPng = SvgConverter.ConvertToPng(transparent, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(plainPng.Span.SequenceEqual(backdropPng.Span));
+    }
+
+    [Fact]
+    public void Rejects_filter_style_root_enable_background()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' enable-background='blur(5)'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
 }
