@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-gradient-fill-stroke-mark-white",
+  "referencePng": "original-logo-gradient-fill-stroke-mark-white.png",
+  "referenceSha256": "a9ae3abb7a578ec6468821515b7ba4f5a95e0cb382451a50c7be119fb9245dee",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "9a1cf27678befa4910e2e622c5ef2dfa9dc98ddc8e3ff36fbaa18e4364e0ed7c",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
