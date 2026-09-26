@@ -317,7 +317,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 
 ### inv-020 — Artsy-logo-mask
 
-- file: tests/Fixtures/candidates/inv-020.svg (SHA-256 8A899BE3B4FBEDF1FC81C8E3F315278D0BA250496968DFB01FCD75E72AE0410F)
+- file: tests/Fixtures/candidates/inv-020.svg (SHA-256 1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889)
 - source: Wikimedia Commons, File:Artsy-logo-mask.svg. Retrieval 2026-09-26.
 - license: PD (Commons).
 - retrievalDate: 2026-09-26.
