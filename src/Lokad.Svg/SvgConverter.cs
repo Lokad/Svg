@@ -308,6 +308,9 @@ public static class SvgConverter
         void RasterizePolygonFill(SvgPolygonFill polygon, byte[] destination)
         {
             if (!polygon.HasFill || polygon.Points.Length < 3) return;
+            long mappingWork = polygon.Points.Length;
+            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
+            workUnits += mappingWork;
             using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Surface);
             SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
             bool hasFractionalEdge = false;
@@ -326,10 +329,6 @@ public static class SvgConverter
                 if (edgeX > right) right = edgeX;
                 if (edgeY > bottom) bottom = edgeY;
             }
-
-            long mappingWork = polygon.Points.Length;
-            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
-            workUnits += mappingWork;
             int startY = ClampFloor(top, outputHeight);
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
@@ -364,6 +363,9 @@ public static class SvgConverter
         void RasterizeGradientPolygon(SvgGradientPolygon outline, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
+            long mappingWork = outline.Points.Length;
+            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
+            workUnits += mappingWork;
             using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Surface);
             SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
             bool hasFractionalEdge = false;
@@ -382,9 +384,6 @@ public static class SvgConverter
                 if (edgeX > right) right = edgeX;
                 if (edgeY > bottom) bottom = edgeY;
             }
-            long mappingWork = outline.Points.Length;
-            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
-            workUnits += mappingWork;
             int startY = ClampFloor(top, outputHeight);
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
@@ -464,6 +463,9 @@ public static class SvgConverter
         void RasterizeRadialPolygon(SvgRadialPolygon outline, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
+            long mappingWork = outline.Points.Length;
+            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
+            workUnits += mappingWork;
             using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Surface);
             SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
             bool hasFractionalEdge = false;
@@ -482,9 +484,6 @@ public static class SvgConverter
                 if (edgeX > right) right = edgeX;
                 if (edgeY > bottom) bottom = edgeY;
             }
-            long mappingWork = outline.Points.Length;
-            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
-            workUnits += mappingWork;
             int startY = ClampFloor(top, outputHeight);
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
@@ -614,6 +613,9 @@ public static class SvgConverter
         void RasterizePatternPolygon(SvgPatternPolygon outline, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
+            long mappingWork = outline.Points.Length;
+            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
+            workUnits += mappingWork;
             using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Surface);
             SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
             bool hasFractionalEdge = false;
@@ -632,9 +634,6 @@ public static class SvgConverter
                 if (edgeX > right) right = edgeX;
                 if (edgeY > bottom) bottom = edgeY;
             }
-            long mappingWork = outline.Points.Length;
-            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
-            workUnits += mappingWork;
             int startY = ClampFloor(top, outputHeight);
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);

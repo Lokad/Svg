@@ -372,6 +372,21 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Polygon_rasterization_denies_mapping_work_before_mapped_reservation()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
+        SvgRenderLimits deniedLimits = new(300, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, 2, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        RenderBudget rasterBudget = new(deniedLimits.MaximumAccountedBytes);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, deniedLimits), rasterBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Contains("vertex mapping", exception.Message);
+        Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Polygon_rasterization_denies_before_mapping_work_exceeds_the_limit()
     {
         RenderBudget budget = new(100_000);
