@@ -419,6 +419,30 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Rejects_dashed_circle_strokes()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-dasharray=\"4 2\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_round_caps_on_dashed_circle_strokes()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-dasharray=\"4 2\" stroke-linecap=\"round\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_square_caps_on_dashed_circle_strokes()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-dasharray=\"4 2\" stroke-linecap=\"square\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Rejects_translucent_paint_strokes_on_circles()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><circle cx=\"4\" cy=\"4\" r=\"4\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"2\" opacity=\"0.5\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
