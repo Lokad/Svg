@@ -226,9 +226,9 @@ internal static class SvgLeafParser
 
         static SvgParsedGeometry LowerRoundedStroke(XmlReader reader, SvgPaintableElementContext context, SvgRectangleSyntax syntax, double cornerX, double cornerY, SvgResolvedPaintableElement element, SvgStrokeStyleSyntax.SvgAdmittedStroke stroke, SvgViewportFrame? frame, SvgDocumentState state)
         {
-            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1));
+            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SvgOrthogonalGeometryLowering.SampledOutlineCapacity(4, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1));
             using RenderBudget.BudgetReservation scratch = state.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints, 1);
+            SvgContourBuilder builder = new(SvgOrthogonalGeometryLowering.SampledOutlineCapacity(4, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), 1);
             builder.AddRoundedRect(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, new SvgFlattenPolicy(SvgOrthogonalGeometryLowering.ScaledFlatness(context.OutputMagnification), SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), context.CancellationToken);
 
             if (builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rounded rectangle stroke contours are not implemented.");
@@ -391,9 +391,9 @@ internal static class SvgLeafParser
             double composedScaleX = shape.Transform.ScaleX * (frame?.ScaleX ?? 1);
             double composedScaleY = shape.Transform.ScaleY * (frame?.ScaleY ?? 1);
             if (composedScaleX != composedScaleY || composedScaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, shapeName == "circle" ? "Circle strokes under non-uniform polygon transforms stay unsupported." : "Ellipse strokes under non-uniform polygon transforms stay unsupported.");
-            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1));
+            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SvgOrthogonalGeometryLowering.SampledOutlineCapacity(1, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1));
             using RenderBudget.BudgetReservation scratch = state.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints, 1);
+            SvgContourBuilder builder = new(SvgOrthogonalGeometryLowering.SampledOutlineCapacity(1, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), 1);
             builder.AddEllipse(new SvgDevicePoint(syntax.CenterX, syntax.CenterY), syntax.RadiusX, syntax.RadiusY, 0, new SvgFlattenPolicy(SvgOrthogonalGeometryLowering.ScaledFlatness(context.OutputMagnification), SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), context.CancellationToken);
             if (builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, shapeName == "circle" ? "Dashed circle stroke contours are not implemented." : "Dashed ellipse stroke contours are not implemented.");
             using BudgetedParserList<SvgFractionalPoint> circlePoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);

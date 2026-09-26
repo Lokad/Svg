@@ -273,6 +273,16 @@ public sealed class RenderBudgetTests
         Assert.True(budget.Snapshot().PeakBytes < 500_000, "Straight paths must not reserve curve-sized scratch.");
     }
     [Fact]
+    public void Circle_fill_fits_small_scratch_budget()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><circle cx='32' cy='32' r='20' fill='red'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
+        Assert.Single(root.Geometries);
+        Assert.True(budget.Snapshot().PeakBytes < 500_000, "Shape sampling must scale with loops and segments, not global limits.");
+    }
+    [Fact]
     public void Single_curve_path_fits_small_scratch_budget()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 C2,2 6,2 8,4' fill='red'/></svg>");

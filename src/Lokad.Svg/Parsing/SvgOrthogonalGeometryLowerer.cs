@@ -25,6 +25,10 @@ internal ref struct SvgOrthogonalGeometryLowering
     private const int ShapeSegmentsPerShape = 4096;
     internal const int MaximumFlattenedContourPoints = 65536;
 
+    /// <summary>Bounds sampling storage for shape outlines: each sampled loop appends at most the policy segment cap, plus line-vertex headroom.</summary>
+    internal static int SampledOutlineCapacity(int loops, int maximumSegments)
+        => checked(loops * (maximumSegments + 1) + 8);
+
     private readonly BudgetedParserList<SvgPoint> _points;
     private readonly BudgetedParserList<int> _contourEnds;
     private readonly string _elementName;
@@ -267,8 +271,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
             SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
-            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(MaximumFlattenedContourPoints, 1);
+            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(1, ShapeSegmentsPerShape)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry);
+            SvgContourBuilder builder = new(SampledOutlineCapacity(1, ShapeSegmentsPerShape), 1);
             builder.AddEllipse(center, mappedRadiusX, mappedRadiusY, 0, flattenPolicy, _cancellationToken);
             ends = new int[builder.ContourCount];
             for (int contour = 0; contour < builder.ContourCount; contour++)
@@ -300,8 +304,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             double innerRadius = deviceRadius - deviceWidth / 2;
             SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
             SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
-            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(2), SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(MaximumFlattenedContourPoints, 2);
+            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(2, ShapeSegmentsPerShape)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(2), SvgMemoryCategory.Geometry);
+            SvgContourBuilder builder = new(SampledOutlineCapacity(2, ShapeSegmentsPerShape), 2);
             builder.AddEllipse(center, outerRadius, outerRadius, 0, flattenPolicy, _cancellationToken);
             if (innerRadius > 0) builder.AddEllipse(center, innerRadius, innerRadius, 0, flattenPolicy, _cancellationToken);
             ends = new int[builder.ContourCount];
@@ -345,8 +349,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             double innerRadiusY = deviceRadiusY - deviceWidth / 2;
             SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
             SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
-            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(2), SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(MaximumFlattenedContourPoints, 2);
+            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(2, ShapeSegmentsPerShape)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(2), SvgMemoryCategory.Geometry);
+            SvgContourBuilder builder = new(SampledOutlineCapacity(2, ShapeSegmentsPerShape), 2);
             builder.AddEllipse(center, outerRadiusX, outerRadiusY, 0, flattenPolicy, _cancellationToken);
             if (innerRadiusX > 0 && innerRadiusY > 0) builder.AddEllipse(center, innerRadiusX, innerRadiusY, 0, flattenPolicy, _cancellationToken);
             ends = new int[builder.ContourCount];
@@ -379,8 +383,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
         double mappedRadiusY = radiusY * Math.Abs(scaleY);
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
-        using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry);
-        SvgContourBuilder builder = new(MaximumFlattenedContourPoints, 1);
+        using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(4, ShapeSegmentsPerShape)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry);
+        SvgContourBuilder builder = new(SampledOutlineCapacity(4, ShapeSegmentsPerShape), 1);
         builder.AddRoundedRect(shifted.X, shifted.Y, shifted.Width, shifted.Height, mappedRadiusX, mappedRadiusY, flattenPolicy, _cancellationToken);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = new int[builder.ContourCount];
