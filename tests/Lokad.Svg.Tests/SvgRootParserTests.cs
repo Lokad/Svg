@@ -6708,4 +6708,27 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
+    [Fact]
+    public void Ignores_clip_rule_on_regular_paths_when_rendering()
+    {
+        byte[] plain = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+        byte[] ruled = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red' clip-rule='evenodd'/></svg>"u8.ToArray();
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> ruledPng = SvgConverter.ConvertToPng(ruled, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(plainPng.Span.SequenceEqual(ruledPng.Span));
+    }
+
+    [Fact]
+    public void Ignores_clip_rule_on_groups_when_rendering()
+    {
+        byte[] plain = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><rect x='1' y='1' width='2' height='2' fill='red'/></g></svg>"u8.ToArray();
+        byte[] ruled = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g clip-rule='evenodd'><rect x='1' y='1' width='2' height='2' fill='red'/></g></svg>"u8.ToArray();
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> ruledPng = SvgConverter.ConvertToPng(ruled, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(plainPng.Span.SequenceEqual(ruledPng.Span));
+    }
 }

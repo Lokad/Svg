@@ -120,7 +120,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: clipped composition.
 - content: 3 paths, clipPath, rect.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Path attribute clip-rule is not implemented).
+- status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; fractional and scientific notation stay unsupported) [inv-005; shape clip-rule admitted 2026-09-26].
 - reference: none yet. [exploratory oracle triple 2026-09-26, 815x233 transparent, 3/3 byte-identical SHA-256 d6bf022775737d415fd76ce5e40c5022d0c792c05c9188ed3e779f0135201d58, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ## Selected documents (batch 2, 2026-09-26)
