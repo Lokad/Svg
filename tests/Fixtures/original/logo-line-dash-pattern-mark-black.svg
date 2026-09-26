@@ -1,0 +1,5 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="8">
+  <defs><pattern id="p" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="red"/></pattern></defs>
+  <line x1="0" y1="4" x2="16" y2="4" stroke="url(#p)" stroke-width="2" stroke-dasharray="4 2"/>
+</svg>
