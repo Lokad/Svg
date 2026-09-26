@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-bevel-join-rounded-stroke-mark",
+  "referencePng": "original-logo-bevel-join-rounded-stroke-mark.png",
+  "referenceSha256": "52030e791b57db67e442440fffe6670256f1b5e36a206f48043541d65e372b29",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "51d9d3cf55e99a6a986e8c65c41cd9ff57d8fac154c82a2821864f05eca8d9b3",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 184,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 71,
+    "exact": false
+  },
+  "admittedAt": "2026-09-26"
+}
