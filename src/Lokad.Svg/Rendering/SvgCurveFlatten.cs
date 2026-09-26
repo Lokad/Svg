@@ -101,7 +101,9 @@ internal static class SvgCurveFlatten
         double armY = RequireFinite(controlY - startY);
         double chordSquared = RequireFinite(chordX * chordX + chordY * chordY);
         if (chordSquared == 0) return Math.Sqrt(RequireFinite(armX * armX + armY * armY));
-        return RequireFinite(Math.Abs(chordX * armY - chordY * armX)) / Math.Sqrt(chordSquared);
+        double chordLength = Math.Sqrt(chordSquared);
+        double across = RequireFinite(Math.Abs(chordX * armY - chordY * armX)) / chordLength;
+        return Math.Max(across, SegmentOvershoot(chordX, chordY, armX, armY, chordSquared, chordLength));
     }
 
     private static double CubicDeviation(double startX, double startY, double firstControlX, double firstControlY, double secondControlX, double secondControlY, double endX, double endY)
@@ -123,7 +125,15 @@ internal static class SvgCurveFlatten
         double chordLength = Math.Sqrt(chordSquared);
         double first = RequireFinite(Math.Abs(chordX * firstY - chordY * firstX)) / chordLength;
         double second = RequireFinite(Math.Abs(chordX * secondY - chordY * secondX)) / chordLength;
-        return Math.Max(first, second);
+        double overshoot = Math.Max(SegmentOvershoot(chordX, chordY, firstX, firstY, chordSquared, chordLength), SegmentOvershoot(chordX, chordY, secondX, secondY, chordSquared, chordLength));
+        return Math.Max(Math.Max(first, second), overshoot);
+    }
+
+    private static double SegmentOvershoot(double chordX, double chordY, double armX, double armY, double chordSquared, double chordLength)
+    {
+        double along = RequireFinite(RequireFinite(chordX * armX) + RequireFinite(chordY * armY));
+        double beyond = along < 0 ? RequireFinite(-along) : (along > chordSquared ? RequireFinite(along - chordSquared) : 0);
+        return RequireFinite(beyond) / chordLength;
     }
 
     private static void AppendPoint(Span<SvgDevicePoint> output, ref int appended, double x, double y, SvgFlattenPolicy policy, CancellationToken cancellationToken)

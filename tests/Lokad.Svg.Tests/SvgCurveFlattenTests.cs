@@ -191,18 +191,18 @@ public sealed class SvgCurveFlattenTests
     [Fact]
     public void Quadratic_collinear_overshoot_captures_excursion()
     {
-        SvgDevicePoint[] flattened = FlattenQuad(new SvgDevicePoint(0, 4), new SvgDevicePoint(100, 4), new SvgDevicePoint(8, 4), 0.25);
+        SvgDevicePoint[] flattened = FlattenQuad(new SvgDevicePoint(0, 4), new SvgDevicePoint(20, 4), new SvgDevicePoint(8, 4), 0.25);
 
-        Assert.True(MaxX(flattened) > 40);
+        Assert.True(MaxX(flattened) > 10);
         Assert.Equal(new SvgDevicePoint(8, 4), flattened[^1]);
     }
 
     [Fact]
     public void Cubic_collinear_overshoot_captures_excursion()
     {
-        SvgDevicePoint[] flattened = FlattenCube(new SvgDevicePoint(0, 4), new SvgDevicePoint(60, 4), new SvgDevicePoint(80, 4), new SvgDevicePoint(8, 4), 0.25);
+        SvgDevicePoint[] flattened = FlattenCube(new SvgDevicePoint(0, 4), new SvgDevicePoint(16, 4), new SvgDevicePoint(20, 4), new SvgDevicePoint(8, 4), 0.25);
 
-        Assert.True(MaxX(flattened) > 40);
+        Assert.True(MaxX(flattened) > 12);
         Assert.Equal(new SvgDevicePoint(8, 4), flattened[^1]);
     }
 
