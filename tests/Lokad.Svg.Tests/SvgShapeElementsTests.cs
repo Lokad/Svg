@@ -697,6 +697,28 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Paint_strokes_on_rounded_symbols_render_through_use()
+    {
+        byte[] instanced = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><defs><symbol id=\"s\" viewBox=\"0 0 64 64\"><rect x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"12\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"8\"/></symbol></defs><use href=\"#s\" width=\"64\" height=\"64\"/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"12\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"8\"/></svg>");
+
+        ReadOnlyMemory<byte> instancedPng = SvgConverter.ConvertToPng(instanced, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(instancedPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Fact]
+    public void Rejects_translucent_paint_strokes_on_rounded_definitions()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><defs><rect id=\"r\" x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"12\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"8\" opacity=\"0.5\"/></defs><use href=\"#r\"/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Stroked_rounded_rectangle_in_definitions_renders_through_use()
     {
         byte[] instanced = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><defs><rect id=\"r\" x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"12\" fill=\"red\" stroke=\"blue\" stroke-width=\"8\"/></defs><use href=\"#r\"/></svg>");
