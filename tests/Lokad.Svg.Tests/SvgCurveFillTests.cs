@@ -55,9 +55,28 @@ public sealed class SvgCurveFillTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
 
+    [Fact]
+    public void Integral_decimal_cubic_matches_integer_spelling()
+    {
+        byte[] integer = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 C3,0 6,0 8,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] decimalSpelling = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 C3.0,0.0 6.0,0.0 8.0,8.0 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(integer, decimalSpelling);
+    }
+
+    [Fact]
+    public void Integral_exponent_quadratic_matches_integer_spelling()
+    {
+        byte[] integer = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] exponent = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 Q4e0,0e0 8e0,8e0 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(integer, exponent);
+    }
+
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4.5,0 8,8 Z' fill='red'/></svg>")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q10,0 1e2,8 Z' fill='red'/></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q10,0 1e-1,8 Z' fill='red'/></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 C3.5,0 6,0 8,8 Z' fill='red'/></svg>")]
     public void Non_integer_curve_coordinates_stay_unsupported(string svg)
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
