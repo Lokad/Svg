@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for all five (3/3 byte-identical each; per-entry hashes below).
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples pending.
 
 ## Purpose and non-goals
 
@@ -122,3 +122,67 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Path attribute clip-rule is not implemented).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 815x233 transparent, 3/3 byte-identical SHA-256 d6bf022775737d415fd76ce5e40c5022d0c792c05c9188ed3e779f0135201d58, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+
+## Selected documents (batch 2, 2026-09-26)
+
+Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, 2026-09-26). Same trademark disclosure as batch 1: Commons PD tags state copyright status; depicted marks may carry trademark considerations. Batch 2 targets the archetypes batch 1 missed: strokes, dashes, cap degeneracy, transforms without viewBox, physical units, and the DTD security-rejection path. Files live in tests/Fixtures/candidates/ with provenance; no CC0 SPDX headers; never copied into tests/Fixtures/original/.
+
+### inv-006 — Omega logo
+
+- file: tests/Fixtures/candidates/inv-006.svg (SHA-256 4A921B949C4DFDA7A885B27D1A4EB693BDACB33ECC7A18BC41C9B9E985938588)
+- source: Wikimedia Commons, File:Omega logo.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: physical mm units, flat mark, defs container.
+- content: 2 paths, sodipodi metadata.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Definition container attributes are not implemented).
+- reference: none yet.
+
+### inv-007 — Zeppelin logo
+
+- file: tests/Fixtures/candidates/inv-007.svg (SHA-256 90009E03C20B43565A4D2E4903A9F07402FE07D37E3EC0F66184E4286D6E6AC5)
+- source: Wikimedia Commons, File:Zeppelin logo.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: transforms without viewBox.
+- content: 4 paths, 3 transforms, DOCTYPE present.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
+- reference: none yet.
+
+### inv-008 — Eisenbahn und Haefen logo
+
+- file: tests/Fixtures/candidates/inv-008.svg (SHA-256 BBB81E14EAB6C57EC3876C4A7E116FD38351F94B94A0A5BDE954186A878B2DE3)
+- source: Wikimedia Commons, File:Eisenbahn und Häfen logo.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: stroked axis-aligned polyline.
+- content: 1 path, stroke-width 2.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented).
+- reference: none yet.
+
+### inv-009 — Rede Manchete
+
+- file: tests/Fixtures/candidates/inv-009.svg (SHA-256 C8882446B5C341A41B0848187F375868AE4C94CC56EFB7A2CFD5C5998F80971E)
+- source: Wikimedia Commons, File:Rede Manchete.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: strokes, round caps, degenerate zero-length segments.
+- content: 3 paths, stroke-widths 36/98, stroke-linecap round.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Only non-painting stroke none is implemented).
+- reference: none yet.
+
+### inv-010 — ROC HCVS logo
+
+- file: tests/Fixtures/candidates/inv-010.svg (SHA-256 6BE57E308A793EEEAD287B1601D31C95A1862DE7FA9834625BC7C0A222D199A7)
+- source: Wikimedia Commons, File:ROC HCVS logo.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: dashed stroke.
+- content: 1 path, stroke-width 56, stroke-dasharray 56,8.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented).
+- reference: none yet.
