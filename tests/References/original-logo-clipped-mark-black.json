@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-clipped-mark-black",
+  "referencePng": "original-logo-clipped-mark-black.png",
+  "referenceSha256": "3bd5c2298bdc1fdd7a32178c87b0b897fee5dce13b61634bafa67309032c8f10",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "5a4d47e4962bcb58a3f0c44c41f0b2dc87114d3080fb384981de3606642aab2e",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
