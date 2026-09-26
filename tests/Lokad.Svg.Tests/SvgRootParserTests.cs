@@ -4767,6 +4767,18 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void White_masks_leave_rounded_strokes_unchanged()
+    {
+        byte[] masked = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><defs><mask id=\"m\"><rect x=\"0\" y=\"0\" width=\"64\" height=\"64\" fill=\"white\"/></mask></defs><rect x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"12\" fill=\"red\" stroke=\"blue\" stroke-width=\"8\" mask=\"url(#m)\"/></svg>");
+        byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><rect x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"12\" fill=\"red\" stroke=\"blue\" stroke-width=\"8\"/></svg>");
+
+        ReadOnlyMemory<byte> maskedPng = SvgConverter.ConvertToPng(masked, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(maskedPng.Span.SequenceEqual(baselinePng.Span));
+    }
+
+    [Fact]
     public void White_masks_leave_rounded_rectangles_unchanged()
     {
         byte[] masked = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><defs><mask id=\"m\"><rect x=\"0\" y=\"0\" width=\"64\" height=\"64\" fill=\"white\"/></mask></defs><rect x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"12\" fill=\"red\" mask=\"url(#m)\"/></svg>");
