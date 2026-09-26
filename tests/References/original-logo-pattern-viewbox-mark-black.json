@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-pattern-viewbox-mark-black",
+  "referencePng": "original-logo-pattern-viewbox-mark-black.png",
+  "referenceSha256": "fc73b3bd84f0165b0d8f7e36392f56abe278a07ed4c9f7e919ca7c02789e7e03",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "e1b1028d96b7df5cabb83fbba8f129b91a282fa471d9b6be82590d40534a4b9a",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
