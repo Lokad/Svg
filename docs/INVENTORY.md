@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples stable for batch 3 (3/3 byte-identical each; per-entry hashes below). Batch 4 selected 2026-09-26: 2 documents (inv-013..inv-014), both renderer-probed 2026-09-26; oracle triples stable for batch 4 (3/3 byte-identical each; per-entry hashes below). A third staged file (4-set Venn, PD) was held back as a redundant fourth DTD rejection; it can backfill later if the rejects path needs volume.
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples stable for batch 3 (3/3 byte-identical each; per-entry hashes below). Batch 4 selected 2026-09-26: 2 documents (inv-013..inv-014), both renderer-probed 2026-09-26; oracle triples stable for batch 4 (3/3 byte-identical each; per-entry hashes below). Batch 5 selected 2026-09-26: 2 documents (inv-015..inv-016), both renderer-probed 2026-09-26; oracle triples pending. A staged USGov candidate (Joint Typhoon Warning Center logo, PD, pt units, feGaussianBlur filter) was excluded: it carries live text elements, which the selection rules keep out of scope (fonts); filter primitives remain a genuine gap. A third staged file (4-set Venn, PD) was held back as a redundant fourth DTD rejection; it can backfill later if the rejects path needs volume.
 
 ## Purpose and non-goals
 
@@ -242,3 +242,31 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 1000x800 transparent, 3/3 byte-identical SHA-256 f73c86a3289d7cb7ab70ca5b6a4928b9a2439b9d14e6b6078fff161668e99965, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+
+## Selected documents (batch 5, 2026-09-26)
+
+Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, 2026-09-26). Batch 5 closes the rotation gap: inv-015 carries a live rotate(040 250,250) transform. inv-016 adds nested Inkscape group transforms. Files live in tests/Fixtures/candidates/ with provenance; no CC0 SPDX headers; never copied into tests/Fixtures/original/.
+
+### inv-015 — BSicon numN040
+
+- file: tests/Fixtures/candidates/inv-015.svg (SHA-256 567063C92D30993E824E1B8CF48310B0F1211FA8CA8DAA79732436E48CF617B5)
+- source: Wikimedia Commons, File:BSicon numN040.svg. Retrieval 2026-09-26.
+- license: PD-shape (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: rotation transform rotate(040 250,250), fractional path coordinates, px units.
+- content: 1 path, style fill/stroke presentation.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; fractional and scientific notation stay unsupported).
+- reference: none yet.
+
+### inv-016 — Location pin icon
+
+- file: tests/Fixtures/candidates/inv-016.svg (SHA-256 7170268EF2569E4F7D13A6ECC917AAC846EE50277E609D697BC9F92463D3EDAE)
+- source: Wikimedia Commons, File:Location pin icon.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: nested group transforms, Inkscape/sodipodi metadata, fractional viewBox.
+- content: 2 paths, 2 transforms.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; fractional and scientific notation stay unsupported).
+- reference: none yet.
