@@ -1,0 +1,9 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <clipPath id="w" clipPathUnits="objectBoundingBox">
+      <rect x="0.25" y="0.25" width="0.5" height="0.5"/>
+    </clipPath>
+  </defs>
+  <path d="M8,56 Q32,-16 56,56" fill="#ff0000" clip-path="url(#w)"/>
+</svg>
