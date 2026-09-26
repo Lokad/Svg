@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-curved-clip-mark-black",
+  "referencePng": "original-logo-curved-clip-mark-black.png",
+  "referenceSha256": "b6974a432352caa1ddbfbe0025926aa9d282851f09c68b4ad444918ca89870c5",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "75c6de407ed1a09c00f7caa584b2c56b5b3802a8e1ee77f200ca36f84f37ce90",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
