@@ -507,6 +507,7 @@ Public-domain state-symbol SVGs from Wikimedia Commons (both LicenseShortName=Pu
 - retrievalDate: 2026-09-26.
 - archetypes: round linecaps, fractional stroked geometry, stroked circle, group stroke inheritance.
 - content: 1 rect, stroked paths, 1 stroked circle.
+- diagnosis 2026-09-26 (exploratory scratch probe, ignored artifacts/inventory/pz-butt.svg, never committed): swapping round for butt caps moves the rejection to Group attribute stroke-width is not implemented. Layered gates: round caps, then group stroke-width inheritance (ignoring it would silently misrender the width-27 paths, so this needs inheritance plumbing, not admission), then fractional coordinates, all unreached behind the first.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only butt stroke linecaps are implemented).
 - reference: exploratory oracle triple 2026-09-26, 1500x1000 (top-left crop: native 1800x1200 exceeds the 2M-pixel capture transport limit) transparent, 3/3 byte-identical SHA-256 9db82bf081bccc1eedfcfba28947b9dc49ad80c0f3b4025b9de2d6aaa56f12b0, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
