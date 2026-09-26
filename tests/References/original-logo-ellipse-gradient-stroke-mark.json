@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-ellipse-gradient-stroke-mark",
+  "referencePng": "original-logo-ellipse-gradient-stroke-mark.png",
+  "referenceSha256": "e1202c40666833910e61556726c4206f38972b17466bf40fbba44f3a85f97968",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "f775b96326316879e2654b88a60eabf6eb55052320f438b995037eef856b2c54",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 247,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 70,
+    "exact": false
+  },
+  "admittedAt": "2026-09-26"
+}
