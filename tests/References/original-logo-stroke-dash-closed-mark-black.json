@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-stroke-dash-closed-mark-black",
+  "referencePng": "original-logo-stroke-dash-closed-mark-black.png",
+  "referenceSha256": "c5501008aae60b63b34de965f48785521d9f517202b3d9f43baf9cbd51b98802",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "311c42f21f8a88c38ecd4ff7342c62f57c74e30870f5243682e4add228b48852",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
