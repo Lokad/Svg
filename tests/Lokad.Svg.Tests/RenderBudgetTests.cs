@@ -333,6 +333,45 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Polygon_rasterization_charges_mapped_vertices_and_coverage_pixels()
+    {
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
+        int[] ends = [3];
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        try
+        {
+            SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
+            using SvgRoot root = new(8, 8, null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255)], false, 0, null);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 67);
+            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
+            Assert.Equal(67, surface.WorkUnits);
+        }
+        finally { fill.Dispose(); }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+    public void Polygon_rasterization_denies_before_mapping_work_exceeds_the_limit()
+    {
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
+        int[] ends = [3];
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        try
+        {
+            SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
+            using SvgRoot root = new(8, 8, null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255)], false, 0, null);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 2);
+            SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None));
+            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+            Assert.Contains("vertex mapping", exception.Message);
+        }
+        finally { fill.Dispose(); }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
     public void Gradient_parse_denies_and_releases_when_stops_exceed_the_remaining_budget()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(EightStopGradientSvg());

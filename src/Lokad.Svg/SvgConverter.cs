@@ -327,6 +327,9 @@ public static class SvgConverter
                 if (edgeY > bottom) bottom = edgeY;
             }
 
+            long mappingWork = polygon.Points.Length;
+            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
+            workUnits += mappingWork;
             int startY = ClampFloor(top, outputHeight);
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
@@ -379,6 +382,9 @@ public static class SvgConverter
                 if (edgeX > right) right = edgeX;
                 if (edgeY > bottom) bottom = edgeY;
             }
+            long mappingWork = outline.Points.Length;
+            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
+            workUnits += mappingWork;
             int startY = ClampFloor(top, outputHeight);
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
@@ -476,6 +482,9 @@ public static class SvgConverter
                 if (edgeX > right) right = edgeX;
                 if (edgeY > bottom) bottom = edgeY;
             }
+            long mappingWork = outline.Points.Length;
+            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
+            workUnits += mappingWork;
             int startY = ClampFloor(top, outputHeight);
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
@@ -623,6 +632,9 @@ public static class SvgConverter
                 if (edgeX > right) right = edgeX;
                 if (edgeY > bottom) bottom = edgeY;
             }
+            long mappingWork = outline.Points.Length;
+            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
+            workUnits += mappingWork;
             int startY = ClampFloor(top, outputHeight);
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
