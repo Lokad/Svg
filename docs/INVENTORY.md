@@ -205,7 +205,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 
 ### inv-012 — SG Rotation Leipzig
 
-- file: tests/Fixtures/candidates/inv-012.svg (SHA-256 2D65278FECBD7325BA26120123E61A588364E0314DD89A41F548B92CCDF2FF97)
+- file: tests/Fixtures/candidates/inv-012.svg (SHA-256 4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2)
 - source: Wikimedia Commons, File:SG Rotation Leipzig.svg. Retrieval 2026-09-26.
 - license: PD (Commons).
 - retrievalDate: 2026-09-26.
