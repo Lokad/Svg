@@ -188,6 +188,30 @@ public sealed class SvgCurveFlattenTests
         Assert.Throws<OperationCanceledException>(() => SvgCurveFlatten.FlattenQuadratic(new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(8, 0), policy, buffer, cancelled.Token));
     }
 
+    [Fact]
+    public void Quadratic_collinear_overshoot_captures_excursion()
+    {
+        SvgDevicePoint[] flattened = FlattenQuad(new SvgDevicePoint(0, 4), new SvgDevicePoint(100, 4), new SvgDevicePoint(8, 4), 0.25);
+
+        Assert.True(MaxX(flattened) > 40);
+        Assert.Equal(new SvgDevicePoint(8, 4), flattened[^1]);
+    }
+
+    [Fact]
+    public void Cubic_collinear_overshoot_captures_excursion()
+    {
+        SvgDevicePoint[] flattened = FlattenCube(new SvgDevicePoint(0, 4), new SvgDevicePoint(60, 4), new SvgDevicePoint(80, 4), new SvgDevicePoint(8, 4), 0.25);
+
+        Assert.True(MaxX(flattened) > 40);
+        Assert.Equal(new SvgDevicePoint(8, 4), flattened[^1]);
+    }
+
+    private static double MaxX(SvgDevicePoint[] flattened)
+    {
+        double maximum = double.NegativeInfinity;
+        foreach (SvgDevicePoint vertex in flattened) maximum = System.Math.Max(maximum, vertex.X);
+        return maximum;
+    }
     private static SvgDevicePoint[] FlattenQuad(SvgDevicePoint start, SvgDevicePoint control, SvgDevicePoint end, double flatness)
     {
         SvgFlattenPolicy policy = new(flatness, 64, 256);
