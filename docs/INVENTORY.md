@@ -172,6 +172,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - retrievalDate: 2026-09-26.
 - archetypes: strokes, round caps, degenerate zero-length segments.
 - content: 3 paths, stroke-widths 36/98, stroke-linecap round.
+- diagnosis 2026-09-26 (exploratory scratch probes, ignored artifacts/inventory/pr-*.svg, never committed): closed wide strokes render with butt and round caps alike (round lowers as butt, byte-identical), and width 98 renders; but moving the stroke paint to the root so paths inherit it reproduces the Only non-painting stroke=none rejection. The precise blocker is therefore inherited (vs direct) stroke paint, a presentation-inheritance gap; the open diagonal contours and degenerate h0 dots are unreached second gates (both reject separately with Only closed axis-aligned integer paths).
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only non-painting stroke none is implemented).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 500x500 transparent, 3/3 byte-identical SHA-256 2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
