@@ -342,14 +342,14 @@ internal static class SvgLeafParser
                 return LowerPaintedCircleStroke(reader, context, syntax, elementName, false, element, filled, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, nonScalingStroke, frame, state);
             SvgStroke? ellipseStroke = ParseCircleStroke(element, reader);
             if (ellipseStroke is null || !element.Presentation.IsPainted) return filled;
-            string? ellipseDashes = reader.GetAttribute("stroke-dasharray");
+            string? ellipseDashes = element.Style.Dasharray;
             if (ellipseDashes is not null && !ellipseDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
             {
-                SvgStrokeCap ellipseDashCap = SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap"));
+                SvgStrokeCap ellipseDashCap = SvgStrokeStyleSyntax.ParseLinecap(element.Style.Linecap);
                 if (ellipseDashCap == SvgStrokeCap.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round caps with dashed ellipse strokes are not implemented.");
                 if (ellipseDashCap == SvgStrokeCap.Square) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed ellipse strokes are not implemented.");
                 double[] ellipseDashPattern = SvgStrokeStyleSyntax.ParseDasharray(ellipseDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Ellipse dash arrays cannot be empty.");
-                double ellipseDashOffset = SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset"));
+                double ellipseDashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
                 double? ellipseDashPathLength = SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
                 double ellipseDashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
                 try { return LowerDashedEllipseStroke(reader, context, syntax, element, filled, ellipseStroke.Value, ellipseDashPattern, ellipseDashOffset, ellipseDashPathLength, ellipseDashMiterLimit, nonScalingStroke, "ellipse", frame, state); }
@@ -366,14 +366,14 @@ internal static class SvgLeafParser
             return LowerPaintedCircleStroke(reader, context, syntax, elementName, true, element, filled, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, nonScalingStroke, frame, state);
         SvgStroke? stroke = ParseCircleStroke(element, reader);
         if (stroke is null || !element.Presentation.IsPainted) return filled;
-        string? circleDashes = reader.GetAttribute("stroke-dasharray");
+        string? circleDashes = element.Style.Dasharray;
         if (circleDashes is not null && !circleDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
         {
-            SvgStrokeCap dashCap = SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap"));
+            SvgStrokeCap dashCap = SvgStrokeStyleSyntax.ParseLinecap(element.Style.Linecap);
             if (dashCap == SvgStrokeCap.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round caps with dashed circle strokes are not implemented.");
             if (dashCap == SvgStrokeCap.Square) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed circle strokes are not implemented.");
             double[] dashPattern = SvgStrokeStyleSyntax.ParseDasharray(circleDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Circle dash arrays cannot be empty.");
-            double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset"));
+            double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
             double? dashPathLength = SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
             double dashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
             try { return LowerDashedEllipseStroke(reader, context, syntax, element, filled, stroke.Value, dashPattern, dashOffset, dashPathLength, dashMiterLimit, nonScalingStroke, "circle", frame, state); }
@@ -524,8 +524,8 @@ internal static class SvgLeafParser
         if (element.Transform != AxisTransform.Identity || strokeColor is null || (syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
         if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
-        SvgStrokeCap linecap = SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap"));
-        double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray"));
+        SvgStrokeCap linecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
+        double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);
         if (linecap == SvgStrokeCap.Square && dashes is null) syntax = syntax.WithSquareCaps(strokeWidth);
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor.Value, element.Presentation.Opacity);
         bool painted = element.Presentation.IsPainted;
@@ -540,7 +540,7 @@ internal static class SvgLeafParser
             return RetainSingleGeometry(frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line), state, context);
         }
         if (linecap == SvgStrokeCap.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round caps with dashed lines are not implemented.");
-        double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset"));
+        double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(style.Dashoffset);
         double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
         if (linecap == SvgStrokeCap.Square && color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         return LowerDashedLine();

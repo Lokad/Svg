@@ -13,6 +13,10 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
 
     /// <summary>Gets the specified scalar CSS letter-spacing declaration when direct text admits it.</summary>
     internal string? LetterSpacing { get; init; }
+    internal string? Linecap { get; init; }
+    internal string? Linejoin { get; init; }
+    internal string? Dasharray { get; init; }
+    internal string? Dashoffset { get; init; }
 }
 
 
@@ -35,6 +39,10 @@ internal enum InlineImportantProperties
     FontSize = 1 << 11,
     WhiteSpace = 1 << 12,
     LetterSpacing = 1 << 13,
+    Linecap = 1 << 14,
+    Linejoin = 1 << 15,
+    Dasharray = 1 << 16,
+    Dashoffset = 1 << 17,
 }
 
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
@@ -68,6 +76,7 @@ internal static class SvgInlineStyleParser
     {
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
         string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null;
+        string? linecap = null, linejoin = null, dasharray = null, dashoffset = null;
         InlineImportantProperties important = InlineImportantProperties.None;
         SvgInlineDeclarationReader declarations = new(value, workCounter, cancellationToken);
         while (declarations.TryRead(out ReadOnlySpan<char> declaration))
@@ -86,10 +95,10 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("visibility", StringComparison.OrdinalIgnoreCase)) Set(ref visibility, InlineImportantProperties.Visibility, property, propertyValue, strings, ref important, true);
             else if (property.Equals("opacity", StringComparison.OrdinalIgnoreCase)) Set(ref opacity, InlineImportantProperties.Opacity, property, propertyValue, strings, ref important, true);
             else if (property.Equals("fill-rule", StringComparison.OrdinalIgnoreCase)) Set(ref fillRule, InlineImportantProperties.FillRule, property, propertyValue, strings, ref important, true);
-            else if (property.Equals("stroke-linecap", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-linecap", propertyValue);
-            else if (property.Equals("stroke-linejoin", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-linejoin", propertyValue);
-            else if (property.Equals("stroke-dasharray", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-dasharray", propertyValue);
-            else if (property.Equals("stroke-dashoffset", StringComparison.OrdinalIgnoreCase)) ValidateStrokeDeclaration("stroke-dashoffset", propertyValue);
+            else if (property.Equals("stroke-linecap", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-linecap", propertyValue); Set(ref linecap, InlineImportantProperties.Linecap, property, propertyValue, strings, ref important, false); }
+            else if (property.Equals("stroke-linejoin", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-linejoin", propertyValue); Set(ref linejoin, InlineImportantProperties.Linejoin, property, propertyValue, strings, ref important, false); }
+            else if (property.Equals("stroke-dasharray", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-dasharray", propertyValue); Set(ref dasharray, InlineImportantProperties.Dasharray, property, propertyValue, strings, ref important, false); }
+            else if (property.Equals("stroke-dashoffset", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-dashoffset", propertyValue); Set(ref dashoffset, InlineImportantProperties.Dashoffset, property, propertyValue, strings, ref important, false); }
             else if (property.Equals("pathLength", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline path lengths are not implemented.");
             else if (property.Equals("clip-rule", StringComparison.OrdinalIgnoreCase)) ValidateClipDeclaration(propertyValue);
             else if (property.Equals("overflow", StringComparison.OrdinalIgnoreCase)) ValidateOverflowDeclaration(propertyValue);
@@ -105,7 +114,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("pointer-events", StringComparison.OrdinalIgnoreCase) || property.Equals("cursor", StringComparison.OrdinalIgnoreCase)) { } // UI behavior never affects static pixels.
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, Important = important };
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Important = important };
 
         static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> property, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important, bool mapKeywords)
         {

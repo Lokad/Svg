@@ -153,10 +153,10 @@ internal static class SvgStrokeStyleSyntax
         if (shape.Presentation.StrokeColor is null) return null;
         int width = ParseStrokeWidth(reader.GetAttribute("stroke-width"), elementName);
         double miterLimit = ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
-        SvgStrokeCap cap = ParseLinecap(reader.GetAttribute("stroke-linecap"));
-        SvgStrokeJoin join = ParseLinejoin(reader.GetAttribute("stroke-linejoin"), allowBevelJoin);
-        double[]? dashes = ParseDasharray(reader.GetAttribute("stroke-dasharray"));
-        double dashOffset = ParseDashoffset(reader.GetAttribute("stroke-dashoffset"));
+        SvgStrokeCap cap = ParseLinecap(style.Linecap);
+        SvgStrokeJoin join = ParseLinejoin(style.Linejoin, allowBevelJoin);
+        double[]? dashes = ParseDasharray(style.Dasharray);
+        double dashOffset = ParseDashoffset(style.Dashoffset);
         if (dashes is not null)
         {
             bool hasPositive = false;

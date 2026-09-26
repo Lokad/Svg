@@ -19,6 +19,10 @@ internal struct SvgStyleCascade
     private string? _fontSize;
     private string? _whiteSpace;
     private string? _letterSpacing;
+    private string? _linecap;
+    private string? _linejoin;
+    private string? _dasharray;
+    private string? _dashoffset;
     private int _colorRank;
     private int _fillRank;
     private int _fillOpacityRank;
@@ -33,12 +37,17 @@ internal struct SvgStyleCascade
     private int _fontSizeRank;
     private int _whiteSpaceRank;
     private int _letterSpacingRank;
+    private int _linecapRank;
+    private int _linejoinRank;
+    private int _dasharrayRank;
+    private int _dashoffsetRank;
 
     public SvgStyleCascade()
     {
         _colorRank = _fillRank = _fillOpacityRank = _strokeRank = -1;
         _displayRank = _visibilityRank = _opacityRank = _fillRuleRank = -1;
         _familyRank = _weightRank = _fontStyleRank = _fontSizeRank = _whiteSpaceRank = _letterSpacingRank = -1;
+        _linecapRank = _linejoinRank = _dasharrayRank = _dashoffsetRank = -1;
     }
 
     internal void Apply(InlineStyle style, int specificity)
@@ -57,6 +66,10 @@ internal struct SvgStyleCascade
         Apply(ref _fontSize, ref _fontSizeRank, style.TextFont.Size, (style.Important & InlineImportantProperties.FontSize) != 0, specificity);
         Apply(ref _whiteSpace, ref _whiteSpaceRank, style.WhiteSpace, (style.Important & InlineImportantProperties.WhiteSpace) != 0, specificity);
         Apply(ref _letterSpacing, ref _letterSpacingRank, style.LetterSpacing, (style.Important & InlineImportantProperties.LetterSpacing) != 0, specificity);
+        Apply(ref _linecap, ref _linecapRank, style.Linecap, (style.Important & InlineImportantProperties.Linecap) != 0, specificity);
+        Apply(ref _linejoin, ref _linejoinRank, style.Linejoin, (style.Important & InlineImportantProperties.Linejoin) != 0, specificity);
+        Apply(ref _dasharray, ref _dasharrayRank, style.Dasharray, (style.Important & InlineImportantProperties.Dasharray) != 0, specificity);
+        Apply(ref _dashoffset, ref _dashoffsetRank, style.Dashoffset, (style.Important & InlineImportantProperties.Dashoffset) != 0, specificity);
     }
 
     internal InlineStyle ToInlineStyle()
@@ -76,7 +89,11 @@ internal struct SvgStyleCascade
         if (_fontSizeRank >= ImportantBias) important |= InlineImportantProperties.FontSize;
         if (_whiteSpaceRank >= ImportantBias) important |= InlineImportantProperties.WhiteSpace;
         if (_letterSpacingRank >= ImportantBias) important |= InlineImportantProperties.LetterSpacing;
-        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Important = important };
+        if (_linecapRank >= ImportantBias) important |= InlineImportantProperties.Linecap;
+        if (_linejoinRank >= ImportantBias) important |= InlineImportantProperties.Linejoin;
+        if (_dasharrayRank >= ImportantBias) important |= InlineImportantProperties.Dasharray;
+        if (_dashoffsetRank >= ImportantBias) important |= InlineImportantProperties.Dashoffset;
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Important = important };
     }
 
     private static void Apply(ref string? value, ref int currentRank, string? candidate, bool candidateImportant, int specificity)
