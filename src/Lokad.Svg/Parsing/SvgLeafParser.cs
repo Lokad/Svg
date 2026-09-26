@@ -452,6 +452,31 @@ internal static class SvgLeafParser
         }
     }
 
+    /// <summary>Lowers one white round-capped line band with two white tip discs for paint repainting; the white never reaches the scene.</summary>
+    internal static (SvgParsedGeometry White, SvgRectangle Box) LowerWhiteRoundCapLine(SvgLineSyntax syntax, int strokeWidth, SvgComputedStyle style, AxisTransform transform, bool painted, bool fillHasPaint, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    {
+        SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
+        SvgRectangle box = band;
+        if (frame is not null)
+        {
+            band = frame.Value.ClipShifted(band);
+            box = frame.Value.Shift(box);
+        }
+        SvgColor white = new(255, 255, 255, 255);
+        SvgPaint discPaint = new(white, fillHasPaint, 255, white, false);
+        SvgResolvedPaintableElement discElement = new(style, transform, new SvgResolvedShapePresentation(discPaint, white, null, 255, painted));
+        double radius = strokeWidth / 2d;
+        using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "line", false, false, int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
+        using SvgParsedGeometry first = lowering.LowerEllipseFill(syntax.X1, syntax.Y1, radius, radius, discElement, frame, state.Budget);
+        using SvgParsedGeometry second = lowering.LowerEllipseFill(syntax.X2, syntax.Y2, radius, radius, discElement, frame, state.Budget);
+        using BudgetedParserList<SvgGeometry> all = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        all.Add(SvgGeometry.FromOrthogonalBand(band with { Color = white, HasFill = fillHasPaint }));
+        all.AddRange(first.Geometries);
+        all.AddRange(second.Geometries);
+        return (new SvgParsedGeometry(all.Detach(), first.ElementCount + second.ElementCount), box);
+    }
     /// <summary>Appends one clipped rectangle per dash-pattern on-run along a horizontal or vertical line, reporting whether any run paints.</summary>
     /// <remarks><para>Callers paint over the returned rectangles and leave the single quiet rectangle unpainted, sharing the solid phase convention across paints.</para></remarks>
     internal static bool AppendLineDashRunRects(SvgLineSyntax syntax, int strokeWidth, bool squareCaps, double[] dashes, double dashOffset, double? pathLength, SvgViewportFrame? frame, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<SvgRectangle> runs)

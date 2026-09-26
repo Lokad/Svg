@@ -661,7 +661,8 @@ internal static class SvgGradientSyntax
 
     internal static SvgParsedGeometry LowerGradientStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
     {
-        SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line");
+        // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
+        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line");
         AxisTransform transform = context.ResolveTransform(reader);
         if (transform != AxisTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
@@ -680,6 +681,11 @@ internal static class SvgGradientSyntax
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         if (dashLinecap == SvgStrokeCap.Square && dashEntries is not null && !IsOpaqueGradientStroke(gradient, opacity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
+        if (dashLinecap == SvgStrokeCap.Round && dashEntries is null)
+        {
+            if (!IsOpaqueGradientStroke(gradient, opacity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent round-capped paint lines are not implemented.");
+            return LowerRoundCapGradientStrokeLine(syntax, strokeWidth, style, transform, gradient, painted, opacity, frame, state, context);
+        }
         if (dashEntries is not null) return LowerDashedGradientStrokeLine(syntax, strokeWidth, dashLinecap == SvgStrokeCap.Square, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), pathLength, gradient, painted, opacity, frame, state, context);
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         SvgRectangle box = band;
@@ -705,6 +711,27 @@ internal static class SvgGradientSyntax
         return true;
     }
 
+    /// <summary>Lowers one round-capped linear-gradient line stroke into one gradient-evaluated band with two repainted tip discs.</summary>
+    private static SvgParsedGeometry LowerRoundCapGradientStrokeLine(SvgLineSyntax syntax, int strokeWidth, SvgComputedStyle style, AxisTransform transform, SvgLinearGradient gradient, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    {
+        bool degenerate = gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty;
+        if (degenerate && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
+        (SvgParsedGeometry white, SvgRectangle strokeBox) = SvgLeafParser.LowerWhiteRoundCapLine(syntax, strokeWidth, style, transform, painted, painted && !gradient.IsEmpty, frame, state, context);
+        try
+        {
+            SvgColor solid = SvgPaintResolver.ApplyOpacity(gradient.End, opacity);
+            using BudgetedParserList<SvgGeometry> repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            foreach (SvgGeometry existing in white.Geometries)
+            {
+                if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(degenerate ? SvgGeometry.FromOrthogonalBand(existing.Rectangle with { Color = solid }) : SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, strokeBox, existing.Rectangle, opacity, null)));
+                else if (degenerate) repainted.Add(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(existing.Polygon.Points, existing.Polygon.ContourEnds, existing.Polygon.Signs, solid, existing.Polygon.HasFill, existing.Polygon.IsEvenOdd, existing.Polygon.Mapping, existing.Polygon.Clip, state.Budget)));
+                else repainted.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, strokeBox, opacity, state.Budget));
+            }
+            white.Dispose();
+            return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
+        }
+        catch { white.Dispose(); throw; }
+    }
     /// <summary>Lowers one dashed linear-gradient line stroke into one gradient-evaluated band per dash run.</summary>
     private static SvgParsedGeometry LowerDashedGradientStrokeLine(SvgLineSyntax syntax, int strokeWidth, bool squareCaps, double[] dashes, double dashOffset, double? pathLength, SvgLinearGradient gradient, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
     {
@@ -733,7 +760,8 @@ internal static class SvgGradientSyntax
     /// <summary>Lowers one radial-gradient-stroked axis-aligned line into a radial-evaluated stroke band.</summary>
     internal static SvgParsedGeometry LowerRadialStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
     {
-        SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line");
+        // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
+        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line");
         AxisTransform transform = context.ResolveTransform(reader);
         if (transform != AxisTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
@@ -751,6 +779,11 @@ internal static class SvgGradientSyntax
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         if (dashLinecap == SvgStrokeCap.Square && dashEntries is not null && !IsOpaqueRadialStroke(circle, opacity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
+        if (dashLinecap == SvgStrokeCap.Round && dashEntries is null)
+        {
+            if (!IsOpaqueRadialStroke(circle, opacity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent round-capped paint lines are not implemented.");
+            return LowerRoundCapRadialStrokeLine(syntax, strokeWidth, style, transform, circle, painted, opacity, frame, state, context);
+        }
         if (dashEntries is not null) return LowerDashedRadialStrokeLine(syntax, strokeWidth, dashLinecap == SvgStrokeCap.Square, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), pathLength, circle, painted, opacity, frame, state, context);
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         SvgRectangle box = band;
@@ -776,6 +809,27 @@ internal static class SvgGradientSyntax
         return true;
     }
 
+    /// <summary>Lowers one round-capped radial-gradient line stroke into one radial-evaluated band with two repainted tip discs.</summary>
+    private static SvgParsedGeometry LowerRoundCapRadialStrokeLine(SvgLineSyntax syntax, int strokeWidth, SvgComputedStyle style, AxisTransform transform, SvgRadialGradient circle, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    {
+        bool degenerate = circle.Radius == 0 && !circle.IsEmpty;
+        if (degenerate && circle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");
+        (SvgParsedGeometry white, SvgRectangle strokeBox) = SvgLeafParser.LowerWhiteRoundCapLine(syntax, strokeWidth, style, transform, painted, painted && !circle.IsEmpty, frame, state, context);
+        try
+        {
+            SvgColor solid = SvgPaintResolver.ApplyOpacity(circle.End, opacity);
+            using BudgetedParserList<SvgGeometry> repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            foreach (SvgGeometry existing in white.Geometries)
+            {
+                if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(degenerate ? SvgGeometry.FromOrthogonalBand(existing.Rectangle with { Color = solid }) : SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, strokeBox, existing.Rectangle, opacity, null)));
+                else if (degenerate) repainted.Add(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(existing.Polygon.Points, existing.Polygon.ContourEnds, existing.Polygon.Signs, solid, existing.Polygon.HasFill, existing.Polygon.IsEvenOdd, existing.Polygon.Mapping, existing.Polygon.Clip, state.Budget)));
+                else repainted.Add(SvgRadialPolygon.RepaintOutline(existing.Polygon, circle, strokeBox, opacity, state.Budget));
+            }
+            white.Dispose();
+            return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
+        }
+        catch { white.Dispose(); throw; }
+    }
     /// <summary>Lowers one dashed radial-gradient line stroke into one radial-evaluated band per dash run.</summary>
     private static SvgParsedGeometry LowerDashedRadialStrokeLine(SvgLineSyntax syntax, int strokeWidth, bool squareCaps, double[] dashes, double dashOffset, double? pathLength, SvgRadialGradient circle, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
     {

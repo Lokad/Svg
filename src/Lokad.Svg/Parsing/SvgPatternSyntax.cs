@@ -308,7 +308,8 @@ internal static class SvgPatternSyntax
     /// <summary>Lowers one pattern-stroked axis-aligned line into a pattern-evaluated stroke band.</summary>
     internal static SvgParsedGeometry LowerPatternStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
     {
-        SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line");
+        // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
+        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line");
         AxisTransform transform = context.ResolveTransform(reader);
         if (transform != AxisTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
@@ -323,6 +324,11 @@ internal static class SvgPatternSyntax
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         if (dashLinecap == SvgStrokeCap.Square && dashEntries is not null && (opacity != 255 || (tile.Content is SvgGeometry tileContent && tileContent.Rectangle.Color.Alpha != 255))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
+        if (dashLinecap == SvgStrokeCap.Round && dashEntries is null)
+        {
+            if (opacity != 255 || (tile.Content is SvgGeometry tilePaint && tilePaint.Rectangle.Color.Alpha != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent round-capped paint lines are not implemented.");
+            return LowerRoundCapPatternStrokeLine(syntax, strokeWidth, style, transform, tile, painted, opacity, frame, state, context);
+        }
         if (dashEntries is not null) return LowerDashedPatternStrokeLine(syntax, strokeWidth, dashLinecap == SvgStrokeCap.Square, dashEntries, SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset")), pathLength, tile, painted, opacity, frame, state, context);
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         if (frame is not null) band = frame.Value.ClipShifted(band);
@@ -331,6 +337,30 @@ internal static class SvgPatternSyntax
         return RetainSingleBand(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, band, opacity, null)), state, context);
     }
 
+    /// <summary>Lowers one round-capped pattern-tile line stroke into one tile-evaluated band with two repainted tip discs.</summary>
+    private static SvgParsedGeometry LowerRoundCapPatternStrokeLine(SvgLineSyntax syntax, int strokeWidth, SvgComputedStyle style, AxisTransform transform, SvgPatternTile tile, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    {
+        SvgGeometry? paintContent = tile.Content;
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || paintContent is null)
+        {
+            (SvgParsedGeometry blank, SvgRectangle _) = SvgLeafParser.LowerWhiteRoundCapLine(syntax, strokeWidth, style, transform, painted, false, frame, state, context);
+            return blank;
+        }
+        (SvgParsedGeometry white, SvgRectangle _) = SvgLeafParser.LowerWhiteRoundCapLine(syntax, strokeWidth, style, transform, painted, painted, frame, state, context);
+        try
+        {
+            SvgRectangle content = paintContent.Value.Rectangle;
+            using BudgetedParserList<SvgGeometry> repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            foreach (SvgGeometry existing in white.Geometries)
+            {
+                if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, existing.Rectangle, opacity, null)));
+                else repainted.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, state.Budget));
+            }
+            white.Dispose();
+            return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
+        }
+        catch { white.Dispose(); throw; }
+    }
     /// <summary>Lowers one dashed pattern-tile line stroke into one tile-evaluated band per dash run.</summary>
     private static SvgParsedGeometry LowerDashedPatternStrokeLine(SvgLineSyntax syntax, int strokeWidth, bool squareCaps, double[] dashes, double dashOffset, double? pathLength, SvgPatternTile tile, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
     {

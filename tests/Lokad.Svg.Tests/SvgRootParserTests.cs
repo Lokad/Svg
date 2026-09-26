@@ -4670,6 +4670,68 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Lowers_round_capped_gradient_lines_as_band_with_tip_discs()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\" gradientUnits=\"userSpaceOnUse\" x1=\"0\" y1=\"0\" x2=\"16\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><line x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\" stroke=\"url(#g)\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(3, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.GradientFill, root.Geometries[0].Kind);
+        Assert.True(root.Geometries[0].Gradient.Fill.HasFill);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
+        Assert.True(root.Geometries[1].GradientPolygon.HasFill);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[2].Kind);
+        Assert.True(root.Geometries[2].GradientPolygon.HasFill);
+    }
+
+    [Fact]
+    public void Lowers_round_capped_radial_lines_as_band_with_tip_discs()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><radialGradient id=\"g\" gradientUnits=\"userSpaceOnUse\" cx=\"8\" cy=\"4\" r=\"8\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient></defs><line x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\" stroke=\"url(#g)\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(3, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.RadialGradient, root.Geometries[0].Kind);
+        Assert.True(root.Geometries[0].Radial.Fill.HasFill);
+        Assert.Equal(SvgGeometryKind.RadialPolygon, root.Geometries[1].Kind);
+        Assert.True(root.Geometries[1].RadialPolygon.HasFill);
+        Assert.Equal(SvgGeometryKind.RadialPolygon, root.Geometries[2].Kind);
+        Assert.True(root.Geometries[2].RadialPolygon.HasFill);
+    }
+
+    [Fact]
+    public void Lowers_round_capped_pattern_lines_as_band_with_tip_discs()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect width=\"8\" height=\"8\" fill=\"red\"/></pattern></defs><line x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\" stroke=\"url(#p)\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(3, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PatternFill, root.Geometries[0].Kind);
+        Assert.True(root.Geometries[0].Pattern.Fill.HasFill);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, root.Geometries[1].Kind);
+        Assert.True(root.Geometries[1].PatternPolygon.HasFill);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, root.Geometries[2].Kind);
+        Assert.True(root.Geometries[2].PatternPolygon.HasFill);
+    }
+
+    [Fact]
+    public void Rejects_translucent_round_capped_paint_lines()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\" gradientUnits=\"userSpaceOnUse\" x1=\"0\" y1=\"0\" x2=\"16\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><line x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\" stroke=\"url(#g)\" stroke-width=\"2\" stroke-linecap=\"round\" opacity=\"0.5\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Renders_pattern_round_capped_lines_identical_to_solid()
+    {
+        byte[] painted = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"8\"><defs><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect width=\"8\" height=\"8\" fill=\"red\"/></pattern></defs><line x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\" stroke=\"url(#p)\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>");
+        byte[] solid = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"8\"><line x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\" stroke=\"red\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>");
+
+        ReadOnlyMemory<byte> paintedPng = SvgConverter.ConvertToPng(painted, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> solidPng = SvgConverter.ConvertToPng(solid, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(paintedPng.Span.SequenceEqual(solidPng.Span));
+    }
+
+    [Fact]
     public void Lowers_dashed_lines_as_run_bands()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
@@ -4697,12 +4759,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_round_caps_on_gradient_lines()
+    public void Maps_user_space_vectors_on_round_capped_gradient_lines()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='s' gradientUnits='userSpaceOnUse' x1='0' y1='4' x2='16' y2='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#s)' stroke-width='2' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"s\" gradientUnits=\"userSpaceOnUse\" x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><line x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\" stroke=\"url(#s)\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-    }    [Fact]
+        Assert.Equal(0, root.Geometries[0].Gradient.Gradient.X1);
+        Assert.Equal(4, root.Geometries[0].Gradient.Gradient.Y1);
+        Assert.Equal(16, root.Geometries[0].Gradient.Gradient.X2);
+        Assert.Equal(4, root.Geometries[0].Gradient.Gradient.Y2);
+    }
+    [Fact]
     public void Dashed_line_offsets_shift_run_bands()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-dashoffset='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
