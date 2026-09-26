@@ -299,8 +299,19 @@ internal static class SvgRenderedLeafParser
                 if (pathData)
                 {
                     string d = shape.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-                    long wantedPoints = (long)maximumGeometryElements * (SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand + 1);
+                    int boundsCommands = 0;
+                    bool boundsHasCurve = false;
+                    for (int scanIndex = 0; scanIndex < d.Length; scanIndex++)
+                    {
+                        if ((scanIndex & 4095) == 0) shapeContext.WorkCounter.Consume(shapeContext.CancellationToken);
+                        char scanLetter = d[scanIndex];
+                        if (scanLetter is 'A' or 'a' or 'C' or 'c' or 'S' or 's' or 'Q' or 'q' or 'T' or 't') { boundsHasCurve = true; boundsCommands++; }
+                        else if (scanLetter is 'M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z') boundsCommands++;
+                    }
+
+                    long wantedPoints = boundsHasCurve ? (long)boundsCommands * (SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand + 1) : (long)d.Length + boundsCommands + 1;
                     int pointCapacity = wantedPoints > SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints ? SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints : (int)wantedPoints;
+                    if (pointCapacity < 1) pointCapacity = 1;
                     int contourCapacity = pointCapacity < maximumGeometryElements ? pointCapacity : maximumGeometryElements;
                     long scratchBytes;
                     try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)); }

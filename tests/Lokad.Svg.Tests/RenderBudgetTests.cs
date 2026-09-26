@@ -294,6 +294,17 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Curved_clip_bounds_fit_small_scratch_budget()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs><path d='M0,8 Q4,-4 8,8' fill='red' clip-path='url(#window)'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
+        Assert.Single(root.Geometries);
+        Assert.True(budget.Snapshot().PeakBytes < 500_000, "Clip-bounds flattening must scale with commands, not global limits.");
+    }
+
+    [Fact]
     public void Gradient_parse_denies_and_releases_when_stops_exceed_the_remaining_budget()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(EightStopGradientSvg());
