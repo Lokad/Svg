@@ -161,7 +161,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 1 path, stroke-width 2.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented).
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 72x72 transparent, 3/3 byte-identical SHA-256 8808db0d924ba280fa602b09e7c07c6f304d43d3dcd1826f78c80da42f1ea312, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-009 — Rede Manchete
 
