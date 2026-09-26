@@ -29,9 +29,20 @@ internal static class SvgElementAttributePolicy
     /// <summary>Validates the whitespace-and-letter-spacing nested span subset before direct-text extraction.</summary>
     internal static void ValidateTextSpan(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.TextSpan, "Text span", workCounter, cancellationToken);
 
-    internal static void ValidateDefinitionContainer(XmlReader reader)
+    internal static void ValidateDefinitionContainer(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Definition container attributes are not implemented.");
+        if (!reader.HasAttributes) return;
+        while (reader.MoveToNextAttribute())
+        {
+            workCounter.Consume(cancellationToken);
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "id")
+            {
+                if (reader.Value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");
+                continue;
+            }
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Definition container attributes are not implemented.");
+        }
+        reader.MoveToElement();
     }
 
     internal static void ValidateSymbol(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken) => Validate(reader, SvgElementKind.Symbol, "Symbol", workCounter, cancellationToken);

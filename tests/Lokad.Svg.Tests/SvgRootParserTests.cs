@@ -6671,4 +6671,41 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+    [Fact]
+    public void Admits_empty_defs_with_id()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs id='defs1'/><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Single(root.Rectangles);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Ignores_empty_id_defs_when_rendering()
+    {
+        byte[] plain = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+        byte[] defined = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs id='defs1'/><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> definedPng = SvgConverter.ConvertToPng(defined, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(plainPng.Span.SequenceEqual(definedPng.Span));
+    }
+
+    [Fact]
+    public void Rejects_defs_with_non_id_attributes()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs transform='scale(2)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_overlong_defs_ids()
+    {
+        string id = new('a', SvgSyntaxLimits.MaximumIdentifierCharacters + 1);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs id='" + id + "'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
 }

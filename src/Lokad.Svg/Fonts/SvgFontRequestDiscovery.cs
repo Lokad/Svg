@@ -173,7 +173,7 @@ internal static class SvgFontRequestDiscovery
                     {
                         if (!rootElement && reader.LocalName == "switch") SvgElementAttributePolicy.ValidateSwitch(reader, workCounter, cancellationToken);
                         else if (!rootElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
-                        else if ((directChild || hasGroupAncestor) && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateDefinitionContainer(reader);
+                        else if ((directChild || hasGroupAncestor) && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateDefinitionContainer(reader, workCounter, cancellationToken);
                     }
                     if (!sterile && inertDepth >= 0 && reader.Depth == inertDepth + 1 && isSvgElement)
                     {

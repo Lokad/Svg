@@ -108,7 +108,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: path mark.
 - content: 6 paths, inkscape metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Definition container attributes are not implemented) [inv-004; root x/y, xml:space and enable-background admitted 2026-09-26].
+- status: unsupported (rejects:UnsupportedFeature: Only integer rectangle coordinates are implemented) [inv-004; root x/y, xml:space, enable-background and id-only defs admitted 2026-09-26].
 - reference: none yet. [exploratory oracle triple 2026-09-26, 595x740 transparent, 3/3 byte-identical SHA-256 7db3cdfce75d6906ddd36dca06bb8e5b52102a5a5701c677f734194adbc303d9, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-005 — SimpleX.chat logo
@@ -136,7 +136,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - archetypes: physical mm units, flat mark, defs container.
 - content: 2 paths, sodipodi metadata.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Definition container attributes are not implemented).
+- status: unsupported (rejects:UnsupportedFeature: Only integer rectangle coordinates are implemented) [inv-006; id-only defs admitted 2026-09-26].
 - reference: none yet. [exploratory oracle triple 2026-09-26, 57x23 transparent, 3/3 byte-identical SHA-256 8dd0e9e4f9b990e7a17e36658c411cecd4bbf37fffa84294ca2babee2a9ec534, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-007 — Zeppelin logo
