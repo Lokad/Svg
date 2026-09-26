@@ -171,13 +171,20 @@ internal static class SvgLeafParser
     private static SvgParsedGeometry LowerEllipseShape(XmlReader reader, SvgPaintableElementContext context, SvgEllipseSyntax syntax, string elementName, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgPatternSyntax.IsPatternFill(style.Fill) && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(style.Fill), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills on " + elementName + " elements are not implemented.");
-        bool paintGradient = SvgGradientSyntax.IsGradientFill(style.Fill);
+        SvgPatternTile tile = default;
+        bool paintPattern = SvgPatternSyntax.IsPatternFill(style.Fill) && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(style.Fill), out tile);
+        bool paintGradient = SvgGradientSyntax.IsGradientFill(style.Fill) && !paintPattern;
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient strokes on " + elementName + " elements are not implemented.");
         if (paintGradient && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient-filled " + elementName + "s with strokes are not implemented.");
-        SvgComputedStyle fillStyle = paintGradient ? style with { Fill = "#ffffff" } : style;
+        if (paintPattern && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern-filled " + elementName + "s with strokes are not implemented.");
+        SvgComputedStyle fillStyle = paintGradient || paintPattern ? style with { Fill = "#ffffff" } : style;
         SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, elementName is "circle" or "ellipse");
         AxisTransform transform = element.Transform;
+        if (paintPattern)
+        {
+            if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
+            if (transform.ScaleX < 0 || transform.ScaleY < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are not implemented.");
+        }
         SvgLinearGradient linear = default;
         SvgRadialGradient radial = default;
         bool isLinear = false;
@@ -201,9 +208,11 @@ internal static class SvgLeafParser
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, elementName, false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
         SvgParsedGeometry filled = lowering.LowerEllipseFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, element, frame, state.Budget);
-        if (paintGradient)
+        if (paintGradient || paintPattern)
         {
-            SvgGeometry repainted = isLinear
+            SvgGeometry repainted;
+            if (paintPattern) repainted = SvgPatternPolygon.RepaintOutline(filled.Geometries[0].Polygon, tile, opacity, state.Budget);
+            else repainted = isLinear
                 ? SvgGradientPolygon.RepaintOutline(filled.Geometries[0].Polygon, linear, box, opacity, state.Budget)
                 : SvgRadialPolygon.RepaintOutline(filled.Geometries[0].Polygon, radial, box, opacity, state.Budget);
             filled.Dispose();
