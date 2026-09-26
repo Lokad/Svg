@@ -231,7 +231,7 @@ Independent 32x32 repro, three identical browser captures:
 
 264/1,024 pixels differ, maximum alpha error 255. Replacing clipPath with a nested
 8x16 SVG viewport gives the same failure. Map geometry and clips once into the
-same final space; regress root offsets/scales, outputScale, nested viewports and paints.
+same final space; regress root offsets/scales, outputScale, nested viewports and paints. Status 2026-09-26: repaired by mapping clip boxes through the shared root/output transform in all four polygon-outline raster paths (single IntersectMappedClip helper; nested-viewport clipping flows through the same boxes); the 32x32 repro now renders byte-exact against the pinned oracle with viewBox/direct, nested-viewport/clip-path and gradient twins plus mapped-region pixel tests (4 tests); root offsets, outputScale and fractional clip coverage stay open.
 
 ### R34 / P1 — Signed area accumulation is not spatial nonzero fill
 

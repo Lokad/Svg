@@ -339,10 +339,7 @@ public static class SvgConverter
             int endX = ClampCeiling(right, outputWidth);
             if (polygon.Clip is SvgClipBox clip)
             {
-                startY = Math.Max(startY, ClampFloor(clip.Y, outputHeight));
-                endY = Math.Min(endY, ClampCeiling(clip.Bottom, outputHeight));
-                startX = Math.Max(startX, ClampFloor(clip.X, outputWidth));
-                endX = Math.Min(endX, ClampCeiling(clip.Right, outputWidth));
+                (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
             }
 
             if (endY <= startY || endX <= startX) return;
@@ -391,10 +388,7 @@ public static class SvgConverter
             int endX = ClampCeiling(right, outputWidth);
             if (outline.Clip is SvgClipBox clip)
             {
-                startY = Math.Max(startY, ClampFloor(clip.Y, outputHeight));
-                endY = Math.Min(endY, ClampCeiling(clip.Bottom, outputHeight));
-                startX = Math.Max(startX, ClampFloor(clip.X, outputWidth));
-                endX = Math.Min(endX, ClampCeiling(clip.Right, outputWidth));
+                (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
             }
             if (endY <= startY || endX <= startX) return;
             long coverage = (long)(endY - startY) * (endX - startX);
@@ -488,10 +482,7 @@ public static class SvgConverter
             int endX = ClampCeiling(right, outputWidth);
             if (outline.Clip is SvgClipBox clip)
             {
-                startY = Math.Max(startY, ClampFloor(clip.Y, outputHeight));
-                endY = Math.Min(endY, ClampCeiling(clip.Bottom, outputHeight));
-                startX = Math.Max(startX, ClampFloor(clip.X, outputWidth));
-                endX = Math.Min(endX, ClampCeiling(clip.Right, outputWidth));
+                (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
             }
             if (endY <= startY || endX <= startX) return;
             long coverage = (long)(endY - startY) * (endX - startX);
@@ -635,10 +626,7 @@ public static class SvgConverter
             int endX = ClampCeiling(right, outputWidth);
             if (outline.Clip is SvgClipBox clip)
             {
-                startY = Math.Max(startY, ClampFloor(clip.Y, outputHeight));
-                endY = Math.Min(endY, ClampCeiling(clip.Bottom, outputHeight));
-                startX = Math.Max(startX, ClampFloor(clip.X, outputWidth));
-                endX = Math.Min(endX, ClampCeiling(clip.Right, outputWidth));
+                (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
             }
             if (endY <= startY || endX <= startX) return;
             long coverage = (long)(endY - startY) * (endX - startX);
@@ -1206,6 +1194,19 @@ public static class SvgConverter
         }
 
         static int ClampFloor(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Floor(value));
+
+        static (int StartX, int StartY, int EndX, int EndY) IntersectMappedClip(SvgClipBox clip, double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset, int outputWidth, int outputHeight, int startX, int startY, int endX, int endY)
+        {
+            double left = MapEdge(clip.X, horizontalScale, horizontalOffset);
+            double top = MapEdge(clip.Y, verticalScale, verticalOffset);
+            double right = MapEdge(clip.Right, horizontalScale, horizontalOffset);
+            double bottom = MapEdge(clip.Bottom, verticalScale, verticalOffset);
+            return (
+                Math.Max(startX, ClampFloor(left, outputWidth)),
+                Math.Max(startY, ClampFloor(top, outputHeight)),
+                Math.Min(endX, ClampCeiling(right, outputWidth)),
+                Math.Min(endY, ClampCeiling(bottom, outputHeight)));
+        }
 
         static int ClampCeiling(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Ceiling(value));
 

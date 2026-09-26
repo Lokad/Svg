@@ -160,6 +160,46 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void ViewBox_scaled_clip_path_keeps_mapped_region()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='red' clip-path='url(#c)'/></svg>", out int width, out int height);
+
+        Assert.Equal(32, width);
+        Assert.Equal(32, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 10, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 16, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 20, 8));
+    }
+
+    [Fact]
+    public void ViewBox_scaled_clip_matches_direct_rendering()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><polygon points='0,0 32,0 0,32' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
+    public void Nested_viewport_clip_matches_clip_path_rendering()
+    {
+        byte[] clipped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
+        byte[] nested = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><svg x='0' y='0' width='8' height='16'><polygon points='0,0 16,0 0,16' fill='red'/></svg></svg>", out _, out _);
+
+        Assert.Equal(clipped, nested);
+    }
+
+    [Fact]
+    public void ViewBox_scaled_gradient_clip_matches_direct_rendering()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='url(#g)' clip-path='url(#c)'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><clipPath id='c'><rect width='16' height='32'/></clipPath></defs><polygon points='0,0 32,0 0,32' fill='url(#g)' clip-path='url(#c)'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
     public void Forward_clip_path_on_polygon_matches_backward_clip()
     {
         byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/><defs><clipPath id='c'><rect x='4' y='0' width='4' height='8'/></clipPath></defs></svg>", out _, out _);
