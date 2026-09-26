@@ -430,4 +430,4 @@ Public-domain SVG from Wikimedia Commons (LicenseShortName=Public domain per Com
 - content: nested svg, group, paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Inline style property width is not implemented) [inv-027; root class admitted 2026-09-26].
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 572x400 transparent, 3/3 byte-identical SHA-256 b85f8f983fd6b761f1d256ff4f770bf14021bff7974e7781262a8aabb8dba31e, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
