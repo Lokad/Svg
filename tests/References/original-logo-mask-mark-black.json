@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-mask-mark-black",
+  "referencePng": "original-logo-mask-mark-black.png",
+  "referenceSha256": "85ce5335a50ddeb27d0353607efbffd233670bb7b77c070b94cd64b19c941c95",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "658fb6f401a806da3240e27dae41087da41c7b46faa29e72fd44976f2cc6845d",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
