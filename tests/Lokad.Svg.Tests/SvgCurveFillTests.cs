@@ -143,6 +143,32 @@ public sealed class SvgCurveFillTests
         Assert.Equal(SvgErrorCode.LimitExceeded, rejected.ErrorCode);
     }
 
+    [Fact]
+    public void Scaled_circle_fill_matches_direct_circle()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><circle cx='4' cy='4' r='3' fill='red'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><circle cx='64' cy='64' r='48' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
+    public void Scaled_arc_path_matches_direct_arc_path()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><path d='M1,4 A3,3 0 1 1 7,4 A3,3 0 1 1 1,4 Z' fill='red'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><path d='M16,64 A48,48 0 1 1 112,64 A48,48 0 1 1 16,64 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
+    public void Scaled_circle_stroke_matches_direct_stroke()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><circle cx='4' cy='4' r='3' fill='none' stroke='red' stroke-width='1'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><circle cx='64' cy='64' r='48' fill='none' stroke='red' stroke-width='16'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
