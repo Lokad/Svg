@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-forward-group-clip-mark-white",
+  "referencePng": "original-logo-forward-group-clip-mark-white.png",
+  "referenceSha256": "00fa61ced84486ba1989e34a45e51c5b86e69a493afa18970ebc483524f15871",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "5b40616e36a2bd072a470850c0bdf89c2f60398386ee2b63d98757d3294538e5",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
