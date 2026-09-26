@@ -3813,6 +3813,28 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Clips_a_rounded_rectangle_to_its_user_space_clip()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><clipPath id=\"c\"><rect x=\"8\" y=\"8\" width=\"48\" height=\"48\"/></clipPath></defs><rect x=\"0\" y=\"0\" width=\"64\" height=\"64\" rx=\"12\" fill=\"red\" clip-path=\"url(#c)\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.True(geometry.Polygon.Clip.HasValue);
+        Assert.Equal(new SvgClipBox(8, 8, 48, 48), geometry.Polygon.Clip.Value);
+    }
+
+    [Fact]
+    public void Clips_a_rounded_rectangle_to_its_object_bounding_box_clip()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><clipPath id=\"c\" clipPathUnits=\"objectBoundingBox\"><rect x=\"0.25\" y=\"0.25\" width=\"0.5\" height=\"0.5\"/></clipPath></defs><rect x=\"0\" y=\"0\" width=\"64\" height=\"64\" rx=\"12\" fill=\"red\" clip-path=\"url(#c)\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.True(geometry.Polygon.Clip.HasValue);
+        Assert.Equal(new SvgClipBox(16, 16, 32, 32), geometry.Polygon.Clip.Value);
+    }
+
+    [Fact]
     public void Clips_a_rectangle_to_its_object_bounding_box_clip()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><rect x='8' y='8' width='48' height='48' fill='red' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
