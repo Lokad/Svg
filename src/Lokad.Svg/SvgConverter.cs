@@ -340,7 +340,7 @@ public static class SvgConverter
             }
 
             if (endY <= startY || endX <= startX) return;
-            long coverage = (long)(endY - startY) * (endX - startX);
+            long coverage = (long)(endY - startY) * (endX - startX) * polygon.Points.Length;
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
             workUnits += coverage;
             ReadOnlySpan<int> contourEnds = polygon.ContourEnds;
@@ -394,7 +394,7 @@ public static class SvgConverter
                 (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
             }
             if (endY <= startY || endX <= startX) return;
-            long coverage = (long)(endY - startY) * (endX - startX);
+            long coverage = (long)(endY - startY) * (endX - startX) * outline.Points.Length;
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
             workUnits += coverage;
             SvgLinearGradient definition = outline.Gradient;
@@ -494,7 +494,7 @@ public static class SvgConverter
                 (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
             }
             if (endY <= startY || endX <= startX) return;
-            long coverage = (long)(endY - startY) * (endX - startX);
+            long coverage = (long)(endY - startY) * (endX - startX) * outline.Points.Length;
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
             workUnits += coverage;
             SvgRadialGradient definition = outline.Gradient;
@@ -644,7 +644,7 @@ public static class SvgConverter
                 (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
             }
             if (endY <= startY || endX <= startX) return;
-            long coverage = (long)(endY - startY) * (endX - startX);
+            long coverage = (long)(endY - startY) * (endX - startX) * outline.Points.Length;
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
             workUnits += coverage;
             SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null);

@@ -343,9 +343,29 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(8, 8, null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255)], false, 0, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 67);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 195);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
-            Assert.Equal(67, surface.WorkUnits);
+            Assert.Equal(195, surface.WorkUnits);
+        }
+        finally { fill.Dispose(); }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+    public void Polygon_rasterization_denies_before_vertex_weighted_coverage_exceeds_the_limit()
+    {
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
+        int[] ends = [3];
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        try
+        {
+            SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
+            using SvgRoot root = new(8, 8, null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255)], false, 0, null);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100);
+            SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None));
+            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+            Assert.Contains("raster work", exception.Message);
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);
