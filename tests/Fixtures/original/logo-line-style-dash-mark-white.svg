@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+  <line x1="2" y1="8" x2="14" y2="8" stroke="red" stroke-width="2" stroke-dasharray="4 4" style="stroke-dasharray: none"/>
+</svg>

@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-line-style-dash-mark-white",
+  "referencePng": "original-logo-line-style-dash-mark-white.png",
+  "referenceSha256": "869e1e4c1962abf5dd8e57fe53ec2be46b71e637fee50a037bc8b4cfb4b8fb3e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "dcc9fe82aa3fbd37fd43ceaea438f08af014f8921f00b70887d6cc80abc8dffa",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
