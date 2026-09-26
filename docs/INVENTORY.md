@@ -66,7 +66,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 ### inv-001 — SimpleLogin logo
 
 - file: tests/Fixtures/candidates/inv-001.svg (SHA-256 BFF82F97D7A113BA10B4DEF3341BD2D5FD43FF3E5BAD648157708F27A1BFDD6B)
-- source: Wikimedia Commons, File:SimpleLogin logo. Retrieval 2026-09-26.
+- source: Wikimedia Commons, File:SimpleLogin logo.svg. Retrieval 2026-09-26.
 - license: PD-logo (simplelogin.io/press via Commons).
 - retrievalDate: 2026-09-26.
 - archetypes: flat mark, linear gradient (2 stops).
@@ -78,7 +78,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 ### inv-002 — Ford simple text logo
 
 - file: tests/Fixtures/candidates/inv-002.svg (SHA-256 67459A7C7D446E6CD54C8B4ECA5A994908EC2D9A51F75406BF669B810D905F84)
-- source: Wikimedia Commons, File:Ford simple text logo. Retrieval 2026-09-26.
+- source: Wikimedia Commons, File:Ford simple text logo.svg. Retrieval 2026-09-26.
 - license: PD-textlogo (ford.es via Commons).
 - retrievalDate: 2026-09-26.
 - archetypes: text-as-paths outlined wordmark.
@@ -87,10 +87,10 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - status: unsupported (rejects:UnsupportedFeature: Only bare-number, px, in, cm, mm, pt, and pc root dimensions are implemented) [inv-002; root x/y and xml:space admitted 2026-09-26].
 - reference: none yet. [exploratory oracle triple 2026-09-26, 500x200 transparent, 3/3 byte-identical SHA-256 723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
-### inv-003 — SDL logo
+### inv-003 — Simple DirectMedia Layer (SDL) logo
 
 - file: tests/Fixtures/candidates/inv-003.svg (SHA-256 A0B8CFEFBF49BE3B5D2E25F06F7592EF6249FA5D225A9843FDD37FF5C7450F1F)
-- source: Wikimedia Commons, File:SDL logo. Retrieval 2026-09-26.
+- source: Wikimedia Commons, File:Simple DirectMedia Layer, Logo.svg. Retrieval 2026-09-26.
 - license: PD-textlogo (vectorised by uploader via Commons).
 - retrievalDate: 2026-09-26.
 - archetypes: flat mark, radial gradient.
@@ -102,7 +102,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 ### inv-004 — UAAR logo 2012
 
 - file: tests/Fixtures/candidates/inv-004.svg (SHA-256 BD196823376965820189695EE07A6EC6BCB792564653EF1D66BAD5B2142DC5F5)
-- source: Wikimedia Commons, File:UAAR logo 2012. Retrieval 2026-09-26.
+- source: Wikimedia Commons, File:UAAR logo 2012.svg. Retrieval 2026-09-26.
 - license: PD-TextLogo (vectorialized from PNG via Commons).
 - retrievalDate: 2026-09-26.
 - archetypes: path mark.
@@ -114,7 +114,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 ### inv-005 — SimpleX.chat logo
 
 - file: tests/Fixtures/candidates/inv-005.svg (SHA-256 1F631699B6559197BF7A1163546388DD095F84E2B2E77A47A4DC2703B6C628B6)
-- source: Wikimedia Commons, File:SimpleX.chat logo. Retrieval 2026-09-26.
+- source: Wikimedia Commons, File:SimpleX.chat logo.svg. Retrieval 2026-09-26.
 - license: PD-text-logo (github simplex-chat via Commons).
 - retrievalDate: 2026-09-26.
 - archetypes: clipped composition.
