@@ -419,11 +419,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_dashed_circle_strokes()
+    public void Lowers_dashed_circle_strokes_as_rings()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-dasharray=\"4 2\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-dasharray=\"4 2\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.True(root.Geometries.Length >= 1);
+        Assert.All(root.Geometries, geometry => Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind));
     }
 
     [Fact]

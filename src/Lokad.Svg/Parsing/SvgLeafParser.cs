@@ -356,7 +356,18 @@ internal static class SvgLeafParser
         SvgStroke? stroke = ParseCircleStroke(element, reader);
         if (stroke is null || !element.Presentation.IsPainted) return filled;
         string? circleDashes = reader.GetAttribute("stroke-dasharray");
-        if (circleDashes is not null && !circleDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed circle strokes are not implemented.");
+        if (circleDashes is not null && !circleDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
+        {
+            SvgStrokeCap dashCap = SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap"));
+            if (dashCap == SvgStrokeCap.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round caps with dashed circle strokes are not implemented.");
+            if (dashCap == SvgStrokeCap.Square) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed circle strokes are not implemented.");
+            double[] dashPattern = SvgStrokeStyleSyntax.ParseDasharray(circleDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Circle dash arrays cannot be empty.");
+            double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(reader.GetAttribute("stroke-dashoffset"));
+            double? dashPathLength = SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
+            double dashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
+            try { return LowerDashedCircleStroke(reader, context, syntax, element, filled, stroke.Value, dashPattern, dashOffset, dashPathLength, dashMiterLimit, nonScalingStroke, frame, state); }
+            catch { filled.Dispose(); throw; }
+        }
         try
         {
             using SvgParsedGeometry ring = lowering.LowerCircleStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, element, stroke.Value, nonScalingStroke, frame, state.Budget);
@@ -364,6 +375,31 @@ internal static class SvgLeafParser
         }
         catch { filled.Dispose(); throw; }
 
+        static SvgParsedGeometry LowerDashedCircleStroke(XmlReader reader, SvgPaintableElementContext context, SvgEllipseSyntax syntax, SvgResolvedPaintableElement shape, SvgParsedGeometry fill, SvgStroke ringStroke, double[] dashes, double dashOffset, double? pathLength, double miterLimit, bool nonScaling, SvgViewportFrame? frame, SvgDocumentState state)
+        {
+            double composedScaleX = shape.Transform.ScaleX * (frame?.ScaleX ?? 1);
+            double composedScaleY = shape.Transform.ScaleY * (frame?.ScaleY ?? 1);
+            if (composedScaleX != composedScaleY || composedScaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Circle strokes under non-uniform polygon transforms stay unsupported.");
+            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1));
+            using RenderBudget.BudgetReservation scratch = state.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
+            SvgContourBuilder builder = new(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints, 1);
+            builder.AddEllipse(new SvgDevicePoint(syntax.CenterX, syntax.CenterY), syntax.RadiusX, syntax.RadiusX, 0, new SvgFlattenPolicy(SvgOrthogonalGeometryLowering.FlattenFlatness, SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), context.CancellationToken);
+            if (builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed circle stroke contours are not implemented.");
+            using BudgetedParserList<SvgFractionalPoint> circlePoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            int vertexIndex = 0;
+            foreach (SvgDevicePoint vertex in builder.GetContour(0))
+            {
+                if ((vertexIndex++ & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
+                circlePoints.Add(new SvgFractionalPoint(vertex.X, vertex.Y));
+            }
+            using BudgetedParserList<SvgPoint> noStrokePoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noStrokeEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, "circle", false, shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
+            SvgParsedGeometry dashed;
+            try { dashed = strokeLowering.LowerStrokePointList(circlePoints, true, shape, ringStroke.Color, shape.Presentation.IsPainted, ringStroke.Width, miterLimit, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, dashes, dashOffset, pathLength, nonScaling, frame, state.Budget); }
+            catch { fill.Dispose(); throw; }
+            return ConcatGeometries(fill, dashed, state.Budget, context.WorkCounter, context.CancellationToken);
+        }
         static SvgParsedGeometry LowerPaintedCircleStroke(XmlReader reader, SvgPaintableElementContext context, SvgEllipseSyntax syntax, string shapeName, bool isCircle, SvgResolvedPaintableElement fillElement, SvgParsedGeometry fill, SvgLinearGradient outlineGradient, SvgRadialGradient outlineCircle, SvgPatternTile outlineTile, bool useLinear, bool useRadial, bool nonScaling, SvgViewportFrame? frame, SvgDocumentState state)
         {
             string? paintDashes = reader.GetAttribute("stroke-dasharray");
