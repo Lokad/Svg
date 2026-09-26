@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-link-use-mark-white",
+  "referencePng": "original-logo-link-use-mark-white.png",
+  "referenceSha256": "28fe1e67768dc19c25424206b7cec5e3cf9c1542ecdca4682909e1f282a5afc6",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "00668bdfd5bf9d5e0a90c61eb02a8f2afd027d1377939f131e9647ae75c82775",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}

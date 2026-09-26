@@ -1,0 +1,11 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <rect id="bar" width="32" height="8" fill="#ff0000"/>
+  </defs>
+  <a href="#linked">
+    <use href="#bar" x="16" y="16"/>
+    <use href="#bar" x="16" y="40"/>
+  </a>
+  <rect x="16" y="28" width="8" height="8" fill="#0000ff"/>
+</svg>
