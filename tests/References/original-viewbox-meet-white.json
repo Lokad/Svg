@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-viewbox-meet-white",
+  "referencePng": "original-viewbox-meet-white.png",
+  "referenceSha256": "fe95d1f4cfb222a84128426b16046e808c4a1457028b70a6d4ec05eb6b3ac5af",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 4,
+    "height": 4,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "b5e9536666073fcc0ae4a3cb42d5f615fd2947fead8119a190c876a904efcac3",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
