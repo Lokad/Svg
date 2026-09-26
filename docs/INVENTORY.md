@@ -149,9 +149,9 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 4 paths, 3 transforms, DOCTYPE present.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 500x143 transparent, 3/3 byte-identical SHA-256 aabc201800a4fa1aaa7d187667252c2a0e978664633566dd2210302f19dcb8d3, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
-### inv-008 — Eisenbahn und Haefen logo
+### inv-008 — Eisenbahn und Häfen logo
 
 - file: tests/Fixtures/candidates/inv-008.svg (SHA-256 BBB81E14EAB6C57EC3876C4A7E116FD38351F94B94A0A5BDE954186A878B2DE3)
 - source: Wikimedia Commons, File:Eisenbahn und Häfen logo.svg. Retrieval 2026-09-26.
