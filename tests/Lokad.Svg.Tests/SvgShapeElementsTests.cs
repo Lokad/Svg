@@ -36,6 +36,15 @@ public sealed class SvgShapeElementsTests
 
         Assert.Equal(direct, viewport);
     }
+
+    [Fact]
+    public void Scaled_viewBox_rounded_matches_direct_rendering()
+    {
+        byte[] viewport = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\" viewBox=\"0 0 32 32\"><rect x=\"4\" y=\"4\" width=\"24\" height=\"24\" rx=\"6\" fill=\"red\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><rect x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"12\" fill=\"red\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, viewport);
+    }
     [Fact]
     public void Rounded_rectangle_cuts_corners()
     {
