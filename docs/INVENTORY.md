@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples stable for batch 3 (3/3 byte-identical each; per-entry hashes below).
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples stable for batch 3 (3/3 byte-identical each; per-entry hashes below). Batch 4 selected 2026-09-26: 2 documents (inv-013..inv-014), both renderer-probed 2026-09-26; oracle triples pending. A third staged file (4-set Venn, PD) was held back as a redundant fourth DTD rejection; it can backfill later if the rejects path needs volume.
 
 ## Purpose and non-goals
 
@@ -214,3 +214,31 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 396x403 transparent, 3/3 byte-identical SHA-256 c9abedd317b8eb2708852ae5ed8603d8e5dc39f66ebda5d49b47c073be949211, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+
+## Selected documents (batch 4, 2026-09-26)
+
+Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, 2026-09-26). Batch 4 closes the live even-odd and live opacity gaps from the batch-3 census: inv-013 carries live root fill-rule/clip-rule evenodd plus per-path opacity; inv-014 carries six stroked paths with per-path opacity (third DTD security rejection). Files live in tests/Fixtures/candidates/ with provenance; no CC0 SPDX headers; never copied into tests/Fixtures/original/.
+
+### inv-013 — 5 linked circles with transparent background
+
+- file: tests/Fixtures/candidates/inv-013.svg (SHA-256 12943A6DD558720D49C2A4D3BD49C523453735BB940C6D6A4F4C19555353C2A4)
+- source: Wikimedia Commons, File:5 linked circles with transparent background.svg. Retrieval 2026-09-26.
+- license: PD-shape (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: live even-odd fill and clip rules, per-path opacity, fractional stroke width (first blocker: root xml:space).
+- content: 5 paths, root fill-rule/clip-rule evenodd, opacity .25.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: SVG root attribute xml:space is not implemented).
+- reference: none yet.
+
+### inv-014 — Blank 6 circle Venn rotated view
+
+- file: tests/Fixtures/candidates/inv-014.svg (SHA-256 C8A10CA8F72B99685EE46C0D79064B15A2F9D456E98CF4A2973D63A996BF1D67)
+- source: Wikimedia Commons, File:Blank 6 circle or 6 set Venn diagram with limited overlap rotated view.svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: per-path opacity, stroked paths, viewBox-only viewport (unrenderable: DOCTYPE present).
+- content: 6 paths, defs, opacity on all paths.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: rejects (rejects:MalformedInput: DTD prohibited by XML security policy).
+- reference: none yet.
