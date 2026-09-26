@@ -171,14 +171,44 @@ internal static class SvgLeafParser
     private static SvgParsedGeometry LowerEllipseShape(XmlReader reader, SvgPaintableElementContext context, SvgEllipseSyntax syntax, string elementName, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgPatternSyntax.IsPatternFill(style.Fill)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills on " + elementName + " elements are not implemented.");
-        if (SvgGradientSyntax.IsGradientFill(style.Fill)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient fills on " + elementName + " elements are not implemented.");
+        if (SvgPatternSyntax.IsPatternFill(style.Fill) && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(style.Fill), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills on " + elementName + " elements are not implemented.");
+        bool paintGradient = SvgGradientSyntax.IsGradientFill(style.Fill);
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient strokes on " + elementName + " elements are not implemented.");
-        SvgResolvedPaintableElement element = context.ResolveShape(style, reader, elementName is "circle" or "ellipse");
+        if (paintGradient && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient-filled " + elementName + "s with strokes are not implemented.");
+        SvgComputedStyle fillStyle = paintGradient ? style with { Fill = "#ffffff" } : style;
+        SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, elementName is "circle" or "ellipse");
+        AxisTransform transform = element.Transform;
+        SvgLinearGradient linear = default;
+        SvgRadialGradient radial = default;
+        bool isLinear = false;
+        byte opacity = 255;
+        SvgRectangle box = default;
+        if (paintGradient)
+        {
+            string paintId = SvgGradientSyntax.ParsePaintId(style.Fill);
+            if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient foundLinear))
+            {
+                linear = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, foundLinear, frame));
+                isLinear = true;
+            }
+            else if (!state.RadialGradients.TryGetValue(paintId, out radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+            else radial = SvgGradientSyntax.MapUserSpaceRadial(transform, radial, frame);
+            opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
+            SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.CenterX - syntax.RadiusX, syntax.CenterY - syntax.RadiusY, 2 * syntax.RadiusX, 2 * syntax.RadiusY, default, true, null));
+            box = frame is null ? placement : frame.Value.Shift(placement);
+        }
         using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, elementName, false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
         SvgParsedGeometry filled = lowering.LowerEllipseFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, element, frame, state.Budget);
+        if (paintGradient)
+        {
+            SvgGeometry repainted = isLinear
+                ? SvgGradientPolygon.RepaintOutline(filled.Geometries[0].Polygon, linear, box, opacity, state.Budget)
+                : SvgRadialPolygon.RepaintOutline(filled.Geometries[0].Polygon, radial, box, opacity, state.Budget);
+            filled.Dispose();
+            return RetainSingleGeometry(repainted, state, context);
+        }
         bool nonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(reader.GetAttribute("vector-effect"));
         if (elementName != "circle")
         {
