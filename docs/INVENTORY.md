@@ -229,7 +229,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 5 paths, root fill-rule/clip-rule evenodd, opacity .25.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: SVG root attribute xml:space is not implemented).
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 1000x800 transparent, 3/3 byte-identical SHA-256 d5bf3f1f2a5232c767bb4302be338e1b8cc92d349e172f7b96181fe87ec11dfc, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-014 — Blank 6 circle Venn rotated view
 
