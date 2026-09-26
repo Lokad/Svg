@@ -415,3 +415,19 @@ Public-domain SVG from Wikimedia Commons (LicenseShortName=Public domain per Com
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only integer rectangle coordinates are implemented).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 543x149 transparent, 3/3 byte-identical SHA-256 826fc626a84a21945425934eca291517ee5dda87a9dea7e8cfc62e8b6a266a40, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+
+## Selected documents (batch 11, 2026-09-26)
+
+Public-domain SVG from Wikimedia Commons (LicenseShortName=Public domain per Commons API extmetadata, 2026-09-26; SHA-1 check below at commit time). inv-027 is a nested-svg icon whose root class admission (2026-09-26) exposed its next gate: CSS width/height in root inline style. File lives in tests/Fixtures/candidates/ with provenance; no CC0 SPDX header; never copied into tests/Fixtures/original/.
+
+### inv-027 — YouTube grey icon (2017)
+
+- file: tests/Fixtures/candidates/inv-027.svg (SHA-256 59563E953FC358D4D7C244ED7BE4B463DD401CEB16AACB57979ADC53E413FFEE)
+- source: Wikimedia Commons, File:YouTube grey icon (2017).svg. Retrieval 2026-09-26.
+- license: PD-shape (Commons; depicted mark may carry trademark considerations).
+- retrievalDate: 2026-09-26.
+- archetypes: nested svg viewport, style-sized dimensions, fractional curves.
+- content: nested svg, group, paths.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Inline style property width is not implemented) [inv-027; root class admitted 2026-09-26].
+- reference: none yet.

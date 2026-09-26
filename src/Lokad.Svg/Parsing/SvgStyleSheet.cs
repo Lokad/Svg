@@ -57,6 +57,18 @@ internal static class SvgStyleSheet
         return false;
     }
 
+    internal static bool TargetsRootClass(string? rootClass, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (rootClass is null) return false;
+        for (int ruleIndex = 0; ruleIndex < rules.Count; ruleIndex++)
+        {
+            workCounter.Consume(cancellationToken);
+            CssRule rule = rules[ruleIndex];
+            if ((rule.Kind == CssSelectorKind.Class && HasCssClass(rootClass, rule.Value, workCounter, cancellationToken)) || (rule.Kind == CssSelectorKind.AttributePresent && rule.Value == "class") || (rule.Kind == CssSelectorKind.AttributeEquals && rule.Value == "class" && string.Equals(rootClass, rule.ExpectedValue, StringComparison.Ordinal))) return true;
+        }
+        return false;
+    }
+
     internal static OwnedStyleSheetText ReadElementText(XmlReader reader, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         using XmlReader subtree = reader.ReadSubtree();

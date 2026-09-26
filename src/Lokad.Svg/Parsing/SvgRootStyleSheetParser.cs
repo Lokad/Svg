@@ -28,5 +28,6 @@ internal static class SvgRootStyleSheetParser
             SvgStyleSheet.Parse(text.Value, maximumRules, state.StyleRules, state.Strings, budget, workCounter, cancellationToken);
         }
         if (SvgStyleSheet.TargetsRootId(root.Id, state.StyleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
+        if (SvgStyleSheet.TargetsRootClass(root.Class, state.StyleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
     }
 }

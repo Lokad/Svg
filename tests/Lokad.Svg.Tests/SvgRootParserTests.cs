@@ -3518,7 +3518,7 @@ public sealed class SvgRootParserTests
         ParserWorkCounter workCounter = new(1);
         using SvgDocumentState state = new(budget, workCounter, CancellationToken.None);
         state.StyleRules.Add(new CssRule(CssSelectorKind.Class, "selected", null, 10, default));
-        SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, null, 255, null, null, null);
+        SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, null, null, 255, null, null, null);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRenderedLeafParser.TryParse(reader, true, true, root, state, SvgRenderLimits.Default, budget, new Dictionary<string, SvgColor>(), null, workCounter, CancellationToken.None));
 
@@ -6730,5 +6730,51 @@ public sealed class SvgRootParserTests
         ReadOnlyMemory<byte> ruledPng = SvgConverter.ConvertToPng(ruled, SvgRenderOptions.Default, CancellationToken.None);
 
         Assert.True(plainPng.Span.SequenceEqual(ruledPng.Span));
+    }
+    [Fact]
+    public void Admits_root_class_without_stylesheet()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' class='external-icon' width='12' height='7'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Single(root.Rectangles);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Ignores_root_class_when_rendering()
+    {
+        byte[] plain = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+        byte[] classified = "<svg xmlns='http://www.w3.org/2000/svg' class='external-icon' width='5' height='5'><rect x='1' y='1' width='2' height='2' fill='red'/></svg>"u8.ToArray();
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> classifiedPng = SvgConverter.ConvertToPng(classified, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(plainPng.Span.SequenceEqual(classifiedPng.Span));
+    }
+
+    [Fact]
+    public void Rejects_class_stylesheet_targeting_root_class()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' class='external-icon'><style>.external-icon{fill:blue}</style><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Admits_unmatched_class_stylesheet_with_root_class()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' class='external-icon'><style>.other{fill:blue}</style><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Single(root.Rectangles);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Rejects_overlong_root_class()
+    {
+        string classValue = new('a', SvgSyntaxLimits.MaximumIdentifierCharacters + 1);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' class='" + classValue + "'/>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
 }

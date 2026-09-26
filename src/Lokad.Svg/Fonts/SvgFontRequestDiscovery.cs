@@ -59,6 +59,7 @@ internal static class SvgFontRequestDiscovery
             bool hasRoot = false;
             int rootDepth = -1;
             string? rootId = null;
+            string? rootClass = null;
             bool sawStyleableNode = false;
             bool hasUnsupportedContent = false;
             int nodeCount = 0;
@@ -81,6 +82,7 @@ internal static class SvgFontRequestDiscovery
                         hasRoot = true;
                         rootDepth = reader.Depth;
                         rootId = reader.GetAttribute("id");
+                        rootClass = reader.GetAttribute("class");
                     }
                     SvgStructuralAdmission.ValidateElementStructure(reader, limits);
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
@@ -134,6 +136,7 @@ internal static class SvgFontRequestDiscovery
                         using OwnedStyleSheetText styleText = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken);
                         SvgStyleSheet.Parse(styleText.Value, limits.MaximumNodes, styleRules, styleStrings, budget, workCounter, cancellationToken);
                         if (SvgStyleSheet.TargetsRootId(rootId, styleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
+                        if (SvgStyleSheet.TargetsRootClass(rootClass, styleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
                     }
                     if (rootStyleElement) continue;
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && (directChild || hasGroupAncestor) && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
