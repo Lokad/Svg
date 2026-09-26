@@ -195,6 +195,20 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void ViewBox_scaled_circle_matches_direct_rendering()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><circle cx='4' cy='4' r='3' fill='red'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><circle cx='64' cy='64' r='48' fill='red'/></svg>", out _, out _);
+        Assert.Equal(direct, scaled);
+    }
+    [Fact]
+    public void ViewBox_scaled_ellipse_matches_direct_rendering()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 16 16'><ellipse cx='8' cy='8' rx='5' ry='3' fill='red'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><ellipse cx='32' cy='32' rx='20' ry='12' fill='red'/></svg>", out _, out _);
+        Assert.Equal(direct, scaled);
+    }
+    [Fact]
     public void Circle_sized_ellipse_stroke_matches_circle_stroke()
     {
         byte[] ellipse = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='6' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);

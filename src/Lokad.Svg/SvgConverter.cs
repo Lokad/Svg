@@ -153,14 +153,7 @@ public static class SvgConverter
     /// <summary>Renders one parsed scene while retaining its surface reservation until the returned surface is disposed.</summary>
     internal static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
     {
-        (double width, double height) = options.Viewport is SvgViewport viewport ? (viewport.Width, viewport.Height) : (root.Width, root.Height) switch
-        {
-            (double explicitWidth, double explicitHeight) => (explicitWidth, explicitHeight),
-            (null, null) => (300, 150),
-            (double explicitWidth, null) when root.ViewBox is SvgViewBox box => (explicitWidth, explicitWidth * box.Height / box.Width),
-            (null, double explicitHeight) when root.ViewBox is SvgViewBox box => (explicitHeight * box.Width / box.Height, explicitHeight),
-            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Both root dimensions or neither root dimension are required currently.")
-        };
+        (double width, double height) = ResolveOutputDimensions(options.Viewport, root.Width, root.Height, root.ViewBox);
         double scaledWidth = width * options.OutputScale;
         double scaledHeight = height * options.OutputScale;
         if (!double.IsFinite(scaledWidth) || !double.IsFinite(scaledHeight) || scaledWidth <= 0 || scaledHeight <= 0 || scaledWidth != Math.Truncate(scaledWidth) || scaledHeight != Math.Truncate(scaledHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive finite integral output dimensions are implemented currently.");
@@ -1218,27 +1211,6 @@ public static class SvgConverter
 
         static int ClampCeiling(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Ceiling(value));
 
-        static (double HorizontalScale, double HorizontalOffset, double VerticalScale, double VerticalOffset) GetViewBoxTransform(SvgViewBox? viewBox, double width, double height, double outputScale)
-        {
-            if (viewBox is not SvgViewBox box) return (outputScale, 0, outputScale, 0);
-            double horizontalScale = width / box.Width;
-            double verticalScale = height / box.Height;
-            if (box.HorizontalAlignment != SvgViewBoxAlignment.None)
-            {
-                double scale = box.Fit == SvgViewBoxFit.Slice ? Math.Max(horizontalScale, verticalScale) : Math.Min(horizontalScale, verticalScale);
-                horizontalScale = scale;
-                verticalScale = scale;
-            }
-            return (horizontalScale * outputScale, (GetAlignmentOffset(width - box.Width * horizontalScale, box.HorizontalAlignment) - box.X * horizontalScale) * outputScale, verticalScale * outputScale, (GetAlignmentOffset(height - box.Height * verticalScale, box.VerticalAlignment) - box.Y * verticalScale) * outputScale);
-
-            static double GetAlignmentOffset(double remaining, SvgViewBoxAlignment alignment) => alignment switch
-            {
-                SvgViewBoxAlignment.Min or SvgViewBoxAlignment.None => 0,
-                SvgViewBoxAlignment.Mid => remaining / 2,
-                SvgViewBoxAlignment.Max => remaining,
-                _ => throw new InvalidOperationException("Unknown viewBox alignment.")
-            };
-        }
     }
 
         private static readonly int[,] GradientDither =
@@ -1253,9 +1225,77 @@ public static class SvgConverter
             { 63, 31, 55, 23, 61, 29, 53, 21 },
         };
 
+    /// <summary>Resolves output dimensions from an explicit viewport or root dimensions with viewBox aspect handling.</summary>
+    private static (double Width, double Height) ResolveOutputDimensions(SvgViewport? viewport, double? rootWidth, double? rootHeight, SvgViewBox? viewBox)
+        => viewport is SvgViewport explicitViewport
+            ? (explicitViewport.Width, explicitViewport.Height)
+            : (rootWidth, rootHeight) switch
+            {
+                (double explicitWidth, double explicitHeight) => (explicitWidth, explicitHeight),
+                (null, null) => (300, 150),
+                (double explicitWidth, null) when viewBox is SvgViewBox widthBox => (explicitWidth, explicitWidth * widthBox.Height / widthBox.Width),
+                (null, double explicitHeight) when viewBox is SvgViewBox heightBox => (explicitHeight * heightBox.Width / heightBox.Height, explicitHeight),
+                _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Both root dimensions or neither root dimension are required currently.")
+            };
+
+    private static (double HorizontalScale, double HorizontalOffset, double VerticalScale, double VerticalOffset) GetViewBoxTransform(SvgViewBox? viewBox, double width, double height, double outputScale)
+    {
+        if (viewBox is not SvgViewBox box) return (outputScale, 0, outputScale, 0);
+        double horizontalScale = width / box.Width;
+        double verticalScale = height / box.Height;
+        if (box.HorizontalAlignment != SvgViewBoxAlignment.None)
+        {
+            double scale = box.Fit == SvgViewBoxFit.Slice ? Math.Max(horizontalScale, verticalScale) : Math.Min(horizontalScale, verticalScale);
+            horizontalScale = scale;
+            verticalScale = scale;
+        }
+        return (horizontalScale * outputScale, (GetAlignmentOffset(width - box.Width * horizontalScale, box.HorizontalAlignment) - box.X * horizontalScale) * outputScale, verticalScale * outputScale, (GetAlignmentOffset(height - box.Height * verticalScale, box.VerticalAlignment) - box.Y * verticalScale) * outputScale);
+
+        static double GetAlignmentOffset(double remaining, SvgViewBoxAlignment alignment) => alignment switch
+        {
+            SvgViewBoxAlignment.Min or SvgViewBoxAlignment.None => 0,
+            SvgViewBoxAlignment.Mid => remaining / 2,
+            SvgViewBoxAlignment.Max => remaining,
+            _ => throw new InvalidOperationException("Unknown viewBox alignment.")
+        };
+    }
+
+    /// <summary>Probes root dimensions and the output transform without lowering, falling back to unit scales when the root cannot be resolved.</summary>
+    internal static (double HorizontalScale, double VerticalScale) TryResolveOutputScales(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+    {
+        try
+        {
+            using RenderBudget.BudgetReservation workspace = budget.Reserve(SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, options.Limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
+            XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = options.Limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
+            using ReadOnlyMemoryStream stream = new(svg);
+            using XmlReader reader = XmlReader.Create(stream, settings);
+            ParserWorkCounter probe = new(options.Limits.MaximumWorkUnits);
+            while (reader.Read())
+            {
+                probe.Consume(cancellationToken);
+                if (reader.NodeType != XmlNodeType.Element) continue;
+                if (!reader.LocalName.Equals("svg", StringComparison.Ordinal)) return (1.0, 1.0);
+                SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, probe, cancellationToken);
+                (double width, double height) = ResolveOutputDimensions(options.Viewport, root.Width, root.Height, root.ViewBox);
+                (double horizontalScale, _, double verticalScale, _) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
+                if (!double.IsFinite(horizontalScale) || !double.IsFinite(verticalScale) || horizontalScale <= 0 || verticalScale <= 0) return (1.0, 1.0);
+                return (horizontalScale, verticalScale);
+            }
+
+            return (1.0, 1.0);
+        }
+        catch (OperationCanceledException) { throw; }
+        catch (Exception exception) when (exception is SvgException or XmlException or InvalidOperationException or OverflowException)
+        {
+            return (1.0, 1.0);
+        }
+    }
+
     private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        try { return workCounter is null ? SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, cancellationToken) : SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, workCounter, cancellationToken); }
+        (double outputScaleX, double outputScaleY) = TryResolveOutputScales(svg, options, budget, cancellationToken);
+        ParserWorkCounter counter = workCounter ?? new ParserWorkCounter(options.Limits.MaximumWorkUnits);
+        try { return SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, counter, cancellationToken, outputScaleX, outputScaleY); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
