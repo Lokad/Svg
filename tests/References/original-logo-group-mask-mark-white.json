@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-group-mask-mark-white",
+  "referencePng": "original-logo-group-mask-mark-white.png",
+  "referenceSha256": "f8a2a94e62856fa97f3a521a7d4594958919f9d597b7bee4c1370daf7e14686f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "63461f1a76b836c29a611b1c1adbda43aa4b80ea5799c2eec03b11df972223a8",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
