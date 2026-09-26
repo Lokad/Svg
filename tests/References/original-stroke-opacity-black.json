@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-stroke-opacity-black",
+  "referencePng": "original-stroke-opacity-black.png",
+  "referenceSha256": "6dde284d084e7fbdf9b712de30ad17d10e68d4b943abc83041125272d14cdacc",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 6,
+    "height": 6,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "d87561511ab8136d9ee1a7108159f67709af107d4f83d0f48ea943ed0452023a",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
