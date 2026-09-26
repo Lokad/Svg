@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-circle-dash-mark",
+  "referencePng": "original-logo-circle-dash-mark.png",
+  "referenceSha256": "26ad7d7e89048da11221a1355a1df0177c76f976978d062205dd28ea34d19c1b",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 16, "height": 16, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "6c812eba8cc535bb0a44c6769f0e8a144dc4b8647a293bce1e12d3f0d9a34c2e",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 114,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 240,
+    "exact": false
+  },
+  "admittedAt": "2026-09-26"
+}
