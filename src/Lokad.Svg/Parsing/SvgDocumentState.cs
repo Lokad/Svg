@@ -55,6 +55,9 @@ internal sealed class SvgDocumentState : IDisposable
     /// <summary>Gets or sets the depth of the skipped switch subtree root, or -1 when nothing is skipped.</summary>
     internal int SkipDepth { get; set; } = -1;
 
+    /// <summary>Gets or sets the root and output magnification applied after lowering, which scales flattening tolerance.</summary>
+    internal double OutputMagnification { get; set; } = 1.0;
+
     internal BudgetedParserList<SvgViewportFrame> Viewports { get; }
 
     internal SvgViewportFrame? EffectiveFrame => Viewports.Count == 0 ? null : Viewports[^1];

@@ -16,6 +16,10 @@ internal readonly record struct SvgOrthogonalEdgeIntersection(int X, int Winding
 internal ref struct SvgOrthogonalGeometryLowering
 {
     internal const double FlattenFlatness = 0.25;
+
+    /// <summary>Scales flattening tolerance down with root and output magnification, never coarsening past the nominal flatness.</summary>
+    internal static double ScaledFlatness(double outputMagnification)
+        => outputMagnification <= 1 ? FlattenFlatness : FlattenFlatness / outputMagnification;
     internal const int FlattenMaxDepth = 64;
     internal const int CurveSegmentsPerCommand = 1024;
     private const int ShapeSegmentsPerShape = 4096;
@@ -262,7 +266,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (mappedRadiusX > 0 && mappedRadiusY > 0)
         {
             SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
-            SvgFlattenPolicy flattenPolicy = new(FlattenFlatness, FlattenMaxDepth, ShapeSegmentsPerShape);
+            SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
             using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry);
             SvgContourBuilder builder = new(MaximumFlattenedContourPoints, 1);
             builder.AddEllipse(center, mappedRadiusX, mappedRadiusY, 0, flattenPolicy, _cancellationToken);
@@ -295,7 +299,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             double outerRadius = deviceRadius + deviceWidth / 2;
             double innerRadius = deviceRadius - deviceWidth / 2;
             SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
-            SvgFlattenPolicy flattenPolicy = new(FlattenFlatness, FlattenMaxDepth, ShapeSegmentsPerShape);
+            SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
             using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(2), SvgMemoryCategory.Geometry);
             SvgContourBuilder builder = new(MaximumFlattenedContourPoints, 2);
             builder.AddEllipse(center, outerRadius, outerRadius, 0, flattenPolicy, _cancellationToken);
@@ -340,7 +344,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             double innerRadiusX = deviceRadiusX - deviceWidth / 2;
             double innerRadiusY = deviceRadiusY - deviceWidth / 2;
             SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
-            SvgFlattenPolicy flattenPolicy = new(FlattenFlatness, FlattenMaxDepth, ShapeSegmentsPerShape);
+            SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
             using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(2), SvgMemoryCategory.Geometry);
             SvgContourBuilder builder = new(MaximumFlattenedContourPoints, 2);
             builder.AddEllipse(center, outerRadiusX, outerRadiusY, 0, flattenPolicy, _cancellationToken);
@@ -374,7 +378,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgRectangle shifted = frame is null ? placed : frame.Value.Shift(placed);
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
         double mappedRadiusY = radiusY * Math.Abs(scaleY);
-        SvgFlattenPolicy flattenPolicy = new(FlattenFlatness, FlattenMaxDepth, ShapeSegmentsPerShape);
+        SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
         using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry);
         SvgContourBuilder builder = new(MaximumFlattenedContourPoints, 1);
         builder.AddRoundedRect(shifted.X, shifted.Y, shifted.Width, shifted.Height, mappedRadiusX, mappedRadiusY, flattenPolicy, _cancellationToken);
@@ -396,7 +400,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured path-command limit.");
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
         if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
-        SvgFlattenPolicy flattenPolicy = new(FlattenFlatness, FlattenMaxDepth, CurveSegmentsPerCommand);
+        SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
         long wantedPoints = (long)_maximumGeometryElements * (CurveSegmentsPerCommand + 1);
         int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
         int contourCapacity = pointCapacity < _maximumGeometryElements ? pointCapacity : _maximumGeometryElements;
@@ -852,7 +856,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
         if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
         double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame, nonScaling);
-        SvgFlattenPolicy flattenPolicy = new(FlattenFlatness, FlattenMaxDepth, CurveSegmentsPerCommand);
+        SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
         long wantedPoints = (long)_maximumGeometryElements * (CurveSegmentsPerCommand + 1);
         int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
         int contourCapacity = pointCapacity < _maximumGeometryElements ? pointCapacity : _maximumGeometryElements;

@@ -12,12 +12,13 @@ public sealed class SvgPaintableElementContextTests
         using XmlReader reader = XmlReader.Create(new StringReader("<rect fill='currentColor' color='blue' display='none' transform='translate(4, 5)'/>"));
         Assert.True(reader.Read());
         IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase) { ["blue"] = new SvgColor(0, 0, 255, 255) };
-        SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, default, namedColors, new ParserWorkCounter(100), CancellationToken.None);
+        SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, default, namedColors, new ParserWorkCounter(100), CancellationToken.None, 1.0);
 
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
 
         Assert.Equal(new SvgComputedStyle("blue", "currentColor", null, null, "none", null, null, null), element.Style);
         Assert.Equal(new AxisTransform(1, 1, 4, 5), element.Transform);
+        Assert.Equal(1.0, element.OutputMagnification);
         Assert.Equal(new SvgColor(0, 0, 255, 255), element.Presentation.Color);
         Assert.False(element.Presentation.IsPainted);
     }
@@ -27,7 +28,7 @@ public sealed class SvgPaintableElementContextTests
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<text style='fill: #f00; font-family: Example; font-weight: 700; font-style: italic; font-size: 12'/>"));
         Assert.True(reader.Read());
-        SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, default, new Dictionary<string, SvgColor>(), new ParserWorkCounter(100), CancellationToken.None);
+        SvgPaintableElementContext context = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, default, new Dictionary<string, SvgColor>(), new ParserWorkCounter(100), CancellationToken.None, 1.0);
 
         SvgResolvedDirectTextElement element = context.ResolveTextShape(reader);
 

@@ -229,7 +229,7 @@ internal static class SvgLeafParser
             long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1));
             using RenderBudget.BudgetReservation scratch = state.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
             SvgContourBuilder builder = new(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints, 1);
-            builder.AddRoundedRect(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, new SvgFlattenPolicy(SvgOrthogonalGeometryLowering.FlattenFlatness, SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), context.CancellationToken);
+            builder.AddRoundedRect(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, new SvgFlattenPolicy(SvgOrthogonalGeometryLowering.ScaledFlatness(context.OutputMagnification), SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), context.CancellationToken);
 
             if (builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rounded rectangle stroke contours are not implemented.");
             using BudgetedParserList<SvgFractionalPoint> roundedPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -394,7 +394,7 @@ internal static class SvgLeafParser
             long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1));
             using RenderBudget.BudgetReservation scratch = state.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
             SvgContourBuilder builder = new(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints, 1);
-            builder.AddEllipse(new SvgDevicePoint(syntax.CenterX, syntax.CenterY), syntax.RadiusX, syntax.RadiusY, 0, new SvgFlattenPolicy(SvgOrthogonalGeometryLowering.FlattenFlatness, SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), context.CancellationToken);
+            builder.AddEllipse(new SvgDevicePoint(syntax.CenterX, syntax.CenterY), syntax.RadiusX, syntax.RadiusY, 0, new SvgFlattenPolicy(SvgOrthogonalGeometryLowering.ScaledFlatness(context.OutputMagnification), SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), context.CancellationToken);
             if (builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, shapeName == "circle" ? "Dashed circle stroke contours are not implemented." : "Dashed ellipse stroke contours are not implemented.");
             using BudgetedParserList<SvgFractionalPoint> circlePoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             int vertexIndex = 0;
@@ -586,7 +586,7 @@ internal static class SvgLeafParser
         }
         SvgColor white = new(255, 255, 255, 255);
         SvgPaint discPaint = new(white, fillHasPaint, 255, white, false);
-        SvgResolvedPaintableElement discElement = new(style, transform, new SvgResolvedShapePresentation(discPaint, white, null, 255, painted));
+        SvgResolvedPaintableElement discElement = new(style, transform, new SvgResolvedShapePresentation(discPaint, white, null, 255, painted), context.OutputMagnification);
         double radius = strokeWidth / 2d;
         using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
