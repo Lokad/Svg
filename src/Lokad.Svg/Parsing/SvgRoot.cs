@@ -393,6 +393,7 @@ internal sealed class SvgPolygonFill : IDisposable
 
     internal int[] ContourEnds { get; }
 
+    /// <summary>Per-contour combination weights resolved at retention: parity signs for even-odd fills, winding roles for nonzero fills; the rasterizer falls back to signed accumulation when absent.</summary>
     internal int[]? Signs { get; }
 
     internal SvgColor Color { get; }
@@ -460,6 +461,7 @@ internal sealed class SvgGradientPolygon : IDisposable
 
     internal int[] ContourEnds { get; }
 
+    /// <summary>Per-contour combination weights resolved at retention: parity signs for even-odd fills, winding roles for nonzero fills; the rasterizer falls back to signed accumulation when absent.</summary>
     internal int[]? Signs { get; }
 
     internal SvgLinearGradient Gradient { get; }
@@ -542,6 +544,7 @@ internal sealed class SvgRadialPolygon : IDisposable
 
     internal int[] ContourEnds { get; }
 
+    /// <summary>Per-contour combination weights resolved at retention: parity signs for even-odd fills, winding roles for nonzero fills; the rasterizer falls back to signed accumulation when absent.</summary>
     internal int[]? Signs { get; }
 
     internal SvgRadialGradient Gradient { get; }
@@ -623,6 +626,7 @@ internal sealed class SvgPatternPolygon : IDisposable
 
     internal int[] ContourEnds { get; }
 
+    /// <summary>Per-contour combination weights resolved at retention: parity signs for even-odd fills, winding roles for nonzero fills; the rasterizer falls back to signed accumulation when absent.</summary>
     internal int[]? Signs { get; }
 
     internal SvgRectangle Content { get; }

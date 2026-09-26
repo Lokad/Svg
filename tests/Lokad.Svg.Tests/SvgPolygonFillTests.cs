@@ -191,6 +191,29 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Disjoint_opposite_contours_paint()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .6 .9 L .9 .6 Z' fill='red'/></svg>", out int width, out int height);
+
+        Assert.Equal(8, width);
+        Assert.Equal(8, height);
+        SvgColor center = Pixel(pixels, width, 0, 0);
+        Assert.Equal(255, center.Red);
+        Assert.Equal(0, center.Green);
+        Assert.Equal(0, center.Blue);
+        Assert.True(center.Alpha > 0, "Disjoint opposite contours must not cancel.");
+    }
+
+    [Fact]
+    public void Contour_reversal_keeps_disjoint_paint()
+    {
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .6 .9 L .9 .6 Z' fill='red'/></svg>", out _, out _);
+        byte[] reversed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .9 .6 L .6 .9 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(plain, reversed);
+    }
+
+    [Fact]
     public void ViewBox_scaled_gradient_clip_matches_direct_rendering()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='url(#g)' clip-path='url(#c)'/></svg>", out _, out _);

@@ -355,7 +355,9 @@ public static class SvgConverter
                 {
                     double pixelCoverage = polygon.IsEvenOdd
                         ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
-                        : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                        : polygon.Signs is int[] roles
+                            ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
+                            : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
                     SvgColor color = WithCoverage(polygon.Color, pixelCoverage);
                     int offset = (y * outputWidth + x) * 4;
                     BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
@@ -417,7 +419,9 @@ public static class SvgConverter
             {
                 double pixelCoverage = outline.IsEvenOdd
                     ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
-                    : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                    : outline.Signs is int[] roles
+                        ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
+                        : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double position;
                 if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
@@ -506,7 +510,9 @@ public static class SvgConverter
             {
                 double pixelCoverage = outline.IsEvenOdd
                     ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
-                    : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                    : outline.Signs is int[] roles
+                        ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
+                        : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double sampleX;
                 double sampleY;
@@ -649,7 +655,9 @@ public static class SvgConverter
             {
                 double pixelCoverage = outline.IsEvenOdd
                     ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
-                    : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                    : outline.Signs is int[] roles
+                        ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
+                        : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
                 int tileX = PositiveModulo(x - tile.OriginX, tile.TileWidth);
                 int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
                 int tileOffset = (tileY * tile.TileWidth + tileX) * 4;

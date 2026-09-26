@@ -13,7 +13,7 @@
   "candidateSha256": "51d9d3cf55e99a6a986e8c65c41cd9ff57d8fac154c82a2821864f05eca8d9b3",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 184,
+    "changedPixelCount": 196,
     "maximumChannelError": 255,
     "maximumAlphaError": 71,
     "exact": false

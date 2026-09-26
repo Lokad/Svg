@@ -890,7 +890,10 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgPolygonMapping mapping = flattenedCenterline ? SvgPolygonMapping.FlattenedCurves : fractionalVertices ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.QuarterEdges;
         SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
         ValidateDeviceRange(retained);
-        return RetainPolygonFill(retained, ends, null, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+        int[] roles = new int[ends.Length];
+        ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+        SvgContourNesting.ComputeWindingRoles(retained, ends, roles, _cancellationToken);
+        return RetainPolygonFill(retained, ends, roles, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
     }
 
     /// <summary>Validates separated device contours once and retains one polygon fill with scene-owned storage.</summary>
@@ -909,6 +912,12 @@ internal ref struct SvgOrthogonalGeometryLowering
             signs = new int[ends.Length];
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
             SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
+        }
+        else
+        {
+            signs = new int[ends.Length];
+            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            SvgContourNesting.ComputeWindingRoles(retained, ends, signs, _cancellationToken);
         }
 
         return RetainPolygonFill(retained, ends, signs, color, hasFill, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
@@ -955,6 +964,12 @@ internal ref struct SvgOrthogonalGeometryLowering
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
             SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
         }
+        else
+        {
+            signs = new int[ends.Length];
+            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            SvgContourNesting.ComputeWindingRoles(retained, ends, signs, _cancellationToken);
+        }
 
         return RetainGradientPolygonFill(retained, ends, signs, gradient, box, hasFill, opacity, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
     }
@@ -986,6 +1001,12 @@ internal ref struct SvgOrthogonalGeometryLowering
             signs = new int[ends.Length];
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
             SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
+        }
+        else
+        {
+            signs = new int[ends.Length];
+            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            SvgContourNesting.ComputeWindingRoles(retained, ends, signs, _cancellationToken);
         }
 
         return RetainRadialPolygonFill(retained, ends, signs, gradient, box, hasFill, opacity, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
