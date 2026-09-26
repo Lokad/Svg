@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-pattern-rounded-mark",
+  "referencePng": "original-logo-pattern-rounded-mark.png",
+  "referenceSha256": "8dd5dd83b3938ffe7079a806fc9e8a504dc59678b1a76cb6b1339fab0b7e5be9",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "567abcf988e8d8f5766afed4b700b55d71073ae57cbf0a85f546e454973ba0d7",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 93,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 65,
+    "exact": false
+  },
+  "admittedAt": "2026-09-26"
+}

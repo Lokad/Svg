@@ -91,17 +91,23 @@ internal static class SvgLeafParser
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient strokes on rounded rectangles are not implemented.");
-        bool paintPattern = SvgPatternSyntax.IsPatternFill(style.Fill) && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(style.Fill), out _);
-        if (paintPattern) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills on rounded rectangles are not implemented.");
+        SvgPatternTile tile = default;
+        bool paintPattern = SvgPatternSyntax.IsPatternFill(style.Fill) && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(style.Fill), out tile);
         bool paintGradient = SvgGradientSyntax.IsGradientFill(style.Fill) && !paintPattern;
-        SvgComputedStyle fillStyle = paintGradient ? style with { Fill = "#ffffff" } : style;
+        SvgComputedStyle fillStyle = paintGradient || paintPattern ? style with { Fill = "#ffffff" } : style;
         SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, false);
         AxisTransform transform = context.ResolveTransform(reader);
+        if (paintPattern)
+        {
+            if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
+            if (transform.ScaleX < 0 || transform.ScaleY < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
+        }
         SvgLinearGradient linear = default;
         SvgRadialGradient radial = default;
         bool isLinear = false;
         byte opacity = 255;
         SvgRectangle box = default;
+        if (paintGradient || paintPattern) opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
         if (paintGradient)
         {
             string paintId = SvgGradientSyntax.ParsePaintId(style.Fill);
@@ -112,7 +118,6 @@ internal static class SvgLeafParser
             }
             else if (!state.RadialGradients.TryGetValue(paintId, out radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
             else radial = SvgGradientSyntax.MapUserSpaceRadial(transform, radial, frame);
-            opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
             SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
             box = frame is null ? placement : frame.Value.Shift(placement);
         }
@@ -120,7 +125,7 @@ internal static class SvgLeafParser
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "rect", false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
         SvgParsedGeometry parsed = lowering.LowerRoundedRectFill(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, element, frame, state.Budget);
-        if (!paintGradient)
+        if (!paintGradient && !paintPattern)
         {
             SvgGeometry single = parsed.Geometries[0];
             parsed.Dispose();
@@ -128,7 +133,9 @@ internal static class SvgLeafParser
         }
         try
         {
-            SvgGeometry repainted = isLinear
+            SvgGeometry repainted;
+            if (paintPattern) repainted = SvgPatternPolygon.RepaintOutline(parsed.Geometries[0].Polygon, tile, opacity, state.Budget);
+            else repainted = isLinear
                 ? SvgGradientPolygon.RepaintOutline(parsed.Geometries[0].Polygon, linear, box, opacity, state.Budget)
                 : SvgRadialPolygon.RepaintOutline(parsed.Geometries[0].Polygon, radial, box, opacity, state.Budget);
             parsed.Dispose();
