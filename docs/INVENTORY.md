@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples pending.
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below).
 
 ## Purpose and non-goals
 
@@ -185,4 +185,4 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 1 path, stroke-width 56, stroke-dasharray 56,8.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented).
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical SHA-256 c7d0d6be3c4aa195fdb9e58ae84603d5bd5fd057587a05b4630c5d4804b4f1c1, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
