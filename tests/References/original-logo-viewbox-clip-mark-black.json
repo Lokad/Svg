@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-viewbox-clip-mark-black",
+  "referencePng": "original-logo-viewbox-clip-mark-black.png",
+  "referenceSha256": "dd3054ac0312f3ca41a108807f272a4efac2715ea5f8657c817164353f2b934f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "c46901578e610116eb0521641c71ad11f305341c51733b2953b1334582b5ea3a",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
