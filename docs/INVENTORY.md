@@ -97,7 +97,7 @@ Public-domain logo SVGs sourced from Wikimedia Commons (all LicenseShortName=Pub
 - content: 4 paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only positive axis-aligned matrix() gradient transforms are implemented).
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 738x371 transparent, 3/3 byte-identical SHA-256 a941550faea36541a0656296ba5b8ece0cf0cc947311a0ebff739fa32cb90161, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-004 — UAAR logo 2012
 
