@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-mask-rounded-mark",
+  "referencePng": "original-logo-mask-rounded-mark.png",
+  "referenceSha256": "13a6114dec1cebbb14cce033bf0029440deaa925c57b60ce64be2f4b4f245c45",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "567abcf988e8d8f5766afed4b700b55d71073ae57cbf0a85f546e454973ba0d7",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 94,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 64,
+    "exact": false
+  },
+  "admittedAt": "2026-09-26"
+}
