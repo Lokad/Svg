@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-gradient-inherit-mark-white",
+  "referencePng": "original-logo-gradient-inherit-mark-white.png",
+  "referenceSha256": "09da638d99754c5e961eea34d20fd7c5da925acbcbbd8fd0cba51b7a4a133c5c",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "a4e387171cd3944fa0b55e59c10452bdc1eaf3a18470117159f7abdfc4b3c71e",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
