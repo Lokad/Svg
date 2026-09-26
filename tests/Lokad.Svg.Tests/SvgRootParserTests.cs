@@ -471,9 +471,37 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_solid_strokes_on_rounded_rectangles()
+    public void Strokes_solid_strokes_on_rounded_rectangles()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' rx='2' fill='red' stroke='blue' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' rx='2' fill='red' stroke='blue' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
+        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[1].Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries[0].Polygon.Color);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), root.Geometries[1].Polygon.Color);
+    }
+
+    [Fact]
+    public void Rejects_non_butt_strokes_on_rounded_rectangles()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' rx='2' fill='red' stroke='blue' stroke-width='2' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_dashed_strokes_on_rounded_rectangles()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' rx='2' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2 2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_translucent_strokes_on_filled_rounded_rectangles()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' rx='2' fill='red' stroke='blue' stroke-width='2' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
