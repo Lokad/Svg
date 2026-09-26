@@ -394,14 +394,16 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Lowers device-space path data through affine flattening into one polygon fill with the caller mapping discipline.</summary>
-    internal SvgParsedGeometry LowerDeviceFill(string d, int commandCount, bool hasArc, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerDeviceFill(string d, int commandCount, bool hasArc, bool hasCurve, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured path-command limit.");
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
         if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
-        long wantedPoints = (long)_maximumGeometryElements * (CurveSegmentsPerCommand + 1);
+        long wantedPoints = hasCurve
+            ? (long)commandCount * (CurveSegmentsPerCommand + 1)
+            : (long)d.Length + commandCount + 1;
         int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
         int contourCapacity = pointCapacity < _maximumGeometryElements ? pointCapacity : _maximumGeometryElements;
         long scratchBytes;
@@ -857,7 +859,9 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
         double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame, nonScaling);
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
-        long wantedPoints = (long)_maximumGeometryElements * (CurveSegmentsPerCommand + 1);
+        long wantedPoints = hasCurves
+            ? (long)commandCount * (CurveSegmentsPerCommand + 1)
+            : (long)d.Length + commandCount + 1;
         int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
         int contourCapacity = pointCapacity < _maximumGeometryElements ? pointCapacity : _maximumGeometryElements;
         long scratchBytes;

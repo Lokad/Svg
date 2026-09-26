@@ -31,7 +31,7 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, "path", true, curveEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            SvgParsedGeometry curved = curveLowering.LowerDeviceFill(d, commandCount, hasArc, SvgPolygonMapping.FlattenedCurves, shape, frame, budget);
+            SvgParsedGeometry curved = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, SvgPolygonMapping.FlattenedCurves, shape, frame, budget);
             filled = curved with { ElementCount = commandCount + 1 };
         }
         else if (hasFractional)
@@ -41,7 +41,7 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noFractionEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering fractionalLowering = new(noFractionPoints, noFractionEnds, "path", true, fractionalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            SvgParsedGeometry fractional = fractionalLowering.LowerDeviceFill(d, commandCount, false, SvgPolygonMapping.FiniteEdges, shape, frame, budget);
+            SvgParsedGeometry fractional = fractionalLowering.LowerDeviceFill(d, commandCount, false, false, SvgPolygonMapping.FiniteEdges, shape, frame, budget);
             filled = fractional with { ElementCount = commandCount + 1 };
         }
         else

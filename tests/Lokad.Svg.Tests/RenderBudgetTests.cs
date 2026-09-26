@@ -263,6 +263,27 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Fractional_straight_path_fits_small_scratch_budget()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0 L8,0 L8,8 Z' fill='red'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
+        Assert.Single(root.Geometries);
+        Assert.True(budget.Snapshot().PeakBytes < 500_000, "Straight paths must not reserve curve-sized scratch.");
+    }
+    [Fact]
+    public void Single_curve_path_fits_small_scratch_budget()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 C2,2 6,2 8,4' fill='red'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
+        Assert.Single(root.Geometries);
+        Assert.True(budget.Snapshot().PeakBytes < 500_000, "Curve scratch must scale with commands, not global limits.");
+    }
+
+    [Fact]
     public void Gradient_parse_denies_and_releases_when_stops_exceed_the_remaining_budget()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes(EightStopGradientSvg());
