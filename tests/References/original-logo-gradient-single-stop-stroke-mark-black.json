@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-gradient-single-stop-stroke-mark-black",
+  "referencePng": "original-logo-gradient-single-stop-stroke-mark-black.png",
+  "referenceSha256": "9f8ca2d2adc221d5a060b60140ad0a70f19d2fb2a8bf70388140e971b592b5d7",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "6d6aa809bb12e9c3fcdf18df7f33416f6b1f14b6171886a3016e716f3c584607",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
