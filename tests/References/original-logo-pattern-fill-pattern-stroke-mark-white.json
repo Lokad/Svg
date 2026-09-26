@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-logo-pattern-fill-pattern-stroke-mark-white",
+  "referencePng": "original-logo-pattern-fill-pattern-stroke-mark-white.png",
+  "referenceSha256": "cc883e4fc13ddefae507bf502fe55f59bc2c72d73ec1b2a0a2950265f6219087",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "3c05432e3f4a49b31347c7c012108ea230d4b55d16b4aa56d344e6cac3f7868d",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-26"
+}
