@@ -152,7 +152,7 @@ Add CI failures for an exact entry drifting, an unsupported case starting to
 render without review, a missing known-difference capture, or a variant omitted
 from the coverage report. Existing research-rejection tests are useful but do not
 cover these nine census entries. R24's wrap defect stays closed; its residual
-rounding is an S11 blocker, not evidence that overlaps are generally admitted.
+rounding is an S11 blocker, not evidence that overlaps are generally admitted. Status 2026-09-26: unsupported-branch gate verified closed at HEAD (FixtureManifestTests renders every entry: exact entries compared pixel-exact, renders entries requiring known-difference captures with ratcheted dimensions and mismatch triple plus graduate-on-exact failure, rejects entries asserting categorized throws; all four named fixtures carry knownDifferenceIdentity; variant parents validated).
 
 ### R28 / P1 — Paint coordinate systems are wrong under admitted transforms
 
