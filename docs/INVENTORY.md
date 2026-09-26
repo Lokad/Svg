@@ -373,7 +373,7 @@ Public-domain state-symbol SVGs from Wikimedia Commons (all LicenseShortName=Pub
 
 ### inv-024 — Flag of Ukraine
 
-- file: tests/Fixtures/candidates/inv-024.svg (SHA-256 77E3EB29BBC7D4BAE51F2E959D4EF4656EB1E34484CF772B4081A22F4AF5256B)
+- file: tests/Fixtures/candidates/inv-024.svg (SHA-256 93C270A797E55C36F7EB7D383A94AC885B0A957E1367EE77160B6089F0ADDAF4)
 - source: Wikimedia Commons, File:Flag of Ukraine.svg. Retrieval 2026-09-26.
 - license: PD (Commons, state symbol).
 - retrievalDate: 2026-09-26.
