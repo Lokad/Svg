@@ -399,3 +399,19 @@ Public-domain state-symbol SVGs from Wikimedia Commons (all LicenseShortName=Pub
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: known-difference (renders at default 300x150; VisualDiff vs 300x150 oracle SHA-256 0e88a41004c83ae73e21c855bf2e43cb8196bb6c59670957ce1b669bef521a90: changedPixelCount 12007, maximumChannelError 255, maximumAlphaError 255, whole-image bbox; candidate identity SHA-256 1725b71abdeb201654de6fa8fd5def7dca301a48d4232795d06f54fae28303dd).
 - reference: exploratory oracle triple 2026-09-26, 300x150 transparent, 3/3 byte-identical (hash in status line), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+
+## Selected documents (batch 10, 2026-09-26)
+
+Public-domain SVG from Wikimedia Commons (LicenseShortName=Public domain per Commons API extmetadata, size and SHA-1 byte-identical to local blob, 2026-09-26). inv-026 adds group-nesting depth (12 groups) and mm-unit wordmark diversity against the integer-coordinate wall. File lives in tests/Fixtures/candidates/ with provenance; no CC0 SPDX header; never copied into tests/Fixtures/original/.
+
+### inv-026 — Logo of the Party of Changes (Russia)
+
+- file: tests/Fixtures/candidates/inv-026.svg (SHA-256 8DE9A98498AB873DCCC2EC90387C70572DC5298F084D4D344AB92B246A308D19)
+- source: Wikimedia Commons, File:Logo of the Party of Changes (Russia).svg. Retrieval 2026-09-26.
+- license: PD (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: deeply nested wordmark, mm units, fractional coordinates.
+- content: 19 paths, 12 groups, sodipodi metadata.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: unsupported (rejects:UnsupportedFeature: Only integer rectangle coordinates are implemented).
+- reference: none yet.
