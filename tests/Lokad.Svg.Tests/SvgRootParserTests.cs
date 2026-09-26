@@ -221,6 +221,27 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Square_dash_offset_keeps_butt_phase()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-dashoffset='2' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(3, root.Geometries.Length);
+        Assert.Equal(new SvgRectangle(-1, 3, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[0].Rectangle);
+        Assert.Equal(new SvgRectangle(5, 3, 6, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[1].Rectangle);
+        Assert.Equal(new SvgRectangle(13, 3, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[2].Rectangle);
+    }
+
+    [Fact]
+    public void Square_capped_vertical_line_dash_extends_runs()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='4' y1='0' x2='4' y2='16' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.Equal(new SvgRectangle(3, -1, 2, 6, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[0].Rectangle);
+        Assert.Equal(new SvgRectangle(3, 7, 2, 6, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[1].Rectangle);
+    }
+
+    [Fact]
     public void Square_capped_line_dash_extends_each_run()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
