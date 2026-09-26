@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-viewbox-scaled-circle-mark",
+  "referencePng": "original-logo-viewbox-scaled-circle-mark.png",
+  "referenceSha256": "afb765d54355a9a53906559f671e45375d655b80e5720ab15efb8768de216ee3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 128, "height": 128, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "7630667f3f1ca812de0052eb55199bebfbed8c4149a13c9b264538784471e3fe",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 372,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 74,
+    "exact": false
+  },
+  "admittedAt": "2026-09-26"
+}
