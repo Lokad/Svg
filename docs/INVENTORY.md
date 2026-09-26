@@ -201,7 +201,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 3 paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; fractional and scientific notation stay unsupported).
-- reference: none yet.
+- reference: none yet. [exploratory oracle triple 2026-09-26, 512x500 transparent, 3/3 byte-identical SHA-256 44f537838d608edfcbc3e3291482ef2484d82e8c759b47354317fb3708197849, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-012 — SG Rotation Leipzig
 
