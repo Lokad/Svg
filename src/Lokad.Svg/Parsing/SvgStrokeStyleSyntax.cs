@@ -22,14 +22,14 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Validates one stroke style attribute value, additionally admitting square caps on band-stroked lines.</summary>
     internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps)
     {
-        ValidateAttribute(localName, value, allowNonButt, allowSquareCap, allowClosedLoopCaps, false);
+        ValidateAttribute(localName, value, allowNonButt, allowSquareCap, allowClosedLoopCaps, false, false);
     }
 
     /// <summary>Validates one stroke style attribute value, additionally admitting round joins on rounded rectangles.</summary>
-    internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps, bool allowRoundJoin)
+    internal static void ValidateAttribute(string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps, bool allowRoundJoin, bool allowBevelJoin)
     {
         if (localName == "stroke-linecap") ValidateLinecap(value.AsSpan(), allowNonButt, allowSquareCap, allowClosedLoopCaps);
-        else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan(), allowNonButt || allowRoundJoin);
+        else if (localName == "stroke-linejoin") ValidateLinejoin(value.AsSpan(), allowNonButt || allowRoundJoin, allowBevelJoin);
         else if (localName == "stroke-dasharray") ValidateDasharray(value.AsSpan(), allowNonButt);
         else if (localName == "stroke-dashoffset") ValidateDashoffset(value.AsSpan());
     }
@@ -46,11 +46,14 @@ internal static class SvgStrokeStyleSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented.");
     }
 
-    private static void ValidateLinejoin(ReadOnlySpan<char> value, bool allowNonButt)
+    private static void ValidateLinejoin(ReadOnlySpan<char> value, bool allowNonButt, bool allowBevelJoin)
     {
         if (value.Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
         if (allowNonButt && value.Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, allowNonButt ? "Only miter and round stroke linejoins are implemented." : "Only miter stroke linejoins are implemented.");
+        if (allowBevelJoin && value.Trim().Equals("bevel".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (allowNonButt && allowBevelJoin) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter, round and bevel stroke linejoins are implemented.");
+        if (allowNonButt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter and round stroke linejoins are implemented.");
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter stroke linejoins are implemented.");
     }
 
     private static void ValidateDashoffset(ReadOnlySpan<char> value)
