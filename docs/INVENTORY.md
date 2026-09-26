@@ -314,6 +314,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - retrievalDate: 2026-09-26.
 - archetypes: use-element instancing with transforms, circle primitives, sodipodi metadata.
 - content: 1 rect, 5 circles, 4 uses.
+- diagnosis 2026-09-26: every shape carries inline stroke-width:4 plus stroke-opacity, neither of which has an InlineStyle cascade channel (linecap/linejoin/dasharray/dashoffset do; stroke-width/stroke-opacity would need the same plumbing across computed style, cascade, stroke syntax and leaf lowering, about eight files currently active in the cascade workstream). Deferred to that workstream rather than duplicated here.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Inline style property stroke-width is not implemented).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 400x400 transparent, 3/3 byte-identical SHA-256 c108ab22d2bc4dbe05c01ae5df5d5a8cfaf48b8255c9e5db39845f75ac753f2e, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
