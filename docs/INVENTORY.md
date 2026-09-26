@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples stable for batch 3 (3/3 byte-identical each; per-entry hashes below). Batch 4 selected 2026-09-26: 2 documents (inv-013..inv-014), both renderer-probed 2026-09-26; oracle triples stable for batch 4 (3/3 byte-identical each; per-entry hashes below). Batch 5 selected 2026-09-26: 2 documents (inv-015..inv-016), both renderer-probed 2026-09-26; oracle triples stable for batch 5 (3/3 byte-identical each; per-entry hashes below). A staged USGov candidate (Joint Typhoon Warning Center logo, PD, pt units, feGaussianBlur filter) was excluded: it carries live text elements, which the selection rules keep out of scope (fonts); filter primitives remain a genuine gap. A third staged file (4-set Venn, PD) was held back as a redundant fourth DTD rejection; it can backfill later if the rejects path needs volume.
+Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001..inv-005). Renderer probe 2026-09-26 (Release, SvgRenderOptions.Default): all five reject with categorized UnsupportedFeature reasons below; no candidate renders. Oracle triples stable for batch 1 (3/3 byte-identical each; per-entry hashes below). Batch 2 selected 2026-09-26: 5 documents (inv-006..inv-010), all renderer-probed 2026-09-26; oracle triples stable for batch 2 (3/3 byte-identical each; per-entry hashes below). Batch 3 selected 2026-09-26: 2 documents (inv-011..inv-012), both renderer-probed 2026-09-26; oracle triples stable for batch 3 (3/3 byte-identical each; per-entry hashes below). Batch 4 selected 2026-09-26: 2 documents (inv-013..inv-014), both renderer-probed 2026-09-26; oracle triples stable for batch 4 (3/3 byte-identical each; per-entry hashes below). Batch 5 selected 2026-09-26: 2 documents (inv-015..inv-016), both renderer-probed 2026-09-26; oracle triples stable for batch 5 (3/3 byte-identical each; per-entry hashes below). Batch 6 selected 2026-09-26: 2 documents (inv-017..inv-018), the first renderable candidates; oracle triples stable for batch 6 (3/3 byte-identical each; per-entry hashes below). A staged USGov candidate (Joint Typhoon Warning Center logo, PD, pt units, feGaussianBlur filter) was excluded: it carries live text elements, which the selection rules keep out of scope (fonts); filter primitives remain a genuine gap. A third staged file (4-set Venn, PD) was held back as a redundant fourth DTD rejection; it can backfill later if the rejects path needs volume.
 
 ## Purpose and non-goals
 
@@ -270,3 +270,31 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
 - status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; fractional and scientific notation stay unsupported).
 - reference: none yet. [exploratory oracle triple 2026-09-26, 318x400 transparent, 3/3 byte-identical SHA-256 855db4f88bb8a1c1432ebd626594f38a98dc92400ac5db73d16235c756b8b73d, staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
+
+## Selected documents (batch 6, 2026-09-26)
+
+Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public domain per Commons API extmetadata, 2026-09-26). Batch 6 are stroked-circle primitives: the first candidates the renderer can paint, both with measured mismatches against stable oracles (VisualDiff Release numbers below; candidate PNGs rendered with SvgRenderOptions.Default from staging bytes, XML-equivalent to committed bytes). Files live in tests/Fixtures/candidates/ with provenance; no CC0 SPDX headers; never copied into tests/Fixtures/original/.
+
+### inv-017 — Cercle vert 50%
+
+- file: tests/Fixtures/candidates/inv-017.svg (SHA-256 ACF18ED4F82B07A19BFC52FE4565A346B4889912DB35B9FC1D986605BCD50081)
+- source: Wikimedia Commons, File:Cercle vert 50%.svg. Retrieval 2026-09-26.
+- license: PD-shape (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: stroked circle primitive, opacity .5, named color, fill none.
+- content: 1 circle.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: known-difference (renders; VisualDiff vs 200x200 oracle SHA-256 2b79a788d03f53f1e1cd8a87a52577f586874b9a0c757e1db1483bbef1581f19: changedPixelCount 1220, maximumChannelError 255, maximumAlphaError 24).
+- reference: exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical (hash in status line), staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
+
+### inv-018 — Cercle rouge 100%
+
+- file: tests/Fixtures/candidates/inv-018.svg (SHA-256 5F096A0419FB21988E8DAFF679CD9CEA83FD7BA8EF011A9CE64B3B5564BF8D31)
+- source: Wikimedia Commons, File:Cercle rouge 100%.svg. Retrieval 2026-09-26.
+- license: PD-shape (Commons).
+- retrievalDate: 2026-09-26.
+- archetypes: stroked circle primitive, integer geometry, opaque.
+- content: 1 circle.
+- variants: intended/small/large x transparent/white/black (declared, unmeasured).
+- status: known-difference (renders; VisualDiff vs 200x200 oracle SHA-256 3032d48eaf4e52c7db5c2fd6289339e1089a0a7799fc7d0c98a058a501c9c083: changedPixelCount 1294, maximumChannelError 255, maximumAlphaError 50).
+- reference: exploratory oracle triple 2026-09-26, 200x200 transparent, 3/3 byte-identical (hash in status line), staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
