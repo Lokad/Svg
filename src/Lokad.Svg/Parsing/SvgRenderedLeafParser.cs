@@ -63,7 +63,8 @@ internal static class SvgRenderedLeafParser
                         {
                             if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, rectangle.Storage.Items);
                             SvgMaskSyntax.ValidateMaskScopeBands(state, rectangle.Storage.Items);
-                            state.Scene.AddGeometries(rectangle.Geometries);
+                            try { state.Scene.AddGeometries(rectangle.Geometries); }
+                            catch { foreach (SvgGeometry geometry in rectangle.Geometries) geometry.Dispose(); throw; }
                         }
                     }
                 }
@@ -93,7 +94,8 @@ internal static class SvgRenderedLeafParser
                         {
                             if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, line.Storage.Items);
                             SvgMaskSyntax.ValidateMaskScopeBands(state, line.Storage.Items);
-                            state.Scene.AddGeometries(line.Geometries);
+                            try { state.Scene.AddGeometries(line.Geometries); }
+                            catch { foreach (SvgGeometry geometry in line.Geometries) geometry.Dispose(); throw; }
                         }
                     }
                 }
@@ -123,7 +125,8 @@ internal static class SvgRenderedLeafParser
                         {
                             if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, circle.Storage.Items);
                             SvgMaskSyntax.ValidateMaskScopeBands(state, circle.Storage.Items);
-                            state.Scene.AddGeometries(circle.Geometries);
+                            try { state.Scene.AddGeometries(circle.Geometries); }
+                            catch { foreach (SvgGeometry geometry in circle.Geometries) geometry.Dispose(); throw; }
                         }
                     }
                 }
@@ -153,7 +156,8 @@ internal static class SvgRenderedLeafParser
                         {
                             if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, ellipse.Storage.Items);
                             SvgMaskSyntax.ValidateMaskScopeBands(state, ellipse.Storage.Items);
-                            state.Scene.AddGeometries(ellipse.Geometries);
+                            try { state.Scene.AddGeometries(ellipse.Geometries); }
+                            catch { foreach (SvgGeometry geometry in ellipse.Geometries) geometry.Dispose(); throw; }
                         }
                     }
                 }
@@ -176,7 +180,8 @@ internal static class SvgRenderedLeafParser
                         state.GeometryElementCount += path.ElementCount;
                         if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, path.Storage.Items);
                         SvgMaskSyntax.ValidateMaskScopeBands(state, path.Storage.Items);
-                        state.Scene.AddGeometries(path.Geometries);
+                        try { state.Scene.AddGeometries(path.Geometries); }
+                            catch { foreach (SvgGeometry geometry in path.Geometries) geometry.Dispose(); throw; }
                     }
                 }
                 finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
@@ -198,7 +203,8 @@ internal static class SvgRenderedLeafParser
                         state.GeometryElementCount += pointList.ElementCount;
                         if (!state.DeferringLeafMask) SvgMaskSyntax.ApplyMaskToBands(reader, state, pointList.Storage.Items);
                         SvgMaskSyntax.ValidateMaskScopeBands(state, pointList.Storage.Items);
-                        state.Scene.AddGeometries(pointList.Geometries);
+                        try { state.Scene.AddGeometries(pointList.Geometries); }
+                            catch { foreach (SvgGeometry geometry in pointList.Geometries) geometry.Dispose(); throw; }
                     }
                 }
                 finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }

@@ -153,7 +153,8 @@ internal ref struct SvgOrthogonalGeometryLowering
                 if (winding != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
             }
         }
-        return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
+        try { return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount); }
+        catch { foreach (SvgGeometry geometry in _geometries.AsSpan()) geometry.Dispose(); throw; }
     }
 
     /// <summary>Lowers diagonal solid polygons with separated simple contours to retained device points, keeping touching and non-simple shapes rejected.</summary>
@@ -954,9 +955,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
         SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, isEvenOdd, mapping, clip, budget);
-        _geometries.Add(SvgGeometry.FromPolygonFill(fill));
+        try { _geometries.Add(SvgGeometry.FromPolygonFill(fill)); }
+        catch { fill.Dispose(); throw; }
         _geometryElementCount++;
-        return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
+        try { return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount); }
+        catch { foreach (SvgGeometry geometry in _geometries.AsSpan()) geometry.Dispose(); throw; }
     }
 
     /// <summary>Validates separated device contours once and retains one gradient polygon fill with scene-owned storage.</summary>
@@ -992,9 +995,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
         SvgGradientPolygon fill = SvgGradientPolygon.Create(retained, ends, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, budget);
-        _geometries.Add(SvgGeometry.FromGradientPolygon(fill));
+        try { _geometries.Add(SvgGeometry.FromGradientPolygon(fill)); }
+        catch { fill.Dispose(); throw; }
         _geometryElementCount++;
-        return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
+        try { return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount); }
+        catch { foreach (SvgGeometry geometry in _geometries.AsSpan()) geometry.Dispose(); throw; }
     }
 
     /// <summary>Validates separated device contours once and retains one radial polygon fill with scene-owned storage.</summary>
@@ -1030,9 +1035,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
         SvgRadialPolygon fill = SvgRadialPolygon.Create(retained, ends, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, budget);
-        _geometries.Add(SvgGeometry.FromRadialPolygon(fill));
+        try { _geometries.Add(SvgGeometry.FromRadialPolygon(fill)); }
+        catch { fill.Dispose(); throw; }
         _geometryElementCount++;
-        return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount);
+        try { return new SvgParsedGeometry(_geometries.Detach(), _geometryElementCount); }
+        catch { foreach (SvgGeometry geometry in _geometries.AsSpan()) geometry.Dispose(); throw; }
     }
 
     public void Dispose()
