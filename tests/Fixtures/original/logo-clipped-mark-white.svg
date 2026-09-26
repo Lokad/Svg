@@ -1,0 +1,12 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <clipPath id="window">
+      <rect x="16" y="16" width="32" height="32"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#window)">
+    <rect x="8" y="8" width="48" height="20" fill="#ff0000"/>
+    <rect x="8" y="36" width="48" height="20" fill="#0000ff"/>
+  </g>
+</svg>
