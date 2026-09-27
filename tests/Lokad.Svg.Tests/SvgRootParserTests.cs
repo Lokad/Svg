@@ -3608,6 +3608,30 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Twenty_circles_report_exact_budget_peak_before_denial()
+    {
+        StringBuilder discs = new("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>");
+        for (int index = 0; index < 20; index++)
+        {
+            discs.Append("<circle cx='4' cy='4' r='3' fill='red'/>");
+        }
+        discs.Append("</svg>");
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes(discs.ToString());
+        RenderBudget budget = new(100_000_000);
+        using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, CancellationToken.None);
+        long peak = budget.Snapshot().PeakBytes;
+        RenderBudget denied = new(peak - 1);
+        SvgException exception = Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot deniedRoot = SvgRootParser.Parse(svg, SvgRenderLimits.Default, denied, CancellationToken.None);
+        });
+
+        Assert.NotEmpty(root.Geometries);
+        Assert.True(peak > 0);
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+    }
+
+    [Fact]
     public void Clips_a_crossing_rectangle_to_its_nested_viewport_box()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><svg x='8' y='8' width='32' height='32'><rect width='64' height='64' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
