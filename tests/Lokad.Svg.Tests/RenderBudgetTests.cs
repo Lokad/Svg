@@ -361,16 +361,41 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Use_instance_mapping_charges_one_work_unit_per_mapped_point()
     {
+        // R39: mapping work is charged incrementally per mapped polygon point
+        // inside the Apply dispatch rather than post-hoc at entry points.
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
         SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
         try
         {
-            SvgGeometry[] applied = [SvgGeometry.FromPolygonFill(fill), SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null))];
+            SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill), SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null))], false, null);
+            using SvgDocumentState state = new(new RenderBudget(100_000), new ParserWorkCounter(100_000), CancellationToken.None);
             ParserWorkCounter workCounter = new(100_000);
-            SvgReferenceResolver.ChargeAppliedMappingWork(applied, workCounter, CancellationToken.None);
+            SvgGeometry[] applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null, null), null, state, workCounter, CancellationToken.None);
             Assert.Equal(3, workCounter.Used);
+            Assert.Equal(2, applied.Length);
+        }
+        finally { fill.Dispose(); }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+    public void Use_instance_mapping_observes_cancellation_during_point_mapping()
+    {
+        // R39: per-loop charging observes cancellation inside the mapping loop,
+        // so a cancelled resolve stops before scene transfer.
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
+        int[] ends = [3];
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        try
+        {
+            SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill)], false, null);
+            using SvgDocumentState state = new(new RenderBudget(100_000), new ParserWorkCounter(100_000), CancellationToken.None);
+            using CancellationTokenSource cancelled = new();
+            cancelled.Cancel();
+            Assert.Throws<OperationCanceledException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null, null), null, state, new ParserWorkCounter(100_000), cancelled.Token));
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);
