@@ -111,7 +111,14 @@ internal static class SvgFontRequestDiscovery
                     if (switchChild)
                     {
                         SwitchScope top = switchScopes[switchScopes.Count - 1];
-                        if (top.FirstChildConsumed)
+                        // systemLanguage selection evaluates against an empty locale set, so language-tagged
+                        // switch children never match: skip them without consuming the first-child slot.
+                        if (reader.GetAttribute("systemLanguage") is not null)
+                        {
+                            if (!reader.IsEmptyElement) skipDepth = reader.Depth;
+                            sterile = true;
+                        }
+                        else if (top.FirstChildConsumed)
                         {
                             if (!reader.IsEmptyElement) skipDepth = reader.Depth;
                             sterile = true;

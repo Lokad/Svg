@@ -54,7 +54,14 @@ internal static class SvgDocumentTraversal
                 if (!skipped && state.Switches.Count > 0 && reader.Depth == state.Switches[state.Switches.Count - 1].Depth + 1)
                 {
                     SwitchScope top = state.Switches[state.Switches.Count - 1];
-                    if (top.FirstChildConsumed)
+                    // systemLanguage selection evaluates against an empty locale set, so language-tagged
+                    // switch children never match: skip them without consuming the first-child slot.
+                    if (reader.GetAttribute("systemLanguage") is not null)
+                    {
+                        if (!reader.IsEmptyElement) state.SkipDepth = reader.Depth;
+                        skipped = true;
+                    }
+                    else if (top.FirstChildConsumed)
                     {
                         if (!reader.IsEmptyElement) state.SkipDepth = reader.Depth;
                         skipped = true;
