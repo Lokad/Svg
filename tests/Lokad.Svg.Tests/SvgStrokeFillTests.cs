@@ -1247,6 +1247,38 @@ public sealed class SvgStrokeFillTests
 
         Assert.Contains("stroke linecaps", exception.Message);
     }
+    [Fact]
+    public void Rect_inline_width_without_stroke_renders_fill_only()
+    {
+        byte[] styled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" style=\"stroke-width:2\"/></svg>", out _, out _);
+        byte[] plain = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\"/></svg>", out _, out _);
+
+        Assert.Equal(plain, styled);
+    }
+    [Fact]
+    public void Circle_attribute_width_without_stroke_renders_fill_only()
+    {
+        byte[] styled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"5\" fill=\"red\" stroke-width=\"2\"/></svg>", out _, out _);
+        byte[] plain = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"5\" fill=\"red\"/></svg>", out _, out _);
+
+        Assert.Equal(plain, styled);
+    }
+    [Fact]
+    public void Group_paint_with_leaf_width_strokes_rect()
+    {
+        byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><g stroke=\"blue\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" stroke-width=\"2\"/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, grouped);
+    }
+    [Fact]
+    public void Group_paint_with_leaf_width_strokes_circle()
+    {
+        byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><g stroke=\"blue\"><circle cx=\"8\" cy=\"8\" r=\"5\" fill=\"red\" stroke-width=\"2\"/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"5\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, grouped);
+    }
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

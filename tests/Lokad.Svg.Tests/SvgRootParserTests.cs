@@ -3506,7 +3506,7 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Rejects_inline_styles_that_are_not_in_the_supported_rectangle_subset()
     {
-        SvgException unknownProperty = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' style='stroke-width: 1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException unknownProperty = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' style='stroke-dashoffset: foo'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, unknownProperty.ErrorCode);
     }
 

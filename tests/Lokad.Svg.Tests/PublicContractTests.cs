@@ -606,7 +606,6 @@ public sealed class PublicContractTests
     [Theory]
     [InlineData("<rect vector-effect='non-scaling-stroke'/>")]
     [InlineData("<style>circle { fill: red; }</style><rect/>")]
-    [InlineData("<style>rect { stroke-width: 1; }</style><rect/>")]
     [InlineData("<style>rect { fill: red</style><rect/>")]
     [InlineData("<polygon points='0,0 2,2 2,0 0,2'/>")]
     [InlineData("<rect x='0.1'/>")]
@@ -636,6 +635,7 @@ public sealed class PublicContractTests
     [InlineData("<style>#link { fill: red; }</style><a id='link'><rect width='2' height='2'/></a>")]
     [InlineData("<style>#tile { fill: red; }</style><defs><rect id='tile' width='2' height='2'/></defs><use href='#tile'/>")]
     [InlineData("<style>#instance { opacity: 0.5; }</style><defs><rect id='tile' width='2' height='2' fill='red'/></defs><use id='instance' href='#tile'/>")]
+    [InlineData("<style>rect { stroke-width: 1; }</style><rect/>")]
     public void Supported_stylesheet_and_reference_paths_reach_public_PNG_conversion(string content)
     {
         string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'>" + content + "</svg>";
