@@ -208,6 +208,20 @@ public sealed class SvgShapeElementsTests
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><ellipse cx='32' cy='32' rx='20' ry='12' fill='red'/></svg>", out _, out _);
         Assert.Equal(direct, scaled);
     }
+
+    [Fact]
+    public void OutputScale_rect_matches_enlarged_direct_rendering()
+    {
+        byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect x='8' y='8' width='48' height='48' fill='red'/></svg>");
+        byte[] large = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><rect x='16' y='16' width='96' height='96' fill='red'/></svg>");
+        SvgRenderOptions scaled = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default);
+        SvgRenderOptions direct = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> scaledPng = SvgConverter.ConvertToPng(small, scaled, CancellationToken.None);
+        ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(large, direct, CancellationToken.None);
+
+        Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
+    }
+
     [Fact]
     public void Circle_sized_ellipse_stroke_matches_circle_stroke()
     {
