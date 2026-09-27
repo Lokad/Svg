@@ -484,6 +484,20 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Gradient_polygon_rasterization_denies_and_releases_under_tight_budget()
+    {
+        // R39 remainder: denial coverage grows with new geometry kinds. Gradient fills
+        // share the polygon mapping path and must deny before work all the same.
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
+        RenderBudget rasterBudget = new(300);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+    [Fact]
     public void Polygon_rasterization_observes_cancellation_during_vertex_mapping()
     {
         RenderBudget budget = new(100_000);
