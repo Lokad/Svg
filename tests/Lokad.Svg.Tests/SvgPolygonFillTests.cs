@@ -321,6 +321,38 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void OutputScale_viewBox_clip_matches_enlarged_direct_rendering()
+    {
+        // R33 remainder: clip boxes map through the output transform with the
+        // clipped geometry, so a scaled clip render matches the enlarged direct
+        // render byte-identically.
+        byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='red' clip-path='url(#c)'/></svg>");
+        byte[] large = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><clipPath id='c'><rect width='32' height='64'/></clipPath></defs><polygon points='0,0 64,0 0,64' fill='red' clip-path='url(#c)'/></svg>");
+        SvgRenderOptions scaled = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default);
+        SvgRenderOptions direct = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> scaledPng = SvgConverter.ConvertToPng(small, scaled, CancellationToken.None);
+        ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(large, direct, CancellationToken.None);
+
+        Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
+    }
+
+    [Fact]
+    public void OutputScale_fractional_clip_matches_integer_direct_rendering()
+    {
+        // R33 remainder: fractional clip edges scale per-pixel coverage exactly
+        // like fractional rectangle edges, so a scaled fractional clip matches
+        // the integer direct render byte-identically.
+        byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><clipPath id='c'><rect x='4.5' y='2.5' width='7.5' height='11.5'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='red' clip-path='url(#c)'/></svg>");
+        byte[] large = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><rect x='9' y='5' width='15' height='23'/></clipPath></defs><polygon points='0,0 32,0 0,32' fill='red' clip-path='url(#c)'/></svg>");
+        SvgRenderOptions scaled = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default);
+        SvgRenderOptions direct = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> scaledPng = SvgConverter.ConvertToPng(small, scaled, CancellationToken.None);
+        ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(large, direct, CancellationToken.None);
+
+        Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
+    }
+
+    [Fact]
     public void ViewBox_scaled_offset_viewport_matches_shifted_clip_rendering()
     {
         // R33 remainder: viewport origins compose through the root viewBox map
