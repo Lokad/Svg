@@ -132,7 +132,7 @@ internal static class SvgPatternSyntax
                 hasLinearStroke = true;
             }
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
-            SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
+            SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
             if (probe is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width gradient strokes no larger than the rectangle dimensions are implemented.");
             halfWidth = probe.Value.Width / 2d;
             strokeWidth = probe.Value.Width;
@@ -183,7 +183,7 @@ internal static class SvgPatternSyntax
     {
         if (style.Stroke is null || style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) return null;
         SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
-        return SvgLeafParser.ParseRectangleStroke(strokeColor, reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, opacity, painted);
+        return SvgLeafParser.ParseRectangleStroke(strokeColor, style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, opacity, painted);
     }
 
     private static int ParseGridCoordinate(string value)
@@ -265,7 +265,7 @@ internal static class SvgPatternSyntax
             fillColor = SvgPaintResolver.ResolveFillColor(presentation.Paint, opacity);
             hasFill = presentation.Paint.HasFill && painted;
         }
-        SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
+        SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
         if (probe is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width pattern strokes no larger than the rectangle dimensions are implemented.");
         double halfWidth = probe.Value.Width / 2d;
         int strokeWidth = probe.Value.Width;
@@ -314,7 +314,7 @@ internal static class SvgPatternSyntax
         if (transform != AxisTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         if ((syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
-        int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
+        int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
         if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
         double[]? dashEntries = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);
         SvgStrokeCap dashLinecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);

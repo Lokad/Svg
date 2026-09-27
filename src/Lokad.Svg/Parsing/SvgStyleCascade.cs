@@ -23,6 +23,7 @@ internal struct SvgStyleCascade
     private string? _linejoin;
     private string? _dasharray;
     private string? _dashoffset;
+    private string? _width;
     private int _colorRank;
     private int _fillRank;
     private int _fillOpacityRank;
@@ -41,13 +42,14 @@ internal struct SvgStyleCascade
     private int _linejoinRank;
     private int _dasharrayRank;
     private int _dashoffsetRank;
+    private int _widthRank;
 
     public SvgStyleCascade()
     {
         _colorRank = _fillRank = _fillOpacityRank = _strokeRank = -1;
         _displayRank = _visibilityRank = _opacityRank = _fillRuleRank = -1;
         _familyRank = _weightRank = _fontStyleRank = _fontSizeRank = _whiteSpaceRank = _letterSpacingRank = -1;
-        _linecapRank = _linejoinRank = _dasharrayRank = _dashoffsetRank = -1;
+        _linecapRank = _linejoinRank = _dasharrayRank = _dashoffsetRank = _widthRank = -1;
     }
 
     internal void Apply(InlineStyle style, int specificity)
@@ -70,6 +72,7 @@ internal struct SvgStyleCascade
         Apply(ref _linejoin, ref _linejoinRank, style.Linejoin, (style.Important & InlineImportantProperties.Linejoin) != 0, specificity);
         Apply(ref _dasharray, ref _dasharrayRank, style.Dasharray, (style.Important & InlineImportantProperties.Dasharray) != 0, specificity);
         Apply(ref _dashoffset, ref _dashoffsetRank, style.Dashoffset, (style.Important & InlineImportantProperties.Dashoffset) != 0, specificity);
+        Apply(ref _width, ref _widthRank, style.Width, (style.Important & InlineImportantProperties.Width) != 0, specificity);
     }
 
     internal InlineStyle ToInlineStyle()
@@ -93,7 +96,8 @@ internal struct SvgStyleCascade
         if (_linejoinRank >= ImportantBias) important |= InlineImportantProperties.Linejoin;
         if (_dasharrayRank >= ImportantBias) important |= InlineImportantProperties.Dasharray;
         if (_dashoffsetRank >= ImportantBias) important |= InlineImportantProperties.Dashoffset;
-        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Important = important };
+        if (_widthRank >= ImportantBias) important |= InlineImportantProperties.Width;
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Important = important };
     }
 
     private static void Apply(ref string? value, ref int currentRank, string? candidate, bool candidateImportant, int specificity)

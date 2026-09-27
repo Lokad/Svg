@@ -151,7 +151,7 @@ internal static class SvgStrokeStyleSyntax
         ArgumentNullException.ThrowIfNull(reader);
         RejectPaintServerStroke(style.Stroke, elementName);
         if (shape.Presentation.StrokeColor is null) return null;
-        int width = ParseStrokeWidth(reader.GetAttribute("stroke-width"), elementName);
+        int width = ParseStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"), elementName);
         double miterLimit = ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
         SvgStrokeCap cap = ParseLinecap(style.Linecap);
         SvgStrokeJoin join = ParseLinejoin(style.Linejoin, allowBevelJoin);

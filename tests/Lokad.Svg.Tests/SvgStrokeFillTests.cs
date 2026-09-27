@@ -80,10 +80,65 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(plain, evenOdd);
     }
 
+    [Fact]
+    public void Inline_style_width_matches_direct_attribute()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' style='stroke-width:4'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='4'/></svg>", out _, out _);
+
+        Assert.Equal(direct, styled);
+    }
+
+    [Fact]
+    public void Inline_width_overrides_attribute()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' style='stroke-width:6'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='6'/></svg>", out _, out _);
+
+        Assert.Equal(direct, styled);
+    }
+
+    [Fact]
+    public void Group_attribute_width_inherits_to_line()
+    {
+        byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke-width='4'><line x1='2' y1='8' x2='14' y2='8' stroke='red'/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='4'/></svg>", out _, out _);
+
+        Assert.Equal(direct, grouped);
+    }
+
+    [Fact]
+    public void Stylesheet_class_width_applies_to_line()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><style>.w { stroke-width: 4; }</style><line class='w' x1='2' y1='8' x2='14' y2='8' stroke='red'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='4'/></svg>", out _, out _);
+
+        Assert.Equal(direct, styled);
+    }
+
+    [Fact]
+    public void Root_style_width_applies_to_line()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' style='stroke-width:4'><line x1='2' y1='8' x2='14' y2='8' stroke='red'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='4'/></svg>", out _, out _);
+
+        Assert.Equal(direct, styled);
+    }
+
+    [Fact]
+    public void Rect_inline_width_matches_direct_attribute()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='12' height='12' fill='red' stroke='blue' style='stroke-width:4'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='12' height='12' fill='red' stroke='blue' stroke-width='4'/></svg>", out _, out _);
+
+        Assert.Equal(direct, styled);
+    }
+
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='3'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='0'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2.5'/></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' style='stroke-width:3'/>")]
     public void Non_even_stroke_widths_stay_unsupported(string svg)
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));

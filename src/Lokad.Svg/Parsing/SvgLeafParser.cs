@@ -29,7 +29,7 @@ internal static class SvgLeafParser
         if (rounded) return LowerRoundedRect(reader, context, syntax, cornerX, cornerY, effectiveFrame, state);
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         SvgRectangle rectangle = element.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
-        SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, syntax.StrokeWidth, element.Transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
+        SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, element.Transform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
         if (stroke is not null && effectiveFrame is not null && effectiveFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         if (effectiveFrame is not null) rectangle = ClipStrokedRectangle(rectangle, stroke, effectiveFrame.Value);
         return RetainSingleGeometry(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }), state, context);
@@ -263,7 +263,7 @@ internal static class SvgLeafParser
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         AxisTransform localTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"));
         SvgRectangle rectangle = localTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
-        SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, syntax.StrokeWidth, localTransform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
+        SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, localTransform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
         return new SvgParsedRectangle(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }), element.Style);
     }
 
@@ -505,7 +505,7 @@ internal static class SvgLeafParser
             return null;
         }
         _ = SvgStrokeStyleSyntax.ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
-        int width = SvgGeometrySyntax.ParseInteger(reader.GetAttribute("stroke-width") ?? "1");
+        int width = SvgGeometrySyntax.ParseInteger(element.Style.Width ?? reader.GetAttribute("stroke-width") ?? "1");
         if (width <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive circle stroke widths are implemented.");
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(element.Presentation.StrokeColor.Value, element.Presentation.Opacity), width);
     }
@@ -522,7 +522,7 @@ internal static class SvgLeafParser
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgColor? strokeColor = element.Presentation.StrokeColor;
         if (element.Transform != AxisTransform.Identity || strokeColor is null || (syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
-        int strokeWidth = SvgGeometrySyntax.ParseInteger(syntax.StrokeWidth ?? "1");
+        int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
         if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
         SvgStrokeCap linecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
         double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);

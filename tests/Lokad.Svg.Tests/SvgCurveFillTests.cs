@@ -258,16 +258,14 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
-    public void Fractional_path_with_inline_stroke_width_stays_unsupported()
+    public void Fractional_path_inline_width_matches_direct_attribute()
     {
-        // Inventory re-probe 2026-09-27 (R37): fractional admission carries the check-mark
-        // shape through to the inline-width gate (inv-074, corroborating inv-042).
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0 L8,0 L8,8 Z' fill='red' style='stroke-width:2'/></svg>");
+        // R36: inline stroke widths flow through the same cascade as attributes,
+        // advancing the check-mark bundle past the inline-width gate (inv-074).
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0 L8,0 L8,8 Z' fill='red' stroke='blue' style='stroke-width:2'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0 L8,0 L8,8 Z' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Inline style property 'stroke-width' is not implemented.", rejected.Message);
+        Assert.Equal(direct, styled);
     }
 
     [Fact]

@@ -10,6 +10,8 @@ is not a general pixel-fidelity claim.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
+Stroke widths flow through the same cascade: presentation attributes, inline styles and matching stylesheets on the shape plus group and root inheritance render identically to direct attributes, with odd, fractional and non-positive widths still rejected at lowering.
+
 | Area | Status |
 | --- | --- |
 | Public options, limits and failure categories | Initial contract and categorized public failures implemented; current rectangle raster work is preflight-bounded. Lowering and font-request discovery both reserve the greater of 16 KiB, four times input bytes, or 512 bytes per configured XML-attribute limit before `XmlReader` construction; it is an accounted renderer allowance, not a process-RSS cap or exact BCL allocation measure |
