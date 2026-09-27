@@ -135,6 +135,21 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Gradient_bowtie_paints_both_lobes()
+    {
+        // R34: the crossing split feeds the shared gradient repaint, so both
+        // lobes carry the ramp (structural asserts only; the dithered ramp itself
+        // stays calibrated elsewhere).
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='0,0 8,8 8,0 0,8' fill='url(#g)'/></svg>", out _, out _);
+
+        SvgColor left = Pixel(pixels, 8, 1, 2);
+        SvgColor right = Pixel(pixels, 8, 6, 2);
+        Assert.True(left.Red > left.Blue);
+        Assert.True(right.Blue > right.Red);
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 2));
+    }
+
+    [Fact]
     public void Coincident_spike_stays_unsupported()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 4,4 0,8' fill='red'/></svg>");
