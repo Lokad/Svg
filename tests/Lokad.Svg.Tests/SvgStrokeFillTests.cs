@@ -424,6 +424,41 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Dashed_diagonal_vertex_run_survives_overlap()
+    {
+        // S12: the dash run starting on the diagonal just past the vertex
+        // overlaps the run ending at the vertex, and first-vertex winding
+        // roles must not cancel the partially overlapped run.
+        byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><polyline points=\"0,0 16,0 0,16\" fill=\"none\" stroke=\"red\" stroke-width=\"2\" stroke-dasharray=\"4 2\"/></svg>", out _, out _);
+
+        Assert.NotEqual(0, Pixel(pixels, 16, 13, 3).Alpha);
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 11, 5));
+    }
+
+    [Fact]
+    public void Dashed_diagonal_path_run_matches_polyline()
+    {
+        // S12: the path lowering shares the dashed vertex-adjacent run with
+        // the polyline lowering instead of dropping it at role resolution.
+        byte[] path = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M0,0 L16,0 L0,16\" fill=\"none\" stroke=\"red\" stroke-width=\"2\" stroke-dasharray=\"4 2\"/></svg>", out _, out _);
+        byte[] polyline = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><polyline points=\"0,0 16,0 0,16\" fill=\"none\" stroke=\"red\" stroke-width=\"2\" stroke-dasharray=\"4 2\"/></svg>", out _, out _);
+
+        Assert.NotEqual(0, Pixel(path, 16, 13, 3).Alpha);
+        Assert.Equal(polyline, path);
+    }
+
+    [Fact]
+    public void Dashed_diagonal_polygon_run_survives_overlap()
+    {
+        // S12: the closed dashed triangle keeps the same vertex-adjacent
+        // diagonal run as the open polyline through seam merging.
+        byte[] polygon = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><polygon points=\"0,0 16,0 0,16\" fill=\"none\" stroke=\"red\" stroke-width=\"2\" stroke-dasharray=\"4 2\"/></svg>", out _, out _);
+
+        Assert.NotEqual(0, Pixel(polygon, 16, 13, 3).Alpha);
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(polygon, 16, 11, 5));
+    }
+
+    [Fact]
     public void Dashed_fractional_polygon_differs_from_solid()
     {
         byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0.5 7.5,0.5 7.5,7.5 0.5,7.5' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4'/></svg>", out _, out _);
