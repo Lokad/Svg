@@ -179,6 +179,24 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    public void Scaled_quadratic_fill_matches_direct_quadratic()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><path d='M0,128 Q64,0 128,128 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
+    public void Scaled_cubic_fill_matches_direct_cubic()
+    {
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><path d='M0,8 C3,0 6,0 8,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><path d='M0,128 C48,0 96,0 128,128 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
     public void Scaled_circle_stroke_matches_direct_stroke()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><circle cx='4' cy='4' r='3' fill='none' stroke='red' stroke-width='1'/></svg>", out _, out _);
