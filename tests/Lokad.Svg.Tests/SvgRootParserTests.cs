@@ -4248,11 +4248,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_object_bounding_box_clips_on_fractional_curves()
+    public void Clips_a_fractional_curve_to_its_object_bounding_box_clip()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs><path d='M0.5,8 Q4,-3.5 8,8' fill='red' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs><path d='M0.5,8 Q4,-3.5 8,8' fill='red' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.True(geometry.Polygon.Clip.HasValue);
+        SvgRectangle fillBox = FillBounds(geometry);
+        Assert.Equal(new SvgClipBox(fillBox.X, fillBox.Y, fillBox.Width, fillBox.Height), geometry.Polygon.Clip.Value);
     }
 
     [Fact]

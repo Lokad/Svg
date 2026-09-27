@@ -73,16 +73,33 @@ public sealed class SvgCurveFillTests
         Assert.Equal(integer, exponent);
     }
 
-    [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4.5,0 8,8 Z' fill='red'/></svg>")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q10,0 1e-1,8 Z' fill='red'/></svg>")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 C3.5,0 6,0 8,8 Z' fill='red'/></svg>")]
-    public void Non_integer_curve_coordinates_stay_unsupported(string svg)
+    [Fact]
+    public void Fractional_quadratic_side_control_fills_sliver()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4.5,0 8,8 Z' fill='red'/></svg>", out _, out _);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only integer path coordinates are implemented", rejected.Message);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 3, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 7));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 0));
+    }
+
+    [Fact]
+    public void Exponent_quadratic_outside_control_fills_triangle()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q10,0 1e-1,8 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 2, 2));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 7));
+    }
+
+    [Fact]
+    public void Fractional_cubic_arch_fills_below_curve()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,8 C3.5,0 6,0 8,8 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 7));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 0));
     }
 
     [Fact]

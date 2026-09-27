@@ -26,7 +26,6 @@ internal static class SvgOrthogonalShapeParser
         SvgParsedGeometry filled;
         if (hasCurve)
         {
-            if (hasFractional && HasNonIntegralNumber(d, context.WorkCounter, context.CancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer path coordinates are implemented; fractional and scientific notation stay unsupported.");
             shape = context.ResolveShape(fillStyle, reader, true);
             bool curveEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -147,62 +146,6 @@ internal static class SvgOrthogonalShapeParser
             return (commands, curve, arc);
         }
 
-        static bool HasNonIntegralNumber(string value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        {
-            for (int index = 0; index < value.Length;)
-            {
-                if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
-                char current = value[index];
-                if (current is '+' or '-' or '.' || char.IsAsciiDigit(current))
-                {
-                    int start = index;
-                    if (current is '+' or '-')
-                    {
-                        index++;
-                        if (index >= value.Length) break;
-                    }
-
-                    bool digits = false;
-                    while (index < value.Length && char.IsAsciiDigit(value[index])) { index++; digits = true; }
-                    if (index < value.Length && value[index] == '.')
-                    {
-                        index++;
-                        while (index < value.Length && char.IsAsciiDigit(value[index])) { index++; digits = true; }
-                    }
-
-                    if (!digits)
-                    {
-                        index = start + 1;
-                        continue;
-                    }
-
-                    if (index < value.Length && value[index] is 'e' or 'E')
-                    {
-                        int exponentMark = index;
-                        index++;
-                        if (index < value.Length && value[index] is '+' or '-') index++;
-                        bool exponentDigits = false;
-                        while (index < value.Length && char.IsAsciiDigit(value[index])) { index++; exponentDigits = true; }
-                        if (!exponentDigits)
-                        {
-                            index = exponentMark + 1;
-                            continue;
-                        }
-                    }
-
-                    ReadOnlySpan<char> token = value.AsSpan(start, index - start);
-                    if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) continue;
-                    if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) || !double.IsFinite(number)) continue;
-                    if (number != Math.Truncate(number)) return true;
-                }
-                else
-                {
-                    index++;
-                }
-            }
-
-            return false;
-        }
     }
 
     internal static BudgetedParserList<SvgPoint> TokenizeBands(XmlReader reader, string elementName, bool isPath, bool allowDiagonal, int maximumGeometryElements, RenderBudget budget, SvgPaintableElementContext context, BudgetedParserList<int> contourEnds)
