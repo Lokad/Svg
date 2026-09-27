@@ -380,7 +380,7 @@ internal static class SvgGradientSyntax
         {
             string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
             (int commandCount, bool hasCurve, bool hasArc, bool hasFractional) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
-            if (bandStroke is not null && (hasCurve || hasFractional)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient-filled curved or fractional paths with strokes are not implemented.");
+
             if (hasCurve || hasFractional)
             {
                 // Curved and fractional fills flatten through shared device outlines, repainted with the gradient like stroke outlines.
@@ -402,7 +402,7 @@ internal static class SvgGradientSyntax
                         repainted.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, paintBox, opacity, budget));
                     }
                     filled.Dispose();
-                    return new SvgParsedGeometry(repainted.Detach(), filled.ElementCount);
+                    return AppendPaintFillStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
                 }
                 catch { filled.Dispose(); throw; }
             }
@@ -440,25 +440,33 @@ internal static class SvgGradientSyntax
     internal static SvgParsedGeometry AppendPaintFillStroke(SvgParsedGeometry filled, XmlReader reader, SvgPaintableElementContext context, string elementName, bool isPath, BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, AxisTransform transform, SvgViewportFrame? frame, int maximumGeometryElements, RenderBudget budget, SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke, SvgResolvedPaintableElement strokeShape)
     {
         if (stroke is null) return filled;
+        if (isPath)
+        {
+            string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
+            (int commandCount, bool hasArc, bool hasCurve, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            return AppendPaintFillStrokePath(filled, d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, stroke, strokeShape);
+        }
         try
         {
-            SvgParsedGeometry stroked;
-            if (isPath)
-            {
-                string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-                (int commandCount, bool hasArc, bool hasCurve, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
-                using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, strokeShape, stroke.Value.Color, strokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
-            }
-            else
-            {
-                using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, false, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                stroked = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", strokeShape.Transform, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, strokeShape.Presentation.IsPainted, frame, budget);
-            }
+            using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, false, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            SvgParsedGeometry stroked = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", strokeShape.Transform, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, strokeShape.Presentation.IsPainted, frame, budget);
+            return SvgOrthogonalShapeParser.ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
+        }
+        catch { filled.Dispose(); throw; }
+    }
+
+    /// <summary>Appends an admitted solid stroke outline lowered from path data to paint-filled geometry.</summary>
+    private static SvgParsedGeometry AppendPaintFillStrokePath(SvgParsedGeometry filled, string d, int commandCount, bool hasArc, bool hasCurve, XmlReader reader, SvgPaintableElementContext context, string elementName, SvgViewportFrame? frame, int maximumGeometryElements, RenderBudget budget, SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke, SvgResolvedPaintableElement strokeShape)
+    {
+        if (stroke is null) return filled;
+        try
+        {
+            using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            SvgParsedGeometry stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, strokeShape, stroke.Value.Color, strokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
             return SvgOrthogonalShapeParser.ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
         }
         catch { filled.Dispose(); throw; }
