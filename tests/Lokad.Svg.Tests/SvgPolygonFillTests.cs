@@ -370,11 +370,11 @@ public sealed class SvgPolygonFillTests
 
         Assert.Equal(8, width);
         Assert.Equal(8, height);
-        SvgColor center = Pixel(pixels, width, 0, 0);
-        Assert.Equal(255, center.Red);
-        Assert.Equal(0, center.Green);
-        Assert.Equal(0, center.Blue);
-        Assert.True(center.Alpha > 0, "Disjoint opposite contours must not cancel.");
+        // R34: disjoint opposite contours share one pixel without cancelling.
+        // The sliver pins candidate identity (alpha 23) against the pinned
+        // Chrome triple (alpha 37, SHA-256 a6c2aee0); the twin below locks reversal invariance.
+        Assert.Equal(new SvgColor(255, 0, 0, 23), Pixel(pixels, width, 0, 0));
+        Assert.Equal(23, AlphaSum(pixels));
     }
 
     [Fact]

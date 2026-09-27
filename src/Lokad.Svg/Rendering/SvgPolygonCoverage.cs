@@ -85,7 +85,7 @@ internal static class SvgPolygonCoverage
         if (contourEnds.Length > 0 && previous != points.Length) throw new ArgumentOutOfRangeException(nameof(contourEnds));
     }
 
-    /// <summary>Returns the nonzero-fill coverage of the pixel square across spatially resolved contour roles.</summary>    /// <summary>Returns the nonzero-fill coverage of the pixel square across spatially resolved contour roles.</summary>
+    /// <summary>Returns the nonzero-fill coverage of the pixel square across spatially resolved contour roles.</summary>
     /// <remarks>
     /// <para>Each contour contributes its unsigned fan area times its caller role, so top-level contours paint regardless of orientation, opposite-wound holes subtract and same-wound islands add nothing: disjoint opposite contours sharing a pixel add instead of cancelling. Roles come from SvgContourNesting in one wiring pass; zero masks a contour out, and any other value is rejected. Exactness needs separated contour boundaries within the pixel, matching the signed contract.</para>
     /// </remarks>
