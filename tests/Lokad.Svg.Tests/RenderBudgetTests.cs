@@ -498,6 +498,35 @@ public sealed class RenderBudgetTests
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
     }
     [Fact]
+    public void Curved_gradient_fill_denies_and_releases_under_tight_raster_budget()
+    {
+        // R39 remainder: denial coverage grows with new geometry kinds. Curved
+        // gradient fills flatten through budgeted scratch before repainting.
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0 Q8,0 8,8 L0,8 Z\" fill=\"url(#g)\"/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
+        RenderBudget rasterBudget = new(300);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+    [Fact]
+    public void Curved_gradient_fill_denies_and_releases_under_tight_parse_budget()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0 Q8,0 8,8 L0,8 Z\" fill=\"url(#g)\"/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget probe = new(limits.MaximumAccountedBytes);
+        using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
+        long peak = probe.Snapshot().PeakBytes;
+        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumWorkUnits, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Polygon_rasterization_observes_cancellation_during_vertex_mapping()
     {
         RenderBudget budget = new(100_000);
