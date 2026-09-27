@@ -593,7 +593,6 @@ public sealed class PublicContractTests
     [InlineData("<circle cx='1' cy='1' r='1' fill='url(#g)'/>")]
     [InlineData("<text x='0' y='1'>x</text>")]
     [InlineData("<foreignObject width='1' height='1'><body/></foreignObject>")]
-    [InlineData("<linearGradient id='paint'><stop offset='0' stop-color='red'/></linearGradient>")]
     public void Unimplemented_visible_children_are_rejected_at_public_conversion(string content)
     {
         string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'>" + content + "</svg>";

@@ -38,6 +38,23 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Root_linear_gradient_matches_defs_twin()
+    {
+        byte[] rooted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#g)\"/></svg>", out _, out _);
+        byte[] defsed = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#g)\"/></svg>", out _, out _);
+
+        Assert.Equal(defsed, rooted);
+    }
+    [Fact]
+    public void Root_radial_gradient_matches_defs_twin()
+    {
+        byte[] rooted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><radialGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><circle cx=\"8\" cy=\"8\" r=\"5\" fill=\"url(#g)\"/></svg>", out _, out _);
+        byte[] defsed = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient></defs><circle cx=\"8\" cy=\"8\" r=\"5\" fill=\"url(#g)\"/></svg>", out _, out _);
+
+        Assert.Equal(defsed, rooted);
+    }
+
+    [Fact]
     public void Scaled_viewBox_rounded_matches_direct_rendering()
     {
         byte[] viewport = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\" viewBox=\"0 0 32 32\"><rect x=\"4\" y=\"4\" width=\"24\" height=\"24\" rx=\"6\" fill=\"red\"/></svg>", out _, out _);
