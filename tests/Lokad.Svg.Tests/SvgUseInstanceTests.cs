@@ -27,6 +27,19 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void OutputScale_use_matches_enlarged_direct_rendering()
+    {
+        byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='r' x='8' y='8' width='48' height='48' fill='red'/></defs><use href='#r'/></svg>");
+        byte[] large = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><defs><rect id='r' x='16' y='16' width='96' height='96' fill='red'/></defs><use href='#r'/></svg>");
+        SvgRenderOptions scaled = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default);
+        SvgRenderOptions direct = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> scaledPng = SvgConverter.ConvertToPng(small, scaled, CancellationToken.None);
+        ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(large, direct, CancellationToken.None);
+
+        Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
+    }
+
+    [Fact]
     public void Use_offset_matches_shifted_rendering()
     {
         byte[] shifted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='2,1 6,1 2,5' fill='red'/></svg>", out _, out _);
