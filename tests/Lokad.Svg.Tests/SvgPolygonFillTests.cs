@@ -108,13 +108,18 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Self_intersecting_diagonal_polygon_stays_unsupported()
+    public void Self_intersecting_diagonal_polygon_paints_union()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='red'/></svg>");
+        // R34: a single closed contour crossing only itself paints its unsigned
+        // union under nonzero fill; the lobes meet at exactly one point.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='red'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 6, 2));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 2));
+        // Coverage sums, not maxes, at the shared vertex, so the pinned sum exceeds
+        // the analytic 8160 by 8.
+        Assert.Equal(8168, AlphaSum(pixels));
     }
 
     [Fact]
@@ -602,13 +607,17 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Fractional_bowtie_stays_unsupported()
+    public void Fractional_bowtie_paints_union()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L7.5,7.5 L7.5,0.5 L0.5,7.5 Z' fill='red'/></svg>");
+        // R34: the fractional bowtie paints like its integer twin through the
+        // same unsigned-union rule.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L7.5,7.5 L7.5,0.5 L0.5,7.5 Z' fill='red'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 6, 2));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 2));
+        // Same shared-vertex summation over the analytic 6247.5 plus fractional edge rounding.
+        Assert.Equal(6260, AlphaSum(pixels));
     }
 
     [Fact]

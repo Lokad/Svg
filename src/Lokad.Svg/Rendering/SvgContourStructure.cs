@@ -108,6 +108,71 @@ internal static class SvgContourStructure
         return flags;
     }
 
+    /// <summary>Finds the first interior crossing between non-adjacent edges of one closed contour slice.</summary>
+    /// <remarks>Uses the same adjacency exclusions as classification: neighboring edges and the closing pair never count. Strict opposite orientation signs on both sides guarantee an interior intersection, which is verified in unit coordinates before reporting. Observes cancellation at the pair checkpoint; allocates nothing and holds no budget.</remarks>
+    internal static bool TryFindProperCrossing(ReadOnlySpan<SvgDevicePoint> points, int start, int end, CancellationToken cancellationToken, out int firstEdge, out int secondEdge, out SvgDevicePoint crossing)
+    {
+        if (start < 0 || start > points.Length) throw new ArgumentOutOfRangeException(nameof(start));
+        if (end < start || end > points.Length) throw new ArgumentOutOfRangeException(nameof(end));
+        int count = end - start;
+        int pairs = 0;
+        for (int first = 0; first < count; first++)
+        {
+            (SvgDevicePoint firstStart, SvgDevicePoint firstEnd) = EdgeAt(points, start, count, first);
+            if (firstStart == firstEnd) continue;
+            for (int second = first + 1; second < count; second++)
+            {
+                if (second == first + 1 || (first == 0 && second == count - 1)) continue;
+                (SvgDevicePoint secondStart, SvgDevicePoint secondEnd) = EdgeAt(points, start, count, second);
+                if (secondStart == secondEnd) continue;
+                if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                if (Math.Max(firstStart.X, firstEnd.X) < Math.Min(secondStart.X, secondEnd.X) || Math.Max(secondStart.X, secondEnd.X) < Math.Min(firstStart.X, firstEnd.X)) continue;
+                if (Math.Max(firstStart.Y, firstEnd.Y) < Math.Min(secondStart.Y, secondEnd.Y) || Math.Max(secondStart.Y, secondEnd.Y) < Math.Min(firstStart.Y, firstEnd.Y)) continue;
+                if (Orient(firstStart, firstEnd, secondStart) * Orient(firstStart, firstEnd, secondEnd) < 0 && Orient(secondStart, secondEnd, firstStart) * Orient(secondStart, secondEnd, firstEnd) < 0 && TryCrossingPoint(firstStart, firstEnd, secondStart, secondEnd, out SvgDevicePoint point))
+                {
+                    firstEdge = first;
+                    secondEdge = second;
+                    crossing = point;
+                    return true;
+                }
+            }
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        firstEdge = -1;
+        secondEdge = -1;
+        crossing = default;
+        return false;
+    }
+
+    /// <summary>Computes the interior intersection of two straddling segments, refusing degenerate quotients.</summary>
+    private static bool TryCrossingPoint(SvgDevicePoint firstStart, SvgDevicePoint firstEnd, SvgDevicePoint secondStart, SvgDevicePoint secondEnd, out SvgDevicePoint crossing)
+    {
+        double ux = RequireFinite(firstEnd.X - firstStart.X);
+        double uy = RequireFinite(firstEnd.Y - firstStart.Y);
+        double vx = RequireFinite(secondEnd.X - secondStart.X);
+        double vy = RequireFinite(secondEnd.Y - secondStart.Y);
+        double denominator = RequireFinite(ux * vy - uy * vx);
+        if (denominator == 0)
+        {
+            crossing = default;
+            return false;
+        }
+
+        double firstNumerator = RequireFinite((secondStart.X - firstStart.X) * vy - (secondStart.Y - firstStart.Y) * vx);
+        double secondNumerator = RequireFinite((secondStart.X - firstStart.X) * uy - (secondStart.Y - firstStart.Y) * ux);
+        double firstPosition = firstNumerator / denominator;
+        double secondPosition = secondNumerator / denominator;
+        if (!double.IsFinite(firstPosition) || !double.IsFinite(secondPosition) || firstPosition <= 0 || firstPosition >= 1 || secondPosition <= 0 || secondPosition >= 1)
+        {
+            crossing = default;
+            return false;
+        }
+
+        crossing = new SvgDevicePoint(RequireFinite(firstStart.X + firstPosition * ux), RequireFinite(firstStart.Y + firstPosition * uy));
+        return true;
+    }
+
     private static (SvgDevicePoint From, SvgDevicePoint To) EdgeAt(ReadOnlySpan<SvgDevicePoint> points, int start, int count, int edge)
     {
         return (points[start + edge], points[start + (edge + 1) % count]);

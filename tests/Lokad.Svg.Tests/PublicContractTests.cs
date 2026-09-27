@@ -606,7 +606,6 @@ public sealed class PublicContractTests
     [InlineData("<rect vector-effect='non-scaling-stroke'/>")]
     [InlineData("<style>circle { fill: red; }</style><rect/>")]
     [InlineData("<style>rect { fill: red</style><rect/>")]
-    [InlineData("<polygon points='0,0 2,2 2,0 0,2'/>")]
     [InlineData("<rect x='0.1'/>")]
     [InlineData("<foreign:rect xmlns:foreign='urn:foreign' width='1' height='1'><foreign:child/></foreign:rect>")]
     [InlineData("<g opacity='0.5'><g opacity='0.5'><rect/></g></g>")]

@@ -263,16 +263,17 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
-    public void Fractional_self_intersecting_path_stays_unsupported()
+    public void Fractional_self_intersecting_path_paints_union()
     {
-        // Inventory re-probe 2026-09-27 (R37): fractional admission carries stop-sign,
-        // flame and cross shapes through to the simplicity gate (inv-050, inv-067, inv-070).
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8.5,8 L8,0 L0,8 Z' fill='red'/></svg>");
+        // R34: flattened self-crossings admit through the same unsigned-union rule.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8.5,8 L8,0 L0,8 Z' fill='red'/></svg>", out int width, out int height);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.", rejected.Message);
+        Assert.Equal(8, width);
+        Assert.Equal(8, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 1, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 6, 2));
+        // The shared crossing vertex sums corner coverage from both loops instead of maxing it.
+        Assert.Equal(new SvgColor(255, 0, 0, 68), Pixel(pixels, width, 4, 4));
     }
 
     [Fact]

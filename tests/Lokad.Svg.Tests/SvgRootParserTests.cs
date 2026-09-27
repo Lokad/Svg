@@ -2994,11 +2994,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_self_intersecting_diagonal_polygons()
+    public void Admits_self_intersecting_diagonal_polygons()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 2,2 2,0 0,2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        // R34: single-contour nonzero crossings lower like simple contours.
+        SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 2,2 2,0 0,2'/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.NotEmpty(root.Geometries);
+        Assert.False(root.HasUnsupportedChild);
     }
 
     [Fact]
