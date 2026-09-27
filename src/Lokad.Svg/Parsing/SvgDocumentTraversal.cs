@@ -284,6 +284,7 @@ internal static class SvgDocumentTraversal
                     SvgMaskSyntax.ResolvePendingGroupMasks(state, workCounter, cancellationToken);
                     if (root.Opacity != 255) state.Scene.EndOpacityScope();
                     SvgSceneStorage sceneStorage = state.Scene.Build();
+                    state.ReleaseDefinitions();
                     try
                     {
                         ValidateDocumentEnd(reader, workCounter, cancellationToken);

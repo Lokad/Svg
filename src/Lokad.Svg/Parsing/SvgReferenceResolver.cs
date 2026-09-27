@@ -130,6 +130,7 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
+        using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -153,6 +154,7 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
+        using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -181,6 +183,7 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
+        using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -208,6 +211,7 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
+        using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -282,6 +286,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
             {
@@ -450,6 +455,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
             {
@@ -546,6 +552,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
             {
@@ -594,6 +601,7 @@ internal static class SvgReferenceResolver
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
             if (viewportFrame is not null && viewportFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
+            using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
             {

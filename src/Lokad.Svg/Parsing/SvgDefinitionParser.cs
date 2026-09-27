@@ -495,7 +495,7 @@ internal static class SvgDefinitionParser
             "rect" => RetainParsedGeometries(SvgLeafParser.ParseRoundedRectangleDefinition(reader, context, state)),
             _ => throw new InvalidOperationException("Unsupported definition leaf reached shape lowering."),
         };
-        if (geometries.Length > 0) state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Scene);
+        if (geometries.Length > 0) state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Scene));
         return new SvgDefinition(geometries, IsOverrideableFill(style, geometries), symbolViewBox);
 
         static SvgGeometry[] RetainCircleGeometries(SvgParsedGeometry parsed)

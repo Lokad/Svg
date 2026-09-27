@@ -549,6 +549,9 @@ internal sealed class BudgetedParserDictionary<TKey, TValue> : IDisposable where
 
     internal bool TryGetValue(TKey key, out TValue value) => _items.TryGetValue(key, out value);
 
+    /// <summary>Enumerates retained values so owners can release value-owned resources on teardown.</summary>
+    internal IEnumerable<TValue> Values => _items.Values;
+
     public void Dispose()
     {
         _items = [];

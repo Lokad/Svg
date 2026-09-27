@@ -338,6 +338,31 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Use_instance_mapping_denies_and_releases_when_points_exceed_the_remaining_budget()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><use href='#p'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget probe = new(limits.MaximumAccountedBytes);
+        using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
+        long peak = probe.Snapshot().PeakBytes;
+        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumWorkUnits, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Successful_use_parse_releases_definition_storage_after_root_disposal()
+    {
+        byte[] probeSvg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><use href='#p'/></svg>");
+        SvgRenderLimits probeLimits = SvgRenderLimits.Default;
+        RenderBudget probeBudget = new(probeLimits.MaximumAccountedBytes);
+        using (SvgRootParser.Parse(probeSvg, probeLimits, probeBudget, CancellationToken.None)) { }
+        Assert.Equal(0, probeBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Polygon_rasterization_denies_and_releases_when_mapped_points_exceed_the_remaining_budget()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>");

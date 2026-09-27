@@ -66,6 +66,9 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserDictionary<string, SvgDefinition> Definitions { get; }
 
+    /// <summary>Holds definition-array reservations until teardown releases them on success, failure or cancellation.</summary>
+    internal List<RenderBudget.BudgetReservation> DefinitionReservations { get; } = new();
+
     internal BudgetedParserDictionary<string, SvgClipBox> Clips { get; }
 
     internal BudgetedParserDictionary<string, SvgClipBox> ObjectClips { get; }
@@ -174,14 +177,29 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal SvgViewBox? SymbolViewBox { get; set; }
 
+    private bool _definitionsReleased;
+
+    /// <summary>Releases definition-owned geometry reservations exactly once, covering success after scene build and failure or cancellation during teardown.</summary>
+    internal void ReleaseDefinitions()
+    {
+        if (_definitionsReleased) return;
+        _definitionsReleased = true;
+        foreach (SvgDefinition value in Definitions.Values)
+            foreach (SvgGeometry geometry in value.Geometries)
+                geometry.Dispose();
+    }
+
     public void Dispose()
     {
+        ReleaseDefinitions();
         PendingUses.Dispose();
         PendingLeafClips.Dispose();
         PendingGroupClips.Dispose();
         PendingLeafMasks.Dispose();
         PendingGroupMasks.Dispose();
         Definitions.Dispose();
+        foreach (RenderBudget.BudgetReservation reservation in DefinitionReservations) reservation.Dispose();
+        DefinitionReservations.Clear();
         Clips.Dispose();
         ObjectClips.Dispose();
         Masks.Dispose();
