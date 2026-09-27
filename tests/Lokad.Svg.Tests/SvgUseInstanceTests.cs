@@ -999,6 +999,42 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Rejects_use_of_use_reference()
+    {
+        // S9: use elements never register as definitions, so chained
+        // references reject instead of recursing.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect id='r' x='0' y='0' width='4' height='4' fill='red'/><use id='u' href='#r'/><use href='#u'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_forward_use_of_use_reference()
+    {
+        // S9: forward chained references defer and then reject at document end
+        // rather than resolving through the intermediate instance.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><use href='#u'/><rect id='r' x='0' y='0' width='4' height='4' fill='red'/><use id='u' href='#r'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_duplicate_definition_ids_across_defs_and_root()
+    {
+        // S9: direct-root geometry registers exactly like defs-held geometry,
+        // so a repeated id is malformed wherever the twins live.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><rect id='r' x='0' y='0' width='4' height='4' fill='red'/></defs><rect id='r' x='4' y='4' width='4' height='4' fill='blue'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Rejects_use_of_non_geometry_definitions()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><image id='m' href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8'/></defs><use href='#m'/></svg>");
