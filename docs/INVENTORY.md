@@ -186,7 +186,7 @@ Public-domain SVGs sourced from Wikimedia Commons (all LicenseShortName=Public d
 - content: 3 paths, stroke-widths 36/98, stroke-linecap round.
 - diagnosis 2026-09-26 (exploratory scratch probes, ignored artifacts/inventory/pr-*.svg, never committed): closed wide strokes render with butt and round caps alike (round lowers as butt, byte-identical), and width 98 renders; but moving the stroke paint to the root so paths inherit it reproduces the Only non-painting stroke=none rejection. The precise blocker is therefore inherited (vs direct) stroke paint, a presentation-inheritance gap; the open diagonal contours and degenerate h0 dots are unreached second gates (both reject separately with Only closed axis-aligned integer paths).
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Only non-painting stroke none is implemented).
+- status: unsupported (rejects:UnsupportedFeature: Only non-painting stroke none is implemented).; re-probe 2026-09-27 (batch 83): advances past the stroke-none gate to even-width path strokes.
 - reference: none yet. [exploratory oracle triple 2026-09-26, 500x500 transparent, 3/3 byte-identical SHA-256 2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json)].
 
 ### inv-010 — ROC HCVS logo
@@ -456,7 +456,7 @@ Public-domain state-symbol SVGs from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: open stroked subpaths, default stroke width, fractional coordinate, viewBox-mapped.
 - content: 2 paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer path contours are implemented).
+- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer path contours are implemented).; re-probe 2026-09-27 (batch 83): advances past the closed-contour gate to even-width path strokes (default odd width 1 stays gated).
 - reference: exploratory oracle triple 2026-09-26, 1600x1000 transparent, 3/3 byte-identical (hash in status line for inv-030; Sweden af44aa8311e1c0a612f7a6292fbc3e401a2675880e421bc27cc6e2feb31130e9, Norway c41155bf1e7b50b9390bfc96a9980b4f1e583ef8b0439c448106eb107636da4d), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ### inv-029 — Flag of Norway
@@ -468,7 +468,7 @@ Public-domain state-symbol SVGs from Wikimedia Commons (all LicenseShortName=Pub
 - archetypes: outlined-cross stroke overlay, title element, viewBox-only viewport.
 - content: 1 rect, 2 stroked paths.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer path contours are implemented).
+- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer path contours are implemented).; re-probe 2026-09-27 (batch 83): advances past the closed-contour gate to viewBox mapping that must preserve quarter-pixel output edges (viewBox-only 22x16).
 - reference: exploratory oracle triple 2026-09-26, 300x150 transparent, 3/3 byte-identical (hash in status line for inv-030; Sweden af44aa8311e1c0a612f7a6292fbc3e401a2675880e421bc27cc6e2feb31130e9, Norway c41155bf1e7b50b9390bfc96a9980b4f1e583ef8b0439c448106eb107636da4d), pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ### inv-030 — Flag of Switzerland
@@ -509,7 +509,7 @@ Public-domain state-symbol SVGs from Wikimedia Commons (both LicenseShortName=Pu
 - content: 1 rect, stroked paths, 1 stroked circle.
 - diagnosis 2026-09-26 (exploratory scratch probe, ignored artifacts/inventory/pz-butt.svg, never committed): swapping round for butt caps moves the rejection to Group attribute stroke-width is not implemented. Layered gates: round caps, then group stroke-width inheritance (ignoring it would silently misrender the width-27 paths, so this needs inheritance plumbing, not admission), then fractional coordinates, all unreached behind the first.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Only butt stroke linecaps are implemented).
+- status: unsupported (rejects:UnsupportedFeature: Only butt stroke linecaps are implemented).; re-probe 2026-09-27 (batch 83): advances past the butt-cap gate (round caps admitted) to even-width path strokes (group width 27 and fractional coordinates stay layered behind).
 - reference: exploratory oracle triple 2026-09-26, 1500x1000 (top-left crop: native 1800x1200 exceeds the 2M-pixel capture transport limit) transparent, 3/3 byte-identical SHA-256 9db82bf081bccc1eedfcfba28947b9dc49ad80c0f3b4025b9de2d6aaa56f12b0, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ## Selected documents (batch 15, 2026-09-26)
@@ -525,7 +525,7 @@ Public-domain state-symbol SVG from Wikimedia Commons (LicenseShortName=Public d
 - archetypes: open stroked cross, integer coordinates, explicit stroke width, viewBox-only viewport.
 - content: 1 closed ground path, 1 open two-subpath stroked cross.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented; Release SvgRenderOptions.Default probe 2026-09-26, no candidate render).
+- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented; Release SvgRenderOptions.Default probe 2026-09-26, no candidate render).; re-probe 2026-09-27 (batch 83): advances past the closed-path and openness gates to viewBox mapping that must preserve quarter-pixel output edges (viewBox-only 37x28).
 - reference: exploratory oracle triple 2026-09-26, native 37x28 transparent, 3/3 byte-identical SHA-256 2502e5492fc3c300f82ddc6667a8a318bd520f1c1f40d6ecdf9e313238f7b751, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ## Selected documents (batch 16, 2026-09-26)
@@ -1149,7 +1149,7 @@ Public-domain icon SVG from Wikimedia Commons (LicenseShortName=Public domain pe
 - archetypes: fractional tick path, odd inline stroke-width, fractional rect coords, stroke opacity, version attribute, editor namespaces.
 - content: 1 fractional curved path plus 1 styled rect box.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; Release SvgRenderOptions.Default probe 2026-09-27, no candidate render). Layered behind the gate: odd inline stroke-width corroborating inv-042 on a new shape, fractional rect coordinates, fractional stroke opacity and version wiring.
+- status: unsupported (rejects:UnsupportedFeature: Only integer path coordinates are implemented; Release SvgRenderOptions.Default probe 2026-09-27, no candidate render).; re-probe 2026-09-27 (batch 83): advances past integer path coordinates (fractional curves admitted) to untransformed integer rectangle strokes with opacity only when fill-less (fractional box coords plus stroke opacity stay layered behind). Layered behind the gate: odd inline stroke-width corroborating inv-042 on a new shape, fractional rect coordinates, fractional stroke opacity and version wiring.
 - reference: exploratory oracle triple 2026-09-27, native 28x28 transparent, 3/3 byte-identical SHA-256 071C3C4E040457A45FC80E8F321A20336EAA4F7154142D4998BA51C9AD78B902, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ## Selected documents (batch 56, 2026-09-27)
@@ -1325,7 +1325,7 @@ Public-domain state-symbol SVG from Wikimedia Commons (LicenseShortName=Public d
 - archetypes: diagonal saltire strokes, saltire clip path, fill-and-stroke cross, viewBox-mapped viewport, solid strokes.
 - content: 1 ground path, 2 saltire stroke paths with 1 clipped, 1 cross path with fill and stroke.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented; Release SvgRenderOptions.Default probe 2026-09-27, no candidate render). Second point in the inv-061 stroke-only class with saltire clip-path strokes and cross combo distinct from band shapes; diagonal stroke lowering behind the gate.
+- status: unsupported (rejects:UnsupportedFeature: Only closed axis-aligned integer paths are implemented; Release SvgRenderOptions.Default probe 2026-09-27, no candidate render).; re-probe 2026-09-27 (batch 83): advances past the closed-path gate to defined local clip-path references (diagonal saltire clip content stays gated). Second point in the inv-061 stroke-only class with saltire clip-path strokes and cross combo distinct from band shapes; diagonal stroke lowering behind the gate.
 - reference: exploratory oracle triple 2026-09-27, native 1000x600 transparent, 3/3 byte-identical SHA-256 057E1681DA4BDE7CF0D659D7B9C8A572DB3DD81DF5B527FBA9B6BC15DA74C48A, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ## Selected documents (batch 67, 2026-09-27)
