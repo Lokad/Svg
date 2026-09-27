@@ -831,6 +831,30 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Radial_fill_with_solid_stroke_paints_band_over_fill()
+    {
+        // S13: radial-filled bands compose with an admitted solid stroke
+        // outline in paint order, matching Chrome up to a 3-pixel
+        // single-step edge residual.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,0 H16 V16 H0 Z' fill='url(#g)' stroke='blue' stroke-width='2'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 8, 0));
+    }
+
+    [Fact]
+    public void Radial_fill_with_solid_stroke_path_matches_polygon()
+    {
+        // S13: paths and polygons share the radial fill-plus-stroke lowering,
+        // so the same outline renders byte-identically through both spellings.
+        byte[] path = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,0 H16 V16 H0 Z' fill='url(#g)' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+        byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><polygon points='0,0 16,0 16,16 0,16' fill='url(#g)' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(polygon, path);
+    }
+
+    [Fact]
     public void Gradient_fill_with_solid_stroke_on_diagonal_paints_outline()
     {
         // S13: diagonal outlines compose the same way; the axis-aligned left
