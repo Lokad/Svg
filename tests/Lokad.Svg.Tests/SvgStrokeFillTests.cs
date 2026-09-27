@@ -690,6 +690,64 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Inline_linecap_on_line_stroke_matches_attribute()
+    {
+        // R36: linecap style overrides evaluate through the cascade exactly
+        // like the attribute spelling.
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='4' y1='8' x2='12' y2='8' stroke='red' stroke-width='4' stroke-linecap='square' style='stroke-linecap:butt'/></svg>", out _, out _);
+        byte[] attribute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='4' y1='8' x2='12' y2='8' stroke='red' stroke-width='4' stroke-linecap='butt'/></svg>", out _, out _);
+
+        Assert.Equal(attribute, styled);
+    }
+
+    [Fact]
+    public void Inline_dasharray_on_line_stroke_matches_attribute()
+    {
+        // R36: an inline neutralized dasharray renders the solid line exactly
+        // like the dash-free spelling.
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4' style='stroke-dasharray:none'/></svg>", out _, out _);
+        byte[] attribute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(attribute, styled);
+    }
+
+    [Fact]
+    public void Inline_dashoffset_on_line_stroke_matches_attribute()
+    {
+        // R36: dashoffset style overrides shift dash runs exactly like the
+        // attribute spelling.
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4' style='stroke-dashoffset:3'/></svg>", out _, out _);
+        byte[] attribute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-dashoffset='3'/></svg>", out _, out _);
+
+        Assert.Equal(attribute, styled);
+    }
+
+    [Fact]
+    public void Inline_dash_and_cap_on_gradient_line_matches_attribute()
+    {
+        // R36: the gradient-stroke routers and band gates evaluate effective
+        // style values, so neutralized dash and cap spellings render exactly
+        // like the plain gradient line.
+        string gradient = "<defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs>";
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'>" + gradient + "<line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-dasharray='4 4' stroke-linecap='round' style='stroke-dasharray:none;stroke-linecap:butt'/></svg>", out _, out _);
+        byte[] attribute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'>" + gradient + "<line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(attribute, styled);
+    }
+
+    [Fact]
+    public void Inline_cap_on_gradient_line_matches_attribute()
+    {
+        // R36: the gradient round-cap path honors the style cap, rendering
+        // exactly like the attribute butt spelling.
+        string gradient = "<defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs>";
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'>" + gradient + "<line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-linecap='round' style='stroke-linecap:butt'/></svg>", out _, out _);
+        byte[] attribute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'>" + gradient + "<line x1='0' y1='4' x2='16' y2='4' stroke='url(#g)' stroke-width='2' stroke-linecap='butt'/></svg>", out _, out _);
+
+        Assert.Equal(attribute, styled);
+    }
+
+    [Fact]
     public void Dasharray_on_line_stroke_renders_runs()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></svg>", out _, out _);
