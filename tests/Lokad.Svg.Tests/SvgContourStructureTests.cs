@@ -124,4 +124,22 @@ public sealed class SvgContourStructureTests
 
         Assert.False(SvgContourStructure.TryFindProperCrossing(square, 0, square.Length, CancellationToken.None, out _, out _, out _));
     }
+
+    [Fact]
+    public void Single_crossing_reports_no_other_crossing()
+    {
+        SvgDevicePoint[] bowtie = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+
+        Assert.True(SvgContourStructure.TryFindProperCrossing(bowtie, 0, bowtie.Length, CancellationToken.None, out int firstEdge, out int secondEdge, out _));
+        Assert.False(SvgContourStructure.HasAnotherProperCrossing(bowtie, 0, bowtie.Length, firstEdge, secondEdge, CancellationToken.None));
+    }
+
+    [Fact]
+    public void Double_crossing_reports_another_crossing()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(10, 10), new SvgDevicePoint(10, 0), new SvgDevicePoint(0, 10), new SvgDevicePoint(6, 10), new SvgDevicePoint(6, 4)];
+
+        Assert.True(SvgContourStructure.TryFindProperCrossing(points, 0, points.Length, CancellationToken.None, out int firstEdge, out int secondEdge, out _));
+        Assert.True(SvgContourStructure.HasAnotherProperCrossing(points, 0, points.Length, firstEdge, secondEdge, CancellationToken.None));
+    }
 }

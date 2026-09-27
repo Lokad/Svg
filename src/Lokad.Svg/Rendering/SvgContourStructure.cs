@@ -112,6 +112,18 @@ internal static class SvgContourStructure
     /// <remarks>Uses the same adjacency exclusions as classification: neighboring edges and the closing pair never count. Strict opposite orientation signs on both sides guarantee an interior intersection, which is verified in unit coordinates before reporting. Observes cancellation at the pair checkpoint; allocates nothing and holds no budget.</remarks>
     internal static bool TryFindProperCrossing(ReadOnlySpan<SvgDevicePoint> points, int start, int end, CancellationToken cancellationToken, out int firstEdge, out int secondEdge, out SvgDevicePoint crossing)
     {
+        return TryFindProperCrossingCore(points, start, end, -1, -1, cancellationToken, out firstEdge, out secondEdge, out crossing);
+    }
+
+    /// <summary>Reports whether another interior crossing exists apart from one excluded edge pair.</summary>
+    /// <remarks>Shares the core scan with the finder; edge indices below zero never match, so negative sentinels disable the exclusion. Observes cancellation at the pair checkpoint; allocates nothing and holds no budget.</remarks>
+    internal static bool HasAnotherProperCrossing(ReadOnlySpan<SvgDevicePoint> points, int start, int end, int excludeFirst, int excludeSecond, CancellationToken cancellationToken)
+    {
+        return TryFindProperCrossingCore(points, start, end, excludeFirst, excludeSecond, cancellationToken, out _, out _, out _);
+    }
+
+    private static bool TryFindProperCrossingCore(ReadOnlySpan<SvgDevicePoint> points, int start, int end, int excludeFirst, int excludeSecond, CancellationToken cancellationToken, out int firstEdge, out int secondEdge, out SvgDevicePoint crossing)
+    {
         if (start < 0 || start > points.Length) throw new ArgumentOutOfRangeException(nameof(start));
         if (end < start || end > points.Length) throw new ArgumentOutOfRangeException(nameof(end));
         int count = end - start;
@@ -123,6 +135,7 @@ internal static class SvgContourStructure
             for (int second = first + 1; second < count; second++)
             {
                 if (second == first + 1 || (first == 0 && second == count - 1)) continue;
+                if (first == excludeFirst && second == excludeSecond) continue;
                 (SvgDevicePoint secondStart, SvgDevicePoint secondEnd) = EdgeAt(points, start, count, second);
                 if (secondStart == secondEnd) continue;
                 if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();

@@ -967,7 +967,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Splits one self-crossing contour at its single interior crossing into two simple loops sharing the crossing point.</summary>
-    /// <remarks>Admits exactly single-contour sets whose only structure flag is a proper crossing, under either fill rule: the shared crossing vertex is the loops only contact, every other first vertex differs from it, and each loop carries at least three vertices by non-adjacency, so first-vertex roles and parity signs resolve exactly as for separated contours. Each split loop is reclassified on its own before admission, so leftover crossings still reject. Output lists are caller-owned budgeted storage filled after the caller reserves them; charges the crossing search pairs plus one work unit per copied vertex; observes cancellation in the search and the copy.</remarks>
+    /// <remarks>Admits exactly single-contour sets whose only structure flag is a proper crossing, under either fill rule: the shared crossing vertex is the loops only contact, every other first vertex differs from it, and each loop carries at least three vertices by non-adjacency, so first-vertex roles and parity signs resolve exactly as for separated contours. Second and further crossings reject up front through the exclusion scan, and each split loop is reclassified on its own before admission, so leftover crossings still reject. Output lists are caller-owned budgeted storage filled after the caller reserves them; charges the crossing search pairs plus one work unit per copied vertex; observes cancellation in the search and the copy.</remarks>
     private bool TrySplitSingleCrossing(SvgContourFlags structure, ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds)
     {
         ArgumentNullException.ThrowIfNull(splitPoints);
@@ -976,6 +976,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         int count = ends[0];
         ChargePairs(_workCounter, (long)count * (count - 1) / 2, _cancellationToken);
         if (!SvgContourStructure.TryFindProperCrossing(points, 0, count, _cancellationToken, out int firstEdge, out int secondEdge, out SvgDevicePoint crossing)) return false;
+        ChargePairs(_workCounter, (long)count * (count - 1) / 2, _cancellationToken);
+        if (SvgContourStructure.HasAnotherProperCrossing(points, 0, count, firstEdge, secondEdge, _cancellationToken)) return false;
         int firstLoopCount = secondEdge - firstEdge + 1;
         int secondLoopCount = count - (secondEdge - firstEdge) + 1;
         if (firstLoopCount < 3 || secondLoopCount < 3) return false;
