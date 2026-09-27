@@ -1428,7 +1428,7 @@ Public-domain reticle SVG from Wikimedia Commons (CC0 dedication per Commons API
 
 ### inv-091 — Red crosshairs
 
-- file: tests/Fixtures/candidates/inv-091.svg (SHA-256 0908C17E6BE7EF2F16CAFD30A725EE6DAA51CEE388CA24C851611F61BE688058)
+- file: tests/Fixtures/candidates/inv-091.svg (SHA-256 FFE9629D8550D489D357E92037154950C360A59CDD28460E1C902E12A1B046E2)
 - source: Wikimedia Commons, File:Crosshairs Red.svg. Retrieval 2026-09-27. Upstream verification 2026-09-27 via Commons API: size 797 and SHA-1 5b96eb65ac736b890ef24e778076e897be54b642 match local bytes; CC0 dedication.
 - license: CC0 (Commons dedication).
 - retrievalDate: 2026-09-27.
