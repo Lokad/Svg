@@ -213,7 +213,7 @@ internal static class SvgPatternSyntax
     /// <summary>Lowers one pattern-stroked rectangle into one solid fill plus four pattern-evaluated stroke bands sharing the tile grid.</summary>
     internal static SvgParsedGeometry LowerPatternStrokeRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
     {
-        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle");
+        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Stroke), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
@@ -310,7 +310,7 @@ internal static class SvgPatternSyntax
     internal static SvgParsedGeometry LowerPatternStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
     {
         // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
-        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line");
+        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
         AxisTransform transform = context.ResolveTransform(reader);
         if (transform != AxisTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");

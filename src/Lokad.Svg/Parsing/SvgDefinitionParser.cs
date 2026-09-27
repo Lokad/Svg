@@ -526,7 +526,7 @@ internal static class SvgDefinitionParser
 
     private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
-        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle");
+        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader);
         if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox);
         SvgComputedStyle style = context.ResolveStyle(reader);

@@ -34,6 +34,37 @@ internal static class SvgStrokeStyleSyntax
         else if (localName == "stroke-dashoffset") ValidateDashoffset(value.AsSpan());
     }
 
+    /// <summary>Validates one stroke style attribute, falling back to the inline style declaration when the attribute carries a spelling the inline style neutralizes. Stylesheet overrides resolve later; lowering re-gates the cascaded value honestly.</summary>
+    internal static void ValidateAttribute(XmlReader reader, string localName, string value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps, bool allowRoundJoin, bool allowBevelJoin, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        try { ValidateAttribute(localName, value, allowNonButt, allowSquareCap, allowClosedLoopCaps, allowRoundJoin, allowBevelJoin); }
+        catch (SvgException)
+        {
+            if (InlineStrokeDeclaration(reader, localName, workCounter, cancellationToken) is not string inline) throw;
+            ValidateAttribute(localName, inline, allowNonButt, allowSquareCap, allowClosedLoopCaps, allowRoundJoin, allowBevelJoin);
+        }
+    }
+
+    /// <summary>Returns the inline style value for one stroke property when the element declares it, so validation honors inline overrides of rejected attribute spellings.</summary>
+    internal static string? InlineStrokeDeclaration(XmlReader reader, string localName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        string? inline = reader.GetAttribute("style");
+        if (inline is null) return null;
+        InlineStyle parsed = SvgInlineStyleParser.Parse(inline.AsSpan(), workCounter, cancellationToken);
+        return localName switch
+        {
+            "stroke-linecap" => parsed.Linecap,
+            "stroke-linejoin" => parsed.Linejoin,
+            "stroke-dasharray" => parsed.Dasharray,
+            "stroke-dashoffset" => parsed.Dashoffset,
+            _ => null,
+        };
+    }
+
     private static void ValidateLinecap(ReadOnlySpan<char> value, bool allowNonButt, bool allowSquareCap, bool allowClosedLoopCaps)
     {
         if (value.Trim().Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
@@ -225,32 +256,36 @@ internal static class SvgStrokeStyleSyntax
     }
 
     /// <summary>Rejects non-butt caps on dashed strokes and non-miter joins where strokes lower to fixed bands; round and square caps on solid closed loops are spec no-ops and lower as butt.</summary>
-    internal static void RequireButtCapJoin(XmlReader reader, string elementName)
+    internal static void RequireButtCapJoin(XmlReader reader, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        bool solid = ParseDasharray(reader.GetAttribute("stroke-dasharray")) is null;
-        RequireBandCapJoin(reader, elementName, solid, solid, solid && SvgElementAttributePolicy.HasNonzeroRoundedCorners(reader), solid && SvgElementAttributePolicy.HasNonzeroRoundedCorners(reader));
+        string? dashAttribute = reader.GetAttribute("stroke-dasharray");
+        bool solid = ParseDasharray(dashAttribute is null ? null : InlineStrokeDeclaration(reader, "stroke-dasharray", workCounter, cancellationToken) ?? dashAttribute) is null;
+        RequireBandCapJoin(reader, elementName, solid, solid, solid && SvgElementAttributePolicy.HasNonzeroRoundedCorners(reader), solid && SvgElementAttributePolicy.HasNonzeroRoundedCorners(reader), workCounter, cancellationToken);
     }
 
     /// <summary>Rejects round caps and non-miter joins where strokes lower to fixed bands with square tip extension.</summary>
-    internal static void RequireLineCapJoin(XmlReader reader, string elementName)
+    internal static void RequireLineCapJoin(XmlReader reader, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        RequireBandCapJoin(reader, elementName, true, true, false, false);
+        RequireBandCapJoin(reader, elementName, true, true, false, false, workCounter, cancellationToken);
     }
 
-    internal static void RequireButtOrSquareCapJoin(XmlReader reader, string elementName)
+    internal static void RequireButtOrSquareCapJoin(XmlReader reader, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        RequireBandCapJoin(reader, elementName, true, false, false, false);
+        RequireBandCapJoin(reader, elementName, true, false, false, false, workCounter, cancellationToken);
     }
 
-    private static void RequireBandCapJoin(XmlReader reader, string elementName, bool allowSquare, bool allowRound, bool allowRoundJoin, bool allowBevelJoin)
+    private static void RequireBandCapJoin(XmlReader reader, string elementName, bool allowSquare, bool allowRound, bool allowRoundJoin, bool allowBevelJoin, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
-        string? cap = reader.GetAttribute("stroke-linecap");
+        ArgumentNullException.ThrowIfNull(workCounter);
+        string? capAttribute = reader.GetAttribute("stroke-linecap");
+        string? cap = capAttribute is null ? null : InlineStrokeDeclaration(reader, "stroke-linecap", workCounter, cancellationToken) ?? capAttribute;
         bool butt = cap is null || cap.AsSpan().Trim().Equals("butt".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool square = allowSquare && cap is not null && cap.AsSpan().Trim().Equals("square".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool round = allowRound && cap is not null && cap.AsSpan().Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase);
         if (!butt && !square && !round) throw new SvgException(SvgErrorCode.UnsupportedFeature, allowRound ? "Only butt, square and round stroke linecaps are implemented on " + elementName + " strokes." : allowSquare ? "Only butt and square stroke linecaps are implemented on " + elementName + " strokes." : "Only butt stroke linecaps are implemented on " + elementName + " strokes.");
-        string? join = reader.GetAttribute("stroke-linejoin");
+        string? joinAttribute = reader.GetAttribute("stroke-linejoin");
+        string? join = joinAttribute is null ? null : InlineStrokeDeclaration(reader, "stroke-linejoin", workCounter, cancellationToken) ?? joinAttribute;
         bool roundJoin = allowRoundJoin && join is not null && join.AsSpan().Trim().Equals("round".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool bevelJoin = allowBevelJoin && join is not null && join.AsSpan().Trim().Equals("bevel".AsSpan(), StringComparison.OrdinalIgnoreCase);        if (join is not null && !join.AsSpan().Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase) && !roundJoin && !bevelJoin) throw new SvgException(SvgErrorCode.UnsupportedFeature, allowBevelJoin ? "Only miter, round and bevel stroke linejoins are implemented on " + elementName + " strokes." : allowRoundJoin ? "Only miter and round stroke linejoins are implemented on " + elementName + " strokes." : "Only miter stroke linejoins are implemented on " + elementName + " strokes.");
     }

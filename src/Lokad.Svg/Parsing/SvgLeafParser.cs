@@ -10,7 +10,7 @@ internal static class SvgLeafParser
     {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         SvgComputedStyle patternStyle = context.ResolveStyle(reader);
-        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle");
+        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         AxisTransform earlyTransform = context.ResolveTransform(reader);
         SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgViewportFrame? effectiveFrame = SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, frame, earlyPlacement);
@@ -258,7 +258,7 @@ internal static class SvgLeafParser
     internal static SvgParsedRectangle ParseRectangleWithStyle(XmlReader reader, SvgPaintableElementContext context)
     {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
-        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle");
+        SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         if ((syntax.CornerX ?? syntax.CornerY ?? 0) != 0 || (syntax.CornerY ?? syntax.CornerX ?? 0) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rounded rectangles in definitions stay unsupported.");
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
         AxisTransform localTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"));
@@ -513,7 +513,7 @@ internal static class SvgLeafParser
     internal static SvgParsedGeometry ParseLine(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgLineSyntax syntax = SvgLineSyntax.Parse(reader);
-        SvgStrokeStyleSyntax.RequireLineCapJoin(reader, "line");
+        SvgStrokeStyleSyntax.RequireLineCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
         SvgComputedStyle style = context.ResolveStyle(reader);
         if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return SvgPatternSyntax.LowerPatternStrokeLine(reader, context, style, syntax, state, frame);
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return SvgGradientSyntax.LowerGradientStrokeLine(reader, context, style, syntax, state, frame);

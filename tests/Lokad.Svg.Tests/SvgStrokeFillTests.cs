@@ -599,6 +599,59 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Inline_neutralized_dasharray_on_rectangle_stroke_matches_solid()
+    {
+        // R36: validation honors inline overrides of rejected attribute
+        // spellings, and lowering already evaluates the cascaded value.
+        byte[] neutralized = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2' style='stroke-dasharray:none'/></svg>");
+        byte[] solid = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></svg>");
+        ReadOnlyMemory<byte> neutralizedPng = SvgConverter.ConvertToPng(neutralized, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> solidPng = SvgConverter.ConvertToPng(solid, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(neutralizedPng.Span.SequenceEqual(solidPng.Span));
+    }
+
+    [Fact]
+    public void Inline_neutralized_linejoin_on_rectangle_stroke_matches_miter()
+    {
+        // R36: the rectangle band gate evaluates the inline-neutralized join,
+        // not the rejected attribute spelling.
+        byte[] neutralized = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' stroke-linejoin='round' style='stroke-linejoin:miter'/></svg>");
+        byte[] miter = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' stroke-linejoin='miter'/></svg>");
+        ReadOnlyMemory<byte> neutralizedPng = SvgConverter.ConvertToPng(neutralized, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> miterPng = SvgConverter.ConvertToPng(miter, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(neutralizedPng.Span.SequenceEqual(miterPng.Span));
+    }
+
+    [Fact]
+    public void Inline_only_linejoin_on_unstroked_rect_matches_plain()
+    {
+        // R36: inline stroke declarations without an attribute spelling stay
+        // lowering business; band gates must not trip on them, since
+        // fill-only geometry never lowers a stroke.
+        byte[] styled = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' style='stroke-linejoin:round'/></svg>");
+        byte[] plain = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red'/></svg>");
+        ReadOnlyMemory<byte> styledPng = SvgConverter.ConvertToPng(styled, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(styledPng.Span.SequenceEqual(plainPng.Span));
+    }
+
+    [Fact]
+    public void Stylesheet_neutralized_dasharray_on_rectangle_stroke_stays_unsupported()
+    {
+        // R36: stylesheet rules resolve after attribute validation, so a
+        // stylesheet-neutralized rejected spelling stays explicitly unsupported
+        // while lowering would already honor the cascaded value.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><style>rect { stroke-dasharray: none; }</style><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Dasharray_on_line_stroke_renders_runs()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></svg>", out _, out _);
