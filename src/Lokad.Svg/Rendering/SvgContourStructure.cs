@@ -251,4 +251,131 @@ internal static class SvgContourStructure
         if (!double.IsFinite(value)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour structure exceeds the admitted numeric range.");
         return value;
     }
+
+    /// <summary>Reports whether split loops share at most common vertices with no other contact or partial overlap.</summary>
+    /// <remarks>
+    /// <para>Every loop pair shares a bounding-box precheck per edge pair, then orientation predicates: a proper crossing rejects outright, an endpoint lying strictly inside the other segment rejects as a touch beyond shared vertices, and a positive-length collinear overlap rejects as coincidence. Endpoint coincidences are admissible only for bitwise-equal shared split vertices, and the closing edge of each loop counts like any other. Containment runs after the edge scan over non-shared vertices with half-open ray casting: mutual containment rejects as partial overlap, one-sided containment admits nesting for role resolution, and none admits disjoint siblings.</para>
+    /// <para>Ordering matters: the edge scan runs first, so a vertex lying exactly on the other loop reaches containment only as a shared vertex, where ray casting would decide arbitrarily. Predicates evaluate in double arithmetic and stay exact for integer-scale geometry; every finite input decides deterministically, and non-finite intermediates fail with LimitExceeded. Loops with fewer than three vertices reject. Observes cancellation at the pair checkpoint, allocates nothing, and holds no budget; callers charge the quadratic pair estimate up front.</para>
+    /// </remarks>
+    internal static bool AreSplitLoopsAdmissible(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, CancellationToken cancellationToken)
+    {
+        SvgPolygonCoverage.ValidateContourEnds(points, ends);
+        for (int loop = 0; loop < ends.Length; loop++)
+        {
+            int loopStart = loop == 0 ? 0 : ends[loop - 1];
+            if (ends[loop] - loopStart < 3) return false;
+        }
+
+        int pairs = 0;
+        for (int first = 0; first < ends.Length; first++)
+        {
+            int firstStart = first == 0 ? 0 : ends[first - 1];
+            int firstCount = ends[first] - firstStart;
+            for (int second = first + 1; second < ends.Length; second++)
+            {
+                int secondStart = second == 0 ? 0 : ends[second - 1];
+                int secondCount = ends[second] - secondStart;
+                for (int firstEdge = 0; firstEdge < firstCount; firstEdge++)
+                {
+                    (SvgDevicePoint firstEdgeStart, SvgDevicePoint firstEdgeEnd) = EdgeAt(points, firstStart, firstCount, firstEdge);
+                    if (firstEdgeStart == firstEdgeEnd) return false;
+                    for (int secondEdge = 0; secondEdge < secondCount; secondEdge++)
+                    {
+                        if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        (SvgDevicePoint secondEdgeStart, SvgDevicePoint secondEdgeEnd) = EdgeAt(points, secondStart, secondCount, secondEdge);
+                        if (secondEdgeStart == secondEdgeEnd) return false;
+                        if (LoopEdgesOverlapBeyondSharedVertices(firstEdgeStart, firstEdgeEnd, secondEdgeStart, secondEdgeEnd)) return false;
+                    }
+                }
+
+                if (LoopPairOverlapsPartially(points, firstStart, firstCount, secondStart, secondCount, ref pairs, cancellationToken)) return false;
+            }
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        return true;
+    }
+
+    /// <summary>Reports whether two split-loop edges overlap beyond shared vertices.</summary>
+    private static bool LoopEdgesOverlapBeyondSharedVertices(SvgDevicePoint firstStart, SvgDevicePoint firstEnd, SvgDevicePoint secondStart, SvgDevicePoint secondEnd)
+    {
+        if (Math.Max(firstStart.X, firstEnd.X) < Math.Min(secondStart.X, secondEnd.X) || Math.Max(secondStart.X, secondEnd.X) < Math.Min(firstStart.X, firstEnd.X)) return false;
+        if (Math.Max(firstStart.Y, firstEnd.Y) < Math.Min(secondStart.Y, secondEnd.Y) || Math.Max(secondStart.Y, secondEnd.Y) < Math.Min(firstStart.Y, firstEnd.Y)) return false;
+        double firstToSecondStart = Orient(firstStart, firstEnd, secondStart);
+        double firstToSecondEnd = Orient(firstStart, firstEnd, secondEnd);
+        double secondToFirstStart = Orient(secondStart, secondEnd, firstStart);
+        double secondToFirstEnd = Orient(secondStart, secondEnd, firstEnd);
+        if (firstToSecondStart != 0 && firstToSecondEnd != 0 && secondToFirstStart != 0 && secondToFirstEnd != 0)
+        {
+            return firstToSecondStart * firstToSecondEnd < 0 && secondToFirstStart * secondToFirstEnd < 0;
+        }
+
+        if (firstToSecondStart == 0 && WithinBox(secondStart, firstStart, firstEnd) && secondStart != firstStart && secondStart != firstEnd) return true;
+        if (firstToSecondEnd == 0 && WithinBox(secondEnd, firstStart, firstEnd) && secondEnd != firstStart && secondEnd != firstEnd) return true;
+        if (secondToFirstStart == 0 && WithinBox(firstStart, secondStart, secondEnd) && firstStart != secondStart && firstStart != secondEnd) return true;
+        if (secondToFirstEnd == 0 && WithinBox(firstEnd, secondStart, secondEnd) && firstEnd != secondStart && firstEnd != secondEnd) return true;
+        if (firstToSecondStart != 0 || firstToSecondEnd != 0 || secondToFirstStart != 0 || secondToFirstEnd != 0) return false;
+        double deltaX = RequireFinite(firstEnd.X - firstStart.X);
+        double deltaY = RequireFinite(firstEnd.Y - firstStart.Y);
+        double firstLow;
+        double firstHigh;
+        double secondLow;
+        double secondHigh;
+        if (Math.Abs(deltaX) >= Math.Abs(deltaY))
+        {
+            firstLow = Math.Min(firstStart.X, firstEnd.X);
+            firstHigh = Math.Max(firstStart.X, firstEnd.X);
+            secondLow = Math.Min(secondStart.X, secondEnd.X);
+            secondHigh = Math.Max(secondStart.X, secondEnd.X);
+        }
+        else
+        {
+            firstLow = Math.Min(firstStart.Y, firstEnd.Y);
+            firstHigh = Math.Max(firstStart.Y, firstEnd.Y);
+            secondLow = Math.Min(secondStart.Y, secondEnd.Y);
+            secondHigh = Math.Max(secondStart.Y, secondEnd.Y);
+        }
+
+        double overlapLow = Math.Max(firstLow, secondLow);
+        double overlapHigh = Math.Min(firstHigh, secondHigh);
+        if (overlapHigh > overlapLow) return true;
+        return overlapHigh == overlapLow && firstStart != secondStart && firstStart != secondEnd && firstEnd != secondStart && firstEnd != secondEnd;
+    }
+
+    /// <summary>Reports whether either loop contains the other only partially, ignoring shared vertices.</summary>
+    private static bool LoopPairOverlapsPartially(ReadOnlySpan<SvgDevicePoint> points, int firstStart, int firstCount, int secondStart, int secondCount, ref int pairs, CancellationToken cancellationToken)
+    {
+        bool firstInSecond = false;
+        bool secondInFirst = false;
+        int firstEnd = firstStart + firstCount;
+        int secondEnd = secondStart + secondCount;
+        for (int index = firstStart; index < firstEnd && !(firstInSecond && secondInFirst); index++)
+        {
+            if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            if (IsSharedVertex(points[index], points, secondStart, secondEnd)) continue;
+            if (SvgContourNesting.ContainsPoint(points, secondStart, secondEnd, points[index].X, points[index].Y)) firstInSecond = true;
+        }
+
+        for (int index = secondStart; index < secondEnd && !(firstInSecond && secondInFirst); index++)
+        {
+            if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            if (IsSharedVertex(points[index], points, firstStart, firstEnd)) continue;
+            if (SvgContourNesting.ContainsPoint(points, firstStart, firstEnd, points[index].X, points[index].Y)) secondInFirst = true;
+        }
+
+        return firstInSecond && secondInFirst;
+    }
+
+    /// <summary>Reports whether a vertex matches any vertex of another loop by value.</summary>
+    private static bool IsSharedVertex(SvgDevicePoint candidate, ReadOnlySpan<SvgDevicePoint> points, int start, int end)
+    {
+        for (int index = start; index < end; index++)
+        {
+            if (points[index] == candidate) return true;
+        }
+
+        return false;
+    }
+
+
 }

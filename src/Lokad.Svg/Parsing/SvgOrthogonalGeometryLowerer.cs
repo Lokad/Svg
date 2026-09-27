@@ -941,10 +941,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
             using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-            if (!TrySplitSingleCrossing(structure, retained, ends, splitPoints, splitEnds)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+            if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
             retained = splitPoints.AsSpan().ToArray();
             ends = splitEnds.AsSpan().ToArray();
             ValidateDeviceRange(retained);
+            mapping = UpgradeSplitMapping(retained, mapping);
         }
         int[]? signs = null;
         if (_isEvenOdd)
@@ -963,53 +964,121 @@ internal ref struct SvgOrthogonalGeometryLowering
         return RetainPolygonFill(retained, ends, signs, color, hasFill, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
     }
 
-    /// <summary>Splits one self-crossing contour at its single interior crossing into two simple loops sharing the crossing point.</summary>
-    /// <remarks>Admits exactly single-contour sets whose only structure flag is a proper crossing, under either fill rule: the shared crossing vertex is the loops only contact, every other first vertex differs from it, and each loop carries at least three vertices by non-adjacency, so first-vertex roles and parity signs resolve exactly as for separated contours. Second and further crossings reject up front through the exclusion scan, and each split loop is reclassified on its own before admission, so leftover crossings still reject. Output lists are caller-owned budgeted storage filled after the caller reserves them; charges the crossing search pairs plus one work unit per copied vertex; observes cancellation in the search and the copy.</remarks>
-    private bool TrySplitSingleCrossing(SvgContourFlags structure, ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds)
+    /// <summary>Splits self-crossing contours at interior crossings into simple loops sharing only split vertices.</summary>
+    /// <remarks>Every queued loop classifies either clean, joining the output, or as a pure proper crossing, splitting again; any other flag rejects, so touches, spikes and degenerate edges never enter the output. Even-odd keeps the single-contour single-crossing gate because first-vertex parity signs are meaningless for vertex-sharing loops, while nonzero fill iterates to a fixpoint where each split strictly reduces the remaining intra-loop crossings. Admitted loop sets pass the pairwise split-loop guard, so loops meet at most at bitwise-shared split vertices with nesting resolved by roles. Output lists are caller-owned budgeted storage filled after the caller reserves them; each popped loop charges its pair estimate, each copied vertex charges one work unit, and the final guard charges the quadratic pair estimate; observes cancellation in classification, search, copy and guard. Partial output on denial stays caller-discarded.</remarks>
+    private bool TrySplitCrossingContours(SvgContourFlags structure, ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, bool isEvenOdd, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(splitPoints);
         ArgumentNullException.ThrowIfNull(splitEnds);
-        if (structure != SvgContourFlags.ProperCrossing || ends.Length != 1 || ends[0] != points.Length) return false;
-        int count = ends[0];
-        ChargePairs(_workCounter, (long)count * (count - 1) / 2, _cancellationToken);
-        if (!SvgContourStructure.TryFindProperCrossing(points, 0, count, _cancellationToken, out int firstEdge, out int secondEdge, out SvgDevicePoint crossing)) return false;
-        ChargePairs(_workCounter, (long)count * (count - 1) / 2, _cancellationToken);
-        if (SvgContourStructure.HasAnotherProperCrossing(points, 0, count, firstEdge, secondEdge, _cancellationToken)) return false;
-        int firstLoopCount = secondEdge - firstEdge + 1;
-        int secondLoopCount = count - (secondEdge - firstEdge) + 1;
-        if (firstLoopCount < 3 || secondLoopCount < 3) return false;
-        for (int index = firstEdge + 1; index <= secondEdge; index++)
+        ArgumentNullException.ThrowIfNull(budget);
+        if (structure == SvgContourFlags.None) return false;
+        if (isEvenOdd && (structure != SvgContourFlags.ProperCrossing || ends.Length != 1 || ends[0] != points.Length)) return false;
+        using BudgetedParserList<SvgDevicePoint> workPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<int> pending = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        for (int index = 0; index < points.Length; index++)
         {
             _workCounter.Consume(_cancellationToken);
-            splitPoints.Add(points[index]);
+            workPoints.Add(points[index]);
         }
-        _workCounter.Consume(_cancellationToken);
-        splitPoints.Add(crossing);
-        splitEnds.Add(splitPoints.Count);
-        for (int index = secondEdge + 1; index < count; index++)
-        {
-            _workCounter.Consume(_cancellationToken);
-            splitPoints.Add(points[index]);
-        }
-        for (int index = 0; index <= firstEdge; index++)
-        {
-            _workCounter.Consume(_cancellationToken);
-            splitPoints.Add(points[index]);
-        }
-        _workCounter.Consume(_cancellationToken);
-        splitPoints.Add(crossing);
-        splitEnds.Add(splitPoints.Count);
-        ReadOnlySpan<SvgDevicePoint> flat = splitPoints.AsSpan();
+
         int previousEnd = 0;
-        foreach (int contourEnd in splitEnds.AsSpan())
+        foreach (int contourEnd in ends)
         {
-            int loopCount = contourEnd - previousEnd;
-            ChargePairs(_workCounter, (long)loopCount * (loopCount - 1) / 2, _cancellationToken);
-            if (SvgContourStructure.ClassifyContour(flat, previousEnd, contourEnd, _cancellationToken) != SvgContourFlags.None) return false;
+            _workCounter.Consume(_cancellationToken);
+            pending.Add(previousEnd);
+            _workCounter.Consume(_cancellationToken);
+            pending.Add(contourEnd);
             previousEnd = contourEnd;
         }
-        return true;
+
+        bool splitDone = false;
+        long pops = 0;
+        long maximumPops = checked((long)points.Length * points.Length + ends.Length + 1);
+        for (int cursor = 0; cursor < pending.Count;)
+        {
+            if (++pops > maximumPops) return false;
+            int start = pending[cursor];
+            int end = pending[cursor + 1];
+            cursor += 2;
+            int count = end - start;
+            if (count < 3) return false;
+            ChargePairs(_workCounter, (long)count * (count - 1) / 2, _cancellationToken);
+            SvgContourFlags loop = SvgContourStructure.ClassifyContour(workPoints.AsSpan(), start, end, _cancellationToken);
+            if (loop == SvgContourFlags.None)
+            {
+                for (int index = start; index < end; index++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    splitPoints.Add(workPoints[index]);
+                }
+
+                _workCounter.Consume(_cancellationToken);
+                splitEnds.Add(splitPoints.Count);
+                continue;
+            }
+
+            if (loop != SvgContourFlags.ProperCrossing || (isEvenOdd && splitDone)) return false;
+            if (!SvgContourStructure.TryFindProperCrossing(workPoints.AsSpan(), start, end, _cancellationToken, out int firstEdge, out int secondEdge, out SvgDevicePoint crossing)) return false;
+            int firstLoopCount = secondEdge - firstEdge + 1;
+            int secondLoopCount = count - (secondEdge - firstEdge) + 1;
+            if (firstLoopCount < 3 || secondLoopCount < 3) return false;
+            int firstLoopStart = workPoints.Count;
+            for (int index = start + firstEdge + 1; index <= start + secondEdge; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                workPoints.Add(workPoints[index]);
+            }
+
+            _workCounter.Consume(_cancellationToken);
+            workPoints.Add(crossing);
+            int secondLoopStart = workPoints.Count;
+            for (int index = start + secondEdge + 1; index < end; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                workPoints.Add(workPoints[index]);
+            }
+
+            for (int index = start; index <= start + firstEdge; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                workPoints.Add(workPoints[index]);
+            }
+
+            _workCounter.Consume(_cancellationToken);
+            workPoints.Add(crossing);
+            _workCounter.Consume(_cancellationToken);
+            pending.Add(firstLoopStart);
+            _workCounter.Consume(_cancellationToken);
+            pending.Add(secondLoopStart);
+            _workCounter.Consume(_cancellationToken);
+            pending.Add(secondLoopStart);
+            _workCounter.Consume(_cancellationToken);
+            pending.Add(workPoints.Count);
+            splitDone = true;
+        }
+
+        long totalPoints = splitPoints.Count;
+        ChargePairs(_workCounter, totalPoints * totalPoints, _cancellationToken);
+        return SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken);
     }
+
+
+
+    /// <summary>Upgrades quarter-edge mapping to finite edges when split vertices leave the quarter grid.</summary>
+    /// <remarks>Split crossings land at arbitrary finite coordinates while polygon lowering assumes quarter-grid vertices; the scan mirrors the stroke-outline fractionality check. Charges one work unit per scanned vertex and observes cancellation.</remarks>
+    private SvgPolygonMapping UpgradeSplitMapping(SvgDevicePoint[] retained, SvgPolygonMapping mapping)
+    {
+        ArgumentNullException.ThrowIfNull(retained);
+        if (mapping != SvgPolygonMapping.QuarterEdges) return mapping;
+        foreach (SvgDevicePoint vertex in retained)
+        {
+            _workCounter.Consume(_cancellationToken);
+            if (Math.Abs(vertex.X * 4 - Math.Round(vertex.X * 4, MidpointRounding.AwayFromZero)) > 0.000000001 || Math.Abs(vertex.Y * 4 - Math.Round(vertex.Y * 4, MidpointRounding.AwayFromZero)) > 0.000000001) return SvgPolygonMapping.FiniteEdges;
+        }
+
+        return mapping;
+    }
+
 
     private static void ChargePairs(ParserWorkCounter workCounter, long pairs, CancellationToken cancellationToken)
     {
@@ -1051,10 +1120,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
             using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-            if (!TrySplitSingleCrossing(structure, retained, ends, splitPoints, splitEnds)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+            if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
             retained = splitPoints.AsSpan().ToArray();
             ends = splitEnds.AsSpan().ToArray();
             ValidateDeviceRange(retained);
+            mapping = UpgradeSplitMapping(retained, mapping);
         }
         int[]? signs = null;
         if (_isEvenOdd)
@@ -1100,10 +1170,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
             using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-            if (!TrySplitSingleCrossing(structure, retained, ends, splitPoints, splitEnds)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+            if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
             retained = splitPoints.AsSpan().ToArray();
             ends = splitEnds.AsSpan().ToArray();
             ValidateDeviceRange(retained);
+            mapping = UpgradeSplitMapping(retained, mapping);
         }
         int[]? signs = null;
         if (_isEvenOdd)

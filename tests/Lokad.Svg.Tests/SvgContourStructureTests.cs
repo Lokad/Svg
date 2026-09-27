@@ -142,4 +142,36 @@ public sealed class SvgContourStructureTests
         Assert.True(SvgContourStructure.TryFindProperCrossing(points, 0, points.Length, CancellationToken.None, out int firstEdge, out int secondEdge, out _));
         Assert.True(SvgContourStructure.HasAnotherProperCrossing(points, 0, points.Length, firstEdge, secondEdge, CancellationToken.None));
     }
+    [Fact]
+    public void Split_bowtie_loops_admit_union()
+    {
+        SvgDevicePoint[] loops = [new SvgDevicePoint(8, 8), new SvgDevicePoint(8, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 4)];
+
+        Assert.True(SvgContourStructure.AreSplitLoopsAdmissible(loops, [3, 6], CancellationToken.None));
+    }
+
+    [Fact]
+    public void Touching_loops_reject_union()
+    {
+        SvgDevicePoint[] loops = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(8, 4), new SvgDevicePoint(12, 0), new SvgDevicePoint(12, 8)];
+
+        Assert.False(SvgContourStructure.AreSplitLoopsAdmissible(loops, [4, 7], CancellationToken.None));
+    }
+
+    [Fact]
+    public void Overlapping_loops_reject_union()
+    {
+        SvgDevicePoint[] loops = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 4), new SvgDevicePoint(12, 4), new SvgDevicePoint(12, 12), new SvgDevicePoint(4, 12)];
+
+        Assert.False(SvgContourStructure.AreSplitLoopsAdmissible(loops, [4, 8], CancellationToken.None));
+    }
+
+    [Fact]
+    public void Nested_loops_admit_union()
+    {
+        SvgDevicePoint[] loops = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];
+
+        Assert.True(SvgContourStructure.AreSplitLoopsAdmissible(loops, [4, 8], CancellationToken.None));
+    }
+
 }

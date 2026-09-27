@@ -673,6 +673,57 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Double_crossing_diagonal_contour_paints_union()
+    {
+        // R34: a single closed contour with two interior crossings splits twice
+        // into three simple loops sharing only split vertices; every lobe paints.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 6,6 6,2 0,8 6,8' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 5, 3));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 5, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 2, 6));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 3, 7));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 7));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 3, 0));
+        // Exact tiling verified independently: the three split triangles meet
+        // pairwise at single points, every fully covered pixel paints 255, every
+        // exterior pixel paints 0, and edge pixels track analytic coverage within
+        // half an alpha step; 4231 walks 5.3 steps over the analytic 4225.7.
+        Assert.Equal(4231, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Double_crossing_evenodd_contour_stays_unsupported()
+    {
+        // R34: first-vertex parity signs are meaningless for vertex-sharing loops,
+        // so multi-crossing contours stay gated under even-odd fill.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 6,6 6,2 0,8 6,8' fill='red' fill-rule='evenodd'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only simple diagonal polygon contours are implemented;", rejected.Message);
+    }
+
+    [Fact]
+    public void Disjoint_triangle_and_bowtie_paint_union()
+    {
+        // R34: a clean contour copies through beside a split one; disjoint regions
+        // add exactly, so the combined sum equals the separately rendered parts.
+        byte[] triangle = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M0,0 H8 L0,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] bowtie = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M16,16 L24,24 L24,16 L16,24 Z' fill='red'/></svg>", out _, out _);
+        byte[] combined = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M0,0 H8 L0,8 Z M16,16 L24,24 L24,16 L16,24 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(combined, 32, 1, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(combined, 32, 17, 20));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(combined, 32, 10, 10));
+        Assert.Equal(AlphaSum(triangle) + AlphaSum(bowtie), AlphaSum(combined));
+    }
+
+
+
+    [Fact]
     public void Fractional_polygon_matches_equivalent_path()
     {
         byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0.5 7.5,0.5 0.5,7.5' fill='red'/></svg>", out _, out _);

@@ -93,7 +93,9 @@ internal static class SvgContourNesting
         return 0;
     }
 
-    private static bool ContainsPoint(ReadOnlySpan<SvgDevicePoint> points, int start, int end, double x, double y)
+    /// <summary>Reports whether a point lies strictly inside one closed contour slice under half-open ray casting.</summary>
+    /// <remarks>Boundary points decide arbitrarily, so callers exclude shared vertices before asking.</remarks>
+    internal static bool ContainsPoint(ReadOnlySpan<SvgDevicePoint> points, int start, int end, double x, double y)
     {
         bool inside = false;
         for (int index = start; index < end; index++)

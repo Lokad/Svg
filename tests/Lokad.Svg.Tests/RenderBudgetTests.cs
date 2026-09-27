@@ -803,4 +803,31 @@ public sealed class RenderBudgetTests
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         AssertBudgetReleased(tightBudget);
     }
+    [Fact]
+    public void Crossing_split_denies_multi_crossing_when_split_budget_exhausted()
+    {
+        // R34: the iterative split reserves work storage before copying loops, so a
+        // budget sized near the mapped input fails at the split with full release.
+        RenderBudget roomyBudget = new(100_000);
+        ParserWorkCounter roomyCounter = new(100_000);
+        using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
+        points.Add(new SvgPoint(0, 0));
+        points.Add(new SvgPoint(6, 6));
+        points.Add(new SvgPoint(6, 2));
+        points.Add(new SvgPoint(0, 8));
+        points.Add(new SvgPoint(6, 8));
+        using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
+        ends.Add(5);
+        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(6) + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(6) + ParserCollectionMemory.GetArrayByteCount<int>(6) - 1);
+
+        SvgException denied = Assert.Throws<SvgException>(() =>
+        {
+            using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
+            return lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, AxisTransform.Identity, null, tightBudget);
+        });
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        AssertBudgetReleased(tightBudget);
+    }
+
 }
