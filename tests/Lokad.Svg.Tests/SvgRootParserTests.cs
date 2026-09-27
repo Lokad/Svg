@@ -125,6 +125,23 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Ignores_empty_foreign_namespace_metadata_element()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'><sodipodi:namedview id='namedview'/><rect width='5' height='5' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Single(root.Geometries);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Flags_nonempty_foreign_namespace_wrapper()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:foo='urn:example'><foo:wrapper><rect width='5' height='5' fill='red'/></foo:wrapper></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Empty(root.Geometries);
+        Assert.True(root.HasUnsupportedChild);
+    }
+    [Fact]
     public void Rejects_group_wrapped_definitions_at_conversion()
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><defs><g><rect width='5' height='5' fill='red'/></g></defs></g></svg>"u8.ToArray();
@@ -3570,7 +3587,7 @@ public sealed class SvgRootParserTests
         ParserWorkCounter workCounter = new(1);
         using SvgDocumentState state = new(budget, workCounter, CancellationToken.None);
         state.StyleRules.Add(new CssRule(CssSelectorKind.Class, "selected", null, 10, default));
-        SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, 255, null, null, null);
+        SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, 255, null, null, null, null);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRenderedLeafParser.TryParse(reader, true, true, root, state, SvgRenderLimits.Default, budget, new Dictionary<string, SvgColor>(), null, workCounter, CancellationToken.None));
 

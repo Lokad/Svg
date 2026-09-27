@@ -186,6 +186,10 @@ internal static class SvgDocumentTraversal
                 }
                 else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
                 else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsInertContainer(reader.LocalName)) { }
+                else if (inScope && reader.NamespaceURI != "http://www.w3.org/2000/svg" && reader.IsEmptyElement)
+                {
+                    // Empty foreign-namespace elements (editor metadata like sodipodi:namedview) paint nothing and carry no renderable descendants.
+                }
                 else if (inScope) state.HasUnsupportedContent = true;
             }
             if (reader.NodeType == XmlNodeType.EndElement)

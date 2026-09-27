@@ -12,6 +12,7 @@ internal static class SvgContainerInheritance
         SvgComputedStyle computedStyle,
         InlineStyle styleSheet,
         SvgInheritedPresentation inheritedPresentation,
+        string? inheritedFillRule,
         SvgInheritedTextStyle inheritedTextStyle,
         SvgInheritedStrokeStyle inheritedStroke,
         bool inheritedHasOpacityScope,
@@ -28,7 +29,7 @@ internal static class SvgContainerInheritance
         return new SvgInheritedContainer(
             new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform),
             textStyle,
-            computedStyle.FillRule,
+            computedStyle.FillRule ?? inheritedFillRule,
             inheritedHasOpacityScope || presentation.Opacity != 255,
             presentation.Opacity,
             stroke);

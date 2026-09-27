@@ -610,7 +610,7 @@ public sealed class PublicContractTests
     [InlineData("<style>rect { fill: red</style><rect/>")]
     [InlineData("<polygon points='0,0 2,2 2,0 0,2'/>")]
     [InlineData("<rect x='0.1'/>")]
-    [InlineData("<foreign:rect xmlns:foreign='urn:foreign' width='1' height='1'/>")]
+    [InlineData("<foreign:rect xmlns:foreign='urn:foreign' width='1' height='1'><foreign:child/></foreign:rect>")]
     [InlineData("<g opacity='0.5'><g opacity='0.5'><rect/></g></g>")]
     public void Unsupported_presentation_namespace_and_syntax_forms_are_categorized_at_public_conversion(string content)
     {
