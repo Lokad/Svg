@@ -163,7 +163,7 @@ internal static class SvgPatternSyntax
             if (solidRing)
             {
                 SvgColor ringColor = hasLinearStroke ? strokeGradient.End : strokeCircle.End;
-                SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(ringColor, opacity), strokeWidth);
+                SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(ringColor, SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.StrokeOpacity))), strokeWidth);
                 lowered.Add(SvgGeometry.FromRectangle(area with { Stroke = painted ? solidStroke : null }));
             }
             else if (hasLinearStroke) lowered.Add(SvgGeometry.FromGradientStroke(new SvgGradientStrokeGeometry(area, top, bottom, left, right, strokeGradient, box, opacity, painted)));
@@ -183,6 +183,7 @@ internal static class SvgPatternSyntax
     {
         if (style.Stroke is null || style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) return null;
         SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
+        if (style.StrokeOpacity is not null) strokeColor = SvgPaintResolver.ApplyOpacity(strokeColor, SvgColorParser.ParseOpacity(style.StrokeOpacity));
         return SvgLeafParser.ParseRectangleStroke(strokeColor, style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, opacity, painted);
     }
 
@@ -322,7 +323,7 @@ internal static class SvgPatternSyntax
         double? pathLength = dashEntries is null ? null : SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Stroke), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
-        byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.StrokeOpacity));
         if (dashLinecap == SvgStrokeCap.Square && dashEntries is not null && (opacity != 255 || (tile.Content is SvgGeometry tileContent && tileContent.Rectangle.Color.Alpha != 255))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         if (dashLinecap == SvgStrokeCap.Round && dashEntries is null)
         {

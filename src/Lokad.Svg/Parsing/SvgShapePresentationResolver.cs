@@ -16,6 +16,7 @@ internal static class SvgShapePresentationResolver
         if (!allowsPaintedStroke) SvgPresentationResolver.ValidateStroke(style.Stroke);
         SvgColor color = SvgPaintResolver.ResolveFillColor(presentation.Paint, presentation.Opacity);
         SvgColor? strokeColor = allowsPaintedStroke ? ResolveStrokeColor(style.Stroke, style.Color, inheritedPaint, namedColors) : null;
+        if (strokeColor is not null && style.StrokeOpacity is not null) strokeColor = SvgPaintResolver.ApplyOpacity(strokeColor.Value, SvgColorParser.ParseOpacity(style.StrokeOpacity));
         return new SvgResolvedShapePresentation(presentation.Paint, color, strokeColor, presentation.Opacity, presentation.IsPainted);
     }
 

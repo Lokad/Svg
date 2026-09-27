@@ -152,6 +152,36 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, grouped);
     }
 
+    [Fact]
+    public void Line_style_opacity_scales_alpha()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' style='stroke-opacity:0.5'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 16, 8, 7));
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 16, 8, 8));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 8, 0));
+    }
+
+    [Fact]
+    public void Group_style_opacity_inherits_to_line()
+    {
+        byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g style='stroke-opacity:0.5'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2'/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' style='stroke-opacity:0.5'/></svg>", out _, out _);
+
+        Assert.Equal(direct, grouped);
+    }
+
+    [Fact]
+    public void Rect_fill_stroke_with_opacity_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='12' height='12' fill='red' stroke='blue' stroke-width='2' style='stroke-opacity:0.5'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only opaque even-width rectangle strokes no larger than the rectangle dimensions are implemented.", rejected.Message);
+    }
+
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='3'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='0'/></svg>")]

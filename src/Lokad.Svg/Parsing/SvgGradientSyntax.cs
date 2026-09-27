@@ -553,7 +553,7 @@ internal static class SvgGradientSyntax
         if (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
         {
             if (gradient.Stops.Length > 1 && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are implemented.");
-            SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), strokeWidth);
+            SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(gradient.End, SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.StrokeOpacity))), strokeWidth);
             stroked.Add(SvgGeometry.FromRectangle(strokeFill with { Stroke = painted ? solidStroke : null }));
             return new SvgParsedGeometry(stroked.Detach(), 0);
         }
@@ -647,7 +647,7 @@ internal static class SvgGradientSyntax
         if (circle.Radius == 0 && !circle.IsEmpty)
         {
             if (circle.Stops.Length > 1 && circle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");
-            SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(circle.End, opacity), strokeWidth);
+            SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(circle.End, SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.StrokeOpacity))), strokeWidth);
             stroked.Add(SvgGeometry.FromRectangle(strokeFill with { Stroke = painted ? solidStroke : null }));
             return new SvgParsedGeometry(stroked.Detach(), 0);
         }
@@ -679,7 +679,7 @@ internal static class SvgGradientSyntax
         if (!gradient.IsUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse gradient strokes on lines are implemented.");
         gradient = MirrorBoundingBoxVector(transform, gradient);
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
-        byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.StrokeOpacity));
         if (dashLinecap == SvgStrokeCap.Square && dashEntries is not null && !IsOpaqueGradientStroke(gradient, opacity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         if (dashLinecap == SvgStrokeCap.Round && dashEntries is null)
         {
@@ -777,7 +777,7 @@ internal static class SvgGradientSyntax
         circle = MapUserSpaceRadial(transform, circle, frame);
         if (!circle.IsUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse gradient strokes on lines are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
-        byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.StrokeOpacity));
         if (dashLinecap == SvgStrokeCap.Square && dashEntries is not null && !IsOpaqueRadialStroke(circle, opacity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         if (dashLinecap == SvgStrokeCap.Round && dashEntries is null)
         {
@@ -872,6 +872,7 @@ internal static class SvgGradientSyntax
         if (style.Stroke is null || style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) return null;
         if (IsGradientStrokeUrl(style.Stroke)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient fills with gradient strokes are not implemented.");
         SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
+        if (style.StrokeOpacity is not null) strokeColor = SvgPaintResolver.ApplyOpacity(strokeColor, SvgColorParser.ParseOpacity(style.StrokeOpacity));
         return SvgLeafParser.ParseRectangleStroke(strokeColor, style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, opacity, painted);
     }
 

@@ -164,7 +164,7 @@ internal static class SvgLeafParser
             if (admitted.Value.Cap != SvgStrokeCap.Butt && admitted.Value.DashPattern is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt stroke linecaps are implemented on rectangle strokes.");
             if (admitted.Value.Join != SvgStrokeJoin.Miter && admitted.Value.Join != SvgStrokeJoin.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter and round stroke linejoins are implemented on rectangle strokes.");
             if (admitted.Value.DashPattern is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed strokes on rounded rectangles are not implemented.");
-            byte strokeOpacity = whiteShape.Presentation.Opacity;
+            byte strokeOpacity = SvgReferenceResolver.MultiplyAlpha(whiteShape.Presentation.Opacity, SvgColorParser.ParseOpacity(whiteShape.Style.StrokeOpacity));
             if (strokeOpacity != 255
                 || (useLinear && !SvgGradientSyntax.IsOpaqueGradientStroke(outlineGradient, 255))
                 || (useRadial && !SvgGradientSyntax.IsOpaqueRadialStroke(outlineCircle, 255))
@@ -419,7 +419,7 @@ internal static class SvgLeafParser
             SvgResolvedPaintableElement whiteShape = context.ResolveShape(whiteStyle, reader, true);
             SvgStroke? admitted = ParseCircleStroke(whiteShape, reader);
             if (admitted is null || !whiteShape.Presentation.IsPainted) return fill;
-            byte strokeOpacity = whiteShape.Presentation.Opacity;
+            byte strokeOpacity = SvgReferenceResolver.MultiplyAlpha(whiteShape.Presentation.Opacity, SvgColorParser.ParseOpacity(whiteShape.Style.StrokeOpacity));
             if (strokeOpacity != 255
                 || (useLinear && !SvgGradientSyntax.IsOpaqueGradientStroke(outlineGradient, 255))
                 || (useRadial && !SvgGradientSyntax.IsOpaqueRadialStroke(outlineCircle, 255))
