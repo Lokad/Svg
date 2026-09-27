@@ -46,6 +46,41 @@ public sealed class SvgShapeElementsTests
         Assert.Equal(defsed, rooted);
     }
     [Fact]
+    public void Radial_from_linear_href_matches_same_type_twin()
+    {
+        // S13: a radial gradient inherits stops through a cross-type href,
+        // rendering exactly like the same stops declared locally (pinned
+        // Chrome capture shows the cross-type render byte-identical to the
+        // same-type render).
+        byte[] crossed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='l'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><radialGradient id='r' href='#l'/></defs><rect x='2' y='2' width='12' height='12' fill='url(#r)'/></svg>", out _, out _);
+        byte[] local = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='r'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='2' y='2' width='12' height='12' fill='url(#r)'/></svg>", out _, out _);
+
+        Assert.Equal(local, crossed);
+    }
+
+    [Fact]
+    public void Radial_from_linear_xlink_href_matches_same_type_twin()
+    {
+        // S13: the cross-type inheritance accepts the xlink:href spelling
+        // used by real exports like inv-035.
+        byte[] crossed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='16' height='16'><defs><linearGradient id='l'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><radialGradient id='r' xlink:href='#l'/></defs><rect x='2' y='2' width='12' height='12' fill='url(#r)'/></svg>", out _, out _);
+        byte[] local = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='r'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='2' y='2' width='12' height='12' fill='url(#r)'/></svg>", out _, out _);
+
+        Assert.Equal(local, crossed);
+    }
+
+    [Fact]
+    public void Radial_from_linear_spread_matches_local_spread_twin()
+    {
+        // S13: unspecified spread and units follow the linear parent, so a
+        // cross-type reflect render matches the locally declared reflect twin.
+        byte[] crossed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='l' spreadMethod='reflect'><stop offset='0' stop-color='#ff0000'/><stop offset='0.5' stop-color='#0000ff'/></linearGradient><radialGradient id='r' href='#l'/></defs><rect x='2' y='2' width='12' height='12' fill='url(#r)'/></svg>", out _, out _);
+        byte[] local = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='r' spreadMethod='reflect'><stop offset='0' stop-color='#ff0000'/><stop offset='0.5' stop-color='#0000ff'/></radialGradient></defs><rect x='2' y='2' width='12' height='12' fill='url(#r)'/></svg>", out _, out _);
+
+        Assert.Equal(local, crossed);
+    }
+
+    [Fact]
     public void Root_radial_gradient_matches_defs_twin()
     {
         byte[] rooted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><radialGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><circle cx=\"8\" cy=\"8\" r=\"5\" fill=\"url(#g)\"/></svg>", out _, out _);
