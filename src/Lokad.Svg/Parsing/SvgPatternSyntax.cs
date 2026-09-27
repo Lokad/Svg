@@ -74,6 +74,30 @@ internal static class SvgPatternSyntax
         byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
+        if (isPath && painted && tile.Content is not null && tile.TileWidth != 0 && tile.TileHeight != 0)
+        {
+            string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
+            (int commandCount, bool hasCurve, bool hasArc, bool hasFractional) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            if (hasCurve || hasFractional)
+            {
+                // Curved and fractional fills flatten through shared device outlines, repainted with the tile like gradient outlines.
+                SvgComputedStyle solidFill = style with { Fill = "black" };
+                SvgResolvedPaintableElement curveShape = context.ResolveShape(solidFill, reader, true);
+                using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+                SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
+                SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, mapping, curveShape, frame, budget);
+                try
+                {
+                    using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                    foreach (SvgGeometry existing in filled.Geometries) repainted.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, budget));
+                    filled.Dispose();
+                    return new SvgParsedGeometry(repainted.Detach(), filled.ElementCount);
+                }
+                catch { filled.Dispose(); throw; }
+            }
+        }
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalShapeParser.TokenizeBands(reader, elementName, isPath, true, maximumGeometryElements, budget, context, contourEnds);
         using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);

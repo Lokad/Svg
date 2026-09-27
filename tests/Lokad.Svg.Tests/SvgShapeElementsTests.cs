@@ -119,6 +119,21 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Pattern_filled_curved_path_tiles_arch_interior()
+    {
+        // S13/S16: curved pattern fills flatten through shared device outlines
+        // repainted with the tile; interior pixels are exact while the curved
+        // edge carries a 3-pixel flattening residual against Chrome.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M0,8 Q8,0 16,8 L16,16 L0,16 Z' fill='url(#p)'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 1, 8));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 3, 8));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 13, 8));
+    }
+
+    [Fact]
     public void Pattern_filled_diagonal_path_matches_polygon()
     {
         // S13/S16: diagonal paths share the point-list pattern-fill lowering,
