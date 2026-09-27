@@ -682,23 +682,20 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Inline_round_cap_stays_unsupported()
+    public void Inline_round_cap_matches_direct_on_polygon()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' style='stroke-linecap: round'/></svg>");
+        byte[] styled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><polygon points=\"0,0 8,0 8,8 0,8\" fill=\"none\" stroke=\"red\" stroke-width=\"2\" style=\"stroke-linecap: round\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><polygon points=\"0,0 8,0 8,8 0,8\" fill=\"none\" stroke=\"red\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(direct, styled);
     }
-
     [Fact]
-    public void Group_round_join_stays_unsupported()
+    public void Group_round_join_matches_direct_on_polygon()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g stroke-linejoin='round'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2'/></g></svg>");
+        byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><g stroke-linejoin=\"round\"><polygon points=\"0,0 8,0 8,8 0,8\" fill=\"none\" stroke=\"red\" stroke-width=\"2\"/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><polygon points=\"0,0 8,0 8,8 0,8\" fill=\"none\" stroke=\"red\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(direct, grouped);
     }
 
     [Fact]
@@ -1202,6 +1199,53 @@ public sealed class SvgStrokeFillTests
         ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(large, direct, CancellationToken.None);
 
         Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
+    }
+    [Fact]
+    public void Group_linecap_inherits_to_line()
+    {
+        byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><g stroke-linecap=\"round\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\"/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, grouped);
+    }
+    [Fact]
+    public void Inline_style_linecap_matches_direct_attribute()
+    {
+        byte[] styled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\" style=\"stroke-linecap:round\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, styled);
+    }
+    [Fact]
+    public void Stylesheet_class_linecap_applies_to_line()
+    {
+        byte[] styled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><style>.c { stroke-linecap: round; }</style><line class=\"c\" x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, styled);
+    }
+    [Fact]
+    public void Root_attribute_linecap_inherits_to_line()
+    {
+        byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" stroke-linecap=\"round\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, grouped);
+    }
+    [Fact]
+    public void Group_linejoin_inherits_to_path()
+    {
+        byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><g stroke-linejoin=\"round\"><path d=\"M2,2 L14,2 L14,14\" fill=\"none\" stroke=\"red\" stroke-width=\"2\"/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M2,2 L14,2 L14,14\" fill=\"none\" stroke=\"red\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, grouped);
+    }
+    [Fact]
+    public void Invalid_inline_linecap_still_rejects()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"2\" style=\"stroke-linecap:foo\"/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Contains("stroke linecaps", exception.Message);
     }
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {

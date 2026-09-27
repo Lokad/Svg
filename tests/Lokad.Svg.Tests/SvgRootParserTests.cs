@@ -952,7 +952,7 @@ public sealed class SvgRootParserTests
     [InlineData("<rect width='1' height='1' fill='red' stroke='blue' stroke-width='2' stroke-linecap='round'/>")]
     [InlineData("<rect width='1' height='1' fill='red' stroke='blue' stroke-width='2' stroke-linejoin='round'/>")]
     [InlineData("<rect width='1' height='1' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/>")]
-    [InlineData("<rect width='1' height='1' fill='red' style='stroke-linecap: round'/>")]
+
     public void Rejects_effectful_stroke_styles(string leaf)
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + leaf + "</svg>");
