@@ -483,7 +483,7 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Appends an admitted solid stroke outline lowered from path data to paint-filled geometry.</summary>
-    private static SvgParsedGeometry AppendPaintFillStrokePath(SvgParsedGeometry filled, string d, int commandCount, bool hasArc, bool hasCurve, XmlReader reader, SvgPaintableElementContext context, string elementName, SvgViewportFrame? frame, int maximumGeometryElements, RenderBudget budget, SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke, SvgResolvedPaintableElement strokeShape)
+    internal static SvgParsedGeometry AppendPaintFillStrokePath(SvgParsedGeometry filled, string d, int commandCount, bool hasArc, bool hasCurve, XmlReader reader, SvgPaintableElementContext context, string elementName, SvgViewportFrame? frame, int maximumGeometryElements, RenderBudget budget, SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke, SvgResolvedPaintableElement strokeShape)
     {
         if (stroke is null) return filled;
         try

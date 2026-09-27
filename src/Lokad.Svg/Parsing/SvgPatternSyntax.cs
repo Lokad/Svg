@@ -85,7 +85,7 @@ internal static class SvgPatternSyntax
         {
             string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
             (int commandCount, bool hasCurve, bool hasArc, bool hasFractional) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
-            if (bandStroke is not null && (hasCurve || hasFractional)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern-filled curved or fractional paths with strokes are not implemented.");
+
             if (hasCurve || hasFractional)
             {
                 // Curved and fractional fills flatten through shared device outlines, repainted with the tile like gradient outlines.
@@ -101,7 +101,7 @@ internal static class SvgPatternSyntax
                     using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                     foreach (SvgGeometry existing in filled.Geometries) repainted.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, budget));
                     filled.Dispose();
-                    return new SvgParsedGeometry(repainted.Detach(), filled.ElementCount);
+                    return SvgGradientSyntax.AppendPaintFillStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
                 }
                 catch { filled.Dispose(); throw; }
             }

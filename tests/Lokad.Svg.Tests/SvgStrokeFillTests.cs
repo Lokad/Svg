@@ -868,6 +868,20 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Pattern_fill_with_solid_stroke_on_curved_path_paints_outline()
+    {
+        // S13/S16: curved pattern fills compose with solid outlines through
+        // flattened geometry; the axis-aligned edge stroke pixels are exact
+        // while the flattened curve carries the standing curve-edge delta.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M0,8 Q8,0 16,8 L16,16 L0,16 Z' fill='url(#p)' stroke='blue' stroke-width='2'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 12));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 8, 15));
+    }
+
+    [Fact]
     public void Pattern_fill_with_solid_stroke_on_diagonal_paints_outline()
     {
         // S13/S16: diagonal outlines compose the same way; the axis-aligned
