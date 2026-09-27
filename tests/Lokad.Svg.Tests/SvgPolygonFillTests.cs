@@ -238,6 +238,21 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void OutputScale_gradient_clip_matches_enlarged_direct_rendering()
+    {
+        string paint64 = "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><clipPath id='c'><rect x='16' y='16' width='32' height='32'/></clipPath></defs>";
+        string paint128 = "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><clipPath id='c'><rect x='32' y='32' width='64' height='64'/></clipPath></defs>";
+        byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>" + paint64 + "<rect x='0' y='0' width='64' height='64' fill='url(#g)' clip-path='url(#c)'/></svg>");
+        byte[] large = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'>" + paint128 + "<rect x='0' y='0' width='128' height='128' fill='url(#g)' clip-path='url(#c)'/></svg>");
+        SvgRenderOptions scaled = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default);
+        SvgRenderOptions direct = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> scaledPng = SvgConverter.ConvertToPng(small, scaled, CancellationToken.None);
+        ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(large, direct, CancellationToken.None);
+
+        Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
+    }
+
+    [Fact]
     public void Forward_clip_path_on_polygon_matches_backward_clip()
     {
         byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/><defs><clipPath id='c'><rect x='4' y='0' width='4' height='8'/></clipPath></defs></svg>", out _, out _);
