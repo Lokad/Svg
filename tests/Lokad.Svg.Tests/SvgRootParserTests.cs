@@ -5544,15 +5544,23 @@ public sealed class SvgRootParserTests
         Assert.Equal(0.5, geometry.Radial.Gradient.Radius);
     }
 
-    [Fact]
-    public void Rejects_cross_type_linear_href_from_radial_parent()
+        [Fact]
+    public void Admits_cross_type_linear_href_from_radial_parent()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><radialGradient id='a' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient><linearGradient id='b' xlink:href='#a'/></defs><rect width='8' height='8' fill='url(#b)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><defs><radialGradient id=\"a\" cx=\"0.5\" cy=\"0.5\" r=\"0.5\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"b\" xlink:href=\"#a\"/></defs><rect width=\"8\" height=\"8\" fill=\"url(#b)\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Gradient.Gradient.Start);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), geometry.Gradient.Gradient.End);
+        Assert.Equal(2, geometry.Gradient.Gradient.Stops.Length);
+        Assert.Equal(0, geometry.Gradient.Gradient.X1);
+        Assert.Equal(0, geometry.Gradient.Gradient.Y1);
+        Assert.Equal(1, geometry.Gradient.Gradient.X2);
+        Assert.Equal(0, geometry.Gradient.Gradient.Y2);
     }
 
-    [Fact]
+[Fact]
     public void Lowers_inside_radial_focal()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5' fx='0.25' fy='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

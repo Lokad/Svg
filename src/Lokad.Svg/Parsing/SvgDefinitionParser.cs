@@ -408,7 +408,12 @@ internal static class SvgDefinitionParser
     {
         if (state.GradientStops.Count >= 1) return ClampStopList(state);
         if (template.Href is null) return (default, default, 0, 1, true, Array.Empty<SvgGradientStop>());
-        if (!state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgLinearGradient parent)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+        if (!state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgLinearGradient parent))
+        {
+            if (!state.RadialGradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgRadialGradient radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+            return (radial.Start, radial.End, radial.Offset1, radial.Offset2, radial.IsEmpty, radial.Stops);
+        }
+
         return (parent.Start, parent.End, parent.Offset1, parent.Offset2, parent.IsEmpty, parent.Stops);
     }
 
@@ -440,15 +445,26 @@ internal static class SvgDefinitionParser
         SvgGradientSpread spread = template.Spread;
         if (template.Href is not null && template.VectorCount < 4)
         {
-            if (!state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgLinearGradient parent)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
-            x1 = template.HasX1 ? template.X1 : parent.X1;
-            y1 = template.HasY1 ? template.Y1 : parent.Y1;
-            x2 = template.HasX2 ? template.X2 : parent.X2;
-            y2 = template.HasY2 ? template.Y2 : parent.Y2;
-            if (!template.HasUnits) isUserSpace = parent.IsUserSpace;
-            if (!template.HasSpread) spread = parent.Spread;
-            referenceScaleX = parent.ReferenceScaleX;
-            referenceScaleY = parent.ReferenceScaleY;
+            if (!state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgLinearGradient parent))
+            {
+                if (!state.RadialGradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgRadialGradient radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
+                if (template.VectorCount != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial gradient vector overrides with cross-type gradient references are not implemented.");
+                if (!template.HasUnits) isUserSpace = radial.IsUserSpace;
+                if (!template.HasSpread) spread = radial.Spread;
+                referenceScaleX = radial.ReferenceScaleX;
+                referenceScaleY = radial.ReferenceScaleY;
+            }
+            else
+            {
+                x1 = template.HasX1 ? template.X1 : parent.X1;
+                y1 = template.HasY1 ? template.Y1 : parent.Y1;
+                x2 = template.HasX2 ? template.X2 : parent.X2;
+                y2 = template.HasY2 ? template.Y2 : parent.Y2;
+                if (!template.HasUnits) isUserSpace = parent.IsUserSpace;
+                if (!template.HasSpread) spread = parent.Spread;
+                referenceScaleX = parent.ReferenceScaleX;
+                referenceScaleY = parent.ReferenceScaleY;
+            }
         }
         if (template.HasTransform)
         {

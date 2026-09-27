@@ -110,6 +110,52 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Linear_from_radial_href_matches_same_type_twin()
+    {
+        // S13: a linear gradient inherits stops through a cross-type href,
+        // rendering exactly like the same stops declared locally while the
+        // vector stays linear-local.
+        byte[] crossed = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"l\" href=\"#r\"/></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
+        byte[] local = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"l\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
+
+        Assert.Equal(local, crossed);
+    }
+
+    [Fact]
+    public void Linear_from_radial_xlink_href_matches_same_type_twin()
+    {
+        // S13: the cross-type inheritance accepts the xlink:href spelling.
+        byte[] crossed = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"l\" xlink:href=\"#r\"/></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
+        byte[] local = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"l\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
+
+        Assert.Equal(local, crossed);
+    }
+
+    [Fact]
+    public void Linear_from_radial_spread_matches_local_spread_twin()
+    {
+        // S13: unspecified spread and units follow the radial parent, so a
+        // cross-type reflect render matches the locally declared reflect twin.
+        byte[] crossed = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\" spreadMethod=\"reflect\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"0.5\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"l\" href=\"#r\"/></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
+        byte[] local = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"l\" spreadMethod=\"reflect\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"0.5\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>", out _, out _);
+
+        Assert.Equal(local, crossed);
+    }
+
+    [Fact]
+    public void Linear_partial_vector_with_radial_href_stays_unsupported()
+    {
+        // S13: partial vector overrides have no cross-type meaning, mirroring
+        // the partial radial vector gate in the other direction.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"l\" href=\"#r\" x1=\"0\"/></defs><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#l)\"/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Partial gradient vector overrides with cross-type gradient references are not implemented.", rejected.Message);
+    }
+
+    [Fact]
     public void Pattern_filled_diagonal_polygon_tiles_exactly()
     {
         // S13/S16: pattern fills lower diagonal outlines through the shared
