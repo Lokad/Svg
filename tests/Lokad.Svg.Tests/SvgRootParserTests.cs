@@ -6880,6 +6880,24 @@ public sealed class SvgRootParserTests
         Assert.True(plainPng.Span.SequenceEqual(ruledPng.Span));
     }
     [Fact]
+    public void Ignores_clip_rule_on_root_when_rendering()
+    {
+        byte[] plain = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"5\" height=\"5\"><rect x=\"1\" y=\"1\" width=\"2\" height=\"2\" fill=\"red\"/></svg>"u8.ToArray();
+        byte[] ruled = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"5\" height=\"5\" clip-rule=\"evenodd\"><rect x=\"1\" y=\"1\" width=\"2\" height=\"2\" fill=\"red\"/></svg>"u8.ToArray();
+
+        ReadOnlyMemory<byte> plainPng = SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> ruledPng = SvgConverter.ConvertToPng(ruled, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(plainPng.Span.SequenceEqual(ruledPng.Span));
+    }
+    [Fact]
+    public void Rejects_invalid_root_clip_rule()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"5\" height=\"5\" clip-rule=\"bogus\"><rect x=\"1\" y=\"1\" width=\"2\" height=\"2\" fill=\"red\"/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+    [Fact]
     public void Admits_root_class_without_stylesheet()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' class='external-icon' width='12' height='7'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
