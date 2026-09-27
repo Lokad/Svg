@@ -124,6 +124,17 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Evenodd_bowtie_paints_union()
+    {
+        // R34: each lobe winds once, so even-odd paints both split loops like nonzero.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 6, 2));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 2));
+        Assert.Equal(8168, AlphaSum(pixels));
+    }
+
+    [Fact]
     public void Coincident_spike_stays_unsupported()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 4,4 0,8' fill='red'/></svg>");
