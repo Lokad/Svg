@@ -117,8 +117,9 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 6, 2));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 2));
-        // Coverage sums, not maxes, at the shared vertex, so the pinned sum exceeds
-        // the analytic 8160 by 8.
+        // Sixteen half-coverage edge pixels quantize 127.5 up to 128, hence 8168
+        // over the naive area-times-255 value 8160; the loops share only the crossing
+        // point, so no coverage doubles.
         Assert.Equal(8168, AlphaSum(pixels));
     }
 
@@ -616,7 +617,8 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 6, 2));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 2));
-        // Same shared-vertex summation over the analytic 6247.5 plus fractional edge rounding.
+        // Coverage quantization walk over the analytic 6247.5; the loops share only
+        // the crossing point, so no coverage doubles.
         Assert.Equal(6260, AlphaSum(pixels));
     }
 
