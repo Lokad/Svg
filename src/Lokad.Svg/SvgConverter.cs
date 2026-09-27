@@ -337,9 +337,11 @@ public static class SvgConverter
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
             int endX = ClampCeiling(right, outputWidth);
+            (double Left, double Top, double Right, double Bottom)? mappedClip = null;
             if (polygon.Clip is SvgClipBox clip)
             {
                 (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
+                mappedClip = MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
             }
 
             if (endY <= startY || endX <= startX) return;
@@ -358,6 +360,7 @@ public static class SvgConverter
                         : polygon.Signs is int[] roles
                             ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
                             : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                    if (mappedClip is not null) pixelCoverage *= ClipBoxCoverage(mappedClip.Value, x, y);
                     SvgColor color = WithCoverage(polygon.Color, pixelCoverage);
                     int offset = (y * outputWidth + x) * 4;
                     BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
@@ -393,9 +396,11 @@ public static class SvgConverter
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
             int endX = ClampCeiling(right, outputWidth);
+            (double Left, double Top, double Right, double Bottom)? mappedClip = null;
             if (outline.Clip is SvgClipBox clip)
             {
                 (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
+                mappedClip = MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
             }
             if (endY <= startY || endX <= startX) return;
             long coverage = (long)(endY - startY) * (endX - startX) * outline.Points.Length;
@@ -427,6 +432,7 @@ public static class SvgConverter
                     : outline.Signs is int[] roles
                         ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
                         : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                if (mappedClip is not null) pixelCoverage *= ClipBoxCoverage(mappedClip.Value, x, y);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double position;
                 if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
@@ -494,9 +500,11 @@ public static class SvgConverter
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
             int endX = ClampCeiling(right, outputWidth);
+            (double Left, double Top, double Right, double Bottom)? mappedClip = null;
             if (outline.Clip is SvgClipBox clip)
             {
                 (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
+                mappedClip = MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
             }
             if (endY <= startY || endX <= startX) return;
             long coverage = (long)(endY - startY) * (endX - startX) * outline.Points.Length;
@@ -523,6 +531,7 @@ public static class SvgConverter
                     : outline.Signs is int[] roles
                         ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
                         : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                if (mappedClip is not null) pixelCoverage *= ClipBoxCoverage(mappedClip.Value, x, y);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double sampleX;
                 double sampleY;
@@ -645,9 +654,11 @@ public static class SvgConverter
             int endY = ClampCeiling(bottom, outputHeight);
             int startX = ClampFloor(left, outputWidth);
             int endX = ClampCeiling(right, outputWidth);
+            (double Left, double Top, double Right, double Bottom)? mappedClip = null;
             if (outline.Clip is SvgClipBox clip)
             {
                 (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
+                mappedClip = MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
             }
             if (endY <= startY || endX <= startX) return;
             long coverage = (long)(endY - startY) * (endX - startX) * outline.Points.Length;
@@ -673,6 +684,7 @@ public static class SvgConverter
                     : outline.Signs is int[] roles
                         ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
                         : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
+                if (mappedClip is not null) pixelCoverage *= ClipBoxCoverage(mappedClip.Value, x, y);
                 int tileX = PositiveModulo(x - tile.OriginX, tile.TileWidth);
                 int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
                 int tileOffset = (tileY * tile.TileWidth + tileX) * 4;
@@ -1218,12 +1230,25 @@ public static class SvgConverter
 
         static int ClampFloor(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Floor(value));
 
+        static (double Left, double Top, double Right, double Bottom) MapClipBounds(SvgClipBox clip, double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset)
+        {
+            return (
+                MapEdge(clip.X, horizontalScale, horizontalOffset),
+                MapEdge(clip.Y, verticalScale, verticalOffset),
+                MapEdge(clip.Right, horizontalScale, horizontalOffset),
+                MapEdge(clip.Bottom, verticalScale, verticalOffset));
+        }
+
+        static double ClipBoxCoverage((double Left, double Top, double Right, double Bottom) bounds, int x, int y)
+        {
+            double horizontal = Math.Clamp(Math.Min(bounds.Right, x + 1) - Math.Max(bounds.Left, x), 0, 1);
+            double vertical = Math.Clamp(Math.Min(bounds.Bottom, y + 1) - Math.Max(bounds.Top, y), 0, 1);
+            return horizontal * vertical;
+        }
+
         static (int StartX, int StartY, int EndX, int EndY) IntersectMappedClip(SvgClipBox clip, double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset, int outputWidth, int outputHeight, int startX, int startY, int endX, int endY)
         {
-            double left = MapEdge(clip.X, horizontalScale, horizontalOffset);
-            double top = MapEdge(clip.Y, verticalScale, verticalOffset);
-            double right = MapEdge(clip.Right, horizontalScale, horizontalOffset);
-            double bottom = MapEdge(clip.Bottom, verticalScale, verticalOffset);
+            (double left, double top, double right, double bottom) = MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
             return (
                 Math.Max(startX, ClampFloor(left, outputWidth)),
                 Math.Max(startY, ClampFloor(top, outputHeight)),

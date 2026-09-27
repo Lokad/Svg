@@ -160,6 +160,37 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Fractional_clip_path_scales_edge_pixels()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='1.5' y='0' width='5' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 2, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 8, 1, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 8, 6, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 1));
+    }
+
+    [Fact]
+    public void Fractional_clip_scales_gradient_alpha()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><clipPath id='c'><rect x='1.5' y='0' width='5' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='url(#g)' clip-path='url(#c)'/></svg>", out _, out _);
+
+        Assert.Equal(255, Pixel(pixels, 8, 2, 1).Alpha);
+        Assert.Equal(128, Pixel(pixels, 8, 1, 1).Alpha);
+        Assert.Equal(0, Pixel(pixels, 8, 0, 1).Alpha);
+    }
+
+    [Fact]
+    public void Fractional_clip_scales_radial_alpha()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><clipPath id='c'><rect x='1.5' y='0' width='5' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='url(#g)' clip-path='url(#c)'/></svg>", out _, out _);
+
+        Assert.Equal(255, Pixel(pixels, 8, 2, 1).Alpha);
+        Assert.Equal(128, Pixel(pixels, 8, 1, 1).Alpha);
+        Assert.Equal(0, Pixel(pixels, 8, 0, 1).Alpha);
+    }
+
+    [Fact]
     public void ViewBox_scaled_clip_path_keeps_mapped_region()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><clipPath id='c'><rect width='8' height='16'/></clipPath></defs><polygon points='0,0 16,0 0,16' fill='red' clip-path='url(#c)'/></svg>", out int width, out int height);
