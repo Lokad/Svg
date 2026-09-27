@@ -1081,6 +1081,10 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     internal static void ValidateContours(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => ValidateContours(points, contourEnds, elementName, workCounter, cancellationToken, false);
+
+    /// <summary>Validates band contours, deferring diagonal simplicity checks to outline lowering when admitted; spatial classification still rejects touching contours there.</summary>
+    internal static void ValidateContours(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, string elementName, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowDiagonal)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
@@ -1097,7 +1101,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         for (int contourIndex = 0; contourIndex < contourEnds.Count; contourIndex++)
         {
             int contourEnd = contourEnds[contourIndex];
-            if (SvgContourTopology.Classify(points.AsSpan(), contourStart, contourEnd) == SvgContourKind.Diagonal) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned " + elementName + " contours are implemented.");
+            if (SvgContourTopology.Classify(points.AsSpan(), contourStart, contourEnd) == SvgContourKind.Diagonal && !allowDiagonal) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned " + elementName + " contours are implemented.");
             ValidateContourSlice(points, contourStart, contourEnd, elementName, workCounter, cancellationToken);
             contourStart = contourEnd;
         }

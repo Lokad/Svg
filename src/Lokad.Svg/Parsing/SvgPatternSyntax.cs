@@ -75,9 +75,22 @@ internal static class SvgPatternSyntax
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        using BudgetedParserList<SvgPoint> points = SvgOrthogonalShapeParser.TokenizeBands(reader, elementName, isPath, false, maximumGeometryElements, budget, context, contourEnds);
+        using BudgetedParserList<SvgPoint> points = SvgOrthogonalShapeParser.TokenizeBands(reader, elementName, isPath, true, maximumGeometryElements, budget, context, contourEnds);
         using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, isPath, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return lowering.Lower(default, false, transform, frame);
+        if (SvgOrthogonalShapeParser.HasDiagonalContour(points, contourEnds))
+        {
+            // Diagonal pattern fills lower through shared polygon outlines repainted with the tile, like gradient outlines.
+            SvgParsedGeometry white = lowering.LowerPolygonFill(default, painted, transform, frame, budget);
+            try
+            {
+                using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                foreach (SvgGeometry existing in white.Geometries) repainted.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, budget));
+                white.Dispose();
+                return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
+            }
+            catch { white.Dispose(); throw; }
+        }
         SvgRectangle content = tile.Content.Value.Rectangle;
         SvgParsedGeometry solid = lowering.Lower(default, painted, transform, frame);
         SvgGeometry[] bands = solid.Storage.Items;

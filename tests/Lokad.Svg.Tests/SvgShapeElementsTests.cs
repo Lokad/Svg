@@ -81,6 +81,55 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Pattern_filled_diagonal_polygon_tiles_exactly()
+    {
+        // S13/S16: pattern fills lower diagonal outlines through the shared
+        // polygon machinery repainted with the tile, byte-exact against the
+        // pinned Chrome capture of the same document.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><polygon points='0,0 16,0 0,16' fill='url(#p)'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 1, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 3, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 13, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 15, 15));
+    }
+
+    [Fact]
+    public void Gradient_filled_diagonal_path_matches_polygon()
+    {
+        // S13/S16: diagonal paths share the point-list gradient-fill lowering,
+        // so the same outline renders byte-identically through both spellings.
+        byte[] path = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,0 L16,0 L0,16 Z' fill='url(#g)'/></svg>", out _, out _);
+        byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><polygon points='0,0 16,0 0,16' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.Equal(polygon, path);
+    }
+
+    [Fact]
+    public void Radial_filled_diagonal_path_matches_polygon()
+    {
+        // S13/S16: diagonal paths share the point-list radial-fill lowering,
+        // so the same circle renders byte-identically through both spellings.
+        byte[] path = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,0 L16,0 L0,16 Z' fill='url(#g)'/></svg>", out _, out _);
+        byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><polygon points='0,0 16,0 0,16' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.Equal(polygon, path);
+    }
+
+    [Fact]
+    public void Pattern_filled_diagonal_path_matches_polygon()
+    {
+        // S13/S16: diagonal paths share the point-list pattern-fill lowering,
+        // so the same outline renders byte-identically through both spellings.
+        byte[] path = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M0,0 L16,0 L0,16 Z' fill='url(#p)'/></svg>", out _, out _);
+        byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><polygon points='0,0 16,0 0,16' fill='url(#p)'/></svg>", out _, out _);
+
+        Assert.Equal(polygon, path);
+    }
+
+    [Fact]
     public void Root_radial_gradient_matches_defs_twin()
     {
         byte[] rooted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><radialGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><circle cx=\"8\" cy=\"8\" r=\"5\" fill=\"url(#g)\"/></svg>", out _, out _);
