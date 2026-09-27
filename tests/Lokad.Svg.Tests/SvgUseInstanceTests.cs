@@ -162,6 +162,24 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Root_rect_definition_use_matches_defs_twin()
+    {
+        byte[] rooted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect id='r' x='0' y='0' width='4' height='4' fill='red'/><use href='#r' x='4' y='4'/></svg>", out _, out _);
+        byte[] defsed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><rect id='r' x='0' y='0' width='4' height='4' fill='red'/></defs><rect x='0' y='0' width='4' height='4' fill='red'/><use href='#r' x='4' y='4'/></svg>", out _, out _);
+
+        Assert.Equal(defsed, rooted);
+    }
+
+    [Fact]
+    public void Root_circle_definition_use_matches_defs_twin()
+    {
+        byte[] rooted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><circle id='c' cx='4' cy='4' r='3' fill='red'/><use href='#c' x='8' y='8'/></svg>", out _, out _);
+        byte[] defsed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><circle id='c' cx='4' cy='4' r='3' fill='red'/></defs><circle cx='4' cy='4' r='3' fill='red'/><use href='#c' x='8' y='8'/></svg>", out _, out _);
+
+        Assert.Equal(defsed, rooted);
+    }
+
+    [Fact]
     public void Forward_multi_geometry_use_matches_backward_reference()
     {
         byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 8,8 0,8' fill='red' stroke='blue' stroke-width='2'/></defs><use href='#p'/></svg>", out _, out _);
