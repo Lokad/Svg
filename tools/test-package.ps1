@@ -27,6 +27,7 @@ try {
         if ($entries -notcontains $required) { throw "Package is missing required entry: $required" }
     }
     if ($entries | Where-Object { $_.StartsWith('runtimes/', [StringComparison]::OrdinalIgnoreCase) }) { throw 'Package must not contain runtime-specific assets.' }
+    if ($entries | Where-Object { $_.EndsWith('.svg', [StringComparison]::OrdinalIgnoreCase) }) { throw 'Package must not contain SVG fixtures.' }
     $nuspecEntry = $archive.Entries | Where-Object { $_.FullName.EndsWith('.nuspec', [StringComparison]::OrdinalIgnoreCase) }
     if ($null -eq $nuspecEntry) { throw 'Package has no nuspec.' }
     $reader = [IO.StreamReader]::new($nuspecEntry.Open())
@@ -44,6 +45,7 @@ try {
     $symbolEntries = @($symbolArchive.Entries | ForEach-Object FullName)
     if ($symbolEntries -notcontains 'lib/net10.0/Lokad.Svg.pdb') { throw 'Symbol package is missing the net10.0 Lokad.Svg PDB.' }
     if ($symbolEntries | Where-Object { $_.StartsWith('runtimes/', [StringComparison]::OrdinalIgnoreCase) }) { throw 'Symbol package must not contain runtime-specific assets.' }
+    if ($symbolEntries | Where-Object { $_.EndsWith('.svg', [StringComparison]::OrdinalIgnoreCase) }) { throw 'Symbol package must not contain SVG fixtures.' }
 }
 finally { $symbolArchive.Dispose() }
 
