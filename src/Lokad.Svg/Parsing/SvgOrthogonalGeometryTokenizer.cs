@@ -29,6 +29,7 @@ internal static class SvgOrthogonalGeometryTokenizer
                     if (moveCommand is not ('M' or 'm')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 }
                 firstMove = false;
+                bool closedExplicit = false;
                 int dx = tokens.ReadInteger();
                 int dy = tokens.ReadInteger();
                 current = moveCommand == 'M' ? new SvgPoint(dx, dy) : AddOffset(current, dx, dy);
@@ -83,10 +84,11 @@ internal static class SvgOrthogonalGeometryTokenizer
                         } while (tokens.PeekIsValueStart() && !tokens.End);
                         implicitLine = command;
                     }
-                    else if (command is 'Z' or 'z') { break; }
+                    else if (command is 'Z' or 'z') { closedExplicit = true; break; }
                     else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 }
-                current = points[contourStart];
+                // A closepath moves the current point back to the subpath start; open ends stay in place.
+                if (closedExplicit) current = points[contourStart];
                 // An explicit return to the contour start without closepath seals the contour for fill.
                 if (points.Count > contourStart && points[points.Count - 1] == points[contourStart]) points.RemoveLast();
                 int contourEnd = points.Count;

@@ -1279,6 +1279,21 @@ public sealed class SvgStrokeFillTests
 
         Assert.Equal(direct, grouped);
     }
+    [Fact]
+    public void Relative_moveto_offsets_from_open_subpath_end()
+    {
+        byte[] relative = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\"><path d=\"M8,36h184m0,64H8\" stroke=\"#036\" stroke-width=\"2\"/></svg>", out _, out _);
+        byte[] absolute = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\"><path d=\"M8,36h184M192,100H8\" stroke=\"#036\" stroke-width=\"2\"/></svg>", out _, out _);
+
+        Assert.Equal(absolute, relative);
+    }
+    [Fact]
+    public void Bare_moveto_subpath_stays_unsupported()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\"><path d=\"M192,100H8M0,0\" stroke=\"#036\" stroke-width=\"2\"/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
