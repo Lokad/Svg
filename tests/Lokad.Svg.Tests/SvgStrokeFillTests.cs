@@ -844,6 +844,43 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Pattern_fill_with_solid_stroke_paints_band_over_fill()
+    {
+        // S13/S16: pattern-filled bands compose with an admitted solid stroke
+        // outline in paint order, byte-exact against the pinned Chrome capture.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M0,0 H16 V16 H0 Z' fill='url(#p)' stroke='blue' stroke-width='2'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 8, 0));
+    }
+
+    [Fact]
+    public void Pattern_fill_with_solid_stroke_path_matches_polygon()
+    {
+        // S13/S16: paths and polygons share the pattern fill-plus-stroke
+        // lowering, so the same outline renders byte-identically through both
+        // spellings.
+        byte[] path = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M0,0 H16 V16 H0 Z' fill='url(#p)' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+        byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><polygon points='0,0 16,0 16,16 0,16' fill='url(#p)' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(polygon, path);
+    }
+
+    [Fact]
+    public void Pattern_fill_with_solid_stroke_on_diagonal_paints_outline()
+    {
+        // S13/S16: diagonal outlines compose the same way; the axis-aligned
+        // left edge stroke pixel is exact while the diagonal carries the
+        // standing pattern-triangle delta.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><polygon points='0,0 16,0 0,16' fill='url(#p)' stroke='blue' stroke-width='2'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 10));
+    }
+
+    [Fact]
     public void Radial_fill_with_solid_stroke_path_matches_polygon()
     {
         // S13: paths and polygons share the radial fill-plus-stroke lowering,

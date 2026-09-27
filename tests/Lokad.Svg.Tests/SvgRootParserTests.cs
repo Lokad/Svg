@@ -2582,7 +2582,6 @@ public sealed class SvgRootParserTests
     }
 
     [Theory]
-    [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)' stroke='red' stroke-width='2'/>")]
     [InlineData("<path d='M1,1 H7 V7 H1 Z' fill='url(#p)' transform='translate(8,0) scale(-1,1)'/>")]
     public void Rejects_unsupported_pattern_path_forms(string body)
     {

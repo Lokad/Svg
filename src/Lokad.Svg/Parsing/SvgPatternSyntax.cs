@@ -65,7 +65,14 @@ internal static class SvgPatternSyntax
     /// <summary>Lowers one pattern-filled orthogonal path or point-list shape into pattern-evaluated rectangle bands.</summary>
     internal static SvgParsedGeometry LowerPatternBands(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame)
     {
-        if (style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern-filled paths with strokes are not implemented.");
+        SvgStrokeStyleSyntax.SvgAdmittedStroke? bandStroke = null;
+        SvgResolvedPaintableElement bandStrokeShape = default;
+        if (style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase))
+        {
+            // Solid strokes compose over pattern fills through the admitted outline kernel; paint strokes stay gated below.
+            bandStrokeShape = context.ResolveShape(style with { Fill = "black" }, reader, true);
+            bandStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, bandStrokeShape, elementName, false);
+        }
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Fill), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
         AxisTransform transform = context.ResolveTransform(reader);
@@ -78,6 +85,7 @@ internal static class SvgPatternSyntax
         {
             string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
             (int commandCount, bool hasCurve, bool hasArc, bool hasFractional) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            if (bandStroke is not null && (hasCurve || hasFractional)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern-filled curved or fractional paths with strokes are not implemented.");
             if (hasCurve || hasFractional)
             {
                 // Curved and fractional fills flatten through shared device outlines, repainted with the tile like gradient outlines.
@@ -111,7 +119,7 @@ internal static class SvgPatternSyntax
                 using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 foreach (SvgGeometry existing in white.Geometries) repainted.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, budget));
                 white.Dispose();
-                return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
+                return SvgGradientSyntax.AppendPaintFillStroke(new SvgParsedGeometry(repainted.Detach(), white.ElementCount), reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
             }
             catch { white.Dispose(); throw; }
         }
@@ -123,7 +131,7 @@ internal static class SvgPatternSyntax
             context.WorkCounter.Consume(context.CancellationToken);
             bands[bandIndex] = SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bands[bandIndex].Rectangle, opacity, null));
         }
-        return solid;
+        return SvgGradientSyntax.AppendPaintFillStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
     }
 
     /// <summary>Lowers one pattern fill region shared by fill-only and fill-plus-stroke lowerings.</summary>
