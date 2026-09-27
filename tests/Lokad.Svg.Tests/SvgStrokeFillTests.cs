@@ -182,6 +182,45 @@ public sealed class SvgStrokeFillTests
         Assert.Contains("Only opaque even-width rectangle strokes no larger than the rectangle dimensions are implemented.", rejected.Message);
     }
 
+    [Fact]
+    public void Group_stroke_paint_inherits_to_line()
+    {
+        byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke='red'><line x1='2' y1='8' x2='14' y2='8' stroke-width='2'/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(direct, grouped);
+    }
+
+    [Fact]
+    public void Inner_none_blocks_group_stroke()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke='red'><g stroke='none'><line x1='2' y1='8' x2='14' y2='8' stroke-width='2'/></g></g></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only untransformed horizontal or vertical lines are implemented.", rejected.Message);
+    }
+
+    [Fact]
+    public void Root_stroke_attribute_inherits_to_line()
+    {
+        byte[] rooted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' stroke='red'><line x1='2' y1='8' x2='14' y2='8' stroke-width='2'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(direct, rooted);
+    }
+
+    [Fact]
+    public void Invalid_group_stroke_value_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke='banana'><line x1='2' y1='8' x2='14' y2='8' stroke-width='2'/></g></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='3'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='0'/></svg>")]

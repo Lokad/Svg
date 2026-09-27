@@ -16,7 +16,7 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
         ValidateXmlSpace(reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace"));
         ValidateEnableBackground(reader.GetAttribute("enable-background"));
         SvgRootSyntax syntax = SvgRootSyntax.Parse(reader);
-        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, AxisTransform.Identity), SvgTextInheritance.Resolve(reader, SvgInheritedTextStyle.Default, inline.TextFont, inline.WhiteSpace, inline.LetterSpacing), new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity), reader.GetAttribute("id"), reader.GetAttribute("class"), presentation.Opacity, syntax.Width, syntax.Height, syntax.ViewBox, style.FillRule);
+        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, AxisTransform.Identity), SvgTextInheritance.Resolve(reader, SvgInheritedTextStyle.Default, inline.TextFont, inline.WhiteSpace, inline.LetterSpacing), new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), reader.GetAttribute("id"), reader.GetAttribute("class"), presentation.Opacity, syntax.Width, syntax.Height, syntax.ViewBox, style.FillRule);
         // enable-background is a deprecated Illustrator-era hint for filter
         // backdrops; the renderer performs no backdrop compositing, so the value
         // is validated as spec-shaped and then discarded.

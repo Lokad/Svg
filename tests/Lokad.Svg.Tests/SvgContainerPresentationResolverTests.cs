@@ -45,12 +45,12 @@ public sealed class SvgContainerPresentationResolverTests
     }
 
     [Fact]
-    public void Rejects_painted_stroke_through_the_shared_presentation_policy()
+    public void Accepts_painted_stroke_for_container_inheritance()
     {
         SvgComputedStyle style = new(null, null, null, "red", null, null, null, null);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, new Dictionary<string, SvgColor>()));
+        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, new Dictionary<string, SvgColor>());
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.True(presentation.IsPainted);
     }
 }
