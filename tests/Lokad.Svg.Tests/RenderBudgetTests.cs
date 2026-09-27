@@ -484,6 +484,21 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Radial_polygon_rasterization_denies_and_releases_under_tight_budget()
+    {
+        // R39 remainder: denial coverage grows with new geometry kinds. Radial
+        // fills share the polygon mapping path and must deny before work all
+        // the same.
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='g'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><polygon points='0,0 8,0 0,8' fill='url(#g)'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
+        RenderBudget rasterBudget = new(300);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+    [Fact]
     public void Gradient_polygon_rasterization_denies_and_releases_under_tight_budget()
     {
         // R39 remainder: denial coverage grows with new geometry kinds. Gradient fills
@@ -647,6 +662,24 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Radial_parse_denies_and_releases_when_stops_exceed_the_remaining_budget()
+    {
+        // R39 remainder: denial coverage grows with new geometry kinds. Radial
+        // stop arrays are scene-owned like linear ones and must deny before
+        // exceeding the remaining budget with nothing retained.
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes(EightStopRadialGradientSvg());
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget probe = new(limits.MaximumAccountedBytes);
+        using (SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { }
+        long peak = probe.Snapshot().PeakBytes;
+        SvgRenderLimits deniedLimits = new(peak - 1, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, limits.MaximumWorkUnits, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Scene_builder_transfers_one_reservation_per_distinct_radial_stop_array()
     {
         RenderBudget budget = new(100_000);
@@ -704,6 +737,8 @@ public sealed class RenderBudgetTests
         SvgRectangle box = new(8, 0, 2, 2, default, true, null);
         return SvgGeometry.FromRadialFill(new SvgRadialGeometry(gradient, box, box, 255, null));
     }
+
+    private static string EightStopRadialGradientSvg() => "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"0.15\" stop-color=\"#ff8000\"/><stop offset=\"0.3\" stop-color=\"#ffff00\"/><stop offset=\"0.45\" stop-color=\"#00ff00\"/><stop offset=\"0.6\" stop-color=\"#00ffff\"/><stop offset=\"0.75\" stop-color=\"#0000ff\"/><stop offset=\"0.9\" stop-color=\"#8000ff\"/><stop offset=\"1\" stop-color=\"#ff00ff\"/></radialGradient></defs><rect x=\"0\" y=\"0\" width=\"16\" height=\"16\" fill=\"url(#g)\"/></svg>";
 
     private static string EightStopGradientSvg() => "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"0.15\" stop-color=\"#ff8000\"/><stop offset=\"0.3\" stop-color=\"#ffff00\"/><stop offset=\"0.45\" stop-color=\"#00ff00\"/><stop offset=\"0.6\" stop-color=\"#00ffff\"/><stop offset=\"0.75\" stop-color=\"#0000ff\"/><stop offset=\"0.9\" stop-color=\"#8000ff\"/><stop offset=\"1\" stop-color=\"#ff00ff\"/></linearGradient></defs><rect x=\"0\" y=\"0\" width=\"16\" height=\"16\" fill=\"url(#g)\"/></svg>";
 
