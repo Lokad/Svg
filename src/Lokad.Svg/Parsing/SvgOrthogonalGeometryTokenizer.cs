@@ -304,7 +304,13 @@ internal static class SvgOrthogonalGeometryTokenizer
             SkipSeparators();
             ConsumeCheckpoints();
             int start = _position;
-            while (_position < _value.Length && !IsPathSeparator(_value[_position]) && !IsPathCommand(_value[_position])) { _position++; ConsumeCheckpoints(); }
+            while (_position < _value.Length && !IsPathSeparator(_value[_position]) && !IsPathCommand(_value[_position]))
+            {
+                // A sign after a digit starts the next number in compact exporter output like 99-99.
+                if (_position > start && _value[_position] is '-' or '+' && char.IsAsciiDigit(_value[_position - 1])) break;
+                _position++;
+                ConsumeCheckpoints();
+            }
             if (start == _position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
             return _value[start.._position];
         }

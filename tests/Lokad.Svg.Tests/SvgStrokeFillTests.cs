@@ -1337,6 +1337,22 @@ public sealed class SvgStrokeFillTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+    [Fact]
+    public void Sign_abutted_coordinates_match_spaced_twin()
+    {
+        byte[] abutted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M48,40l8-8L56,48Z\" fill=\"red\"/></svg>", out _, out _);
+        byte[] spaced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M48,40l8 -8L56,48Z\" fill=\"red\"/></svg>", out _, out _);
+
+        Assert.Equal(spaced, abutted);
+    }
+    [Fact]
+    public void Sign_abutted_coordinates_match_spaced_twin_after_relative_moveto()
+    {
+        byte[] abutted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"m48,40l8-8L56,48Z\" fill=\"red\"/></svg>", out _, out _);
+        byte[] spaced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"m48,40l8 -8L56,48Z\" fill=\"red\"/></svg>", out _, out _);
+
+        Assert.Equal(spaced, abutted);
+    }
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
