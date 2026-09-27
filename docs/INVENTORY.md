@@ -621,7 +621,7 @@ CC0 SVG from Wikimedia Commons (CC0 dedication per Commons API extmetadata, size
 - archetypes: cubic-curve flag, translucent gradient sheen, stroked curve contour, round joins, solid fills.
 - content: 2 solid wavy paths, 1 gradient-filled stroked contour.
 - variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: unsupported (rejects:UnsupportedFeature: Gradient-filled paths with strokes are not implemented; Release SvgRenderOptions.Default probe 2026-09-27, no candidate render). Layered behind the gate: translucent-stop evaluation, cubic lowering, round-join stroking.
+- status: unsupported (rejects:UnsupportedFeature: Only even-width path strokes are implemented; Release SvgRenderOptions.Default probe 2026-09-27, no candidate render). Layered behind the gate: translucent-stop evaluation, cubic lowering, round-join stroking.; re-probe 2026-09-27 (batch 84): advances past the fill-plus-stroke composition gate (orthogonal/diagonal linear fills pair with solid outlines since 25c787a) to odd width 3 on the stroked contour.
 - reference: exploratory oracle triple 2026-09-27, native 266x232 transparent, 3/3 byte-identical SHA-256 3199a02415ccc1fd84319ee21faae090792a9a8adcab44df1814a02a756b844d, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ## Selected documents (batch 23, 2026-09-27)
