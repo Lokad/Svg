@@ -207,6 +207,46 @@ public sealed class SvgCurveFillTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
         Assert.Contains("non-uniform viewBox or output scaling", rejected.Message);
     }
+
+    [Fact]
+    public void Fractional_self_intersecting_path_stays_unsupported()
+    {
+        // Inventory re-probe 2026-09-27 (R37): fractional admission carries stop-sign,
+        // flame and cross shapes through to the simplicity gate (inv-050, inv-067, inv-070).
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8.5,8 L8,0 L0,8 Z' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.", rejected.Message);
+    }
+
+    [Fact]
+    public void Fractional_path_with_inline_stroke_width_stays_unsupported()
+    {
+        // Inventory re-probe 2026-09-27 (R37): fractional admission carries the check-mark
+        // shape through to the inline-width gate (inv-074, corroborating inv-042).
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0 L8,0 L8,8 Z' fill='red' style='stroke-width:2'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Inline style property 'stroke-width' is not implemented.", rejected.Message);
+    }
+
+    [Fact]
+    public void Fractional_path_with_rotate_stays_unsupported()
+    {
+        // Inventory re-probe 2026-09-27 (R37): fractional admission carries the shield
+        // composition through to the integer-transform gate (inv-068 rotate(30)).
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g transform='rotate(30)'><path d='M0.5,0 L8,0 L8,8 Z' fill='red'/></g></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.", rejected.Message);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
