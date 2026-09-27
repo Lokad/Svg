@@ -70,6 +70,35 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Radial_filled_curved_path_paints_end_stops()
+    {
+        // S13: radial fills flatten curved paths through shared device
+        // outlines; clamped end-stop corners are exact while the curve edge
+        // carries the standing radial-curve residual against Chrome.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,8 Q8,0 16,8 L16,16 L0,16 Z' fill='url(#g)'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 15));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 15, 15));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 0, 0));
+    }
+
+    [Fact]
+    public void Radial_fill_with_solid_stroke_on_curved_path_paints_outline()
+    {
+        // S13: curved radial fills compose with solid outlines through
+        // flattened geometry; the axis-aligned bottom-edge stroke pixel is
+        // exact while the curve carries the standing residual.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M0,8 Q8,0 16,8 L16,16 L0,16 Z' fill='url(#g)' stroke='blue' stroke-width='2'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 8, 15));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 15));
+    }
+
+    [Fact]
     public void Radial_from_linear_spread_matches_local_spread_twin()
     {
         // S13: unspecified spread and units follow the linear parent, so a
