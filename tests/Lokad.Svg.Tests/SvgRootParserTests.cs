@@ -5518,6 +5518,26 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
         Assert.Equal(SvgGradientSpread.Repeat, geometry.Radial.Gradient.Spread);
     }
+
+    [Fact]
+    public void Admits_xlink_href_on_radial_gradient_definitions()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><radialGradient id='p' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient><radialGradient id='g' xlink:href='#p' spreadMethod='repeat'/></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
+        Assert.Equal(SvgGradientSpread.Repeat, geometry.Radial.Gradient.Spread);
+    }
+
+    [Fact]
+    public void Rejects_cross_type_radial_href_from_linear_parent()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><linearGradient id='a'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><radialGradient id='b' xlink:href='#a' cx='0.5' cy='0.5' r='0.5'/></defs><rect width='8' height='8' fill='url(#b)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only defined local radial gradient references are implemented.", rejected.Message);
+    }
+
     [Fact]
     public void Lowers_inside_radial_focal()
     {
