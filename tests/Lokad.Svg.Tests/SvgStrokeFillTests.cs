@@ -1294,6 +1294,49 @@ public sealed class SvgStrokeFillTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+    [Fact]
+    public void Fractional_path_gradient_fill_matches_solid_coverage()
+    {
+        byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0H4.5H8V8H0Z\" fill=\"url(#g)\"/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M0,0H4.5H8V8H0Z\" fill=\"red\"/></svg>", out _, out _);
+        byte[] solidAlpha = new byte[solid.Length / 4];
+        byte[] paintedAlpha = new byte[painted.Length / 4];
+        for (int i = 0; i < solidAlpha.Length; i++)
+        {
+            solidAlpha[i] = solid[i * 4 + 3];
+            paintedAlpha[i] = painted[i * 4 + 3];
+        }
+        Assert.Equal(solidAlpha, paintedAlpha);
+    }
+    [Fact]
+    public void Curved_path_gradient_fill_matches_solid_coverage()
+    {
+        byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M2,2 Q8,0 14,2 L14,14 L2,14 Z\" fill=\"url(#g)\"/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M2,2 Q8,0 14,2 L14,14 L2,14 Z\" fill=\"red\"/></svg>", out _, out _);
+        byte[] solidAlpha = new byte[solid.Length / 4];
+        byte[] paintedAlpha = new byte[painted.Length / 4];
+        for (int i = 0; i < solidAlpha.Length; i++)
+        {
+            solidAlpha[i] = solid[i * 4 + 3];
+            paintedAlpha[i] = painted[i * 4 + 3];
+        }
+        Assert.Equal(solidAlpha, paintedAlpha);
+    }
+    [Fact]
+    public void Single_stop_fractional_gradient_matches_solid_fill()
+    {
+        byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0H4.5H8V8H0Z\" fill=\"url(#g)\"/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M0,0H4.5H8V8H0Z\" fill=\"blue\"/></svg>", out _, out _);
+
+        Assert.Equal(solid, painted);
+    }
+    [Fact]
+    public void Degenerate_nonpad_fractional_gradient_stays_unsupported()
+    {
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"0\" spreadMethod=\"reflect\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M0,0H4.5H8V8H0Z\" fill=\"url(#g)\"/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

@@ -20,8 +20,7 @@ internal static class SvgOrthogonalShapeParser
             return SvgGradientSyntax.LowerGradientBands(reader, context, style, state, "path", true, maximumGeometryElements, budget, frame);
         }
         string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-        (int commandCount, bool hasCurve, bool hasArc) = ScanPathCommands(d, context.WorkCounter, context.CancellationToken);
-        bool hasFractional = d.Contains('.') || d.Contains('e') || d.Contains('E');
+        (int commandCount, bool hasCurve, bool hasArc, bool hasFractional) = ScanPathData(d, context.WorkCounter, context.CancellationToken);
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
         if (hasCurve)
@@ -135,24 +134,26 @@ internal static class SvgOrthogonalShapeParser
         }
         catch { filled.Dispose(); throw; }
         return ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
+    }
 
-        static (int CommandCount, bool HasCurve, bool HasArc) ScanPathCommands(string value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <summary>Scans path data for command counts and curve, arc and fractional notation shared by solid and gradient lowering.</summary>
+    internal static (int CommandCount, bool HasCurve, bool HasArc, bool HasFractional) ScanPathData(string value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        int commands = 0;
+        bool curve = false;
+        bool arc = false;
+        bool fractional = false;
+        for (int index = 0; index < value.Length; index++)
         {
-            int commands = 0;
-            bool curve = false;
-            bool arc = false;
-            for (int index = 0; index < value.Length; index++)
-            {
-                if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
-                char letter = value[index];
-                if (letter is 'A' or 'a') { arc = true; curve = true; commands++; }
-                else if (letter is 'C' or 'c' or 'S' or 's' or 'Q' or 'q' or 'T' or 't') { curve = true; commands++; }
-                else if (letter is 'M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z') commands++;
-            }
-
-            return (commands, curve, arc);
+            if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
+            char letter = value[index];
+            if (letter is 'A' or 'a') { arc = true; curve = true; commands++; }
+            else if (letter is 'C' or 'c' or 'S' or 's' or 'Q' or 'q' or 'T' or 't') { curve = true; commands++; }
+            else if (letter is 'M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z') commands++;
+            else if (letter is '.' or 'e' or 'E') fractional = true;
         }
 
+        return (commands, curve, arc, fractional);
     }
 
     internal static BudgetedParserList<SvgPoint> TokenizeBands(XmlReader reader, string elementName, bool isPath, bool allowDiagonal, int maximumGeometryElements, RenderBudget budget, SvgPaintableElementContext context, BudgetedParserList<int> contourEnds)
@@ -359,7 +360,7 @@ internal static class SvgOrthogonalShapeParser
     }
 
     /// <summary>Reads output-space fill-geometry bounds for bounding-box outline paints, sharing one helper across path and fractional lowerings.</summary>
-    private static SvgRectangle BoxFromFilledGeometryBounds(SvgParsedGeometry filled, CancellationToken cancellationToken)
+    internal static SvgRectangle BoxFromFilledGeometryBounds(SvgParsedGeometry filled, CancellationToken cancellationToken)
     {
         double left = double.PositiveInfinity;
         double top = double.PositiveInfinity;
