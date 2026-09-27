@@ -150,6 +150,30 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Radial_bowtie_paints_both_lobes()
+    {
+        // R34: the crossing split feeds the shared radial repaint, so both
+        // lobes carry the radial ramp with the gap transparent.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='r'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><polygon points='0,0 8,8 8,0 0,8' fill='url(#r)'/></svg>", out _, out _);
+
+        SvgColor corner = Pixel(pixels, 8, 0, 0);
+        SvgColor middle = Pixel(pixels, 8, 4, 3);
+        Assert.True(corner.Blue > corner.Red);
+        Assert.True(middle.Red > middle.Blue);
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 2));
+    }
+
+    [Fact]
+    public void Pattern_bowtie_matches_solid_bowtie()
+    {
+        // R34: a solid pattern tile repaints the split loops exactly like a solid fill.
+        byte[] pattern = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><polygon points='0,0 8,8 8,0 0,8' fill='url(#p)'/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(solid, pattern);
+    }
+
+    [Fact]
     public void Coincident_spike_stays_unsupported()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 4,4 0,8' fill='red'/></svg>");
