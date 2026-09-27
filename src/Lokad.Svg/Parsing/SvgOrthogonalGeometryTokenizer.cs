@@ -11,7 +11,9 @@ internal static class SvgOrthogonalGeometryTokenizer
         ArgumentNullException.ThrowIfNull(contourEnds);
         ValidatePathCommandCount(value, maximumGeometryElements, workCounter, cancellationToken);
         PathTokenReader tokens = new(value, workCounter, cancellationToken);
-        if (tokens.End || tokens.ReadCommand() is not ('M' or 'm')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
+        if (tokens.End) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
+        char firstCommand = tokens.ReadCommand();
+        if (firstCommand is not ('M' or 'm')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
         BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
         try
         {
@@ -19,7 +21,7 @@ internal static class SvgOrthogonalGeometryTokenizer
             SvgPoint current = new(0, 0);
             bool hasMore = true;
             bool firstMove = true;
-            char moveCommand = 'M';
+            char moveCommand = firstCommand;
             while (hasMore)
             {
                 if (!firstMove)

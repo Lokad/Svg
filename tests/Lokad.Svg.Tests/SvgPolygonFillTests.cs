@@ -721,6 +721,39 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(AlphaSum(triangle) + AlphaSum(bowtie), AlphaSum(combined));
     }
 
+    [Fact]
+    public void Relative_moveto_implicit_pairs_match_absolute_twin()
+    {
+        // The integer tokenizer accumulates a first-subpath lowercase moveto
+        // before its implicit relative pairs (inv-086 recorded the raw deltas).
+        byte[] relative = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='m5,1 2,0 -1,4 z' fill='red'/></svg>", out _, out _);
+        byte[] absolute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M5,1 L7,1 L6,5 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(absolute, relative);
+    }
+
+    [Fact]
+    public void Uppercase_moveto_implicit_pairs_stay_absolute()
+    {
+        // Control: an uppercase moveto keeps implicit pairs absolute per spec.
+        byte[] implicitPairs = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M5,1 7,1 6,5 z' fill='red'/></svg>", out _, out _);
+        byte[] explicitLines = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M5,1 L7,1 L6,5 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(explicitLines, implicitPairs);
+    }
+
+    [Fact]
+    public void Fractional_relative_moveto_implicit_pairs_match_absolute_twin()
+    {
+        // Same moveto accumulation through the fractional path lowering.
+        byte[] relative = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='m5.5,1.5 2,0 -1,4 z' fill='red'/></svg>", out _, out _);
+        byte[] absolute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M5.5,1.5 L7.5,1.5 L6.5,5.5 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(absolute, relative);
+    }
+
+
+
 
 
     [Fact]
