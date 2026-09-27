@@ -10,7 +10,7 @@ is not a general pixel-fidelity claim.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
-Stroke widths flow through the same cascade: presentation attributes, inline styles and matching stylesheets on the shape plus group and root inheritance render identically to direct attributes, with odd, fractional and non-positive widths still rejected at lowering. Miter limits flow through the same cascade with sub-one values still rejected at lowering. Stroke opacity multiplies stroke alpha on solid strokes while paint-server strokes stay opaque-only.
+Stroke widths flow through the same cascade: presentation attributes, inline styles and matching stylesheets on the shape plus group and root inheritance render identically to direct attributes, with odd, fractional and non-positive widths still rejected at lowering. Miter limits flow through the same cascade with sub-one values still rejected at lowering. Stroke opacity multiplies stroke alpha on solid strokes while paint-server strokes stay opaque-only. Path lengths flow through the same cascade with the single lowering-time validation unchanged.
 
 | Area | Status |
 | --- | --- |

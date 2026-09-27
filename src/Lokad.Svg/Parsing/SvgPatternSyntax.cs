@@ -320,7 +320,7 @@ internal static class SvgPatternSyntax
         double[]? dashEntries = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);
         SvgStrokeCap dashLinecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
         if (dashLinecap == SvgStrokeCap.Square && dashEntries is null) syntax = syntax.WithSquareCaps(strokeWidth);
-        double? pathLength = dashEntries is null ? null : SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
+        double? pathLength = dashEntries is null ? null : SvgStrokeStyleSyntax.ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Stroke), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.StrokeOpacity));

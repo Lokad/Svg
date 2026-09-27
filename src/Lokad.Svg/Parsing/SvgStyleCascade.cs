@@ -26,6 +26,7 @@ internal struct SvgStyleCascade
     private string? _width;
     private string? _miterlimit;
     private string? _strokeOpacity;
+    private string? _pathLength;
     private int _colorRank;
     private int _fillRank;
     private int _fillOpacityRank;
@@ -47,13 +48,14 @@ internal struct SvgStyleCascade
     private int _widthRank;
     private int _miterlimitRank;
     private int _strokeOpacityRank;
+    private int _pathLengthRank;
 
     public SvgStyleCascade()
     {
         _colorRank = _fillRank = _fillOpacityRank = _strokeRank = -1;
         _displayRank = _visibilityRank = _opacityRank = _fillRuleRank = -1;
         _familyRank = _weightRank = _fontStyleRank = _fontSizeRank = _whiteSpaceRank = _letterSpacingRank = -1;
-        _linecapRank = _linejoinRank = _dasharrayRank = _dashoffsetRank = _widthRank = _miterlimitRank = _strokeOpacityRank = -1;
+        _linecapRank = _linejoinRank = _dasharrayRank = _dashoffsetRank = _widthRank = _miterlimitRank = _strokeOpacityRank = _pathLengthRank = -1;
     }
 
     internal void Apply(InlineStyle style, int specificity)
@@ -79,6 +81,7 @@ internal struct SvgStyleCascade
         Apply(ref _width, ref _widthRank, style.Width, (style.Important & InlineImportantProperties.Width) != 0, specificity);
         Apply(ref _miterlimit, ref _miterlimitRank, style.Miterlimit, (style.Important & InlineImportantProperties.Miterlimit) != 0, specificity);
         Apply(ref _strokeOpacity, ref _strokeOpacityRank, style.StrokeOpacity, (style.Important & InlineImportantProperties.StrokeOpacity) != 0, specificity);
+        Apply(ref _pathLength, ref _pathLengthRank, style.PathLength, (style.Important & InlineImportantProperties.PathLength) != 0, specificity);
     }
 
     internal InlineStyle ToInlineStyle()
@@ -105,7 +108,8 @@ internal struct SvgStyleCascade
         if (_widthRank >= ImportantBias) important |= InlineImportantProperties.Width;
         if (_miterlimitRank >= ImportantBias) important |= InlineImportantProperties.Miterlimit;
         if (_strokeOpacityRank >= ImportantBias) important |= InlineImportantProperties.StrokeOpacity;
-        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, Important = important };
+        if (_pathLengthRank >= ImportantBias) important |= InlineImportantProperties.PathLength;
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, Important = important };
     }
 
     private static void Apply(ref string? value, ref int currentRank, string? candidate, bool candidateImportant, int specificity)

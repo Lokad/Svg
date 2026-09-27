@@ -170,7 +170,7 @@ internal static class SvgStrokeStyleSyntax
             if (hasZero && cap != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Zero-length dashes with round or square caps are not implemented.");
         }
         bool nonScaling = ParseVectorEffect(reader.GetAttribute("vector-effect"));
-        double? pathLength = ParsePathLength(reader.GetAttribute("pathLength"));
+        double? pathLength = ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));
         if (pathLength == 0 && dashes is not null)
         {
             if (dashes[0] > 0) dashes = null;
