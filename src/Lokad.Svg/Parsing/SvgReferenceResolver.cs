@@ -14,13 +14,33 @@ internal readonly record struct PendingUse(SvgSceneSlot Slot, SvgUseReference Re
 /// <summary>Applies typed local references through their geometry-specific supported transforms.</summary>
 internal static class SvgReferenceResolver
 {
+    /// <summary>Charges one work unit per polygon point bound by instance resolution at its entry points.</summary>
+    internal static void ChargeAppliedMappingWork(SvgGeometry[] applied, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        foreach (SvgGeometry geometry in applied)
+        {
+            int points = geometry.Kind switch
+            {
+                SvgGeometryKind.PolygonFill => geometry.Polygon.Points.Length,
+                SvgGeometryKind.GradientPolygon => geometry.GradientPolygon.Points.Length,
+                SvgGeometryKind.RadialPolygon => geometry.RadialPolygon.Points.Length,
+                SvgGeometryKind.PatternPolygon => geometry.PatternPolygon.Points.Length,
+                _ => 0,
+            };
+            for (int index = 0; index < points; index++) workCounter.Consume(cancellationToken);
+        }
+    }
+
     /// <summary>Resolves an already parsed local reference immediately or retains its typed placeholder for document-end resolution.</summary>
+
     internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDeferredClip? deferredClip, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
         if (deferredClip is null && (maskReference is null || mask is not null) && definitions.TryGetValue(reference.Id, out SvgDefinition definition))
         {
-            foreach (SvgGeometry geometry in ApplyMask(definition, reference, frame, mask, maskReference, state)) scene.AddGeometry(geometry);
+            SvgGeometry[] applied = ApplyMask(definition, reference, frame, mask, maskReference, state);
+            ChargeAppliedMappingWork(applied, workCounter, cancellationToken);
+            foreach (SvgGeometry geometry in applied) scene.AddGeometry(geometry);
         }
         else
         {
@@ -829,6 +849,7 @@ internal static class SvgReferenceResolver
             byte? mask = pendingUse.Mask;
             if (pendingUse.MaskReference is not null && mask is null) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
             SvgGeometry[] applied = ApplyMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference, state);
+            ChargeAppliedMappingWork(applied, workCounter, cancellationToken);
             if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
             int adjustedCommand = pendingUse.Slot.CommandIndex + commandShift;
             int insertedCommands = scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = adjustedCommand }, applied);

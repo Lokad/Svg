@@ -338,6 +338,39 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Use_instance_mapping_charges_one_work_unit_per_mapped_point()
+    {
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
+        int[] ends = [3];
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        try
+        {
+            SvgGeometry[] applied = [SvgGeometry.FromPolygonFill(fill), SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null))];
+            ParserWorkCounter workCounter = new(100_000);
+            SvgReferenceResolver.ChargeAppliedMappingWork(applied, workCounter, CancellationToken.None);
+            Assert.Equal(3, workCounter.Used);
+        }
+        finally { fill.Dispose(); }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+    public void Use_instance_mapping_denies_when_work_runs_out()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><use href='#p'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget probe = new(limits.MaximumAccountedBytes);
+        long used;
+        using (SvgRoot root = SvgRootParser.Parse(svg, limits, probe, CancellationToken.None)) { used = root.ParserWorkUnits; }
+        SvgRenderLimits deniedLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)(used - 1)), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+        RenderBudget deniedBudget = new(deniedLimits.MaximumAccountedBytes);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, deniedLimits, deniedBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Use_instance_mapping_denies_and_releases_when_points_exceed_the_remaining_budget()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red'/></defs><use href='#p'/></svg>");
