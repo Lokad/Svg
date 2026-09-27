@@ -2680,6 +2680,19 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Prepared_scaled_circle_matches_direct_conversion()
+    {
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><circle cx='4' cy='4' r='3' fill='red'/></svg>"u8.ToArray();
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> direct = SvgConverter.ConvertToPng(svg, options, CancellationToken.None);
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(svg, catalog, provider, options, CancellationToken.None);
+        ReadOnlyMemory<byte> prepared = document.ConvertToPng(CancellationToken.None);
+
+        Assert.True(direct.Span.SequenceEqual(prepared.Span));
+    }
+
+    [Fact]
     public async Task Disposed_document_detaches_its_retained_scene()
     {
         using SvgPreparedDocument document = await CreateSceneDocumentAsync(CreateSceneSvg());
