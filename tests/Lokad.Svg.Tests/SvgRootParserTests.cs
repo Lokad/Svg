@@ -465,6 +465,19 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void OutputScale_dashed_circle_offset_matches_enlarged_direct_rendering()
+    {
+        byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><circle cx=\"32\" cy=\"32\" r=\"16\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-dasharray=\"8 8\" stroke-dashoffset=\"4\"/></svg>");
+        byte[] large = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><circle cx=\"64\" cy=\"64\" r=\"32\" fill=\"none\" stroke=\"red\" stroke-width=\"16\" stroke-dasharray=\"16 16\" stroke-dashoffset=\"8\"/></svg>");
+        SvgRenderOptions scaled = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default);
+        SvgRenderOptions direct = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> scaledPng = SvgConverter.ConvertToPng(small, scaled, CancellationToken.None);
+        ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(large, direct, CancellationToken.None);
+
+        Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
+    }
+
+    [Fact]
     public void Rejects_round_caps_on_dashed_circle_strokes()
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-dasharray=\"4 2\" stroke-linecap=\"round\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
