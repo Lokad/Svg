@@ -263,6 +263,16 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    public void Curved_bowtie_matches_integer_bowtie()
+    {
+        // R34: flattened collinear cubics cross exactly like their straight twin.
+        byte[] curved = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] straight = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(straight, curved);
+    }
+
+    [Fact]
     public void Fractional_self_intersecting_path_paints_union()
     {
         // R34: flattened self-crossings admit through the same unsigned-union rule.
