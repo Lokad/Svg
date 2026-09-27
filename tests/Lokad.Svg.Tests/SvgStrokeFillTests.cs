@@ -172,14 +172,29 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Rect_fill_stroke_with_opacity_stays_unsupported()
+    public void Stroke_opacity_on_fill_less_rect_matches_element_opacity()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='12' height='12' fill='red' stroke='blue' stroke-width='2' style='stroke-opacity:0.5'/></svg>");
+        // S12: rectangle stroke bands are butt-jointed without overlap, so a
+        // translucent stroke composes exactly like element opacity on
+        // fill-less strokes.
+        byte[] strokeOpacity = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='none' stroke='black' stroke-width='2' stroke-opacity='0.5'/></svg>", out _, out _);
+        byte[] elementOpacity = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='none' stroke='black' stroke-width='2' opacity='0.5'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(elementOpacity, strokeOpacity);
+    }
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only opaque even-width rectangle strokes no larger than the rectangle dimensions are implemented.", rejected.Message);
+    [Fact]
+    public void Stroke_opacity_on_filled_rect_paints_blended_band()
+    {
+        // S12: translucent bands composite once over the fill with no corner
+        // double-coverage, so black at half opacity over red is exactly
+        // (127, 0, 128, 255) on fully covered band pixels.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='12' height='12' fill='red' stroke='blue' stroke-width='2' style='stroke-opacity:0.5'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 8, 8));
+        Assert.Equal(new SvgColor(127, 0, 128, 255), Pixel(pixels, width, 8, 2));
     }
 
     [Fact]
