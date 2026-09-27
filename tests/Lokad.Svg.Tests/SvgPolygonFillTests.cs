@@ -310,6 +310,28 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Offset_nested_viewport_matches_shifted_clip_rendering()
+    {
+        // R33 remainder: a nonzero viewport origin shifts polygon content and
+        // clips it exactly like the equivalent shifted clip-path reference.
+        byte[] nested = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><svg x='4' y='2' width='8' height='12'><polygon points='0,0 16,0 0,16' fill='red'/></svg></svg>", out _, out _);
+        byte[] clipped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><clipPath id='c'><rect x='4' y='2' width='8' height='12'/></clipPath></defs><polygon points='4,2 20,2 4,18' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
+
+        Assert.Equal(clipped, nested);
+    }
+
+    [Fact]
+    public void ViewBox_scaled_offset_viewport_matches_shifted_clip_rendering()
+    {
+        // R33 remainder: viewport origins compose through the root viewBox map
+        // on both the nested-viewport and the clip-path reference paths.
+        byte[] nested = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><svg x='4' y='2' width='8' height='12'><polygon points='0,0 16,0 0,16' fill='red'/></svg></svg>", out _, out _);
+        byte[] clipped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 16 16'><defs><clipPath id='c'><rect x='4' y='2' width='8' height='12'/></clipPath></defs><polygon points='4,2 20,2 4,18' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
+
+        Assert.Equal(clipped, nested);
+    }
+
+    [Fact]
     public void Disjoint_opposite_contours_paint()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .6 .9 L .9 .6 Z' fill='red'/></svg>", out int width, out int height);
