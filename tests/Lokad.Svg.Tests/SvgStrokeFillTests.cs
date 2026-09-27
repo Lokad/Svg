@@ -448,6 +448,17 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Dashed_bowtie_matches_path_twin()
+    {
+        // R34: dashed outlines agree across polygon and path lowerings on crossing input.
+        byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
+        byte[] path = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,8 L8,0 L0,8 Z' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4 2'/></svg>", out _, out _);
+
+        Assert.Equal(path, polygon);
+        Assert.True(Pixel(polygon, 8, 0, 0).Alpha > 0);
+    }
+
+    [Fact]
     public void Dashed_diagonal_polygon_run_survives_overlap()
     {
         // S12: the closed dashed triangle keeps the same vertex-adjacent
