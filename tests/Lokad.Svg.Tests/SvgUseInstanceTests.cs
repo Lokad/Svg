@@ -17,6 +17,16 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Pattern_path_use_matches_direct_rendering()
+    {
+        string pattern = "<defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs>";
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + pattern + "<path d='M2,2 H14 V14 H2 Z' fill='url(#p)'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + pattern + "<defs><path id='r' d='M2,2 H14 V14 H2 Z' fill='url(#p)'/></defs><use href='#r'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
     public void Use_offset_matches_shifted_rendering()
     {
         byte[] shifted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='2,1 6,1 2,5' fill='red'/></svg>", out _, out _);
