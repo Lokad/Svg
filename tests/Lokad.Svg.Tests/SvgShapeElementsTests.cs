@@ -399,6 +399,19 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Fractional_outputScale_matches_enlarged_direct_rendering()
+    {
+        byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect x='8' y='8' width='48' height='48' fill='red'/></svg>");
+        byte[] large = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><rect x='12' y='12' width='72' height='72' fill='red'/></svg>");
+        SvgRenderOptions scaled = new(null, 1.5, SvgColor.Transparent, SvgRenderLimits.Default);
+        SvgRenderOptions direct = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> scaledPng = SvgConverter.ConvertToPng(small, scaled, CancellationToken.None);
+        ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(large, direct, CancellationToken.None);
+
+        Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
+    }
+
+    [Fact]
     public void Circle_sized_ellipse_stroke_matches_circle_stroke()
     {
         byte[] ellipse = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='6' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
