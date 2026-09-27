@@ -45,9 +45,6 @@ public sealed class OutputDimensionTests
     }
 
     [Theory]
-    [InlineData(1.5, 1, 1)]
-    [InlineData(1, 1.5, 1)]
-    [InlineData(1, 1, 0.5)]
     [InlineData(double.MaxValue, 1, 2)]
     [InlineData(1, double.MaxValue, 2)]
     [InlineData(double.Epsilon, 1, 0.5)]
@@ -61,6 +58,35 @@ public sealed class OutputDimensionTests
             SvgException exception = await Assert.ThrowsAsync<SvgException>(() => Convert(svg, options, form));
             Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         }
+    }
+
+    [Theory]
+    [InlineData("10.4", "6.4", 1, 10, 6)]
+    [InlineData("10.5", "6.5", 1, 11, 7)]
+    [InlineData("10.6", "6.6", 1, 11, 7)]
+    [InlineData("10.4", "6.4", 2, 21, 13)]
+    public async Task Fractional_dimensions_round_to_nearest_device_pixel(string width, string height, double scale, int expectedWidth, int expectedHeight)
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes(FormattableString.Invariant($"<svg xmlns='http://www.w3.org/2000/svg' width='{width}' height='{height}'><rect width='10' height='6' fill='red'/></svg>"));
+        SvgRenderOptions options = new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default);
+
+        foreach (OutputForm form in Enum.GetValues<OutputForm>())
+        {
+            ReadOnlyMemory<byte> png = await Convert(svg, options, form);
+            Assert.Equal(expectedWidth, BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(16, 4)));
+            Assert.Equal(expectedHeight, BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(20, 4)));
+        }
+    }
+
+    [Fact]
+    public void Default_fractional_dimensions_match_explicit_rounded_viewport()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='10.4' height='6.4'><rect width='10' height='6' fill='red'/></svg>");
+        SvgRenderOptions defaultOptions = SvgRenderOptions.Default;
+        SvgRenderOptions explicitViewport = new(new SvgViewport(10.4, 6.4), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> defaultPng = SvgConverter.ConvertToPng(svg, defaultOptions, CancellationToken.None);
+        ReadOnlyMemory<byte> explicitPng = SvgConverter.ConvertToPng(svg, explicitViewport, CancellationToken.None);
+        Assert.True(defaultPng.Span.SequenceEqual(explicitPng.Span));
     }
 
     [Fact]

@@ -154,8 +154,8 @@ public static class SvgConverter
     internal static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
     {
         (double width, double height) = ResolveOutputDimensions(options.Viewport, root.Width, root.Height, root.ViewBox);
-        double scaledWidth = width * options.OutputScale;
-        double scaledHeight = height * options.OutputScale;
+        double scaledWidth = Math.Round(width * options.OutputScale, MidpointRounding.AwayFromZero);
+        double scaledHeight = Math.Round(height * options.OutputScale, MidpointRounding.AwayFromZero);
         if (!double.IsFinite(scaledWidth) || !double.IsFinite(scaledHeight) || scaledWidth <= 0 || scaledHeight <= 0 || scaledWidth != Math.Truncate(scaledWidth) || scaledHeight != Math.Truncate(scaledHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive finite integral output dimensions are implemented currently.");
         if (scaledWidth > options.Limits.MaximumDimension || scaledHeight > options.Limits.MaximumDimension) throw new SvgException(SvgErrorCode.LimitExceeded, "Output dimensions exceed the configured dimension limit.");
         int outputWidth = (int)scaledWidth;
