@@ -599,6 +599,44 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Inline_dash_list_on_rectangle_stroke_stays_unsupported()
+    {
+        // S12: solid sharp-rectangle bands silently dropped inline dash lists;
+        // the lowering now gates them exactly like the attribute spelling.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2' style='stroke-dasharray:4 4'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Inline_dash_list_on_polygon_stroke_matches_attribute()
+    {
+        // S12: inline dash lists flow through the cascade into the admitted
+        // polygon dash kernel exactly like the attribute spelling.
+        byte[] inline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polygon points='0,0 16,0 16,8 0,8' fill='none' stroke='red' stroke-width='2' style='stroke-dasharray:4 4'/></svg>");
+        byte[] attribute = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polygon points='0,0 16,0 16,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>");
+        ReadOnlyMemory<byte> inlinePng = SvgConverter.ConvertToPng(inline, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> attributePng = SvgConverter.ConvertToPng(attribute, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(inlinePng.Span.SequenceEqual(attributePng.Span));
+    }
+
+    [Fact]
+    public void Stylesheet_dash_list_on_polygon_stroke_matches_attribute()
+    {
+        // S12: stylesheet dash lists resolve through the same cascade into the
+        // admitted polygon dash kernel.
+        byte[] styled = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><style>#p { stroke-dasharray: 4 4; }</style><polygon id='p' points='0,0 16,0 16,8 0,8' fill='none' stroke='red' stroke-width='2'/></svg>");
+        byte[] attribute = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polygon points='0,0 16,0 16,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>");
+        ReadOnlyMemory<byte> styledPng = SvgConverter.ConvertToPng(styled, SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> attributePng = SvgConverter.ConvertToPng(attribute, SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(styledPng.Span.SequenceEqual(attributePng.Span));
+    }
+
+    [Fact]
     public void Inline_neutralized_dasharray_on_rectangle_stroke_matches_solid()
     {
         // R36: validation honors inline overrides of rejected attribute
