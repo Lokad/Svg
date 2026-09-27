@@ -197,6 +197,24 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    public void OutputScale_viewBox_curve_matches_direct_rendering()
+    {
+        SvgRenderOptions magnified = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default, null);
+        byte[] scaled = DecodeRgba(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>"), magnified, CancellationToken.None), out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><path d='M0,256 Q128,0 256,256 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(direct, scaled);
+    }
+
+    [Fact]
+    public void Nested_viewport_curve_matches_direct_rendering()
+    {
+        byte[] nested = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><svg x='32' y='32' width='64' height='64' viewBox='0 0 8 8'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><path d='M32,96 Q64,32 96,96 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(direct, nested);
+    }
+    [Fact]
     public void Scaled_circle_stroke_matches_direct_stroke()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 8 8'><circle cx='4' cy='4' r='3' fill='none' stroke='red' stroke-width='1'/></svg>", out _, out _);
