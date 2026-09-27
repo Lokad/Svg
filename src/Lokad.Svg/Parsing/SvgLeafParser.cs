@@ -351,7 +351,7 @@ internal static class SvgLeafParser
                 double[] ellipseDashPattern = SvgStrokeStyleSyntax.ParseDasharray(ellipseDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Ellipse dash arrays cannot be empty.");
                 double ellipseDashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
                 double? ellipseDashPathLength = SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
-                double ellipseDashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
+                double ellipseDashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
                 try { return LowerDashedEllipseStroke(reader, context, syntax, element, filled, ellipseStroke.Value, ellipseDashPattern, ellipseDashOffset, ellipseDashPathLength, ellipseDashMiterLimit, nonScalingStroke, "ellipse", frame, state); }
                 catch { filled.Dispose(); throw; }
             }
@@ -375,7 +375,7 @@ internal static class SvgLeafParser
             double[] dashPattern = SvgStrokeStyleSyntax.ParseDasharray(circleDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Circle dash arrays cannot be empty.");
             double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
             double? dashPathLength = SvgStrokeStyleSyntax.ParsePathLength(reader.GetAttribute("pathLength"));
-            double dashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
+            double dashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
             try { return LowerDashedEllipseStroke(reader, context, syntax, element, filled, stroke.Value, dashPattern, dashOffset, dashPathLength, dashMiterLimit, nonScalingStroke, "circle", frame, state); }
             catch { filled.Dispose(); throw; }
         }
@@ -504,7 +504,7 @@ internal static class SvgLeafParser
             if (reader.GetAttribute("stroke-width") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke width without a stroke is not implemented.");
             return null;
         }
-        _ = SvgStrokeStyleSyntax.ParseMiterLimit(reader.GetAttribute("stroke-miterlimit"));
+        _ = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
         int width = SvgGeometrySyntax.ParseInteger(element.Style.Width ?? reader.GetAttribute("stroke-width") ?? "1");
         if (width <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive circle stroke widths are implemented.");
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(element.Presentation.StrokeColor.Value, element.Presentation.Opacity), width);

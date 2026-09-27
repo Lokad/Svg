@@ -134,6 +134,24 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, styled);
     }
 
+    [Fact]
+    public void Inline_miterlimit_matches_direct_attribute()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='0,0 16,0 8,16' fill='red' stroke='blue' stroke-width='4' style='stroke-miterlimit:10'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='0,0 16,0 8,16' fill='red' stroke='blue' stroke-width='4' stroke-miterlimit='10'/></svg>", out _, out _);
+
+        Assert.Equal(direct, styled);
+    }
+
+    [Fact]
+    public void Group_attribute_miterlimit_inherits()
+    {
+        byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke-miterlimit='10'><polygon points='0,0 16,0 8,16' fill='red' stroke='blue' stroke-width='4'/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='0,0 16,0 8,16' fill='red' stroke='blue' stroke-width='4' stroke-miterlimit='10'/></svg>", out _, out _);
+
+        Assert.Equal(direct, grouped);
+    }
+
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='3'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='0'/></svg>")]
@@ -150,6 +168,7 @@ public sealed class SvgStrokeFillTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-linejoin='bevel'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0.5,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-linejoin='bevel'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-miterlimit='0.5'/></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' style='stroke-miterlimit:0.5'/>")]
     public void Non_admitted_stroke_styles_stay_unsupported(string svg)
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
