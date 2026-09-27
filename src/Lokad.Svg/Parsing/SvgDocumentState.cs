@@ -205,6 +205,7 @@ internal sealed class SvgDocumentState : IDisposable
 }
 
 /// <summary>Represents one inherited group or link context while streaming the document.</summary>
-internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, bool IsolatesOpacity, bool HasMaskScope);
+internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, bool IsolatesOpacity, bool HasMaskScope, SvgInheritedStrokeStyle InheritedStroke);
 
 internal enum SvgGroupKind { Group, Link, Switch }
+

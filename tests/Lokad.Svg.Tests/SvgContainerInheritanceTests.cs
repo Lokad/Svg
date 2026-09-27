@@ -17,9 +17,7 @@ public sealed class SvgContainerInheritanceTests
             default,
             computedStyle,
             default,
-            new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity),
-            SvgInheritedTextStyle.Default,
-            false,
+            new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, false,
             new Dictionary<string, SvgColor>());
 
         Assert.Equal(SvgPaint.Default, resolved.Presentation.Paint);
@@ -47,9 +45,7 @@ public sealed class SvgContainerInheritanceTests
             inline,
             computedStyle,
             styleSheet,
-            new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity),
-            SvgInheritedTextStyle.Default,
-            false,
+            new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, false,
             new Dictionary<string, SvgColor>());
 
         Assert.Equal("Important", resolved.TextStyle.Family);
@@ -67,11 +63,10 @@ public sealed class SvgContainerInheritanceTests
             default,
             nestedStyle,
             default,
-            new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity),
-            SvgInheritedTextStyle.Default,
-            true,
+            new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, true,
             new Dictionary<string, SvgColor>()));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 }
+

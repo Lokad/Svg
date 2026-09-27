@@ -13,6 +13,7 @@ internal static class SvgContainerInheritance
         InlineStyle styleSheet,
         SvgInheritedPresentation inheritedPresentation,
         SvgInheritedTextStyle inheritedTextStyle,
+        SvgInheritedStrokeStyle inheritedStroke,
         bool inheritedHasOpacityScope,
         IReadOnlyDictionary<string, SvgColor> namedColors)
     {
@@ -23,12 +24,14 @@ internal static class SvgContainerInheritance
         if (presentation.Opacity != 255 && inheritedHasOpacityScope) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
         AxisTransform transform = inheritedPresentation.Transform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
         SvgInheritedTextStyle textStyle = SvgTextInheritance.Resolve(reader, inheritedTextStyle, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WhiteSpace, inlineStyle.Important, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important));
+        SvgInheritedStrokeStyle stroke = inheritedStroke.ResolveChild(computedStyle);
         return new SvgInheritedContainer(
             new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform),
             textStyle,
             computedStyle.FillRule,
             inheritedHasOpacityScope || presentation.Opacity != 255,
-            presentation.Opacity);
+            presentation.Opacity,
+            stroke);
     }
 }
 
@@ -38,4 +41,5 @@ internal readonly record struct SvgInheritedContainer(
     SvgInheritedTextStyle TextStyle,
     string? FillRule,
     bool HasOpacityScope,
-    byte Opacity);
+    byte Opacity,
+    SvgInheritedStrokeStyle Stroke);

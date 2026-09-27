@@ -139,7 +139,8 @@ internal static class SvgInlineStyleParser
         static void ValidateStrokeDeclaration(string name, ReadOnlySpan<char> rawValue)
         {
             TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
-            SvgStrokeStyleSyntax.ValidateAttribute(name, stripped.ToString());
+            if (name == "stroke-dasharray" || name == "stroke-dashoffset") SvgStrokeStyleSyntax.ValidateAttribute(name, stripped.ToString(), true, true, true, true, true);
+            else SvgStrokeStyleSyntax.ValidateAttribute(name, stripped.ToString());
         }
 
         static void ValidateImagePreserveAspectRatioDeclaration(ReadOnlySpan<char> rawValue)

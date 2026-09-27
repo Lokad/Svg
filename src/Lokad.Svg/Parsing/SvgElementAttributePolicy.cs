@@ -70,7 +70,9 @@ internal static class SvgElementAttributePolicy
             workCounter.Consume(cancellationToken);
             if (IsAllowed(reader, kind))
             {
-                if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line, kind == SvgElementKind.Line, kind == SvgElementKind.Rectangle, reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader), kind == SvgElementKind.Circle || (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)));
+                bool isDashStyle = reader.LocalName == "stroke-dasharray" || reader.LocalName == "stroke-dashoffset";
+                bool isInheritedContainer = isDashStyle && kind is SvgElementKind.Group or SvgElementKind.Root;
+                if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Rectangle || isInheritedContainer, (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || isInheritedContainer, kind == SvgElementKind.Circle || (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || isInheritedContainer);
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "font-variant") SvgTextFontSyntax.ValidateFontVariant(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "color-interpolation") SvgGradientSyntax.ValidateColorInterpolation(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow") SvgNestedViewportSyntax.ValidateOverflow(reader.Value.AsSpan());

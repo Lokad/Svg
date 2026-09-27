@@ -3,19 +3,19 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Supplies one paintable element with its inherited rendering context and bounded style resolution.</summary>
-internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, InlineStyle StyleSheet, IReadOnlyDictionary<string, SvgColor> NamedColors, ParserWorkCounter WorkCounter, CancellationToken CancellationToken, double OutputMagnification)
+internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, SvgInheritedStrokeStyle InheritedStroke, InlineStyle StyleSheet, IReadOnlyDictionary<string, SvgColor> NamedColors, ParserWorkCounter WorkCounter, CancellationToken CancellationToken, double OutputMagnification)
 {
-
     internal static SvgPaintableElementContext Create(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgInheritedPresentation inheritedPresentation = state.Groups.Count == 0 ? root.InheritedPresentation : state.Groups[^1].InheritedPresentation;
         SvgInheritedTextStyle inheritedTextStyle = state.Groups.Count == 0 ? root.InheritedTextStyle : state.Groups[^1].InheritedTextStyle;
-        return new SvgPaintableElementContext(inheritedPresentation, inheritedTextStyle, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken, state.OutputMagnification);
+        SvgInheritedStrokeStyle inheritedStroke = state.Groups.Count == 0 ? root.InheritedStroke : state.Groups[^1].InheritedStroke;
+        return new SvgPaintableElementContext(inheritedPresentation, inheritedTextStyle, inheritedStroke, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken, state.OutputMagnification);
     }
 
-    internal SvgComputedStyle ResolveStyle(XmlReader reader) => SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken);
+    internal SvgComputedStyle ResolveStyle(XmlReader reader) => InheritedStroke.ApplyTo(SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken));
 
-    internal SvgComputedStyle ResolveStyle(XmlReader reader, bool allowsDirectTextFontProperties) => SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, allowsDirectTextFontProperties);
+    internal SvgComputedStyle ResolveStyle(XmlReader reader, bool allowsDirectTextFontProperties) => InheritedStroke.ApplyTo(SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, allowsDirectTextFontProperties));
 
     internal AxisTransform ResolveTransform(XmlReader reader) => InheritedPresentation.Transform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
 
@@ -43,7 +43,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal SvgResolvedDirectTextElement ResolveTextShape(XmlReader reader)
     {
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), WorkCounter, CancellationToken, true);
-        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, StyleSheet);
+        SvgComputedStyle style = InheritedStroke.ApplyTo(SvgComputedStyle.Resolve(reader, inline, StyleSheet));
         return new SvgResolvedDirectTextElement(new SvgResolvedPaintableElement(style, ResolveTransform(reader), ResolvePresentation(style, false), OutputMagnification), SvgInlineStyleParser.MergeFont(inline.TextFont, inline.Important, StyleSheet.TextFont, StyleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inline.WhiteSpace, inline.Important, InlineImportantProperties.WhiteSpace, StyleSheet.WhiteSpace, StyleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inline.LetterSpacing, inline.Important, InlineImportantProperties.LetterSpacing, StyleSheet.LetterSpacing, StyleSheet.Important));
     }
 }

@@ -979,6 +979,41 @@ public sealed class SvgStrokeFillTests
 
         Assert.Equal(plain, styled);
     }
+    [Fact]
+    public void Stylesheet_dasharray_matches_dash_attribute()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><style>.dsw { stroke-dasharray: 4 4; }</style><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' class='dsw'/></svg>", out _, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>", out _, out _);
+
+        Assert.Equal(plain, styled);
+    }
+
+    [Fact]
+    public void Important_inline_dasharray_overrides_dash_attribute()
+    {
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='none' style='stroke-dasharray:4 4 !important'/></svg>", out _, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>", out _, out _);
+
+        Assert.Equal(plain, styled);
+    }
+
+    [Fact]
+    public void Group_dasharray_is_inherited_by_line()
+    {
+        byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke-dasharray='4 4'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2'/></g></svg>", out _, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>", out _, out _);
+
+        Assert.Equal(plain, grouped);
+    }
+
+    [Fact]
+    public void Use_instance_dash_matches_direct_dash()
+    {
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><line id='l' x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></defs><use href='#l'/></svg>", out _, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='2' y1='8' x2='14' y2='8' stroke='red' stroke-width='2' stroke-dasharray='4 4'/></svg>", out _, out _);
+
+        Assert.Equal(plain, instanced);
+    }
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
@@ -1025,3 +1060,4 @@ public sealed class SvgStrokeFillTests
         return total;
     }
 }
+
