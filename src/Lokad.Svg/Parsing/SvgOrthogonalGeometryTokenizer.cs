@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses bounded absolute integer path and point-list contours into charged point storage. Diagonal contours materialize here; orthogonality is enforced downstream at lowering.</summary>
 internal static class SvgOrthogonalGeometryTokenizer
 {
-    internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<int> contourEnds)
+    internal static BudgetedParserList<SvgPoint> ParsePath(string value, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<int> contourEnds, bool allowDegenerateContours)
     {
         ArgumentNullException.ThrowIfNull(contourEnds);
         ValidatePathCommandCount(value, maximumGeometryElements, workCounter, cancellationToken);
@@ -90,7 +90,7 @@ internal static class SvgOrthogonalGeometryTokenizer
                 // An explicit return to the contour start without closepath seals the contour for fill.
                 if (points.Count > contourStart && points[points.Count - 1] == points[contourStart]) points.RemoveLast();
                 int contourEnd = points.Count;
-                if (contourEnd - contourStart < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
+                if (contourEnd - contourStart < 3 && (!allowDegenerateContours || contourEnd - contourStart < 2 || points[contourStart] == points[contourStart + 1])) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 if (points.Count > maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
                 for (int pointIndex = contourStart; pointIndex < contourEnd; pointIndex++)
                 {
@@ -145,7 +145,7 @@ internal static class SvgOrthogonalGeometryTokenizer
         points.Add(next);
         return next;
     }
-    internal static BudgetedParserList<SvgPoint> ParsePointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static BudgetedParserList<SvgPoint> ParsePointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowDegenerateContours)
     {
         ValidatePointListVertexCount(value, maximumGeometryElements, workCounter, cancellationToken);
         BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
@@ -161,7 +161,7 @@ internal static class SvgOrthogonalGeometryTokenizer
                 points.Add(new SvgPoint(SvgGeometrySyntax.ParseInteger(x), SvgGeometrySyntax.ParseInteger(y)));
                 vertexCount++;
             }
-            if (points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
+            if (points.Count < 3 && (!allowDegenerateContours || points.Count < 2 || points[0] == points[1])) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer " + elementName + " elements are implemented.");
             for (int index = 0; index < points.Count; index++)
             {
                 SvgPoint start = points[index]; SvgPoint end = points[(index + 1) % points.Count];

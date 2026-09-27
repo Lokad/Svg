@@ -47,8 +47,15 @@ internal static class SvgOrthogonalShapeParser
         else
         {
             using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds);
-            if (HasDiagonalContour(points, contourEnds))
+            using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds, true);
+            if (AllContoursDegenerate(points, contourEnds))
+            {
+                // Sealed subpaths with fewer than three points enclose no area, so the fill contributes nothing while stroke lowering still outlines every subpath.
+                shape = context.ResolveShape(fillStyle, reader, true);
+                using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                filled = new SvgParsedGeometry(empty.Detach(), commandCount + 1);
+            }
+            else if (HasDiagonalContour(points, contourEnds))
             {
                 shape = context.ResolveShape(fillStyle, reader, true);
                 bool diagonalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
@@ -95,7 +102,7 @@ internal static class SvgOrthogonalShapeParser
             if (isStraightPath)
             {
                 using BudgetedParserList<int> boxEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using BudgetedParserList<SvgPoint> boxPoints = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, boxEnds);
+                using BudgetedParserList<SvgPoint> boxPoints = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, boxEnds, true);
                 return SvgGradientSyntax.BoxFromGradientBands(boxPoints, shape.Transform, frame, context);
             }
             return BoxFromFilledOutlineBounds();
@@ -153,13 +160,13 @@ internal static class SvgOrthogonalShapeParser
         if (isPath)
         {
             string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-            BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds);
+            BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds, false);
             try { SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, elementName, context.WorkCounter, context.CancellationToken); }
             catch { points.Dispose(); throw; }
             return points;
         }
         string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
-        BudgetedParserList<SvgPoint> pointList = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+        BudgetedParserList<SvgPoint> pointList = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, false);
         try
         {
             if (!allowDiagonal) SvgOrthogonalGeometryLowering.ValidateSimpleContour(pointList, elementName, context.WorkCounter, context.CancellationToken);
@@ -235,10 +242,17 @@ internal static class SvgOrthogonalShapeParser
             catch { filled.Dispose(); throw; }
             return ConcatParsedGeometries(filled, fractionalStroked, budget, context.WorkCounter, context.CancellationToken);
         }
-        using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+        using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, true);
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         contourEnds.Add(points.Count);
-        if (HasDiagonalContour(points, contourEnds))
+        if (AllContoursDegenerate(points, contourEnds))
+        {
+            // A sealed subpath with fewer than three points encloses no area, so the fill contributes nothing while stroke lowering still outlines it.
+            shape = context.ResolveShape(fillStyle, reader, true);
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            filled = new SvgParsedGeometry(empty.Detach(), points.Count + 1);
+        }
+        else if (HasDiagonalContour(points, contourEnds))
         {
             shape = context.ResolveShape(fillStyle, reader, true);
             bool diagonalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
@@ -400,6 +414,19 @@ internal static class SvgOrthogonalShapeParser
             && SvgGradientSyntax.IsGradientStrokeUrl(strokePaint)
             && SvgLocalUrl.TryParseId(strokePaint, out string outlinePaintId)
             && state.Gradients.TryGetValue(outlinePaintId, out gradient);
+    }
+
+    internal static bool AllContoursDegenerate(BudgetedParserList<SvgPoint> contourPoints, BudgetedParserList<int> ends)
+    {
+        if (ends.Count == 0) return false;
+        int start = 0;
+        for (int index = 0; index < ends.Count; index++)
+        {
+            if (ends[index] - start >= 3) return false;
+            start = ends[index];
+        }
+
+        return true;
     }
 
     internal static bool HasDiagonalContour(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds)

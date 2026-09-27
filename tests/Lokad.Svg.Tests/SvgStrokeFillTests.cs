@@ -612,13 +612,12 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Inline_style_dasharray_stays_unsupported()
+    public void Inline_dasharray_matches_direct_attribute()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2' style='stroke-dasharray: 2,2'/></svg>");
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2' style='stroke-dasharray: 2,2'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(direct, styled);
     }
 
     [Fact]

@@ -167,6 +167,86 @@ public sealed class SvgPolygonFillTests
 
         Assert.Equal(plain, offset);
     }
+
+    [Fact]
+    public void Open_line_path_strokes_band()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 L8,4' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 3));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 7));
+        Assert.Equal(4080, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Open_line_default_fill_paints_nothing_extra()
+    {
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 L8,4' stroke='red' stroke-width='2'/></svg>", out _, out _);
+        byte[] nofill = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 L8,4' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(nofill, plain);
+    }
+
+    [Fact]
+    public void Two_open_subpaths_stroke_cross()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 H8 M4,0 V8' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(7140, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Closed_spike_strokes()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M4,0 L4,8 Z' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 0));
+    }
+
+    [Fact]
+    public void Single_point_path_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M4,4' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only closed axis-aligned integer paths are implemented.", rejected.Message);
+    }
+
+    [Fact]
+    public void Mixed_open_closed_path_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M0,4 L8,4' fill='red' stroke='red' stroke-width='2'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only closed axis-aligned integer path contours are implemented.", rejected.Message);
+    }
+
+    [Fact]
+    public void Open_polyline_matches_open_path()
+    {
+        byte[] polyline = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+        byte[] path = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 L8,4' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(path, polyline);
+    }
+
+    [Fact]
+    public void Diagonal_open_path_strokes()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,8' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 7));
+    }
     [Fact]
     public void Fractional_clip_path_scales_edge_pixels()
     {
