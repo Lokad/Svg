@@ -526,7 +526,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgContourBuilder outlines = new(pointCapacity, closed ? 2 : 1);
             if (closed) SvgStrokeOutline.StrokeClosedPolyline(mapped.AsSpan(), deviceWidth, miterLimit, join, outlines, _cancellationToken);
             else SvgStrokeOutline.StrokeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
-            return FinishStrokeFill(outlines, color, hasFill, false, false, frame, budget) with { ElementCount = points.Count + 1 };
+            return FinishStrokeFill(outlines, color, hasFill, false, frame, budget) with { ElementCount = points.Count + 1 };
         }
         double dashScale = Math.Abs(transform.ScaleX * (frame?.ScaleX ?? 1));
         return LowerDashedStrokePolyline(mapped, closed, deviceWidth, dashScale, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget) with { ElementCount = points.Count + 1 };
@@ -566,7 +566,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         double scaledOffset = dashOffset * dashScale * dashFactor;
         if (!double.IsFinite(scaledOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
         StrokeDashedContour(mapped.AsSpan(), closed, pattern, scaledOffset, deviceWidth, miterLimit, cap, join, outlines, leading, current);
-        return FinishStrokeFill(outlines, color, hasFill, false, true, frame, budget);
+        return FinishStrokeFill(outlines, color, hasFill, false, frame, budget);
     }
 
     /// <summary>Scales one dash pattern into device units.</summary>
@@ -813,7 +813,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             StrokeDashedContour(source.GetContour(contour), closedEnds[contour], pattern, scaledOffset, deviceWidth, miterLimit, cap, join, outlines, leading, current);
         }
 
-        return FinishStrokeFill(outlines, color, hasFill, hasCurves, true, frame, budget);
+        return FinishStrokeFill(outlines, color, hasFill, hasCurves, frame, budget);
     }
 
     /// <summary>Strokes device-space contours with the caller cap and join styles into one nonzero outline fill.</summary>
@@ -849,7 +849,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             else SvgStrokeOutline.StrokeOpenPolyline(source.GetContour(contour), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
         }
 
-        return FinishStrokeFill(outlines, color, hasFill, hasCurves, false, frame, budget);
+        return FinishStrokeFill(outlines, color, hasFill, hasCurves, frame, budget);
     }
 
     private double StrokeDeviceWidth(int width, AxisTransform transform, SvgViewportFrame? frame, bool nonScaling)
@@ -892,8 +892,8 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Retains stroke outline loops as one nonzero fill without structure validation, which spike retraces would false-positive.</summary>
-    /// <remarks>Dashed runs pass unionRuns so every run paints: dash outlines may overlap at vertices without nesting, and first-vertex winding roles would cancel a partially overlapped run instead of unioning it. Solid outlines keep winding roles for closed outer/inner rings.</remarks>
-    private SvgParsedGeometry FinishStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, bool flattenedCenterline, bool unionRuns, SvgViewportFrame? frame, RenderBudget budget)
+    /// <remarks>Winding roles resolve closed outer and inner rings, then role zero lifts to plus one for non-degenerate loops: a zero role on such a loop always means a same-wound painted island (holes resolve to minus one and degenerate loops contribute nothing), so overlapping bands union instead of cancelling each other while ring holes stay holes. Dashed runs inherit the same rule, which subsumes the earlier dash-only union flag.</remarks>
+    private SvgParsedGeometry FinishStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, bool flattenedCenterline, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(outlines);
         ArgumentNullException.ThrowIfNull(budget);
@@ -917,16 +917,13 @@ internal ref struct SvgOrthogonalGeometryLowering
         ValidateDeviceRange(retained);
         int[] roles = new int[ends.Length];
         ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
-        if (unionRuns)
+        SvgContourNesting.ComputeWindingRoles(retained, ends, roles, _cancellationToken);
+        for (int contour = 0; contour < ends.Length; contour++)
         {
-            for (int contour = 0; contour < ends.Length; contour++)
-            {
-                if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
-                int start = contour == 0 ? 0 : ends[contour - 1];
-                roles[contour] = ends[contour] - start >= 3 ? 1 : 0;
-            }
+            if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
+            int start = contour == 0 ? 0 : ends[contour - 1];
+            if (roles[contour] == 0 && ends[contour] - start >= 3) roles[contour] = 1;
         }
-        else SvgContourNesting.ComputeWindingRoles(retained, ends, roles, _cancellationToken);
         return RetainPolygonFill(retained, ends, roles, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
     }
 

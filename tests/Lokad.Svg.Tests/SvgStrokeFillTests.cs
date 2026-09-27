@@ -448,6 +448,30 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Solid_bowtie_stroke_paints_both_halves()
+    {
+        // S12/R34: solid stroke outlines union across the crossing like dashes;
+        // the render is 180-degree rotationally symmetric with stroke on both sides.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.True(Pixel(pixels, 8, 7, 0).Alpha > 0);
+        Assert.True(Pixel(pixels, 8, 0, 7).Alpha > 0);
+        Assert.Equal(Pixel(pixels, 8, 0, 0), Pixel(pixels, 8, 7, 7));
+        Assert.Equal(Pixel(pixels, 8, 1, 0), Pixel(pixels, 8, 6, 7));
+    }
+
+    [Fact]
+    public void Filled_bowtie_stroke_covers_both_halves()
+    {
+        // S12/R34: solid stroke over a filled crossing reaches both halves in paint order.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.True(Pixel(pixels, 8, 7, 0).Blue > 0);
+        Assert.True(Pixel(pixels, 8, 0, 7).Blue > 0);
+        Assert.Equal(Pixel(pixels, 8, 0, 0), Pixel(pixels, 8, 7, 7));
+    }
+
+    [Fact]
     public void Dashed_bowtie_matches_path_twin()
     {
         // R34: dashed outlines agree across polygon and path lowerings on crossing input.
