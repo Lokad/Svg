@@ -419,11 +419,22 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, null);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = new int[builder.ContourCount];
+        int kept = 0;
+        bool droppedDegenerate = false;
         for (int contour = 0; contour < builder.ContourCount; contour++)
         {
-            if (AppendStrippedContour(mapped, builder.GetContour(contour), _workCounter, _cancellationToken) < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer path contours are implemented.");
-            ends[contour] = mapped.Count;
+            int before = mapped.Count;
+            if (AppendStrippedContour(mapped, builder.GetContour(contour), _workCounter, _cancellationToken) < 3)
+            {
+                // Sealed degenerate contours enclose no area; drop them instead of rejecting.
+                while (mapped.Count > before) mapped.RemoveLast();
+                droppedDegenerate = true;
+                continue;
+            }
+            ends[kept++] = mapped.Count;
         }
+        if (droppedDegenerate && kept > 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer path contours are implemented.");
+        if (kept != ends.Length) Array.Resize(ref ends, kept);
 
         return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
     }

@@ -126,13 +126,31 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
-    public void Degenerate_curve_stays_unsupported()
+    public void Degenerate_curve_fill_paints_nothing()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C0,0 0,0 0,0 Z' fill='red'/></svg>");
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C0,0 0,0 0,0 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Fractional_open_dash_matches_direct_dash()
+    {
+        byte[] fractional = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,4 L8,4' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2 2'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,4 L8,4' fill='none' stroke='red' stroke-width='2' style='stroke-dasharray: 2 2'/></svg>", out _, out _);
+
+        Assert.Equal(direct, fractional);
+    }
+
+    [Fact]
+    public void Mixed_curve_degenerate_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4,0 8,8 Z M0.5,0.5 L1.5,0.5' fill='red'/></svg>");
 
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only closed axis-aligned integer path contours are implemented.", rejected.Message);
     }
 
     [Fact]
