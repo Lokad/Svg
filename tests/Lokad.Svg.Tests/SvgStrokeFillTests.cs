@@ -1040,6 +1040,19 @@ public sealed class SvgStrokeFillTests
 
         Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
     }
+
+    [Fact]
+    public void OutputScale_dashed_polygon_matches_scaled_pattern_direct_rendering()
+    {
+        byte[] small = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><polygon points='8,56 32,8 56,56' fill='none' stroke='red' stroke-width='4' stroke-dasharray='8 4'/></svg>");
+        byte[] large = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><polygon points='16,112 64,16 112,112' fill='none' stroke='red' stroke-width='8' stroke-dasharray='16 8'/></svg>");
+        SvgRenderOptions scaled = new(null, 2, SvgColor.Transparent, SvgRenderLimits.Default);
+        SvgRenderOptions direct = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        ReadOnlyMemory<byte> scaledPng = SvgConverter.ConvertToPng(small, scaled, CancellationToken.None);
+        ReadOnlyMemory<byte> directPng = SvgConverter.ConvertToPng(large, direct, CancellationToken.None);
+
+        Assert.True(scaledPng.Span.SequenceEqual(directPng.Span));
+    }
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
