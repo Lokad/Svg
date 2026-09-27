@@ -1381,6 +1381,28 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void White_mask_on_line_matches_unmasked_rendering()
+    {
+        // S14: a white luminance mask is the identity on stroked lines, so
+        // both spellings render byte-identically.
+        byte[] masked = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><mask id='m' mask-type='luminance'><rect x='0' y='0' width='16' height='8' fill='#ffffff'/></mask></defs><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' mask='url(#m)'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(direct, masked);
+    }
+
+    [Fact]
+    public void White_mask_on_path_matches_unmasked_rendering()
+    {
+        // S14: a white luminance mask is the identity on filled paths, so
+        // both spellings render byte-identically.
+        byte[] masked = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><mask id='m' mask-type='luminance'><rect x='0' y='0' width='16' height='16' fill='#ffffff'/></mask></defs><path d='M0,0 H16 V8 H0 Z' fill='red' mask='url(#m)'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 H16 V8 H0 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(direct, masked);
+    }
+
+    [Fact]
     public void White_masked_gradient_outline_matches_unmasked_outline()
     {
         byte[] masked = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><mask id='m'><rect x='-8' y='-8' width='24' height='24' fill='#ffffff'/></mask></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2' mask='url(#m)'/></svg>", out _, out _);
