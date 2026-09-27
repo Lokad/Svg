@@ -5,7 +5,7 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-All one hundred eighty-two current manifest entries are gated (one hundred seventeen exact decoded-pixel references; sixty-five classified-unsupported rejections with reasons); this
+All three hundred thirty-one current manifest entries are gated (two hundred forty-nine exact decoded-pixel references; eighty-two classified-unsupported entries with reasons); this
 is not a general pixel-fidelity claim.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
@@ -27,7 +27,7 @@ Stroke widths flow through the same cascade: presentation attributes, inline sty
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
 | Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and one hundred forty-two stable references |
-| Fixture corpus | One hundred seventy-seven original CC0 probes with verified hashes; the manifest gate renders and compares all one hundred sixteen exact entries exactly and locks all sixty-one unsupported entries to their observed render-or-reject behavior with categorized rejection codes, and the seventy-three renderable entries carry retained pinned-Chrome references with ratcheted decoded-RGBA mismatch measures |
+| Fixture corpus | One hundred seventy-seven original CC0 probes with verified hashes; the manifest gate renders and compares all two hundred forty-nine exact entries exactly and locks all eighty-two unsupported entries to their observed render-or-reject behavior with categorized rejection codes (seventy-seven renders, five rejections), and the seventy-seven renderable entries carry retained pinned-Chrome references with ratcheted decoded-RGBA mismatch measures |
 
 ### Experimental supplied-font text
 
