@@ -184,6 +184,51 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Stroke_opacity_on_butt_line_matches_element_opacity()
+    {
+        // S12: butt-capped line bands never overlap, so stroke opacity
+        // composes exactly like element opacity.
+        byte[] strokeOpacity = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-opacity='0.5'/></svg>", out _, out _);
+        byte[] elementOpacity = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' opacity='0.5'/></svg>", out _, out _);
+
+        Assert.Equal(elementOpacity, strokeOpacity);
+    }
+
+    [Fact]
+    public void Stroke_opacity_on_polygon_outline_matches_element_opacity()
+    {
+        // S12: polygon outline fills inherit the same single-coverage paint,
+        // so both opacity spellings coincide byte-identically.
+        byte[] strokeOpacity = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polygon points='0,0 16,0 16,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-opacity='0.5'/></svg>", out _, out _);
+        byte[] elementOpacity = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><polygon points='0,0 16,0 16,8 0,8' fill='none' stroke='red' stroke-width='2' opacity='0.5'/></svg>", out _, out _);
+
+        Assert.Equal(elementOpacity, strokeOpacity);
+    }
+
+    [Fact]
+    public void Stroke_opacity_on_path_outline_matches_element_opacity()
+    {
+        // S12: path outline fills share the polygon machinery, so both opacity
+        // spellings coincide byte-identically here as well.
+        byte[] strokeOpacity = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M0,0 H16 V8 H0 Z' fill='none' stroke='red' stroke-width='2' stroke-opacity='0.5'/></svg>", out _, out _);
+        byte[] elementOpacity = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M0,0 H16 V8 H0 Z' fill='none' stroke='red' stroke-width='2' opacity='0.5'/></svg>", out _, out _);
+
+        Assert.Equal(elementOpacity, strokeOpacity);
+    }
+
+    [Fact]
+    public void Stroke_opacity_on_circle_ring_matches_element_opacity()
+    {
+        // S12: opposite-wound ring fills cover each pixel once, so stroke
+        // opacity matches element opacity exactly; round caps with
+        // translucency stay honestly gated by Rejects_translucent_round_capped_lines.
+        byte[] strokeOpacity = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><circle cx='8' cy='4' r='3' fill='none' stroke='red' stroke-width='2' stroke-opacity='0.5'/></svg>", out _, out _);
+        byte[] elementOpacity = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><circle cx='8' cy='4' r='3' fill='none' stroke='red' stroke-width='2' opacity='0.5'/></svg>", out _, out _);
+
+        Assert.Equal(elementOpacity, strokeOpacity);
+    }
+
+    [Fact]
     public void Stroke_opacity_on_filled_rect_paints_blended_band()
     {
         // S12: translucent bands composite once over the fill with no corner
