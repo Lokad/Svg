@@ -1864,6 +1864,47 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-radial-rect-16x16",
+      "path": "radial-rect-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "a712949dbcf615fc7ebe782ba659a1c56b606c65f24620ddad17b6f9c6e56db9",
+      "featureTags": [
+        "paint",
+        "gradient",
+        "radial",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 1,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 9,
+        "minimumMismatchY": 13,
+        "maximumMismatchX": 9,
+        "maximumMismatchY": 13
+      },
+      "oracle": {
+        "referencePng": "references/radial-rect-16x16.png",
+        "referenceSha256": "6c96e2d27cf779d2785a1daadcb7dccd679f6b3bca088c764fd067d6f602b98a",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }

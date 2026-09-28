@@ -794,3 +794,9 @@ Question: does multi-stop segment interpolation agree, and where does transparen
 Method: two admitted-syntax 16x16 probes (opaque red-green-blue ramp, transparent-green middle ramp) with no product change; default render; fresh triples 3/3 identical; per-pixel sampling.
 Facts: the opaque ramp is byte-exact, so segment interpolation and dithering agree there. The transparent-middle ramp misses exactly two pixels at (4,4) and (4,12) with green differing and identical alpha, sharing one 8x8 Bayer cell while same-cell same-value (4,8) agrees; consistent with a dither-matrix difference confined to the transparent evaluation path, with opaque paths agreeing everywhere.
 Decision: the transparent-middle probe stays as an admittedRendering ratchet of 2 pixels at max error 2 with zero alpha error; the exact opaque probe leaves no manifest entry. Next: transparent-path dither matrix for the paint owner; no interpolation work is indicated.
+
+## Radial on rects misses one gray level; userSpace vectors agree (2026-09-28 decision analysis)
+Question: does radial evaluation or userSpace vector mapping contribute residuals beyond geometry?
+Method: two admitted-syntax 16x16 probes (bbox radial on rect, userSpace linear on rect) with no product change; default render; fresh triples 3/3 identical; per-pixel sampling.
+Facts: userSpace linear is byte-exact, so vector mapping agrees. Radial on rects misses one pixel at (9, 13) with gray 13 against 12 and opaque alpha, implicating radial radius evaluation (two-circle cone math) rather than paint interpolation, which the disc twin already exonerated.
+Decision: the radial-rect probe stays as an admittedRendering ratchet of 1 pixel at max error 1 with zero alpha error; the exact userspace probe leaves no manifest entry. Next: radial radius evaluation for the paint owner; vector mapping needs nothing.
