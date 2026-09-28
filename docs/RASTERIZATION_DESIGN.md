@@ -926,3 +926,9 @@ Question: does the stroked rounded rect agree, and does join style matter on smo
 Method: admitted-syntax 16x16 stroked rounded rect with default miter joins and no product change; default render; fresh triple 3/3 identical; VisualDiff; cross-check against the bevel twin oracle.
 Facts: 48 pixels at max error 80 at the corners. The oracle is byte-identical to the bevel twin oracle, so joins never fire on smooth corners in Chrome; our candidates differ by join setting, implicating tessellation joints treated as vertices in our outline lowering.
 Decision: the probe stays as an admittedRendering ratchet of 48 pixels at max error 80. Next: tessellated-corner join firing belongs to the S12 outline work with the conic route.
+
+## Square-cap dash runs stay unextended and pathLength normalizes exactly (2026-09-28 decision analysis)
+Question: do square caps extend dash runs, and does pathLength scaling agree?
+Method: two admitted-syntax 16x16 probes (square-cap dashes, pathLength 24 over computed 12) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
+Facts: both byte-exact. Square caps do not extend dash runs on either side here, and pathLength halves the pattern identically. No dash-cap or normalization work is indicated.
+Decision: no probes retained since exact renders have no manifest home, and no product change. Next: nothing open on dash caps or pathLength.
