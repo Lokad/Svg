@@ -800,3 +800,9 @@ Question: does radial evaluation or userSpace vector mapping contribute residual
 Method: two admitted-syntax 16x16 probes (bbox radial on rect, userSpace linear on rect) with no product change; default render; fresh triples 3/3 identical; per-pixel sampling.
 Facts: userSpace linear is byte-exact, so vector mapping agrees. Radial on rects misses one pixel at (9, 13) with gray 13 against 12 and opaque alpha, implicating radial radius evaluation (two-circle cone math) rather than paint interpolation, which the disc twin already exonerated.
 Decision: the radial-rect probe stays as an admittedRendering ratchet of 1 pixel at max error 1 with zero alpha error; the exact userspace probe leaves no manifest entry. Next: radial radius evaluation for the paint owner; vector mapping needs nothing.
+
+## Ellipse and rounded-rect corners carry tessellation residuals (2026-09-28 decision analysis)
+Question: do ellipse and rounded-rectangle outlines agree, completing primitive coverage?
+Method: two admitted-syntax 16x16 probes (rx 6 ry 4 ellipse, 10x10 rect with rx 3) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
+Facts: ellipse misses 36 pixels at max error 35 on the curved flanks, same family as sampled-circle disc edges; rounded rect misses 20 pixels at max error 70 confined to the four corners, same family as round caps and joins. Straight edges agree in both.
+Decision: both probes stay as admittedRendering ratchets with those numbers. Next: corners join the conic-flattening hypothesis; ellipse sampling joins the disc-outline item; primitive coverage is now complete with every curved family residual and every straight family exact.
