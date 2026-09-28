@@ -1,398 +1,352 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Reviewed 2026-09-26 against d7fddbf, reconciled through paused HEAD d561e6e and
-the existing uncommitted dashed-ellipse use/symbol tests. This replaces the
-accumulated status journal with current evidence and an ordered queue.
-R01–R32 and S1–S17 retain their identities; R33–R39 record the new review defects.
+Reviewed 2026-09-28 against `8a9991e47ed8e897c3547bbf69fdf0fbeba6088f`.
+This revision incorporates the previously uncommitted plan and supersedes its
+stale queue. Detailed findings, fresh reproductions and verification are in
+[the review](docs/REVIEW_2026_09_28.md). R01–R39 and S1–S17 retain their identities;
+R40 records the calibration-evidence correction and R41 the degenerate-paint defect.
 
 **Objective:** render most ordinary, static, self-contained corporate SVG logos,
 including outlined wordmarks, pixel-exact against the pinned browser oracle.
-“Most” is document coverage, never permission for pixel tolerance. Do not drift
-into an approximate tier, a native dependency, or a browser rendering service.
+“Most” means independently measured document coverage. It never permits pixel
+tolerance. Preserve the pure-managed, dependency-free library contract.
 
-The immediate critical path is correct shared coverage and final device mapping.
-General curves have been implemented experimentally, but “returns PNG” is not
-exact admission. Live fonts, exhaustive stroke/paint combinations, patterns and
-filters must not delay path-only logos.
+The next work is implementation. There are enough existing assets and retained
+counterexamples to proceed. The first product checkpoint is an independently
+selected flat curved corporate mark and an outlined wordmark with counters,
+each exact at every declared size/background; it is not the S17 release claim.
 
-## 1. Current assessment and verification
+## 1. Current baseline and its limits
 
-The agent has made substantial progress: typed contours, full-command path
-parsing, affine/curve/arc kernels, winding/nesting, shared stroke outlines,
-paint/reference combinations, retained oracle evidence and resource repairs.
-However, **general corporate-logo usability remains unproven**. Independent
-probes found scaled clipping, winding, flattening and CSS-stroke errors;
-fractional curves and arbitrary public transforms still reject ordinary exports.
-
-### Revision-scoped evidence
-
-| Check | Result and boundary |
+| Evidence at the reviewed revision | Assessment |
 | --- | --- |
-| d7fddbf isolated build | All nine Release projects build, zero warnings/errors, locked restore. |
-| d7fddbf isolated tests | 2,285 pass / 1 stale dashed-circle rejection failure. Not current failure status. |
-| 264099f isolated follow-up | All 2,288 pass; the agent repaired the stale test during review. |
-| d561e6e + current tooling repair + two pre-existing uncommitted ellipse tests | Fresh locked Release solution build succeeds; full suite 2,202 core + 100 visual-project + 6 FontProbe = **2,308 pass**, zero failed/skipped. Includes the paused agent's two tests; runner counts are not image counts. |
-| Current retained census | **193 entries: 117 exact, 76 labelled unsupported.** Of the latter, 71 return PNG with retained known differences, five reject. 14 variants / 179 base documents; 147 logo-tag entries. All are contributor-created CC0 inputs, no external source URL. |
-| Independent representative inventory | docs/INVENTORY.md defines the framework; **zero documents selected**. No real-logo coverage percentage or defensible ETA exists. |
-| Fresh independent oracle probes at d7fddbf | Nine rendered cases, each with three identical decoded fresh-process captures. Wrong scaled clips, disjoint contour cancellation, scale-dependent circles and ignored CSS stroke settings reproduced (R33–R36). Three further ordinary inputs rejected (R37). |
-| Fresh allocation observations at d7fddbf | Tiny rectangle 13,312 bytes; circle 1,065,899; twenty circles 21,077,202; fractional triangle path 1,588,656 versus polygon 14,088 (R38). Warmed cumulative managed allocations, not live/ledger/process memory. |
-| Other isolated d7fddbf checks | All 25 memory scenarios, artifact-validator negatives, font-host synthetic smoke, package creation and installed-consumer checks pass. They do not exercise the new curve-heavy hot path. |
-| Windows Chrome repair | Hash-verified installer provisions Chrome-specific sandbox RX capabilities; fresh/cached/offline cases, launch stderr health/timing, cleanup and negative validation are exercised. See R31a and docs/ORACLE.md for the final repair evidence. |
-| Not fresh evidence | Linux, remote CI, full corpus browser regeneration, BenchmarkDotNet throughput, private fonts and intended-font pixel comparisons were not rerun in this review. |
+| Fresh locked restore / Release solution build | Nine projects, zero warnings/errors. |
+| Fresh full tests | **2,602 passed**: 2,496 core, 100 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Fresh memory and delivery checks | All 25 memory scenarios pass; runtime/symbol package and isolated installed-consumer checks pass. |
+| Executed fixture manifest | **331 entries = 249 exact + 77 known-difference renders + five rejections**; 148 variants / 183 base entries. Synthetic coverage is not corporate-logo coverage. |
+| Executed research manifest | **79 probes = 66 known-difference renders + 13 rejections**. Positive controls must be retained too; see R27. |
+| Inventory | **92 independent files**. Fresh Default-options re-render: 46 render / 46 reject. Recorded amended-recipe dispositions: 27 labelled exact / 21 known-difference / 44 unsupported. These are different option sets. |
+| All-variant evidence | Only inv-029, inv-034 and inv-053 have recorded completion of all declared small/intended/large × transparent/white/black combinations. The recorded 27/92 tally is not an all-variant rate. |
+| Representativeness | 26 of the 27 exact-labelled entries are flags; the other is Bumps n01. No general corporate-logo or wordmark success rate is established. |
+| Fresh independent probes | Mapped half-pixel polygon clip exact; overlapping stroke outlines overcount fringe coverage; degenerate objectBoundingBox gradient path stroke paints 24 opaque black pixels where Chrome paints none. Three stable captures each. |
+| Not fresh evidence | Linux/remote CI, full inventory browser regeneration, BenchmarkDotNet throughput, private-font metrics and pixels. Do not imply those were rerun. |
 
-The browser remains Chrome 153.0.8010.52 win64, Chromium revision 1681091,
-recipe 3. No pin, reference PNG, GPU/headless/security flag or pixel policy changed.
-Earlier review results at cd0e352 are historical, not current status.
+Chrome remains **153.0.8010.52 win64, recipe 3**, with the existing executable hash
+and Chromium revision field 1681091. Historical recipe-2 references stay identified
+as such. The matching release-tag Skia pin is **f8b66b7597c4cc859d3ed190e9c6872241e6721c**;
+the recent main-revision `8b8c3872` investigation does not supersede it (R40).
 
-README.md still has blanket unsupported statements for gradients/images/general
-paths despite their limited experimental implementation. Reconcile it with the
-support matrix and exactness boundaries in the next relevant implementation slice;
-do not replace stale negatives with unqualified positive support claims.
+The tests deliberately lock known wrong pixels as well as successes. Returning
+PNG, accepting a new spelling, a same-renderer twin, and matching a mismatch tuple
+are not independent proof of exactness. The current API can return inexact output;
+keep the preview's support/fidelity boundaries explicit without inventing a new
+approximate tier or silently changing public behavior.
 
-### Progress assessment
+## 2. Execution decisions and ownership
 
-cd0e352..d7fddbf contained 221 commits and 415 changed files. New kernels are
-real progress, not merely documentation. But the latest 20 commits ending at
-d7fddbf contained three production changes, six test/proof additions, ten retained
-fixture/reference additions and one inventory framework; all also edited PLAN.
-They concentrated on paint-server round caps, circle/ellipse strokes and dashes.
+1. **Use one implementation owner for the renderer queue.** The next agent taking
+   implementation owns the active row through its tests and documentation. Work
+   serially across `SvgConverter`, geometry lowering, reference resolution and
+   shared style/mapping types. Do not split those files between concurrent writers.
+   A second review may be read-only; delegation is not required by this plan.
+2. **Check actual state, not historical ownership.** Before edits, inspect HEAD,
+   status and live coordination. Committed work from a previous session is not
+   a file lock. Preserve genuine concurrent/uncommitted edits; use a separate
+   worktree for an experiment if necessary and coordinate only the overlapping
+   slice. At review start the only tracked modification was the PLAN draft, now
+   incorporated here. No product-code conflict was observed.
+3. **Start with row 1 below.** The miter and degenerate-gradient defects have
+   concrete source explanations and witnesses. They need no new source assets,
+   broader feature permission or chosen S17 percentage. Fix existing behavior
+   before another shape/paint/reference permutation.
+4. **Do not execute the old six-site floor256 switch.** It conflates coverage,
+   byte-opacity multiplication and composition. Use the narrower row-3 work order.
+   The release-tag source has been rechecked; extend that source trace only for
+   the specific operation being implemented.
+5. **Separate engineering from release decisions.** The numeric S17 coverage target
+   and representative corporate cohort remain to be agreed before claiming “most”.
+   They do not block defect repair, shared raster architecture, or the first
+   outlined-wordmark checkpoint. No date or percentage is inferred from tests.
 
-Six subsequent commits through d561e6e added bevel ring declarations, ellipse
-dashes/offsets and rounded-rectangle bevels. The paused agent also left two
-uncommitted dashed-ellipse use/symbol twins and their support-matrix note:
-they prove equivalence with direct rendering, not a new independent oracle result.
-Those edits are preserved; the retained ellipse-dash differences still apply.
+Make small, buildable commits with the regression, relevant support documentation
+and actual validation. Update the current row/status in place. Detailed trials
+belong in the existing design record; Git holds the implementation history.
+Do not append another sequence of census-only or “all safe lanes exhausted”
+entries. After two experiments without a mechanism-level improvement, record the
+remaining uncertainty and choose the next architectural step. A real blocked slice
+does not block independent repairs elsewhere in this queue.
 
-Since cd0e352, exact entries rose from 83 to 117 while known-difference renders
-rose from four to 71. These changing synthetic denominators are not a success-rate
-trend. Retaining mismatches is useful evidence, not completion of logo families.
-Prioritize defects closed and independently selected documents made exact,
-not commit/test/accepted-syntax counts.
+## 3. Ordered implementation queue
 
-## 2. Ordered execution queue
+Rows describe a sequence and dependencies, not one large rewrite. Finish each
+bounded slice with a buildable commit. Re-evaluate inventory dispositions after
+changes that affect them; do not start another broad sourcing campaign first.
 
-Take this queue before another peripheral shape/paint/definition combination.
-
-| Order | Deliverable | Required exit evidence |
+| Order | Work and owner boundary | Exit evidence |
 | --- | --- | --- |
-| 0 — completed enabling repair | R31a Windows Chrome setup/diagnostics repaired without weakening the sandbox. Preserve the gates; start implementation at rows 1–2. | Fresh/cached/offline permission checks, bounded failures, healthy exact smoke captures, retained diagnostics, no unrelated ACL/process changes. Keep the full suite green. |
-| 1 — representative direction | Populate the first 5–10 independent legal exports, then the planned 20–30. Freeze declared size/scale/background variants; include failures unchanged. | Real source/provenance records and exact/known-difference/rejection/oracle-failure outcomes. Ask a specific asset question if needed; “sourcing pending” is not inventory completion. |
-| 2 — repair shared geometry | R33 scaled clips, R34 spatial winding, R35 final-device flattening; consolidate the duplicated coverage loop while fixing R38/R39 allocation/work accounting. | Retained adversarial/browser cases across paint kinds, transforms and output scales; bounded memory/work/cancellation. No shape-specific offset patches. |
-| 3 — critical path S10/S11 | Resolve exact non-orthogonal coverage, fractional/scientific curved paths, public affine mapping and compound contours. | Independent flat curved marks and outlined wordmarks with counters, exact across every declared variant. Parsing a command or preserving a known difference does not close this step. |
-| 4 — practical exports | Fix R36 computed stroke style; complete shared strokes/caps/joins and required dashes, local references, arbitrary path clips and group opacity. | Independent exporter and mixed fill/stroke/clip/style cases, not only twins through the same renderer. |
-| 5 — common paints/composition | Complete reusable linear/radial paint maps, transparent/multiple stops, nested layers and required masks. | Exact transformed/clipped/alpha families; no new per-paint geometry hierarchy. |
-| 6 — coverage-driven completion | Add images/patterns/markers/effects and later live text only for measured inventory blockers. Run package/platform/resource checks throughout. | Agreed frozen exact-document coverage target; categorized residual gaps and fresh platform evidence. |
+| 1 | **Repair existing semantic defects:** S12 miter threshold; R41 zero-area objectBoundingBox gradient path strokes. Separate commits. Retain exact controls and failing SVGs as part of each fix. | Acute limit-1/default/limit-10 branch tests; degenerate path/line and userSpace controls; fresh retained oracle comparison, unchanged exact corpus, reviewed mismatch improvements. |
+| 2 | **One owned contour/paint boundary:** R30/R38/R39. Extract common polygon mapping, bounds, clip and coverage traversal across four paints; reserve retained arrays before allocation and transfer ownership explicitly. | Behavior-preserving fixture/research results, six-output equality, denial/cancellation/disposal tests, measured tiny/many-curve and wordmark allocation behavior. |
+| 3 | **Calibrate coverage-to-alpha narrowly:** S11/R40. Separate mask quantization from paint alpha and composition at the shared boundary. | Opaque quarter/half/full coverage, translucent 127/128 controls, both axes, all paints, overlaps and backgrounds; every existing exact case remains exact. No bulk six-site rounding replacement. |
+| 4 | **Spatial fill plus matched straight-edge scan conversion:** R34/S11. Resolve winding/parity over spatial intervals, then coverage, including overlapping stroke outlines. Replace full per-pixel fan scans through the shared path. | Disjoint opposite contours, nested counters, crossings, touching/coincident edges, duplicate/overlapping strokes, held-out phases/slopes, charged work and during-phase cancellation. Both semantics and per-input oracle fidelity required. |
+| 5 | **Final device mapping and retained curves:** R35/R37/S10. Wire a double affine context through containers, leaves, use/symbol and paints; lower curves with the complete map. Calibrate curves on the common raster path. | Equivalent direct/viewBox/instance encodings; fractional/scientific coordinates, rotations/skews/reflections/nonuniform scales; extrema/overshoot and scalable prepared scenes; flat curved mark and wordmark progress on existing independent exports. |
+| 6 | **Shared stroke completion:** S12. Correct sampled circle/ellipse traversal and closed dash seams in separate slices; add bounded conic handling and preserve smooth-curve versus authored joins; then revisit gated odd/fractional widths. | Retained dash-offset, seam, round-cap/join and rounded-rectangle cases, acute limits, zero-length/hairline cases, pathLength and non-scaling controls; no width admission based only on parser readiness. |
+| 7 | **Measured practical-export blockers:** S9/S13/S14. Finish needed computed style/references, diagonal/arbitrary clips, paint-alpha calibration and bounded layers/masks. Prioritize inv-050, inv-085, inv-094 and other retained first blockers. | Independent exporter semantics; mixed fill/stroke/paint/use/clip/opacity across sizes/backgrounds; source-order and per-object binding correct; temporary-surface bounds and cleanup measured. |
+| 8 | **Independent milestone and delivery:** S8/S17. Reconcile frozen variants and corporate strata continuously; claim the milestone only after exact all-variant results and fresh platform/package/resource evidence. | Exact outlined wordmarks and flat curved marks, agreed document target, categorized residuals, portable reproducible reports and consumer checks. |
 
-The first useful milestone is outlined wordmarks plus flat curved marks.
-Do not complete every S9/S12/S13 permutation before attempting that milestone.
-Do not trade the exactness criterion for quicker apparent coverage.
+### Row 1: bounded repairs that unblock implementation
 
-## 3. Active findings and concrete repairs
+`SvgStrokeOutline.EmitJoin` computes a half-normalized miter ratio but compares it
+to the full limit. Normalize displacement to half-width consistently (or use the
+equivalent correctly scaled comparison). The matched Skia source and the retained
+acute witnesses agree on the missing factor. Keep inner/outer joins, limits at the
+threshold, and diagonal coverage separate. A fix to the branch choice need not
+make every antialiased spike exact to be a valid existing-behavior repair.
 
-### R26 / P1 — Representative coverage is still unmeasured
+R41's reproducer is a horizontal **path**, `M2,8 H14`, with width-2 gradient stroke
+and default objectBoundingBox units. Chrome paints none; Lokad.Svg paints black.
+The equivalent `<line>` currently rejects, so a line-only regression misses it.
+Fix paint applicability using original geometric bounds, not expanded stroke
+bounds. Cover vertical paths, linear/radial paints, instancing and nondegenerate
+userSpace controls. Do not lose this case because it is “semantic, not calibration”.
 
-The 193-entry synthetic corpus and its logo tags do not establish real-export
-coverage. Keep docs/INVENTORY.md's selection/provenance/legal rules; populate it
-now, beginning with a small independently selected set. Restricted inputs remain
-private. Never redraw/simplify difficult logos or drop failing variants.
-Count a document exact only when all declared variants are exact. Live text may
-remain outside the first path-only denominator, with S7/S15 explicitly separate.
+### Rows 2–4: shared coverage and ownership
 
-### R27 / P1 — Original manifest gate repaired; fidelity admission still needs discipline
+Retain one owned contour payload with ends/topology and a typed paint binding.
+Use one mapping/coverage path for solid, linear, radial and pattern fills/stroke
+outlines. Preserve exact rectangle/band fast paths. Consolidate incrementally
+around the defects; a new general scene framework or file-renaming campaign is
+unnecessary. Do not add another geometry kind for each fill/stroke combination.
 
-The original missing unsupported branch is closed: FixtureManifestTests renders
-every entry, asserts categorized rejection or measured mismatch, verifies variant
-parents, compares exact pixels and requires graduation when a known difference
-becomes exact. Preserve these tests.
+Reserve before allocating points, ends, roles, transformed arrays and growth
+copies; include simultaneous old/new storage and transfer reservations with
+ownership. Existing raster mapping reservations, definition cleanup, reduced
+curve scratch and work charging are repairs to preserve, not tasks to redo.
+Eliminate spelling-dependent straight-path sizing and repeated dash parsing as
+these paths are touched. Pooling is optional and must account retained storage.
 
-Remaining work:
+The R34 winding-role and nonzero crossing-split repairs help separated contours.
+They do not implement general spatial membership. `FinishStrokeFill` currently
+bypasses validation and lifts zero roles; summing unsigned areas can double a
+shared fringe. Fresh duplicate diagonal strokes differ from Chrome by 50 pixels
+with maximum alpha error 108, versus eight for a single stroke. The browser itself
+has a small single/duplicate delta, so compare each input to its own reference.
+No fixture-specific deduplication or per-pixel correction is acceptable.
 
-- Separate implemented/rejected behavior from exact/known-difference/oracle-failure
-  outcomes in reporting. Default conversion still returns PNG for 71 inexact
-  entries without a per-result fidelity status. Do not call these delivered exact
-  support, or add an approximate tier without user direction.
-- The known-difference tuple (changed pixels / max channel / max alpha) is not
-  full candidate identity: a different error layout can retain the same maxima.
-  Retain decoded candidate identity or complete diff evidence when ratcheting
-  intentional failures; allow reviewed improvements and graduation.
-- Validate reference browser/recipe/platform identity against the appropriate
-  historical/current allowed pin. A PNG hash alone is not oracle provenance.
-- The 14 variants have not grown with the new curve families. Add phase, size,
-  fractional outputScale and transparent/white/dark background variants.
-- Report all-variant outcomes per independent document, not only entry counts.
+Separate membership from the matched antialiasing rule. Exact continuous area is
+not Chrome analytic-AA; more precision or supersampling does not close the known
+diagonal residuals. Use the matched release's active-edge/fixed-point construction
+as a scoped investigation route. Account edge setup, ordering/intersections,
+contour-vertex scans, spans, painting and cancellation; a contour-pair count alone
+does not cover inner vertex scans. Preserve held-out failures and exact controls.
 
-Known examples remain substantial: circle 145 wrong pixels / max alpha 63;
-cubic 97 / 29; dashed circle 114 of 256 / 240. RGB error 255 on a faint sliver
-can exaggerate appearance, but these alpha/extent errors are not all tiny slivers.
-Retained known differences are not passing exactness gates.
+For row 3, retain geometric coverage, mask alpha, paint alpha, premultiplied
+intermediates and final straight RGBA as distinct operations. The opaque 0.75
+observation (192 in Chrome versus 191) motivates a coverage change. It does not
+authorize replacing byte-opacity/compositor rounding. Match translucent controls
+(including alpha 127), backgrounds and isolated groups before widening it.
+`SkScan_AAAPath` itself contains both shifts and rounded partial-alpha operations.
+Never replace oracle references or automatically regenerate every mismatch tuple
+to make an experimental rule green.
 
-### R28 / P1 — Original paint-map defects partly repaired, exactness incomplete
+### Rows 5–7: coordinates, curves, strokes and composition
 
-The original pattern/root-viewBox case now maps on its admitted integer tile grid
-and has exact evidence. Preserve that fix. Nonuniform userSpace linear gradients
-now use recorded inverse maps, but the original gradient case still has a retained
-nine-pixel / max-error-one difference; its stroke companion has four.
-Treat remaining paint/dither/alpha calibration as S11/S13, not an exact admission.
-Do not reintroduce the original wrong coordinate mapping or mark all R28 closed.
+Define user, object, viewport, instance, device and paint spaces explicitly.
+`AxisTransform` is still the calibrated integer subset; `SvgDevicePoint` can still
+precede the root map. A leaf-only double parser cannot fix container inheritance.
+Introduce the common affine carrier/composition path with explicit integer fast
+paths, updating consumers together. Preserve original geometry bounds for paint
+and clip binding; stroke/clipped/layer bounds have separate purposes.
 
-### R30 / P1 design, P2 GC — Consolidate geometry, paint and ownership when fixing defects
+Keep verbs and controls until the complete device transform is available, or prove
+a conservative tolerance under every remaining map. Current direct-use/symbol
+magnification gates are sound restrictions, not completion of scalable instances.
+Test root/nested viewBox, outputScale, use/symbol frames, collinear overshoot,
+reflections, singular/nonfinite maps and nonuniform stroke transforms. Mathematical
+flatness bounds and independent endpoint/tangent tests do not establish S11 pixels.
 
-SvgGeometry now has 13 kinds including Invalid and nine nullable reference
-payload fields. Solid/linear/radial/pattern polygons repeat points, ends, signs,
-mapping, clip, storage ownership and stamping. SvgConverter repeats four
-mapping/bounds/clipping/coverage loops; reference and leaf lowering multiply
-the same shape/paint cases. R33/R35 demonstrate real inconsistency.
+Round caps/joins need a bounded weighted-conic representation or justified
+conversion: the current flattener supports only polynomial quadratics/cubics.
+Preserve authored corners through curve subdivision so smooth rounded rectangles
+do not gain joins at every tessellation vertex. Circle/ellipse dash traversal,
+closed-run seam merging and cap/curve tessellation are separate defects; the
+straight dash kernel has positive evidence worth retaining. Revisit odd/fractional
+widths only after their quantum, overlap and geometry witnesses are resolved.
 
-Use one owned contour geometry, a typed paint binding/evaluator and one coverage
-path. Preserve calibrated rectangle fast paths. Distinguish user/document/device
-coordinates and geometry/stroke/paint bounds: “DevicePoint” currently precedes
-the root/output map. Reconcile AxisTransform with the general affine kernel.
-Retain computed stroke values instead of raw strings/boolean capability clusters;
-avoid repeated dash parsing/array allocation. Encapsulate shared arrays and
-reservation transfer instead of duplicating mutable ownership conventions.
+Continue from cascaded stroke values already present in `SvgComputedStyle`;
+replace repeated raw-string interpretation with shared typed computed state.
+Exercise attributes, inline/embedded CSS, important/default overrides, inheritance
+and references with independent expected behavior. Required forward resources,
+per-instance paint/clip binding, stylesheet location and harmless export metadata
+belong to S9. Keep DTD/external entity/resource retrieval disabled.
 
-This is a bounded consolidation around correctness/resource fixes, not a
-repository-wide scene-graph or naming rewrite.
+R33 now maps clip boxes and applies fractional coverage on all four polygon paths;
+the new half-pixel probe is exact. Preserve that behavior. Arbitrary clip paths,
+clip-child union versus nested intersection, clip rules/units and use transforms
+remain S14. inv-085's diagonal clip is not a rectangle-union shortcut. Keep group
+opacity isolated, support nested layers, crop surfaces with correct origins and
+bounds, then implement the mask regions/content evidenced by inv-094. Constant
+mask opacity is not general alpha/luminance masking.
 
-### R31 / P2 — Delivery-workflow gaps after the repaired CI hook
+Paint work must share geometry. Keep corrected inverse paint maps and backward
+cross-type gradient inheritance. Transparent-stop unpremultiplication, gradient
+opacity/dither ordering, forward inheritance and combined paints need independent
+evidence. Retain degenerate bounds/vector rules, stop ordering, spread and object
+versus user-space semantics; replace arbitrary stop caps with configured bounds
+only where measured inputs require it.
 
-The validator negative suite is now wired into Windows/Linux CI with artifacts.
-Preserve this repair and the new startup-health validation.
+## 4. Findings and stage ledger
 
-The capture-chrome.ps1 parent-deadline/stream-drain gap is repaired in this change:
-concurrent drains, an overall capture deadline, owned-process cleanup, retained
-stderr and atomic publication now preserve an existing output on failure.
-Still open: one opt-in manifest-compatible corpus capture/compare/report workflow;
-changing only the browser screenshot viewport does not scale a fixed-size SVG image.
+### Active findings
 
-Add curve-heavy logos, many-contour wordmarks, mixed paints/clips and isolated
-opacity to existing benchmark/probe families. Existing rectangle/text/font/PNG
-benchmarks and 25 resource scenarios do not characterize the new hot path.
-Do not turn a small enabling tooling repair into another tooling campaign.
-
-#### R31a / P1 — Windows Chrome sandbox startup repair (completed locally)
-
-Implemented in this change:
-
-- tools/setup-chrome.ps1 validates strict cache/install path containment and
-  rejects reparse-point traversal before acting. Archive, executable and
-  setup.exe are authenticated; the latter is compared with the verified archive.
-- The pinned installer runs only --configure-browser-in-directory for the browser
-  directory, with hidden/no-shell execution and a 30-second deadline. Chromium
-  success status 78 is handled explicitly; other failure codes are actionable.
-- Fresh, cached and offline installations receive the same idempotent setup.
-  Verify both Chrome-specific capability RX rules throughout files/resources;
-  reject missing/denied/protected-inheritance cases without broadening access.
-  Preserve all pre-existing ACLs. No repo/home/cache-root grants, Everyone or
-  all-application fallback, no sandbox-disabling flags.
-- ChromeProcess drains stdout and stderr independently; retains at most 32 KiB
-  of stderr, detects sandbox failures and repeated network-service crashes even
-  beyond truncation, and emits redacted per-launch JSON on stderr, never PNG stdout.
-  Reports include executable name, launch/ready timings and profile cleanup.
-- Validate startup health through shutdown before returning screenshot bytes.
-  Retry locked/partially written DevToolsActivePort inside the startup deadline.
-  Existing cancellation and owned-process/profile cleanup remain bounded.
-- The three-capture smoke retains hashed diagnostic files; Chrome fingerprint
-  schema 4 and the artifact validator distinguish configured sandbox policy
-  from observed startup health. Old schema-3 smoke artifacts do not prove health.
-- Unit/setup/validator regressions cover chunk-split/late errors, bounded retention,
-  benign stderr, repeated crashes, redaction, partial port files, cancellation,
-  path escapes/junctions, denied permissions, exit codes and forged/missing health.
-- capture-chrome.ps1 retains the same per-launch diagnostic beside its PNG, drains
-  streams concurrently and applies a parent deadline; child-failure/forced-timeout
-  smoke controls preserve an existing destination and remove only their partial file.
-
-Fresh cached-install smoke: three exact, stable captures; zero sandbox failures,
-zero network crashes; all profiles cleaned. Chrome lifetimes 1,243 / 1,342 /
-1,390 ms; DevTools ready in 311 / 318 / 349 ms. These are local observations,
-not a throughput promise or a matched before/after benchmark. The old trace
-established an intermittent failure, not a controlled pre-repair timing baseline.
-Fresh extraction/offline reuse and parent-ACL checks are separately exercised;
-final results and reproduction commands belong in docs/ORACLE.md.
-
-Do not infer that every stderr message is fatal. A successful PNG alone, or the
-literal sandbox='enabled' policy field, is insufficient health evidence.
-
-### R33 / P1 — Scaled polygon clips use the wrong coordinate space
-
-SvgConverter.cs maps polygon vertices through root viewBox/outputScale but
-intersects polygon.Clip directly with output pixel bounds. The shared defect
-must be repaired across solid/linear/radial/pattern paths. Fractional clipping
-also needs coverage intersection, not just rounded bounding extents.
-
-Independent 32x32 repro, three identical browser captures:
-
-~~~xml
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16">
-  <defs><clipPath id="c"><rect width="8" height="16"/></clipPath></defs>
-  <polygon points="0,0 16,0 0,16" fill="red" clip-path="url(#c)"/>
-</svg>
-~~~
-
-264/1,024 pixels differ, maximum alpha error 255. Replacing clipPath with a nested
-8x16 SVG viewport gives the same failure. Map geometry and clips once into the
-same final space; regress root offsets/scales, outputScale, nested viewports and paints. Status 2026-09-26: repaired by mapping clip boxes through the shared root/output transform in all four polygon-outline raster paths (single IntersectMappedClip helper; nested-viewport clipping flows through the same boxes); the 32x32 repro now renders byte-exact against the pinned oracle with viewBox/direct, nested-viewport/clip-path and gradient twins plus mapped-region pixel tests (4 tests); root offsets, outputScale and fractional clip coverage stay open.
-
-### R34 / P1 — Signed area accumulation is not spatial nonzero fill
-
-SvgPolygonCoverage.GetWindingCoverage sums signed contour/pixel areas before
-SvgConverter takes abs/clamp. Disjoint shapes of opposite orientation in one
-pixel can cancel, although both should paint.
-
-In an 8x8 SVG, fill red:
-
-~~~xml
-<path d="M .1 .1 L .4 .1 L .1 .4 Z M .6 .6 L .6 .9 L .9 .6 Z"/>
-~~~
-
-Browser alpha (0,0)=37, candidate=0. Reversing the second contour to
-M .6 .6 L .9 .6 L .6 .9 Z leaves the browser identical but candidate alpha=23.
-Three stable captures per variant. This is semantic, not only one-step AA drift.
-
-Integrate spatial winding/parity membership before pixel coverage. Test disjoint
-opposite contours, same-wound nesting, holes/small counters, contour reversal,
-touching/self-intersections and overlapping stroke outlines. A comment requiring
-separated boundaries is not an enforced public gate.
-
-### R35 / P1 — Flattening happens before the final device transform
-
-SvgOrthogonalGeometryLowerer's fixed flatness 0.25 and BuildDeviceMap omit the
-root viewBox/outputScale subsequently applied by SvgConverter. A small user-space
-curve can therefore magnify a nominal quarter-pixel error many times.
-
-Equivalent 128x128 red circles: viewBox 0 0 8 8 with cx=cy=4,r=3 versus no viewBox
-with cx=cy=64,r=48. Browser outputs are identical; candidates differ at 1,028
-pixels. Against Chrome: scaled input 1,042 wrong pixels / max alpha 255; direct
-input 372 / 74. Three stable captures each.
-
-Flatten under the complete device map or derive a conservative tolerance from it.
-The nonuniform-root guard currently checks only PolygonFill, not paint variants.
-Regress fills, strokes, paints and prepared output. Correct subdivision alone
-does not establish Chrome-exact AA. Also test collinear control overshoot/reversal:
-the kernel's infinite-chord-line flatness test can miss an excursion.
-
-### R36 / P1 — Validated CSS stroke declarations are discarded
-
-SvgInlineStyleParser validates stroke-linecap/linejoin/dasharray/dashoffset but
-does not retain them in SvgComputedStyle. Leaf lowering reads attributes instead.
-
-Fresh 16x16 red-line cases, three stable captures each:
-
-| Settings | Wrong pixels / max alpha error |
+| ID | Current disposition and remaining closure |
 | --- | --- |
-| x1=4,y1=y2=8,x2=12,width=4, square cap attribute + style stroke-linecap:butt | 16 / 255 |
-| x1=2,y1=y2=8,x2=14,width=2, dasharray="4 4" + style stroke-dasharray:none | 8 / 255 |
-| Same dashed line + style stroke-dashoffset:3 | 18 / 255 |
+| R26 | Inventory sourcing is substantially complete for prioritization. Reconcile all-variant records and corporate representativeness; 27/92 is not S17 evidence. Preserve failures and original assets. |
+| R27 | Every fixture is executed. Still retain complete decoded candidate identity/diff, validate historical/current oracle identity, distinguish render/reject from fidelity, and graduate positive research controls instead of deleting them. |
+| R28 | Original pattern/root-map repair and inverse gradient maps retained. Paint/alpha one-step residuals remain S11/S13. |
+| R30 | Four contour/paint owners and raster loops, string-based computed values and repeated binding remain. Bounded consolidation is row 2, not a repository rewrite. |
+| R31 | CI artifact-validator hooks, Windows sandbox setup/health, wrapper deadline/drain and atomic publication are repaired. One opt-in corpus capture/compare/report workflow and representative performance evidence remain; reuse existing tools. |
+| R33 | Original scaled clip-coordinate fault repaired; fractional mapped coverage present and one fresh independent case exact. Wider phases/scales/paints and path clips remain validation/extension work. |
+| R34 | Disjoint orientation roles, bounded nonzero crossing splits and stroke-role repair landed. General touching/coincident/complex evenodd geometry and spatial stroke unions remain open; row 4. |
+| R35 | Root/output tolerance propagation, overshoot and unsafe magnification gates landed. Complete per-instance/device curve lowering is still architectural; row 5. |
+| R36 | Cascaded cap/join/dash/width values are carried and many spelling twins pass. Finish shared typed state and practical inheritance without reopening repaired attribute/inline cases. |
+| R37 | Fractional/scientific curved paths, fractional root sizing and both relative-moveto repairs landed. General public affine transforms, restricted numeric grids and layered exporter gates remain. |
+| R38 | Maximum scratch allocations substantially reduced; continue actual-size storage, ownership transfer and measured many-curve/wordmark allocation work. |
+| R39 | Raster-map reservation, vertex-weighted raster work and definition lifetime repairs landed. Retained arrays still allocate before scene reservation; nested scan cost and new spatial work require charging. |
+| R40 — new | Correct source provenance and narrow the quantization work order. Release-tag pin reverified in this review; later design/inventory claims still need correction with the next calibration slice. |
+| R41 — new | Accepted degenerate objectBoundingBox gradient path stroke paints black instead of nothing. Fresh retained reproduction in the review; row 1. |
 
-Retain typed specified/computed stroke values and use one cascade/inheritance path
-for attributes, inline/embedded CSS, !important and references. Defaults cannot
-be discarded when they override non-default attributes. Reject unsupported
-semantics until honored; validation is not implementation.
+### Completed original repairs: preserve their regressions
 
-### R37 / P1 — Kernel grammar/affine support is not public export support
-
-SvgOrthogonalShapeParser rejects any decimal point/exponent in curved paths:
-even numerically integral C 3.0 10.0 10.0 3.0 12.0 12.0 is rejected. Public
-AxisTransform still uses integer scale/translation; rotate/skew and general
-affine input are not wired through the new affine kernel. Touching/self-crossing
-fills remain gated. A fill=none reversing cubic stroke is rejected by fill-first
-lowering as needing a closed axis-aligned contour.
-
-Prioritize finite decimal/exponent curves, transform composition and stroke-only
-paths through the common representation. Add lexical/transform/equivalent-shape
-tests backed by independent pixels. Do not advertise “full paths” from command
-enumeration while ordinary exporter spelling fails.
-
-### R38 / P1 scalability — Maximum scratch buffers for tiny geometry
-
-Ellipse/circle/rounded lowerers allocate 65,536 SvgDevicePoint slots (~1 MiB)
-per tiny shape. LowerDeviceFill/LowerStrokePath choose capacity from the configured
-global command limit, not actual commands; even a fractional straight triangle
-allocates about 1.5 MiB versus 14 KiB for the equivalent polygon.
-
-Use budgeted actual-size/growing or bounded reusable scratch, count real
-commands/contours, bypass curve buffers for straight segments, and avoid repeated
-builder/list/retained/mapped copies. Pooling is not automatically a fix: account
-retained pool storage. Add allocation checks for one curve, many curves and an
-outlined wordmark. Keep cumulative allocated bytes distinct from peak memory.
-
-### R39 / P1 resources — Polygon mapping/work bypasses the contract
-
-Each polygon rasterizer allocates an unreserved mapped-point array. Lowering
-creates retained/end/sign arrays before SvgPolygonFill.Create reserves scene
-storage, missing transient overlap and allowing allocations before denial.
-
-Raster work is charged per bounding-box pixel while each pixel scans all vertices
-and clips fan triangles: actual work grows with pixels times geometry.
-Contour classification is pairwise; ChargePairs amortizes a unit across a byte
-checkpoint-sized group. Define and enforce the real unit across these algorithms.
-Inner cancellation exists; this is not a claim it is wholly absent.
-
-Reserve before allocation/copy, explicitly transfer ownership, charge mapping and
-edge/coverage work, avoid full fan scans for every pixel, and test tight remaining
-budgets plus cancellation during curve-heavy work. Add cases to the existing probe,
-not a new resource-tool project.
-
-## 4. Completed repairs and retained boundaries
-
-Do not reopen a repaired original reproduction because its old paragraph said
-“still missing”. Preserve regressions; new defects have their own IDs.
-
-| Stable IDs / stages | Disposition |
+| IDs / stages | Disposition |
 | --- | --- |
-| R01/R02 | Visible glyph/contour, sibling/CDATA/empty-text and XML-tail fixes retained. |
-| R03/R08/R10 | Shared style/admission and selected text/outline semantics repaired for the declared subset. Wider spans/fallback/GPOS remain S7/S15. |
-| R04/R12; S1–S5 | Original type sizing, surface cleanup, glyph ownership, numeric/aggregate work and XML workspace/copy/membership repairs retained. New polygon gaps are R38/R39. |
-| R05/R06/R07/R09/R10/R11/R16 | Original matrix/cmap/face/identity/lifetime/diagnostic repairs retained. Ordinary-font fidelity remains separate. |
-| R13; S7 | Intended-font metrics/pixel evidence still open; synthetic glyphs/source access do not close it. |
-| R14/R15/R19 | Several sharing/cache/typed-size/allocation repairs complete. Remaining bounded consolidation is R30/R38. |
-| R17/R18 | Discovery reservation/probes and original root-count/eligibility parity repaired; retain parity without open-ended row enumeration. |
-| R20/R21 | First-write IDAT/output-limit repair, common PNG kernels and prepared-scene detachment/consumption fixes retained. |
-| R22/R23 | Original portable provenance/pixel comparison and CDP transport/cleanup repairs retained. Launch health and wrapper deadlines/publication are repaired here; the remaining corpus workflow is R31. |
-| R24 | Impossible channel wrap repaired; remaining one-step coverage/composition is S11, not tolerance. |
-| R25 | Definition-ancestor transform fault repaired; wider inherited presentation still bounded. |
-| R27 original branch | Every manifest entry now executed and classified; remaining reporting/identity work above. |
-| R29 original decoder/tile/stops | Reserve-before-copy decoder storage, proportional chunk/row/tile work, cancellation and scene-owned shared gradient stops repaired. Per-wrapper object granularity and lenient late tRNS remain explicitly accepted limits. Do not treat new polygon omissions as those original bugs. |
-| R31 CI hook / R32 PNG errors | Validator negatives wired to both CI platforms; categorized corrupt-zlib errors and critical-chunk policy repaired. |
-| Review stale dashed-circle test | Repaired by 264099f; full suite reverified. Keep full-suite checks on support-boundary changes. |
+| R01/R02 | Glyph/contour visibility, sibling/CDATA/empty-text and XML-tail fixes retained. |
+| R03/R08/R10 | Original shared style/admission and selected text/outline semantics repaired; wider text is S7/S15. |
+| R04/R12; S1–S5 | Original sizing, cleanup, glyph ownership, numeric/aggregate work and XML workspace/copy/membership repairs retained. New geometry work is R38/R39. |
+| R05/R06/R07/R09/R10/R11/R16 | Original matrix/cmap/face/identity/lifetime/diagnostic repairs retained. Ordinary-font fidelity is not thereby proved. |
+| R13; S7 | Intended-font metrics/pixels remain open; synthetic glyphs and source access do not close them. |
+| R14/R15/R19 | Sharing/cache/typed-size/allocation repairs retained; remaining consolidation is R30/R38. |
+| R17/R18 | Discovery reservation and original eligibility/root-count parity repaired. |
+| R20/R21; S6 | PNG first-write/output limit, common encoding kernels and disposable single-use prepared-scene lifetime repairs retained. |
+| R22/R23/R31a | Original provenance, pixel comparison, CDP transport/cleanup and later sandbox startup/diagnostics/deadline repairs retained. |
+| R24/R25 | Channel-wrap and definition-ancestor transform defects repaired. Residual alpha and broader inherited semantics have their active owners. |
+| R27 original branch | Manifest now executes both renderable and rejected unsupported entries. Remaining fidelity reporting is above. |
+| R29/R32 | Decoder reserve-before-copy, proportional image/tile work, shared gradient stops, corrupt-zlib categorization and critical-chunk policy repaired. Per-wrapper granularity and lenient late tRNS remain recorded limits. |
 
-The fresh full-suite result is green but preserves known bad pixels intentionally.
-A positive test asserting “stroke changes output” does not establish correct dash
-placement. Twin renders can share a bug; combine semantics tests with oracle cases.
+### Stage completion criteria
 
-S6's disposable single-use prepared scene and S7's generic opt-in local/stdin/HTTP
-font host exist. Keep private acquisition/metrics/pixel validation separate from
-the path-only logo milestone. The user-authorized font/privacy contract below is
-retained unchanged.
+| Stage | State / remaining exit |
+| --- | --- |
+| S1–S5 | Core foundations and original repairs exist; preserve API, parser, memory/work and output contracts throughout. |
+| S6 | Disposable single-use preparation exists; preserve resource leases and six-output behavior. |
+| S7 | Generic local/stdin/HTTP supplied-font host exists; actual-pack and same-font metrics/pixels remain separate work under section 6. |
+| S8 | 92 selected independent exports exist. Freeze and measure variants/cohorts; retain corporate marks separately from flags/symbols and calibration probes. |
+| S9 | Narrow styles/references/viewports implemented; complete the actual exporter blockers through shared semantics. |
+| S10 | Full path-command/affine kernels and fractional curves exist. Public transforms, topology and final device lowering remain incomplete. |
+| S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
+| S12 | Caps/joins/dashes/stroke outlines implemented in narrow subsets with retained errors. Finish rows 1 and 6 using common coverage. |
+| S13 | Limited gradients/patterns and paint maps exist. R41, transparent/opacity calibration and required inheritance/combinations remain. |
+| S14 | Rectangle clips, limited masks and isolated opacity exist. General clips, mask regions/content and bounded nested composition remain. |
+| S15 | Live-text wordmarks are experimental, not required for outlined wordmarks. Follow section 6 and shared glyph contours, not a separate renderer. |
+| S16 | Uniform embedded PNGs and narrow patterns exist. General raster decoding/resampling, multi-element patterns, markers, filters/blending and additional static CSS only for measured blockers. |
+| S17 | Not achieved. Requires a frozen representative corporate cohort, agreed exact-document target, every declared variant exact for counted documents and fresh delivery evidence. |
 
-## 5. S10/S11 execution and decision discipline
+## 5. Product contract, evidence and completion
 
-1. Establish one final device map, contour representation and spatial fill rule.
-   Retain R33–R35 and unseen variants as regressions with their fixes.
-2. Calibrate a non-orthogonal solid-fill family across phases, slopes, scales,
-   clipping, opacity and backgrounds; separate geometry from AA/composition.
-3. Extend the same path to fractional Béziers/arcs, compound contours and complete
-   affine input; share stroke outlines/paints instead of adding parallel engines.
-4. Reach the outlined-wordmark checkpoint on independent exports with counters
-   and many contours at small/intended/large sizes and every declared background.
+Keep one MIT pure-managed C# net10.0 library for Windows/Linux: no third-party
+runtime packages, native assets/PInvoke, System.Drawing, installed-font engine,
+browser rendering service or other Lokad runtime dependency. Rendering consumes
+explicit options/resources; it does not discover filesystem/network resources.
+Scripts/events, animation, mutable DOM, foreignObject HTML and arbitrary external
+documents stay out of scope. Live fonts and effects must not delay outlined logos.
 
-Reuse the existing negative research: pixel-centre/uniform supersampling, exact
-continuous area and partial snapping models have already failed. Record one
-discriminating hypothesis before each experiment, then its complete outcome on
-training and held-out cases. A pinned source revision is not proof of the runtime
-raster route. Do not tune individual pixels or repeat eliminated hypotheses.
+Preserve the six output APIs, owned/caller memory, overlap rejection and non-array
+memory; named null arguments, categorized errors and token-preserving cancellation.
+Async memory schedules CPU work once; async streams await backpressure, propagate
+failures and stay open. Hosts own transactional output. Prepared documents are
+single-use owners; snapshots/borrowed bytes retain their documented lifetimes.
+Read [the C# guidelines](docs/GUIDELINES_CSHARP.md) before C# changes.
 
-If two successive iterations make no cross-family progress, write the eliminated
-hypotheses and make an explicit investigation/architecture decision. Preserve
-pixel exactness and dependency restrictions; surface feasibility uncertainty
-rather than diverting into easy pattern/cap/reference admissions indefinitely.
+| Default bound | Value / interpretation |
+| --- | --- |
+| Renderer-accounted live storage | 256 MiB; not process/host memory. R38/R39 exceptions must be closed. |
+| SVG input / encoded PNG | 16 MiB / 128 MiB. |
+| Output | 16,384 per axis; 16,777,216 pixels. |
+| Nodes / cumulative path commands | 100,000 / 1,000,000. |
+| Shared conversion work | 100,000,000 units through preparation, scene, raster and encoding. |
+| XML depth / attributes per element | 128 / 256. |
+| Direct text | 32,768 cumulative UTF-16 characters. |
+| Snapshot caps | 256 faces / 32 MiB distinct borrowed programs, separate accounting. |
 
-Every implementation slice includes tests, relevant support documentation and
-actual verification. Update current status in place in the same small buildable
-commit. Detailed history belongs in Git, docs/RASTERIZATION_DESIGN.md and
-docs/BENCHMARKS.md, not another multi-page “Status” paragraph here.
-Report newly exact independent documents, important defects closed, dominant
-remaining blockers and evidence revision—not activity totals.
+Root lowering and discovery share the conservative XML allowance
+`max(16 KiB, 4 × input bytes, 512 × configured attribute limit)`. Distinguish that
+allowance, ledger peaks, cumulative managed allocations, borrowed storage and
+process working set. Charge curve/stroke/dash/reference expansion, pair/vertex
+scans, coverage/paint, images and intermediate surfaces before denied work;
+check cancellation within bounded chunks and release owners on every exit.
+
+### Validation and evidence policy
+
+- Each implementation slice includes locked restore/Release build/tests,
+  independent semantic/numeric/negative vectors and relevant documentation.
+  Current exact references must remain exact. Changes to known mismatches require
+  full before/after comparison and explanation, not merely refreshed maxima.
+- Preserve exact controls. This plan supersedes RESEARCH_PROBES.md's instruction
+  to delete exact renders: graduate useful original cases into the exact fixture
+  corpus with their oracle provenance. Keep semantic failures as well as AA probes.
+  Extend the existing harness rather than creating another testing system.
+- Retain decoded candidate identity or complete diff evidence; mismatch count,
+  maxima and bounding box do not uniquely identify an output. Verify browser,
+  executable hash, recipe, platform, dimensions/options, background and input/asset
+  identity against the appropriate historical/current pin.
+- New references require three stable fresh-process captures with existing
+  sandboxed tooling. Compare decoded RGBA8 exactly, ignoring RGB only when both
+  pixels are fully transparent. Browser/recipe migration is deliberate; a failed
+  candidate never authorizes replacing its reference.
+- Exercise during-phase cancellation, tight remaining memory/work denial,
+  cleanup after partial construction and six-output parity where affected.
+  Extend existing memory/benchmark scenarios for curves, many contours, paints,
+  clips and layers; do not infer performance from ledger-only observations.
+- Re-render affected inventory inputs after narrow repairs; broad coverage,
+  transform or composition changes require the complete frozen variant set.
+  Record missing/oracle-failure/unmeasured results explicitly. Ordinary unit tests
+  and library consumers remain offline and independent of browsers/private assets.
+- Package/API changes require the isolated installed consumer; release claims
+  require fresh Windows/Linux build/test/package/resource and platform-appropriate
+  oracle evidence. A Windows reference is not automatic Linux fidelity evidence.
+
+### S8/S17 accounting and remaining user decision
+
+Keep original files, hashes, source/license evidence and generator provenance when
+known. Never redraw/simplify hard logos, select easier variants after failure, or
+reuse retired inv-033/inv-036 IDs. Public-domain candidates are not contributor
+CC0 originals; preserve their provenance and keep private assets untracked.
+
+Turn inventory declarations into explicit options per variant: logical viewport,
+outputScale, resulting dimensions and background, with input and materialized-input
+hashes if capture requires materialization. Changing screenshot dimensions alone
+crops a fixed-size SVG image; it does not implement scaling. The current browser
+transport's two-million-pixel limit is an oracle-tool constraint, not permission
+to drop a declared large variant or change the renderer's pixel limit.
+
+Report render/reject separately from exact/known-difference/oracle-failure and
+unmeasured. A document counts only when **all declared variants** are measured
+and exact. Reconcile the current 27 exact labels without erasing their narrower
+successes or their unmeasured sizes. Freeze a corporate-mark/outlined-wordmark
+cohort and hold-outs; retain flags and other symbols as separate useful strata.
+Use existing inv-019/inv-040/inv-066 and independently chosen curved marks to drive
+the first checkpoint, not additions optimized for the current renderer.
+
+The user still needs to choose the numeric S17 exact-document coverage target
+against that frozen cohort before a release claim. Until then, report measured
+results and gaps without a “most logos” claim or ETA. This decision does not hold
+rows 1–7. S17 also requires categorized residuals, reproducible oracle evidence,
+representative latency/allocations and the fresh delivery/platform gates above.
+
+Maintain API_CONTRACT, README and SUPPORT_MATRIX as current contracts. In
+particular, reconcile stale fractional-dimension rejection prose and synthetic
+counts. PLAN is the execution queue; INVENTORY holds document evidence,
+RASTERIZATION_DESIGN holds hypotheses/results and BENCHMARKS holds measurements.
+Neither another status paragraph nor another source audit is an implementation exit.
 
 ## 6. Font, text and host requirements retained
 
@@ -557,308 +511,38 @@ Preserve rejected diagonal/overlap/opacity models as negative evidence; Windows
 oracle results are not canonical Linux evidence. Work toward 200 targeted cases and
 10–20 representative diagrams/illustrations as coverage prompts, not release quotas.
 
-## 7. Core contract and validation discipline
+## 7. Optional reference sources
 
-Keep one MIT pure-managed C# net10.0 library for Windows/Linux: no third-party
-runtime packages, native assets/PInvoke, System.Drawing, platform font engine,
-browser service or other Lokad runtime dependency. Research does not authorize
-copying/vendorizing third-party implementations. Keep external/ optional, ignored
-and unreferenced. Rendering uses explicit supplied resources/options, never
-implicit filesystem/network/installed-font access. Private/public asset permissions
-and confidentiality remain exactly as specified in section 6.
+The local reference review in the earlier draft remains useful design guidance.
+Keep `external/` optional, ignored and unreferenced: no submodule, build/test input,
+runtime load, CI download, vendored/translated implementation or hidden Rust/C++/
+Node dependency. Do not modify another worker's reference checkout to test its
+absence. Ordinary build/test/package/consumer workflows need no sibling checkout.
 
-Preserve the six output APIs, owned/caller-memory lifetime, overlap rejection and
-non-array memory. Keep named null-argument contracts, categorized malformed/
-unsupported/unresolved/limit/insufficient-destination errors and token-preserving
-cancellation. Async memory schedules CPU work once; async streams await writes,
-propagate failures and remain open. Hosts own partial-output cleanup and atomic
-publication. Prepared documents remain single-use owners; raw snapshot concurrency
-and borrowed-byte validity have their separate documented lifetimes.
-
-| Existing default | Value / interpretation |
+| Inspected source / revision | Bounded use |
 | --- | --- |
-| Accounted renderer storage | 256 MiB; renderer-owned accounting, not process/host memory. Polygon gaps: R38/R39. |
-| SVG input / encoded PNG | 16 MiB / 128 MiB. |
-| Output | 16,384 per axis; 16,777,216 pixels. |
-| Nodes / cumulative path commands | 100,000 / 1,000,000. |
-| Shared conversion work | 100,000,000 units; preparation carries through scene/raster/PNG output. |
-| XML depth / attributes per element | 128 / 256. |
-| Text | 32,768 UTF-16 characters cumulatively in direct-text extraction. |
-| Snapshot caps, separate accounting | 256 faces / 32 MiB borrowed distinct programs. |
+| resvg `75b6bbadd7999d0516dcd7153b4a321bfdf8670a` | `usvg` style/tree, use/clip/paint binding and renderer operation order; typed resolved state and distinct geometry/stroke/layer bounds. |
+| tiny-skia `5d4754777746eef0828be166896eaf482c49f8f2` | Edge/span organization, compact paths, stroke/dash expansion and storage reuse. Its fourfold supersampling is not Chrome-exact analytic AA. |
+| resvg-test-suite `d8e064337faf01bc5a9579187a56dbdbe3eacc72` | Semantic counterexample index. It overlaps heavily with resvg's bundled suite; neither is a separate real-logo cohort or our PNG oracle. |
+| NanoSVG `239e102ec2c691f2902e20ace2ed36ee4a35cfe6` | Secondary small-parser/scanline comparison only; five-subsample output is not the exactness target. |
+| Matched Skia `f8b66b7597c4cc859d3ed190e9c6872241e6721c` | Release-tag `SkScan_AAAPath`, blitter/draw routing, stroker and curve conversion for a specific S11/S12 hypothesis. Relevant AAA/stroker routines were freshly read in this review. |
 
-Root lowering and discovery now share the conservative XML workspace allowance:
-max(16 KiB, four times input bytes, 512 bytes per configured attribute limit).
-The old claim that discovery lacked it is obsolete. This policy is not exact
-BCL-allocation accounting. Keep allocated bytes, owned/borrowed/live-accounted
-storage and working set distinct.
+The shelf's current Skia checkout `8b8c3872fbc03f025855db96ce683f34ec98a815`
+is a main-revision comparison, not the browser release pin. Use explicit matched
+source reads without changing it implicitly. resvg's registry tiny-skia dependency
+also need not be byte-identical to the sibling checkout despite equal version text.
 
-Validation per implementation slice:
+Upstream success criteria and defaults are not ours: resvg tests allow channel
+tolerance and can regenerate references from themselves; the test-suite Chrome
+helper disables the sandbox; upstream resolvers may read host files or keep a
+malformed path prefix. Keep our pinned captures, explicit providers, categorized
+failures, strict comparison and bounds. Keep upstream notices with optional
+checkouts; bundled fonts/assets have separate licenses. Source access authorizes
+study, not product vendoring or publication of private assets.
 
-- Locked restore and Release build/test; all retained exact references remain
-  exact. A regression against current source is separate from an old recorded run.
-- Independent geometry/semantics tests, retained browser references for changed
-  pixel behavior, and negative grammar/degenerate/numeric-boundary tests.
-- Deterministic during-phase cancellation, remaining-work/storage denial,
-  cleanup after partial construction, and six-output equivalence where touched.
-- Resource probes for new owning/work-heavy paths; package plus isolated installed
-  consumer for public API/package changes; fresh platform evidence for release.
-- Three stable fresh-process captures per new reference with SVG/assets, browser,
-  platform, recipe, output mapping and background identity. Compare decoded RGBA,
-  not PNG byte identity; ignore RGB only when both pixels are fully transparent.
-- A changed browser/recipe is a reviewed migration, never automatic replacement
-  of failing references. Preserve known-difference and failed research evidence.
-
-Use existing [oracle tooling](docs/ORACLE.md), [benchmarks](docs/BENCHMARKS.md),
-[raster research](docs/RASTERIZATION_DESIGN.md) and
-[C# guidelines](docs/GUIDELINES_CSHARP.md). Local artifact consistency is not proof
-of remote CI authenticity; retain run/revision/conclusions for remote evidence.
-No release claim depends on private fonts, a sibling checkout or a browser runtime.
-
-## 8. Pixel-exact corporate-logo requirements and stage status
-
-| Stage | Current state | Exit |
-| --- | --- | --- |
-| S8 — inventory/oracle | Honest synthetic exact/known-difference gate; real inventory empty. | Frozen independent inventory, variants and agreed exact-document target. |
-| S9 — static exports/style/references | Limited cascade, defs/use/symbol and forward references; CSS stroke defect R36. | Practical exporter semantics and bounded reusable resolution. |
-| S10 — geometry/coordinates | Curves/basic shapes and contour/affine kernels implemented experimentally; fractional curves/general public affine/complex contours still incomplete. | Complete required geometry/maps with independent semantics and S11 pixels. |
-| S11 — coverage/composition | Shared analytic polygon work exists; general Chrome-exact solution missing, with R33–R35 defects and known alpha residuals. | Exact held-out cross-phase/scale/alpha families. Critical path. |
-| S12 — strokes | Outline kernels, caps/joins/dashes and limited shape/paint instancing exist; many curved outputs inexact. | Correct shared fractional/transformed strokes and inventory-required variants. |
-| S13 — paints | Limited linear/radial stops, alpha, spread and inverse maps implemented; exactness/interaction gaps persist. | Reusable correct paint maps and exact mixed-feature evidence. |
-| S14 — clips/masks/layers | Restricted rectangles, constant masks, opacity and forward resolution; R33 device clipping defect. | Arbitrary path clips and corpus-required nested composition. |
-| S7/S15 — live text | Supplied-font preparation/host exists; ordinary-font fidelity unproven. | Same-font metrics/pixels under section 6, separate from outlined logos. |
-| S16 — extensions | Uniform PNG and narrow patterns exist; other features inventory-driven. | Only measured blockers, no detours. |
-| S17 — logo validation | Component tests green; representative milestone not demonstrated. | Agreed all-variant exact coverage with fresh platform/package/resource evidence. |
-
-The requirements below are targets, not blanket current-support claims.
-
-### S8 — Inventory and measurable completion
-
-Initially select 20–30 representative documents for prioritization, then 50–100
-distinct logo documents for the agreed milestone. Curves, outlined wordmarks with
-counters, thin strokes, compound/self-intersecting shapes, rotated/transformed
-groups, gradients, clipped marks, translucent overlap and live text must be visible,
-whether supported or not. Include ordinary design-tool and minified exports;
-record actual generator provenance, not guesses. Synthetic microprobes stay a
-separate calibration/regression suite, never substitutes for representative logos.
-
-Record original/materialized hashes, permission/license evidence, feature
-combinations, output dimensions, required supplied assets and pinned oracle
-identity. Do not assume brand assets are redistributable or simplify them to
-fit current admission. Restricted inputs/captures remain private; derive public
-original reproductions without private content.
-
-Capture intended size plus representative small/large sizes (e.g. 24/64/256 on a
-reference axis), selected non-integral OutputScale, and transparent/white/dark
-backgrounds where applicable. Preserve aspect ratio and distinguish resizing SVG
-input from same-input viewport/output-scale options. A smaller browser screenshot
-viewport alone clips a fixed-size img; it does not scale it.
-
-Freeze the inventory and agree a numeric exact-document coverage target before
-claiming “most”. A document counts exact only if **every declared variant** passes.
-Report exact, known-difference, unsupported and oracle-failure counts with feature
-intersections and current revision; count duplicates/variants separately.
-Do not infer coverage or a date from unit-test totals.
-
-### S9 — Practical static exports, style and references
-
-- Accept ordinary namespaces, metadata and non-rendering export wrappers under a
-  documented policy; do not reject harmless metadata or silently ignore unfamiliar
-  output-affecting attributes. Keep DTD/external entity/resource resolution off.
-- Resolve presentation attributes, inline style and ordered embedded stylesheets
-  with correct per-property cascade, specificity, inheritance, important priority,
-  currentColor, opacity and needed initial/inherit/unset forms. Preserve group
-  opacity versus inherited fill/stroke opacity and display versus visibility.
-  Add selectors/variables/declarations only for actual static-export blockers.
-- Parse dimensions, units and percentages against the proper viewport/bounding
-  box; root/nested svg/viewBox/preserveAspectRatio, overflow and intrinsic size
-  must use one mapping contract. Unsupported unknown-base semantics remain explicit.
-- Support local defs/use/symbol references, href/xlink:href, forward references,
-  nested containers and reusable groups as demanded by the inventory. Correct
-  instance presentation/inheritance, element-local transforms, symbol viewport,
-  clipping and object bounds; no accidental definition-ancestor transform reuse.
-  Bound resolution/expansion and detect cycles/duplicate-ID ambiguity explicitly.
-- Separate unresolved source syntax from computed style/typed paint and geometry.
-  Keep font discovery and lowering eligibility coherent, without duplicating
-  whole traversals or blocking shape-only rendering on font lookup.
-
-Exit: independently expected cascade/reference/viewport results, shared numeric
-and eligibility boundaries, plus representative exporter documents. General CSS,
-scripting, events, external-document retrieval and animation are not prerequisites.
-
-### S10 — General filled geometry and transforms
-
-- Parse absolute/relative M/L/H/V/C/S/Q/T/A/Z, repeated parameters, implicit lines
-  after moveto, reflected curve controls, compact signed decimal/exponent syntax
-  and strict arc flags. Preserve contour starts and closure. Handle radii
-  correction, arc rotation, degeneracies and malformed tails explicitly.
-- Preserve multiple contours/holes, either orientation, touching/coincident and
-  self-intersecting contours under nonzero/evenodd. Distinguish implicit fill
-  closure from explicit stroke closure.
-
-- Normalize circles, ellipses, rounded rectangles, lines, polygons and polylines
-  to shared geometry; retain independent equivalent-shape tests.
-- Support fractional coordinates, relevant units/percentages and all viewBox
-  alignments without quarter-pixel-only admission. Compose matrix, translate,
-  nonuniform/negative scale, rotate about optional center, and skew in order,
-  including ancestors/use/output scale. Define singular/nonfinite/overflow policy.
-- Keep object/user/viewport/device/paint maps and geometric/stroked/clipped bounds
-  distinct. Use compact typed commands/contours and explicitly owned arrays,
-  not a heap object per segment or reconstruction of topology from repeated points.
-
-Geometry exit: independent endpoints/tangents/extrema/bounds, winding and transform
-order; malformed/truncated command vectors and exact command/expansion limits.
-Subdivisions need a bounded device-space error/work policy. Mathematical closeness
-alone is not S11 fidelity; parsing the grammar alone is not rendering support.
-
-### S11 — Calibrated antialiasing, alpha and composition
-
-Build one bounded device-space coverage subsystem for fills, shared stroke outlines
-and eventually glyphs. Keep normalization and coverage independently testable.
-Preserve rectangle fast paths only where they match the same admitted output.
-
-Reuse the [retained calibration record](docs/RASTERIZATION_DESIGN.md): pixel-centre,
-uniform supersampling, exact continuous area and partial fixed-point/edge-snapping
-models have already failed. The pinned Skia source revision identifies a candidate
-source, not proof of the Chrome runtime raster route. Do not repeat rejected
-experiments or tune a handful of pixels into an asserted general rule.
-
-Calibrate edge inclusion, curve subdivision, scan conversion, phase, coverage
-quantization, coverage×opacity, premultiplied intermediates and final straight
-RGBA conversion. Test cusp/tangent/coincident/shared edges, slivers, winding
-cancellation, clipping, small/large/reflected/off-canvas geometry, transparent
-overlaps and opaque backgrounds. Investigate shape-rendering modes explicitly.
-
-Preserve the earlier full-canvas versus partial-rectangle alpha finding: identical
-local half-red/half-blue stacks can give alpha 191 versus 192 under the pinned
-oracle. This rejects a single context-free rounding explanation; it does **not**
-justify a fixture allowlist or prove that a general mechanism cannot be identified.
-Likewise, the current transposed-Bayer gradient model has recorded one-step
-residuals and must not be described as universally exact.
-
-Exit: zero decoded differences across the complete admitted and hold-out families;
-stable references, six-output equivalence and deterministic work/cancellation/
-cleanup tests. Known mismatches stay visible under R27 and unadmitted until fixed.
-Outlined wordmarks exercise this path, not the experimental font sampler.
-
-### S12 — Strokes used in normal exports
-
-Implement arbitrary positive fractional width, butt/round/square caps,
-miter/round/bevel joins and miter limit, proper closed joins, zero-length segments
-and curve offsets. Then corpus-required dash arrays/offsets, odd-array repetition,
-degenerate dashes and pathLength normalization. Support fill plus stroke with
-separate paints/opacities, paint-order, affine/nonuniform transforms and
-vector-effect=non-scaling-stroke without a scalar-width approximation.
-
-Generate a bounded stroke outline for the shared coverage/compositor; avoid
-independently composited overlapping rectangle bands at fractional corners.
-Retain the prior failed odd-width/fractional-line experiments: orientation-dependent
-half-coverage differences and double-composited band corners are unresolved, not
-permission to admit an approximation. Test acute miters, round tangencies, hairlines,
-dash seams, open/closed/degenerate paths, self-overlap and transformed strokes.
-Bounds/expansion/work denial tests are independent of pixel success.
-
-### S13 — Paint servers
-
-Use one typed paint resource and explicit paint-space transform for solid,
-linear/radial gradient and later pattern paints. Preserve original object bounds
-through clipping and instancing. Resolve objectBoundingBox/userSpaceOnUse,
-gradientTransform and href inheritance with bounded cycle-aware references.
-
-Complete stop ordering/clamping, duplicate/edge stops, opacity/transparency,
-spread pad/repeat/reflect, degenerate vectors, radial center/focal/radius behavior
-and specified color-interpolation policy. The present eight-stop limit is a narrow
-admission limit, not an SVG semantic rule; replace arbitrary caps with measured
-configured resource bounds as corpus cases require. Fill and stroke share paint
-evaluation; both gradients together should not require a new geometry variant.
-
-Exit: independent coordinate/stop expectations and exact size/phase/color/alpha
-oracle families, including diagonal ramps under nonuniform/rotated transforms,
-clipped/instanced shapes and combined gradient fills/strokes. Validate dithering/
-interpolation across unseen colors/slopes, not just a four-pixel red-blue ramp.
-
-### S14 — Clips, masks, groups and operation order
-
-Apply arbitrary paths/basic shapes and multiple children as clip geometry using
-the shared contour/coverage path; support clip-rule, clipPathUnits/transforms,
-nested/intersecting clips, referencing object bounds and local references.
-Retain viewport/symbol clipping order and antialiased clipped stroke boundaries.
-
-Preserve isolated group opacity: render overlapping children once, then composite
-the group, not opacity on every child. Support nested layers and object/group
-opacity interactions. Bound and crop intermediate surfaces without changing edge
-coverage or painting order; test empty/offscreen groups and allocation denial.
-
-Add alpha/luminance masks, maskUnits/maskContentUnits, region/defaults/transforms
-and painted mask content according to actual inventory needs. Mask and clip are
-different operations; a single byte opacity/rectangle is not general masking.
-Keep related definition state coherent rather than separate nullable lookups.
-
-Exit: mixed fill/stroke/gradient, transform/use, nested viewport, clip/mask and
-opacity cases on transparent/white/dark backgrounds with independent expected
-operation order, exact pixels and bounded intermediate lifetime/work.
-
-### S15 — Live-text wordmarks (not a prerequisite for outlined text)
-
-Use section 6/S7's unchanged supplied-font manifest and same-font oracle controls.
-Prioritize actual corpus-required family/style selection, metrics, kerning,
-whitespace, span paint/positioning, letter/word spacing and baseline behavior.
-Retain missing/corrupt/substitution controls; catalog family fallback is not
-per-glyph fallback or complex shaping. Required missing glyphs must not disappear.
-
-Feed validated glyph contours into the common geometry/paint/clip/compositor;
-do not duplicate the general rasterizer or claim exactness from a triangle font.
-Text-path placement, position/rotate lists, textLength/lengthAdjust, complex
-shaping/bidi, variable/color fonts and new formats each need separate measured
-scope and admission. Private success does not replace redistributable public
-regressions or authorize publication of private fonts/assets.
-
-### S16 — Measured extensions; avoid detours
-
-| Feature | Only pursue when it blocks the representative target |
-| --- | --- |
-| Embedded raster images | Bounded real multi-color decoding, data/reference policy, intrinsic sizing, transforms, resampling, alpha and color/orientation metadata. The current uniform-PNG-to-rectangle feature does not cover this. Preserve R29/R32's repairs; broaden formats only for measured blockers. |
-| Patterns | Reusable multi-element tile scenes, patternUnits/contentUnits, viewBox/aspect, transform, clipping/overflow and alpha through shared scene/paint evaluation. Preserve corrected tile work/ownership; resolve remaining paint-map fidelity without a pattern-only renderer. |
-| Markers | Start/mid/end placement, tangents/orientation, units, local viewports/context paint, degeneracies and bounded expansion. |
-| Effects/blending | Only corpus-required shadows/blur/offset/flood/composite/merge or feDropShadow first; filter regions/units, color space, edge extension, graph/surface/kernel limits and isolation/blending explicitly tested. |
-| Remaining export syntax | Static selectors/variables/conditional content and geometry/transform declarations evidenced in S8; add semantics before accepting formerly rejected spellings. |
-
-Scripts/events, animation, mutable DOM, foreignObject HTML, arbitrary external
-document fetching, installed-font discovery and unbounded global caches remain
-out of scope. No native backend or renderer dependency is introduced to bypass
-a difficult pixel-matching problem.
-
-### Cross-cutting resource and maintainability gates
-
-Charge commands, reference/curve/stroke/dash expansion, edge intersections/active
-edges, coverage, paint evaluation, clips/masks/layers and image/filter work.
-Reserve before allocation and before expensive denied work. Check cancellation
-inside bounded chunks; pre-cancelled entry tests are not phase evidence.
-Sparse/off-canvas geometry, tiny dash periods, cycles, near-degenerate curves and
-huge transformed bounds need adversarial tests.
-
-Every owned paint/contour/surface releases on success, failure, cancellation and
-disposal, with ownership transfer rather than bookkeeping-only release. Share
-immutable geometry/paint resources without hiding memory or double-accounting it.
-Keep six-output bytes/errors consistent, caller buffers/resources borrowed and
-async streams backpressure-aware. Benchmark repeated/distinct logos and cold/warm
-paths; do not conflate lower ledger peaks with fewer GC allocations.
-
-### S17 — Definition of usable for most corporate logos
-
-The milestone is reached only when the frozen S8 inventory meets the agreed exact
-document-coverage target, all declared variants of admitted documents are exact,
-and the remaining unsupported/known-difference/oracle failures are classified.
-No tolerance tier, reference rewriting, easier replacement assets or inflated
-variant counts. Publish implemented, oracle-validated and unsupported boundaries
-separately.
-
-Retain stable SVG/asset hashes and three-capture references with browser/platform/
-recipe, output mapping, background and any font/media assumptions. Exercise
-feature intersections, not only individual capabilities. Report representative
-latency, allocations/live peaks and cancellation/denial behavior.
-
-Require fresh Windows/Linux build/test/package/installed-consumer and resource
-evidence for claimed platforms. Windows exactness is not automatically canonical
-Linux evidence. A normal library consumer needs no browser, network, private font
-pack or sibling checkout. Use the census to choose work and the independent
-oracle to decide exact admission; do not confuse either with implementation volume.
+Use the existing [oracle tooling](docs/ORACLE.md),
+[research record](docs/RASTERIZATION_DESIGN.md),
+[comparison tool](docs/VISUAL_COMPARISON.md),
+[inventory](docs/INVENTORY.md) and [benchmarks](docs/BENCHMARKS.md).
+Do not build Chromium, fetch a renderer ecosystem or survey more reference
+implementations as a prerequisite to the concrete queue.
