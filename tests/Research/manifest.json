@@ -3056,6 +3056,88 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-stroke-single-diagonal-16x16",
+      "path": "stroke-single-diagonal-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "2ea0cf4460d484a94e16c91c8c422659183ad9729ffdd0f436d17e3af4dd8013",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 50,
+        "maximumChannelError": 8,
+        "maximumAlphaError": 8,
+        "alphaChangedPixelCount": 50,
+        "minimumMismatchX": 1,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 14,
+        "maximumMismatchY": 14
+      },
+      "oracle": {
+        "referencePng": "references/stroke-single-diagonal-16x16.png",
+        "referenceSha256": "958462075398e73f4b8226944a72a071a497c7b4a8e1842734d1cf93e841c44c",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-stroke-duplicate-diagonal-16x16",
+      "path": "stroke-duplicate-diagonal-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "554af5c8b62633ddcc6e38b5ae6e1ea10e329b14a0c95a81849c5e89affa9038",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 50,
+        "maximumChannelError": 108,
+        "maximumAlphaError": 108,
+        "alphaChangedPixelCount": 50,
+        "minimumMismatchX": 1,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 14,
+        "maximumMismatchY": 14
+      },
+      "oracle": {
+        "referencePng": "references/stroke-duplicate-diagonal-16x16.png",
+        "referenceSha256": "45e007bc95cd507b14ebc1696116573b2287088d6d524d0b07637cf1c5eddd5d",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }

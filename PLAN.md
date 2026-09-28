@@ -152,6 +152,8 @@ to make an experimental rule green.
 
 Status 2026-09-28: row 2 is complete in four commits. Contour preparation is shared through one payload, retention pre-reserves scene storage with ownership transfer on all four fill paths, denial and release are covered per paint plus crossing splits and stroke outlining, raster mapping/bounds/clip/coverage dispatch is shared through one owned payload with per-pixel paint evaluation left per loop, and six-output parity is pinned over a four-paint combo. Gates held green throughout with no exact-corpus change. Per-pixel paint unification is intentionally deferred: it would need hot-path polymorphism, and row 4 replaces the fan-scan traversal anyway.
 
+Status 2026-09-28: row 3 byte-rule calibration is redirected, not completed. Tenth-coverage adjudication proved no fixed mask-plus-combination rule fits the pinned cells, and the structural coverage-versus-alpha separation already holds at the shared boundary from row 2; translucent composition agrees with Chrome, and the opaque mask question belongs to the row-4 fixed-point model below. No bulk rounding change was made. Row 4 now carries a scoped plan in the design record with the duplicate-stroke pair retained as its first acceptance probes.
+
 ### Rows 5–7: coordinates, curves, strokes and composition
 
 Define user, object, viewport, instance, device and paint spaces explicitly.
