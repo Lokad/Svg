@@ -812,3 +812,9 @@ Question: does the edge-quantum divergence survive opaque-background compositing
 Method: admitted-syntax 16x16 black rect at x 10.25 on explicit white background with no product change; default render with white option; fresh white triple 3/3 identical; per-pixel sampling.
 Facts: 12 pixels at max error 1 on column 10 with alpha clean: 63 here against 64 in Chrome at nominal 0.75 coverage over white (255 times 0.25 equals 63.75). We round half away while Chrome truncates, the same direction as the transparent quantum rule, now through the retained-destination compositing path. The floor256 switch must therefore align both WithCoverage and the opaque blend roundings.
 Decision: the probe stays as an admittedRendering ratchet of 12 pixels at max error 1 with zero alpha error. Next: S11 owns both quantization points as one switch with the eight plus one acceptance values.
+
+## Integer arcs carry curve-family residuals with a clean diameter (2026-09-28 decision analysis)
+Question: does elliptical-arc conversion agree independently of cubic flattening?
+Method: admitted-syntax 16x16 integer half-disc arc fill with no product change; default render; fresh triple 3/3 identical; VisualDiff.
+Facts: 22 pixels at max error 61 confined to the curved half with the straight diameter edge agreeing, the same magnitude family as sampled-circle disc edges. Arc-to-segment conversion plus flattening therefore shares the curve residual shape with circles.
+Decision: the probe stays as an admittedRendering ratchet of 22 pixels at max error 61. Next: arc conversion and circle sampling converge on one curve-flattening hypothesis for S11; the legacy cubic-arch probe covers cubics separately.
