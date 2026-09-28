@@ -944,3 +944,9 @@ Question: how do element-opacity composition residuals scale across opacity leve
 Method: admitted-syntax 16x16 opaque-ramp twins at fill-opacity 0.25 and 0.75 with no product change; default render; fresh triples 3/3 identical; VisualDiff against the 0.5 and 1.0 points.
 Facts: 120 pixels at max error 3 for 0.25 and 66 at 1 for 0.75, both alpha-clean, against 114 at 1 for 0.5 and exact at 1.0. Residual count and magnitude grow as opacity drops while alpha stays exact, implicating opacity application into dithered values rather than interpolation or opacity parsing.
 Decision: both probes stay as admittedRendering ratchets with those numbers. Next: opacity application order for the paint owner; the sweep is complete at four levels.
+
+## Closed-loop dash seams diverge while traversal agrees (2026-09-28 decision analysis)
+Question: is the dash mirror general to closed loops, or does offset only disturb seam-crossing runs?
+Method: admitted-syntax 16x16 closed rectangular path with dashoffset 2.5 and no product change (offset-0 twin is byte-exact); default render; fresh triple 3/3 identical; VisualDiff with row profile.
+Facts: 4 pixels at max error 127 with matching alpha at the corners, against 94 opaque pixels for mirrored circles. Traversal therefore agrees on explicit-start loops; only runs crossing the closure seam diverge, while implicit-start sampled circles mirror globally.
+Decision: the probe stays as an admittedRendering ratchet of 4 pixels at max error 127 with matching alpha. Next: seam-crossing run merging for S12 alongside the sampling-direction flip; the two are now separate items.
