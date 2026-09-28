@@ -848,3 +848,9 @@ Question: why does an acute spike miter here while Chrome bevels it, when obtuse
 Method: admitted-syntax 16x16 acute spike probe with default miter limit 4; row-profile of oracle against candidate; read Skia MiterJoiner and stroker limit plumbing at the pinned revision against our EmitJoin ratio.
 Facts: the probe misses 50 opaque pixels with our spike taller by two rows. Algebra proves our ratio equals one over twice Skia sine-half-angle, so Skia bevels exactly when our ratio exceeds half the limit while we bevel at the full limit; with limit 4 the bands are both-miter below 2, split between 2 and 4 with our probe at 2.47, and both-bevel above 4. Skia passes one over the limit with no factor of two, so the two-times gap is in the comparison itself.
 Decision: the probe stays as an admittedRendering ratchet of 50 opaque pixels. Next: S12 matches Chrome by comparing twice our ratio, or equivalently half the limit, behind twins; miter math itself stays exonerated.
+
+## Non-scaling strokes under nonuniform scale agree exactly (2026-09-28 decision analysis)
+Question: does vector-effect non-scaling-stroke composition agree through nonuniform container transforms?
+Method: admitted-syntax 16x16 closed path with width 2 non-scaling stroke inside a scale(2,1) group with no product change; default render; fresh triple 3/3 identical; VisualDiff.
+Facts: byte-exact. Transform and stroke-width handling compose correctly through the vector-effect path with fixed width under nonuniform scales.
+Decision: no probe retained since the exact render has no manifest home, and no product change. Next: nothing open on non-scaling strokes.
