@@ -913,22 +913,30 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
 
         SvgPolygonMapping mapping = flattenedCenterline ? SvgPolygonMapping.FlattenedCurves : fractionalVertices ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.QuarterEdges;
-        SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
-        ValidateDeviceRange(retained);
-        int[] roles = new int[ends.Length];
-        ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
-        SvgContourNesting.ComputeWindingRoles(retained, ends, roles, _cancellationToken);
-        for (int contour = 0; contour < ends.Length; contour++)
+        RenderBudget.BudgetReservation? reservation = ReserveScene(mapped.Count, ends.Length, ends.Length, budget);
+        try
         {
-            if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
-            int start = contour == 0 ? 0 : ends[contour - 1];
-            if (roles[contour] == 0 && ends[contour] - start >= 3) roles[contour] = 1;
+            SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
+            ValidateDeviceRange(retained);
+            int[] roles = new int[ends.Length];
+            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            SvgContourNesting.ComputeWindingRoles(retained, ends, roles, _cancellationToken);
+            for (int contour = 0; contour < ends.Length; contour++)
+            {
+                if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
+                int start = contour == 0 ? 0 : ends[contour - 1];
+                if (roles[contour] == 0 && ends[contour] - start >= 3) roles[contour] = 1;
+            }
+            return RetainPolygonFill(retained, ends, roles, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
         }
-        return RetainPolygonFill(retained, ends, roles, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, null, budget);
+        catch
+        {
+            reservation?.Dispose();
+            throw;
+        }
     }
 
-    /// <summary>Validated separated contour storage with resolved combination weights, ready for paint-specific retention.</summary>
-    /// <summary>Validated separated contour storage with resolved combination weights and its scene reservation, ready for paint-specific retention. The reservation transfers to the retained fill; callers dispose it when retention does not take ownership.</summary>
+    /// <summary>Validated separated contour storage with resolved combination weights and its scene reservation, ready for paint-specific retention. The reservation transfers to the retained fill.</summary>
     private readonly record struct SeparatedContours(SvgDevicePoint[] Points, int[] Ends, int[] Signs, SvgPolygonMapping Mapping, RenderBudget.BudgetReservation? SceneReservation);
 
     /// <summary>Reserves exact scene storage for retained contour arrays before allocation, returning null when nothing is retained.</summary>

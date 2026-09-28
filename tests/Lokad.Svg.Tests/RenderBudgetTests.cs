@@ -966,4 +966,32 @@ public sealed class RenderBudgetTests
         AssertBudgetReleased(budget);
     }
 
+    [Fact]
+    public void Stroke_retention_denies_and_releases_when_scene_pre_reserve_exceeds_budget()
+    {
+        // R39: stroke retention shares the pre-reserved boundary, so a budget
+        // sized for mapping and outlining but not retention fails before copying.
+        RenderBudget roomyBudget = new(100_000);
+        ParserWorkCounter roomyCounter = new(100_000);
+        using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
+        points.Add(new SvgPoint(0, 0));
+        points.Add(new SvgPoint(8, 0));
+        using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
+        ends.Add(2);
+        RenderBudget tightBudget = new(
+            ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) +
+            ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(16) +
+            2 * ParserCollectionMemory.GetArrayByteCount<int>(1) +
+            ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) +
+            ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) +
+            ParserCollectionMemory.GetArrayByteCount<int>(1) +
+            ParserCollectionMemory.GetArrayByteCount<int>(1) - 1);
+        SvgException denied = Assert.Throws<SvgException>(() =>
+        {
+            using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polyline", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
+            return lowering.LowerStrokePolyline(points, false, AxisTransform.Identity, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, null, 0, null, false, new SvgColor(255, 0, 0, 255), false, null, tightBudget);
+        });
+        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        AssertBudgetReleased(tightBudget);
+    }
 }
