@@ -124,7 +124,7 @@ internal static class SvgEllipticalArc
 
     /// <summary>Appends one full ellipse loop, ending exactly where angle zero starts.</summary>
     /// <remarks>
-    /// <para>Each quarter subdivides independently with the endpoint convention, so the loop carries no
+    /// <para>Traversal runs from angle zero toward negative angles, matching the browser circle direction; start point and closure are unchanged. Each quarter subdivides independently with the endpoint convention, so the loop carries no
     /// duplicate and its implicit closing edge is a tested chord. A flatness above the loop extent
     /// collapses each quarter to its right end for four cardinal samples.</para>
     /// </remarks>
@@ -137,13 +137,13 @@ internal static class SvgEllipticalArc
         policy.Validate();
         cancellationToken.ThrowIfCancellationRequested();
         SvgDevicePoint origin = EllipsePointAt(center.X, center.Y, radiusX, radiusY, rotationRadians, 0);
-        SvgNormalizedArc loop = SvgNormalizedArc.CreateArc(origin, center, radiusX, radiusY, rotationRadians, 0, 2 * Math.PI, origin);
+        SvgNormalizedArc loop = SvgNormalizedArc.CreateArc(origin, center, radiusX, radiusY, rotationRadians, 0, -2 * Math.PI, origin);
         int appended = 0;
         double quarter = Math.PI / 2;
-        SubdivideArc(loop, 0, quarter, 0, policy, output, ref appended, cancellationToken);
-        SubdivideArc(loop, quarter, 2 * quarter, 0, policy, output, ref appended, cancellationToken);
-        SubdivideArc(loop, 2 * quarter, 3 * quarter, 0, policy, output, ref appended, cancellationToken);
-        SubdivideArc(loop, 3 * quarter, 4 * quarter, 0, policy, output, ref appended, cancellationToken);
+        SubdivideArc(loop, 0, -quarter, 0, policy, output, ref appended, cancellationToken);
+        SubdivideArc(loop, -quarter, -2 * quarter, 0, policy, output, ref appended, cancellationToken);
+        SubdivideArc(loop, -2 * quarter, -3 * quarter, 0, policy, output, ref appended, cancellationToken);
+        SubdivideArc(loop, -3 * quarter, -4 * quarter, 0, policy, output, ref appended, cancellationToken);
         output[appended - 1] = origin;
         cancellationToken.ThrowIfCancellationRequested();
         return appended;

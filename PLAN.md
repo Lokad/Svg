@@ -178,6 +178,8 @@ closed-run seam merging and cap/curve tessellation are separate defects; the
 straight dash kernel has positive evidence worth retaining. Revisit odd/fractional
 widths only after their quantum, overlap and geometry witnesses are resolved.
 
+Status 2026-09-28: row 6 first slice complete. Closed-loop circle and ellipse traversal now sweeps negative angles from the unchanged origin, matching the recorded browser circle direction; solid-circle renders are byte-identical pre and post. Dash ratchets re-measured and updated: research butt 94 to 90 and offset 98 to 92 with max error 255 to 241, fixture circle-dash 114 to 103 with max alpha 240 to 232, circle-dash-offset 113 to 106, ellipse-dash-offset 86 to 77 with max alpha 226 to 123; ellipse-dash regresses 88 to 93 with max alpha 223 to 255, recorded as such. Three new single-dash, aperiodic and ellipse research probes (53, 80 and 54 pixels, each a fresh identical triple) pin the start-phase, true-length and seam-merging follow-ups. Full gate holds 2511 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
+
 Continue from cascaded stroke values already present in `SvgComputedStyle`;
 replace repeated raw-string interpretation with shared typed computed state.
 Exercise attributes, inline/embedded CSS, important/default overrides, inheritance

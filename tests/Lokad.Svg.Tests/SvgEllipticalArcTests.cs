@@ -209,9 +209,9 @@ public sealed class SvgEllipticalArcTests
         int count = SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(100.0, 64, 16), buffer, CancellationToken.None);
 
         Assert.Equal(4, count);
-        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(System.Math.PI / 2.0), 4.0 + 8.0 * System.Math.Sin(System.Math.PI / 2.0)), buffer[0]);
-        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(System.Math.PI), 4.0 + 8.0 * System.Math.Sin(System.Math.PI)), buffer[1]);
-        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(3.0 * System.Math.PI / 2.0), 4.0 + 8.0 * System.Math.Sin(3.0 * System.Math.PI / 2.0)), buffer[2]);
+        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(-System.Math.PI / 2.0), 4.0 + 8.0 * System.Math.Sin(-System.Math.PI / 2.0)), buffer[0]);
+        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(-System.Math.PI), 4.0 + 8.0 * System.Math.Sin(-System.Math.PI)), buffer[1]);
+        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(-3.0 * System.Math.PI / 2.0), 4.0 + 8.0 * System.Math.Sin(-3.0 * System.Math.PI / 2.0)), buffer[2]);
         Assert.Equal(new SvgDevicePoint(12, 4), buffer[3]);
     }
 
