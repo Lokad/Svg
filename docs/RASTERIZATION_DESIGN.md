@@ -824,3 +824,9 @@ Question: does opaque-background compositing damp the diagonal-coverage residual
 Method: admitted-syntax 16x16 even-width diagonal stroke on explicit white with no product change; default render with white option; fresh white triple 3/3 identical; VisualDiff.
 Facts: 50 pixels at max error 8 with zero alpha error, against 87 pixels at 31 on transparency. Compositing over white compresses the coverage residual into gray levels without removing it, confirming the residual is coverage-driven with compositing as a damper rather than a second source.
 Decision: the probe stays as an admittedRendering ratchet of 50 pixels at max error 8 with zero alpha error. Next: diagonal work stays the S11 structural item; background interaction needs nothing separate.
+
+## Container transforms compose as AxisTransform at inheritance (2026-09-28 decision analysis)
+Question: is there a per-site shortcut for fractional container transforms below the AxisTransform conversion?
+Method: read SvgContainerInheritance.Resolve and the tiger gate stack (fractional transform through container inheritance, thirteenth transform-gated document).
+Facts: containers compose ParseTransform results directly into inheritedPresentation.Transform as AxisTransform before any leaf is visited, so fractional container args cannot sidestep the integer type at a lower layer; the 70-site conversion count stands and per-site targets must either change the inheritance carrier or resolve at leaf device maps.
+Decision: no inheritance-level shortcut exists; the R37 per-site direction from the earlier entry constrains to leaf device-map resolution or a carrier change, both owned by R37. Next: nothing further to scope from outside that work.
