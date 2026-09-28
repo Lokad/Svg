@@ -87,6 +87,33 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Curve_use_in_scaled_viewport_stays_unsupported()
+    {
+        // R35: the pre-existing scaled-viewport use gate also covers
+        // tolerance-flattened curve content, closing the frame-magnification
+        // hole independently of the instance-scale gates.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><svg x=\"0\" y=\"0\" width=\"128\" height=\"128\" viewBox=\"0 0 16 16\"><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs><use href=\"#q\"/></svg></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Use instances in scaled viewports are not implemented.", rejected.Message);
+    }
+
+    [Fact]
+    public void Forward_magnified_curve_use_stays_unsupported()
+    {
+        // R35: deferred forward-use resolution routes through the same instance
+        // mapping, so the magnification gate holds on the late path too.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><use href=\"#q\" transform=\"scale(8)\"/><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only unmagnified use instances of flattened curve outlines are implemented.", rejected.Message);
+    }
+
+    [Fact]
     public void Pattern_path_use_matches_direct_rendering()
     {
         string pattern = "<defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs>";
