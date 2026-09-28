@@ -2973,6 +2973,89 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-quantum-tenth-edge-path-16x16",
+      "path": "quantum-tenth-edge-path-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "9b79dd6bdd8eb4752dafce0b12ed41ef9a2594e735a353f58336023deed36e4e",
+      "featureTags": [
+        "geometry",
+        "path",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 12,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 12,
+        "minimumMismatchX": 10,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 15,
+        "maximumMismatchY": 13
+      },
+      "oracle": {
+        "referencePng": "references/quantum-tenth-edge-path-16x16.png",
+        "referenceSha256": "71bf42cee3fee1b651a197befa7b84cc7c01b62ef46c0984d0a592a9be139f93",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-quantum-translucent-127-tenth-path-16x16",
+      "path": "quantum-translucent-127-tenth-path-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "d2d8bc2297d5cc90f39de5b1491ea326aed01837d80f596a4a547699369f8c00",
+      "featureTags": [
+        "geometry",
+        "path",
+        "coverage",
+        "calibration",
+        "transparency"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 12,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 12,
+        "minimumMismatchX": 10,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 10,
+        "maximumMismatchY": 13
+      },
+      "oracle": {
+        "referencePng": "references/quantum-translucent-127-tenth-path-16x16.png",
+        "referenceSha256": "f4b56c719261d10abd984bd648e8a0038ed75f4732dee95027053a6cb9d47d77",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
