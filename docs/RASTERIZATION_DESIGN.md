@@ -950,3 +950,9 @@ Question: is the dash mirror general to closed loops, or does offset only distur
 Method: admitted-syntax 16x16 closed rectangular path with dashoffset 2.5 and no product change (offset-0 twin is byte-exact); default render; fresh triple 3/3 identical; VisualDiff with row profile.
 Facts: 4 pixels at max error 127 with matching alpha at the corners, against 94 opaque pixels for mirrored circles. Traversal therefore agrees on explicit-start loops; only runs crossing the closure seam diverge, while implicit-start sampled circles mirror globally.
 Decision: the probe stays as an admittedRendering ratchet of 4 pixels at max error 127 with matching alpha. Next: seam-crossing run merging for S12 alongside the sampling-direction flip; the two are now separate items.
+
+## Dash cap and join interactions follow their base families (2026-09-28 decision analysis)
+Question: do round caps and miter joins on dashed paths add new mechanisms beyond their solid twins?
+Method: two admitted-syntax 16x16 probes (round-cap dashes, miter-join dashes) with no product change; default render; fresh triples 3/3 identical; VisualDiff against the solid twins.
+Facts: round-cap dashes miss 14 pixels at the tips against 12 for solid round caps, same arc-fan family; miter-join dashes miss 52 at 27 across join and runs, consistent with diagonal coverage plus dash runs already proven exact separately. No new mechanism in either combination.
+Decision: both probes stay as admittedRendering ratchets with those numbers. Next: dash combinations need nothing beyond their base families.
