@@ -956,3 +956,9 @@ Question: do round caps and miter joins on dashed paths add new mechanisms beyon
 Method: two admitted-syntax 16x16 probes (round-cap dashes, miter-join dashes) with no product change; default render; fresh triples 3/3 identical; VisualDiff against the solid twins.
 Facts: round-cap dashes miss 14 pixels at the tips against 12 for solid round caps, same arc-fan family; miter-join dashes miss 52 at 27 across join and runs, consistent with diagonal coverage plus dash runs already proven exact separately. No new mechanism in either combination.
 Decision: both probes stay as admittedRendering ratchets with those numbers. Next: dash combinations need nothing beyond their base families.
+
+## Rect bands and userSpace gradient line strokes agree exactly (2026-09-28 decision analysis)
+Question: do sharp-rectangle band strokes and userSpace gradient line strokes agree, confirming two matrix exactness claims?
+Method: two admitted-syntax 16x16 probes (band stroked rect, userSpace red-blue stroked line) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
+Facts: both byte-exact. Band lowering with mitered band corners agrees, and userSpace gradient evaluation on lines adds zero error as claimed.
+Decision: no probes retained since exact renders have no manifest home, and no product change. Next: nothing open on bands or gradient line strokes.
