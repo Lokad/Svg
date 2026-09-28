@@ -109,6 +109,8 @@ Fix paint applicability using original geometric bounds, not expanded stroke
 bounds. Cover vertical paths, linear/radial paints, instancing and nondegenerate
 userSpace controls. Do not lose this case because it is “semantic, not calibration”.
 
+Status 2026-09-28: row 1 is complete in two commits. The miter comparison now tests the full displacement-to-half-width ratio (new limit-2 regression alongside the retained limit-1/limit-4 branches; acute research ratchet improved from 50 pixels at max error 255 to 46 at 36 as the sole mover in a 66-probe sweep). Degenerate objectBoundingBox linear/radial path strokes now paint nothing through a shared rasterizer guard on the original paint box, with horizontal, vertical, radial, use-instance and userSpace-band regressions retained. Post-fix degenerate candidates are fully transparent against the pinned empty oracle, and the full gate holds 2502 core plus 100 visual plus 6 font green with no exact-corpus change. The line-spelling rejection for objectBoundingBox gradient strokes is unchanged.
+
 ### Rows 2–4: shared coverage and ownership
 
 Retain one owned contour payload with ends/topology and a typed paint binding.

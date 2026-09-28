@@ -370,6 +370,8 @@ public static class SvgConverter
         void RasterizeGradientPolygon(SvgGradientPolygon outline, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
+            // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
+            if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
             long mappingWork = outline.Points.Length;
             if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
             workUnits += mappingWork;
@@ -474,6 +476,8 @@ public static class SvgConverter
         void RasterizeRadialPolygon(SvgRadialPolygon outline, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
+            // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
+            if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
             long mappingWork = outline.Points.Length;
             if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
             workUnits += mappingWork;

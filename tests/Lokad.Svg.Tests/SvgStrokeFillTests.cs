@@ -1190,6 +1190,53 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Degenerate_box_linear_gradient_path_stroke_paints_nothing()
+    {
+        // R41: a horizontal path has a zero-height objectBoundingBox, so its gradient stroke covers nothing.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#f00'/><stop offset='1' stop-color='#00f'/></linearGradient></defs><path d='M2,8 H14' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Degenerate_box_linear_gradient_vertical_path_stroke_paints_nothing()
+    {
+        // R41: a vertical path has a zero-width objectBoundingBox, so its gradient stroke covers nothing.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#f00'/><stop offset='1' stop-color='#00f'/></linearGradient></defs><path d='M8,2 V14' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Degenerate_box_radial_gradient_path_stroke_paints_nothing()
+    {
+        // R41: the zero-area box rule also applies to radial objectBoundingBox paints on degenerate paths.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g'><stop offset='0' stop-color='#f00'/><stop offset='1' stop-color='#00f'/></radialGradient></defs><path d='M2,8 H14' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Userspace_linear_gradient_path_stroke_paints_band()
+    {
+        // R41 control: userSpaceOnUse paints do not use the bounding box, so the same degenerate path still paints its band.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='2' y1='8' x2='14' y2='8'><stop offset='0' stop-color='#f00'/><stop offset='1' stop-color='#00f'/></linearGradient></defs><path d='M2,8 H14' fill='none' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(6120, AlphaSum(pixels));
+        Assert.Equal(255, Pixel(pixels, 16, 8, 7).Alpha);
+        Assert.Equal(255, Pixel(pixels, 16, 2, 7).Alpha);
+    }
+
+    [Fact]
+    public void Degenerate_box_linear_gradient_path_use_paints_nothing()
+    {
+        // R41: instanced degenerate paths share the paint box, so the use instance also paints nothing.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#f00'/><stop offset='1' stop-color='#00f'/></linearGradient></defs><defs><path id='p' d='M2,8 H14' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#p'/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(pixels));
+    }
+
+    [Fact]
     public void Gradient_fill_with_single_stop_stroke_matches_solid_stroke_pair()
     {
         byte[] gradient = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='s'><stop offset='0.3' stop-color='#00ff00'/></linearGradient></defs><rect x='1' y='1' width='6' height='6' fill='url(#g)' stroke='url(#s)' stroke-width='2'/></svg>", out _, out _);
