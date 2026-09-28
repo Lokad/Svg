@@ -908,3 +908,9 @@ Question: is the dashed-circle phase gap a start-point shift or a mirrored trave
 Method: two admitted-syntax 16x16 dashed circles at dashoffset 0 and 2.5 with no product change; default renders; fresh triples 3/3 identical; angular run mapping per renderer at both offsets; VisualDiff.
 Facts: offset 0 misses 94 opaque pixels and offset 2.5 misses 98. Raising dashoffset rotates our pattern by half a period one way and Chrome pattern by half a period the other way, so traversal directions are mirrored; equal-and-opposite rotation excludes a shared direction with opposite sign convention, which would agree at offset 0. The locus is sampling order or dash-walk order on closed loops.
 Decision: both probes stay as admittedRendering ratchets with those numbers. Next: S12 flips one traversal order for closed loops and re-probes against these two oracles.
+
+## Dash mirror localizes to circle sampling, not the dash kernel (2026-09-28 decision analysis)
+Question: does the mirrored traversal affect closed path loops or only sampled circles?
+Method: admitted-syntax 16x16 closed rectangular path with dashes and no product change; default render; fresh triple 3/3 identical; VisualDiff.
+Facts: byte-exact. Closed-loop dash traversal agrees, so the mirror lives in circle and ellipse sampling start or direction, not the dash machinery; the fix tries a sampling-direction flip first with the two dashed-circle oracles as acceptance, adjusting start point only if phase remains.
+Decision: no probe retained since the exact render has no manifest home, and no product change. Next: S12 flips sampling direction for closed loops against the two oracles.
