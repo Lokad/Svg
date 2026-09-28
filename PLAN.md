@@ -140,7 +140,9 @@ as a scoped investigation route. Account edge setup, ordering/intersections,
 contour-vertex scans, spans, painting and cancellation; a contour-pair count alone
 does not cover inner vertex scans. Preserve held-out failures and exact controls.
 
-Status 2026-09-28: row 4 first slice complete for the coincident class. Bitwise-identical contours merge to first occurrence in both fill preparation sites before roles and reservations, with pair charging and per-vertex copy accounting; touching, nested, crossing, rotated and reversed contours keep existing combination. The duplicate probe falls to max error 10; the merge fires nowhere else. Full gate holds 2516 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass. Crossings and partial overlaps stay spatial-union work.`n`nStatus 2026-09-29: row 4 second slice complete for opaque mask quantization. Opaque paints truncate coverage times 256 (clamped) per the release-tag Skia source while translucent keeps its verified rounding; the 0.75 anchor moves 191 to 192 with 0.25/0.5/1.0 agreeing. Three quarter-edge probes graduate exact alongside the viewbox-mark-24 graduation (341 entries = 260 exact + 81 unsupported). Curve/stroke ratchets re-measured across the family, broadly improving at fringe level; structural residuals (circle-mark 145 to 147, ellipse-mark 149 to 144) ride the row-4 fixed-point model, not calibration. Full gate holds 2524 core plus 100 visual plus 6 font green; memory and package checks pass.
+Status 2026-09-28: row 4 first slice complete for the coincident class. Bitwise-identical contours merge to first occurrence in both fill preparation sites before roles and reservations, with pair charging and per-vertex copy accounting; touching, nested, crossing, rotated and reversed contours keep existing combination. The duplicate probe falls to max error 10; the merge fires nowhere else. Full gate holds 2516 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass. Crossings and partial overlaps stay spatial-union work.
+
+Status 2026-09-29: row 4 second slice complete for opaque mask quantization. Opaque paints truncate coverage times 256 (clamped) per the release-tag Skia source while translucent keeps its verified rounding; the 0.75 anchor moves 191 to 192 with 0.25/0.5/1.0 agreeing. Three quarter-edge probes graduate exact alongside the viewbox-mark-24 graduation (341 entries = 260 exact + 81 unsupported). Curve/stroke ratchets re-measured across the family, broadly improving at fringe level; structural residuals (circle-mark 145 to 147, ellipse-mark 149 to 144) ride the row-4 fixed-point model, not calibration. Full gate holds 2524 core plus 100 visual plus 6 font green; memory and package checks pass.
 
 For row 3, retain geometric coverage, mask alpha, paint alpha, premultiplied
 intermediates and final straight RGBA as distinct operations. The opaque 0.75
@@ -206,6 +208,8 @@ opacity/dither ordering, forward inheritance and combined paints need independen
 evidence. Retain degenerate bounds/vector rules, stop ordering, spread and object
 versus user-space semantics; replace arbitrary stop caps with configured bounds
 only where measured inputs require it.
+
+Status 2026-09-29: row 7 first slice complete for general fractional rect-coordinate admission. ParseRectangleCoordinate drops the quarter-pixel gate (one line) after a consumer audit proving the rectangle rasterizer evaluates exact analytic fractional coverage and all other consumers ride general-double backends with downstream gates preserved; fractional transform args and stroke widths stay on their integer carriers for rows 5 and 6. Exactly one inventory disposition flips (inv-042 renders with a rounded-region known difference, numbers in its entry, oracle triple re-verified 3/3 byte-identical); four locked rejection tests repurposed deliberately. Full gate holds 2524 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
 
 ## 4. Findings and stage ledger
 
@@ -559,4 +563,5 @@ Use the existing [oracle tooling](docs/ORACLE.md),
 [inventory](docs/INVENTORY.md) and [benchmarks](docs/BENCHMARKS.md).
 Do not build Chromium, fetch a renderer ecosystem or survey more reference
 implementations as a prerequisite to the concrete queue.
+
 

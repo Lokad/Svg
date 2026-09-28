@@ -3778,7 +3778,7 @@ public sealed class OpenTypeFontTests
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         RenderBudget budget = new(1_000_000);
-        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' font-size='100'>A</text><rect x='0.1' width='1'/></svg>"u8.ToArray();
+        byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' font-size='100'>A</text><rect x='1%' width='1'/></svg>"u8.ToArray();
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None));
 

@@ -320,13 +320,24 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Fractional_beyond_quarter_stays_unsupported()
+    public void Fractional_beyond_quarter_renders()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><circle cx='4.1' cy='4' r='2' fill='red'/></svg>");
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><circle cx='4.1' cy='4' r='2' fill='red'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 0));
+    }
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    [Fact]
+    public void Fractional_rectangle_renders_exact_analytic_coverage()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='1.125' y='2' width='4' height='3' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 224), Pixel(pixels, 8, 1, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 32), Pixel(pixels, 8, 5, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 3, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 2));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 2));
     }
 
     [Fact]
