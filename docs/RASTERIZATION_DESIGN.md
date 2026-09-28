@@ -788,3 +788,9 @@ Question: does radial-gradient evaluation contribute its own residual on top of 
 Method: two admitted-syntax 16x16 probes sharing one r=6 disc (solid black, white-to-black radial) with no product change; default render; fresh triples 3/3 identical; VisualDiff plus exact differing-pixel-set comparison.
 Facts: both miss the identical 44-pixel edge ring at max error 61 in bbox 2 to 13, verified as the same pixel set, so radial evaluation adds zero error pixels and the entire residual is sampled-circle outline geometry. This matches the shared paint-box repaint claims and directs disc-family inventory residuals (Palau, Ukraine, Niger) at outlines, not paints.
 Decision: both probes stay as admittedRendering ratchets with those numbers. Next: disc-outline sampling is the remaining disc hypothesis; no radial-paint work is indicated.
+
+## Multistop opaque ramps agree; transparent middle misses two dither cells (2026-09-28 decision analysis)
+Question: does multi-stop segment interpolation agree, and where does transparent-middle evaluation diverge?
+Method: two admitted-syntax 16x16 probes (opaque red-green-blue ramp, transparent-green middle ramp) with no product change; default render; fresh triples 3/3 identical; per-pixel sampling.
+Facts: the opaque ramp is byte-exact, so segment interpolation and dithering agree there. The transparent-middle ramp misses exactly two pixels at (4,4) and (4,12) with green differing and identical alpha, sharing one 8x8 Bayer cell while same-cell same-value (4,8) agrees; consistent with a dither-matrix difference confined to the transparent evaluation path, with opaque paths agreeing everywhere.
+Decision: the transparent-middle probe stays as an admittedRendering ratchet of 2 pixels at max error 2 with zero alpha error; the exact opaque probe leaves no manifest entry. Next: transparent-path dither matrix for the paint owner; no interpolation work is indicated.
