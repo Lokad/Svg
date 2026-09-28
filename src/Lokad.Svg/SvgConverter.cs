@@ -10,6 +10,12 @@ using System.Xml;
 public static class SvgConverter
 {
     private const int GlyphSamplesPerAxis = 4;
+    /// <summary>Owns mapped polygon points with raster bounds, clip and their surface reservation until the rasterizer releases them.</summary>
+    private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, (double Left, double Top, double Right, double Bottom)? Clip, bool HasFractionalEdge, RenderBudget.BudgetReservation? Reservation) : IDisposable
+    {
+        public void Dispose() => Reservation?.Dispose();
+    }
+
 
     /// <summary>Converts SVG bytes to an independently owned PNG result.</summary>
     public static ReadOnlyMemory<byte> ConvertToPng(ReadOnlyMemory<byte> svg, SvgRenderOptions options, CancellationToken cancellationToken)
@@ -308,62 +314,80 @@ public static class SvgConverter
             if (band.HasFill) RasterizeSolidRectangle(band, destination);
         }
 
+        double PixelCoverage(MappedPolygon raster, ReadOnlySpan<int> contourEnds, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, int x, int y, CancellationToken cancellationToken)
+        {
+            double coverage = isEvenOdd
+                ? SvgPolygonCoverage.GetEvenOddCoverage(raster.Points, contourEnds, nestingSigns, x, y, cancellationToken)
+                : signs is int[] roles
+                    ? SvgPolygonCoverage.GetWindingCoverage(raster.Points, contourEnds, roles, x, y, cancellationToken)
+                    : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(raster.Points, contourEnds, x, y, cancellationToken)), 0, 1);
+            if (raster.Clip is not null) coverage *= ClipBoxCoverage(raster.Clip.Value, x, y);
+            return coverage;
+        }
+
+        MappedPolygon MapPolygon(SvgDevicePoint[] points, SvgPolygonMapping mapping, SvgClipBox? clip)
+        {
+            long mappingWork = points.Length;
+            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
+            workUnits += mappingWork;
+            RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length), SvgMemoryCategory.Surface);
+            try
+            {
+                SvgDevicePoint[] mapped = new SvgDevicePoint[points.Length];
+                bool hasFractionalEdge = false;
+                double left = double.PositiveInfinity;
+                double top = double.PositiveInfinity;
+                double right = double.NegativeInfinity;
+                double bottom = double.NegativeInfinity;
+                for (int index = 0; index < points.Length; index++)
+                {
+                    if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    double edgeX = mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(points[index].X, horizontalScale, horizontalOffset) : MapEdge(points[index].X, horizontalScale, horizontalOffset);
+                    double edgeY = mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(points[index].Y, verticalScale, verticalOffset) : MapEdge(points[index].Y, verticalScale, verticalOffset);
+                    mapped[index] = new SvgDevicePoint(edgeX, edgeY);
+                    if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
+                    if (edgeX < left) left = edgeX;
+                    if (edgeY < top) top = edgeY;
+                    if (edgeX > right) right = edgeX;
+                    if (edgeY > bottom) bottom = edgeY;
+                }
+                int startY = ClampFloor(top, outputHeight);
+                int endY = ClampCeiling(bottom, outputHeight);
+                int startX = ClampFloor(left, outputWidth);
+                int endX = ClampCeiling(right, outputWidth);
+                (double Left, double Top, double Right, double Bottom)? mappedClip = null;
+                if (clip is SvgClipBox clipBox)
+                {
+                    (startX, startY, endX, endY) = IntersectMappedClip(clipBox, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
+                    mappedClip = MapClipBounds(clipBox, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
+                }
+                return new MappedPolygon(mapped, startX, startY, endX, endY, mappedClip, hasFractionalEdge, mappedReservation);
+            }
+            catch
+            {
+                mappedReservation.Dispose();
+                throw;
+            }
+        }
         void RasterizePolygonFill(SvgPolygonFill polygon, byte[] destination)
         {
             if (!polygon.HasFill || polygon.Points.Length < 3) return;
-            long mappingWork = polygon.Points.Length;
-            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
-            workUnits += mappingWork;
-            using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Surface);
-            SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
-            bool hasFractionalEdge = false;
-            double left = double.PositiveInfinity;
-            double top = double.PositiveInfinity;
-            double right = double.NegativeInfinity;
-            double bottom = double.NegativeInfinity;
-            for (int index = 0; index < polygon.Points.Length; index++)
-            {
-                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                double edgeX = polygon.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(polygon.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(polygon.Points[index].X, horizontalScale, horizontalOffset);
-                double edgeY = polygon.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(polygon.Points[index].Y, verticalScale, verticalOffset) : MapEdge(polygon.Points[index].Y, verticalScale, verticalOffset);
-                mapped[index] = new SvgDevicePoint(edgeX, edgeY);
-                if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
-                if (edgeX < left) left = edgeX;
-                if (edgeY < top) top = edgeY;
-                if (edgeX > right) right = edgeX;
-                if (edgeY > bottom) bottom = edgeY;
-            }
-            int startY = ClampFloor(top, outputHeight);
-            int endY = ClampCeiling(bottom, outputHeight);
-            int startX = ClampFloor(left, outputWidth);
-            int endX = ClampCeiling(right, outputWidth);
-            (double Left, double Top, double Right, double Bottom)? mappedClip = null;
-            if (polygon.Clip is SvgClipBox clip)
-            {
-                (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
-                mappedClip = MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
-            }
-
-            if (endY <= startY || endX <= startX) return;
-            long coverage = (long)(endY - startY) * (endX - startX) * polygon.Points.Length;
+            using MappedPolygon raster = MapPolygon(polygon.Points, polygon.Mapping, polygon.Clip);
+            if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
+            long coverage = (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
             workUnits += coverage;
             ReadOnlySpan<int> contourEnds = polygon.ContourEnds;
             ReadOnlySpan<int> nestingSigns = polygon.Signs is int[] signs ? signs : Array.Empty<int>();
-            for (int y = startY; y < endY; y++)
+            for (int y = raster.StartY; y < raster.EndY; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                for (int x = startX; x < endX; x++)
+                for (int x = raster.StartX; x < raster.EndX; x++)
                 {
-                    double pixelCoverage = polygon.IsEvenOdd
-                        ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
-                        : polygon.Signs is int[] roles
-                            ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
-                            : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
-                    if (mappedClip is not null) pixelCoverage *= ClipBoxCoverage(mappedClip.Value, x, y);
+                    double pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, x, y, cancellationToken);
                     SvgColor color = WithCoverage(polygon.Color, pixelCoverage);
                     int offset = (y * outputWidth + x) * 4;
-                    BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+                    BlendSourceOver(destination.AsSpan(offset, 4), color, raster.HasFractionalEdge);
                 }
             }
         }
@@ -372,40 +396,9 @@ public static class SvgConverter
             if (!outline.HasFill || outline.Points.Length < 3) return;
             // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
-            long mappingWork = outline.Points.Length;
-            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
-            workUnits += mappingWork;
-            using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Surface);
-            SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
-            bool hasFractionalEdge = false;
-            double left = double.PositiveInfinity;
-            double top = double.PositiveInfinity;
-            double right = double.NegativeInfinity;
-            double bottom = double.NegativeInfinity;
-            for (int index = 0; index < outline.Points.Length; index++)
-            {
-                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                double edgeX = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(outline.Points[index].X, horizontalScale, horizontalOffset);
-                double edgeY = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].Y, verticalScale, verticalOffset) : MapEdge(outline.Points[index].Y, verticalScale, verticalOffset);
-                mapped[index] = new SvgDevicePoint(edgeX, edgeY);
-                if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
-                if (edgeX < left) left = edgeX;
-                if (edgeY < top) top = edgeY;
-                if (edgeX > right) right = edgeX;
-                if (edgeY > bottom) bottom = edgeY;
-            }
-            int startY = ClampFloor(top, outputHeight);
-            int endY = ClampCeiling(bottom, outputHeight);
-            int startX = ClampFloor(left, outputWidth);
-            int endX = ClampCeiling(right, outputWidth);
-            (double Left, double Top, double Right, double Bottom)? mappedClip = null;
-            if (outline.Clip is SvgClipBox clip)
-            {
-                (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
-                mappedClip = MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
-            }
-            if (endY <= startY || endX <= startX) return;
-            long coverage = (long)(endY - startY) * (endX - startX) * outline.Points.Length;
+            using MappedPolygon raster = MapPolygon(outline.Points, outline.Mapping, outline.Clip);
+            if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
+            long coverage = (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
             workUnits += coverage;
             SvgLinearGradient definition = outline.Gradient;
@@ -423,18 +416,13 @@ public static class SvgConverter
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
             if (denominator != 0 || definition.Stops.Length == 1)
-            for (int y = startY; y < endY; y++)
+            for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
-            for (int x = startX; x < endX; x++)
+            for (int x = raster.StartX; x < raster.EndX; x++)
             {
-                double pixelCoverage = outline.IsEvenOdd
-                    ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
-                    : outline.Signs is int[] roles
-                        ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
-                        : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
-                if (mappedClip is not null) pixelCoverage *= ClipBoxCoverage(mappedClip.Value, x, y);
+                double pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double position;
                 if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
@@ -469,7 +457,7 @@ public static class SvgConverter
                 SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
                 SvgColor color = WithCoverage(tileColor, pixelCoverage);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+                BlendSourceOver(destination.AsSpan(offset, 4), color, raster.HasFractionalEdge);
             }
             }
         }
@@ -478,40 +466,9 @@ public static class SvgConverter
             if (!outline.HasFill || outline.Points.Length < 3) return;
             // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
-            long mappingWork = outline.Points.Length;
-            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
-            workUnits += mappingWork;
-            using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Surface);
-            SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
-            bool hasFractionalEdge = false;
-            double left = double.PositiveInfinity;
-            double top = double.PositiveInfinity;
-            double right = double.NegativeInfinity;
-            double bottom = double.NegativeInfinity;
-            for (int index = 0; index < outline.Points.Length; index++)
-            {
-                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                double edgeX = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(outline.Points[index].X, horizontalScale, horizontalOffset);
-                double edgeY = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].Y, verticalScale, verticalOffset) : MapEdge(outline.Points[index].Y, verticalScale, verticalOffset);
-                mapped[index] = new SvgDevicePoint(edgeX, edgeY);
-                if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
-                if (edgeX < left) left = edgeX;
-                if (edgeY < top) top = edgeY;
-                if (edgeX > right) right = edgeX;
-                if (edgeY > bottom) bottom = edgeY;
-            }
-            int startY = ClampFloor(top, outputHeight);
-            int endY = ClampCeiling(bottom, outputHeight);
-            int startX = ClampFloor(left, outputWidth);
-            int endX = ClampCeiling(right, outputWidth);
-            (double Left, double Top, double Right, double Bottom)? mappedClip = null;
-            if (outline.Clip is SvgClipBox clip)
-            {
-                (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
-                mappedClip = MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
-            }
-            if (endY <= startY || endX <= startX) return;
-            long coverage = (long)(endY - startY) * (endX - startX) * outline.Points.Length;
+            using MappedPolygon raster = MapPolygon(outline.Points, outline.Mapping, outline.Clip);
+            if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
+            long coverage = (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
             workUnits += coverage;
             SvgRadialGradient definition = outline.Gradient;
@@ -524,18 +481,13 @@ public static class SvgConverter
             }
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            for (int y = startY; y < endY; y++)
+            for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
-            for (int x = startX; x < endX; x++)
+            for (int x = raster.StartX; x < raster.EndX; x++)
             {
-                double pixelCoverage = outline.IsEvenOdd
-                    ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
-                    : outline.Signs is int[] roles
-                        ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
-                        : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
-                if (mappedClip is not null) pixelCoverage *= ClipBoxCoverage(mappedClip.Value, x, y);
+                double pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double sampleX;
                 double sampleY;
@@ -624,7 +576,7 @@ public static class SvgConverter
                 SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
                 SvgColor color = WithCoverage(tileColor, pixelCoverage);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+                BlendSourceOver(destination.AsSpan(offset, 4), color, raster.HasFractionalEdge);
             }
             }
         }
@@ -632,40 +584,9 @@ public static class SvgConverter
         void RasterizePatternPolygon(SvgPatternPolygon outline, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
-            long mappingWork = outline.Points.Length;
-            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
-            workUnits += mappingWork;
-            using RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Surface);
-            SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
-            bool hasFractionalEdge = false;
-            double left = double.PositiveInfinity;
-            double top = double.PositiveInfinity;
-            double right = double.NegativeInfinity;
-            double bottom = double.NegativeInfinity;
-            for (int index = 0; index < outline.Points.Length; index++)
-            {
-                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                double edgeX = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].X, horizontalScale, horizontalOffset) : MapEdge(outline.Points[index].X, horizontalScale, horizontalOffset);
-                double edgeY = outline.Mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(outline.Points[index].Y, verticalScale, verticalOffset) : MapEdge(outline.Points[index].Y, verticalScale, verticalOffset);
-                mapped[index] = new SvgDevicePoint(edgeX, edgeY);
-                if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
-                if (edgeX < left) left = edgeX;
-                if (edgeY < top) top = edgeY;
-                if (edgeX > right) right = edgeX;
-                if (edgeY > bottom) bottom = edgeY;
-            }
-            int startY = ClampFloor(top, outputHeight);
-            int endY = ClampCeiling(bottom, outputHeight);
-            int startX = ClampFloor(left, outputWidth);
-            int endX = ClampCeiling(right, outputWidth);
-            (double Left, double Top, double Right, double Bottom)? mappedClip = null;
-            if (outline.Clip is SvgClipBox clip)
-            {
-                (startX, startY, endX, endY) = IntersectMappedClip(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
-                mappedClip = MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
-            }
-            if (endY <= startY || endX <= startX) return;
-            long coverage = (long)(endY - startY) * (endX - startX) * outline.Points.Length;
+            using MappedPolygon raster = MapPolygon(outline.Points, outline.Mapping, outline.Clip);
+            if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
+            long coverage = (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
             if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
             workUnits += coverage;
             SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null);
@@ -678,24 +599,19 @@ public static class SvgConverter
             BlitPatternTile(tile, blitted);
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            for (int y = startY; y < endY; y++)
+            for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
-            for (int x = startX; x < endX; x++)
+            for (int x = raster.StartX; x < raster.EndX; x++)
             {
-                double pixelCoverage = outline.IsEvenOdd
-                    ? SvgPolygonCoverage.GetEvenOddCoverage(mapped, contourEnds, nestingSigns, x, y, cancellationToken)
-                    : outline.Signs is int[] roles
-                        ? SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, roles, x, y, cancellationToken)
-                        : Math.Clamp(Math.Abs(SvgPolygonCoverage.GetWindingCoverage(mapped, contourEnds, x, y, cancellationToken)), 0, 1);
-                if (mappedClip is not null) pixelCoverage *= ClipBoxCoverage(mappedClip.Value, x, y);
+                double pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
                 int tileX = PositiveModulo(x - tile.OriginX, tile.TileWidth);
                 int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
                 int tileOffset = (tileY * tile.TileWidth + tileX) * 4;
                 SvgColor tileColor = new(blitted[tileOffset], blitted[tileOffset + 1], blitted[tileOffset + 2], MultiplyAlpha(blitted[tileOffset + 3], tile.Opacity));
                 SvgColor color = WithCoverage(tileColor, pixelCoverage);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+                BlendSourceOver(destination.AsSpan(offset, 4), color, raster.HasFractionalEdge);
             }
             }
         }
