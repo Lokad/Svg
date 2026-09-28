@@ -2604,6 +2604,88 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-dashed-circle-butt-16x16",
+      "path": "dashed-circle-butt-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "3ddd2497e3259b3d2b70a0b4059e792049a7ecf699fd35774603d6ac0acfa3a9",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "dash",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 94,
+        "maximumChannelError": 255,
+        "maximumAlphaError": 255,
+        "alphaChangedPixelCount": 94,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 13,
+        "maximumMismatchY": 13
+      },
+      "oracle": {
+        "referencePng": "references/dashed-circle-butt-16x16.png",
+        "referenceSha256": "ec1a2ec99a9432986f975da0a9ce7ee0ca9bb185febde6379765a98eb6e451a4",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-dashed-circle-offset-16x16",
+      "path": "dashed-circle-offset-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "69bfab14b4fb5889004cf6067547f111ecaa7cea20b326606af3a616af7369f8",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "dash",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 98,
+        "maximumChannelError": 255,
+        "maximumAlphaError": 255,
+        "alphaChangedPixelCount": 98,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 13,
+        "maximumMismatchY": 13
+      },
+      "oracle": {
+        "referencePng": "references/dashed-circle-offset-16x16.png",
+        "referenceSha256": "a1d6f1b16ee19d76b862298237eddbaa5216876f79fcb2c7246b8b3d37919e02",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }

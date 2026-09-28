@@ -902,3 +902,9 @@ Question: does opposite-wound ring coverage agree independently of disc fills?
 Method: admitted-syntax 16x16 stroked circle with no product change; default render; fresh triple 3/3 identical; VisualDiff.
 Facts: 69 pixels at max error 50 across the ring band, consistent with sampled-outline residuals on two circumferences rather than any ring-composition effect. The ring machinery itself needs nothing separate.
 Decision: the probe stays as an admittedRendering ratchet of 69 pixels at max error 50. Next: disc-outline sampling covers rings too; no ring-specific work is indicated.
+
+## Dashed circles run mirrored against Chrome, proven by opposite offset rotation (2026-09-28 decision analysis)
+Question: is the dashed-circle phase gap a start-point shift or a mirrored traversal?
+Method: two admitted-syntax 16x16 dashed circles at dashoffset 0 and 2.5 with no product change; default renders; fresh triples 3/3 identical; angular run mapping per renderer at both offsets; VisualDiff.
+Facts: offset 0 misses 94 opaque pixels and offset 2.5 misses 98. Raising dashoffset rotates our pattern by half a period one way and Chrome pattern by half a period the other way, so traversal directions are mirrored; equal-and-opposite rotation excludes a shared direction with opposite sign convention, which would agree at offset 0. The locus is sampling order or dash-walk order on closed loops.
+Decision: both probes stay as admittedRendering ratchets with those numbers. Next: S12 flips one traversal order for closed loops and re-probes against these two oracles.
