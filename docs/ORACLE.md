@@ -163,3 +163,23 @@ that produced it: retained historical references may therefore record revision 1
 2 or 3, while newly admitted references must record revision 3. A recipe change requires
 an explicit review of affected baselines; do not rewrite that provenance field to
 make the inventory uniform.
+
+## Capture sizing behavior
+
+The harness renders the SVG in an unstyled block img, see tools/Lokad.Svg.Chrome/ChromeSvgCapture.cs,
+and screenshots the page top-left at the requested dimensions with captureBeyondViewport=false.
+Size every capture from the SVG intrinsic dimensions:
+
+- Roots with explicit width and height render the img at that intrinsic size. A smaller capture crops
+the top-left; a larger one adds page-background margin. Compare candidates only at intrinsic size.
+The batch-101 inv-080 proof shows a 540x360 capture of the intrinsic-600x400 file is a top-left crop,
+with vertical-bar center x=111 and stripe scale 22.222, so its 86,055-pixel divergence from the
+meet-fitted candidate is the viewport contract, not renderer fidelity.
+
+- ViewBox-only roots without dimensions size the auto img by ratio negotiation. The batch-83 inv-011
+proof shows Chrome negotiates height from the intrinsic ratio and screenshots the top while the renderer
+meets the viewBox into its viewport. Compare at explicit integer-scale viewports with matching aspect
+ratio instead, as in batches 84-89 and 101-103.
+
+- Hard transport limits: SVG input at most 8 MiB; capture area at most 2,000,000 pixels. A 3000x2000
+request fails before launch, see batch-103.
