@@ -194,7 +194,7 @@ belong to S9. Keep DTD/external entity/resource retrieval disabled.
 R33 now maps clip boxes and applies fractional coverage on all four polygon paths;
 the new half-pixel probe is exact. Preserve that behavior. Arbitrary clip paths,
 clip-child union versus nested intersection, clip rules/units and use transforms
-remain S14. inv-085's diagonal clip is not a rectangle-union shortcut. Keep group
+remain S14. inv-085's diagonal clip is not a rectangle-union shortcut. Status 2026-09-28: clip application scoped (ghost composite proves triangle-union geometry and part correctness with all 5762 residual pixels in the diagonal-AA family; needs contour intersection with union semantics from row 4; expected Czech-like known-difference render). Keep group
 opacity isolated, support nested layers, crop surfaces with correct origins and
 bounds, then implement the mask regions/content evidenced by inv-094. Constant
 mask opacity is not general alpha/luminance masking.
