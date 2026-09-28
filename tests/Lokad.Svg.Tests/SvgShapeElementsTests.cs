@@ -172,6 +172,42 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Shared_clip_path_binds_each_object_box()
+    {
+        // S14: one objectBoundingBox clip definition resolves per referencing
+        // box; the second rect keeps its full half width instead of inheriting
+        // the first rects narrower clip.
+        byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><clipPath id=\"c\" clipPathUnits=\"objectBoundingBox\"><rect x=\"0\" y=\"0\" width=\"0.5\" height=\"1\"/></clipPath></defs><rect x=\"0\" y=\"0\" width=\"4\" height=\"8\" fill=\"red\" clip-path=\"url(#c)\"/><rect x=\"8\" y=\"0\" width=\"8\" height=\"8\" fill=\"blue\" clip-path=\"url(#c)\"/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 3, 0));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 8, 0));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 11, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 13, 0));
+        Assert.Equal(12240, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Shared_gradient_binds_each_object_box()
+    {
+        // S13: one objectBoundingBox gradient definition evaluates per
+        // referencing box; the second ramp restarts instead of continuing.
+        byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"0\" y=\"0\" width=\"4\" height=\"8\" fill=\"url(#g)\"/><rect x=\"8\" y=\"0\" width=\"8\" height=\"8\" fill=\"url(#g)\"/></svg>", out _, out _);
+
+        SvgColor left = Pixel(pixels, 16, 0, 0);
+        SvgColor narrowRight = Pixel(pixels, 16, 3, 0);
+        SvgColor wideLeft = Pixel(pixels, 16, 8, 0);
+        SvgColor wideRight = Pixel(pixels, 16, 15, 0);
+        Assert.True(left.Red > left.Blue);
+        Assert.True(narrowRight.Blue > narrowRight.Red);
+        Assert.True(wideLeft.Red > wideLeft.Blue);
+        Assert.True(wideRight.Blue > wideRight.Red);
+        Assert.Equal(24480, AlphaSum(pixels));
+    }
+
+    [Fact]
     public void Gradient_filled_diagonal_path_matches_polygon()
     {
         // S13/S16: diagonal paths share the point-list gradient-fill lowering,

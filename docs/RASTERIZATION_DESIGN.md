@@ -672,3 +672,10 @@ Method: extended the root-seed work into SvgTextInheritance.Resolve (element att
 Facts: group preserve renders byte-identical to the text-level preserve twin; group inline CSS overrides group xml:space exactly like the root override; invalid group values fail as MalformedInput. The seed and override twins fail without the fix; the invalid pin passes either way because the XML layer rejects out-of-range xml:space values before product validation, which the pin now locks in. Text elements keep their own resolution path untouched. Full gate 2489 core plus 100 visual plus 6 font green.
 Decision: xml:space inheritance is complete across root, containers and text elements with CSS-first precedence throughout; no PLAN.md status line (no finding owns this micro-thread; the design record carries both whitespace entries).
 
+
+## One clip and paint definition binds per referencing object box (2026-09-28 decision analysis)
+Question: does any definition state leak across instances sharing one clip-path or paint-server id?
+Method: two rects of different sizes sharing one objectBoundingBox clipPath and one objectBoundingBox linearGradient; per-pixel maps plus exact AlphaSum analysis; white-box retained-geometry dumps; swapped, three-rectangle and canvas-size bisection probes.
+Facts: both twins bind per instance (clip halves (0,0,2,8) plus (8,0,4,8); ramps restart per box with the wide left edge red-dominant). An early scare about a narrowed second clip traced to an unverified probe file, not the product: byte-verified re-runs render exactly, and no test had ever referenced one clip id twice. Full gate 2491 core plus 100 visual plus 6 font green.
+Decision: per-instance clip and paint binding stands pinned by twin tests (structural pixels plus exact sums 12240 and 24480); probe inputs must be byte-verified before drawing conclusions since ignored scratch is shared with concurrent work. Next: nothing open on this route.
+
