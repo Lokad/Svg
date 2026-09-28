@@ -341,6 +341,49 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Fractional_rectangle_stroke_renders_exact_bands()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='4.5' y='4.5' width='5' height='5' fill='none' stroke='black' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 0, 0, 255), Pixel(pixels, 16, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 128), Pixel(pixels, 16, 3, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 128), Pixel(pixels, 16, 10, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 255), Pixel(pixels, 16, 4, 7));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 7, 7));
+    }
+
+    [Fact]
+    public void Odd_width_rectangle_stroke_renders_exact_bands()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='8' height='8' fill='red' stroke='black' stroke-width='1'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 0, 0, 128), Pixel(pixels, 16, 5, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 128), Pixel(pixels, 16, 1, 5));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 5, 5));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 0, 0));
+    }
+
+    [Fact]
+    public void Transformed_rectangle_stroke_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='8' height='8' fill='red' stroke='black' stroke-width='2' transform='translate(1, 0)'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Oversize_rectangle_stroke_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='4' height='4' fill='red' stroke='black' stroke-width='6'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Gradient_fill_on_circle_renders_ramp()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><circle cx='4' cy='4' r='2' fill='url(#g)'/></svg>", out _, out _);

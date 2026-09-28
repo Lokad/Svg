@@ -211,6 +211,8 @@ only where measured inputs require it.
 
 Status 2026-09-29: row 7 first slice complete for general fractional rect-coordinate admission. ParseRectangleCoordinate drops the quarter-pixel gate (one line) after a consumer audit proving the rectangle rasterizer evaluates exact analytic fractional coverage and all other consumers ride general-double backends with downstream gates preserved; fractional transform args and stroke widths stay on their integer carriers for rows 5 and 6. Exactly one inventory disposition flips (inv-042 renders with a rounded-region known difference, numbers in its entry, oracle triple re-verified 3/3 byte-identical); four locked rejection tests repurposed deliberately. Full gate holds 2524 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
 
+Status 2026-09-29: row 7 second slice complete for rect-stroke fractional geometry and odd widths. ParseRectangleStroke drops the integer-geometry and even-width gates (two lines plus honest messages) after verifying the four-band tiling is exact and shared gradient/pattern probes ride the same bands; transform-identity, positivity, size-bound, dasharray-none and scaled-viewport gates preserved, and general outline-kernel odd widths stay row-6 work. Exactly one inventory disposition flips (inv-074 renders with a tick-curve known difference, numbers in its entry, oracle triple re-verified 3/3 byte-identical, per-pixel map proving box bands exact); one locked rejection test repurposed plus four new rect-stroke unit tests. Full gate holds 2528 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
+
 ## 4. Findings and stage ledger
 
 ### Active findings

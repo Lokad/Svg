@@ -1928,12 +1928,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_rectangle_strokes_outside_the_calibrated_subset()
+    public void Admits_odd_width_rectangle_strokes_on_the_analytic_subset()
     {
-        SvgException oddWidth = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='none' stroke='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='none' stroke='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgException transformed = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='blue' stroke='red' stroke-width='2' transform='translate(1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, oddWidth.ErrorCode);
+        SvgStroke stroke = Assert.NotNull(root.Rectangles[0].Stroke);
+        Assert.Equal(1, stroke.Width);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, transformed.ErrorCode);
     }
 

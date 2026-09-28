@@ -696,9 +696,9 @@ internal static class SvgLeafParser
     internal static SvgStroke? ParseRectangleStroke(SvgColor? color, string? widthValue, AxisTransform transform, double x, double y, double width, double height, byte opacity, bool hasFill)
     {
         if (color is null) { return null; }
-        if (transform != AxisTransform.Identity || x != Math.Truncate(x) || y != Math.Truncate(y) || width != Math.Truncate(width) || height != Math.Truncate(height) || (hasFill && opacity != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed integer rectangle strokes, with opacity only when fill-less, are implemented.");
+        if (transform != AxisTransform.Identity || (hasFill && opacity != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed rectangle strokes, with opacity only when fill-less, are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(widthValue ?? "1");
-        if (strokeWidth <= 0 || strokeWidth % 2 != 0 || strokeWidth > width || strokeWidth > height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width rectangle strokes no larger than the rectangle dimensions are implemented.");
+        if (strokeWidth <= 0 || strokeWidth > width || strokeWidth > height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rectangle strokes no larger than the rectangle dimensions are implemented.");
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(color.Value, opacity), strokeWidth);
     }
 }
