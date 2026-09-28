@@ -830,3 +830,9 @@ Question: is there a per-site shortcut for fractional container transforms below
 Method: read SvgContainerInheritance.Resolve and the tiger gate stack (fractional transform through container inheritance, thirteenth transform-gated document).
 Facts: containers compose ParseTransform results directly into inheritedPresentation.Transform as AxisTransform before any leaf is visited, so fractional container args cannot sidestep the integer type at a lower layer; the 70-site conversion count stands and per-site targets must either change the inheritance carrier or resolve at leaf device maps.
 Decision: no inheritance-level shortcut exists; the R37 per-site direction from the earlier entry constrains to leaf device-map resolution or a carrier change, both owned by R37. Next: nothing further to scope from outside that work.
+
+## Miter math exonerated by axis rectangle; chevron residual is diagonal coverage (2026-09-28 decision analysis)
+Question: is the chevron miter residual miter-limit math or diagonal edges?
+Method: admitted-syntax 16x16 closed rectangular path stroke with four 90 degree miter joins on axis edges and no product change; default render; fresh triple 3/3 identical; VisualDiff. The EmitJoin ratio was also checked against the SVG miter-diagonal over stroke-width definition during scoping and matches.
+Facts: 0 pixels exact. Miter math including ratio, limit, bevel fallback and inner and outer chains agrees; the chevron 54-pixel residual therefore lives entirely in its diagonal spike flanks and notch, which is the structural diagonal item, not a second miter mechanism.
+Decision: axis-miter agreement recorded; the chevron ratchet stays with reattributed mechanism. Next: nothing open on miter math.
