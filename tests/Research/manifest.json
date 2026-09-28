@@ -2317,6 +2317,129 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-fractional-path-orthogonal-16x16",
+      "path": "fractional-path-orthogonal-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "7fbd0fb8bf142fdeea83de64d18c61a0de9983d0164a97221b25992bca8defac",
+      "featureTags": [
+        "geometry",
+        "path",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 8,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 8,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 0,
+        "maximumMismatchX": 0,
+        "maximumMismatchY": 7
+      },
+      "oracle": {
+        "referencePng": "references/fractional-path-orthogonal-16x16.png",
+        "referenceSha256": "b34e871a71882fd758bc296065e316139ad48ca63376bd60051c5cd6e39e2279",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-fractional-polygon-16x16",
+      "path": "fractional-polygon-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "a0628ba1f85d1cfd9bc35176b14984c0f294e3aae7b8b8254cb9d162160c9d9a",
+      "featureTags": [
+        "geometry",
+        "polygon",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 8,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 8,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 0,
+        "maximumMismatchX": 0,
+        "maximumMismatchY": 7
+      },
+      "oracle": {
+        "referencePng": "references/fractional-polygon-16x16.png",
+        "referenceSha256": "b34e871a71882fd758bc296065e316139ad48ca63376bd60051c5cd6e39e2279",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-fractional-polyline-16x16",
+      "path": "fractional-polyline-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "008cec818923bd3de4ca4e20f84fade34edcc15a85447b59ed0e20e5d12dab14",
+      "featureTags": [
+        "geometry",
+        "polyline",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 4,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 4,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 4,
+        "maximumMismatchX": 7,
+        "maximumMismatchY": 6
+      },
+      "oracle": {
+        "referencePng": "references/fractional-polyline-16x16.png",
+        "referenceSha256": "eb52981bfbceb50d0318f77387fd2af880bc580626c36ed32781c0a4c68a4b2c",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }

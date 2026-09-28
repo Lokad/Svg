@@ -872,3 +872,9 @@ Question: when both sides bevel, does any residual remain beyond the branch choi
 Method: same acute spike with stroke-miterlimit 1 so both sides bevel, with no product change; default render; fresh triple 3/3 identical (oracle bytes identical to the default-limit capture, confirming Chrome bevels in both); row-profiled VisualDiff.
 Facts: 46 pixels at max error 36 spread from the bevel cut down the long incoming flank, against 50 opaque pixels for the branch split. Fixing the threshold therefore removes the opaque blowout but leaves diagonal-flank coverage residuals of the structural kind.
 Decision: the probe stays as an admittedRendering ratchet of 46 pixels at max error 36. Next: S12 applies the half-limit comparison first, then diagonal coverage; the two are now separately ratcheted.
+
+## Polygon fractional edges miss boundary quanta through fan-triangulation noise (2026-09-28 decision analysis)
+Question: why do fractional path and polygon edges miss where rect edges at the same coordinates agree?
+Method: three admitted-syntax 16x16 probes (fractional orthogonal path, polygon and sealing polyline) with no product change; default render; fresh triples 3/3 identical; VisualDiff; read the polygon rasterizer quantization call site.
+Facts: path and polygon miss 8 pixels at max error 1 on the half-edge column with byte-identical candidates and oracles, while the sealing polyline misses 4 pixels on its diagonal seal. The polygon rasterizer calls the same WithCoverage quantization as rects, so a shared input of exactly 0.5 would agree; the miss implies fan-triangulation and clip arithmetic deliver just under the boundary quantum where the rect fast path computes it exactly.
+Decision: all three probes stay as admittedRendering ratchets with those numbers. Next: boundary-quantum robustness in fan area arithmetic for the coverage owner; the quantization rule itself is exonerated by the shared call site.
