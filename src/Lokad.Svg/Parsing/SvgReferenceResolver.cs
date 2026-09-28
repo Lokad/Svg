@@ -250,6 +250,14 @@ internal static class SvgReferenceResolver
         }
     }
 
+    /// <summary>Rejects magnified symbol viewBox maps of tolerance-flattened curve outlines, whose lowering-time subdivision error would magnify past the admitted device tolerance.</summary>
+    private static void RequireAdmittedSymbolMagnification(SvgPolygonMapping mapping, double viewBoxScale, SvgUseReference instance)
+    {
+        if (mapping != SvgPolygonMapping.FlattenedCurves) return;
+        double magnification = viewBoxScale * Math.Max(Math.Abs((double)instance.Transform.ScaleX), Math.Abs((double)instance.Transform.ScaleY));
+        if (magnification > 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only unmagnified symbol instances of flattened curve outlines are implemented.");
+    }
+
     /// <summary>Rejects magnified use instances of tolerance-flattened curve outlines, whose lowering-time subdivision error would magnify past the admitted device tolerance.</summary>
     /// <remarks>Straight outlines map exactly under any affine instance transform, and unit-or-smaller integer scales never magnify the quarter-pixel flattening budget; only FlattenedCurves content under a magnifying integer scale rejects.</remarks>
     private static void RequireAdmittedInstanceMagnification(SvgDefinition definition, SvgUseReference reference)
@@ -316,6 +324,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            RequireAdmittedSymbolMagnification(source.Mapping, scaleX, instance);
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
@@ -486,6 +495,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            RequireAdmittedSymbolMagnification(source.Mapping, scaleX, instance);
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
@@ -584,6 +594,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            RequireAdmittedSymbolMagnification(source.Mapping, scaleX, instance);
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
@@ -633,6 +644,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
+            RequireAdmittedSymbolMagnification(source.Mapping, scaleX, instance);
             if (viewportFrame is not null && viewportFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];

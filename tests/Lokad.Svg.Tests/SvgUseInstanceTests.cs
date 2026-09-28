@@ -52,6 +52,41 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Magnified_symbol_curve_use_stays_unsupported()
+    {
+        // R35: symbol viewBox maps magnify the same lowering-time subdivision
+        // error as direct instance scales, so magnified maps reject too.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><symbol id=\"s\" viewBox=\"0 0 8 8\"><path d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></symbol></defs><use href=\"#s\" width=\"64\" height=\"64\"/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only unmagnified symbol instances of flattened curve outlines are implemented.", rejected.Message);
+    }
+
+    [Fact]
+    public void Magnified_symbol_polygon_use_matches_direct_rendering()
+    {
+        // R35: straight symbol content maps exactly under viewBox magnification,
+        // so magnified polygon symbols render byte-identical to direct geometry.
+        byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><symbol id=\"s\" viewBox=\"0 0 8 8\"><polygon points=\"0,8 8,0 8,8\" fill=\"red\"/></symbol></defs><use href=\"#s\" width=\"64\" height=\"64\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><polygon points=\"0,64 64,0 64,64\" fill=\"red\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Unmagnified_symbol_curve_use_matches_direct_rendering()
+    {
+        // R35: unit symbol maps never magnify the flattening budget, so
+        // unmagnified curve symbols render byte-identical to direct geometry.
+        byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><symbol id=\"s\" viewBox=\"0 0 8 8\"><path d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></symbol></defs><use href=\"#s\" width=\"8\" height=\"8\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
     public void Pattern_path_use_matches_direct_rendering()
     {
         string pattern = "<defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs>";
