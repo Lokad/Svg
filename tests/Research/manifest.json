@@ -1577,6 +1577,88 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-round-cap-even-16x16",
+      "path": "round-cap-even-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "77e6be5466585de14622c050f17e1c1d09629e2e326d35bec30ebee3f465b6d0",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 12,
+        "maximumChannelError": 24,
+        "maximumAlphaError": 24,
+        "alphaChangedPixelCount": 12,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 13,
+        "maximumMismatchY": 9
+      },
+      "oracle": {
+        "referencePng": "references/round-cap-even-16x16.png",
+        "referenceSha256": "5f54592ba849871250a13168f58e82c9465e8c0dd4161fdebbb61ac8db1cd285",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-round-join-even-16x16",
+      "path": "round-join-even-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "6cb3c1f1b4ab4a59436ad0934c7f384b3d542c804b76c4a95dfb8ac3416ab889",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 56,
+        "maximumChannelError": 201,
+        "maximumAlphaError": 201,
+        "alphaChangedPixelCount": 56,
+        "minimumMismatchX": 1,
+        "minimumMismatchY": 0,
+        "maximumMismatchX": 14,
+        "maximumMismatchY": 13
+      },
+      "oracle": {
+        "referencePng": "references/round-join-even-16x16.png",
+        "referenceSha256": "fbe799d59f7ca218fb96f4919185dd29fb8360214f09ebc816cfa861baf36cfb",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
