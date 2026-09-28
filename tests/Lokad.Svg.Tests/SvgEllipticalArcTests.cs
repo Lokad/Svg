@@ -209,10 +209,10 @@ public sealed class SvgEllipticalArcTests
         int count = SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(100.0, 64, 16), buffer, CancellationToken.None);
 
         Assert.Equal(4, count);
-        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(-System.Math.PI / 2.0), 4.0 + 8.0 * System.Math.Sin(-System.Math.PI / 2.0)), buffer[0]);
-        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(-System.Math.PI), 4.0 + 8.0 * System.Math.Sin(-System.Math.PI)), buffer[1]);
-        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(-3.0 * System.Math.PI / 2.0), 4.0 + 8.0 * System.Math.Sin(-3.0 * System.Math.PI / 2.0)), buffer[2]);
-        Assert.Equal(new SvgDevicePoint(12, 4), buffer[3]);
+        Assert.Equal(new SvgDevicePoint(12, 4), buffer[0]);
+        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(System.Math.PI / 2.0), 4.0 + 8.0 * System.Math.Sin(System.Math.PI / 2.0)), buffer[1]);
+        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(System.Math.PI), 4.0 + 8.0 * System.Math.Sin(System.Math.PI)), buffer[2]);
+        Assert.Equal(new SvgDevicePoint(4.0 + 8.0 * System.Math.Cos(3.0 * System.Math.PI / 2.0), 4.0 + 8.0 * System.Math.Sin(3.0 * System.Math.PI / 2.0)), buffer[3]);
     }
 
     [Fact]
@@ -223,7 +223,7 @@ public sealed class SvgEllipticalArcTests
         int count = SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 8, 0, new SvgFlattenPolicy(0.5, 64, 256), buffer, CancellationToken.None);
 
         Assert.True(count > 4);
-        Assert.Equal(new SvgDevicePoint(12, 4), buffer[count - 1]);
+        Assert.Equal(new SvgDevicePoint(12, 4), buffer[0]);
         for (int index = 0; index < count; index++)
         {
             Assert.True(double.IsFinite(buffer[index].X) && double.IsFinite(buffer[index].Y));
@@ -238,8 +238,8 @@ public sealed class SvgEllipticalArcTests
         int count = SvgEllipticalArc.SampleFull(new SvgDevicePoint(4, 4), 8, 4, System.Math.PI / 2.0, new SvgFlattenPolicy(0.5, 64, 256), buffer, CancellationToken.None);
 
         Assert.True(count >= 4);
-        Assert.Equal(4.0, buffer[count - 1].X, precision: 12);
-        Assert.Equal(12.0, buffer[count - 1].Y, precision: 12);
+        Assert.Equal(4.0, buffer[0].X, precision: 12);
+        Assert.Equal(12.0, buffer[0].Y, precision: 12);
     }
 
     [Fact]

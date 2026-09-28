@@ -172,7 +172,7 @@ public sealed class SvgContourBuilderTests
         Assert.Equal(1, builder.ContourCount);
         ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
         Assert.True(contour.Length > 4);
-        Assert.Equal(new SvgDevicePoint(12, 4), contour[^1]);
+        Assert.Equal(new SvgDevicePoint(12, 4), contour[0]);
     }
 
     [Fact]
