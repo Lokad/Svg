@@ -746,3 +746,9 @@ Question: do round caps and joins agree with Chrome at admitted even widths, clo
 Method: two admitted-syntax 16x16 probes (width 4 round-cap bar, width 4 round-join chevron) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
 Facts: round caps miss 12 pixels at max error 24 confined to the tip zones with straight edges agreeing; round joins miss 56 pixels at max error 201. Extents match the fractional-width cap and join probes pixel for pixel while magnitudes scale with width, so the arc-fan tessellation disagrees at the same sites regardless of width class.
 Decision: both probes stay as admittedRendering ratchets with those numbers. Next: cap and join agreement needs its own tessellation hypothesis; the stroke calibration map is now complete (quantum rule, overlap exact orthogonal, diagonals structural, caps and joins residual).
+
+## Dash phase, offset and multisubpath agreement is exact on straight butt geometry (2026-09-28 decision analysis)
+Question: does the admitted dash kernel agree with Chrome, and where does the inv-010 dash-edge residual come from?
+Method: three admitted-syntax 16x16 probes (dasharray 4 2 plain, dashoffset 3, two-subpath dash phase) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
+Facts: all three byte-exact, so dash pattern, offset and multisubpath phase agree on straight butt geometry. The inv-010 residual therefore lies outside straight-butt dashing: that file pairs default fills with wide stroked multi-subpath outlines, pointing at fill winding or band topology rather than dash phase.
+Decision: no probes retained since exact renders have no manifest home, and no product change. Next: re-localize the inv-010 residual before any dash-kernel work; none is indicated by these probes.
