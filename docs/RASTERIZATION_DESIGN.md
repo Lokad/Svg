@@ -920,3 +920,9 @@ Question: does gradient-stroke evaluation agree, and what happens on degenerate 
 Method: two admitted-syntax 16x16 probes (gradient-stroked rect, gradient-stroked zero-height line) with no product change; default renders; fresh triples 3/3 identical; VisualDiff; pixel sampling.
 Facts: the rect case is byte-exact, confirming zero added paint error independently. The line case has a zero-height object bounding box: Chrome renders nothing while ours paints opaque black bands, a divergence in degenerate-bounds paint binding, not interpolation.
 Decision: no probes retained since one is exact and the other records a behavior gap rather than calibration; the first probe file was withdrawn as an invalid agreement test. Next: S13 admits degenerate-bounds handling that rejects or skips instead of painting black.
+
+## Stroked rounded rect joins the arc family; join setting changes our output but not Chrome (2026-09-28 decision analysis)
+Question: does the stroked rounded rect agree, and does join style matter on smooth corners?
+Method: admitted-syntax 16x16 stroked rounded rect with default miter joins and no product change; default render; fresh triple 3/3 identical; VisualDiff; cross-check against the bevel twin oracle.
+Facts: 48 pixels at max error 80 at the corners. The oracle is byte-identical to the bevel twin oracle, so joins never fire on smooth corners in Chrome; our candidates differ by join setting, implicating tessellation joints treated as vertices in our outline lowering.
+Decision: the probe stays as an admittedRendering ratchet of 48 pixels at max error 80. Next: tessellated-corner join firing belongs to the S12 outline work with the conic route.
