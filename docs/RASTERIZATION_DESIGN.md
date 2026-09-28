@@ -782,3 +782,9 @@ Question: do gradient interpolation and dithering agree with Chrome, including t
 Method: two admitted-syntax 16x16 probes (opaque red-blue ramp, transparent-red to blue ramp) with no product change; default render; fresh triples 3/3 identical; per-pixel sampling.
 Facts: the opaque ramp is byte-exact, so interpolation and dithering agree there. The transparent-stop ramp misses exactly one pixel at (11, 8) with red 54 against 53 and identical blue and alpha, implicating transparent-stop premultiplied rounding rather than interpolation, dither or vector mapping.
 Decision: the transparent-stop probe stays as an admittedRendering ratchet of 1 pixel at max error 1 with zero alpha error; the exact opaque probe leaves no manifest entry. Next: transparent-stop premultiplied rounding is the remaining gradient hypothesis.
+
+## Radial paint adds zero error over solid disc edges (2026-09-28 decision analysis)
+Question: does radial-gradient evaluation contribute its own residual on top of disc-outline geometry?
+Method: two admitted-syntax 16x16 probes sharing one r=6 disc (solid black, white-to-black radial) with no product change; default render; fresh triples 3/3 identical; VisualDiff plus exact differing-pixel-set comparison.
+Facts: both miss the identical 44-pixel edge ring at max error 61 in bbox 2 to 13, verified as the same pixel set, so radial evaluation adds zero error pixels and the entire residual is sampled-circle outline geometry. This matches the shared paint-box repaint claims and directs disc-family inventory residuals (Palau, Ukraine, Niger) at outlines, not paints.
+Decision: both probes stay as admittedRendering ratchets with those numbers. Next: disc-outline sampling is the remaining disc hypothesis; no radial-paint work is indicated.
