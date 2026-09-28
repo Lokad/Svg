@@ -677,11 +677,36 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Rejects_a_rectangle_view_box_mapping_with_non_quarter_output_edges()
+    public void Admits_a_rectangle_view_box_mapping_with_non_quarter_output_edges()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 3 3'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+        // R37: the rasterizer evaluates general fractional edges, so a third-pixel
+        // rectangle covers exactly one ninth of its pixel.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(
+            "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 3 3'>" +
+            "<rect width='1' height='1' fill='red'/></svg>");
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(new byte[] { 0, 0, 0, 1, 0, 0, 0, 1 }, png.Span.Slice(16, 8).ToArray());
+        Assert.Equal(new SvgColor(255, 0, 0, 28), DecodeSinglePixel(png));
+    }
+
+    private static SvgColor DecodeSinglePixel(ReadOnlyMemory<byte> png)
+    {
+        using System.IO.MemoryStream compressed = new();
+        for (int offset = 8; offset < png.Length;)
+        {
+            int length = System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(offset, 4));
+            bool isData = png.Span.Slice(offset + 4, 4).SequenceEqual("IDAT"u8);
+            if (isData) compressed.Write(png.Span.Slice(offset + 8, length));
+            offset += length + 12;
+        }
+
+        compressed.Position = 0;
+        using System.IO.Compression.ZLibStream zlib = new(compressed, System.IO.Compression.CompressionMode.Decompress);
+        byte[] raw = new byte[5];
+        zlib.ReadExactly(raw);
+        if (raw[0] != 0) throw new InvalidDataException("Test PNG decoder expects an unfiltered scanline.");
+        return new SvgColor(raw[1], raw[2], raw[3], raw[4]);
     }
 
     [Fact]

@@ -1136,16 +1136,12 @@ public static class SvgConverter
 
         static double MapRectangleEdge(double value, double scale, double offset)
         {
-            double edge = MapEdge(value, scale, offset);
-            if (Math.Abs(edge * 4 - Math.Round(edge * 4, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle viewBox mapping must preserve quarter-pixel output edges.");
-            return edge;
+            return MapEdge(value, scale, offset);
         }
 
         static double MapStraightPolygonEdge(double value, double scale, double offset)
         {
-            double edge = MapEdge(value, scale, offset);
-            if (Math.Abs(edge * 4 - Math.Round(edge * 4, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon viewBox mapping must preserve quarter-pixel output edges.");
-            return edge;
+            return MapEdge(value, scale, offset);
         }
 
         static int ClampFloor(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Floor(value));
