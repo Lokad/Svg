@@ -2440,6 +2440,47 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-radial-focal-16x16",
+      "path": "radial-focal-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "8273a20ceae34c3943666d244d1893df34d5ea5c31674ca3fe1db0a660b8a840",
+      "featureTags": [
+        "paint",
+        "gradient",
+        "radial",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 1,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 11,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 11,
+        "maximumMismatchY": 5
+      },
+      "oracle": {
+        "referencePng": "references/radial-focal-16x16.png",
+        "referenceSha256": "e9b89b4f1f205f3710ba455f0faab726d4a627587f500fcc45b60f759533d26e",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }

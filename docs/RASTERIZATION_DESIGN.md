@@ -878,3 +878,9 @@ Question: why do fractional path and polygon edges miss where rect edges at the 
 Method: three admitted-syntax 16x16 probes (fractional orthogonal path, polygon and sealing polyline) with no product change; default render; fresh triples 3/3 identical; VisualDiff; read the polygon rasterizer quantization call site.
 Facts: path and polygon miss 8 pixels at max error 1 on the half-edge column with byte-identical candidates and oracles, while the sealing polyline misses 4 pixels on its diagonal seal. The polygon rasterizer calls the same WithCoverage quantization as rects, so a shared input of exactly 0.5 would agree; the miss implies fan-triangulation and clip arithmetic deliver just under the boundary quantum where the rect fast path computes it exactly.
 Decision: all three probes stay as admittedRendering ratchets with those numbers. Next: boundary-quantum robustness in fan area arithmetic for the coverage owner; the quantization rule itself is exonerated by the shared call site.
+
+## Focal radial evaluation adds no new error class (2026-09-28 decision analysis)
+Question: does focal-point radial evaluation diverge beyond the centered radial quantum?
+Method: admitted-syntax 16x16 rect with focal offset inside the circle and no product change; default render; fresh triple 3/3 identical; per-pixel sampling.
+Facts: 1 pixel at max error 1 with gray 61 against 60 and opaque alpha, the same single-quantum radius signature as the centered radial probe. Focal evaluation introduces no new error class.
+Decision: the probe stays as an admittedRendering ratchet of 1 pixel at max error 1 with zero alpha error. Next: radial work stays the radius-evaluation item with two identical-signature ratchets.
