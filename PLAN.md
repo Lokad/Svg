@@ -182,6 +182,8 @@ Status 2026-09-28: row 6 first slice complete. The negative-angle traversal expe
 
 Status 2026-09-28: dash placement is done; the residue is cap orientation. An exact sampler mirror plus pattern-walk replay proves dash cuts land within 0.1px of true arc while butt caps emit perpendicular to terminal chords (half-step tilt) against tangent-perpendicular Chrome cuts, which no polyline-level fix can reorient; the design record scopes the curve-aware cap slice with the 512px control as acceptance and no kernel or densification hack.
 
+Status 2026-09-28: open-stroke stroking is scoped as a quad-plus-wedge rewrite. Pixel-complete reconstruction proves the browser unions per-segment butt quads with outer join wedges while the joined-polygon inner miter vertex carves the notch at full-pixel strength; an inner-butt single contour was tried and reverted the same day (cap-row diagonal cut, closed-hole regression). Miter and bevel open joins are the slice with the solid-run, pathlength and offset controls as acceptance; round joins and closed loops stay untouched.
+
 Continue from cascaded stroke values already present in `SvgComputedStyle`;
 replace repeated raw-string interpretation with shared typed computed state.
 Exercise attributes, inline/embedded CSS, important/default overrides, inheritance
