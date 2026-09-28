@@ -538,6 +538,36 @@ public sealed class RenderBudgetTests
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
     }
     [Fact]
+    public void Pattern_polygon_rasterization_denies_and_releases_under_tight_budget()
+    {
+        // R39 remainder: denial coverage grows with new geometry kinds. Pattern
+        // fills share the polygon mapping path and must deny before work all
+        // the same.
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><polygon points='0,0 8,0 0,8' fill='url(#p)'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
+        RenderBudget rasterBudget = new(300);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+    [Fact]
+    public void Curved_solid_fill_denies_and_releases_under_tight_raster_budget()
+    {
+        // R39 remainder: denial coverage grows with new geometry kinds. Solid
+        // curved fills flatten through budgeted scratch before painting.
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q8,0 8,8 L0,8 Z' fill='red'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);
+        RenderBudget rasterBudget = new(300);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Curved_gradient_fill_denies_and_releases_under_tight_raster_budget()
     {
         // R39 remainder: denial coverage grows with new geometry kinds. Curved

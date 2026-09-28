@@ -651,3 +651,10 @@ Method: audited every map applied after curve lowering against the tolerance der
 Facts: nested-viewport curve twins stay byte-exact; unscaled, reflected and straight-content instance twins stay byte-exact at any admitted scale; magnified curve instances reject on both the immediate and deferred paths; curve content in a magnified nested viewport rejects through the pre-existing frame gate. No inventory document reaches any of the new gates (verified by re-probe). Deferred definition lowering would be needed to admit magnified instances instead of rejecting them.
 Decision: the tolerance-derivation thread of R35 closes here with two regression pins (frame gate and deferred-path gate); the remaining R35 work is per-instance re-flattening architecture and S11 exact-AA calibration, neither of which changes any admitted output today.
 
+
+## Raster denial coverage grows to pattern polygons and solid curves (2026-09-28 decision analysis)
+Question: which admitted raster paths still lack tight-budget denial coverage?
+Method: surveyed RenderBudgetTests by geometry kind against the R39 grow-with-new-kinds instruction; mirrored the radial and gradient polygon denial shape for the two missing polygon-paint kinds.
+Facts: pattern-polygon and solid-curved fills denied and released under the same tight raster budget on the first attempt with no product change; strokes share the polygon rasterizer and bands share the rectangle rasterizer, so separate denial twins there would exercise identical code paths. Full gate 2484 core plus 100 visual plus 6 font green.
+Decision: denial coverage for the polygon rasterizer is complete across solid, gradient, radial and pattern paints plus curved variants; no new denial tooling was needed. Next: denial cases for genuinely new raster paths only.
+
