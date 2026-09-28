@@ -836,3 +836,9 @@ Question: is the chevron miter residual miter-limit math or diagonal edges?
 Method: admitted-syntax 16x16 closed rectangular path stroke with four 90 degree miter joins on axis edges and no product change; default render; fresh triple 3/3 identical; VisualDiff. The EmitJoin ratio was also checked against the SVG miter-diagonal over stroke-width definition during scoping and matches.
 Facts: 0 pixels exact. Miter math including ratio, limit, bevel fallback and inner and outer chains agrees; the chevron 54-pixel residual therefore lives entirely in its diagonal spike flanks and notch, which is the structural diagonal item, not a second miter mechanism.
 Decision: axis-miter agreement recorded; the chevron ratchet stays with reattributed mechanism. Next: nothing open on miter math.
+
+## Bevel on rounded outlines misses at corners with the arc family (2026-09-28 decision analysis)
+Question: do admitted bevel joins agree where path bevel stays gated?
+Method: admitted-syntax 16x16 stroked rounded rect with bevel joins and no product change; default render; fresh triple 3/3 identical; VisualDiff.
+Facts: 56 pixels at max error 80 confined to the four corners, against 20 pixels at 70 for the solid rounded fill at the same corners. Bevel cuts are analytic flat segments with no tessellation of their own, so attribution favors the corner arcs shared with the solid case; bevel-specific isolation is impossible here since path bevel stays gated.
+Decision: the probe stays as an admittedRendering ratchet of 56 pixels at max error 80. Next: corners join the conic-flattening hypothesis with caps, joins and rounded fills; bevel cuts need nothing separate.
