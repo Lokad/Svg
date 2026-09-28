@@ -13,7 +13,7 @@ public sealed class SvgPolygonFillTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] ends = [3];
         RenderBudget budget = new(long.MaxValue);
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.QuarterEdges, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.QuarterEdges, null, null, budget);
 
         SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
 

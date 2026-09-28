@@ -14,7 +14,7 @@ public sealed class SvgGradientPolygonTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] ends = [3];
         SvgRectangle box = new(0, 0, 8, 8, default, true, null);
-        using SvgGradientPolygon polygon = SvgGradientPolygon.Create(points, ends, null, gradient, box, true, false, 255, SvgPolygonMapping.QuarterEdges, null, budget);
+        using SvgGradientPolygon polygon = SvgGradientPolygon.Create(points, ends, null, gradient, box, true, false, 255, SvgPolygonMapping.QuarterEdges, null, null, budget);
 
         SvgGeometry geometry = SvgGeometry.FromGradientPolygon(polygon);
 
@@ -34,7 +34,7 @@ public sealed class SvgGradientPolygonTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] ends = [3];
         SvgRectangle box = new(0, 0, 8, 8, default, true, null);
-        using SvgRadialPolygon polygon = SvgRadialPolygon.Create(points, ends, null, circle, box, true, false, 255, SvgPolygonMapping.QuarterEdges, null, budget);
+        using SvgRadialPolygon polygon = SvgRadialPolygon.Create(points, ends, null, circle, box, true, false, 255, SvgPolygonMapping.QuarterEdges, null, null, budget);
 
         SvgGeometry geometry = SvgGeometry.FromRadialPolygon(polygon);
 

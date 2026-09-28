@@ -924,37 +924,59 @@ internal ref struct SvgOrthogonalGeometryLowering
             int start = contour == 0 ? 0 : ends[contour - 1];
             if (roles[contour] == 0 && ends[contour] - start >= 3) roles[contour] = 1;
         }
-        return RetainPolygonFill(retained, ends, roles, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+        return RetainPolygonFill(retained, ends, roles, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, null, budget);
     }
 
     /// <summary>Validated separated contour storage with resolved combination weights, ready for paint-specific retention.</summary>
-    private readonly record struct SeparatedContours(SvgDevicePoint[] Points, int[] Ends, int[] Signs, SvgPolygonMapping Mapping);
+    /// <summary>Validated separated contour storage with resolved combination weights and its scene reservation, ready for paint-specific retention. The reservation transfers to the retained fill; callers dispose it when retention does not take ownership.</summary>
+    private readonly record struct SeparatedContours(SvgDevicePoint[] Points, int[] Ends, int[] Signs, SvgPolygonMapping Mapping, RenderBudget.BudgetReservation? SceneReservation);
 
-    /// <summary>Validates separated device contours once and resolves per-contour combination weights, returning paint-independent retained storage.</summary>
+    /// <summary>Reserves exact scene storage for retained contour arrays before allocation, returning null when nothing is retained.</summary>
+    private static RenderBudget.BudgetReservation? ReserveScene(int pointCount, int endCount, int signCount, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(budget);
+        long bytes;
+        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCount) + ParserCollectionMemory.GetArrayByteCount<int>(endCount) + ParserCollectionMemory.GetArrayByteCount<int>(signCount)); }
+        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
+        return bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
+    }
+
+    /// <summary>Validates separated device contours once and resolves per-contour combination weights, returning paint-independent retained storage with its scene reservation, which transfers to the retained fill.</summary>
     private SeparatedContours PrepareSeparatedContours(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgPolygonMapping mapping, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
-        SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
-        ValidateDeviceRange(retained);
-        ChargePairs(_workCounter, (long)retained.Length * (retained.Length - 1) / 2, _cancellationToken);
-        SvgContourFlags structure = SvgContourStructure.ClassifySet(retained, ends, _cancellationToken);
-        if (structure != SvgContourFlags.None)
+        RenderBudget.BudgetReservation? reservation = ReserveScene(mapped.Count, ends.Length, ends.Length, budget);
+        try
         {
-            using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-            using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-            if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
-            retained = splitPoints.AsSpan().ToArray();
-            ends = splitEnds.AsSpan().ToArray();
+            SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
             ValidateDeviceRange(retained);
-            mapping = UpgradeSplitMapping(retained, mapping);
+            ChargePairs(_workCounter, (long)retained.Length * (retained.Length - 1) / 2, _cancellationToken);
+            SvgContourFlags structure = SvgContourStructure.ClassifySet(retained, ends, _cancellationToken);
+            if (structure != SvgContourFlags.None)
+            {
+                using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+                using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+                if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+                reservation?.Dispose();
+                reservation = ReserveScene(splitPoints.Count, splitEnds.Count, splitEnds.Count, budget);
+                retained = splitPoints.AsSpan().ToArray();
+                ends = splitEnds.AsSpan().ToArray();
+                ValidateDeviceRange(retained);
+                mapping = UpgradeSplitMapping(retained, mapping);
+            }
+            int[] signs = new int[ends.Length];
+            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            if (_isEvenOdd) SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
+            else SvgContourNesting.ComputeWindingRoles(retained, ends, signs, _cancellationToken);
+            return new SeparatedContours(retained, ends, signs, mapping, reservation);
         }
-        int[] signs = new int[ends.Length];
-        ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
-        if (_isEvenOdd) SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
-        else SvgContourNesting.ComputeWindingRoles(retained, ends, signs, _cancellationToken);
-        return new SeparatedContours(retained, ends, signs, mapping);
+        catch
+        {
+            reservation?.Dispose();
+            throw;
+        }
     }
 
     /// <summary>Retains one polygon fill from validated separated contours with scene-owned storage.</summary>
@@ -964,7 +986,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
         SeparatedContours separated = PrepareSeparatedContours(mapped, ends, mapping, budget);
-        return RetainPolygonFill(separated.Points, separated.Ends, separated.Signs, color, hasFill, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+        return RetainPolygonFill(separated.Points, separated.Ends, separated.Signs, color, hasFill, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
     }
 
     /// <summary>Splits self-crossing contours at interior crossings into simple loops sharing only split vertices.</summary>
@@ -1096,12 +1118,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
     }
 
-    private SvgParsedGeometry RetainPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    private SvgParsedGeometry RetainPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(retained);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
-        SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, isEvenOdd, mapping, clip, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, isEvenOdd, mapping, clip, reservation, budget);
         try { _geometries.Add(SvgGeometry.FromPolygonFill(fill)); }
         catch { fill.Dispose(); throw; }
         _geometryElementCount++;
@@ -1116,15 +1138,15 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
         SeparatedContours separated = PrepareSeparatedContours(mapped, ends, mapping, budget);
-        return RetainGradientPolygonFill(separated.Points, separated.Ends, separated.Signs, gradient, box, hasFill, opacity, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+        return RetainGradientPolygonFill(separated.Points, separated.Ends, separated.Signs, gradient, box, hasFill, opacity, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
     }
 
-    private SvgParsedGeometry RetainGradientPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, byte opacity, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    private SvgParsedGeometry RetainGradientPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, byte opacity, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(retained);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
-        SvgGradientPolygon fill = SvgGradientPolygon.Create(retained, ends, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, budget);
+        SvgGradientPolygon fill = SvgGradientPolygon.Create(retained, ends, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation, budget);
         try { _geometries.Add(SvgGeometry.FromGradientPolygon(fill)); }
         catch { fill.Dispose(); throw; }
         _geometryElementCount++;
@@ -1139,15 +1161,15 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
         SeparatedContours separated = PrepareSeparatedContours(mapped, ends, mapping, budget);
-        return RetainRadialPolygonFill(separated.Points, separated.Ends, separated.Signs, gradient, box, hasFill, opacity, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, budget);
+        return RetainRadialPolygonFill(separated.Points, separated.Ends, separated.Signs, gradient, box, hasFill, opacity, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
     }
 
-    private SvgParsedGeometry RetainRadialPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, byte opacity, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    private SvgParsedGeometry RetainRadialPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, byte opacity, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(retained);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
-        SvgRadialPolygon fill = SvgRadialPolygon.Create(retained, ends, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, budget);
+        SvgRadialPolygon fill = SvgRadialPolygon.Create(retained, ends, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation, budget);
         try { _geometries.Add(SvgGeometry.FromRadialPolygon(fill)); }
         catch { fill.Dispose(); throw; }
         _geometryElementCount++;

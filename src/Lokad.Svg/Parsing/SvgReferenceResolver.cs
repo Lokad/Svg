@@ -153,7 +153,7 @@ internal static class SvgReferenceResolver
         SvgClipBox? clip = polygon.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         SvgColor color = new(polygon.Color.Red, polygon.Color.Green, polygon.Color.Blue, MultiplyAlpha(polygon.Color.Alpha, reference.Opacity));
-        return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, state.Budget));
+        return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
     }
 
     private static SvgGeometry ApplyGradientPolygon(SvgGradientPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -183,7 +183,7 @@ internal static class SvgReferenceResolver
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, outline.ContourEnds, outline.Signs, vector, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, state.Budget));
+        return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, outline.ContourEnds, outline.Signs, vector, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
     }
 
     private static SvgGeometry ApplyRadialPolygon(SvgRadialPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -212,7 +212,7 @@ internal static class SvgReferenceResolver
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, outline.ContourEnds, outline.Signs, circle, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, state.Budget));
+        return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, outline.ContourEnds, outline.Signs, circle, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
     }
 
     private static SvgGeometry ApplyPatternPolygon(SvgPatternPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -359,7 +359,7 @@ internal static class SvgReferenceResolver
                 clip = placed.Intersect(viewport);
             }
             SvgColor color = new(source.Color.Red, source.Color.Green, source.Color.Blue, MultiplyAlpha(source.Color.Alpha, instance.Opacity));
-            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, source.ContourEnds, source.Signs, color, source.HasFill && instance.IsPainted, source.IsEvenOdd, source.Mapping, clip, document.Budget));
+            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, source.ContourEnds, source.Signs, color, source.HasFill && instance.IsPainted, source.IsEvenOdd, source.Mapping, clip, null, document.Budget));
         }
     }
 
@@ -427,7 +427,7 @@ internal static class SvgReferenceResolver
         static SvgGeometry ApplyInstancePolygonFill(SvgPolygonFill source, SvgPaint paint, SvgDocumentState document)
         {
             ArgumentNullException.ThrowIfNull(document);
-            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(source.Points, source.ContourEnds, source.Signs, SvgPaintResolver.ResolveFillColor(paint, 255), paint.HasFill, source.IsEvenOdd, source.Mapping, source.Clip, document.Budget));
+            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(source.Points, source.ContourEnds, source.Signs, SvgPaintResolver.ResolveFillColor(paint, 255), paint.HasFill, source.IsEvenOdd, source.Mapping, source.Clip, null, document.Budget));
         }
     }
 
@@ -537,7 +537,7 @@ internal static class SvgReferenceResolver
                 clip = placed.Intersect(viewport);
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
-            return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, source.ContourEnds, source.Signs, vector, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, document.Budget));
+            return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, source.ContourEnds, source.Signs, vector, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
         }
         static SvgGeometry ApplySymbolGradientFill(SvgGradientGeometry band, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
@@ -635,7 +635,7 @@ internal static class SvgReferenceResolver
                 clip = placed.Intersect(viewport);
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
-            return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, source.ContourEnds, source.Signs, circle, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, document.Budget));
+            return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, source.ContourEnds, source.Signs, circle, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
         }
 
         static SvgGeometry ApplySymbolPatternPolygon(SvgPatternPolygon source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)

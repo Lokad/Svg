@@ -366,7 +366,7 @@ public sealed class RenderBudgetTests
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill), SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null))], false, null);
@@ -388,7 +388,7 @@ public sealed class RenderBudgetTests
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill)], false, null);
@@ -460,7 +460,7 @@ public sealed class RenderBudgetTests
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
@@ -479,7 +479,7 @@ public sealed class RenderBudgetTests
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
@@ -602,7 +602,7 @@ public sealed class RenderBudgetTests
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(100, 100), new(108, 100), new(100, 108)];
         int[] ends = [3];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
@@ -622,7 +622,7 @@ public sealed class RenderBudgetTests
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
@@ -644,7 +644,7 @@ public sealed class RenderBudgetTests
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
         int[] signs = [1];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, signs, new SvgColor(255, 0, 0, 255), true, true, SvgPolygonMapping.FiniteEdges, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, signs, new SvgColor(255, 0, 0, 255), true, true, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
@@ -666,7 +666,7 @@ public sealed class RenderBudgetTests
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
         int[] roles = [1];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, roles, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, roles, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
@@ -687,7 +687,7 @@ public sealed class RenderBudgetTests
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
-        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
@@ -811,8 +811,9 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Crossing_split_denies_when_budget_covers_mapping_but_not_the_split()
     {
-        // R38: the split lists reserve before copying, so a budget sized for
-        // mapping plus the point list but not the ends list fails at the split.
+        // R38/R39: the scene pre-reservation precedes retained copies and stays
+        // held while the split lists grow, so a budget sized for mapping,
+        // retention and split points but not split ends fails at the split.
         RenderBudget roomyBudget = new(100_000);
         ParserWorkCounter roomyCounter = new(100_000);
         using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
@@ -822,7 +823,7 @@ public sealed class RenderBudgetTests
         points.Add(new SvgPoint(0, 8));
         using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
         ends.Add(4);
-        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(4) - 1);
+        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(4) - 1);
 
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
@@ -834,10 +835,10 @@ public sealed class RenderBudgetTests
         AssertBudgetReleased(tightBudget);
     }
     [Fact]
-    public void Crossing_split_denies_multi_crossing_when_split_budget_exhausted()
+    public void Crossing_split_denies_multi_crossing_when_scene_pre_reserve_exhausted()
     {
-        // R34: the iterative split reserves work storage before copying loops, so a
-        // budget sized near the mapped input fails at the split with full release.
+        // R39: the scene pre-reservation precedes retained copies, so a budget
+        // sized near the mapped input fails at the pre-reserve with full release.
         RenderBudget roomyBudget = new(100_000);
         ParserWorkCounter roomyCounter = new(100_000);
         using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
@@ -858,6 +859,111 @@ public sealed class RenderBudgetTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         AssertBudgetReleased(tightBudget);
+    }
+
+    [Fact]
+    public void Polygon_retention_denies_and_releases_when_scene_pre_reserve_exceeds_budget()
+    {
+        // R39: the scene pre-reservation precedes retained copies, so a budget
+        // sized for mapping but not retention fails before allocating copies.
+        RenderBudget roomyBudget = new(100_000);
+        ParserWorkCounter roomyCounter = new(100_000);
+        using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
+        points.Add(new SvgPoint(0, 0));
+        points.Add(new SvgPoint(8, 0));
+        points.Add(new SvgPoint(0, 8));
+        using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
+        ends.Add(3);
+        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) - 1);
+
+        SvgException denied = Assert.Throws<SvgException>(() =>
+        {
+            using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
+            return lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, AxisTransform.Identity, null, tightBudget);
+        });
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        AssertBudgetReleased(tightBudget);
+    }
+
+    [Fact]
+    public void Gradient_polygon_retention_denies_and_releases_when_scene_pre_reserve_exceeds_budget()
+    {
+        // R39: gradient retention shares the pre-reserved contour boundary, so
+        // the same mapping-sized budget fails before allocating copies.
+        RenderBudget roomyBudget = new(100_000);
+        ParserWorkCounter roomyCounter = new(100_000);
+        using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
+        points.Add(new SvgPoint(0, 0));
+        points.Add(new SvgPoint(8, 0));
+        points.Add(new SvgPoint(0, 8));
+        using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
+        ends.Add(3);
+        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) - 1);
+        SvgLinearGradient gradient = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 1, 0, 1, false, false, SvgGradientSpread.Pad, [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))], 1, 1);
+        SvgRectangle box = new(0, 0, 8, 8, default, true, null);
+
+        SvgException denied = Assert.Throws<SvgException>(() =>
+        {
+            using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
+            return lowering.LowerGradientPolygonFill(gradient, box, true, 255, AxisTransform.Identity, null, tightBudget);
+        });
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        AssertBudgetReleased(tightBudget);
+    }
+
+    [Fact]
+    public void Radial_polygon_retention_denies_and_releases_when_scene_pre_reserve_exceeds_budget()
+    {
+        // R39: radial retention shares the pre-reserved contour boundary, so
+        // the same mapping-sized budget fails before allocating copies.
+        RenderBudget roomyBudget = new(100_000);
+        ParserWorkCounter roomyCounter = new(100_000);
+        using BudgetedParserList<SvgPoint> points = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
+        points.Add(new SvgPoint(0, 0));
+        points.Add(new SvgPoint(8, 0));
+        points.Add(new SvgPoint(0, 8));
+        using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
+        ends.Add(3);
+        RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) - 1);
+        SvgRadialGradient circle = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))], 1, 1);
+        SvgRectangle box = new(0, 0, 8, 8, default, true, null);
+
+        SvgException denied = Assert.Throws<SvgException>(() =>
+        {
+            using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
+            return lowering.LowerRadialPolygonFill(circle, box, true, 255, AxisTransform.Identity, null, tightBudget);
+        });
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        AssertBudgetReleased(tightBudget);
+    }
+
+    [Fact]
+    public void Polygon_retention_transfers_exact_scene_bytes_to_the_fill()
+    {
+        // R39: the adopted pre-reservation single-counts retained arrays, so a
+        // successful lowering holds exactly points, ends and signs in Scene.
+        RenderBudget budget = new(100_000);
+        ParserWorkCounter counter = new(100_000);
+        using (BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, counter, CancellationToken.None))
+        using (BudgetedParserList<int> ends = new(budget, SvgMemoryCategory.Geometry, counter, CancellationToken.None))
+        {
+        points.Add(new SvgPoint(0, 0));
+        points.Add(new SvgPoint(8, 0));
+        points.Add(new SvgPoint(0, 8));
+        ends.Add(3);
+        using (SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, budget, counter, CancellationToken.None))
+        using (SvgParsedGeometry parsed = lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, AxisTransform.Identity, null, budget))
+        {
+            Assert.Equal(1, parsed.Geometries.Length);
+            Assert.Equal(SvgGeometryKind.PolygonFill, parsed.Geometries[0].Kind);
+            Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(3) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1), SceneBytes(budget));
+            foreach (SvgGeometry geometry in parsed.Geometries) geometry.Dispose();
+        }
+        }
+        AssertBudgetReleased(budget);
     }
 
 }

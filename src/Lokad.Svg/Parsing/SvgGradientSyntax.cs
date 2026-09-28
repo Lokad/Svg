@@ -831,7 +831,7 @@ internal static class SvgGradientSyntax
             foreach (SvgGeometry existing in white.Geometries)
             {
                 if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(degenerate ? SvgGeometry.FromOrthogonalBand(existing.Rectangle with { Color = solid }) : SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, strokeBox, existing.Rectangle, opacity, null)));
-                else if (degenerate) repainted.Add(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(existing.Polygon.Points, existing.Polygon.ContourEnds, existing.Polygon.Signs, solid, existing.Polygon.HasFill, existing.Polygon.IsEvenOdd, existing.Polygon.Mapping, existing.Polygon.Clip, state.Budget)));
+                else if (degenerate) repainted.Add(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(existing.Polygon.Points, existing.Polygon.ContourEnds, existing.Polygon.Signs, solid, existing.Polygon.HasFill, existing.Polygon.IsEvenOdd, existing.Polygon.Mapping, existing.Polygon.Clip, null, state.Budget)));
                 else repainted.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, strokeBox, opacity, state.Budget));
             }
             white.Dispose();
@@ -929,7 +929,7 @@ internal static class SvgGradientSyntax
             foreach (SvgGeometry existing in white.Geometries)
             {
                 if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(degenerate ? SvgGeometry.FromOrthogonalBand(existing.Rectangle with { Color = solid }) : SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, strokeBox, existing.Rectangle, opacity, null)));
-                else if (degenerate) repainted.Add(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(existing.Polygon.Points, existing.Polygon.ContourEnds, existing.Polygon.Signs, solid, existing.Polygon.HasFill, existing.Polygon.IsEvenOdd, existing.Polygon.Mapping, existing.Polygon.Clip, state.Budget)));
+                else if (degenerate) repainted.Add(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(existing.Polygon.Points, existing.Polygon.ContourEnds, existing.Polygon.Signs, solid, existing.Polygon.HasFill, existing.Polygon.IsEvenOdd, existing.Polygon.Mapping, existing.Polygon.Clip, null, state.Budget)));
                 else repainted.Add(SvgRadialPolygon.RepaintOutline(existing.Polygon, circle, strokeBox, opacity, state.Budget));
             }
             white.Dispose();

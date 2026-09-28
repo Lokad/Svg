@@ -406,7 +406,8 @@ internal sealed class SvgPolygonFill : IDisposable
 
     internal SvgClipBox? Clip { get; }
 
-    internal static SvgPolygonFill Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    /// <summary>Creates one polygon fill; adopts the caller scene reservation when supplied, which must cover exactly points, contourEnds and signs, and otherwise reserves exact scene storage. Ownership transfers to the fill in both cases.</summary>
+    internal static SvgPolygonFill Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
@@ -415,7 +416,10 @@ internal sealed class SvgPolygonFill : IDisposable
         long bytes;
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length))); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
-        RenderBudget.BudgetReservation? reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
+        if (reservation is null)
+        {
+            reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
+        }
         return new SvgPolygonFill(points, contourEnds, signs, color, hasFill, isEvenOdd, mapping, clip, reservation);
     }
 
@@ -478,7 +482,8 @@ internal sealed class SvgGradientPolygon : IDisposable
 
     internal SvgClipBox? Clip { get; }
 
-    internal static SvgGradientPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    /// <summary>Creates one linear-gradient polygon fill; adopts the caller scene reservation when supplied, which must cover exactly points, contourEnds and signs, and otherwise reserves exact scene storage. Ownership transfers to the fill in both cases.</summary>
+    internal static SvgGradientPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
@@ -487,7 +492,10 @@ internal sealed class SvgGradientPolygon : IDisposable
         long bytes;
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length))); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
-        RenderBudget.BudgetReservation? reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
+        if (reservation is null)
+        {
+            reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
+        }
         return new SvgGradientPolygon(points, contourEnds, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
     }
 
@@ -497,9 +505,9 @@ internal sealed class SvgGradientPolygon : IDisposable
         if (paint.Stops.Length == 1 || (paint.X1 == paint.X2 && paint.Y1 == paint.Y2 && !paint.IsEmpty))
         {
             if (paint.Stops.Length > 1 && paint.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are not implemented.");
-            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, budget));
+            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
         }
-        return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
+        return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget));
     }
 
     /// <summary>Stamps one gradient polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
@@ -561,7 +569,8 @@ internal sealed class SvgRadialPolygon : IDisposable
 
     internal SvgClipBox? Clip { get; }
 
-    internal static SvgRadialPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    /// <summary>Creates one radial-gradient polygon fill; adopts the caller scene reservation when supplied, which must cover exactly points, contourEnds and signs, and otherwise reserves exact scene storage. Ownership transfers to the fill in both cases.</summary>
+    internal static SvgRadialPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
@@ -570,15 +579,18 @@ internal sealed class SvgRadialPolygon : IDisposable
         long bytes;
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length))); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
-        RenderBudget.BudgetReservation? reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
+        if (reservation is null)
+        {
+            reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
+        }
         return new SvgRadialPolygon(points, contourEnds, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
     }
 
     /// <summary>Repaints one solid outline as a radial-gradient outline, rendering single-stop and degenerate paints as solid end-stop fills. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgRadialGradient paint, SvgRectangle box, byte opacity, RenderBudget budget)
     {
-        if (paint.Stops.Length == 1 || (paint.Radius == 0 && !paint.IsEmpty)) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, budget));
-        return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
+        if (paint.Stops.Length == 1 || (paint.Radius == 0 && !paint.IsEmpty)) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
+        return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget));
     }
 
     /// <summary>Stamps one radial polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
@@ -665,7 +677,7 @@ internal sealed class SvgPatternPolygon : IDisposable
     /// <summary>Repaints one solid outline as a pattern-tile outline, rendering empty tiles as unpainted fills. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgPatternTile tile, byte opacity, RenderBudget budget)
     {
-        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, budget));
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
         return SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
     }
 
