@@ -806,3 +806,9 @@ Question: do ellipse and rounded-rectangle outlines agree, completing primitive 
 Method: two admitted-syntax 16x16 probes (rx 6 ry 4 ellipse, 10x10 rect with rx 3) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
 Facts: ellipse misses 36 pixels at max error 35 on the curved flanks, same family as sampled-circle disc edges; rounded rect misses 20 pixels at max error 70 confined to the four corners, same family as round caps and joins. Straight edges agree in both.
 Decision: both probes stay as admittedRendering ratchets with those numbers. Next: corners join the conic-flattening hypothesis; ellipse sampling joins the disc-outline item; primitive coverage is now complete with every curved family residual and every straight family exact.
+
+## Quantum rule persists on opaque backgrounds with truncated compositing (2026-09-28 decision analysis)
+Question: does the edge-quantum divergence survive opaque-background compositing, which takes a different blend path?
+Method: admitted-syntax 16x16 black rect at x 10.25 on explicit white background with no product change; default render with white option; fresh white triple 3/3 identical; per-pixel sampling.
+Facts: 12 pixels at max error 1 on column 10 with alpha clean: 63 here against 64 in Chrome at nominal 0.75 coverage over white (255 times 0.25 equals 63.75). We round half away while Chrome truncates, the same direction as the transparent quantum rule, now through the retained-destination compositing path. The floor256 switch must therefore align both WithCoverage and the opaque blend roundings.
+Decision: the probe stays as an admittedRendering ratchet of 12 pixels at max error 1 with zero alpha error. Next: S11 owns both quantization points as one switch with the eight plus one acceptance values.
