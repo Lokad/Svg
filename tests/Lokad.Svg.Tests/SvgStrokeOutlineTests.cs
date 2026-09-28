@@ -41,7 +41,7 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
-    public void Left_turn_miters_both_sides()
+    public void Left_turn_butts_inner_and_ears_outer()
     {
         SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
         SvgContourBuilder builder = new(16, 4);
@@ -49,7 +49,7 @@ public sealed class SvgStrokeOutlineTests
         SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
-        Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(7, 1), new SvgDevicePoint(7, 8), new SvgDevicePoint(9, 8), new SvgDevicePoint(9, -1), new SvgDevicePoint(0, -1)], builder.GetContour(0).ToArray());
+        Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(8, 1), new SvgDevicePoint(7, 0), new SvgDevicePoint(7, 8), new SvgDevicePoint(9, 8), new SvgDevicePoint(9, 0), new SvgDevicePoint(9, -1), new SvgDevicePoint(8, -1), new SvgDevicePoint(0, -1)], builder.GetContour(0).ToArray());
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public sealed class SvgStrokeOutlineTests
         SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
-        Assert.Equal([new SvgDevicePoint(9, 8), new SvgDevicePoint(9, -1), new SvgDevicePoint(0, -1), new SvgDevicePoint(0, 1), new SvgDevicePoint(7, 1), new SvgDevicePoint(7, 8)], builder.GetContour(0).ToArray());
+        Assert.Equal([new SvgDevicePoint(9, 8), new SvgDevicePoint(9, 0), new SvgDevicePoint(9, -1), new SvgDevicePoint(8, -1), new SvgDevicePoint(0, -1), new SvgDevicePoint(0, 1), new SvgDevicePoint(8, 1), new SvgDevicePoint(7, 0), new SvgDevicePoint(7, 8)], builder.GetContour(0).ToArray());
     }
 
     [Fact]
@@ -122,13 +122,15 @@ public sealed class SvgStrokeOutlineTests
 
         ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
         Assert.Equal(1, builder.ContourCount);
-        Assert.True(contour.Length == 6, "Mitered outline keeps one point per join.");
+        Assert.True(contour.Length == 10, "Obtuse joins trace butt-corner ears around the tip.");
         Assert.Equal(new SvgDevicePoint(0, 1), contour[0]);
-        Assert.Equal(2, contour[1].X, 9);
-        Assert.Equal(1, contour[1].Y, 9);
-        Assert.Equal(8, contour[4].X, 9);
-        Assert.Equal(-1, contour[4].Y, 9);
-        Assert.Equal(new SvgDevicePoint(0, -1), contour[5]);
+        Assert.Equal(new SvgDevicePoint(5, 1), contour[1]);
+        Assert.Equal(2, contour[2].X, 9);
+        Assert.Equal(1, contour[2].Y, 9);
+        Assert.Equal(new SvgDevicePoint(4.4, -0.8), contour[3]);
+        Assert.Equal(8, contour[7].X, 9);
+        Assert.Equal(-1, contour[7].Y, 9);
+        Assert.Equal(new SvgDevicePoint(0, -1), contour[9]);
     }
 
     [Fact]
@@ -215,7 +217,7 @@ public sealed class SvgStrokeOutlineTests
         SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
 
         Assert.Equal(1, builder.ContourCount);
-        Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(7, 1), new SvgDevicePoint(7, 8), new SvgDevicePoint(9, 8), new SvgDevicePoint(9, -1), new SvgDevicePoint(0, -1)], builder.GetContour(0).ToArray());
+        Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(8, 1), new SvgDevicePoint(7, 0), new SvgDevicePoint(7, 8), new SvgDevicePoint(9, 8), new SvgDevicePoint(9, 0), new SvgDevicePoint(9, -1), new SvgDevicePoint(8, -1), new SvgDevicePoint(0, -1)], builder.GetContour(0).ToArray());
     }
 
     [Fact]
@@ -260,7 +262,7 @@ public sealed class SvgStrokeOutlineTests
 
         Assert.Equal(1, builder.ContourCount);
         SvgDevicePoint[] contour = builder.GetContour(0).ToArray();
-        Assert.Equal(9, contour.Length);
+        Assert.Equal(15, contour.Length);
         Assert.InRange(contour.Select(point => point.X).Min(), -1, -0.75);
         Assert.InRange(contour.Select(point => point.X).Max(), 8.75, 9);
     }
@@ -280,8 +282,8 @@ public sealed class SvgStrokeOutlineTests
         SvgDevicePoint vertex = new(8, 0);
         SvgDevicePoint[] shared = miter.Where(point => round.Contains(point)).ToArray();
         SvgDevicePoint[] added = round.Where(point => !miter.Contains(point)).ToArray();
-        Assert.Equal(5, shared.Length);
-        Assert.Equal(3, added.Length);
+        Assert.Equal(8, shared.Length);
+        Assert.Equal(2, added.Length);
         foreach (SvgDevicePoint point in added) Assert.True(Distance(vertex, point) <= 1.000000001, "Round fan stays on the half-width circle.");
 
         static double Distance(SvgDevicePoint first, SvgDevicePoint second)

@@ -10,10 +10,10 @@
   "background": "transparent",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "candidateSha256": "481847e01e9127d34c0cb47df11c54a20fbcc9dc23fb032c501e1eaf12ff1bd1",
+  "candidateSha256": "166d39065c85bacac7a940ea6638cbbc8e69cb4af6c52b6e497adf5ff8d48cad",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 194,
+    "changedPixelCount": 184,
     "maximumChannelError": 255,
     "maximumAlphaError": 71,
     "exact": false

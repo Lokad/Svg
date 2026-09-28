@@ -1,0 +1,22 @@
+{
+  "fixtureId": "original-logo-stroke-dash-closed-offset-mark",
+  "referencePng": "original-logo-stroke-dash-closed-offset-mark.png",
+  "referenceSha256": "d99c9712e23f16a89a059bddaa2af2078c1050114df7787cceba2257e1b82cbf",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 16, "height": 16, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "bc37ef1b49c621c2e5b2be49190c1acb6c710d39bc2bc7b2ba8e33f697d135f6",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-28"
+}

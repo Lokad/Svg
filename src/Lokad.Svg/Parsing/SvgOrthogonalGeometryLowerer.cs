@@ -511,7 +511,8 @@ internal ref struct SvgOrthogonalGeometryLowering
 
         if (dashes is null)
         {
-            long wantedPoints = 4L * mapped.Count + 8;
+            // Open miter joins emit up to five outline points per centerline vertex (inner butt pair plus outer ear triple across both chains).
+            long wantedPoints = 6L * mapped.Count + 8;
             if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join == SvgStrokeJoin.Round)
             {
                 int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
@@ -546,7 +547,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         long cuts;
         try { cuts = double.IsFinite(contourLength) ? checked((long)(contourLength / minimumStep) + 2) : MaximumFlattenedContourPoints; }
         catch (OverflowException) { cuts = MaximumFlattenedContourPoints; }
-        long wantedPoints = checked(4L * (mapped.Count + cuts) + 8);
+        // Open miter joins emit up to five outline points per centerline vertex (inner butt pair plus outer ear triple across both chains).
+            long wantedPoints = checked(6L * (mapped.Count + cuts) + 8);
         if (cap == SvgStrokeCap.Round || join == SvgStrokeJoin.Round)
         {
             int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
@@ -785,7 +787,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (totalCuts >= MaximumFlattenedContourPoints) { totalCuts = MaximumFlattenedContourPoints; break; }
         }
 
-        long wantedPoints = checked(4L * (source.PointCount + totalCuts) + 8);
+        // Open miter joins emit up to five outline points per centerline vertex (inner butt pair plus outer ear triple across both chains).
+            long wantedPoints = checked(6L * (source.PointCount + totalCuts) + 8);
         if (cap == SvgStrokeCap.Round || join == SvgStrokeJoin.Round)
         {
             int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
@@ -825,7 +828,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (source.PointCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path stroke point count exceeds the configured path-command limit." : _elementName + " stroke point count exceeds the configured path-command limit.");
         double deviceWidth = StrokeDeviceWidth(width, transform, frame, nonScaling);
         if (dashes is not null) return LowerDashedStrokeContours(source, closedEnds, hasCurves, transform, deviceWidth, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget);
-        long wantedPoints = 4L * source.PointCount + 8;
+        // Open miter joins emit up to five outline points per centerline vertex (inner butt pair plus outer ear triple across both chains).
+            long wantedPoints = 6L * source.PointCount + 8;
         if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join == SvgStrokeJoin.Round)
         {
             int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);

@@ -103,7 +103,7 @@ internal static class SvgStrokeOutline
             if (vertex >= last) break;
             int after = SkipDegenerate(points, vertex + 1);
             (double nextX, double nextY) = UnitDirection(points[vertex], points[after]);
-            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit, join, cancellationToken);
+            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit, join, true, cancellationToken);
             directionX = nextX;
             directionY = nextY;
             segment = vertex;
@@ -122,7 +122,7 @@ internal static class SvgStrokeOutline
             if (vertex <= first) break;
             int before = SkipDegenerateBackward(points, vertex - 1);
             (double nextX, double nextY) = UnitDirection(points[vertex], points[before]);
-            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit, join, cancellationToken);
+            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit, join, true, cancellationToken);
             directionX = nextX;
             directionY = nextY;
             segment = vertex;
@@ -145,13 +145,13 @@ internal static class SvgStrokeOutline
             int vertex = reverse ? SkipDegenerateBackwardWrap(points, segment) : SkipDegenerateForwardWrap(points, segment);
             if (vertex == start || vertex == segment || remaining-- <= 0) break;
             (double nextX, double nextY) = ClosedDirection(points, vertex, reverse);
-            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit, join, cancellationToken);
+            if ((directionX, directionY) != (nextX, nextY)) EmitJoin(builder, points[vertex], (directionX, directionY), (nextX, nextY), halfWidth, miterLimit, join, false, cancellationToken);
             directionX = nextX;
             directionY = nextY;
             segment = vertex;
         }
 
-        if ((directionX, directionY) != (initialX, initialY)) EmitJoin(builder, points[start], (directionX, directionY), (initialX, initialY), halfWidth, miterLimit, join, cancellationToken);
+        if ((directionX, directionY) != (initialX, initialY)) EmitJoin(builder, points[start], (directionX, directionY), (initialX, initialY), halfWidth, miterLimit, join, false, cancellationToken);
         cancellationToken.ThrowIfCancellationRequested();
         builder.EndContour();
     }
@@ -219,10 +219,11 @@ internal static class SvgStrokeOutline
     /// <summary>Bounds the chord deviation of one round arc fan segment, matching the curve flattening discipline.</summary>
     private const double ArcFlatness = 0.25;
 
-    /// <summary>Returns the flatness-bounded segment count for one arc fan sweep, used for outline capacity planning.</summary>
+    /// <summary>Returns the flatness-bounded segment count for one arc fan sweep, used for outline capacity planning. No chord spans more than thirty degrees, so small radii keep arc fidelity instead of collapsing to coarse chords.</summary>
     internal static int MaxArcFanSegments(double radius, double sweep)
     {
         double step = 2 * Math.Acos(Math.Clamp(1 - ArcFlatness / radius, -1, 1));
+        step = System.Math.Min(step, System.Math.PI / 6);
         if (!double.IsFinite(step) || step <= 0) return 1;
         int segments = (int)Math.Ceiling(Math.Abs(sweep) / step);
         return Math.Max(1, segments);
@@ -253,7 +254,7 @@ internal static class SvgStrokeOutline
         return value;
     }
 
-    private static void EmitJoin(SvgContourBuilder builder, SvgDevicePoint vertex, (double X, double Y) incoming, (double X, double Y) outgoing, double halfWidth, double miterLimit, SvgStrokeJoin join, CancellationToken cancellationToken)
+    private static void EmitJoin(SvgContourBuilder builder, SvgDevicePoint vertex, (double X, double Y) incoming, (double X, double Y) outgoing, double halfWidth, double miterLimit, SvgStrokeJoin join, bool openContour, CancellationToken cancellationToken)
     {
         double dot = incoming.X * outgoing.X + incoming.Y * outgoing.Y;
         double denominator = 1 + dot;
@@ -266,7 +267,7 @@ internal static class SvgStrokeOutline
             builder.AddLine(new SvgDevicePoint(RequireFinite(vertex.X + halfWidth * outgoingNormalX), RequireFinite(vertex.Y + halfWidth * outgoingNormalY)));
             return;
         }
-        if (join == SvgStrokeJoin.Round && denominator > 0 && cross > 0)
+        if (join == SvgStrokeJoin.Round && denominator > 0 && cross < 0)
         {
             EmitArcFan(builder, vertex, halfWidth, (-incoming.Y, incoming.X), (-incoming.Y + outgoingNormalX, incoming.X + outgoingNormalY), (outgoingNormalX, outgoingNormalY), cancellationToken);
             return;
@@ -287,6 +288,20 @@ internal static class SvgStrokeOutline
         double normalSumY = incoming.X + outgoingNormalY;
         // The emitted miter tip sits at halfWidth * (n1 + n2) / (1 + dot), so the tested ratio is the full displacement-to-half-width length, compared directly to the caller limit.
         double ratio = RequireFinite(System.Math.Sqrt(normalSumX * normalSumX + normalSumY * normalSumY) / denominator);
+        if (openContour && (join == SvgStrokeJoin.Miter || join == SvgStrokeJoin.Round))
+        {
+            // Open bands union per-segment quads with outer join wedges on right turns within ninety degrees: both chains close butt at the vertex, and the outer chain additionally spikes through the miter tip, tracing the wedge ear. Wider inner turns keep the classic miter vertex, which the acute oracle matches, and closed loops keep single-vertex joins on both sides.
+            builder.AddLine(new SvgDevicePoint(RequireFinite(vertex.X + halfWidth * (-incoming.Y)), RequireFinite(vertex.Y + halfWidth * incoming.X)));
+            if ((cross > 0 && dot >= 0) || ratio > miterLimit)
+            {
+                builder.AddLine(new SvgDevicePoint(RequireFinite(vertex.X + halfWidth * outgoingNormalX), RequireFinite(vertex.Y + halfWidth * outgoingNormalY)));
+                return;
+            }
+
+            builder.AddLine(new SvgDevicePoint(RequireFinite(vertex.X + halfWidth * normalSumX / denominator), RequireFinite(vertex.Y + halfWidth * normalSumY / denominator)));
+            builder.AddLine(new SvgDevicePoint(RequireFinite(vertex.X + halfWidth * outgoingNormalX), RequireFinite(vertex.Y + halfWidth * outgoingNormalY)));
+            return;
+        }
         if (ratio > miterLimit)
         {
             builder.AddLine(new SvgDevicePoint(RequireFinite(vertex.X + halfWidth * (-incoming.Y)), RequireFinite(vertex.Y + halfWidth * incoming.X)));
