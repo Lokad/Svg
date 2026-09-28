@@ -914,3 +914,9 @@ Question: does the mirrored traversal affect closed path loops or only sampled c
 Method: admitted-syntax 16x16 closed rectangular path with dashes and no product change; default render; fresh triple 3/3 identical; VisualDiff.
 Facts: byte-exact. Closed-loop dash traversal agrees, so the mirror lives in circle and ellipse sampling start or direction, not the dash machinery; the fix tries a sampling-direction flip first with the two dashed-circle oracles as acceptance, adjusting start point only if phase remains.
 Decision: no probe retained since the exact render has no manifest home, and no product change. Next: S12 flips sampling direction for closed loops against the two oracles.
+
+## Gradient strokes agree on solid geometry; degenerate bbox paints black here and nothing in Chrome (2026-09-28 decision analysis)
+Question: does gradient-stroke evaluation agree, and what happens on degenerate bounding boxes?
+Method: two admitted-syntax 16x16 probes (gradient-stroked rect, gradient-stroked zero-height line) with no product change; default renders; fresh triples 3/3 identical; VisualDiff; pixel sampling.
+Facts: the rect case is byte-exact, confirming zero added paint error independently. The line case has a zero-height object bounding box: Chrome renders nothing while ours paints opaque black bands, a divergence in degenerate-bounds paint binding, not interpolation.
+Decision: no probes retained since one is exact and the other records a behavior gap rather than calibration; the first probe file was withdrawn as an invalid agreement test. Next: S13 admits degenerate-bounds handling that rejects or skips instead of painting black.
