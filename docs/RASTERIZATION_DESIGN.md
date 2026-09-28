@@ -818,3 +818,9 @@ Question: does elliptical-arc conversion agree independently of cubic flattening
 Method: admitted-syntax 16x16 integer half-disc arc fill with no product change; default render; fresh triple 3/3 identical; VisualDiff.
 Facts: 22 pixels at max error 61 confined to the curved half with the straight diameter edge agreeing, the same magnitude family as sampled-circle disc edges. Arc-to-segment conversion plus flattening therefore shares the curve residual shape with circles.
 Decision: the probe stays as an admittedRendering ratchet of 22 pixels at max error 61. Next: arc conversion and circle sampling converge on one curve-flattening hypothesis for S11; the legacy cubic-arch probe covers cubics separately.
+
+## Diagonal strokes on opaque white compress but keep residuals (2026-09-28 decision analysis)
+Question: does opaque-background compositing damp the diagonal-coverage residual or interact with it?
+Method: admitted-syntax 16x16 even-width diagonal stroke on explicit white with no product change; default render with white option; fresh white triple 3/3 identical; VisualDiff.
+Facts: 50 pixels at max error 8 with zero alpha error, against 87 pixels at 31 on transparency. Compositing over white compresses the coverage residual into gray levels without removing it, confirming the residual is coverage-driven with compositing as a damper rather than a second source.
+Decision: the probe stays as an admittedRendering ratchet of 50 pixels at max error 8 with zero alpha error. Next: diagonal work stays the S11 structural item; background interaction needs nothing separate.
