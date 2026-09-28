@@ -686,3 +686,10 @@ Method: audited the tokenizer, cross-type href and multi-crossing split boundari
 Facts: second-subpath lowercase moveto with implicit pairs renders byte-identical to its absolute twin; forward cross-type gradient href rejects with the defined-reference message; gradient and radial multi-crossing contours reject under even-odd fill exactly like the solid path. All four pass without touching product code. Full gate 2495 core plus 100 visual plus 6 font green.
 Decision: boundaries locked; no new denial tooling or product change. Next: keep growing pins alongside each landing rather than in arrears.
 
+
+## Fractional parser resets the current point on closepath (2026-09-28 decision analysis)
+Question: why does a relative moveto after closepath paint in the wrong place through fractional paths while the integer twin is exact?
+Method: relative moveto after closepath vs absolute twin at the spec-mandated subpath start; white-box retained-loop dump; fail-without-fix stash check; full 92-document re-probe with oracle re-verification for the moved document.
+Facts: pre-fix the moveto accumulated from the last point (the twin differs by 8 px with max alpha error 255); the integer tokenizer already reset on closepath, so only the fractional path parser needed the three-line subpath-start tracking. Post-fix twins are byte-exact. Blast radius: full gate green (2496 core plus 100 visual plus 6 font, including the manifest entries) with zero failures; inventory shows exactly two drifts, both improvements or advancements: inv-067 flame doors relocate to spec positions (residual collapses from 25870/179 to 2510/63 with zero alpha error, triple re-verified 3/3 byte-identical) and inv-050 advances past polygon simplicity to the non-root stylesheet gate with all octagon and letter contours parsing.
+Decision: closepath now resets the current point in both path parsers; the batch-100 entries record the two drifts. Next: nothing open on moveto handling.
+

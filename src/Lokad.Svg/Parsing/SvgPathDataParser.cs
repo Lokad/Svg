@@ -38,6 +38,8 @@ internal static class SvgPathDataParser
         double currentX = 0;
         double currentY = 0;
         bool open = false;
+        double subpathStartX = 0;
+        double subpathStartY = 0;
         double previousCubicX = 0;
         double previousCubicY = 0;
         bool hasPreviousCubic = false;
@@ -58,6 +60,8 @@ internal static class SvgPathDataParser
                     if (open) SealContour(false);
                     currentX = absolute ? x : RequireFinite(currentX + x);
                     currentY = absolute ? y : RequireFinite(currentY + y);
+                    subpathStartX = currentX;
+                    subpathStartY = currentY;
                     builder.BeginContour(transform.Apply(currentX, currentY));
                     open = true;
                     hasPreviousCubic = false;
@@ -117,6 +121,8 @@ internal static class SvgPathDataParser
                     {
                         SealContour(true);
                         open = false;
+                        currentX = subpathStartX;
+                        currentY = subpathStartY;
                     }
 
                     break;

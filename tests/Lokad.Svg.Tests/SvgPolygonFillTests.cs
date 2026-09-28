@@ -764,6 +764,18 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Relative_moveto_after_closepath_starts_from_subpath_start()
+    {
+        // A relative moveto after closepath resolves from the subpath start,
+        // not the last point: the fractional parser resets current on Z like
+        // the integer tokenizer already does.
+        byte[] relative = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L2.5,0.5 L0.5,2.5 Z m4,4 2,0 -2,2 z' fill='red'/></svg>", out _, out _);
+        byte[] absolute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L2.5,0.5 L0.5,2.5 Z M4.5,4.5 L6.5,4.5 L4.5,6.5 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(absolute, relative);
+    }
+
+    [Fact]
     public void Forward_cross_type_gradient_href_stays_unsupported()
     {
         // S13: forward references stay gated in both directions and across
