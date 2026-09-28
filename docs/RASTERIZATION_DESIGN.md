@@ -854,3 +854,9 @@ Question: does vector-effect non-scaling-stroke composition agree through nonuni
 Method: admitted-syntax 16x16 closed path with width 2 non-scaling stroke inside a scale(2,1) group with no product change; default render; fresh triple 3/3 identical; VisualDiff.
 Facts: byte-exact. Transform and stroke-width handling compose correctly through the vector-effect path with fixed width under nonuniform scales.
 Decision: no probe retained since the exact render has no manifest home, and no product change. Next: nothing open on non-scaling strokes.
+
+## Transparent residuals grow where alpha is small: unpremultiply rounding (2026-09-28 decision analysis)
+Question: is the transparent-stop residual interpolation rounding, dither position, or unpremultiply quantization?
+Method: shifted transparent-stop ramp (rect moved plus 1 pixel, same bbox-relative gradient) with no product change; default render; fresh triple 3/3 identical; per-pixel sampling against the unshifted twin.
+Facts: the shifted version misses 4 pixels against 1 unshifted, ruling out pure value rounding and pure dither cells. Edge pixels at alpha 11 show red 255 against 232 with alpha agreeing, consistent with premultiplied floor plus exact division magnified by the small divisor; mid pixels show red 75 against 73 at alpha 181. Residual magnitude grows as alpha shrinks, the unpremultiply signature.
+Decision: the shifted probe stays as an admittedRendering ratchet of 4 pixels at max error 23 with zero alpha error. Next: transparent-stop work targets unpremultiply rounding, predicting error inversely proportional to alpha.
