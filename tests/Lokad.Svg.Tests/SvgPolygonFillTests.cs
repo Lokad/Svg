@@ -752,9 +752,54 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(absolute, relative);
     }
 
+    [Fact]
+    public void Second_subpath_relative_moveto_implicit_pairs_match_absolute_twin()
+    {
+        // The integer tokenizer resolves every lowercase moveto, not just the
+        // first: implicit pairs after a second-subpath moveto accumulate from it.
+        byte[] relative = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H4 V4 H0 Z m4,4 2,0 -2,2 z' fill='red'/></svg>", out _, out _);
+        byte[] absolute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H4 V4 H0 Z M4,4 L6,4 L4,6 Z' fill='red'/></svg>", out _, out _);
 
+        Assert.Equal(absolute, relative);
+    }
 
+    [Fact]
+    public void Forward_cross_type_gradient_href_stays_unsupported()
+    {
+        // S13: forward references stay gated in both directions and across
+        // types; only backward cross-type hrefs resolve.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='l' href='#r'/><radialGradient id='r'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><rect x='2' y='2' width='12' height='12' fill='url(#l)'/></svg>");
 
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Double_crossing_gradient_evenodd_contour_stays_unsupported()
+    {
+        // R34: first-vertex parity signs are meaningless for vertex-sharing
+        // loops on every paint path, so multi-crossing contours stay gated
+        // under even-odd fill for gradient fills too.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><polygon points='0,0 6,6 6,2 0,8 6,8' fill='url(#g)' fill-rule='evenodd'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Double_crossing_radial_evenodd_contour_stays_unsupported()
+    {
+        // R34: first-vertex parity signs are meaningless for vertex-sharing
+        // loops on every paint path, so multi-crossing contours stay gated
+        // under even-odd fill for radial fills too.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><radialGradient id='r'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><polygon points='0,0 6,6 6,2 0,8 6,8' fill='url(#r)' fill-rule='evenodd'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
 
     [Fact]
     public void Fractional_polygon_matches_equivalent_path()

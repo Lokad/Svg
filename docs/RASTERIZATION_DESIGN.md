@@ -679,3 +679,10 @@ Method: two rects of different sizes sharing one objectBoundingBox clipPath and 
 Facts: both twins bind per instance (clip halves (0,0,2,8) plus (8,0,4,8); ramps restart per box with the wide left edge red-dominant). An early scare about a narrowed second clip traced to an unverified probe file, not the product: byte-verified re-runs render exactly, and no test had ever referenced one clip id twice. Full gate 2491 core plus 100 visual plus 6 font green.
 Decision: per-instance clip and paint binding stands pinned by twin tests (structural pixels plus exact sums 12240 and 24480); probe inputs must be byte-verified before drawing conclusions since ignored scratch is shared with concurrent work. Next: nothing open on this route.
 
+
+## Boundary locks for recent landings need no product change (2026-09-28 decision analysis)
+Question: which recently landed boundaries lack regression pins?
+Method: audited the tokenizer, cross-type href and multi-crossing split boundaries for untested-but-behaving cases; added twin and denial pins only.
+Facts: second-subpath lowercase moveto with implicit pairs renders byte-identical to its absolute twin; forward cross-type gradient href rejects with the defined-reference message; gradient and radial multi-crossing contours reject under even-odd fill exactly like the solid path. All four pass without touching product code. Full gate 2495 core plus 100 visual plus 6 font green.
+Decision: boundaries locked; no new denial tooling or product change. Next: keep growing pins alongside each landing rather than in arrears.
+
