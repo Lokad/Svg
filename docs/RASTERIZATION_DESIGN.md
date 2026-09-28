@@ -842,3 +842,9 @@ Question: do admitted bevel joins agree where path bevel stays gated?
 Method: admitted-syntax 16x16 stroked rounded rect with bevel joins and no product change; default render; fresh triple 3/3 identical; VisualDiff.
 Facts: 56 pixels at max error 80 confined to the four corners, against 20 pixels at 70 for the solid rounded fill at the same corners. Bevel cuts are analytic flat segments with no tessellation of their own, so attribution favors the corner arcs shared with the solid case; bevel-specific isolation is impossible here since path bevel stays gated.
 Decision: the probe stays as an admittedRendering ratchet of 56 pixels at max error 80. Next: corners join the conic-flattening hypothesis with caps, joins and rounded fills; bevel cuts need nothing separate.
+
+## Miter fallback threshold differs by exactly two from Chrome (2026-09-28 source analysis)
+Question: why does an acute spike miter here while Chrome bevels it, when obtuse miters agree?
+Method: admitted-syntax 16x16 acute spike probe with default miter limit 4; row-profile of oracle against candidate; read Skia MiterJoiner and stroker limit plumbing at the pinned revision against our EmitJoin ratio.
+Facts: the probe misses 50 opaque pixels with our spike taller by two rows. Algebra proves our ratio equals one over twice Skia sine-half-angle, so Skia bevels exactly when our ratio exceeds half the limit while we bevel at the full limit; with limit 4 the bands are both-miter below 2, split between 2 and 4 with our probe at 2.47, and both-bevel above 4. Skia passes one over the limit with no factor of two, so the two-times gap is in the comparison itself.
+Decision: the probe stays as an admittedRendering ratchet of 50 opaque pixels. Next: S12 matches Chrome by comparing twice our ratio, or equivalently half the limit, behind twins; miter math itself stays exonerated.
