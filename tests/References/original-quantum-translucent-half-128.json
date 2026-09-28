@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-quantum-translucent-half-128",
+  "referencePng": "original-quantum-translucent-half-128.png",
+  "referenceSha256": "6536ef67ed6534775db20e5af7acb6142dbb2ca60e6cd88668f1f1d806a22f73",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": 3,
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "b8f3efe07817f597dd5715a6ef749997ad8a3e531ab1254dd5b8170350ceb7c7",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-28"
+}

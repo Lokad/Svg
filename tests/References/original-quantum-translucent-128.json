@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-quantum-translucent-128",
+  "referencePng": "original-quantum-translucent-128.png",
+  "referenceSha256": "c8a9a9b7ab94965e68729389beb4afc85c1e61b5e6bc22c40d2c968c1cb1a013",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": 3,
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "9e44a2f26f77482d0428754262791a1c182821e1db6f5edce87e8abc8b52edb8",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-28"
+}

@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-quantum-quarter-edge-black",
+  "referencePng": "original-quantum-quarter-edge-black.png",
+  "referenceSha256": "0b929ffdb3a295cfd235dc00ed4809efd2c854b5a2a453757cb3293f1d722a5a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": 3,
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "b85b27aff95badbc46d79ef8cc5a84baafa6feb834aa8d83edb16e34b4794f4f",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-28"
+}

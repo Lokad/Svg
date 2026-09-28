@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-quantum-half-edge",
+  "referencePng": "original-quantum-half-edge.png",
+  "referenceSha256": "a4d40414f8673c24c964c639c44b7052943432b836c0fc04b48049aed3a2ce3e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": 3,
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "68f85096690179f74d79b62cc0ceacd37f2265693cf97f2a8f883150861e3071",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-28"
+}
