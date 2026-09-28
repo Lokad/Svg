@@ -1495,6 +1495,47 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-quarter-edge-rect-fill-16x16",
+      "path": "quarter-edge-rect-fill-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "89df174915d869c1ef202b491cae3e7df667dcd93a8a05741ba60ee1cc06cbfe",
+      "featureTags": [
+        "geometry",
+        "rectangle",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 12,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 12,
+        "minimumMismatchX": 10,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 10,
+        "maximumMismatchY": 13
+      },
+      "oracle": {
+        "referencePng": "references/quarter-edge-rect-fill-16x16.png",
+        "referenceSha256": "bfd50cfdf24523cb7ed7fbe4588b7f0c80e14e8fbb5043f34c50573830af4364",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
