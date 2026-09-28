@@ -2172,13 +2172,13 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 50,
-        "maximumChannelError": 255,
-        "maximumAlphaError": 255,
-        "alphaChangedPixelCount": 50,
+        "changedPixelCount": 46,
+        "maximumChannelError": 36,
+        "maximumAlphaError": 36,
+        "alphaChangedPixelCount": 46,
         "minimumMismatchX": 1,
-        "minimumMismatchY": 0,
-        "maximumMismatchX": 9,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 8,
         "maximumMismatchY": 13
       },
       "oracle": {

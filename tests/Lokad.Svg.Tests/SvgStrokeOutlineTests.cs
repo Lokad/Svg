@@ -132,6 +132,26 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    public void Sharp_turn_bevels_at_limit_two()
+    {
+        // The (0,0)->(5,0)->(1,3) turn has a true miter ratio of sqrt(10) (about 3.16).
+        // Limit 2 must bevel; the former half-normalized comparison wrongly mitered it.
+        SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(5, 0), new SvgDevicePoint(1, 3)];
+        SvgContourBuilder builder = new(16, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 2, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+
+        ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
+        Assert.Equal(1, builder.ContourCount);
+        Assert.True(contour.Length == 8, "Miter-limit fallback keeps both corners on each chain.");
+        Assert.Equal(new SvgDevicePoint(0, 1), contour[0]);
+        Assert.Equal(new SvgDevicePoint(5, 1), contour[1]);
+        Assert.Equal(4.4, contour[2].X, 9);
+        Assert.Equal(-0.8, contour[2].Y, 9);
+        Assert.Equal(new SvgDevicePoint(0, -1), contour[7]);
+    }
+
+    [Fact]
     public void Closed_square_emits_opposite_wound_outlines()
     {
         SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)];

@@ -285,7 +285,8 @@ internal static class SvgStrokeOutline
 
         double normalSumX = -incoming.Y + outgoingNormalX;
         double normalSumY = incoming.X + outgoingNormalY;
-        double ratio = RequireFinite(System.Math.Sqrt(normalSumX * normalSumX + normalSumY * normalSumY) / (2 * denominator));
+        // The emitted miter tip sits at halfWidth * (n1 + n2) / (1 + dot), so the tested ratio is the full displacement-to-half-width length, compared directly to the caller limit.
+        double ratio = RequireFinite(System.Math.Sqrt(normalSumX * normalSumX + normalSumY * normalSumY) / denominator);
         if (ratio > miterLimit)
         {
             builder.AddLine(new SvgDevicePoint(RequireFinite(vertex.X + halfWidth * (-incoming.Y)), RequireFinite(vertex.Y + halfWidth * incoming.X)));
