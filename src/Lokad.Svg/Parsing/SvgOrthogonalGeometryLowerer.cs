@@ -916,22 +916,27 @@ internal ref struct SvgOrthogonalGeometryLowering
             ends[contour] = mapped.Count;
         }
 
+        ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+        SvgDevicePoint[] retainedOutlines = mapped.AsSpan().ToArray();
+        SvgContourNesting.MergeIdenticalContours(retainedOutlines, ends, _workCounter, out SvgDevicePoint[] mergedOutlines, out int[] mergedEnds, _cancellationToken);
+        retainedOutlines = mergedOutlines;
+        ends = mergedEnds;
+
         SvgPolygonMapping mapping = flattenedCenterline ? SvgPolygonMapping.FlattenedCurves : fractionalVertices ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.QuarterEdges;
-        RenderBudget.BudgetReservation? reservation = ReserveScene(mapped.Count, ends.Length, ends.Length, budget);
+        RenderBudget.BudgetReservation? reservation = ReserveScene(retainedOutlines.Length, ends.Length, ends.Length, budget);
         try
         {
-            SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
-            ValidateDeviceRange(retained);
+            ValidateDeviceRange(retainedOutlines);
             int[] roles = new int[ends.Length];
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
-            SvgContourNesting.ComputeWindingRoles(retained, ends, roles, _cancellationToken);
+            SvgContourNesting.ComputeWindingRoles(retainedOutlines, ends, roles, _cancellationToken);
             for (int contour = 0; contour < ends.Length; contour++)
             {
                 if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
                 int start = contour == 0 ? 0 : ends[contour - 1];
                 if (roles[contour] == 0 && ends[contour] - start >= 3) roles[contour] = 1;
             }
-            return RetainPolygonFill(retained, ends, roles, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
+            return RetainPolygonFill(retainedOutlines, ends, roles, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
         }
         catch
         {
@@ -977,6 +982,14 @@ internal ref struct SvgOrthogonalGeometryLowering
                 ends = splitEnds.AsSpan().ToArray();
                 ValidateDeviceRange(retained);
                 mapping = UpgradeSplitMapping(retained, mapping);
+            }
+            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            if (SvgContourNesting.MergeIdenticalContours(retained, ends, _workCounter, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, _cancellationToken))
+            {
+                reservation?.Dispose();
+                reservation = ReserveScene(mergedPoints.Length, mergedEnds.Length, mergedEnds.Length, budget);
+                retained = mergedPoints;
+                ends = mergedEnds;
             }
             int[] signs = new int[ends.Length];
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);

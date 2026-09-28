@@ -1,5 +1,7 @@
 namespace Lokad.Svg.Rendering;
 
+using Lokad.Svg.Parsing;
+
 /// <summary>Resolves nesting parity signs for even-odd filling of explicit contours.</summary>
 /// <remarks>
 /// <para>Each contour scores plus one when an even number of other contours strictly contain its first
@@ -73,6 +75,81 @@ internal static class SvgContourNesting
         }
 
         cancellationToken.ThrowIfCancellationRequested();
+    }
+
+    /// <summary>Drops bitwise-identical duplicate contours beyond their first occurrence, reporting survivors.</summary>
+    /// <remarks>
+    /// <para>Coincident contours union exactly, so keeping one copy is coverage-identical while summing would double shared fringes. Touching, nested and crossing contours pass through untouched with their existing combination, as do rotated or reversed identicals (spatial identity belongs to row 4) and degenerate contours under three points (they contribute no coverage either way). Bitwise equality keeps NaN vertices unmerged. Callers charge one nesting work unit per contour pair; kept-vertex copies charge one work unit each.</para>
+    /// </remarks>
+    internal static bool MergeIdenticalContours(SvgDevicePoint[] points, int[] ends, ParserWorkCounter workCounter, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        SvgPolygonCoverage.ValidateContourEnds(points, ends);
+        bool[] keep = new bool[ends.Length];
+        for (int contour = 0; contour < ends.Length; contour++) keep[contour] = true;
+        bool merged = false;
+        long pairs = 0;
+        for (int first = 0; first < ends.Length; first++)
+        {
+            if (!keep[first]) continue;
+            int firstStart = first == 0 ? 0 : ends[first - 1];
+            int firstCount = ends[first] - firstStart;
+            if (firstCount < 3) continue;
+            for (int second = first + 1; second < ends.Length; second++)
+            {
+                if ((pairs++ & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                if (!keep[second]) continue;
+                int secondStart = second == 0 ? 0 : ends[second - 1];
+                if (ends[second] - secondStart != firstCount) continue;
+                bool identical = true;
+                for (int vertex = 0; vertex < firstCount; vertex++)
+                {
+                    if (points[firstStart + vertex] != points[secondStart + vertex]) { identical = false; break; }
+                }
+
+                if (identical) { keep[second] = false; merged = true; }
+            }
+        }
+
+        if (!merged)
+        {
+            mergedPoints = points;
+            mergedEnds = ends;
+            return false;
+        }
+
+        int keptPoints = 0;
+        int keptEnds = 0;
+        for (int contour = 0; contour < ends.Length; contour++)
+        {
+            if (!keep[contour]) continue;
+            keptEnds++;
+            keptPoints += ends[contour] - (contour == 0 ? 0 : ends[contour - 1]);
+        }
+
+        SvgDevicePoint[] compactedPoints = new SvgDevicePoint[keptPoints];
+        int[] compactedEnds = new int[keptEnds];
+        int target = 0;
+        int targetEnd = 0;
+        for (int contour = 0; contour < ends.Length; contour++)
+        {
+            if (!keep[contour]) continue;
+            int start = contour == 0 ? 0 : ends[contour - 1];
+            int count = ends[contour] - start;
+            for (int vertex = 0; vertex < count; vertex++)
+            {
+                workCounter.Consume(cancellationToken);
+                compactedPoints[target++] = points[start + vertex];
+            }
+
+            compactedEnds[targetEnd++] = target;
+        }
+
+        mergedPoints = compactedPoints;
+        mergedEnds = compactedEnds;
+        return true;
     }
 
     private static int Painted(int winding) => winding != 0 ? 1 : 0;

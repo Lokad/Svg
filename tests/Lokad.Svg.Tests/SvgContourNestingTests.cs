@@ -1,3 +1,4 @@
+using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
@@ -72,6 +73,64 @@ public sealed class SvgContourNestingTests
     {
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];
         return (points, [4, 8]);
+    }
+
+    [Fact]
+    public void Identical_twins_merge_to_first()
+    {
+        SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)];
+        SvgDevicePoint[] points = [.. square, .. square];
+        (bool merged, SvgDevicePoint[] kept, int[] ends) = Merge(points, [4, 8]);
+
+        Assert.True(merged);
+        Assert.Equal([4], ends);
+        Assert.Equal(square, kept);
+    }
+
+    [Fact]
+    public void Distinct_siblings_pass_through_untouched()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(0, 4)];
+        (bool merged, SvgDevicePoint[] kept, int[] ends) = Merge(points, [4, 8]);
+
+        Assert.False(merged);
+        Assert.Same(points, kept);
+        Assert.Equal([4, 8], ends);
+    }
+
+    [Fact]
+    public void Short_duplicates_stay()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 8)];
+        (bool merged, _, _) = Merge(points, [2, 4]);
+
+        Assert.False(merged);
+    }
+
+    [Fact]
+    public void Rotated_identical_stays_for_spatial_identity()
+    {
+        SvgDevicePoint a = new(0, 0);
+        SvgDevicePoint b = new(8, 0);
+        SvgDevicePoint c = new(8, 8);
+        SvgDevicePoint[] points = [a, b, c, b, c, a];
+        (bool merged, _, _) = Merge(points, [3, 6]);
+
+        Assert.False(merged);
+    }
+
+    [Fact]
+    public void Merge_rejects_mismatched_shapes()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => Merge(points, [2]));
+    }
+
+    private static (bool Merged, SvgDevicePoint[] Points, int[] Ends) Merge(SvgDevicePoint[] points, int[] ends)
+    {
+        bool merged = SvgContourNesting.MergeIdenticalContours(points, ends, new ParserWorkCounter(1000), out SvgDevicePoint[] kept, out int[] keptEnds, CancellationToken.None);
+        return (merged, kept, keptEnds);
     }
 
     private static int[] ParitySigns((SvgDevicePoint[] Points, int[] Ends) contours)

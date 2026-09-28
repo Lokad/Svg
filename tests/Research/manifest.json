@@ -3076,8 +3076,8 @@
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
         "changedPixelCount": 50,
-        "maximumChannelError": 108,
-        "maximumAlphaError": 108,
+        "maximumChannelError": 10,
+        "maximumAlphaError": 10,
         "alphaChangedPixelCount": 50,
         "minimumMismatchX": 1,
         "minimumMismatchY": 1,
