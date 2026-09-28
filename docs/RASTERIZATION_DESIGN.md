@@ -770,3 +770,9 @@ Question: do square caps agree where round caps miss, completing cap coverage?
 Method: two admitted-syntax 16x16 probes (width 4 square-cap bar, width 4 square-cap dash runs) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
 Facts: both byte-exact, including dash-run tip extensions. Square tips extend analytically with no arcs, unlike round caps which fan chords against Skia flattened conics. The cap map is now butt exact, square exact and round residual.
 Decision: no probes retained since exact renders have no manifest home, and no product change. Next: nothing open on caps; joins remain round residual, miter edge-level and bevel gated.
+
+## Translucent coverage agrees; floor256 model gains acceptance vectors (2026-09-28 decision analysis)
+Question: does the floor256 rule survive translucent paint, where mask and blend quantizations compose?
+Method: two admitted-syntax 16x16 probes (paint alpha 128 control landing on integers, paint alpha 127 stress) at quarter edges with no product change; default render; fresh triples 3/3 identical; per-pixel sampling.
+Facts: both byte-exact. The 128 probe lands integers everywhere and does not discriminate. The 127 probe gives 95 at 0.75 coverage, 32 at 0.25 and 127 full on both systems, matching our round-half-away rule exactly; Skia mask-plus-blend arithmetic admits several integer formulas fitting these, so the blend constant is not isolated, but no isolation is needed since the systems agree. The S11 switch therefore carries eight acceptance values: opaque 192, 64, 128 and 255 plus translucent-127 95, 32 and 127 at the same geometries.
+Decision: no probes retained since exact renders have no manifest home, and no separate translucent calibration work. Next: the S11 owner replicates the mask-plus-blend pair outcome against those eight values behind twins and a full re-probe.
