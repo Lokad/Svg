@@ -866,3 +866,9 @@ Question: does raising the limit to 10 reunite both sides on miter, as the half-
 Method: same acute spike with stroke-miterlimit 10 and no product change (our candidate bytes identical to the default-limit render); default render; fresh triple 3/3 identical; VisualDiff.
 Facts: 46 pixels at max error 12 with no opaque blowout, against 50 opaque pixels at default limit. Both sides miter at limit 10 since code ratio 2.47 sits below both thresholds (4 here, 5 in Chrome); the remaining fringe is diagonal-flank coverage. The split-then-reunite pair confirms the threshold rule on both branches, not just the split.
 Decision: the probe stays as an admittedRendering ratchet of 46 pixels at max error 12. Next: S12 applies half-limit comparison with two independent confirmations behind it.
+
+## Both-bevel still misses along flanks; threshold fix is necessary but not sufficient (2026-09-28 decision analysis)
+Question: when both sides bevel, does any residual remain beyond the branch choice?
+Method: same acute spike with stroke-miterlimit 1 so both sides bevel, with no product change; default render; fresh triple 3/3 identical (oracle bytes identical to the default-limit capture, confirming Chrome bevels in both); row-profiled VisualDiff.
+Facts: 46 pixels at max error 36 spread from the bevel cut down the long incoming flank, against 50 opaque pixels for the branch split. Fixing the threshold therefore removes the opaque blowout but leaves diagonal-flank coverage residuals of the structural kind.
+Decision: the probe stays as an admittedRendering ratchet of 46 pixels at max error 36. Next: S12 applies the half-limit comparison first, then diagonal coverage; the two are now separately ratcheted.
