@@ -752,3 +752,9 @@ Question: does the admitted dash kernel agree with Chrome, and where does the in
 Method: three admitted-syntax 16x16 probes (dasharray 4 2 plain, dashoffset 3, two-subpath dash phase) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
 Facts: all three byte-exact, so dash pattern, offset and multisubpath phase agree on straight butt geometry. The inv-010 residual therefore lies outside straight-butt dashing: that file pairs default fills with wide stroked multi-subpath outlines, pointing at fill winding or band topology rather than dash phase.
 Decision: no probes retained since exact renders have no manifest home, and no product change. Next: re-localize the inv-010 residual before any dash-kernel work; none is indicated by these probes.
+
+## Round caps and joins need conics through the flattener, not arc fans (2026-09-28 source analysis)
+Question: what representation gap explains the width-scaled cap and join residuals pinned in the research manifest?
+Method: read the Skia stroker cap and join builders at the pinned revision (SkStrokerPriv RoundCapper, RoundJoiner, MiterJoiner) against our SvgStrokeOutline arc fans.
+Facts: Skia builds round caps and joins from exact conics with Root2Over2 weights, later flattened by the shared curve tolerance; ours emits polygonal arc fans with a segment-count rule. Fan chords therefore deviate proportionally to radius, which matches the observed width-scaled same-site residuals (12 pixels at 24 for width 4 caps, 56 at 201 for joins). Skia miter joins add an upright-right-angle fast path plus sine-half-angle limit math where ours miter within the caller limit with bevel fallback.
+Decision: cap and join agreement routes through emitting conics into the existing curve flattener instead of fans, for S12 with the two even-width ratchets as acceptance. Next: no product change in this slice; miter agreement stays unprobed separately.
