@@ -2522,6 +2522,47 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-elliptical-arc-solid-16x16",
+      "path": "elliptical-arc-solid-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "e64020687e6e31644483b6d6e6129960eefce70ea129862c5d6d4ad7bef4dad9",
+      "featureTags": [
+        "geometry",
+        "arc",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 18,
+        "maximumChannelError": 22,
+        "maximumAlphaError": 22,
+        "alphaChangedPixelCount": 18,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 8,
+        "maximumMismatchX": 13,
+        "maximumMismatchY": 11
+      },
+      "oracle": {
+        "referencePng": "references/elliptical-arc-solid-16x16.png",
+        "referenceSha256": "6b959eb4ea331c3f5cd5e6960ba05f59d2d434df3c2758b7c3f11a38009f4ea1",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }

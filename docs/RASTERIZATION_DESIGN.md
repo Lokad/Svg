@@ -890,3 +890,9 @@ Question: does quadratic conversion agree independently of cubics and arcs, and 
 Method: two admitted-syntax 16x16 probes (integer quadratic dome, circular arc with rotation 30) with no product change; default render; fresh triples 3/3 identical; VisualDiff; oracle-identity comparison across the rotation.
 Facts: quadratic misses 16 pixels at max error 13 on the curve, its own conversion residual distinct from cubics and arcs. Rotated circular arc renders byte-identical candidates and oracles to the unrotated twin, so rotation parsing is end-to-end inert on circles as geometry requires; the rotated file leaves no independent probe.
 Decision: the quadratic probe stays as an admittedRendering ratchet of 16 pixels at max error 13. Next: quadratic conversion joins the curve-flattening hypothesis with its own numbers.
+
+## Elliptical arcs carry smaller flattening residuals than circular ones (2026-09-28 decision analysis)
+Question: does distinct-radii arc conversion with radii correction agree independently of circular arcs?
+Method: admitted-syntax 16x16 half-ellipse arc fill with no product change; default render; fresh triple 3/3 identical; VisualDiff.
+Facts: 18 pixels at max error 22 on the flatter curve, against 22 at 61 for the semicircle; residual magnitude scales with curvature as flattening tolerance predicts, and radii correction places the shape correctly.
+Decision: the probe stays as an admittedRendering ratchet of 18 pixels at max error 22. Next: arc conversion is covered across circular, rotated, elliptical and cubic inputs with one shared flattening hypothesis.
