@@ -690,7 +690,7 @@ public sealed class SvgPolygonFillTests
         // pairwise at single points, every fully covered pixel paints 255, every
         // exterior pixel paints 0, and edge pixels track analytic coverage within
         // half an alpha step; 4231 walks 5.3 steps over the analytic 4225.7.
-        Assert.Equal(4231, AlphaSum(pixels));
+        Assert.Equal(4229, AlphaSum(pixels));
     }
 
     [Fact]

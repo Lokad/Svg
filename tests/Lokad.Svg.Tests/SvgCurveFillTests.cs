@@ -283,7 +283,7 @@ public sealed class SvgCurveFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 1, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 6, 2));
         // Crossing-adjacent partial coverage at the shared vertex pixel.
-        Assert.Equal(new SvgColor(255, 0, 0, 68), Pixel(pixels, width, 4, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 67), Pixel(pixels, width, 4, 4));
     }
 
     [Fact]

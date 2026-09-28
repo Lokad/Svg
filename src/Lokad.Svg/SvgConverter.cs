@@ -1285,7 +1285,21 @@ public static class SvgConverter
         destination[3] = (byte)outputAlpha;
     }
 
-    private static SvgColor WithCoverage(SvgColor color, double coverage) => coverage == 1 ? color : new SvgColor(color.Red, color.Green, color.Blue, checked((byte)Math.Round(color.Alpha * coverage, MidpointRounding.AwayFromZero)));
+    private static SvgColor WithCoverage(SvgColor color, double coverage) => coverage == 1 ? color : new SvgColor(color.Red, color.Green, color.Blue, CoverageAlpha(color.Alpha, coverage));
+
+    /// <summary>Quantizes one geometric coverage step to byte alpha, truncating opaque coverage times 256 per the matched browser source while translucent coverage keeps its verified rounding.</summary>
+    internal static byte CoverageAlpha(byte alpha, double coverage)
+    {
+        if (alpha == 255)
+        {
+            int truncated = (int)(coverage * 256);
+            if (truncated < 0) return 0;
+            if (truncated > 255) return 255;
+            return (byte)truncated;
+        }
+
+        return checked((byte)Math.Round(alpha * coverage, MidpointRounding.AwayFromZero));
+    }
 
     private static byte MultiplyAlpha(byte left, byte right) => (byte)((left * right + 127) / 255);
 

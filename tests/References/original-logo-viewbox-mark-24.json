@@ -10,13 +10,13 @@
   "background": "transparent",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "candidateSha256": "307f004655187d086ad41b0f965e86e3e7d2f18e66239eea730a14494f5fd774",
+  "candidateSha256": "41efc8e20480b62e0e05de632fc7e69dddc696852134277d050730f58b1bc63c",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 28,
-    "maximumChannelError": 1,
-    "maximumAlphaError": 1,
-    "exact": false
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
   },
   "admittedAt": "2026-09-23"
 }
