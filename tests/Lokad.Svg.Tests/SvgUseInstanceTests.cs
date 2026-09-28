@@ -17,6 +17,41 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Magnified_curve_use_stays_unsupported()
+    {
+        // R35: definition curves flatten at the nominal device tolerance, so a
+        // magnifying instance scale would stretch the subdivision error past it.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs><use href=\"#q\" transform=\"scale(8)\"/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only unmagnified use instances of flattened curve outlines are implemented.", rejected.Message);
+    }
+
+    [Fact]
+    public void Magnified_polygon_use_matches_direct_rendering()
+    {
+        // R35: straight outlines map exactly under affine instance transforms,
+        // so magnified polygon instances render byte-identical to direct geometry.
+        byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><polygon id=\"t\" points=\"0,8 8,0 8,8\"/></defs><use href=\"#t\" transform=\"scale(8)\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><polygon points=\"0,64 64,0 64,64\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Reflected_curve_use_matches_direct_rendering()
+    {
+        // R35: unit-magnitude instance scales never magnify the flattening budget,
+        // so reflected curve instances render byte-identical to hand-mirrored geometry.
+        byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs><use href=\"#q\" transform=\"translate(16,0) scale(-1,1)\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M16,8 Q12,0 8,8 Z\" fill=\"red\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
     public void Pattern_path_use_matches_direct_rendering()
     {
         string pattern = "<defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs>";

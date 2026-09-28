@@ -38,6 +38,7 @@ internal static class SvgReferenceResolver
         if (definition.SymbolViewBox is SvgViewBox symbolBox) return ApplySymbol(definition, symbolBox, reference, frame, state, workCounter, cancellationToken);
         if (reference.PaintServerId is not null) return [LowerDirectInstancePaintFill(definition, reference, frame, state)];
         RequireUniformOutlineScales(definition, reference);
+        RequireAdmittedInstanceMagnification(definition, reference);
         SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
         SvgGeometry[] applied = new SvgGeometry[sources.Length];
         for (int index = 0; index < sources.Length; index++)
@@ -248,6 +249,27 @@ internal static class SvgReferenceResolver
             if (source.Kind is SvgGeometryKind.GradientPolygon or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled outline strokes on use instances are implemented.");
         }
     }
+
+    /// <summary>Rejects magnified use instances of tolerance-flattened curve outlines, whose lowering-time subdivision error would magnify past the admitted device tolerance.</summary>
+    /// <remarks>Straight outlines map exactly under any affine instance transform, and unit-or-smaller integer scales never magnify the quarter-pixel flattening budget; only FlattenedCurves content under a magnifying integer scale rejects.</remarks>
+    private static void RequireAdmittedInstanceMagnification(SvgDefinition definition, SvgUseReference reference)
+    {
+        if (reference.Transform.ScaleX is >= -1 and <= 1 && reference.Transform.ScaleY is >= -1 and <= 1) return;
+        foreach (SvgGeometry source in definition.Geometries)
+        {
+            SvgPolygonMapping? mapping = source.Kind switch
+            {
+                SvgGeometryKind.PolygonFill => source.Polygon.Mapping,
+                SvgGeometryKind.GradientPolygon => source.GradientPolygon.Mapping,
+                SvgGeometryKind.RadialPolygon => source.RadialPolygon.Mapping,
+                SvgGeometryKind.PatternPolygon => source.PatternPolygon.Mapping,
+                _ => null,
+            };
+            if (mapping == SvgPolygonMapping.FlattenedCurves) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only unmagnified use instances of flattened curve outlines are implemented.");
+        }
+    }
+
+
 
     private static SvgGeometry ApplySymbolInstance(SvgGeometry geometry, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
