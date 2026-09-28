@@ -896,3 +896,9 @@ Question: does distinct-radii arc conversion with radii correction agree indepen
 Method: admitted-syntax 16x16 half-ellipse arc fill with no product change; default render; fresh triple 3/3 identical; VisualDiff.
 Facts: 18 pixels at max error 22 on the flatter curve, against 22 at 61 for the semicircle; residual magnitude scales with curvature as flattening tolerance predicts, and radii correction places the shape correctly.
 Decision: the probe stays as an admittedRendering ratchet of 18 pixels at max error 22. Next: arc conversion is covered across circular, rotated, elliptical and cubic inputs with one shared flattening hypothesis.
+
+## Stroked-circle rings carry disc-outline residuals on both circumferences (2026-09-28 decision analysis)
+Question: does opposite-wound ring coverage agree independently of disc fills?
+Method: admitted-syntax 16x16 stroked circle with no product change; default render; fresh triple 3/3 identical; VisualDiff.
+Facts: 69 pixels at max error 50 across the ring band, consistent with sampled-outline residuals on two circumferences rather than any ring-composition effect. The ring machinery itself needs nothing separate.
+Decision: the probe stays as an admittedRendering ratchet of 69 pixels at max error 50. Next: disc-outline sampling covers rings too; no ring-specific work is indicated.
