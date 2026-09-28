@@ -884,3 +884,9 @@ Question: does focal-point radial evaluation diverge beyond the centered radial 
 Method: admitted-syntax 16x16 rect with focal offset inside the circle and no product change; default render; fresh triple 3/3 identical; per-pixel sampling.
 Facts: 1 pixel at max error 1 with gray 61 against 60 and opaque alpha, the same single-quantum radius signature as the centered radial probe. Focal evaluation introduces no new error class.
 Decision: the probe stays as an admittedRendering ratchet of 1 pixel at max error 1 with zero alpha error. Next: radial work stays the radius-evaluation item with two identical-signature ratchets.
+
+## Quadratic conversion carries its own residual; arc rotation is inert on circles (2026-09-28 decision analysis)
+Question: does quadratic conversion agree independently of cubics and arcs, and does x-axis-rotation change circular arcs?
+Method: two admitted-syntax 16x16 probes (integer quadratic dome, circular arc with rotation 30) with no product change; default render; fresh triples 3/3 identical; VisualDiff; oracle-identity comparison across the rotation.
+Facts: quadratic misses 16 pixels at max error 13 on the curve, its own conversion residual distinct from cubics and arcs. Rotated circular arc renders byte-identical candidates and oracles to the unrotated twin, so rotation parsing is end-to-end inert on circles as geometry requires; the rotated file leaves no independent probe.
+Decision: the quadratic probe stays as an admittedRendering ratchet of 16 pixels at max error 13. Next: quadratic conversion joins the curve-flattening hypothesis with its own numbers.
