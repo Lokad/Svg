@@ -1,5 +1,7 @@
 using System.Xml;
 
+using Lokad.Svg;
+
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents the admitted single-font text properties inherited by a rendered text descendant.</summary>
@@ -39,6 +41,14 @@ internal sealed class SvgInheritedTextStyle
 /// <summary>Combines inline, presentation, and ancestor text properties using the direct-text precedence subset.</summary>
 internal static class SvgTextInheritance
 {
+    /// <summary>Parses a container xml:space declaration with the inherited mode as its default.</summary>
+    private static SvgTextWhitespaceMode ParseContainerXmlSpace(string value)
+    {
+        if (value == "default") return SvgTextWhitespaceMode.Default;
+        if (value == "preserve") return SvgTextWhitespaceMode.Preserve;
+        throw new SvgException(SvgErrorCode.MalformedInput, "Container xml:space values must be default or preserve.");
+    }
+
     internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, SvgTextInlineFontProperties inline, string? whiteSpace, string? letterSpacing)
     {
         ArgumentNullException.ThrowIfNull(reader);
@@ -51,7 +61,9 @@ internal static class SvgTextInheritance
         string? sizeValue = inline.Size ?? reader.GetAttribute("font-size");
         double fontSize = sizeValue is null ? inherited.FontSize : SvgGeometrySyntax.ParseTextCoordinate(sizeValue);
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
-        SvgTextWhitespaceMode whitespaceMode = whiteSpace is null ? inherited.WhitespaceMode : SvgTextSyntax.ParseCssWhitespaceMode(whiteSpace);
+        string? xmlSpace = reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace");
+        SvgTextWhitespaceMode xmlMode = xmlSpace is null ? inherited.WhitespaceMode : ParseContainerXmlSpace(xmlSpace);
+        SvgTextWhitespaceMode whitespaceMode = whiteSpace is null ? xmlMode : SvgTextSyntax.ParseCssWhitespaceMode(whiteSpace);
         string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
         double resolvedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);
         return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing);

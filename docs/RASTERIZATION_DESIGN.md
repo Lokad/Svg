@@ -665,3 +665,10 @@ Method: traced the whitespace inheritance chain from SvgRootAttributes through c
 Facts: text elements resolve their own xml:space, and containers inherit through the chain, but the root seeded every chain from Default regardless of its own admitted xml:space attribute. Seeding the root base from the validated root mode preserves the full precedence (inline and stylesheet CSS first, element xml:space next, inherited seed last) with no other path touched. The seed test fails without the fix and passes with it; the CSS-override twin passes either way. Full gate 2486 core plus 100 visual plus 6 font green.
 Decision: root xml:space now seeds descendant whitespace inheritance; container-level xml:space still rejects at attribute validation and stays queued behind its own allow-list entry.
 
+
+## Container xml:space feeds whitespace inheritance like the root seed (2026-09-28 decision analysis)
+Question: does group-level xml:space inherit to text descendants, and what rejects bad values where?
+Method: extended the root-seed work into SvgTextInheritance.Resolve (element attribute slotted between merged CSS and the inherited mode) with the Group allow-list entry; mirrored the root twin tests at group level plus an invalid-value pin; fail-without-fix check by stashing the product change.
+Facts: group preserve renders byte-identical to the text-level preserve twin; group inline CSS overrides group xml:space exactly like the root override; invalid group values fail as MalformedInput. The seed and override twins fail without the fix; the invalid pin passes either way because the XML layer rejects out-of-range xml:space values before product validation, which the pin now locks in. Text elements keep their own resolution path untouched. Full gate 2489 core plus 100 visual plus 6 font green.
+Decision: xml:space inheritance is complete across root, containers and text elements with CSS-first precedence throughout; no PLAN.md status line (no finding owns this micro-thread; the design record carries both whitespace entries).
+
