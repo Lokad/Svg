@@ -2727,6 +2727,47 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-gradient-fill-opacity-16x16",
+      "path": "gradient-fill-opacity-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "cbb1f9a4e16ec91d63c5a062b1027ddd2d3897783a05ea73c21748ade7b76bfe",
+      "featureTags": [
+        "paint",
+        "gradient",
+        "opacity",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 114,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 13,
+        "maximumMismatchY": 13
+      },
+      "oracle": {
+        "referencePng": "references/gradient-fill-opacity-16x16.png",
+        "referenceSha256": "83b4dafa67a754c1865095a23fa1d3607f0afdab9fb3dbb3f7ce5c3410e84622",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }

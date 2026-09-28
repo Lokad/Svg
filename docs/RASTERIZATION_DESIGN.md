@@ -932,3 +932,9 @@ Question: do square caps extend dash runs, and does pathLength scaling agree?
 Method: two admitted-syntax 16x16 probes (square-cap dashes, pathLength 24 over computed 12) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
 Facts: both byte-exact. Square caps do not extend dash runs on either side here, and pathLength halves the pattern identically. No dash-cap or normalization work is indicated.
 Decision: no probes retained since exact renders have no manifest home, and no product change. Next: nothing open on dash caps or pathLength.
+
+## Element opacity on gradients scatters quantum residuals (2026-09-28 decision analysis)
+Question: does element opacity compose exactly over agreed gradient interpolation?
+Method: admitted-syntax 16x16 opaque-ramp twin with fill-opacity 0.5 and no product change; default render; fresh triple 3/3 identical; per-channel sampling against the exact opaque twin.
+Facts: 114 pixels at max error 1 with zero alpha error and mixed plus-minus-one signs across channels, while the opaque ramp is byte-exact. Opacity scaling shifts dithered values across rounding boundaries or rounds differently; opacity sweeps would separate dither order from rounding rule.
+Decision: the probe stays as an admittedRendering ratchet of 114 pixels at max error 1 with zero alpha error. Next: opacity sweeps for the paint owner; interpolation itself stays exonerated.
