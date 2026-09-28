@@ -537,7 +537,6 @@ public sealed class PublicContractTests
     }
 
     [Theory]
-    [InlineData("<defs><style>rect { fill: red; }</style></defs>")]
     [InlineData("<metadata><style>rect { fill: red; }</style></metadata>")]
     [InlineData("<script><![CDATA[void 0]]></script>")]
     [InlineData("<metadata><script/></metadata>")]

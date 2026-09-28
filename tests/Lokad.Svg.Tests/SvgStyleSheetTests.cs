@@ -206,4 +206,79 @@ public sealed class SvgStyleSheetTests
             SvgRootStyleSheetParser.ThrowIfAttributed(reader);
         }
     }
+
+    [Fact]
+    public void Defs_stylesheet_class_applies_to_polygon()
+    {
+        // S9: definition stylesheets accumulate exactly like root stylesheets.
+        byte[] pixels = RenderPixels(
+            "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" +
+            "<defs><style>.a{fill:#00ff00;}</style></defs>" +
+            "<polygon points='0,0 8,0 8,8 0,8' class='a'/></svg>",
+            out int width, out int height);
+        Assert.Equal(8, width);
+        Assert.Equal(8, height);
+        Assert.Equal(new SvgColor(0, 255, 0, 255), Pixel(pixels, width, 4, 4));
+    }
+
+    [Fact]
+    public void Defs_stylesheet_wins_source_order_over_root_stylesheet()
+    {
+        // S9: defs stylesheets parse after the root stylesheet, so ties fall to defs.
+        byte[] blue = RenderPixels(
+            "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" +
+            "<style>.a{fill:#ff0000;}</style><defs><style>.a{fill:#0000ff;}</style></defs>" +
+            "<polygon points='0,0 8,0 8,8 0,8' class='a'/></svg>",
+            out _, out _);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(blue, 8, 4, 4));
+    }
+
+    [Fact]
+    public void Late_defs_stylesheet_stays_unsupported()
+    {
+        // S9: streaming cannot apply rules parsed after content, so late stylesheets reject.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(
+            "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" +
+            "<polygon points='0,0 8,0 8,8 0,8' fill='red'/>" +
+            "<defs><style>.a{fill:#00ff00;}</style></defs></svg>");
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    private static byte[] RenderPixels(string svg, out int width, out int height)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None);
+        return DecodeRgba(png, out width, out height);
+    }
+
+    private static byte[] DecodeRgba(ReadOnlyMemory<byte> png, out int width, out int height)
+    {
+        width = System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(16, 4));
+        height = System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(20, 4));
+        using System.IO.MemoryStream compressed = new();
+        for (int offset = 8; offset < png.Length;)
+        {
+            int length = System.Buffers.Binary.BinaryPrimitives.ReadInt32BigEndian(png.Span.Slice(offset, 4));
+            if (png.Span.Slice(offset + 4, 4).SequenceEqual("IDAT"u8)) compressed.Write(png.Span.Slice(offset + 8, length));
+            offset += length + 12;
+        }
+        compressed.Position = 0;
+        using System.IO.Compression.ZLibStream zlib = new(compressed, System.IO.Compression.CompressionMode.Decompress);
+        byte[] raw = new byte[checked((width * 4 + 1) * height)];
+        zlib.ReadExactly(raw);
+        byte[] pixels = new byte[checked(width * 4 * height)];
+        for (int y = 0; y < height; y++)
+        {
+            if (raw[y * (width * 4 + 1)] != 0) throw new InvalidDataException("Test PNG decoder expects an unfiltered scanline.");
+            raw.AsSpan(y * (width * 4 + 1) + 1, width * 4).CopyTo(pixels.AsSpan(y * width * 4, width * 4));
+        }
+        return pixels;
+    }
+
+    private static SvgColor Pixel(byte[] pixels, int width, int x, int y)
+    {
+        int offset = (y * width + x) * 4;
+        return new SvgColor(pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]);
+    }
 }
