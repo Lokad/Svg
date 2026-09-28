@@ -1309,6 +1309,192 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-odd-stroke-orthogonal-butt-16x16",
+      "path": "odd-stroke-orthogonal-butt-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "456681eeb9f188eaa7f4763b67ed8cdcb697d07bac3a7ddbbd024c8ede0cdebf",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/odd-stroke-orthogonal-butt-16x16.png",
+        "referenceSha256": "5365a348573ef71b8018fdf2edbb7087f4e402d692a56fb628d0c7f01c87faea",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-odd-stroke-diagonal-butt-16x16",
+      "path": "odd-stroke-diagonal-butt-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "49d057c5020e06d21084c96fde7dced43619d3a6e80192edccb47f2fcdbca259",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/odd-stroke-diagonal-butt-16x16.png",
+        "referenceSha256": "33af32fedc472ff7ea33bfed3a4bc4ceab7a65470530f1f82df117beffc2b6fa",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-odd-stroke-round-cap-16x16",
+      "path": "odd-stroke-round-cap-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "4bbcd58aa64c38a1df5ed86b668d3cd5e1670bba5d87a821784db16ecc6c18a9",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/odd-stroke-round-cap-16x16.png",
+        "referenceSha256": "a2d3646a655641eef46ba370881ff1bee4b3d13a62acca51b6845f8a0cae540f",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-odd-stroke-round-join-16x16",
+      "path": "odd-stroke-round-join-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "5cfd0839df2363af6180fa8441bc50728930960083db6f8ae9c7c2262241c97a",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/odd-stroke-round-join-16x16.png",
+        "referenceSha256": "8301ad9f963232250428286cac7ffc6e744e39d7d249402e557643ee6637357b",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-odd-stroke-hairline-16x16",
+      "path": "odd-stroke-hairline-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "8d1d0faaf8e9af1bc4de9cb4ccf50f934b06229fcc9524d4c842704f457e7b22",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/odd-stroke-hairline-16x16.png",
+        "referenceSha256": "41c7c56b36428bc5f68f7dbbe981c4e2cbae9e5e7ab02a5fd65f3fde8f370a37",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-odd-stroke-closed-16x16",
+      "path": "odd-stroke-closed-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-28",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "cde9c126f9689a94b5bf4a764e1098de9fdb60c4452302945c77bcb72b545dfd",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/odd-stroke-closed-16x16.png",
+        "referenceSha256": "2f73798604e55925a90da27f3096c62deec7b47d33166662f5601accf2d7c40d",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
