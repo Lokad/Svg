@@ -764,3 +764,9 @@ Question: does miter agreement hold where round joins already miss, completing t
 Method: admitted-syntax 16x16 obtuse chevron at width 4 miter with no product change; default render; fresh triple 3/3 identical; per-pixel profile of oracle against candidate.
 Facts: 54 pixels at max error 13 spread along both spike edges and the inner notch across all rows (tip 43 against 48, inner 131 against 139) with flanks agreeing; the spike outline is subpixel-displaced, consistent with miter-limit math differences (Skia sine-half-angle computation with its upright-right-angle fast path) rather than tessellation or quantum effects.
 Decision: the probe stays as an admittedRendering ratchet of 54 pixels at max error 13. Next: miter-limit math is the remaining join hypothesis; the join map is now complete with round residual, miter edge-level and bevel gated on paths.
+
+## Square caps agree exactly, closing the cap map (2026-09-28 decision analysis)
+Question: do square caps agree where round caps miss, completing cap coverage?
+Method: two admitted-syntax 16x16 probes (width 4 square-cap bar, width 4 square-cap dash runs) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
+Facts: both byte-exact, including dash-run tip extensions. Square tips extend analytically with no arcs, unlike round caps which fan chords against Skia flattened conics. The cap map is now butt exact, square exact and round residual.
+Decision: no probes retained since exact renders have no manifest home, and no product change. Next: nothing open on caps; joins remain round residual, miter edge-level and bevel gated.
