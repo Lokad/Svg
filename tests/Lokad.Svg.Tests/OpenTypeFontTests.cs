@@ -2936,6 +2936,28 @@ public sealed class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Root_xml_space_seeds_descendant_whitespace_inheritance()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        ReadOnlyMemory<byte> rooted = SvgConverter.ConvertToPng("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"5\" height=\"5\" xml:space=\"preserve\"><text font-family=\"Example\" font-size=\"100\" y=\"3\">\t</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> expectedPreserved = SvgConverter.ConvertToPng("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"5\" height=\"5\"><text font-family=\"Example\" font-size=\"100\" y=\"3\" xml:space=\"preserve\">\t</text></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        Assert.Equal(expectedPreserved.ToArray(), rooted.ToArray());
+    }
+
+    [Fact]
+    public async Task Root_inline_whitespace_overrides_root_xml_space()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        ReadOnlyMemory<byte> overridden = SvgConverter.ConvertToPng("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"5\" height=\"5\" xml:space=\"preserve\" style=\"white-space: normal\"><text font-family=\"Example\" font-size=\"100\" y=\"3\">\t</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> expectedDefault = SvgConverter.ConvertToPng("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"5\" height=\"5\"><text font-family=\"Example\" font-size=\"100\" y=\"3\"/></svg>"u8.ToArray(), options, CancellationToken.None);
+
+        Assert.Equal(expectedDefault.ToArray(), overridden.ToArray());
+    }
+
+    [Fact]
     public async Task Direct_text_spans_inherit_and_override_admitted_xml_space_modes()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleSpaceFont())], CancellationToken.None);

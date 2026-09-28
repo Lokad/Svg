@@ -13,10 +13,10 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline);
         SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
-        ValidateXmlSpace(reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace"));
+        SvgTextWhitespaceMode rootWhitespace = ValidateXmlSpace(reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace"));
         ValidateEnableBackground(reader.GetAttribute("enable-background"));
         SvgRootSyntax syntax = SvgRootSyntax.Parse(reader);
-        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, AxisTransform.Identity), SvgTextInheritance.Resolve(reader, SvgInheritedTextStyle.Default, inline.TextFont, inline.WhiteSpace, inline.LetterSpacing), new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), reader.GetAttribute("id"), reader.GetAttribute("class"), presentation.Opacity, syntax.Width, syntax.Height, syntax.ViewBox, style.FillRule);
+        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, AxisTransform.Identity), SvgTextInheritance.Resolve(reader, SvgInheritedTextStyle.Default.WithWhitespaceMode(rootWhitespace), inline.TextFont, inline.WhiteSpace, inline.LetterSpacing), new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), reader.GetAttribute("id"), reader.GetAttribute("class"), presentation.Opacity, syntax.Width, syntax.Height, syntax.ViewBox, style.FillRule);
         // enable-background is a deprecated Illustrator-era hint for filter
         // backdrops; the renderer performs no backdrop compositing, so the value
         // is validated as spec-shaped and then discarded.
@@ -32,12 +32,12 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
                 if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double coordinate) || !double.IsFinite(coordinate)) throw new SvgException(SvgErrorCode.MalformedInput, "Root enable-background rectangles must be finite numbers.");
             }
         }
-        static void ValidateXmlSpace(string? value)
+        static SvgTextWhitespaceMode ValidateXmlSpace(string? value)
         {
-            // Admitted but not yet wired into whitespace inheritance, matching text
-            // elements which pass xml:space through validation today. Only the two
-            // spec-defined values are accepted so anything else fails fast.
-            if (value is null || value is "default" or "preserve") return;
+            // Only the two spec-defined values are accepted so anything else fails fast;
+            // the mode seeds whitespace inheritance for text descendants.
+            if (value is null || value is "default") return SvgTextWhitespaceMode.Default;
+            if (value is "preserve") return SvgTextWhitespaceMode.Preserve;
             throw new SvgException(SvgErrorCode.MalformedInput, "Root xml:space values must be default or preserve.");
         }
 

@@ -21,6 +21,13 @@ internal sealed class SvgInheritedTextStyle
         LetterSpacing = letterSpacing;
     }
 
+    /// <summary>Returns this style with only the whitespace mode replaced.</summary>
+    internal SvgInheritedTextStyle WithWhitespaceMode(SvgTextWhitespaceMode whitespaceMode)
+    {
+        if (whitespaceMode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(whitespaceMode));
+        return new SvgInheritedTextStyle(Family, Weight, Italic, FontSize, whitespaceMode, LetterSpacing);
+    }
+
     internal string? Family { get; }
     internal int Weight { get; }
     internal bool Italic { get; }

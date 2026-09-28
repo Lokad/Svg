@@ -658,3 +658,10 @@ Method: surveyed RenderBudgetTests by geometry kind against the R39 grow-with-ne
 Facts: pattern-polygon and solid-curved fills denied and released under the same tight raster budget on the first attempt with no product change; strokes share the polygon rasterizer and bands share the rectangle rasterizer, so separate denial twins there would exercise identical code paths. Full gate 2484 core plus 100 visual plus 6 font green.
 Decision: denial coverage for the polygon rasterizer is complete across solid, gradient, radial and pattern paints plus curved variants; no new denial tooling was needed. Next: denial cases for genuinely new raster paths only.
 
+
+## Root xml:space seeds whitespace inheritance for text descendants (2026-09-28 decision analysis)
+Question: why does root-level xml:space validate but never affect rendering?
+Method: traced the whitespace inheritance chain from SvgRootAttributes through container resolution to text lowering; mirrored the established text-level whitespace twin tests at the root with the triangle space font.
+Facts: text elements resolve their own xml:space, and containers inherit through the chain, but the root seeded every chain from Default regardless of its own admitted xml:space attribute. Seeding the root base from the validated root mode preserves the full precedence (inline and stylesheet CSS first, element xml:space next, inherited seed last) with no other path touched. The seed test fails without the fix and passes with it; the CSS-override twin passes either way. Full gate 2486 core plus 100 visual plus 6 font green.
+Decision: root xml:space now seeds descendant whitespace inheritance; container-level xml:space still rejects at attribute validation and stays queued behind its own allow-list entry.
+
