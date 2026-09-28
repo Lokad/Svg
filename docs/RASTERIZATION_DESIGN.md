@@ -962,3 +962,9 @@ Question: do sharp-rectangle band strokes and userSpace gradient line strokes ag
 Method: two admitted-syntax 16x16 probes (band stroked rect, userSpace red-blue stroked line) with no product change; default render; fresh triples 3/3 identical; VisualDiff.
 Facts: both byte-exact. Band lowering with mitered band corners agrees, and userSpace gradient evaluation on lines adds zero error as claimed.
 Decision: no probes retained since exact renders have no manifest home, and no product change. Next: nothing open on bands or gradient line strokes.
+
+## Floor256 switch work order: six sites, contained blast radius (2026-09-28 decision analysis)
+Question: what exactly does applying the floor256 quantum rule touch, and how big is the blast radius?
+Method: census of coverage-to-alpha quantization sites across src with no product change.
+Facts: six sites quantize coverage or alpha with round-half behavior: WithCoverage (SvgConverter, coverage times alpha rounded half away), BlendSourceOver transparent branch (plus 127 over 255 thrice), ComposeFractionalChannel retained branch (half-outputAlpha and 255-times-outputAlpha-minus-one biases), and three identical MultiplyAlpha copies adding 127 over 255 in SvgConverter, SvgPaintResolver and SvgReferenceResolver. Exact entries stay exact under the switch since both rules agree at coverages 0 and 1; only fractional-coverage pixels move, which are exactly the ratcheted residual sets plus gated rejections.
+Decision: the switch is a sequenced S11 calibration change (quantization sites, twin tests per affected path, full re-probe, manifest and research ratchet regeneration) for its owner, not a solo turn; containment follows from integer-edge invariance. Next: no partial switch, which would mix rules across stages.
