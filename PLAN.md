@@ -226,6 +226,8 @@ Status 2026-09-29: row 7 third slice complete for deferred gradient href resolut
 
 Status 2026-09-29: row 7 fourth slice complete for editor namedview tolerance. Non-empty foreign namedview subtrees skip when every descendant stays outside the SVG namespace, with main-loop-mirrored structural limits, node budget, work, cancellation and symbol-depth rules; unknown foreign elements keep the unsupported flag by name allowlist, preserving the public-contract foreign-rect lock. Full 92-document re-probe flips inv-016 to a fractional-width known difference with zero drift elsewhere. Full gate holds 2562 core plus 100 visual plus 6 font green; memory and package checks pass. Wider editor vocabularies and text-paired metadata stay queued.
 
+Status 2026-09-29: row 7 fifth slice complete for nested group-use composition. Identifier-bearing groups record scene geometry ranges at close over the append-only scene; group uses expand recursively inside-out with cycle rejection, staged references and slot-keyed extra indices; group opacity, clip and mask scopes stay honestly gated, and group-nested definition leaves register under the true-group depth rule. Full 92-document re-probe flips inv-089 to a star-edge known difference with zero drift elsewhere. Full gate holds 2570 core plus 100 visual plus 6 font green; memory and package checks pass. Non-group targets and scoped groups stay queued.
+
 ## 4. Findings and stage ledger
 
 ### Active findings

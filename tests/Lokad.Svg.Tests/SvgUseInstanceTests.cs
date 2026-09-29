@@ -17,6 +17,15 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Nested_group_use_matches_direct_rendering()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='2' height='2' fill='red'/><rect x='2' width='2' height='2' fill='red'/><rect y='4' width='2' height='2' fill='red'/><rect x='2' y='4' width='2' height='2' fill='red'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g id='inner'><rect id='r' width='2' height='2' fill='red'/><use href='#r' x='2'/></g><use href='#inner' y='4'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
     public void Magnified_curve_use_stays_unsupported()
     {
         // R35: definition curves flatten at the nominal device tolerance, so a

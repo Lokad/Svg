@@ -868,86 +868,183 @@ internal static class SvgReferenceResolver
         {
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
-            if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgDefinition definition)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
-            SvgViewportFrame? frame = pendingUse.Frame;
-            if (pendingUse.DeferredClip is SvgDeferredClip deferred) frame = ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state);
-            if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
-            byte? mask = pendingUse.Mask;
-            if (pendingUse.MaskReference is not null && mask is null) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
-            SvgGeometry[] applied = ApplyMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference, state, workCounter, cancellationToken);
-            if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
-            int adjustedCommand = pendingUse.Slot.CommandIndex + commandShift;
-            int insertedCommands = scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = adjustedCommand }, applied);
-            commandShift += insertedCommands;
-            ShiftPendingCommandRanges(state, adjustedCommand + 1, insertedCommands, workCounter, cancellationToken);
+            if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgDefinition definition))
+            {
+                if (state.GroupSnapshots.TryGetValue(pendingUse.Reference.Id, out _)) continue;
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
+            }
+            InsertResolvedUse(definition, pendingUse, scene, state, ref commandShift, workCounter, cancellationToken);
         }
-
-
-        static byte ResolveDeferredMaskValue(string maskReference, SvgDocumentState document)
+        for (int pendingUseIndex = 0; pendingUseIndex < pendingUses.Count; pendingUseIndex++)
         {
-            ArgumentNullException.ThrowIfNull(document);
-            string maskId = SvgMaskSyntax.ParseMaskId(maskReference);
-            if (!document.Masks.TryGetValue(maskId, out byte value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-            return value;
+            workCounter.Consume(cancellationToken);
+            PendingUse pendingUse = pendingUses[pendingUseIndex];
+            if (!state.GroupSnapshots.TryGetValue(pendingUse.Reference.Id, out _)) continue;
+            SvgGeometry[] expanded = ExpandGroupUse(pendingUse.Reference.Id, new HashSet<string>(StringComparer.Ordinal), scene, state, workCounter, cancellationToken);
+            InsertResolvedUse(new SvgDefinition(expanded, false, null), pendingUse, scene, state, ref commandShift, workCounter, cancellationToken);
         }
+    }
 
-        static SvgViewportFrame ResolveDeferredClipFrame(SvgDefinition definition, SvgUseReference reference, SvgDeferredClip deferred, SvgDocumentState document)
+    /// <summary>Maps one pending use through its frame, clip, mask and scope checks without touching the scene.</summary>
+    private static SvgGeometry[] ResolveUseGeometries(SvgDefinition definition, PendingUse pendingUse, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        SvgViewportFrame? frame = pendingUse.Frame;
+        if (pendingUse.DeferredClip is SvgDeferredClip deferred) frame = ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state);
+        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
+        byte? mask = pendingUse.Mask;
+        if (pendingUse.MaskReference is not null && mask is null) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
+        SvgGeometry[] applied = ApplyMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference, state, workCounter, cancellationToken);
+        if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
+        return applied;
+    }
+
+    /// <summary>Inserts one resolved use instance into its scene placeholder, advancing the shared command shift.</summary>
+    private static void InsertResolvedUse(SvgDefinition definition, PendingUse pendingUse, SvgSceneBuilder scene, SvgDocumentState state, ref int commandShift, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        SvgGeometry[] applied = ResolveUseGeometries(definition, pendingUse, state, workCounter, cancellationToken);
+        int adjustedCommand = pendingUse.Slot.CommandIndex + commandShift;
+        int insertedCommands = scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = adjustedCommand }, applied);
+        commandShift += insertedCommands;
+        ShiftPendingCommandRanges(state, adjustedCommand + 1, insertedCommands, workCounter, cancellationToken);
+        if (insertedCommands > 0)
         {
-            ArgumentNullException.ThrowIfNull(document);
-            if (!document.ObjectClips.TryGetValue(deferred.ClipId, out SvgClipBox fractions))
+            System.Collections.Generic.List<int> extras = new(insertedCommands);
+            for (int extra = 0; extra < insertedCommands; extra++)
             {
-                if (document.Clips.TryGetValue(deferred.ClipId, out SvgClipBox box))
-                {
-                    if (deferred.Parent is not null && deferred.Parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
-                    SvgClipBox userClip = deferred.Parent is null ? box : deferred.Parent.Value.Clip.Intersect(box);
-                    return new SvgViewportFrame(deferred.Parent?.OffsetX ?? 0, deferred.Parent?.OffsetY ?? 0, deferred.Parent?.ScaleX ?? 1, deferred.Parent?.ScaleY ?? 1, deferred.Parent?.ViewportWidth, deferred.Parent?.ViewportHeight, userClip, deferred.Depth);
-                }
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
+                workCounter.Consume(cancellationToken);
+                extras.Add(scene.GeometryCount - insertedCommands + extra);
             }
-            if (deferred.Parent is not null && deferred.Parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
-            SvgRectangle instanceBox;
-            if (definition.SymbolViewBox is SvgViewBox symbolBox)
-            {
-                if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
-                double left = double.PositiveInfinity;
-                double top = double.PositiveInfinity;
-                double right = double.NegativeInfinity;
-                double bottom = double.NegativeInfinity;
-                foreach (SvgGeometry source in definition.Geometries)
-                {
-                    SvgRectangle box = SvgMaskSyntax.BoundingBox(source);
-                    SvgRectangle mapped = MapSymbolBox(box, symbolBox, reference.Width.Value, reference.Height.Value);
-                    SvgRectangle placed = reference.Transform.Apply(new SvgRectangle(mapped.X + reference.X, mapped.Y + reference.Y, mapped.Width, mapped.Height, default, true, null));
-                    left = Math.Min(left, placed.X);
-                    top = Math.Min(top, placed.Y);
-                    right = Math.Max(right, placed.X + placed.Width);
-                    bottom = Math.Max(bottom, placed.Y + placed.Height);
-                }
-                SvgRectangle contentBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
-                SvgClipBox viewport = reference.Transform.Apply(new SvgClipBox(reference.X, reference.Y, reference.Width.Value, reference.Height.Value));
-                instanceBox = viewport.ClipRectangle(contentBox);
-            }
-            else
-            {
-                double left = double.PositiveInfinity;
-                double top = double.PositiveInfinity;
-                double right = double.NegativeInfinity;
-                double bottom = double.NegativeInfinity;
-                foreach (SvgGeometry source in definition.Geometries)
-                {
-                    SvgRectangle box = SvgMaskSyntax.BoundingBox(source);
-                    SvgRectangle placed = reference.Transform.Apply(new SvgRectangle(box.X + reference.X, box.Y + reference.Y, box.Width, box.Height, default, true, null));
-                    left = Math.Min(left, placed.X);
-                    top = Math.Min(top, placed.Y);
-                    right = Math.Max(right, placed.X + placed.Width);
-                    bottom = Math.Max(bottom, placed.Y + placed.Height);
-                }
-                instanceBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
-            }
-            SvgClipBox resolved = new(instanceBox.X + fractions.X * instanceBox.Width, instanceBox.Y + fractions.Y * instanceBox.Height, fractions.Width * instanceBox.Width, fractions.Height * instanceBox.Height);
-            SvgClipBox clip = deferred.Parent is null ? resolved : deferred.Parent.Value.Clip.Intersect(resolved);
-            return new SvgViewportFrame(deferred.Parent?.OffsetX ?? 0, deferred.Parent?.OffsetY ?? 0, deferred.Parent?.ScaleX ?? 1, deferred.Parent?.ScaleY ?? 1, deferred.Parent?.ViewportWidth, deferred.Parent?.ViewportHeight, clip, deferred.Depth);
+            state.GroupUseExtras[pendingUse.Slot.GeometryIndex] = extras;
         }
+    }
+
+    /// <summary>Expands one group use reference into ordered raw geometries, resolving nested group uses inside-out with cycle rejection.</summary>
+    /// <remarks>
+    /// <para>Groups render in place, so snapshots read live scene ranges: leaf placeholders resolved by the first phase, while remaining placeholders own group pendings expanded here. Multi-geometry expansions append extras past every recorded range, so each insertion records its extra indices by placeholder slot and expansions splice them at placeholder positions in place order. Each nested use maps through its own reference before splicing, matching nested rendering order; the caller maps the whole expansion once more through the outer reference. Source groups with opacity, clip or mask scopes stay unsupported because scopes live in scene commands outside geometry ranges. Cycles report honestly instead of recurring: the visited set tracks the current expansion path and releases on exit so diamonds expand once per instance.</para>
+    /// <para>Charges one work unit per visited geometry, placeholder and group, plus the mapping charges of the nested resolutions it performs; observes cancellation.</para>
+    /// </remarks>
+    private static SvgGeometry[] ExpandGroupUse(string id, HashSet<string> visited, SvgSceneBuilder scene, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+        ArgumentNullException.ThrowIfNull(visited);
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (!visited.Add(id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cyclic group use references are not implemented.");
+        try
+        {
+            workCounter.Consume(cancellationToken);
+            if (!state.GroupSnapshots.TryGetValue(id, out SvgGroupSnapshot snapshot)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
+            if (snapshot.IsolatesOpacity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with group opacity are not implemented.");
+            if (snapshot.HasClip || snapshot.HasMask) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with group clip or mask scopes are not implemented.");
+            using BudgetedParserList<SvgGeometry> collected = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
+            for (int index = snapshot.GeometryStart; index < snapshot.GeometryStart + snapshot.GeometryCount; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgGeometry current = scene.GeometryAt(index);
+                if (current.Kind != SvgGeometryKind.Invalid)
+                {
+                    collected.Add(current);
+                    if (state.GroupUseExtras.TryGetValue(index, out System.Collections.Generic.List<int>? extras))
+                    {
+                        foreach (int extra in extras)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            collected.Add(scene.GeometryAt(extra));
+                        }
+                    }
+                    continue;
+                }
+                PendingUse? owner = null;
+                for (int pendingUseIndex = 0; pendingUseIndex < state.PendingUses.Count; pendingUseIndex++)
+                {
+                    workCounter.Consume(cancellationToken);
+                    PendingUse candidate = state.PendingUses[pendingUseIndex];
+                    if (candidate.Slot.GeometryIndex == index) { owner = candidate; break; }
+                }
+                if (owner is null) throw new InvalidOperationException("Group snapshot placeholder has no owning use.");
+                if (state.Definitions.TryGetValue(owner.Value.Reference.Id, out _)) throw new InvalidOperationException("Group snapshot placeholder owns a resolved leaf use.");
+                SvgGeometry[] nested = ExpandGroupUse(owner.Value.Reference.Id, visited, scene, state, workCounter, cancellationToken);
+                SvgGeometry[] mapped = ResolveUseGeometries(new SvgDefinition(nested, false, null), owner.Value, state, workCounter, cancellationToken);
+                foreach (SvgGeometry geometry in mapped)
+                {
+                    workCounter.Consume(cancellationToken);
+                    collected.Add(geometry);
+                }
+            }
+            return collected.AsSpan().ToArray();
+        }
+        finally { visited.Remove(id); }
+    }
+
+
+    private static byte ResolveDeferredMaskValue(string maskReference, SvgDocumentState document)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        string maskId = SvgMaskSyntax.ParseMaskId(maskReference);
+        if (!document.Masks.TryGetValue(maskId, out byte value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+        return value;
+    }
+
+    private static SvgViewportFrame ResolveDeferredClipFrame(SvgDefinition definition, SvgUseReference reference, SvgDeferredClip deferred, SvgDocumentState document)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        if (!document.ObjectClips.TryGetValue(deferred.ClipId, out SvgClipBox fractions))
+        {
+            if (document.Clips.TryGetValue(deferred.ClipId, out SvgClipBox box))
+            {
+                if (deferred.Parent is not null && deferred.Parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
+                SvgClipBox userClip = deferred.Parent is null ? box : deferred.Parent.Value.Clip.Intersect(box);
+                return new SvgViewportFrame(deferred.Parent?.OffsetX ?? 0, deferred.Parent?.OffsetY ?? 0, deferred.Parent?.ScaleX ?? 1, deferred.Parent?.ScaleY ?? 1, deferred.Parent?.ViewportWidth, deferred.Parent?.ViewportHeight, userClip, deferred.Depth);
+            }
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
+        }
+        if (deferred.Parent is not null && deferred.Parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
+        SvgRectangle instanceBox;
+        if (definition.SymbolViewBox is SvgViewBox symbolBox)
+        {
+            if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            foreach (SvgGeometry source in definition.Geometries)
+            {
+                SvgRectangle box = SvgMaskSyntax.BoundingBox(source);
+                SvgRectangle mapped = MapSymbolBox(box, symbolBox, reference.Width.Value, reference.Height.Value);
+                SvgRectangle placed = reference.Transform.Apply(new SvgRectangle(mapped.X + reference.X, mapped.Y + reference.Y, mapped.Width, mapped.Height, default, true, null));
+                left = Math.Min(left, placed.X);
+                top = Math.Min(top, placed.Y);
+                right = Math.Max(right, placed.X + placed.Width);
+                bottom = Math.Max(bottom, placed.Y + placed.Height);
+            }
+            SvgRectangle contentBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
+            SvgClipBox viewport = reference.Transform.Apply(new SvgClipBox(reference.X, reference.Y, reference.Width.Value, reference.Height.Value));
+            instanceBox = viewport.ClipRectangle(contentBox);
+        }
+        else
+        {
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            foreach (SvgGeometry source in definition.Geometries)
+            {
+                SvgRectangle box = SvgMaskSyntax.BoundingBox(source);
+                SvgRectangle placed = reference.Transform.Apply(new SvgRectangle(box.X + reference.X, box.Y + reference.Y, box.Width, box.Height, default, true, null));
+                left = Math.Min(left, placed.X);
+                top = Math.Min(top, placed.Y);
+                right = Math.Max(right, placed.X + placed.Width);
+                bottom = Math.Max(bottom, placed.Y + placed.Height);
+            }
+            instanceBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
+        }
+        SvgClipBox resolved = new(instanceBox.X + fractions.X * instanceBox.Width, instanceBox.Y + fractions.Y * instanceBox.Height, fractions.Width * instanceBox.Width, fractions.Height * instanceBox.Height);
+        SvgClipBox clip = deferred.Parent is null ? resolved : deferred.Parent.Value.Clip.Intersect(resolved);
+        return new SvgViewportFrame(deferred.Parent?.OffsetX ?? 0, deferred.Parent?.OffsetY ?? 0, deferred.Parent?.ScaleX ?? 1, deferred.Parent?.ScaleY ?? 1, deferred.Parent?.ViewportWidth, deferred.Parent?.ViewportHeight, clip, deferred.Depth);
     }
 
     /// <summary>Shifts retained command ranges right after scene insertions, keeping deferred group clips and masks aligned.</summary>

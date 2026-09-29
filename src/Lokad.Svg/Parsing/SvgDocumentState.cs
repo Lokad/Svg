@@ -33,6 +33,8 @@ internal sealed class SvgDocumentState : IDisposable
         RadialGradients = new BudgetedParserDictionary<string, SvgRadialGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        GroupSnapshots = new BudgetedParserDictionary<string, SvgGroupSnapshot>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
+        GroupSnapshotStarts = new BudgetedParserList<SvgGroupSnapshotStart>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLeafClips = new BudgetedParserList<PendingLeafClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingGroupClips = new BudgetedParserList<PendingGroupClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLeafMasks = new BudgetedParserList<PendingLeafMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -41,6 +43,7 @@ internal sealed class SvgDocumentState : IDisposable
         PendingRadialGradientHrefs = new BudgetedParserList<PendingRadialGradientHref>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopeSnapshots = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        GroupUseExtras = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
     }
 
     internal RenderBudget Budget { get; }
@@ -92,6 +95,12 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserList<int> ClipDepths { get; }
 
     internal BudgetedParserList<PendingUse> PendingUses { get; }
+
+    /// <summary>Gets closed groups with identifiers by scene geometry range for use-instance expansion.</summary>
+    internal BudgetedParserDictionary<string, SvgGroupSnapshot> GroupSnapshots { get; }
+
+    /// <summary>Gets the open group stack for snapshot ranges, aligned with the group scope stack.</summary>
+    internal BudgetedParserList<SvgGroupSnapshotStart> GroupSnapshotStarts { get; }
 
     internal BudgetedParserList<PendingLeafClip> PendingLeafClips { get; }
 
@@ -161,6 +170,9 @@ internal sealed class SvgDocumentState : IDisposable
     /// <summary>Gets the append-only retained mask scope boxes snapshotted by deferred use references.</summary>
     internal BudgetedParserList<SvgClipBox> MaskScopeSnapshots { get; }
 
+    /// <summary>Maps expanded use placeholder slots to their appended extra scene geometry indices, so group snapshots read evacuated content in place order.</summary>
+    internal System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>> GroupUseExtras { get; }
+
     internal int GradientDepth { get; set; } = -1;
 
     internal int RadialGradientDepth { get; set; } = -1;
@@ -205,6 +217,8 @@ internal sealed class SvgDocumentState : IDisposable
     {
         ReleaseDefinitions();
         PendingUses.Dispose();
+        GroupSnapshots.Dispose();
+        GroupSnapshotStarts.Dispose();
         PendingLeafClips.Dispose();
         PendingGroupClips.Dispose();
         PendingLeafMasks.Dispose();
@@ -240,4 +254,10 @@ internal sealed class SvgDocumentState : IDisposable
 internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, bool IsolatesOpacity, bool HasMaskScope, SvgInheritedStrokeStyle InheritedStroke, string? FillRule);
 
 internal enum SvgGroupKind { Group, Link, Switch }
+
+/// <summary>Records one closed identifier-bearing group as a scene geometry range for use-instance expansion.</summary>
+internal readonly record struct SvgGroupSnapshot(int GeometryStart, int GeometryCount, SvgGroupKind Kind, bool IsolatesOpacity, bool HasClip, bool HasMask);
+
+/// <summary>Tracks one open group for snapshot ranges, aligned with the group scope stack.</summary>
+internal readonly record struct SvgGroupSnapshotStart(string? Id, int GeometryStart, bool HasClip, bool HasMask);
 

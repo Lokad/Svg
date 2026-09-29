@@ -98,6 +98,76 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Expands_a_group_use_with_offsets()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g id='tile'><rect width='2' height='2' fill='red'/></g><use href='#tile' x='5' y='6'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Rectangles.Length);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Equal(new SvgRectangle(5, 6, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[1]);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Expands_nested_group_uses_transitively()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g id='inner'><rect id='r' width='2' height='2' fill='red'/><use href='#r' x='2'/></g><use href='#inner' y='4'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(4, root.Rectangles.Length);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Equal(new SvgRectangle(2, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[1]);
+        Assert.Equal(new SvgRectangle(0, 4, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[2]);
+        Assert.Equal(new SvgRectangle(2, 4, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[3]);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Resolves_a_forward_group_reference()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#later' x='4'/><g id='later'><rect width='2' height='2' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Rectangles.Length);
+        Assert.Equal(new SvgRectangle(4, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[1]);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Rejects_a_self_referential_group_use_as_cyclic()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g id='c'><use href='#c'/></g><use href='#c'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Cyclic group use references", rejected.Message);
+    }
+
+    [Fact]
+    public void Rejects_mutually_referential_group_uses_as_cyclic()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g id='a'><use href='#b'/></g><g id='b'><use href='#a'/></g><use href='#a'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Cyclic group use references", rejected.Message);
+    }
+
+    [Fact]
+    public void Rejects_group_use_with_group_opacity()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g id='o' opacity='0.5'><rect width='2' height='2' fill='red'/></g><use href='#o'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("group opacity", rejected.Message);
+    }
+
+    [Fact]
+    public void Rejects_duplicate_leaf_and_group_ids()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='x' width='2' height='2' fill='red'/></defs><g id='x'><rect width='1' height='1' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Does_not_paint_group_nested_definitions_without_use()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><defs><rect id='tile' width='2' height='2' fill='red'/></defs></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

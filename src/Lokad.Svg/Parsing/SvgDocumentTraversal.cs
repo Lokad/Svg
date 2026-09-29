@@ -148,6 +148,8 @@ internal static class SvgDocumentTraversal
                     if (!reader.IsEmptyElement)
                     {
                         state.Groups.Add(parsedGroup.Scope);
+                        string? groupId = reader.GetAttribute("id");
+                        state.GroupSnapshotStarts.Add(new SvgGroupSnapshotStart(groupId is null ? null : state.Strings.Copy(groupId), state.Scene.GeometryCount, reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null));
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
                         string? clipReference = reader.GetAttribute("clip-path");
                         if (clipReference is not null)
@@ -263,6 +265,15 @@ internal static class SvgDocumentTraversal
                 {
                     SvgGroupScope group = state.Groups[^1];
                     state.Groups.RemoveLast();
+                    SvgGroupSnapshotStart snapshotStart = state.GroupSnapshotStarts[^1];
+                    state.GroupSnapshotStarts.RemoveLast();
+                    if (snapshotStart.Id is not null && group.Kind == SvgGroupKind.Group)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        if (state.Definitions.TryGetValue(snapshotStart.Id, out _) || state.GroupSnapshots.TryGetValue(snapshotStart.Id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                        string retainedId = state.Strings.Copy(snapshotStart.Id);
+                        if (!state.GroupSnapshots.TryAdd(retainedId, new SvgGroupSnapshot(snapshotStart.GeometryStart, state.Scene.GeometryCount - snapshotStart.GeometryStart, group.Kind, group.IsolatesOpacity, snapshotStart.HasClip, snapshotStart.HasMask))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                    }
                     if (group.HasMaskScope) state.MaskScopes.RemoveLast();
                     if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;
                     for (int pendingGroupIndex = state.PendingGroupClips.Count - 1; pendingGroupIndex >= 0; pendingGroupIndex--)
