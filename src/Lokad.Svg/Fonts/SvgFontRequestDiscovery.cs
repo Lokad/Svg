@@ -130,8 +130,8 @@ internal static class SvgFontRequestDiscovery
                     if (inheritedLevels.Count == 0)
                     {
                         SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, workCounter, cancellationToken);
-                        rootWidth = root.Width;
-                        rootHeight = root.Height;
+                        rootWidth = root.Width?.ToAbsoluteOrNull();
+                        rootHeight = root.Height?.ToAbsoluteOrNull();
                         style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.InheritedStroke.Stroke, root.Opacity != 255);
                     }
                     else style = inheritedLevels[inheritedLevels.Count - 1];

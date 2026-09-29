@@ -1189,17 +1189,20 @@ public static class SvgConverter
         };
 
     /// <summary>Resolves output dimensions from an explicit viewport or root dimensions with viewBox aspect handling.</summary>
-    private static (double Width, double Height) ResolveOutputDimensions(SvgViewport? viewport, double? rootWidth, double? rootHeight, SvgViewBox? viewBox)
+    private static (double Width, double Height) ResolveOutputDimensions(SvgViewport? viewport, SvgRootLength? rootWidth, SvgRootLength? rootHeight, SvgViewBox? viewBox)
         => viewport is SvgViewport explicitViewport
-            ? (explicitViewport.Width, explicitViewport.Height)
+            ? (ResolveAgainstViewport(rootWidth, explicitViewport.Width, 300), ResolveAgainstViewport(rootHeight, explicitViewport.Height, 150))
             : (rootWidth, rootHeight) switch
             {
-                (double explicitWidth, double explicitHeight) => (explicitWidth, explicitHeight),
+                (SvgRootLength explicitWidth, SvgRootLength explicitHeight) => (explicitWidth.Resolve(null, 300), explicitHeight.Resolve(null, 150)),
                 (null, null) => (300, 150),
-                (double explicitWidth, null) when viewBox is SvgViewBox widthBox => (explicitWidth, explicitWidth * widthBox.Height / widthBox.Width),
-                (null, double explicitHeight) when viewBox is SvgViewBox heightBox => (explicitHeight * heightBox.Width / heightBox.Height, explicitHeight),
+                (SvgRootLength explicitWidth, null) when viewBox is SvgViewBox widthBox => (explicitWidth.Resolve(null, 300), explicitWidth.Resolve(null, 300) * widthBox.Height / widthBox.Width),
+                (null, SvgRootLength explicitHeight) when viewBox is SvgViewBox heightBox => (explicitHeight.Resolve(null, 150) * heightBox.Width / heightBox.Height, explicitHeight.Resolve(null, 150)),
                 _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Both root dimensions or neither root dimension are required currently.")
             };
+
+    /// <summary>Resolves one root dimension for an explicit viewport, keeping the viewport size except for viewport-relative percentages.</summary>
+    private static double ResolveAgainstViewport(SvgRootLength? length, double viewportSide, double defaultSide) => length?.IsPercentage == true ? length.Value.Resolve(viewportSide, defaultSide) : viewportSide;
 
     private static (double HorizontalScale, double HorizontalOffset, double VerticalScale, double VerticalOffset) GetViewBoxTransform(SvgViewBox? viewBox, double width, double height, double outputScale)
     {

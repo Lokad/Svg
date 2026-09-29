@@ -1156,6 +1156,26 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Percentage_root_matches_explicit_viewport_render()
+    {
+        byte[] explicitPixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='300' height='150'><rect width='300' height='150' fill='red'/></svg>", out int explicitWidth, out int explicitHeight);
+        byte[] percentPixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><rect width='300' height='150' fill='red'/></svg>", out int percentWidth, out int percentHeight);
+
+        Assert.Equal((explicitWidth, explicitHeight), (300, 150));
+        Assert.Equal((percentWidth, percentHeight), (300, 150));
+        Assert.Equal(explicitPixels, percentPixels);
+    }
+
+    [Fact]
+    public void Block_display_paints_like_inline()
+    {
+        byte[] inlinePixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8' fill='red'/></svg>", out _, out _);
+        byte[] blockPixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' style='display: block'><rect width='8' height='8' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(inlinePixels, blockPixels);
+    }
+
+    [Fact]
     public void Degenerate_ring_renders_empty()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 2,0 0,0 0,2' fill='red'/></svg>", out _, out _);

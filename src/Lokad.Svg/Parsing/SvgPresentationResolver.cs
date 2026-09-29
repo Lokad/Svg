@@ -28,9 +28,9 @@ internal static class SvgPresentationResolver
 
     internal static bool ParseDisplay(string? value)
     {
-        if (value is null || value.Equals("inline", StringComparison.OrdinalIgnoreCase)) return true;
+        if (value is null || value.Equals("inline", StringComparison.OrdinalIgnoreCase) || value.Equals("block", StringComparison.OrdinalIgnoreCase)) return true;
         if (value.Equals("none", StringComparison.OrdinalIgnoreCase)) return false;
-        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only inline and none display values are implemented.");
+        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only inline, block and none display values are implemented.");
     }
 
     internal static bool ParseVisibility(string? value, bool inheritedVisibility)

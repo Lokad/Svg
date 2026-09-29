@@ -13,8 +13,8 @@ public sealed class SvgRootSyntaxTests
 
         SvgRootSyntax syntax = SvgRootSyntax.Parse(reader);
 
-        Assert.Equal(12.5, syntax.Width);
-        Assert.Equal(7, syntax.Height);
+        Assert.Equal(12.5, syntax.Width?.Value);
+        Assert.Equal(7, syntax.Height?.Value);
         Assert.Equal(new SvgViewBox(1, 2, 3, 4, SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None), syntax.ViewBox);
     }
 }

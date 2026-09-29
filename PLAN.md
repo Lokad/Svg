@@ -228,6 +228,8 @@ Status 2026-09-29: row 7 fourth slice complete for editor namedview tolerance. N
 
 Status 2026-09-29: row 7 fifth slice complete for nested group-use composition. Identifier-bearing groups record scene geometry ranges at close over the append-only scene; group uses expand recursively inside-out with cycle rejection, staged references and slot-keyed extra indices; group opacity, clip and mask scopes stay honestly gated, and group-nested definition leaves register under the true-group depth rule. Full 92-document re-probe flips inv-089 to a star-edge known difference with zero drift elsewhere. Full gate holds 2570 core plus 100 visual plus 6 font green; memory and package checks pass. Non-group targets and scoped groups stay queued.
 
+Status 2026-09-29: row 7 sixth slice complete for percentage root dimensions. SvgRootLength carries absolute pixels or viewport percentage from attributes and inline styles with CSS priority; percentages resolve against the explicit viewport or the default intrinsic size while nested, use and font bases keep honest nulls; display block paints like inline and stylesheet type/id attributes are tolerated. Full 92-document re-probe advances inv-002 past dimensions to polygon simplicity and inv-027 past style width to nested-viewport bases with zero other drift. A computed-style cascade variant was reverted the same day after polluting record equality. Full gate holds 2580 core plus 100 visual plus 6 font green; memory and package checks pass. Viewport threading and true-group style width stay queued.
+
 ## 4. Findings and stage ledger
 
 ### Active findings
@@ -243,7 +245,7 @@ Status 2026-09-29: row 7 fifth slice complete for nested group-use composition. 
 | R34 | Disjoint orientation roles, bounded nonzero crossing splits and stroke-role repair landed. Inter-loop planar crossings admitted (pentagram, star/crescent families); coincident merge ordered before classification. Mixed non-coincident touch/crossing sets, coincident overlaps, complex evenodd geometry and spatial stroke unions remain open; row 4. |
 | R35 | Root/output tolerance propagation, overshoot and unsafe magnification gates landed. Complete per-instance/device curve lowering is still architectural; row 5. |
 | R36 | Cascaded cap/join/dash/width values are carried and many spelling twins pass. Finish shared typed state and practical inheritance without reopening repaired attribute/inline cases. |
-| R37 | Fractional/scientific curved paths, fractional root sizing and both relative-moveto repairs landed. General public affine transforms, restricted numeric grids and layered exporter gates remain. |
+| R37 | Fractional/scientific curved paths, fractional root sizing, percentage root dimensions and both relative-moveto repairs landed. General public affine transforms, restricted numeric grids and layered exporter gates remain. |
 | R38 | Maximum scratch allocations substantially reduced; continue actual-size storage, ownership transfer and measured many-curve/wordmark allocation work. |
 | R39 | Raster-map reservation, vertex-weighted raster work and definition lifetime repairs landed. Retained arrays still allocate before scene reservation; nested scan cost and new spatial work require charging. |
 | R40 — new | Correct source provenance and narrow the quantization work order. Release-tag pin reverified in this review; later design/inventory claims still need correction with the next calibration slice. |

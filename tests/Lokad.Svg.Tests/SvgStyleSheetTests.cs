@@ -191,6 +191,10 @@ public sealed class SvgStyleSheetTests
     [Theory]
     [InlineData("<style/>", false)]
     [InlineData("<style media='screen'/>", true)]
+    [InlineData("<style type='text/css'/>", false)]
+    [InlineData("<style id='sheet'/>", false)]
+    [InlineData("<style type='text/css' id='sheet'/>", false)]
+    [InlineData("<style type='text/plain'/>", true)]
     public void Rejects_stylesheet_element_attributes(string element, bool throws)
     {
         using XmlReader reader = XmlReader.Create(new StringReader(element));

@@ -56,8 +56,9 @@ public sealed class SvgRootParserTests
     public void Parses_root_dimensions_without_copying_to_a_document_string()
     {
         SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='12.5' height='7'/>"), SvgRenderLimits.Default, CancellationToken.None);
-        Assert.Equal(12.5, root.Width);
-        Assert.Equal(7, root.Height);
+        Assert.Equal(12.5, root.Width?.Value);
+        Assert.Equal(7, root.Height?.Value);
+        Assert.False(root.Width?.IsPercentage);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -191,6 +192,45 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><defs><path d='M0,0 H5 V5 H0 Z' fill='red'/></defs></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Empty(root.Geometries);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Parses_percentage_root_dimensions()
+    {
+        SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='50%'/>"), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(100, root.Width?.Value);
+        Assert.True(root.Width?.IsPercentage);
+        Assert.Equal(50, root.Height?.Value);
+        Assert.True(root.Height?.IsPercentage);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Rejects_nonpositive_percentage_root_dimensions()
+    {
+        SvgException zero = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='0%'/>"), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, zero.ErrorCode);
+    }
+
+    [Fact]
+    public void Prefers_inline_style_width_over_root_attribute()
+    {
+        SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='10' style='width: 20px'/>"), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(20, root.Width?.Value);
+        Assert.False(root.Width?.IsPercentage);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Ignores_auto_inline_style_width_for_root_attribute()
+    {
+        SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='12' style='width: auto'/>"), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(12, root.Width?.Value);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -1342,8 +1382,8 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' version='1.1' baseProfile='tiny' width='12.5' height='7'><rect width='1' height='1' fill='red' focusable='false'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(12.5, root.Width);
-        Assert.Equal(7, root.Height);
+        Assert.Equal(12.5, root.Width?.Value);
+        Assert.Equal(7, root.Height?.Value);
         Assert.Single(root.Rectangles);
         Assert.False(root.HasUnsupportedChild);
     }
@@ -3624,14 +3664,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Parses_px_dimensions_but_keeps_relative_and_overlapping_unit_suffixes_explicitly_unsupported()
+    public void Parses_px_and_percentage_dimensions_but_keeps_other_relative_unit_suffixes_explicitly_unsupported()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='12.5px' height='7px'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        SvgException percentage = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='7'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot percent = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='7'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgException relativeUnit = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='1vmin' height='7'/>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
-        Assert.Equal(12.5, root.Width);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, percentage.ErrorCode);
+        Assert.Equal(12.5, root.Width?.Value);
+        Assert.Equal(100, percent.Width?.Value);
+        Assert.True(percent.Width?.IsPercentage);
+        Assert.Equal(7, percent.Height?.Value);
+        Assert.False(percent.Height?.IsPercentage);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, relativeUnit.ErrorCode);
     }
 
@@ -6917,8 +6960,8 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='12' height='7'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(12, root.Width);
-        Assert.Equal(7, root.Height);
+        Assert.Equal(12, root.Width?.Value);
+        Assert.Equal(7, root.Height?.Value);
         Assert.Single(root.Rectangles);
         Assert.False(root.HasUnsupportedChild);
     }
@@ -6948,8 +6991,8 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xml:space='preserve' width='12' height='7'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(12, root.Width);
-        Assert.Equal(7, root.Height);
+        Assert.Equal(12, root.Width?.Value);
+        Assert.Equal(7, root.Height?.Value);
         Assert.Single(root.Rectangles);
         Assert.False(root.HasUnsupportedChild);
     }
@@ -6978,8 +7021,8 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' enable-background='new 0 0 595.28 841.89' width='12' height='7'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(12, root.Width);
-        Assert.Equal(7, root.Height);
+        Assert.Equal(12, root.Width?.Value);
+        Assert.Equal(7, root.Height?.Value);
         Assert.Single(root.Rectangles);
         Assert.False(root.HasUnsupportedChild);
     }

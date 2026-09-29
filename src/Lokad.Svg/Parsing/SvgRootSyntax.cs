@@ -4,7 +4,23 @@ using System.Xml;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Parses the bounded root viewport syntax independently of root presentation resolution.</summary>
-internal readonly record struct SvgRootSyntax(double? Width, double? Height, SvgViewBox? ViewBox)
+/// <summary>Represents one bounded root dimension as absolute pixels or viewport percentage.</summary>
+internal readonly record struct SvgRootLength(double Value, bool IsPercentage)
+{
+    /// <summary>Resolves this dimension against an explicit viewport side, falling back to the default intrinsic side.</summary>
+    internal double Resolve(double? viewportSide, double defaultSide)
+    {
+        if (!IsPercentage) return Value;
+        double resolved = (viewportSide ?? defaultSide) * Value / 100;
+        if (!double.IsFinite(resolved)) throw new SvgException(SvgErrorCode.LimitExceeded, "Percentage root dimensions exceed the admitted numeric range.");
+        return resolved;
+    }
+
+    /// <summary>Returns the absolute pixel value, or null for viewport-relative percentages.</summary>
+    internal double? ToAbsoluteOrNull() => IsPercentage ? null : Value;
+}
+
+internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox)
 {
     internal static SvgRootSyntax Parse(XmlReader reader)
     {
@@ -13,7 +29,7 @@ internal readonly record struct SvgRootSyntax(double? Width, double? Height, Svg
         // viewports keep their own offset handling.
         ValidateRootPosition(reader.GetAttribute("x"));
         ValidateRootPosition(reader.GetAttribute("y"));
-        return new(SvgGeometrySyntax.ParseLength(reader.GetAttribute("width")), SvgGeometrySyntax.ParseLength(reader.GetAttribute("height")), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio")));
+        return new(SvgGeometrySyntax.ParseRootLength(reader.GetAttribute("width")), SvgGeometrySyntax.ParseRootLength(reader.GetAttribute("height")), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio")));
 
         static void ValidateRootPosition(string? value)
         {

@@ -6,7 +6,7 @@ using Lokad.Svg.Rendering;
 using System.Runtime.CompilerServices;
 
 /// <summary>Represents the parsed root viewport dimensions before scene construction.</summary>
-internal readonly record struct SvgRoot(double? Width, double? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, long ParserWorkUnits, SvgSceneStorage? SceneStorage) : IDisposable
+internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, long ParserWorkUnits, SvgSceneStorage? SceneStorage) : IDisposable
 {
     /// <summary>Materializes rectangles only for parser characterization tests.</summary>
     internal SvgRectangle[] Rectangles => SvgGeometry.ToRectangles(Geometries);

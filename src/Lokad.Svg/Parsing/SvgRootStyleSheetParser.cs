@@ -12,11 +12,18 @@ internal static class SvgRootStyleSheetParser
         if (sawStyleableNode) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Root-level stylesheet rules must precede supported definitions and rendered content.");
     }
 
-    /// <summary>Rejects stylesheet element attributes, which are not implemented.</summary>
+    /// <summary>Rejects stylesheet element attributes except the inert type and identifier declarations exporters emit.</summary>
     internal static void ThrowIfAttributed(XmlReader reader)
     {
         ArgumentNullException.ThrowIfNull(reader);
-        if (reader.HasAttributes) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
+        if (!reader.HasAttributes) return;
+        while (reader.MoveToNextAttribute())
+        {
+            bool allowed = (reader.LocalName.Equals("type", StringComparison.OrdinalIgnoreCase) && reader.Value.Equals("text/css", StringComparison.OrdinalIgnoreCase))
+                || reader.LocalName.Equals("id", StringComparison.OrdinalIgnoreCase);
+            if (!allowed) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet attributes are not implemented.");
+        }
+        reader.MoveToElement();
     }
 
     internal static void Parse(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, int maximumRules, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
