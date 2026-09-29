@@ -388,12 +388,24 @@ public static class SvgConverter
             workUnits += coverage;
             ReadOnlySpan<int> contourEnds = polygon.ContourEnds;
             ReadOnlySpan<int> nestingSigns = polygon.Signs is int[] signs ? signs : Array.Empty<int>();
+            using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, raster.StartX, raster.EndX, budget, out long scanSetup, cancellationToken);
+            if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+            workUnits += scanSetup;
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                scan.PrepareRow(y, out long rowWork, cancellationToken);
+                if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += rowWork;
                 for (int x = raster.StartX; x < raster.EndX; x++)
                 {
-                    double pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, x, y, cancellationToken);
+                    double pixelCoverage;
+                    if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, x, y, cancellationToken);
+                    else
+                    {
+                        pixelCoverage = 0.0;
+                        if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    }
                     SvgColor color = WithCoverage(polygon.Color, pixelCoverage);
                     int offset = (y * outputWidth + x) * 4;
                     BlendSourceOver(destination.AsSpan(offset, 4), color, raster.HasFractionalEdge);
@@ -424,14 +436,26 @@ public static class SvgConverter
             }
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
+            using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out long scanSetup, cancellationToken);
+            if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+            workUnits += scanSetup;
             if (denominator != 0 || definition.Stops.Length == 1)
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
+            scan.PrepareRow(y, out long rowWork, cancellationToken);
+            if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+            workUnits += rowWork;
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
             for (int x = raster.StartX; x < raster.EndX; x++)
             {
-                double pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
+                double pixelCoverage;
+                if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
+                else
+                {
+                    pixelCoverage = 0.0;
+                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                }
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double position;
                 if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
@@ -490,13 +514,25 @@ public static class SvgConverter
             }
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
+            using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out long scanSetup, cancellationToken);
+            if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+            workUnits += scanSetup;
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
+                scan.PrepareRow(y, out long rowWork, cancellationToken);
+                if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += rowWork;
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
             for (int x = raster.StartX; x < raster.EndX; x++)
             {
-                double pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
+                double pixelCoverage;
+                if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
+                else
+                {
+                    pixelCoverage = 0.0;
+                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                }
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double sampleX;
                 double sampleY;
@@ -608,12 +644,24 @@ public static class SvgConverter
             BlitPatternTile(tile, blitted);
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
+            using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out long scanSetup, cancellationToken);
+            if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+            workUnits += scanSetup;
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
+                scan.PrepareRow(y, out long rowWork, cancellationToken);
+                if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += rowWork;
             for (int x = raster.StartX; x < raster.EndX; x++)
             {
-                double pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
+                double pixelCoverage;
+                if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
+                else
+                {
+                    pixelCoverage = 0.0;
+                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                }
                 int tileX = PositiveModulo(x - tile.OriginX, tile.TileWidth);
                 int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
                 int tileOffset = (tileY * tile.TileWidth + tileX) * 4;
