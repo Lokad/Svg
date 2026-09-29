@@ -293,14 +293,43 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(attribute, 8, 4, 4));
     }
 
-    [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='0'/></svg>")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2.5'/></svg>")]
-    public void Non_positive_or_fractional_stroke_widths_stay_unsupported(string svg)
+    [Fact]
+    public void Non_positive_stroke_width_stays_unsupported()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='0'/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Fractional_stroke_width_renders_ring()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2.5'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 4));
+        Assert.NotEqual(0, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Fractional_dashed_path_renders_runs()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 H8' fill='none' stroke='red' stroke-width='2.5' stroke-dasharray='2.5 2.5'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 3, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 6, 4));
+    }
+
+    [Fact]
+    public void Fractional_gradient_stroke_repaints_outline()
+    {
+        byte[] fractional = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,0 H16 V16 H0 Z' fill='red' stroke='url(#g)' stroke-width='2.5'/></svg>", out _, out _);
+        byte[] integral = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,0 H16 V16 H0 Z' fill='red' stroke='url(#g)' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.NotEqual(integral, fractional);
+        Assert.NotEqual(0, AlphaSum(fractional));
+        Assert.Equal(255, Pixel(fractional, 16, 8, 0).Alpha);
     }
 
     [Theory]

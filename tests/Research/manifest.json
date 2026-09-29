@@ -1100,6 +1100,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 4,
+        "maximumChannelError": 16,
+        "maximumAlphaError": 16,
+        "alphaChangedPixelCount": 4,
+        "minimumMismatchX": 6,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 9,
+        "maximumMismatchY": 9
+      },
       "oracle": {
         "referencePng": "references/fractional-stroke-orthogonal-butt-16x16.png",
         "referenceSha256": "3862482570c4b2656544531e38153ac48da54f7867d25a8272b86f9469de85a8",
@@ -1131,6 +1141,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 26,
+        "maximumChannelError": 15,
+        "maximumAlphaError": 15,
+        "alphaChangedPixelCount": 26,
+        "minimumMismatchX": 1,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 14,
+        "maximumMismatchY": 14
+      },
       "oracle": {
         "referencePng": "references/fractional-stroke-diagonal-butt-16x16.png",
         "referenceSha256": "711ecf5e6eba57ff6e6461fc5074d7b8134aaed54518d73be81ba072b7c0781a",
@@ -1162,6 +1182,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 12,
+        "maximumChannelError": 9,
+        "maximumAlphaError": 9,
+        "alphaChangedPixelCount": 12,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 15,
+        "maximumMismatchY": 9
+      },
       "oracle": {
         "referencePng": "references/fractional-stroke-round-cap-16x16.png",
         "referenceSha256": "0878ccc775cf22ffa34d3aa1bd07a66b218abd6ecbe745f5408d7312a5f7c8a9",
@@ -1193,6 +1223,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 58,
+        "maximumChannelError": 15,
+        "maximumAlphaError": 15,
+        "alphaChangedPixelCount": 58,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 15,
+        "maximumMismatchY": 12
+      },
       "oracle": {
         "referencePng": "references/fractional-stroke-round-join-16x16.png",
         "referenceSha256": "6d88e407eea87da0e59fe6e4f32521568c742516d9aa79f35678c7a5b53051c3",
@@ -1224,6 +1264,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 24,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 24,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 7,
+        "maximumMismatchX": 13,
+        "maximumMismatchY": 8
+      },
       "oracle": {
         "referencePng": "references/fractional-stroke-narrow-16x16.png",
         "referenceSha256": "81aa6f547082649881ca33bc6c9eccd7894ab6eb529e8dd7b87a6a7577b6e1da",
@@ -1255,6 +1305,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 1,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 1,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 4,
+        "maximumMismatchY": 5
+      },
       "oracle": {
         "referencePng": "references/fractional-stroke-closed-16x16.png",
         "referenceSha256": "5c05d46c00b684c42d535efd22ee6b329e347ad1e794e65e70d80e90fc79dc56",

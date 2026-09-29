@@ -165,16 +165,19 @@ internal static class SvgStrokeStyleSyntax
         if (stroke is not null && SvgLocalUrl.TryParseId(stroke, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern and gradient strokes on " + elementName + " elements are not implemented.");
     }
 
-    /// <summary>Parses a positive integer stroke width for the shared outline kernel, which maps half-integer offsets exactly like fractional geometry.</summary>
-    internal static int ParseStrokeWidth(string? value, string elementName)
+    /// <summary>Parses a positive finite stroke width for the shared outline kernel, which maps fractional offsets exactly like fractional geometry.</summary>
+    internal static double ParseStrokeWidth(string? value, string elementName)
     {
-        int strokeWidth = SvgGeometrySyntax.ParseInteger(value ?? "1");
+        ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim();
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
         if (strokeWidth <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive " + elementName + " stroke widths are implemented.");
         return strokeWidth;
     }
 
     /// <summary>Resolves one admitted solid stroke, or nothing when the element carries no stroke paint.</summary>
-    internal readonly record struct SvgAdmittedStroke(SvgColor Color, int Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join, double[]? DashPattern, double DashOffset, double? PathLength, bool NonScalingStroke);
+    internal readonly record struct SvgAdmittedStroke(SvgColor Color, double Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join, double[]? DashPattern, double DashOffset, double? PathLength, bool NonScalingStroke);
 
     /// <summary>Validates the stroke subset shared by stroked shapes, rejecting paint servers, non-positive widths, small limits and unsupported dash combinations.</summary>
     internal static SvgAdmittedStroke? ResolveAdmittedStroke(XmlReader reader, SvgComputedStyle style, SvgResolvedPaintableElement shape, string elementName, bool allowBevelJoin)
@@ -182,7 +185,7 @@ internal static class SvgStrokeStyleSyntax
         ArgumentNullException.ThrowIfNull(reader);
         RejectPaintServerStroke(style.Stroke, elementName);
         if (shape.Presentation.StrokeColor is null) return null;
-        int width = ParseStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"), elementName);
+        double width = ParseStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"), elementName);
         double miterLimit = ParseMiterLimit(style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
         SvgStrokeCap cap = ParseLinecap(style.Linecap);
         SvgStrokeJoin join = ParseLinejoin(style.Linejoin, allowBevelJoin);
