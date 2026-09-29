@@ -86,6 +86,22 @@ internal readonly record struct SvgAffineTransform(double A, double B, double C,
 
     internal double Determinant => A * D - B * C;
 
+    /// <summary>Inverts this transform when its determinant is nonzero, reporting singular or overflowing maps as missing.</summary>
+    internal bool TryInvert(out SvgAffineTransform inverse)
+    {
+        double determinant = Determinant;
+        if (determinant == 0 || !double.IsFinite(determinant)) { inverse = Identity; return false; }
+        double a = D / determinant;
+        double b = -B / determinant;
+        double c = -C / determinant;
+        double d = A / determinant;
+        double e = (C * F - D * E) / determinant;
+        double f = (B * E - A * F) / determinant;
+        if (!double.IsFinite(a) || !double.IsFinite(b) || !double.IsFinite(c) || !double.IsFinite(d) || !double.IsFinite(e) || !double.IsFinite(f)) { inverse = Identity; return false; }
+        inverse = new SvgAffineTransform(a, b, c, d, e, f);
+        return true;
+    }
+
     /// <summary>Reports whether this transform maps axes to axes, keeping rectangles axis-aligned.</summary>
     internal bool IsAxisAligned => B == 0 && C == 0;
 

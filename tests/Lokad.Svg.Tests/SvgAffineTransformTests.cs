@@ -185,4 +185,32 @@ public sealed class SvgAffineTransformTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
+
+    [Fact]
+    public void Inversion_covers_identity_translation_scale_and_rotation()
+    {
+        Assert.True(SvgAffineTransform.Identity.TryInvert(out SvgAffineTransform identityInverse));
+        Assert.Equal(SvgAffineTransform.Identity, identityInverse);
+        SvgAffineTransform translation = SvgAffineTransform.FromTranslation(3, -4);
+        Assert.True(translation.TryInvert(out SvgAffineTransform translationInverse));
+        SvgDevicePoint translated = translation.Apply(new SvgPoint(5, 7));
+        Assert.Equal(new SvgDevicePoint(5, 7), translationInverse.Apply(translated.X, translated.Y));
+        SvgAffineTransform scale = SvgAffineTransform.FromScale(2, -3);
+        Assert.True(scale.TryInvert(out SvgAffineTransform scaleInverse));
+        SvgDevicePoint scaled = scale.Apply(new SvgPoint(5, 7));
+        Assert.Equal(new SvgDevicePoint(5, 7), scaleInverse.Apply(scaled.X, scaled.Y));
+        SvgAffineTransform rotation = SvgAffineTransform.FromRotationDegrees(30);
+        Assert.True(rotation.TryInvert(out SvgAffineTransform rotationInverse));
+        SvgDevicePoint rotated = rotation.Apply(new SvgPoint(5, 7));
+        SvgDevicePoint roundTripped = rotationInverse.Apply(rotated.X, rotated.Y);
+        Assert.Equal(5, roundTripped.X, 9);
+        Assert.Equal(7, roundTripped.Y, 9);
+    }
+
+    [Fact]
+    public void Inversion_rejects_singular_and_overflowing_maps()
+    {
+        Assert.False(SvgAffineTransform.FromScale(0, 5).TryInvert(out _));
+        Assert.False(SvgAffineTransform.FromScale(1e308, 1e308).TryInvert(out _));
+    }
 }

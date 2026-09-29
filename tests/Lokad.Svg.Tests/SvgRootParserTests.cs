@@ -161,12 +161,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_group_use_with_transformed_source_group()
+    public void Expands_translated_ancestor_group_for_outside_use()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(5,0)'><g id='inner'><rect width='2' height='2' fill='red'/></g></g><use href='#inner'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        // Translated ancestors un-bake through the axis-aligned inverse, so the
+        // group instance expands exactly like direct rendering (no misrender, no gate).
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(5,0)'><g id='inner'><rect width='2' height='2' fill='red'/></g></g><use href='#inner'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("transformed source groups", rejected.Message);
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.False(root.HasUnsupportedChild);
     }
 
     [Fact]

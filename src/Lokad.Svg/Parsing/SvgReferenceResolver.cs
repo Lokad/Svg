@@ -946,7 +946,10 @@ internal static class SvgReferenceResolver
             if (!state.GroupSnapshots.TryGetValue(id, out SvgGroupSnapshot snapshot)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
             if (snapshot.IsolatesOpacity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with group opacity are not implemented.");
             if (snapshot.HasClip || snapshot.HasMask) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with group clip or mask scopes are not implemented.");
-            if (!snapshot.AncestorIsIdentity || snapshot.HasViewport) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with transformed source groups are not implemented.");
+            if (snapshot.HasViewport) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with viewport-scoped source groups are not implemented.");
+            SvgAffineTransform unbaker = SvgAffineTransform.Identity;
+            bool mustUnbake = !snapshot.AncestorTransform.Equals(SvgAffineTransform.Identity);
+            if (mustUnbake && !snapshot.AncestorTransform.TryInvert(out unbaker)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with singular source transforms are not implemented.");
             using BudgetedParserList<SvgGeometry> collected = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
             for (int index = snapshot.GeometryStart; index < snapshot.GeometryStart + snapshot.GeometryCount; index++)
             {
@@ -954,13 +957,14 @@ internal static class SvgReferenceResolver
                 SvgGeometry current = scene.GeometryAt(index);
                 if (current.Kind != SvgGeometryKind.Invalid)
                 {
-                    collected.Add(current);
+                    collected.Add(mustUnbake ? UnbakeGroupGeometry(current, snapshot.AncestorTransform, unbaker, state, workCounter, cancellationToken) : current);
                     if (state.GroupUseExtras.TryGetValue(index, out System.Collections.Generic.List<int>? extras))
                     {
                         foreach (int extra in extras)
                         {
                             workCounter.Consume(cancellationToken);
-                            collected.Add(scene.GeometryAt(extra));
+                            SvgGeometry extraGeometry = scene.GeometryAt(extra);
+                            collected.Add(mustUnbake ? UnbakeGroupGeometry(extraGeometry, snapshot.AncestorTransform, unbaker, state, workCounter, cancellationToken) : extraGeometry);
                         }
                     }
                     continue;
@@ -979,12 +983,50 @@ internal static class SvgReferenceResolver
                 foreach (SvgGeometry geometry in mapped)
                 {
                     workCounter.Consume(cancellationToken);
-                    collected.Add(geometry);
+                    collected.Add(mustUnbake ? UnbakeGroupGeometry(geometry, snapshot.AncestorTransform, unbaker, state, workCounter, cancellationToken) : geometry);
                 }
             }
             return collected.AsSpan().ToArray();
         }
         finally { visited.Remove(id); }
+    }
+
+    /// <summary>Maps one baked snapshot geometry back through the source-group ancestor inverse, gating kinds without an exact inverse image.</summary>
+    /// <remarks>Nested uses already map through their full composed reference before splicing, so every collected geometry shares the snapshot ancestor space; un-baking restores the group-local space the outer instance transform expects. Flattened curves survive only when the ancestor never minifies, rectangle strokes never survive because widths would scale, and rectangle, line and band content rides only axis-aligned inverses through the existing honest gates.</remarks>
+    private static SvgGeometry UnbakeGroupGeometry(SvgGeometry geometry, SvgAffineTransform ancestor, SvgAffineTransform inverse, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        switch (geometry.Kind)
+        {
+            case SvgGeometryKind.PolygonFill:
+            {
+                SvgPolygonFill polygon = geometry.Polygon;
+                if (polygon.Mapping == SvgPolygonMapping.FlattenedCurves && (ColumnLength(ancestor.A, ancestor.B) < 1 || ColumnLength(ancestor.C, ancestor.D) < 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with minified flattened-curve content are not implemented.");
+                using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Geometry);
+                SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
+                for (int index = 0; index < mapped.Length; index++)
+                {
+                    workCounter.Consume(cancellationToken);
+                    mapped[index] = inverse.Apply(polygon.Points[index].X, polygon.Points[index].Y);
+                }
+                SvgClipBox? clip = polygon.Clip;
+                if (clip is not null) clip = inverse.Apply(clip.Value);
+                return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, polygon.Color, polygon.HasFill, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
+            }
+            case SvgGeometryKind.Rectangle:
+                SvgRectangle rectangle = geometry.Rectangle;
+                if (rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with rectangle-stroke source content are not implemented.");
+                return SvgGeometry.FromRectangle(inverse.Apply(rectangle));
+            case SvgGeometryKind.OrthogonalBand:
+                return SvgGeometry.FromOrthogonalBand(inverse.Apply(geometry.Rectangle));
+            case SvgGeometryKind.AxisAlignedLine:
+                return SvgGeometry.FromAxisAlignedLine(inverse.Apply(geometry.AxisAlignedLine));
+            case SvgGeometryKind.GlyphContours:
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with glyph source content are not implemented.");
+            default:
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with paint-server source content are not implemented.");
+        }
     }
 
 

@@ -701,7 +701,9 @@ internal static class SvgDefinitionParser
     private static SvgDefinition ParseShapeDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
-        SvgPaintableElementContext localContext = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")) } };
+        // Element-local lowering: the shape lowerers compose the inherited transform with the element attribute themselves, so the inherited
+        // side stays identity here; carrying the parsed attribute would apply it twice. Use clones exclude definition ancestors.
+        SvgPaintableElementContext localContext = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
         SvgGeometry[] geometries = reader.LocalName switch
         {
             "polygon" or "polyline" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, localContext, int.MaxValue, state.Budget, null, state)),

@@ -1228,6 +1228,63 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(direct, instanced);
     }
 
+    [Fact]
+    public void Transformed_definition_use_matches_direct_rendering()
+    {
+        // Definitions lower under the element-local transform exactly once: the rotated
+        // definition instance equals the directly composed path (no double application).
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 L8,0 L8,8 Z' fill='red' transform='translate(4,4) rotate(30)'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><path id='p' d='M0,0 L8,0 L8,8 Z' fill='red' transform='rotate(30)'/></defs><g transform='translate(4,4)'><use href='#p'/></g></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Translated_group_use_matches_direct_rendering()
+    {
+        // Translated ancestors un-bake exactly: the root-level use clones the inner group
+        // without its outer translate, matching the directly placed twin.
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='translate(4,0)'><polygon points='0,0 8,0 0,8' fill='red'/></g><g transform='translate(0,8)'><polygon points='0,0 8,0 0,8' fill='red'/></g></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='translate(4,0)'><g id='a'><polygon points='0,0 8,0 0,8' fill='red'/></g></g><use href='#a' y='8'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Minified_group_curves_stay_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='scale(0.5)'><g id='a'><path d='M0,0 Q16,16 32,0 Z' fill='red'/></g></g><use href='#a'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("minified flattened-curve", rejected.Message);
+    }
+
+    [Fact]
+    public void Translated_group_paint_content_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g transform='translate(4,0)'><g id='a'><rect width='8' height='8' fill='url(#g)'/></g></g><use href='#a'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("paint-server source content", rejected.Message);
+    }
+
+    [Fact]
+    public void Translated_group_rect_stroke_stays_unsupported()
+    {
+        // Canceling ancestor transforms let a rectangle stroke bake under an identity
+        // element map; the instance still gates instead of scaling the width wrongly.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='translate(5,0)'><g id='a' transform='translate(-5,0)'><rect width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></g></g><use href='#a'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("rectangle-stroke source content", rejected.Message);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
