@@ -23,9 +23,16 @@ internal static class SvgOrthogonalShapeParser
         (int commandCount, bool hasCurve, bool hasArc, bool hasFractional) = ScanPathData(d, context.WorkCounter, context.CancellationToken);
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
-        if (hasCurve)
+        shape = context.ResolveShape(fillStyle, reader, true);
+        if (!shape.Presentation.HasFill && !paintOutline && !paintRadialOutline && !paintPatternOutline && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0)
         {
-            shape = context.ResolveShape(fillStyle, reader, true);
+            // Unpainted fills contribute no area and feed no paint-server boxes, masks or clips here, so degenerate
+            // subpaths skip fill validation while stroke lowering still outlines every subpath below.
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            filled = new SvgParsedGeometry(empty.Detach(), commandCount + 1);
+        }
+        else if (hasCurve)
+        {
             bool curveEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -35,7 +42,6 @@ internal static class SvgOrthogonalShapeParser
         }
         else if (hasFractional)
         {
-            shape = context.ResolveShape(fillStyle, reader, true);
             bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noFractionEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -50,13 +56,11 @@ internal static class SvgOrthogonalShapeParser
             if (AllContoursDegenerate(points, contourEnds))
             {
                 // Sealed subpaths with fewer than three points enclose no area, so the fill contributes nothing while stroke lowering still outlines every subpath.
-                shape = context.ResolveShape(fillStyle, reader, true);
                 using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 filled = new SvgParsedGeometry(empty.Detach(), commandCount + 1);
             }
             else if (HasDiagonalContour(points, contourEnds))
             {
-                shape = context.ResolveShape(fillStyle, reader, true);
                 bool diagonalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
                 using SvgOrthogonalGeometryLowering diagonalLowering = new(points, contourEnds, "path", true, diagonalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
                 filled = diagonalLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
@@ -64,7 +68,6 @@ internal static class SvgOrthogonalShapeParser
             else
             {
                 SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, "path", context.WorkCounter, context.CancellationToken);
-                shape = context.ResolveShape(fillStyle, reader, true);
                 bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
                 if (!shape.Transform.IsAxisAligned)
                 {

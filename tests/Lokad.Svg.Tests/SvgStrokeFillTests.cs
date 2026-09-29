@@ -1835,6 +1835,40 @@ public sealed class SvgStrokeFillTests
 
         Assert.Equal(spaced, abutted);
     }
+    [Fact]
+    public void Multi_subpath_stroke_only_paints_all_subpaths()
+    {
+        // Unpainted fills skip fill validation (degenerate subpaths enclose no area), so every
+        // open subpath still strokes, including two-point members.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='90' height='60'><g fill='none'><path stroke='#007749' stroke-width='12' d='m0 0 45 30h45M0 60l45-30'/></g></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 119, 73, 255), Pixel(pixels, 90, 70, 30));
+        Assert.Equal(new SvgColor(0, 119, 73, 255), Pixel(pixels, 90, 10, 53));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 90, 80, 50));
+    }
+
+    [Fact]
+    public void Degenerate_subpath_with_gradient_stroke_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='90' height='60'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g fill='none'><path stroke='url(#g)' stroke-width='12' d='m0 0 45 30h45M0 60l45-30'/></g></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("closed axis-aligned integer path contours", rejected.Message);
+    }
+
+    [Fact]
+    public void Degenerate_subpath_with_mask_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='90' height='60'><defs><mask id='m'><rect width='90' height='60' fill='#ffffff'/></mask></defs><g fill='none'><path stroke='#007749' stroke-width='12' mask='url(#m)' d='m0 0 45 30h45M0 60l45-30'/></g></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("closed axis-aligned integer path contours", rejected.Message);
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
