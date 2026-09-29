@@ -66,8 +66,16 @@ internal static class SvgOrthogonalShapeParser
                 SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, "path", context.WorkCounter, context.CancellationToken);
                 shape = context.ResolveShape(fillStyle, reader, true);
                 bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-                using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                filled = lowering.Lower(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame);
+                if (!shape.Transform.IsAxisAligned)
+                {
+                    using SvgOrthogonalGeometryLowering rotatedLowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+                    filled = rotatedLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
+                }
+                else
+                {
+                    using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+                    filled = lowering.Lower(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame);
+                }
             }
         }
 
@@ -265,8 +273,16 @@ internal static class SvgOrthogonalShapeParser
             SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, elementName, context.WorkCounter, context.CancellationToken);
             shape = context.ResolveShape(fillStyle, reader, true);
             bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-            using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, false, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            filled = lowering.Lower(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame);
+            if (!shape.Transform.IsAxisAligned)
+            {
+                using SvgOrthogonalGeometryLowering rotatedLowering = new(points, contourEnds, elementName, false, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+                filled = rotatedLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
+            }
+            else
+            {
+                using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, elementName, false, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+                filled = lowering.Lower(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame);
+            }
         }
 
         SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke;

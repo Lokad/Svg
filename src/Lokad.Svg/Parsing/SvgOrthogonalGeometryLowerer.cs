@@ -80,7 +80,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
     }
 
-    internal SvgParsedGeometry Lower(SvgColor color, bool hasFill, AxisTransform transform, SvgViewportFrame? frame)
+    internal SvgParsedGeometry Lower(SvgColor color, bool hasFill, SvgAffineTransform transform, SvgViewportFrame? frame)
     {
         for (int boundaryIndex = 0; boundaryIndex < _boundaries.Count;)
         {
@@ -158,7 +158,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Lowers diagonal solid polygons with separated simple contours to retained device points, keeping touching and non-simple shapes rejected.</summary>
-    internal SvgParsedGeometry LowerPolygonFill(SvgColor color, bool hasFill, AxisTransform transform, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerPolygonFill(SvgColor color, bool hasFill, SvgAffineTransform transform, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
@@ -167,7 +167,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Lowers diagonal linear-gradient polygons with separated simple contours to retained device points with their paint box.</summary>
-    internal SvgParsedGeometry LowerGradientPolygonFill(SvgLinearGradient gradient, SvgRectangle box, bool hasFill, byte opacity, AxisTransform transform, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerGradientPolygonFill(SvgLinearGradient gradient, SvgRectangle box, bool hasFill, byte opacity, SvgAffineTransform transform, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
@@ -176,7 +176,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Lowers diagonal radial-gradient polygons with separated simple contours to retained device points with their paint box.</summary>
-    internal SvgParsedGeometry LowerRadialPolygonFill(SvgRadialGradient gradient, SvgRectangle box, bool hasFill, byte opacity, AxisTransform transform, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerRadialPolygonFill(SvgRadialGradient gradient, SvgRectangle box, bool hasFill, byte opacity, SvgAffineTransform transform, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
@@ -184,7 +184,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishRadialPolygonFill(mapped, ends, gradient, box, hasFill, opacity, SvgPolygonMapping.QuarterEdges, frame, budget);
     }
 
-    private int[] MapDiagonalContours(AxisTransform transform, SvgViewportFrame? frame, BudgetedParserList<SvgDevicePoint> mapped)
+    private int[] MapDiagonalContours(SvgAffineTransform transform, SvgViewportFrame? frame, BudgetedParserList<SvgDevicePoint> mapped)
     {
         ArgumentNullException.ThrowIfNull(mapped);
         if (_contourEnds.Count == 0 || _contourEnds[_contourEnds.Count - 1] != _points.Count) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
@@ -208,8 +208,8 @@ internal ref struct SvgOrthogonalGeometryLowering
                 if (!hasKept) first = vertex;
                 previous = vertex;
                 hasKept = true;
-                (double x, double y) = transform.ApplyToVertex(vertex.X, vertex.Y);
-                mapped.Add(ShiftVertex(frame, x, y));
+                SvgDevicePoint mappedVertex = transform.Apply(vertex.X, vertex.Y);
+                mapped.Add(ShiftVertex(frame, mappedVertex.X, mappedVertex.Y));
             }
 
             if (mapped.Count - keptBefore < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, SimpleShapeMessage());
@@ -223,16 +223,29 @@ internal ref struct SvgOrthogonalGeometryLowering
     private static SvgDevicePoint ShiftVertex(SvgViewportFrame? viewport, double x, double y)
         => viewport is null ? new SvgDevicePoint(x, y) : new SvgDevicePoint(x * viewport.Value.ScaleX + viewport.Value.OffsetX, y * viewport.Value.ScaleY + viewport.Value.OffsetY);
 
-    private static (SvgAffineTransform Map, double ScaleX, double ScaleY) BuildDeviceMap(AxisTransform transform, SvgViewportFrame? frame)
+    private static (SvgAffineTransform Map, double ScaleX, double ScaleY) BuildDeviceMap(SvgAffineTransform transform, SvgViewportFrame? frame)
     {
         double frameScaleX = frame?.ScaleX ?? 1;
         double frameScaleY = frame?.ScaleY ?? 1;
         double frameOffsetX = frame?.OffsetX ?? 0;
         double frameOffsetY = frame?.OffsetY ?? 0;
         if (!double.IsFinite(frameScaleX) || !double.IsFinite(frameScaleY) || !double.IsFinite(frameOffsetX) || !double.IsFinite(frameOffsetY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport mapping exceeds the admitted numeric range.");
-        double scaleX = transform.ScaleX * frameScaleX;
-        double scaleY = transform.ScaleY * frameScaleY;
-        SvgAffineTransform deviceMap = SvgAffineTransform.FromMatrix(frameScaleX, 0, 0, frameScaleY, frameOffsetX, frameOffsetY).Compose(SvgAffineTransform.FromMatrix(transform.ScaleX, 0, 0, transform.ScaleY, transform.OffsetX, transform.OffsetY));
+        double userScaleX;
+        double userScaleY;
+        if (transform.IsAxisAligned)
+        {
+            userScaleX = transform.A;
+            userScaleY = transform.D;
+        }
+        else if (!transform.TryGetUniformScale(out double uniformUserScale)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled polygon transforms are implemented.");
+        else
+        {
+            userScaleX = uniformUserScale;
+            userScaleY = uniformUserScale;
+        }
+        double scaleX = userScaleX * frameScaleX;
+        double scaleY = userScaleY * frameScaleY;
+        SvgAffineTransform deviceMap = SvgAffineTransform.FromMatrix(frameScaleX, 0, 0, frameScaleY, frameOffsetX, frameOffsetY).Compose(transform);
         return (deviceMap, scaleX, scaleY);
     }
 
@@ -263,6 +276,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerEllipseFill(double centerX, double centerY, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
+        if (radiusX != radiusY && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rotated ellipse transforms are not implemented.");
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
         double mappedRadiusY = radiusY * Math.Abs(scaleY);
@@ -333,6 +347,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerEllipseStrokeFill(double centerX, double centerY, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgStroke stroke, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
+        if (radiusX != radiusY && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rotated ellipse transforms are not implemented.");
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
         if (scaleX != scaleY || scaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Ellipse strokes under non-uniform polygon transforms stay unsupported.");
         double deviceRadiusX = radiusX * scaleX;
@@ -404,6 +419,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured path-command limit.");
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        if (hasArc && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under rotated polygon transforms stay unsupported.");
         if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
         long wantedPoints = hasCurve
@@ -495,7 +511,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes one integer point contour with the caller cap and join styles into one nonzero outline fill.</summary>
-    internal SvgParsedGeometry LowerStrokePolyline(BudgetedParserList<SvgPoint> points, bool closed, AxisTransform transform, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokePolyline(BudgetedParserList<SvgPoint> points, bool closed, SvgAffineTransform transform, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
@@ -505,8 +521,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         for (int index = 0; index < points.Count; index++)
         {
             _workCounter.Consume(_cancellationToken);
-            (double x, double y) = transform.ApplyToVertex(points[index].X, points[index].Y);
-            mapped.Add(ShiftVertex(frame, x, y));
+            SvgDevicePoint mappedVertex = transform.Apply(points[index].X, points[index].Y);
+            mapped.Add(ShiftVertex(frame, mappedVertex.X, mappedVertex.Y));
         }
 
         if (dashes is null)
@@ -529,7 +545,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             else SvgStrokeOutline.StrokeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
             return FinishStrokeFill(outlines, color, hasFill, false, frame, budget) with { ElementCount = points.Count + 1 };
         }
-        double dashScale = Math.Abs(transform.ScaleX * (frame?.ScaleX ?? 1));
+        double dashScale = Math.Abs(DashDeviceScale(transform) * (frame?.ScaleX ?? 1));
         return LowerDashedStrokePolyline(mapped, closed, deviceWidth, dashScale, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget) with { ElementCount = points.Count + 1 };
     }
 
@@ -766,12 +782,12 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes sampled contours through the dash pattern into one nonzero outline fill.</summary>
-    private SvgParsedGeometry LowerDashedStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, AxisTransform transform, double deviceWidth, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[] dashes, double dashOffset, double? pathLength, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    private SvgParsedGeometry LowerDashedStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, SvgAffineTransform transform, double deviceWidth, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[] dashes, double dashOffset, double? pathLength, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(dashes);
         ArgumentNullException.ThrowIfNull(budget);
-        double dashScale = Math.Abs(transform.ScaleX * (frame?.ScaleX ?? 1));
+        double dashScale = Math.Abs(DashDeviceScale(transform) * (frame?.ScaleX ?? 1));
         double[] pattern = ScaleDashPattern(dashes, dashScale);
         double totalDeviceLength = DashTotalLength(source, closedEnds);
         double dashFactor = RescaleDashPattern(pattern, totalDeviceLength / dashScale, pathLength);
@@ -820,7 +836,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes device-space contours with the caller cap and join styles into one nonzero outline fill.</summary>
-    internal SvgParsedGeometry LowerStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, AxisTransform transform, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokeContours(SvgContourBuilder source, ReadOnlySpan<bool> closedEnds, bool hasCurves, SvgAffineTransform transform, int width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(budget);
@@ -856,16 +872,37 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishStrokeFill(outlines, color, hasFill, hasCurves, frame, budget);
     }
 
-    private double StrokeDeviceWidth(int width, AxisTransform transform, SvgViewportFrame? frame, bool nonScaling)
+    private static double DashDeviceScale(SvgAffineTransform transform)
+    {
+        if (transform.IsAxisAligned) return transform.A;
+        if (!transform.TryGetUniformScale(out double uniform)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled dash transforms are implemented.");
+        return uniform;
+    }
+
+    private double StrokeDeviceWidth(int width, SvgAffineTransform transform, SvgViewportFrame? frame, bool nonScaling)
     {
         double frameScaleX = frame?.ScaleX ?? 1;
         double frameScaleY = frame?.ScaleY ?? 1;
         if (Math.Abs(frameScaleX) != Math.Abs(frameScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled " + _elementName + " strokes are implemented.");
-        double scaleX = transform.ScaleX * frameScaleX;
-        double scaleY = transform.ScaleY * frameScaleY;
+        double userScaleX;
+        double userScaleY;
+        if (transform.IsAxisAligned)
+        {
+            userScaleX = transform.A;
+            userScaleY = transform.D;
+        }
+        else if (!transform.TryGetUniformScale(out double uniformUserScale)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled " + _elementName + " strokes are implemented.");
+        else
+        {
+            userScaleX = uniformUserScale;
+            userScaleY = uniformUserScale;
+        }
+        double scaleX = userScaleX * frameScaleX;
+        double scaleY = userScaleY * frameScaleY;
         if (!nonScaling && (Math.Abs(scaleX) != Math.Abs(scaleY) || scaleX == 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled " + _elementName + " strokes are implemented.");
-        if (nonScaling && (transform.ScaleX == 0 || transform.ScaleY == 0 || frameScaleX == 0 || frameScaleY == 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled " + _elementName + " strokes are implemented.");
+        if (nonScaling && (userScaleX == 0 || userScaleY == 0 || frameScaleX == 0 || frameScaleY == 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled " + _elementName + " strokes are implemented.");
         double deviceWidth = nonScaling ? width : width * Math.Abs(scaleX);
+        if (Math.Abs(deviceWidth - Math.Round(deviceWidth)) <= 1e-9) deviceWidth = Math.Round(deviceWidth);
         if (!double.IsFinite(deviceWidth) || deviceWidth <= 0 || deviceWidth > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
         return deviceWidth;
     }
@@ -876,6 +913,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke command count exceeds the configured path-command limit.");
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        if (hasArc && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under rotated polygon transforms stay unsupported.");
         if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
         double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame, nonScaling);
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);

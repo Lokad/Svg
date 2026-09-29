@@ -156,4 +156,33 @@ public sealed class SvgAffineTransformTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Axis_aligned_reports_axis_flags()
+    {
+        Assert.True(SvgAffineTransform.Identity.IsAxisAligned);
+        Assert.True(SvgAffineTransform.FromScale(2, -3).IsAxisAligned);
+        Assert.False(SvgAffineTransform.FromRotationDegrees(30).IsAxisAligned);
+        Assert.False(SvgAffineTransform.FromSkewXDegrees(10).IsAxisAligned);
+    }
+
+    [Fact]
+    public void Uniform_detection_covers_rotations_and_rejects_stretch()
+    {
+        Assert.True(SvgAffineTransform.Identity.IsUniformScale());
+        Assert.True(SvgAffineTransform.FromScale(2, 2).IsUniformScale());
+        Assert.True(SvgAffineTransform.FromScale(2, -2).IsUniformScale());
+        Assert.True(SvgAffineTransform.FromRotationDegrees(30).IsUniformScale());
+        Assert.False(SvgAffineTransform.FromScale(2, 3).IsUniformScale());
+        Assert.True(SvgAffineTransform.FromRotationDegrees(30).TryGetUniformScale(out double factor));
+        Assert.Equal(1, factor, 9);
+    }
+
+    [Fact]
+    public void Compose_checked_rejects_out_of_range_results()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgAffineTransform.FromScale(1e308, 1).ComposeChecked(SvgAffineTransform.FromScale(1, 1)));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
 }

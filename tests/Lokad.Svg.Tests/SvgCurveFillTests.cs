@@ -298,16 +298,16 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
-    public void Fractional_path_with_rotate_stays_unsupported()
+    public void Rotated_fractional_triangle_paints_union()
     {
-        // Inventory re-probe 2026-09-27 (R37): fractional admission carries the shield
-        // composition through to the integer-transform gate (inv-068 rotate(30)).
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g transform='rotate(30)'><path d='M0.5,0 L8,0 L8,8 Z' fill='red'/></g></svg>");
+        // R37/row 5: rotation maps vertices through the general affine carrier while
+        // the diagonal fill path is unchanged. Staged oracle runs rotri-o1..o2 agree
+        // 2/2 byte-identical SHA-256 d406fa809e3083c7fea8a3cd7144512373edf447a1b56852732e4b138dc9aba3;
+        // the only residual is edge fringe (20 px at max channel error 6).
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g transform='rotate(30)'><path d='M0.5,0 L8,0 L8,8 Z' fill='red'/></g></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only finite translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.", rejected.Message);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 3, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 7));
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)

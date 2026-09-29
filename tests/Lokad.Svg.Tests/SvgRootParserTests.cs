@@ -161,6 +161,24 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Rejects_group_use_with_transformed_source_group()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g transform='translate(5,0)'><g id='inner'><rect width='2' height='2' fill='red'/></g></g><use href='#inner'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("transformed source groups", rejected.Message);
+    }
+
+    [Fact]
+    public void Expands_transformed_group_for_outside_use()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g id='a' transform='rotate(30)'><polygon points='0,0 4,0 0,4' fill='red'/></g><use href='#a' x='8'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(2, root.Geometries.Length);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
     public void Rejects_duplicate_leaf_and_group_ids()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='x' width='2' height='2' fill='red'/></defs><g id='x'><rect width='1' height='1' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
@@ -3803,7 +3821,7 @@ public sealed class SvgRootParserTests
         ParserWorkCounter workCounter = new(1);
         using SvgDocumentState state = new(budget, workCounter, CancellationToken.None);
         state.StyleRules.Add(new CssRule(CssSelectorKind.Class, "selected", null, 10, default));
-        SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, 255, null, null, null, null);
+        SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, 255, null, null, null, null);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRenderedLeafParser.TryParse(reader, true, true, root, state, SvgRenderLimits.Default, budget, new Dictionary<string, SvgColor>(), null, workCounter, CancellationToken.None));
 

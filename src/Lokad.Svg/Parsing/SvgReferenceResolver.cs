@@ -3,7 +3,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents a parsed direct local use reference before its target is resolved.</summary>
-internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, AxisTransform Transform, AxisTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId);
+internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, SvgAffineTransform Transform, SvgAffineTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId);
 
 /// <summary>Retains one clip-path reference whose box needs a forward definition or clip-path definition.</summary>
 internal readonly record struct SvgDeferredClip(string ClipId, SvgViewportFrame? Parent, int Depth);
@@ -134,7 +134,7 @@ internal static class SvgReferenceResolver
     private static SvgGeometry ApplyPolygon(SvgPolygonFill polygon, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
-        SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
+        SvgAffineTransform instanceMap = reference.Transform;
         using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
@@ -159,7 +159,7 @@ internal static class SvgReferenceResolver
     private static SvgGeometry ApplyGradientPolygon(SvgGradientPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
-        SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
+        SvgAffineTransform instanceMap = reference.Transform;
         using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
@@ -189,7 +189,7 @@ internal static class SvgReferenceResolver
     private static SvgGeometry ApplyRadialPolygon(SvgRadialPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
-        SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
+        SvgAffineTransform instanceMap = reference.Transform;
         using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
@@ -218,7 +218,7 @@ internal static class SvgReferenceResolver
     private static SvgGeometry ApplyPatternPolygon(SvgPatternPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
-        SvgAffineTransform instanceMap = SvgAffineTransform.FromMatrix(reference.Transform.ScaleX, 0, 0, reference.Transform.ScaleY, reference.Transform.OffsetX, reference.Transform.OffsetY);
+        SvgAffineTransform instanceMap = reference.Transform;
         using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
@@ -243,7 +243,7 @@ internal static class SvgReferenceResolver
     /// <summary>Rejects non-uniformly scaled outline strokes on use instances, whose pre-scale miters would silently distort.</summary>
     private static void RequireUniformOutlineScales(SvgDefinition definition, SvgUseReference reference)
     {
-        if (reference.Transform.ScaleX == reference.Transform.ScaleY || reference.Transform.ScaleX == -reference.Transform.ScaleY) return;
+        if (reference.Transform.IsUniformScale()) return;
         foreach (SvgGeometry source in definition.Geometries)
         {
             if (source.Kind is SvgGeometryKind.GradientPolygon or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled outline strokes on use instances are implemented.");
@@ -254,7 +254,7 @@ internal static class SvgReferenceResolver
     private static void RequireAdmittedSymbolMagnification(SvgPolygonMapping mapping, double viewBoxScale, SvgUseReference instance)
     {
         if (mapping != SvgPolygonMapping.FlattenedCurves) return;
-        double magnification = viewBoxScale * Math.Max(Math.Abs((double)instance.Transform.ScaleX), Math.Abs((double)instance.Transform.ScaleY));
+        double magnification = viewBoxScale * Math.Max(ColumnLength(instance.Transform.A, instance.Transform.B), ColumnLength(instance.Transform.C, instance.Transform.D));
         if (magnification > 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only unmagnified symbol instances of flattened curve outlines are implemented.");
     }
 
@@ -262,7 +262,7 @@ internal static class SvgReferenceResolver
     /// <remarks>Straight outlines map exactly under any affine instance transform, and unit-or-smaller integer scales never magnify the quarter-pixel flattening budget; only FlattenedCurves content under a magnifying integer scale rejects.</remarks>
     private static void RequireAdmittedInstanceMagnification(SvgDefinition definition, SvgUseReference reference)
     {
-        if (reference.Transform.ScaleX is >= -1 and <= 1 && reference.Transform.ScaleY is >= -1 and <= 1) return;
+        if (ColumnLength(reference.Transform.A, reference.Transform.B) <= 1 && ColumnLength(reference.Transform.C, reference.Transform.D) <= 1) return;
         foreach (SvgGeometry source in definition.Geometries)
         {
             SvgPolygonMapping? mapping = source.Kind switch
@@ -332,8 +332,9 @@ internal static class SvgReferenceResolver
                 workCounter.Consume(cancellationToken);
                 double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
                 double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
-                double placedX = instance.Transform.ScaleX * contentX + instance.Transform.OffsetX;
-                double placedY = instance.Transform.ScaleY * contentY + instance.Transform.OffsetY;
+                SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
+                double placedX = placedPoint.X;
+                double placedY = placedPoint.Y;
                 if (viewportFrame is not null)
                 {
                     placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
@@ -466,8 +467,8 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double _, double _) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of rectangle strokes is not implemented.");
-            if (instance.Transform.ScaleX != instance.Transform.ScaleY && instance.Transform.ScaleX != -instance.Transform.ScaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
-            double scaledWidth = (double)sourceStroke.Width * Math.Abs(scaleX) * Math.Abs(instance.Transform.ScaleX);
+            if (!instance.Transform.IsUniformScale()) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
+            double scaledWidth = (double)sourceStroke.Width * Math.Abs(scaleX) * Math.Abs(UniformFactor(instance.Transform));
             SvgRectangle mapped = MapSymbolBox(source, viewBox, instance.Width.Value, instance.Height.Value);
             SvgRectangle placed = mapped with { X = mapped.X + instance.X, Y = mapped.Y + instance.Y };
             if (placed.X != Math.Truncate(placed.X) || placed.Y != Math.Truncate(placed.Y) || placed.Width != Math.Truncate(placed.Width) || placed.Height != Math.Truncate(placed.Height) || !double.IsFinite(scaledWidth) || scaledWidth < 2 || scaledWidth > int.MaxValue || scaledWidth != Math.Truncate(scaledWidth) || (int)scaledWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped even-width symbol-held rectangle strokes are implemented.");
@@ -503,8 +504,9 @@ internal static class SvgReferenceResolver
                 workCounter.Consume(cancellationToken);
                 double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
                 double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
-                double placedX = instance.Transform.ScaleX * contentX + instance.Transform.OffsetX;
-                double placedY = instance.Transform.ScaleY * contentY + instance.Transform.OffsetY;
+                SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
+                double placedX = placedPoint.X;
+                double placedY = placedPoint.Y;
                 if (viewportFrame is not null)
                 {
                     placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
@@ -602,8 +604,9 @@ internal static class SvgReferenceResolver
                 workCounter.Consume(cancellationToken);
                 double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
                 double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
-                double placedX = instance.Transform.ScaleX * contentX + instance.Transform.OffsetX;
-                double placedY = instance.Transform.ScaleY * contentY + instance.Transform.OffsetY;
+                SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
+                double placedX = placedPoint.X;
+                double placedY = placedPoint.Y;
                 if (viewportFrame is not null)
                 {
                     placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
@@ -653,8 +656,9 @@ internal static class SvgReferenceResolver
                 workCounter.Consume(cancellationToken);
                 double contentX = source.Points[index].X * scaleX + offsetX + instance.X;
                 double contentY = source.Points[index].Y * scaleY + offsetY + instance.Y;
-                double placedX = instance.Transform.ScaleX * contentX + instance.Transform.OffsetX;
-                double placedY = instance.Transform.ScaleY * contentY + instance.Transform.OffsetY;
+                SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
+                double placedX = placedPoint.X;
+                double placedY = placedPoint.Y;
                 if (viewportFrame is not null)
                 {
                     placedX = placedX * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
@@ -754,7 +758,7 @@ internal static class SvgReferenceResolver
         return LowerPlacedRadialFill(circle, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame);
     }
 
-    private static SvgGeometry LowerPlacedGradientFill(SvgLinearGradient vector, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, AxisTransform vectorTransform, SvgViewportFrame? frame)
+    private static SvgGeometry LowerPlacedGradientFill(SvgLinearGradient vector, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform vectorTransform, SvgViewportFrame? frame)
     {
         vector = SvgGradientSyntax.MapUserSpaceVector(vectorTransform, vector, frame);
         vector = SvgGradientSyntax.MirrorBoundingBoxVector(vectorTransform, vector);
@@ -765,7 +769,8 @@ internal static class SvgReferenceResolver
     private static SvgGeometry LowerInstancePatternFill(SvgPatternTile tile, SvgRectangle placement, SvgUseReference reference, SvgViewportFrame? frame)
     {
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
-        if (reference.Transform.ScaleX < 0 || reference.Transform.ScaleY < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
+        if (!reference.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
+        if (reference.Transform.A < 0 || reference.Transform.D < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
         if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
         return FinishInstancePatternFill(tile, placement, reference.Opacity, reference.IsPainted);
     }
@@ -778,7 +783,7 @@ internal static class SvgReferenceResolver
         return SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill, opacity, null));
     }
 
-    private static SvgGeometry LowerPlacedRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, AxisTransform circleTransform, SvgViewportFrame? frame)
+    private static SvgGeometry LowerPlacedRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform circleTransform, SvgViewportFrame? frame)
     {
         circle = SvgGradientSyntax.MapUserSpaceRadial(circleTransform, circle, frame);
         if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
@@ -817,7 +822,8 @@ internal static class SvgReferenceResolver
         if (state.Patterns.TryGetValue(paintId, out SvgPatternTile tile))
         {
             if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
-            if (reference.Transform.ScaleX < 0 || reference.Transform.ScaleY < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
+            if (!reference.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
+            if (reference.Transform.A < 0 || reference.Transform.D < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
             return FinishInstancePatternFill(tile, fillBox, reference.Opacity, reference.IsPainted);
         }
         if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient))
@@ -845,8 +851,8 @@ internal static class SvgReferenceResolver
         static SvgStroke? MapInstanceStroke(SvgStroke? stroke, SvgUseReference reference)
         {
             if (stroke is null) return null;
-            if (reference.Transform.ScaleX != reference.Transform.ScaleY && reference.Transform.ScaleX != -reference.Transform.ScaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
-            double scaledWidth = stroke.Value.Width * Math.Abs(reference.Transform.ScaleX);
+            if (!reference.Transform.IsUniformScale()) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
+            double scaledWidth = stroke.Value.Width * Math.Abs(UniformFactor(reference.Transform));
             if (!double.IsFinite(scaledWidth) || scaledWidth != Math.Truncate(scaledWidth) || scaledWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer effective rectangle stroke widths on use instances are implemented.");
             int width = checked((int)scaledWidth);
             SvgColor color = stroke.Value.Color;
@@ -940,6 +946,7 @@ internal static class SvgReferenceResolver
             if (!state.GroupSnapshots.TryGetValue(id, out SvgGroupSnapshot snapshot)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
             if (snapshot.IsolatesOpacity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with group opacity are not implemented.");
             if (snapshot.HasClip || snapshot.HasMask) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with group clip or mask scopes are not implemented.");
+            if (!snapshot.AncestorIsIdentity || snapshot.HasViewport) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with transformed source groups are not implemented.");
             using BudgetedParserList<SvgGeometry> collected = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
             for (int index = snapshot.GeometryStart; index < snapshot.GeometryStart + snapshot.GeometryCount; index++)
             {
@@ -1046,6 +1053,17 @@ internal static class SvgReferenceResolver
         SvgClipBox clip = deferred.Parent is null ? resolved : deferred.Parent.Value.Clip.Intersect(resolved);
         return new SvgViewportFrame(deferred.Parent?.OffsetX ?? 0, deferred.Parent?.OffsetY ?? 0, deferred.Parent?.ScaleX ?? 1, deferred.Parent?.ScaleY ?? 1, deferred.Parent?.ViewportWidth, deferred.Parent?.ViewportHeight, clip, deferred.Depth);
     }
+
+    /// <summary>Returns the uniform scale factor of an axis-aligned or uniform transform for width scaling.</summary>
+    private static double UniformFactor(SvgAffineTransform transform)
+    {
+        if (transform.IsAxisAligned) return transform.A;
+        if (!transform.TryGetUniformScale(out double uniform)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled instance transforms are implemented.");
+        return uniform;
+    }
+
+    /// <summary>Returns one axis column length for magnification checks, exact for axis-aligned transforms.</summary>
+    private static double ColumnLength(double x, double y) => Math.Sqrt(x * x + y * y);
 
     /// <summary>Shifts retained command ranges right after scene insertions, keeping deferred group clips and masks aligned.</summary>
     internal static void ShiftPendingCommandRanges(SvgDocumentState state, int insertPosition, int insertedCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)

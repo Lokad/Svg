@@ -448,6 +448,15 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Rotated_open_spoke_paints_with_stable_width()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M8,8 L8,0' stroke='red' stroke-width='2' fill='none' transform='rotate(90,8,8)'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 12, 8));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 4, 8));
+    }
+
+    [Fact]
     public void Solid_bowtie_stroke_paints_both_halves()
     {
         // S12/R34: solid stroke outlines union across the crossing like dashes;

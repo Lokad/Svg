@@ -372,7 +372,7 @@ public sealed class RenderBudgetTests
             SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill), SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null))], false, null);
             using SvgDocumentState state = new(new RenderBudget(100_000), new ParserWorkCounter(100_000), CancellationToken.None);
             ParserWorkCounter workCounter = new(100_000);
-            SvgGeometry[] applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null, null), null, state, workCounter, CancellationToken.None);
+            SvgGeometry[] applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null), null, state, workCounter, CancellationToken.None);
             Assert.Equal(3, workCounter.Used);
             Assert.Equal(2, applied.Length);
         }
@@ -395,7 +395,7 @@ public sealed class RenderBudgetTests
             using SvgDocumentState state = new(new RenderBudget(100_000), new ParserWorkCounter(100_000), CancellationToken.None);
             using CancellationTokenSource cancelled = new();
             cancelled.Cancel();
-            Assert.Throws<OperationCanceledException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, AxisTransform.Identity, AxisTransform.Identity, 255, true, null, null), null, state, new ParserWorkCounter(100_000), cancelled.Token));
+            Assert.Throws<OperationCanceledException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null), null, state, new ParserWorkCounter(100_000), cancelled.Token));
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);
@@ -828,7 +828,7 @@ public sealed class RenderBudgetTests
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
-            return lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, AxisTransform.Identity, null, tightBudget);
+            return lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, SvgAffineTransform.Identity, null, tightBudget);
         });
 
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
@@ -854,7 +854,7 @@ public sealed class RenderBudgetTests
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
-            return lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, AxisTransform.Identity, null, tightBudget);
+            return lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, SvgAffineTransform.Identity, null, tightBudget);
         });
 
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
@@ -879,7 +879,7 @@ public sealed class RenderBudgetTests
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
-            return lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, AxisTransform.Identity, null, tightBudget);
+            return lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, SvgAffineTransform.Identity, null, tightBudget);
         });
 
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
@@ -906,7 +906,7 @@ public sealed class RenderBudgetTests
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
-            return lowering.LowerGradientPolygonFill(gradient, box, true, 255, AxisTransform.Identity, null, tightBudget);
+            return lowering.LowerGradientPolygonFill(gradient, box, true, 255, SvgAffineTransform.Identity, null, tightBudget);
         });
 
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
@@ -933,7 +933,7 @@ public sealed class RenderBudgetTests
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
-            return lowering.LowerRadialPolygonFill(circle, box, true, 255, AxisTransform.Identity, null, tightBudget);
+            return lowering.LowerRadialPolygonFill(circle, box, true, 255, SvgAffineTransform.Identity, null, tightBudget);
         });
 
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
@@ -955,7 +955,7 @@ public sealed class RenderBudgetTests
         points.Add(new SvgPoint(0, 8));
         ends.Add(3);
         using (SvgOrthogonalGeometryLowering lowering = new(points, ends, "polygon", false, false, 100_000, budget, counter, CancellationToken.None))
-        using (SvgParsedGeometry parsed = lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, AxisTransform.Identity, null, budget))
+        using (SvgParsedGeometry parsed = lowering.LowerPolygonFill(new SvgColor(255, 0, 0, 255), true, SvgAffineTransform.Identity, null, budget))
         {
             Assert.Equal(1, parsed.Geometries.Length);
             Assert.Equal(SvgGeometryKind.PolygonFill, parsed.Geometries[0].Kind);
@@ -989,7 +989,7 @@ public sealed class RenderBudgetTests
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polyline", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
-            return lowering.LowerStrokePolyline(points, false, AxisTransform.Identity, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, null, 0, null, false, new SvgColor(255, 0, 0, 255), false, null, tightBudget);
+            return lowering.LowerStrokePolyline(points, false, SvgAffineTransform.Identity, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, null, 0, null, false, new SvgColor(255, 0, 0, 255), false, null, tightBudget);
         });
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         AssertBudgetReleased(tightBudget);

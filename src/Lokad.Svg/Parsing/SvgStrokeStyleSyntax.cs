@@ -207,7 +207,7 @@ internal static class SvgStrokeStyleSyntax
             if (dashes[0] > 0) dashes = null;
             else return null;
         }
-        if (dashes is not null && nonScaling && Math.Abs(shape.Transform.ScaleX) != Math.Abs(shape.Transform.ScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniformly scaled dashed strokes are not implemented.");
+        if (dashes is not null && nonScaling && !shape.Transform.IsUniformScale()) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniformly scaled dashed strokes are not implemented.");
         SvgColor color = SvgPaintResolver.ApplyOpacity(shape.Presentation.StrokeColor.Value, shape.Presentation.Opacity);
         return new SvgAdmittedStroke(color, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling);
     }

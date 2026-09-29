@@ -1,5 +1,6 @@
 using System.Xml;
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
@@ -17,13 +18,13 @@ public sealed class SvgContainerInheritanceTests
             default,
             computedStyle,
             default,
-            new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), null, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, false,
+            new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), null, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, false,
             new Dictionary<string, SvgColor>());
 
         Assert.Equal(SvgPaint.Default, resolved.Presentation.Paint);
         Assert.True(resolved.Presentation.IsDisplayed);
         Assert.True(resolved.Presentation.IsVisible);
-        Assert.Equal(new AxisTransform(1, 1, 1, 2), resolved.Presentation.Transform);
+        Assert.Equal(SvgAffineTransform.FromScaleOffset(1, 1, 1, 2), resolved.Presentation.Transform);
         Assert.Equal("Example", resolved.TextStyle.Family);
         Assert.Equal(20, resolved.TextStyle.FontSize);
         Assert.Null(resolved.FillRule);
@@ -45,7 +46,7 @@ public sealed class SvgContainerInheritanceTests
             inline,
             computedStyle,
             styleSheet,
-            new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), "evenodd", SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, false,
+            new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), "evenodd", SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, false,
             new Dictionary<string, SvgColor>());
 
         Assert.Equal("Important", resolved.TextStyle.Family);
@@ -64,7 +65,7 @@ public sealed class SvgContainerInheritanceTests
             default,
             nestedStyle,
             default,
-            new SvgInheritedPresentation(SvgPaint.Default, true, true, AxisTransform.Identity), null, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, true,
+            new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), null, SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, true,
             new Dictionary<string, SvgColor>()));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);

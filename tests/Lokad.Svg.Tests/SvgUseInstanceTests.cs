@@ -26,6 +26,30 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Rotated_polygon_use_matches_direct_rendering()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='4,4 12,4 4,12' fill='red'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><polygon id='p' points='4,4 12,4 4,12' fill='red'/></defs><use href='#p' transform='rotate(90,8,8)'/></svg>", out _, out _);
+        byte[] rotated = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='12,4 12,12 4,4' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(rotated, instanced);
+        Assert.NotEqual(direct, instanced);
+    }
+
+    [Fact]
+    public void Transformed_group_use_matches_oracle_fringe()
+    {
+        // Staged oracle runs tu2-o1..o2 agree 2/2 byte-identical
+        // SHA-256 c2bea74d219be45468d679ebf1855802fb5a3c5a1c34de404f87f0a648250a38;
+        // the only residual is edge fringe (25 px at max channel error 16).
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g id='a' transform='rotate(30)'><polygon points='0,0 4,0 0,4' fill='red'/></g><use href='#a' x='8'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 0, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 250), Pixel(pixels, 16, 9, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 15, 15));
+    }
+
+    [Fact]
     public void Magnified_curve_use_stays_unsupported()
     {
         // R35: definition curves flatten at the nominal device tolerance, so a

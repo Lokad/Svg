@@ -256,8 +256,8 @@ internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgI
 internal enum SvgGroupKind { Group, Link, Switch }
 
 /// <summary>Records one closed identifier-bearing group as a scene geometry range for use-instance expansion.</summary>
-internal readonly record struct SvgGroupSnapshot(int GeometryStart, int GeometryCount, SvgGroupKind Kind, bool IsolatesOpacity, bool HasClip, bool HasMask);
+internal readonly record struct SvgGroupSnapshot(int GeometryStart, int GeometryCount, SvgGroupKind Kind, bool IsolatesOpacity, bool HasClip, bool HasMask, bool AncestorIsIdentity, bool HasViewport);
 
 /// <summary>Tracks one open group for snapshot ranges, aligned with the group scope stack.</summary>
-internal readonly record struct SvgGroupSnapshotStart(string? Id, int GeometryStart, bool HasClip, bool HasMask);
+internal readonly record struct SvgGroupSnapshotStart(string? Id, int GeometryStart, bool HasClip, bool HasMask, bool AncestorIsIdentity);
 

@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
@@ -26,7 +27,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
         return style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
     }
 
-    internal AxisTransform ResolveTransform(XmlReader reader) => InheritedPresentation.Transform.Compose(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
+    internal SvgAffineTransform ResolveTransform(XmlReader reader) => InheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
 
     internal SvgResolvedShapePresentation ResolvePresentation(SvgComputedStyle style, bool acceptsStroke)
         => SvgShapePresentationResolver.Resolve(style, InheritedPresentation.Paint, InheritedPresentation.IsDisplayed, InheritedPresentation.IsVisible, acceptsStroke, NamedColors);
@@ -62,7 +63,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
 }
 
 /// <summary>Pairs one computed style with the inherited transform and resolved presentation used by a shape lowerer.</summary>
-internal readonly record struct SvgResolvedPaintableElement(SvgComputedStyle Style, AxisTransform Transform, SvgResolvedShapePresentation Presentation, double OutputMagnification);
+internal readonly record struct SvgResolvedPaintableElement(SvgComputedStyle Style, SvgAffineTransform Transform, SvgResolvedShapePresentation Presentation, double OutputMagnification);
 
 /// <summary>Pairs direct-text paint resolution with text declarations from its single style scan.</summary>
 internal readonly record struct SvgResolvedDirectTextElement(SvgResolvedPaintableElement PaintableElement, SvgTextInlineFontProperties InlineFont, string? WhiteSpace, string? LetterSpacing);

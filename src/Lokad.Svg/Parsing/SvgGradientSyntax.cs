@@ -244,7 +244,7 @@ internal static class SvgGradientSyntax
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         }
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
-        AxisTransform transform = context.ResolveTransform(reader);
+        SvgAffineTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceVector(transform, gradient, frame);
         gradient = MirrorBoundingBoxVector(transform, gradient);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
@@ -278,7 +278,7 @@ internal static class SvgGradientSyntax
     internal static SvgGeometry LowerRadialRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
-        AxisTransform transform = context.ResolveTransform(reader);
+        SvgAffineTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceRadial(transform, gradient, frame);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
@@ -314,7 +314,7 @@ internal static class SvgGradientSyntax
             bandStrokeShape = context.ResolveShape(style with { Fill = "black" }, reader, true);
             bandStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, bandStrokeShape, elementName, false);
         }
-        AxisTransform transform = context.ResolveTransform(reader);
+        SvgAffineTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceRadial(transform, gradient, frame);
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
@@ -364,7 +364,7 @@ internal static class SvgGradientSyntax
         }
         return AppendPaintFillStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
 
-        static SvgRectangle BoxFromRadialBands(BudgetedParserList<SvgPoint> points, AxisTransform transform, SvgViewportFrame? frame, SvgPaintableElementContext context)
+        static SvgRectangle BoxFromRadialBands(BudgetedParserList<SvgPoint> points, SvgAffineTransform transform, SvgViewportFrame? frame, SvgPaintableElementContext context)
         {
             int minimumX = points[0].X;
             int minimumY = points[0].Y;
@@ -400,7 +400,7 @@ internal static class SvgGradientSyntax
             if (state.RadialGradients.TryGetValue(ParseGradientId(style.Fill), out SvgRadialGradient radial)) return LowerRadialBands(reader, context, style, state, radial, elementName, isPath, maximumGeometryElements, budget, frame);
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         }
-        AxisTransform transform = context.ResolveTransform(reader);
+        SvgAffineTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceVector(transform, gradient, frame);
         gradient = MirrorBoundingBoxVector(transform, gradient);
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
@@ -468,7 +468,7 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Appends an admitted solid stroke outline to paint-filled bands and outlines, leaving unadmitted strokes to the shared stroke gates.</summary>
-    internal static SvgParsedGeometry AppendPaintFillStroke(SvgParsedGeometry filled, XmlReader reader, SvgPaintableElementContext context, string elementName, bool isPath, BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, AxisTransform transform, SvgViewportFrame? frame, int maximumGeometryElements, RenderBudget budget, SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke, SvgResolvedPaintableElement strokeShape)
+    internal static SvgParsedGeometry AppendPaintFillStroke(SvgParsedGeometry filled, XmlReader reader, SvgPaintableElementContext context, string elementName, bool isPath, BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, SvgAffineTransform transform, SvgViewportFrame? frame, int maximumGeometryElements, RenderBudget budget, SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke, SvgResolvedPaintableElement strokeShape)
     {
         if (stroke is null) return filled;
         if (isPath)
@@ -504,7 +504,7 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Computes the device paint box from retained contour points for bounding-box evaluation.</summary>
-    internal static SvgRectangle BoxFromGradientBands(BudgetedParserList<SvgPoint> points, AxisTransform transform, SvgViewportFrame? frame, SvgPaintableElementContext context)
+    internal static SvgRectangle BoxFromGradientBands(BudgetedParserList<SvgPoint> points, SvgAffineTransform transform, SvgViewportFrame? frame, SvgPaintableElementContext context)
     {
         int minimumX = points[0].X;
         int minimumY = points[0].Y;
@@ -526,13 +526,14 @@ internal static class SvgGradientSyntax
     internal static bool IsGradientStrokeUrl(string? stroke)
         => stroke is not null && stroke.StartsWith("url(", StringComparison.Ordinal);
 
-    internal static SvgLinearGradient MapUserSpaceVector(AxisTransform transform, SvgLinearGradient gradient, SvgViewportFrame? frame)
+    internal static SvgLinearGradient MapUserSpaceVector(SvgAffineTransform transform, SvgLinearGradient gradient, SvgViewportFrame? frame)
     {
         if (!gradient.IsUserSpace) return gradient;
+        if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
         (double mappedX1, double mappedY1) = transform.ApplyToUserPoint(gradient.X1, gradient.Y1);
         (double mappedX2, double mappedY2) = transform.ApplyToUserPoint(gradient.X2, gradient.Y2);
-        double referenceScaleX = transform.ScaleX;
-        double referenceScaleY = transform.ScaleY;
+        double referenceScaleX = transform.A;
+        double referenceScaleY = transform.D;
         if (frame is not null)
         {
             mappedX1 = mappedX1 * frame.Value.ScaleX + frame.Value.OffsetX;
@@ -547,15 +548,16 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Maps one userSpaceOnUse radial circle and its focal point through the referencing transform, recording scales for inverse evaluation.</summary>
-    internal static SvgRadialGradient MapUserSpaceRadial(AxisTransform transform, SvgRadialGradient gradient, SvgViewportFrame? frame)
+    internal static SvgRadialGradient MapUserSpaceRadial(SvgAffineTransform transform, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
         if (!gradient.IsUserSpace) return gradient;
+        if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
         (double mappedX, double mappedY) = transform.ApplyToUserPoint(gradient.CenterX, gradient.CenterY);
         (double mappedFocalX, double mappedFocalY) = transform.ApplyToUserPoint(gradient.FocalX, gradient.FocalY);
-        double mappedRadius = gradient.Radius * Math.Abs(transform.ScaleX);
-        double mappedFocalRadius = gradient.FocalRadius * Math.Abs(transform.ScaleX);
-        double referenceScaleX = transform.ScaleX;
-        double referenceScaleY = transform.ScaleY;
+        double mappedRadius = gradient.Radius * Math.Abs(transform.A);
+        double mappedFocalRadius = gradient.FocalRadius * Math.Abs(transform.A);
+        double referenceScaleX = transform.A;
+        double referenceScaleY = transform.D;
         if (frame is not null)
         {
             mappedX = mappedX * frame.Value.ScaleX + frame.Value.OffsetX;
@@ -572,13 +574,14 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Mirrors one objectBoundingBox gradient vector when the referencing transform reflects its axis.</summary>
-    internal static SvgLinearGradient MirrorBoundingBoxVector(AxisTransform transform, SvgLinearGradient gradient)
+    internal static SvgLinearGradient MirrorBoundingBoxVector(SvgAffineTransform transform, SvgLinearGradient gradient)
     {
         if (gradient.IsUserSpace) return gradient;
-        double x1 = transform.ScaleX < 0 ? 1 - gradient.X1 : gradient.X1;
-        double x2 = transform.ScaleX < 0 ? 1 - gradient.X2 : gradient.X2;
-        double y1 = transform.ScaleY < 0 ? 1 - gradient.Y1 : gradient.Y1;
-        double y2 = transform.ScaleY < 0 ? 1 - gradient.Y2 : gradient.Y2;
+        if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
+        double x1 = transform.A < 0 ? 1 - gradient.X1 : gradient.X1;
+        double x2 = transform.A < 0 ? 1 - gradient.X2 : gradient.X2;
+        double y1 = transform.D < 0 ? 1 - gradient.Y1 : gradient.Y1;
+        double y2 = transform.D < 0 ? 1 - gradient.Y2 : gradient.Y2;
         return gradient with { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2 };
     }
 
@@ -590,7 +593,7 @@ internal static class SvgGradientSyntax
         if (!state.Gradients.TryGetValue(ParseGradientId(style.Stroke), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
-        AxisTransform transform = context.ResolveTransform(reader);
+        SvgAffineTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceVector(transform, gradient, frame);
         SvgLinearGradient fillGradient = default;
         SvgRadialGradient fillCircle = default;
@@ -683,7 +686,7 @@ internal static class SvgGradientSyntax
         if (!state.RadialGradients.TryGetValue(ParseGradientId(style.Stroke), out SvgRadialGradient circle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
-        AxisTransform transform = context.ResolveTransform(reader);
+        SvgAffineTransform transform = context.ResolveTransform(reader);
         circle = MapUserSpaceRadial(transform, circle, frame);
         SvgLinearGradient fillGradient = default;
         SvgRadialGradient fillCircle = default;
@@ -776,8 +779,8 @@ internal static class SvgGradientSyntax
     {
         // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
         if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
-        AxisTransform transform = context.ResolveTransform(reader);
-        if (transform != AxisTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
+        SvgAffineTransform transform = context.ResolveTransform(reader);
+        if (transform != SvgAffineTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         if ((syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
@@ -825,7 +828,7 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Lowers one round-capped linear-gradient line stroke into one gradient-evaluated band with two repainted tip discs.</summary>
-    private static SvgParsedGeometry LowerRoundCapGradientStrokeLine(SvgLineSyntax syntax, int strokeWidth, SvgComputedStyle style, AxisTransform transform, SvgLinearGradient gradient, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    private static SvgParsedGeometry LowerRoundCapGradientStrokeLine(SvgLineSyntax syntax, int strokeWidth, SvgComputedStyle style, SvgAffineTransform transform, SvgLinearGradient gradient, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
     {
         bool degenerate = gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty;
         if (degenerate && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
@@ -875,8 +878,8 @@ internal static class SvgGradientSyntax
     {
         // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
         if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
-        AxisTransform transform = context.ResolveTransform(reader);
-        if (transform != AxisTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
+        SvgAffineTransform transform = context.ResolveTransform(reader);
+        if (transform != SvgAffineTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         if ((syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
@@ -923,7 +926,7 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Lowers one round-capped radial-gradient line stroke into one radial-evaluated band with two repainted tip discs.</summary>
-    private static SvgParsedGeometry LowerRoundCapRadialStrokeLine(SvgLineSyntax syntax, int strokeWidth, SvgComputedStyle style, AxisTransform transform, SvgRadialGradient circle, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    private static SvgParsedGeometry LowerRoundCapRadialStrokeLine(SvgLineSyntax syntax, int strokeWidth, SvgComputedStyle style, SvgAffineTransform transform, SvgRadialGradient circle, bool painted, byte opacity, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
     {
         bool degenerate = circle.Radius == 0 && !circle.IsEmpty;
         if (degenerate && circle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");
@@ -980,7 +983,7 @@ internal static class SvgGradientSyntax
         return SvgGeometry.FromRadialFill(new SvgRadialGeometry(fillCircle, box, fill with { HasFill = fillHasFill }, fillOpacity, null));
     }
 
-    private static SvgStroke? ParseGradientStroke(XmlReader reader, SvgComputedStyle style, SvgPaintableElementContext context, AxisTransform transform, SvgRectangle placement, byte opacity, bool painted)
+    private static SvgStroke? ParseGradientStroke(XmlReader reader, SvgComputedStyle style, SvgPaintableElementContext context, SvgAffineTransform transform, SvgRectangle placement, byte opacity, bool painted)
     {
         if (style.Stroke is null || style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) return null;
         if (IsGradientStrokeUrl(style.Stroke)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient fills with gradient strokes are not implemented.");

@@ -66,8 +66,8 @@ internal static class SvgDefinitionParser
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
-                AxisTransform clipTransform = context.ResolveTransform(reader);
-                if (state.ClipIsObjectBoundingBox && clipTransform != AxisTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transformed objectBoundingBox clip content is not implemented.");
+                SvgAffineTransform clipTransform = context.ResolveTransform(reader);
+                if (state.ClipIsObjectBoundingBox && clipTransform != SvgAffineTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transformed objectBoundingBox clip content is not implemented.");
                 SvgRectangle rect = clipTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
                 state.ClipBox = new SvgClipBox(rect.X, rect.Y, rect.Width, rect.Height);
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
@@ -131,7 +131,7 @@ internal static class SvgDefinitionParser
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
                 SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
-                tileContext = tileContext with { InheritedPresentation = tileContext.InheritedPresentation with { Transform = AxisTransform.Identity } };
+                tileContext = tileContext with { InheritedPresentation = tileContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
                 using SvgParsedGeometry parsedContent = SvgLeafParser.ParseRectangle(reader, tileContext, null, state);
                 if (parsedContent.Geometries.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle pattern tiles are implemented.");
                 SvgGeometry content = parsedContent.Geometries[0];
@@ -701,13 +701,14 @@ internal static class SvgDefinitionParser
     private static SvgDefinition ParseShapeDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
+        SvgPaintableElementContext localContext = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")) } };
         SvgGeometry[] geometries = reader.LocalName switch
         {
-            "polygon" or "polyline" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, context, int.MaxValue, state.Budget, null, state)),
-            "path" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePath(reader, context, int.MaxValue, state.Budget, null, state)),
-            "circle" => RetainCircleGeometries(SvgLeafParser.ParseCircle(reader, context, null, state)),
-            "ellipse" => RetainParsedGeometries(SvgLeafParser.ParseEllipse(reader, context, null, state)),
-            "rect" => RetainParsedGeometries(SvgLeafParser.ParseRoundedRectangleDefinition(reader, context, state)),
+            "polygon" or "polyline" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, localContext, int.MaxValue, state.Budget, null, state)),
+            "path" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePath(reader, localContext, int.MaxValue, state.Budget, null, state)),
+            "circle" => RetainCircleGeometries(SvgLeafParser.ParseCircle(reader, localContext, null, state)),
+            "ellipse" => RetainParsedGeometries(SvgLeafParser.ParseEllipse(reader, localContext, null, state)),
+            "rect" => RetainParsedGeometries(SvgLeafParser.ParseRoundedRectangleDefinition(reader, localContext, state)),
             _ => throw new InvalidOperationException("Unsupported definition leaf reached shape lowering."),
         };
         if (geometries.Length > 0) state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Scene));

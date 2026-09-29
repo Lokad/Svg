@@ -1,16 +1,17 @@
 using System.Globalization;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Parses the bounded numeric, transform, viewport, and viewBox syntax shared by supported geometry.</summary>
 internal static class SvgGeometrySyntax
 {
-    internal static AxisTransform ParseTransform(string? value)
+    internal static SvgAffineTransform ParseTransform(string? value)
     {
-        if (value is null) return AxisTransform.Identity;
+        if (value is null) return SvgAffineTransform.Identity;
         if (value.Length > SvgSyntaxLimits.MaximumTransformCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform values exceed the configured syntax limit.");
         ReadOnlySpan<char> input = value.AsSpan();
-        AxisTransform transform = AxisTransform.Identity;
+        SvgAffineTransform transform = SvgAffineTransform.Identity;
         int position = 0;
         bool hasFunction = false;
         while (true)
@@ -32,7 +33,7 @@ internal static class SvgGeometrySyntax
             int argumentsStart = position;
             while (position < input.Length && input[position] != ')') position++;
             if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
-            transform = transform.Compose(ParseTransformFunction(name, input[argumentsStart..position]));
+            transform = transform.ComposeChecked(ParseTransformFunction(name, input[argumentsStart..position]));
             position++;
             hasFunction = true;
         }
@@ -166,12 +167,17 @@ internal static class SvgGeometrySyntax
         return new SvgViewBox(values[0], values[1], values[2], values[3], horizontalAlignment, verticalAlignment, fit);
     }
 
-    private static AxisTransform ParseTransformFunction(ReadOnlySpan<char> name, ReadOnlySpan<char> arguments)
+    private static SvgAffineTransform ParseTransformFunction(ReadOnlySpan<char> name, ReadOnlySpan<char> arguments)
     {
         bool isMatrix = name.Equals("matrix", StringComparison.OrdinalIgnoreCase);
         bool isTranslate = name.Equals("translate", StringComparison.OrdinalIgnoreCase);
-        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
+        bool isRotate = name.Equals("rotate", StringComparison.OrdinalIgnoreCase);
+        bool isSkewX = name.Equals("skewX", StringComparison.OrdinalIgnoreCase);
+        bool isSkewY = name.Equals("skewY", StringComparison.OrdinalIgnoreCase);
+        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.OrdinalIgnoreCase) && !isRotate && !isSkewX && !isSkewY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotate(), skew(), and nonzero axis-aligned matrix() transforms are implemented.");
         if (isTranslate) return ParseTranslate(arguments);
+        if (isRotate) return ParseRotate(arguments);
+        if (isSkewX || isSkewY) return ParseSkew(arguments, isSkewY);
         Span<double> values = stackalloc double[6];
         int valueCount = 0;
         DelimitedTokenReader tokens = new(arguments);
@@ -185,15 +191,45 @@ internal static class SvgGeometrySyntax
             if (valueCount != 6) throw new SvgException(SvgErrorCode.MalformedInput, "matrix() requires six coordinates.");
             double scaleX = values[0]; double skewY = values[1]; double skewX = values[2]; double scaleY = values[3]; double offsetX = values[4]; double offsetY = values[5];
             if (skewX != 0 || skewY != 0 || scaleX == 0 || scaleY == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero axis-aligned finite matrix() transforms are implemented.");
-            return new AxisTransform(scaleX, scaleY, offsetX, offsetY);
+            return SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY);
         }
         if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
         double first = values[0]; double second = valueCount == 2 ? values[1] : first;
         if (first == 0 || second == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero finite scale() values are implemented.");
-        return new AxisTransform(first, second, 0, 0);
+        return SvgAffineTransform.FromScaleOffset(first, second, 0, 0);
     }
 
-    private static AxisTransform ParseTranslate(ReadOnlySpan<char> arguments)
+    private static SvgAffineTransform ParseRotate(ReadOnlySpan<char> arguments)
+    {
+        Span<double> values = stackalloc double[3];
+        int valueCount = 0;
+        DelimitedTokenReader tokens = new(arguments);
+        while (tokens.TryReadValue(out ReadOnlySpan<char> value))
+        {
+            if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "rotate() requires one angle or one angle with a center point.");
+            values[valueCount++] = ParseTransformCoordinate(value);
+        }
+        if (valueCount != 1 && valueCount != 3) throw new SvgException(SvgErrorCode.MalformedInput, "rotate() requires one angle or one angle with a center point.");
+        return valueCount == 1 ? SvgAffineTransform.FromRotationDegrees(values[0]) : SvgAffineTransform.FromRotationDegrees(values[0], values[1], values[2]);
+    }
+
+    private static SvgAffineTransform ParseSkew(ReadOnlySpan<char> arguments, bool skewY)
+    {
+        Span<double> values = stackalloc double[1];
+        int valueCount = 0;
+        DelimitedTokenReader tokens = new(arguments);
+        while (tokens.TryReadValue(out ReadOnlySpan<char> value))
+        {
+            if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "skew() requires one angle.");
+            values[valueCount++] = ParseTransformCoordinate(value);
+        }
+        if (valueCount != 1) throw new SvgException(SvgErrorCode.MalformedInput, "skew() requires one angle.");
+        double slope = Math.Tan(values[0] * (Math.PI / 180d));
+        if (!double.IsFinite(slope)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite skew() slopes are implemented.");
+        return skewY ? SvgAffineTransform.FromMatrix(1, slope, 0, 1, 0, 0) : SvgAffineTransform.FromMatrix(1, 0, slope, 1, 0, 0);
+    }
+
+    private static SvgAffineTransform ParseTranslate(ReadOnlySpan<char> arguments)
     {
         Span<double> values = stackalloc double[2];
         int valueCount = 0;
@@ -204,7 +240,7 @@ internal static class SvgGeometrySyntax
             values[valueCount++] = ParseTransformCoordinate(value);
         }
         if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
-        return new AxisTransform(1, 1, values[0], valueCount == 2 ? values[1] : 0);
+        return SvgAffineTransform.FromScaleOffset(1, 1, values[0], valueCount == 2 ? values[1] : 0);
     }
 
     private static double ParseTransformCoordinate(ReadOnlySpan<char> value)

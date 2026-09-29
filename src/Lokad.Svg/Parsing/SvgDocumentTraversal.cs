@@ -149,7 +149,7 @@ internal static class SvgDocumentTraversal
                     {
                         state.Groups.Add(parsedGroup.Scope);
                         string? groupId = reader.GetAttribute("id");
-                        state.GroupSnapshotStarts.Add(new SvgGroupSnapshotStart(groupId is null ? null : state.Strings.Copy(groupId), state.Scene.GeometryCount, reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null));
+                        state.GroupSnapshotStarts.Add(new SvgGroupSnapshotStart(groupId is null ? null : state.Strings.Copy(groupId), state.Scene.GeometryCount, reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null, state.Groups.Count >= 2 ? state.Groups[^2].InheritedPresentation.Transform.Equals(SvgAffineTransform.Identity) : true));
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
                         string? clipReference = reader.GetAttribute("clip-path");
                         if (clipReference is not null)
@@ -272,7 +272,14 @@ internal static class SvgDocumentTraversal
                         workCounter.Consume(cancellationToken);
                         if (state.Definitions.TryGetValue(snapshotStart.Id, out _) || state.GroupSnapshots.TryGetValue(snapshotStart.Id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                         string retainedId = state.Strings.Copy(snapshotStart.Id);
-                        if (!state.GroupSnapshots.TryAdd(retainedId, new SvgGroupSnapshot(snapshotStart.GeometryStart, state.Scene.GeometryCount - snapshotStart.GeometryStart, group.Kind, group.IsolatesOpacity, snapshotStart.HasClip, snapshotStart.HasMask))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                        bool hasViewport = false;
+                        for (int viewportIndex = 0; viewportIndex < state.Viewports.Count; viewportIndex++)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            SvgViewportFrame viewportFrame = state.Viewports[viewportIndex];
+                            if (viewportFrame.ScaleX != 1 || viewportFrame.ScaleY != 1 || viewportFrame.OffsetX != 0 || viewportFrame.OffsetY != 0) { hasViewport = true; break; }
+                        }
+                        if (!state.GroupSnapshots.TryAdd(retainedId, new SvgGroupSnapshot(snapshotStart.GeometryStart, state.Scene.GeometryCount - snapshotStart.GeometryStart, group.Kind, group.IsolatesOpacity, snapshotStart.HasClip, snapshotStart.HasMask, snapshotStart.AncestorIsIdentity, hasViewport))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                     }
                     if (group.HasMaskScope) state.MaskScopes.RemoveLast();
                     if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;

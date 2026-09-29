@@ -11,7 +11,7 @@ internal static class SvgLeafParser
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         SvgComputedStyle patternStyle = context.ResolveStyle(reader);
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
-        AxisTransform earlyTransform = context.ResolveTransform(reader);
+        SvgAffineTransform earlyTransform = context.ResolveTransform(reader);
         SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgViewportFrame? effectiveFrame = SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, frame, earlyPlacement);
         double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
@@ -103,11 +103,12 @@ internal static class SvgLeafParser
         bool paintGradient = SvgGradientSyntax.IsGradientFill(style.Fill) && !paintPattern;
         SvgComputedStyle fillStyle = paintGradient || paintPattern ? style with { Fill = "#ffffff" } : (paintStrokeLinear || paintStrokeRadial || paintStrokePattern) ? style with { Stroke = "none" } : style;
         SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, !paintGradient && !paintPattern);
-        AxisTransform transform = context.ResolveTransform(reader);
+        SvgAffineTransform transform = context.ResolveTransform(reader);
         if (paintPattern)
         {
             if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
-            if (transform.ScaleX < 0 || transform.ScaleY < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
+            if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
+            if (transform.A < 0 || transform.D < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
         }
         SvgLinearGradient linear = default;
         SvgRadialGradient radial = default;
@@ -262,7 +263,7 @@ internal static class SvgLeafParser
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         if ((syntax.CornerX ?? syntax.CornerY ?? 0) != 0 || (syntax.CornerY ?? syntax.CornerX ?? 0) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rounded rectangles in definitions stay unsupported.");
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
-        AxisTransform localTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"));
+        SvgAffineTransform localTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"));
         SvgRectangle rectangle = localTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
         SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, localTransform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
         if (stroke is not null && SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
@@ -298,11 +299,12 @@ internal static class SvgLeafParser
         if (paintPattern && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern-filled " + elementName + "s with strokes are not implemented.");
         SvgComputedStyle fillStyle = paintGradient || paintPattern ? style with { Fill = "#ffffff" } : (paintStrokeLinear || paintStrokeRadial || paintStrokePattern) ? style with { Stroke = "none" } : style;
         SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, elementName is "circle" or "ellipse");
-        AxisTransform transform = element.Transform;
+        SvgAffineTransform transform = element.Transform;
         if (paintPattern)
         {
             if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
-            if (transform.ScaleX < 0 || transform.ScaleY < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are not implemented.");
+            if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
+            if (transform.A < 0 || transform.D < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are not implemented.");
         }
         SvgLinearGradient linear = default;
         SvgRadialGradient radial = default;
@@ -390,8 +392,21 @@ internal static class SvgLeafParser
 
         static SvgParsedGeometry LowerDashedEllipseStroke(XmlReader reader, SvgPaintableElementContext context, SvgEllipseSyntax syntax, SvgResolvedPaintableElement shape, SvgParsedGeometry fill, SvgStroke ringStroke, double[] dashes, double dashOffset, double? pathLength, double miterLimit, bool nonScaling, string shapeName, SvgViewportFrame? frame, SvgDocumentState state)
         {
-            double composedScaleX = shape.Transform.ScaleX * (frame?.ScaleX ?? 1);
-            double composedScaleY = shape.Transform.ScaleY * (frame?.ScaleY ?? 1);
+            double userScaleX;
+            double userScaleY;
+            if (shape.Transform.IsAxisAligned)
+            {
+                userScaleX = shape.Transform.A;
+                userScaleY = shape.Transform.D;
+            }
+            else if (!shape.Transform.TryGetUniformScale(out double uniformUserScale)) throw new SvgException(SvgErrorCode.UnsupportedFeature, shapeName == "circle" ? "Circle strokes under non-uniform polygon transforms stay unsupported." : "Ellipse strokes under non-uniform polygon transforms stay unsupported.");
+            else
+            {
+                userScaleX = uniformUserScale;
+                userScaleY = uniformUserScale;
+            }
+            double composedScaleX = userScaleX * (frame?.ScaleX ?? 1);
+            double composedScaleY = userScaleY * (frame?.ScaleY ?? 1);
             if (composedScaleX != composedScaleY || composedScaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, shapeName == "circle" ? "Circle strokes under non-uniform polygon transforms stay unsupported." : "Ellipse strokes under non-uniform polygon transforms stay unsupported.");
             long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SvgOrthogonalGeometryLowering.SampledOutlineCapacity(1, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1));
             using RenderBudget.BudgetReservation scratch = state.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
@@ -522,7 +537,7 @@ internal static class SvgLeafParser
         SvgResolvedPaintableElement element = context.ResolveShape(style, reader, true);
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgColor? strokeColor = element.Presentation.StrokeColor;
-        if (element.Transform != AxisTransform.Identity || strokeColor is null || (syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
+        if (element.Transform != SvgAffineTransform.Identity || strokeColor is null || (syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
         if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
         SvgStrokeCap linecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
@@ -576,7 +591,7 @@ internal static class SvgLeafParser
     }
 
     /// <summary>Lowers one white round-capped line band with two white tip discs for paint repainting; the white never reaches the scene.</summary>
-    internal static (SvgParsedGeometry White, SvgRectangle Box) LowerWhiteRoundCapLine(SvgLineSyntax syntax, int strokeWidth, SvgComputedStyle style, AxisTransform transform, bool painted, bool fillHasPaint, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
+    internal static (SvgParsedGeometry White, SvgRectangle Box) LowerWhiteRoundCapLine(SvgLineSyntax syntax, int strokeWidth, SvgComputedStyle style, SvgAffineTransform transform, bool painted, bool fillHasPaint, SvgViewportFrame? frame, SvgDocumentState state, SvgPaintableElementContext context)
     {
         SvgRectangle band = new SvgAxisAlignedLine(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, default, painted, strokeWidth).ToStrokeBand();
         SvgRectangle box = band;
@@ -693,10 +708,10 @@ internal static class SvgLeafParser
         return shifted;
     }
 
-    internal static SvgStroke? ParseRectangleStroke(SvgColor? color, string? widthValue, AxisTransform transform, double x, double y, double width, double height, byte opacity, bool hasFill)
+    internal static SvgStroke? ParseRectangleStroke(SvgColor? color, string? widthValue, SvgAffineTransform transform, double x, double y, double width, double height, byte opacity, bool hasFill)
     {
         if (color is null) { return null; }
-        if (transform != AxisTransform.Identity || (hasFill && opacity != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed rectangle strokes, with opacity only when fill-less, are implemented.");
+        if (transform != SvgAffineTransform.Identity || (hasFill && opacity != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed rectangle strokes, with opacity only when fill-less, are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(widthValue ?? "1");
         if (strokeWidth <= 0 || strokeWidth > width || strokeWidth > height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rectangle strokes no larger than the rectangle dimensions are implemented.");
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(color.Value, opacity), strokeWidth);
