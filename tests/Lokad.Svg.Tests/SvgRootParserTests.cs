@@ -2889,6 +2889,33 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Clips_path_bands_to_direct_child_clip_path_boxes()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(2, 0, 4, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Direct_child_clip_path_matches_defs_wrapped_clip()
+    {
+        ReadOnlyMemory<byte> direct = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"), SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> wrapped = SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath></defs><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"), SvgRenderOptions.Default, CancellationToken.None);
+
+        Assert.True(direct.Span.SequenceEqual(wrapped.Span));
+    }
+
+    [Fact]
+    public void Rejects_path_content_in_direct_child_clip_paths()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><clipPath id='c'><path d='M2,0 L6,0 L2,8 Z'/></clipPath><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("This SVG child element is not implemented yet.", rejected.Message);
+    }
+
+    [Fact]
     public void Clips_lines_to_their_clip_path_box()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath></defs><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

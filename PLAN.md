@@ -245,6 +245,8 @@ Status 2026-09-29: row 7 fifth slice complete for nested group-use composition. 
 
 Status 2026-09-29: row 7 sixth slice complete for percentage root dimensions. SvgRootLength carries absolute pixels or viewport percentage from attributes and inline styles with CSS priority; percentages resolve against the explicit viewport or the default intrinsic size while nested, use and font bases keep honest nulls; display block paints like inline and stylesheet type/id attributes are tolerated. Full 92-document re-probe advances inv-002 past dimensions to polygon simplicity and inv-027 past style width to nested-viewport bases with zero other drift. A computed-style cascade variant was reverted the same day after polluting record equality. Full gate holds 2580 core plus 100 visual plus 6 font green; memory and package checks pass. Viewport threading and true-group style width stay queued.
 
+Status 2026-09-29: row 7 seventh slice complete for direct-child clipPath routing. Definition traversal routes identifier-bearing direct-child clipPath elements through the same policy, content and registration path as defs-nested ones, mirroring shape definitions, while group-nested and anonymous clipPaths keep existing behavior and non-rectangle content stays gated behind contour-intersection union work. Full 92-document re-probe advances inv-085 past defined references to path content with zero other drift. Full gate holds 2635 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
+
 ## 4. Findings and stage ledger
 
 ### Active findings

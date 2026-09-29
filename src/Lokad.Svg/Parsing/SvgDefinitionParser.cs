@@ -44,7 +44,8 @@ internal static class SvgDefinitionParser
             if (!reader.IsEmptyElement) state.SymbolDepth = reader.Depth;
             return true;
         }
-        if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "clipPath")
+        bool inClipDefinitions = state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1;
+        if ((inClipDefinitions || rootDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "clipPath")
         {
             SvgElementAttributePolicy.ValidateClipPath(reader, workCounter, cancellationToken);
             state.ClipPathId = reader.GetAttribute("id");
