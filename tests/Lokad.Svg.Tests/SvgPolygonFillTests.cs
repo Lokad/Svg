@@ -1060,13 +1060,55 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Crossing_plus_touch_stays_unsupported()
+    public void Crossing_plus_touch_at_split_vertex_paints_union()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,4 L4,0 L0,4 Z M2,2 L8,4 L8,8 L2,8 Z' fill='red'/></svg>");
+        // R34 planar split: the triangle corner (2,2) is bitwise-identical to the
+        // computed bowtie crossing, so the touch becomes a shared split vertex and
+        // the union paints. Staged oracle runs mixt-o1..o3 agree 3/3 byte-identical
+        // SHA-256 317b08359b73ce8af25043340c5063d1464fa315633d3f7335a42d01010769f6;
+        // the only residual is overlap summation at the shared pixel (85 vs 170).
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,4 L4,0 L0,4 Z M2,2 L8,4 L8,8 L2,8 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 6));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 3, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 0));
+    }
+
+    [Fact]
+    public void Crossing_plus_inexact_touch_stays_unsupported()
+    {
+        // The triangle corner (2,3) misses the computed bowtie crossing (2,2), so the
+        // touch survives splitting as a strict vertex-on-edge contact and the set
+        // stays unsupported.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,4 L4,0 L0,4 Z M3,1 L2,0 L4,0 Z' fill='red'/></svg>");
 
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Pentagram_paints_full_star()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><polygon points='50,0 21,91 98,35 2,35 79,91' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 100, 50, 50));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 100, 50, 10));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 100, 30, 80));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 100, 50, 60));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 100, 5, 5));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 100, 50, 95));
+    }
+
+    [Fact]
+    public void Crossing_squares_paint_union()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M0,0 H8 V8 H0 Z M4,2 H12 V8 H4 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 2, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 10, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 14, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 14, 0));
     }
 
     [Fact]

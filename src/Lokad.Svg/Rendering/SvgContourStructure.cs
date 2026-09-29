@@ -195,6 +195,54 @@ internal static class SvgContourStructure
         return false;
     }
 
+    /// <summary>Finds one strict-interior crossing between edges of two distinct contour loops.</summary>
+    /// <remarks>Loop pairs share the classifier bounding-box precheck, then strict opposite nonzero orientation signs on both sides plus the shared crossing computation, so endpoint contacts, collinear overlaps and touches never report. Deterministic first-found order over loop pairs, first edges and second edges; callers charge one validation work unit per examined pair.</remarks>
+    internal static bool TryFindInterLoopProperCrossing(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, out int firstLoop, out int firstEdge, out int secondLoop, out int secondEdge, out SvgDevicePoint crossing, CancellationToken cancellationToken)
+    {
+        SvgPolygonCoverage.ValidateContourEnds(points, contourEnds);
+        firstLoop = -1;
+        firstEdge = -1;
+        secondLoop = -1;
+        secondEdge = -1;
+        crossing = default;
+        int pairs = 0;
+        for (int first = 0; first < contourEnds.Length; first++)
+        {
+            int firstStart = first == 0 ? 0 : contourEnds[first - 1];
+            int firstCount = contourEnds[first] - firstStart;
+            for (int second = first + 1; second < contourEnds.Length; second++)
+            {
+                int secondStart = second == 0 ? 0 : contourEnds[second - 1];
+                int secondCount = contourEnds[second] - secondStart;
+                for (int firstIndex = 0; firstIndex < firstCount; firstIndex++)
+                {
+                    (SvgDevicePoint firstEdgeStart, SvgDevicePoint firstEdgeEnd) = EdgeAt(points, firstStart, firstCount, firstIndex);
+                    if (firstEdgeStart == firstEdgeEnd) continue;
+                    for (int secondIndex = 0; secondIndex < secondCount; secondIndex++)
+                    {
+                        if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        (SvgDevicePoint secondEdgeStart, SvgDevicePoint secondEdgeEnd) = EdgeAt(points, secondStart, secondCount, secondIndex);
+                        if (secondEdgeStart == secondEdgeEnd) continue;
+                        if (Math.Max(firstEdgeStart.X, firstEdgeEnd.X) < Math.Min(secondEdgeStart.X, secondEdgeEnd.X) || Math.Max(secondEdgeStart.X, secondEdgeEnd.X) < Math.Min(firstEdgeStart.X, firstEdgeEnd.X)) continue;
+                        if (Math.Max(firstEdgeStart.Y, firstEdgeEnd.Y) < Math.Min(secondEdgeStart.Y, secondEdgeEnd.Y) || Math.Max(secondEdgeStart.Y, secondEdgeEnd.Y) < Math.Min(firstEdgeStart.Y, firstEdgeEnd.Y)) continue;
+                        if (Orient(firstEdgeStart, firstEdgeEnd, secondEdgeStart) * Orient(firstEdgeStart, firstEdgeEnd, secondEdgeEnd) < 0 && Orient(secondEdgeStart, secondEdgeEnd, firstEdgeStart) * Orient(secondEdgeStart, secondEdgeEnd, firstEdgeEnd) < 0 && TryCrossingPoint(firstEdgeStart, firstEdgeEnd, secondEdgeStart, secondEdgeEnd, out SvgDevicePoint point))
+                        {
+                            firstLoop = first;
+                            firstEdge = firstIndex;
+                            secondLoop = second;
+                            secondEdge = secondIndex;
+                            crossing = point;
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        return false;
+    }
+
     private static bool TryFindProperCrossingCore(ReadOnlySpan<SvgDevicePoint> points, int start, int end, int excludeFirst, int excludeSecond, CancellationToken cancellationToken, out int firstEdge, out int secondEdge, out SvgDevicePoint crossing)
     {
         if (start < 0 || start > points.Length) throw new ArgumentOutOfRangeException(nameof(start));

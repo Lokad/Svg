@@ -972,11 +972,12 @@ internal ref struct SvgOrthogonalGeometryLowering
             ChargePairs(_workCounter, (long)retained.Length * (retained.Length - 1) / 2, _cancellationToken);
             SvgContourFlags structure = SvgContourStructure.ClassifySet(retained, ends, _cancellationToken);
             bool touchResolved = false;
+            bool interLoopResolved = false;
             if (structure != SvgContourFlags.None)
             {
                 using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
                 using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-                if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget))
+                if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget, out interLoopResolved))
                 {
                     splitPoints.Clear();
                     splitEnds.Clear();
@@ -1000,8 +1001,9 @@ internal ref struct SvgOrthogonalGeometryLowering
             }
             int[] signs = new int[ends.Length];
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
-            if (_isEvenOdd) SvgContourNesting.ComputeParitySigns(retained, ends, signs, touchResolved, _cancellationToken);
-            else SvgContourNesting.ComputeWindingRoles(retained, ends, signs, touchResolved, _cancellationToken);
+            bool skipSharedVertices = touchResolved || interLoopResolved;
+            if (_isEvenOdd) SvgContourNesting.ComputeParitySigns(retained, ends, signs, skipSharedVertices, _cancellationToken);
+            else SvgContourNesting.ComputeWindingRoles(retained, ends, signs, skipSharedVertices, _cancellationToken);
             return new SeparatedContours(retained, ends, signs, mapping, reservation);
         }
         catch
@@ -1021,13 +1023,14 @@ internal ref struct SvgOrthogonalGeometryLowering
         return RetainPolygonFill(separated.Points, separated.Ends, separated.Signs, color, hasFill, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
     }
 
-    /// <summary>Splits self-crossing contours at interior crossings into simple loops sharing only split vertices.</summary>
-    /// <remarks>Every queued loop classifies either clean, joining the output, or as a pure proper crossing, splitting again; any other flag rejects, so touches, spikes and degenerate edges never enter the output. Even-odd keeps the single-contour single-crossing gate because first-vertex parity signs are meaningless for vertex-sharing loops, while nonzero fill iterates to a fixpoint where each split strictly reduces the remaining intra-loop crossings. Admitted loop sets pass the pairwise split-loop guard, so loops meet at most at bitwise-shared split vertices with nesting resolved by roles. Output lists are caller-owned budgeted storage filled after the caller reserves them; each popped loop charges its pair estimate, each copied vertex charges one work unit, and the final guard charges the quadratic pair estimate; observes cancellation in classification, search, copy and guard. Partial output on denial stays caller-discarded.</remarks>
-    private bool TrySplitCrossingContours(SvgContourFlags structure, ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, bool isEvenOdd, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, RenderBudget budget)
+    /// <summary>Splits self-crossing contours at interior crossings into simple loops sharing only split vertices, then eliminates crossings between loops the same way.</summary>
+    /// <remarks>Every queued loop classifies either clean, joining the output, or as a pure proper crossing, splitting again; any other flag rejects, so touches, spikes and degenerate edges never enter the output. Even-odd keeps the single-contour single-crossing gate because first-vertex parity signs are meaningless for vertex-sharing loops, while nonzero fill iterates to a fixpoint where each split strictly reduces the remaining intra-loop crossings. Admitted loop sets pass the pairwise split-loop guard, so loops meet at most at bitwise-shared split vertices with nesting resolved by roles. When the guard still sees inter-loop crossings under nonzero fill, a second sweep subdivides both edges at each computed crossing until no strict crossing remains; each round strictly reduces the crossing count, and the guard still rejects touches, overlaps and degenerates exactly as before. Even-odd never enters the second sweep. Sets resolved across loops report through interLoopResolved so nesting tests skip bitwise-shared vertices. Output lists are caller-owned budgeted storage filled after the caller reserves them; each popped loop charges its pair estimate, each copied vertex charges one work unit, and the final guard charges the quadratic pair estimate; observes cancellation in classification, search, copy and guard. Partial output on denial stays caller-discarded.</remarks>
+    private bool TrySplitCrossingContours(SvgContourFlags structure, ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, bool isEvenOdd, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, RenderBudget budget, out bool interLoopResolved)
     {
         ArgumentNullException.ThrowIfNull(splitPoints);
         ArgumentNullException.ThrowIfNull(splitEnds);
         ArgumentNullException.ThrowIfNull(budget);
+        interLoopResolved = false;
         if (structure == SvgContourFlags.None) return false;
         if (isEvenOdd && (structure != SvgContourFlags.ProperCrossing || ends.Length != 1 || ends[0] != points.Length)) return false;
         using BudgetedParserList<SvgDevicePoint> workPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
@@ -1116,7 +1119,83 @@ internal ref struct SvgOrthogonalGeometryLowering
 
         long totalPoints = splitPoints.Count;
         ChargePairs(_workCounter, totalPoints * totalPoints, _cancellationToken);
+        if (SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken)) return true;
+        if (isEvenOdd) return false;
+        if (!TrySplitInterLoopCrossings(splitPoints, splitEnds)) return false;
+        interLoopResolved = true;
+        return true;
+    }
+
+    /// <summary>Eliminates proper crossings between split loops by subdividing both edges at each computed crossing.</summary>
+    /// <remarks>Phase-one outputs are intra-clean, so only inter-loop strict crossings remain; each subdivision replaces the crossing pair with endpoint contacts at one bitwise-shared vertex while every other contact stays untouched, so the crossing count strictly decreases and the sweep ends at the round cap at the latest. The earlier loop index always subdivides first so the later loop range stays valid. Touches, overlaps and degenerate edges are never repaired: the split-loop guard still arbitrates the final set and rejects them exactly as before, and even-odd never enters this sweep. On failure the phase-one output stays untouched for the caller to discard; on success the output lists hold the subdivided set for the shared reservation, mapping and nesting steps. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation.</remarks>
+    private bool TrySplitInterLoopCrossings(BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds)
+    {
+        ArgumentNullException.ThrowIfNull(splitPoints);
+        ArgumentNullException.ThrowIfNull(splitEnds);
+        SvgDevicePoint[] workPoints = new SvgDevicePoint[splitPoints.Count];
+        int[] workEnds = new int[splitEnds.Count];
+        for (int index = 0; index < workPoints.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            workPoints[index] = splitPoints[index];
+        }
+        for (int index = 0; index < workEnds.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            workEnds[index] = splitEnds[index];
+        }
+        long rounds = 0;
+        long maximumRounds = checked((long)workPoints.Length * workPoints.Length + workEnds.Length + 1);
+        while (true)
+        {
+            if (++rounds > maximumRounds) return false;
+            ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+            if (!SvgContourStructure.TryFindInterLoopProperCrossing(workPoints, workEnds, out int firstLoop, out int firstEdge, out int secondLoop, out int secondEdge, out SvgDevicePoint crossing, _cancellationToken)) break;
+            InsertSplitVertex(ref workPoints, workEnds, firstLoop, firstEdge, crossing);
+            InsertSplitVertex(ref workPoints, workEnds, secondLoop, secondEdge, crossing);
+        }
+        splitPoints.Clear();
+        splitEnds.Clear();
+        for (int index = 0; index < workPoints.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            splitPoints.Add(workPoints[index]);
+        }
+        for (int index = 0; index < workEnds.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            splitEnds.Add(workEnds[index]);
+        }
+        ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
         return SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken);
+    }
+
+    /// <summary>Inserts one computed crossing vertex strictly inside a loop edge, splitting it into two nonzero edges.</summary>
+    private void InsertSplitVertex(ref SvgDevicePoint[] workPoints, int[] workEnds, int loop, int edge, SvgDevicePoint vertex)
+    {
+        ArgumentNullException.ThrowIfNull(workPoints);
+        ArgumentNullException.ThrowIfNull(workEnds);
+        int loopStart = loop == 0 ? 0 : workEnds[loop - 1];
+        int insertAt = loopStart + edge + 1;
+        SvgDevicePoint[] nextPoints = new SvgDevicePoint[workPoints.Length + 1];
+        for (int index = 0; index < insertAt; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            nextPoints[index] = workPoints[index];
+        }
+        _workCounter.Consume(_cancellationToken);
+        nextPoints[insertAt] = vertex;
+        for (int index = insertAt; index < workPoints.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            nextPoints[index + 1] = workPoints[index];
+        }
+        for (int index = loop; index < workEnds.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            workEnds[index] = workEnds[index] + 1;
+        }
+        workPoints = nextPoints;
     }
 
     /// <summary>Resolves point-touching contours into simple loops sharing only vertices.</summary>

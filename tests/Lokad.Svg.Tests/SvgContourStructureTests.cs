@@ -151,6 +151,43 @@ public sealed class SvgContourStructureTests
     }
 
     [Fact]
+    public void Crossing_squares_report_inter_loop_crossing()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 2), new SvgDevicePoint(12, 2), new SvgDevicePoint(12, 8), new SvgDevicePoint(4, 8)];
+
+        Assert.True(SvgContourStructure.TryFindInterLoopProperCrossing(points, [4, 8], out int firstLoop, out int firstEdge, out int secondLoop, out int secondEdge, out SvgDevicePoint crossing, CancellationToken.None));
+        Assert.Equal(0, firstLoop);
+        Assert.Equal(1, firstEdge);
+        Assert.Equal(1, secondLoop);
+        Assert.Equal(0, secondEdge);
+        Assert.Equal(new SvgDevicePoint(8, 2), crossing);
+    }
+
+    [Fact]
+    public void Disjoint_squares_report_no_inter_loop_crossing()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(2, 0), new SvgDevicePoint(2, 2), new SvgDevicePoint(0, 2), new SvgDevicePoint(4, 4), new SvgDevicePoint(6, 4), new SvgDevicePoint(6, 6), new SvgDevicePoint(4, 6)];
+
+        Assert.False(SvgContourStructure.TryFindInterLoopProperCrossing(points, [4, 8], out _, out _, out _, out _, out _, CancellationToken.None));
+    }
+
+    [Fact]
+    public void Corner_touching_squares_report_no_inter_loop_crossing()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(0, 4), new SvgDevicePoint(4, 4), new SvgDevicePoint(8, 4), new SvgDevicePoint(8, 8), new SvgDevicePoint(4, 8)];
+
+        Assert.False(SvgContourStructure.TryFindInterLoopProperCrossing(points, [4, 8], out _, out _, out _, out _, out _, CancellationToken.None));
+    }
+
+    [Fact]
+    public void Inter_loop_crossing_rejects_bad_ranges()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourStructure.TryFindInterLoopProperCrossing(points, [2], out _, out _, out _, out _, out _, CancellationToken.None));
+    }
+
+    [Fact]
     public void Touching_loops_reject_union()
     {
         SvgDevicePoint[] loops = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(8, 4), new SvgDevicePoint(12, 0), new SvgDevicePoint(12, 8)];
