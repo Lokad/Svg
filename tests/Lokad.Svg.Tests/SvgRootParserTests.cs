@@ -141,6 +141,44 @@ public sealed class SvgRootParserTests
         Assert.Empty(root.Geometries);
         Assert.True(root.HasUnsupportedChild);
     }
+
+    [Fact]
+    public void Skips_editor_namedview_with_foreign_page()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd' xmlns:inkscape='http://www.inkscape.org/namespaces/inkscape'><sodipodi:namedview pagecolor='#ffffff'><inkscape:page x='0' y='0'/></sodipodi:namedview><rect width='5' height='5' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Single(root.Geometries);
+        Assert.False(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Flags_namedview_hiding_svg_content()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'><sodipodi:namedview><rect width='5' height='5' fill='red'/></sodipodi:namedview></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Empty(root.Geometries);
+        Assert.True(root.HasUnsupportedChild);
+    }
+
+    [Fact]
+    public void Deep_namedview_exceeds_nesting_limit()
+    {
+        SvgRenderLimits limits = new(16_385, 1024, 16, 16, 1024, 1024, 1024, 1024, 3, 256);
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'><sodipodi:namedview><sodipodi:namedview><sodipodi:namedview/></sodipodi:namedview></sodipodi:namedview></svg>"u8.ToArray(), limits, new RenderBudget(16_385), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Namedview_subtree_exhausts_node_budget()
+    {
+        SvgRenderLimits limits = new(16_385, 1024, 16, 16, 1024, 3, 1024, 1024, 256, 256);
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'><sodipodi:namedview><sodipodi:guide/><sodipodi:guide/></sodipodi:namedview></svg>"u8.ToArray(), limits, new RenderBudget(16_385), CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, rejected.ErrorCode);
+    }
     [Fact]
     public void Rejects_group_wrapped_definitions_at_conversion()
     {

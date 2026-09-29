@@ -1147,6 +1147,15 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Editor_namedview_paints_nothing()
+    {
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8' fill='red'/></svg>", out _, out _);
+        byte[] withMetadata = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd' xmlns:inkscape='http://www.inkscape.org/namespaces/inkscape'><sodipodi:namedview pagecolor='#ffffff' inkscape:zoom='1.9'><inkscape:page x='0' y='0'/></sodipodi:namedview><rect width='8' height='8' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(plain, withMetadata);
+    }
+
+    [Fact]
     public void Degenerate_ring_renders_empty()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 2,0 0,0 0,2' fill='red'/></svg>", out _, out _);

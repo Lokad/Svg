@@ -224,6 +224,8 @@ Status 2026-09-29: row 7 second slice complete for rect-stroke fractional geomet
 
 Status 2026-09-29: row 7 third slice complete for deferred gradient href resolution. Missing-target inheritances stash as budgeted pending entries with exact consultation conditions (every currently-resolving input takes byte-identical paths); reentrancy-guarded eager drains plus defs-end and document-end drains resolve chains in dependency order while leftover targets throw the original registration error. Exactly one inventory disposition flips (inv-035 renders with a radial-glow known difference, numbers in its entry, oracle triple re-verified 3/3 byte-identical under the explicit-viewport amended recipe); two locked rejection tests repurposed plus two new tests for chains and cycles. Full gate holds 2530 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
 
+Status 2026-09-29: row 7 fourth slice complete for editor namedview tolerance. Non-empty foreign namedview subtrees skip when every descendant stays outside the SVG namespace, with main-loop-mirrored structural limits, node budget, work, cancellation and symbol-depth rules; unknown foreign elements keep the unsupported flag by name allowlist, preserving the public-contract foreign-rect lock. Full 92-document re-probe flips inv-016 to a fractional-width known difference with zero drift elsewhere. Full gate holds 2562 core plus 100 visual plus 6 font green; memory and package checks pass. Wider editor vocabularies and text-paired metadata stay queued.
+
 ## 4. Findings and stage ledger
 
 ### Active findings
