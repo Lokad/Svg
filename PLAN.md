@@ -6,6 +6,11 @@ stale queue. Detailed findings, fresh reproductions and verification are in
 [the review](docs/REVIEW_2026_09_28.md). R01–R39 and S1–S17 retain their identities;
 R40 records the calibration-evidence correction and R41 the degenerate-paint defect.
 
+Execution priority updated 2026-09-29 after focused source inspection against
+`8f6dc652`: finish/checkpoint the implementation owner's current bounded slice,
+then concentrate on row 4's shared scan converter. The reviewed baseline below
+remains historical; this priority update makes no new rendering or timing claim.
+
 **Objective:** render most ordinary, static, self-contained corporate SVG logos,
 including outlined wordmarks, pixel-exact against the pinned browser oracle.
 “Most” means independently measured document coverage. It never permits pixel
@@ -55,12 +60,16 @@ approximate tier or silently changing public behavior.
    worktree for an experiment if necessary and coordinate only the overlapping
    slice. At review start the only tracked modification was the PLAN draft, now
    incorporated here. No product-code conflict was observed.
-3. **Start with row 1 below.** The miter and degenerate-gradient defects have
-   concrete source explanations and witnesses. They need no new source assets,
-   broader feature permission or chosen S17 percentage. Fix existing behavior
-   before another shape/paint/reference permutation.
+3. **Make row 4 the next sustained implementation priority.** Rows 1 and 2 are
+   complete; preserve their repairs. Finish or leave a buildable checkpoint of
+   the current bounded slice before changing direction. Implement spatial
+   winding/parity and matched straight-edge scan conversion through the shared
+   contour boundary, following the active work order below. Further individual
+   shape/width/reference admissions wait until that checkpoint unless needed by
+   the scanner or to repair a regression.
 4. **Do not execute the old six-site floor256 switch.** It conflates coverage,
-   byte-opacity multiplication and composition. Use the narrower row-3 work order.
+   byte-opacity multiplication and composition. Row 4 now owns the remaining
+   coverage calibration, retaining row 3's translucent/composition controls.
    The release-tag source has been rechecked; extend that source trace only for
    the specific operation being implemented.
 5. **Separate engineering from release decisions.** The numeric S17 coverage target
@@ -74,7 +83,9 @@ belong in the existing design record; Git holds the implementation history.
 Do not append another sequence of census-only or “all safe lanes exhausted”
 entries. After two experiments without a mechanism-level improvement, record the
 remaining uncertainty and choose the next architectural step. A real blocked slice
-does not block independent repairs elsewhere in this queue.
+does not block independent repairs elsewhere in this queue: record the concrete
+blocker and return condition before switching. An unresolved scanner hypothesis
+alone is not a reason to resume a sequence of unrelated admission fixes.
 
 ## 3. Ordered implementation queue
 
@@ -84,14 +95,71 @@ changes that affect them; do not start another broad sourcing campaign first.
 
 | Order | Work and owner boundary | Exit evidence |
 | --- | --- | --- |
-| 1 | **Repair existing semantic defects:** S12 miter threshold; R41 zero-area objectBoundingBox gradient path strokes. Separate commits. Retain exact controls and failing SVGs as part of each fix. | Acute limit-1/default/limit-10 branch tests; degenerate path/line and userSpace controls; fresh retained oracle comparison, unchanged exact corpus, reviewed mismatch improvements. |
-| 2 | **One owned contour/paint boundary:** R30/R38/R39. Extract common polygon mapping, bounds, clip and coverage traversal across four paints; reserve retained arrays before allocation and transfer ownership explicitly. | Behavior-preserving fixture/research results, six-output equality, denial/cancellation/disposal tests, measured tiny/many-curve and wordmark allocation behavior. |
-| 3 | **Calibrate coverage-to-alpha narrowly:** S11/R40. Separate mask quantization from paint alpha and composition at the shared boundary. | Opaque quarter/half/full coverage, translucent 127/128 controls, both axes, all paints, overlaps and backgrounds; every existing exact case remains exact. No bulk six-site rounding replacement. |
-| 4 | **Spatial fill plus matched straight-edge scan conversion:** R34/S11. Resolve winding/parity over spatial intervals, then coverage, including overlapping stroke outlines. Replace full per-pixel fan scans through the shared path. | Disjoint opposite contours, nested counters, crossings, touching/coincident edges, duplicate/overlapping strokes, held-out phases/slopes, charged work and during-phase cancellation. Both semantics and per-input oracle fidelity required. |
-| 5 | **Final device mapping and retained curves:** R35/R37/S10. Wire a double affine context through containers, leaves, use/symbol and paints; lower curves with the complete map. Calibrate curves on the common raster path. | Equivalent direct/viewBox/instance encodings; fractional/scientific coordinates, rotations/skews/reflections/nonuniform scales; extrema/overshoot and scalable prepared scenes; flat curved mark and wordmark progress on existing independent exports. |
-| 6 | **Shared stroke completion:** S12. Correct sampled circle/ellipse traversal and closed dash seams in separate slices; add bounded conic handling and preserve smooth-curve versus authored joins; then revisit gated odd/fractional widths. | Retained dash-offset, seam, round-cap/join and rounded-rectangle cases, acute limits, zero-length/hairline cases, pathLength and non-scaling controls; no width admission based only on parser readiness. |
-| 7 | **Measured practical-export blockers:** S9/S13/S14. Finish needed computed style/references, diagonal/arbitrary clips, paint-alpha calibration and bounded layers/masks. Prioritize inv-050, inv-085, inv-094 and other retained first blockers. | Independent exporter semantics; mixed fill/stroke/paint/use/clip/opacity across sizes/backgrounds; source-order and per-object binding correct; temporary-surface bounds and cleanup measured. |
+| 1 | **Completed semantic repairs:** S12 miter threshold; R41 zero-area objectBoundingBox gradient path strokes. Preserve the two landed fixes and their witnesses. | Acute limit-1/default/limit-10 branch tests; degenerate path/line and userSpace controls; fresh retained oracle comparison, unchanged exact corpus, reviewed mismatch improvements. |
+| 2 | **Completed shared contour boundary:** R30/R38/R39. Reuse the landed preparation, ownership and mapping boundary for all four paints; preserve reserve-before-allocation and explicit ownership transfer as traversal changes. | Behavior-preserving fixture/research results, six-output equality, denial/cancellation/disposal tests, measured tiny/many-curve and wordmark allocation behavior. |
+| 3 | **Coverage calibration continues in row 4:** S11/R40. Keep mask quantization, paint alpha and composition separate; preserve the landed opaque coverage correction. | Opaque quarter/half/full coverage, translucent 127/128 controls, both axes, all paints, overlaps and backgrounds; every existing exact case remains exact. No bulk six-site rounding replacement. |
+| 4 | **Active priority: shared scan conversion:** R34/S11. Start with straight-edged opaque fills; resolve spatial winding/parity and matched edge coverage, then route the four paints and stroke outlines through the common traversal. Replace full per-pixel fan scans. | Disjoint opposite contours, nested counters, crossings, touching/coincident edges, duplicate/overlapping strokes, held-out phases/slopes, charged work and during-phase cancellation. Both semantics and per-input oracle fidelity required; checkpoint below. |
+| 5 | **Retained curves and final device mapping:** R35/R37/S10. Build on the landed double affine carrier. Retain verbs/controls through containers and use/symbol resolution, lower with the complete map and calibrate on row 4's raster path. | Equivalent direct/viewBox/instance encodings; fractional/scientific coordinates, rotations/skews/reflections/nonuniform scales; extrema/overshoot and scalable prepared scenes; flat curved mark and wordmark progress on existing independent exports. |
+| 6 | **Curve-aware stroke completion:** S12. Preserve landed traversal, join, width and closed-seam controls. Use retained curves for dash-cut tangents, bounded conic handling and smooth-curve versus authored joins; finish remaining width cases through the shared kernel. | Retained dash-offset, seam, round-cap/join and rounded-rectangle cases, acute limits, zero-length/hairline cases, pathLength and non-scaling controls; no width admission based only on parser readiness. |
+| 7 | **Measured practical-export blockers and bounded layers:** S9/S13/S14. Reuse shared geometry for diagonal/arbitrary clips and a bounded group-composition path for opacity/masks; complete needed styles/references and paint-alpha calibration. Prioritize inv-050, inv-085, inv-094 and other retained first blockers. | Independent exporter semantics; mixed fill/stroke/paint/use/clip/opacity across sizes/backgrounds; source-order and per-object binding correct; temporary-surface bounds and cleanup measured. |
 | 8 | **Independent milestone and delivery:** S8/S17. Reconcile frozen variants and corporate strata continuously; claim the milestone only after exact all-variant results and fresh platform/package/resource evidence. | Exact outlined wordmarks and flat curved marks, agreed document target, categorized residuals, portable reproducible reports and consumer checks. |
+
+### Active work order: shared scan conversion (2026-09-29)
+
+This work order supersedes the next-step ordering in the 2026-09-28 row-4 design
+note, while retaining its evidence and per-input oracle controls. The source
+inspection confirms the shared mechanism; another broad source survey is not a
+prerequisite. Implement independently in managed C# under the existing contract.
+
+1. **Build a bounded straight-edge scanner.** Consume the existing device contour
+   payload and fill rule. Maintain ordered active edges and signed crossings;
+   determine nonzero/even-odd membership over spatial intervals before computing
+   coverage. Handle edge endpoints, crossings and coincident/touching boundaries
+   consistently. Start with opaque fills and retain exact rectangle/band paths;
+   retained curves and a new scene framework are not prerequisites.
+2. **Match the numerical construction at that boundary.** Use the pinned Skia
+   edge setup, scan events and coverage/alpha operations to form explicit
+   hypotheses. Check fractional phases, slopes and both axes against the browser.
+   Exact continuous area or tiny-skia supersampling alone does not establish
+   Chrome equality; paint opacity and source-over rounding remain separate.
+3. **Integrate one traversal across paints and outlines.** Emit bounded coverage
+   rows/spans for the existing solid, linear, radial and pattern paint evaluation.
+   Scope migration by supported geometry invariants, never fixture identities.
+   Stroke pieces within one paint operation need spatial membership; distinct
+   SVG paint operations still composite in painter order. Do not substitute a
+   maximum, clamped sum or global union for those separate semantics. Preserve
+   each duplicate-stroke input's own reference, including Chrome's small delta.
+4. **Measure and complete the slice.** Reserve edge, event and coverage storage
+   before allocation, including growth peaks. Charge setup, sorting/intersections,
+   edge advances, spans and painting; check cancellation during these phases and
+   verify cleanup after denial. Use the existing harness for six-output parity,
+   fixture/research comparison and the complete frozen variants required by
+   section 5 for a broad coverage change. Retain exact controls and explain every
+   changed known-difference image before updating its ratchet.
+
+**Checkpoint:** review the first buildable integrated slice, or after 24–48 hours
+of sustained work from starting this work order, whichever comes first. This is
+an engineering decision checkpoint, not a deadline, release ETA or permission to
+stop. Record the implementation commit, candidate identities and full comparisons
+for existing overlap/duplicate, disjoint-opposite, counter, crossing/touching and
+quarter/half/tenth-coverage probes. Declare held-out slopes/phases before tuning;
+include translucent 127/128 and background controls when integrating paints.
+Report semantic improvements separately from exact-pixel graduations and gaps.
+
+Measure elapsed time, allocated bytes and charged work on the same before/after
+inputs and options: a tiny mark, many-contour/wordmark cases and native-size
+inv-050 (record default-limit denial explicitly). Use existing benchmark/resource
+tools; lower ledger counts alone are not throughput evidence. A prototype may
+remain experimental while failures persist; it is not an approximate product tier.
+If failures remain at the checkpoint, record the specific unresolved mechanism
+and the next implementation experiment. Do not refresh mismatch maxima or resume
+unrelated admissions as a substitute for resolving that mechanism.
+
+After this checkpoint, carry the common scanner through the remaining row-4 exit
+evidence, then retain curves/final transforms (row 5), complete curve-aware strokes
+(row 6), and reuse bounded layers for the measured clip/mask blockers (row 7).
+Regression repairs and demonstrated dependencies may interrupt this order; record
+their dependency and return to the active row when they are resolved.
 
 ### Row 1: bounded repairs that unblock implementation
 
@@ -129,7 +197,10 @@ these paths are touched. Pooling is optional and must account retained storage.
 The R34 winding-role and nonzero crossing-split repairs help separated contours.
 They do not implement general spatial membership. `FinishStrokeFill` currently
 bypasses validation and lifts zero roles; summing unsigned areas can double a
-shared fringe. Coincident duplicate diagonal strokes unioned exactly since the 2026-09-28 merge (50 pixels at max error 10, versus eight for a single stroke); crossing and partial overlaps still sum pending spatial union. The browser itself
+shared fringe. The 2026-09-28 coincident-contour merge reduces the duplicate
+diagonal-stroke probe to 50 changed pixels at max error 10, versus max error eight
+for a single stroke; it does not establish pixel exactness. Crossing and partial
+overlaps still sum pending spatial union. The browser itself
 has a small single/duplicate delta, so compare each input to its own reference.
 No fixture-specific deduplication or per-pixel correction is acceptable.
 
@@ -168,14 +239,21 @@ Status 2026-09-28: row 3 byte-rule calibration is redirected, not completed. Ten
 ### Rows 5–7: coordinates, curves, strokes and composition
 
 Define user, object, viewport, instance, device and paint spaces explicitly.
-`AxisTransform` now carries finite double scales and offsets with int-range result discipline proven identical for the integer subset; `SvgDevicePoint` can still precede the root map. A leaf-only double parser cannot fix container inheritance.
-Introduce the common affine carrier/composition path with explicit integer fast
-paths, updating consumers together. Preserve original geometry bounds for paint
-and clip binding; stroke/clipped/layer bounds have separate purposes.
+`SvgAffineTransform` already carries finite doubles and composed transforms; its
+landed admissions are recorded below. `SvgDevicePoint` can still precede the root
+map. Finish the remaining consumers and retained-curve lowering through that
+carrier, preserving explicit integer fast paths and updating consumers together.
+Preserve original geometry bounds for paint and clip binding; stroke/clipped/layer
+bounds have separate purposes.
 
 Keep verbs and controls until the complete device transform is available, or prove
 a conservative tolerance under every remaining map. Current direct-use/symbol
 magnification gates are sound restrictions, not completion of scalable instances.
+Preserve authored segment/close boundaries and curve tangents for stroke joins
+and dash cuts. Resolve instances while geometry is still local; replacing baked
+geometry and then inverting ancestor transforms must not become the general
+retained-path design. Reuse existing preparation/ownership boundaries and migrate
+one geometry family at a time.
 Test root/nested viewBox, outputScale, use/symbol frames, collinear overshoot,
 reflections, singular/nonfinite maps and nonuniform stroke transforms. Mathematical
 flatness bounds and independent endpoint/tangent tests do not establish S11 pixels.
@@ -227,6 +305,14 @@ remain S14. inv-085's diagonal clip is not a rectangle-union shortcut. Status 20
 opacity isolated, support nested layers, crop surfaces with correct origins and
 bounds, then implement the mask regions/content evidenced by inv-094. Constant
 mask opacity is not general alpha/luminance masking.
+
+Use one bounded isolated-layer operation for the required group effects: compute
+conservative device bounds, retain the surface origin, render children, apply
+clip/mask operations in the required order, then composite with group opacity.
+Reuse normal geometry/paint traversal for mask content. Derive antialiasing bounds
+from the admitted kernel rather than importing resvg's padding constant. Measure
+peak live surfaces and work for nested groups; preserve object-space paint bounds
+separately from layer bounds and validate clip-edge pixels against Chrome.
 
 Paint work must share geometry. Keep corrected inverse paint maps and backward
 cross-type gradient inheritance. Transparent-stop unpremultiplication, gradient
@@ -586,6 +672,28 @@ The shelf's current Skia checkout `8b8c3872fbc03f025855db96ce683f34ec98a815`
 is a main-revision comparison, not the browser release pin. Use explicit matched
 source reads without changing it implicitly. resvg's registry tiny-skia dependency
 also need not be byte-identical to the sibling checkout despite equal version text.
+
+Focused source map for the active work order (inspected 2026-09-29; paths are
+relative to each optional checkout and are study references only):
+
+- **Row 4:** tiny-skia `src/scan/path.rs::walk_edges` shows active-edge ordering,
+  winding/parity and span emission. Its `src/scan/path_aa.rs` uses supersampling;
+  use it for organization, not the Chrome numerical target. At the matched Skia
+  revision, inspect `src/core/SkScan_AntiPath.cpp` for dispatch,
+  `src/core/SkScan_AAAPath.cpp::aaa_walk_edges` for scan intervals/coverage, and
+  `src/core/SkAnalyticEdge.cpp::setLine` for edge quantization. Source paths alone
+  do not prove the browser's selected fast path; retained captures adjudicate.
+- **Rows 5–6:** resvg `crates/usvg/src/tree/mod.rs::Path` retains path data, paint
+  and transform/bounds separately; tiny-skia `path/src/stroker.rs::PathStroker`
+  processes line/quadratic/cubic verbs and curve normals. Apply those boundaries
+  within the existing C# ownership model rather than translating implementations.
+- **Row 7:** resvg `crates/resvg/src/render.rs::render_group` isolates bounded
+  layers and tracks their origin; sibling `clip.rs` and `mask.rs` reuse traversal
+  for effect content. Their composition pixels still need our pinned oracle.
+
+Read a matched Skia file with
+`git -C external/skia show f8b66b7597c4cc859d3ed190e9c6872241e6721c:src/core/SkScan_AAAPath.cpp`.
+Do not switch the shared checkout or add a reference-source dependency.
 
 Upstream success criteria and defaults are not ours: resvg tests allow channel
 tolerance and can regenerate references from themselves; the test-suite Chrome
