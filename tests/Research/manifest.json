@@ -1327,6 +1327,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 4,
+      "maximumChannelError": 63,
+      "maximumAlphaError": 63,
+      "alphaChangedPixelCount": 4,
+      "minimumMismatchX": 6,
+      "minimumMismatchY": 6,
+      "maximumMismatchX": 9,
+      "maximumMismatchY": 9
+    },
       "oracle": {
         "referencePng": "references/odd-stroke-orthogonal-butt-16x16.png",
         "referenceSha256": "5365a348573ef71b8018fdf2edbb7087f4e402d692a56fb628d0c7f01c87faea",
@@ -1358,6 +1368,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 50,
+      "maximumChannelError": 10,
+      "maximumAlphaError": 10,
+      "alphaChangedPixelCount": 50,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 1,
+      "maximumMismatchX": 14,
+      "maximumMismatchY": 14
+    },
       "oracle": {
         "referencePng": "references/odd-stroke-diagonal-butt-16x16.png",
         "referenceSha256": "33af32fedc472ff7ea33bfed3a4bc4ceab7a65470530f1f82df117beffc2b6fa",
@@ -1389,6 +1409,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 16,
+      "maximumChannelError": 4,
+      "maximumAlphaError": 4,
+      "alphaChangedPixelCount": 16,
+      "minimumMismatchX": 1,
+      "minimumMismatchY": 7,
+      "maximumMismatchX": 14,
+      "maximumMismatchY": 8
+    },
       "oracle": {
         "referencePng": "references/odd-stroke-round-cap-16x16.png",
         "referenceSha256": "a2d3646a655641eef46ba370881ff1bee4b3d13a62acca51b6845f8a0cae540f",
@@ -1420,6 +1450,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 59,
+      "maximumChannelError": 26,
+      "maximumAlphaError": 26,
+      "alphaChangedPixelCount": 59,
+      "minimumMismatchX": 0,
+      "minimumMismatchY": 2,
+      "maximumMismatchX": 15,
+      "maximumMismatchY": 12
+    },
       "oracle": {
         "referencePng": "references/odd-stroke-round-join-16x16.png",
         "referenceSha256": "8301ad9f963232250428286cac7ffc6e744e39d7d249402e557643ee6637357b",
@@ -1451,6 +1491,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 12,
+      "maximumChannelError": 1,
+      "maximumAlphaError": 1,
+      "alphaChangedPixelCount": 12,
+      "minimumMismatchX": 2,
+      "minimumMismatchY": 7,
+      "maximumMismatchX": 13,
+      "maximumMismatchY": 7
+    },
       "oracle": {
         "referencePng": "references/odd-stroke-hairline-16x16.png",
         "referenceSha256": "41c7c56b36428bc5f68f7dbbe981c4e2cbae9e5e7ab02a5fd65f3fde8f370a37",
@@ -1482,6 +1532,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
+    "admittedRendering": {
+      "changedPixelCount": 4,
+      "maximumChannelError": 1,
+      "maximumAlphaError": 1,
+      "alphaChangedPixelCount": 4,
+      "minimumMismatchX": 5,
+      "minimumMismatchY": 2,
+      "maximumMismatchX": 6,
+      "maximumMismatchY": 10
+    },
       "oracle": {
         "referencePng": "references/odd-stroke-closed-16x16.png",
         "referenceSha256": "2f73798604e55925a90da27f3096c62deec7b47d33166662f5601accf2d7c40d",

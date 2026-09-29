@@ -192,6 +192,8 @@ Status 2026-09-29: row 6 fourth slice complete for unpainted-fill bypass on stro
 
 Status 2026-09-29: row 7 mask-region slice complete for custom regions on masked groups. Backward masks with custom regions take the deferred path; regions resolve into root-user space through the captured ancestor frame and ride scope commands into clip-discipline raster blending (out-of-region pixels skipped, edge coverage scaled like clip boxes); scope emission no longer depends on opacity alone while nested-opacity calibration stays gated for opacity scopes. Full 92-document re-probe advances inv-094 past custom regions to single-rectangle mask content with zero other drift. Full gate holds 2616 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
 
+Status 2026-09-29: row 6 fifth slice complete for odd-integer stroke admission. ParseStrokeWidth drops the evenness gate on the shared outline kernel (double math throughout, no parity branches; circles and rectangles already admitted odd widths) while line/rect-band and paint-server band strokes keep even discipline with fractional widths still gated. Full 92-document re-probe flips inv-028 to exact and inv-041 to a known difference with zero other drift; six odd-stroke research probes graduate with fringe-level tuples. Full gate holds 2615 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
+
 Round caps/joins need a bounded weighted-conic representation or justified
 conversion: the current flattener supports only polynomial quadratics/cubics.
 Preserve authored corners through curve subdivision so smooth rounded rectangles

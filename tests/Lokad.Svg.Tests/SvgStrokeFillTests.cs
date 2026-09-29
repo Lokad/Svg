@@ -281,12 +281,22 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
 
+    [Fact]
+    public void Odd_integer_stroke_widths_paint()
+    {
+        // The shared outline kernel maps half-integer offsets exactly like fractional geometry.
+        byte[] attribute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='3'/></svg>", out _, out _);
+        byte[] styled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' style='stroke-width:3'/></svg>", out _, out _);
+
+        Assert.Equal(attribute, styled);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(attribute, 8, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(attribute, 8, 4, 4));
+    }
+
     [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='3'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='0'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2.5'/></svg>")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' style='stroke-width:3'/>")]
-    public void Non_even_stroke_widths_stay_unsupported(string svg)
+    public void Non_positive_or_fractional_stroke_widths_stay_unsupported(string svg)
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
 
