@@ -307,7 +307,7 @@ public sealed class SvgCurveFillTests
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.", rejected.Message);
+        Assert.Contains("Only finite translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.", rejected.Message);
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)

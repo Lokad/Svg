@@ -243,7 +243,7 @@ internal static class SvgReferenceResolver
     /// <summary>Rejects non-uniformly scaled outline strokes on use instances, whose pre-scale miters would silently distort.</summary>
     private static void RequireUniformOutlineScales(SvgDefinition definition, SvgUseReference reference)
     {
-        if ((long)reference.Transform.ScaleX == (long)reference.Transform.ScaleY || (long)reference.Transform.ScaleX == -(long)reference.Transform.ScaleY) return;
+        if (reference.Transform.ScaleX == reference.Transform.ScaleY || reference.Transform.ScaleX == -reference.Transform.ScaleY) return;
         foreach (SvgGeometry source in definition.Geometries)
         {
             if (source.Kind is SvgGeometryKind.GradientPolygon or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled outline strokes on use instances are implemented.");
@@ -466,7 +466,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double _, double _) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of rectangle strokes is not implemented.");
-            if ((long)instance.Transform.ScaleX != (long)instance.Transform.ScaleY && (long)instance.Transform.ScaleX != -(long)instance.Transform.ScaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
+            if (instance.Transform.ScaleX != instance.Transform.ScaleY && instance.Transform.ScaleX != -instance.Transform.ScaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
             double scaledWidth = (double)sourceStroke.Width * Math.Abs(scaleX) * Math.Abs(instance.Transform.ScaleX);
             SvgRectangle mapped = MapSymbolBox(source, viewBox, instance.Width.Value, instance.Height.Value);
             SvgRectangle placed = mapped with { X = mapped.X + instance.X, Y = mapped.Y + instance.Y };
@@ -845,10 +845,10 @@ internal static class SvgReferenceResolver
         static SvgStroke? MapInstanceStroke(SvgStroke? stroke, SvgUseReference reference)
         {
             if (stroke is null) return null;
-            if ((long)reference.Transform.ScaleX != (long)reference.Transform.ScaleY && (long)reference.Transform.ScaleX != -(long)reference.Transform.ScaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
-            int width;
-            try { width = checked(stroke.Value.Width * Math.Abs(reference.Transform.ScaleX)); }
-            catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+            if (reference.Transform.ScaleX != reference.Transform.ScaleY && reference.Transform.ScaleX != -reference.Transform.ScaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
+            double scaledWidth = stroke.Value.Width * Math.Abs(reference.Transform.ScaleX);
+            if (!double.IsFinite(scaledWidth) || scaledWidth != Math.Truncate(scaledWidth) || scaledWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer effective rectangle stroke widths on use instances are implemented.");
+            int width = checked((int)scaledWidth);
             SvgColor color = stroke.Value.Color;
             return new SvgStroke(new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, reference.Opacity)), width);
         }

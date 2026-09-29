@@ -156,27 +156,51 @@ internal static class SvgGeometrySyntax
     {
         bool isMatrix = name.Equals("matrix", StringComparison.OrdinalIgnoreCase);
         bool isTranslate = name.Equals("translate", StringComparison.OrdinalIgnoreCase);
-        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
-        Span<int> values = stackalloc int[6];
+        if (!isMatrix && !isTranslate && !name.Equals("scale", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
+        if (isTranslate) return ParseTranslate(arguments);
+        Span<double> values = stackalloc double[6];
         int valueCount = 0;
         DelimitedTokenReader tokens = new(arguments);
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, isMatrix ? "matrix() requires six coordinates." : "Transforms require one or two coordinates.");
-            values[valueCount++] = ParseInteger(value);
+            values[valueCount++] = ParseTransformCoordinate(value);
         }
         if (isMatrix)
         {
             if (valueCount != 6) throw new SvgException(SvgErrorCode.MalformedInput, "matrix() requires six coordinates.");
-            int scaleX = values[0]; int skewY = values[1]; int skewX = values[2]; int scaleY = values[3]; int offsetX = values[4]; int offsetY = values[5];
-            if (skewX != 0 || skewY != 0 || scaleX == 0 || scaleY == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero axis-aligned integer matrix() transforms are implemented.");
+            double scaleX = values[0]; double skewY = values[1]; double skewX = values[2]; double scaleY = values[3]; double offsetX = values[4]; double offsetY = values[5];
+            if (skewX != 0 || skewY != 0 || scaleX == 0 || scaleY == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero axis-aligned finite matrix() transforms are implemented.");
             return new AxisTransform(scaleX, scaleY, offsetX, offsetY);
         }
         if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
-        int first = values[0]; int second = valueCount == 2 ? values[1] : first;
-        if (isTranslate) return new AxisTransform(1, 1, first, valueCount == 2 ? second : 0);
-        if (first == 0 || second == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero integer scale() values are implemented.");
+        double first = values[0]; double second = valueCount == 2 ? values[1] : first;
+        if (first == 0 || second == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero finite scale() values are implemented.");
         return new AxisTransform(first, second, 0, 0);
+    }
+
+    private static AxisTransform ParseTranslate(ReadOnlySpan<char> arguments)
+    {
+        Span<double> values = stackalloc double[2];
+        int valueCount = 0;
+        DelimitedTokenReader tokens = new(arguments);
+        while (tokens.TryReadValue(out ReadOnlySpan<char> value))
+        {
+            if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
+            values[valueCount++] = ParseTransformCoordinate(value);
+        }
+        if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
+        return new AxisTransform(1, 1, values[0], valueCount == 2 ? values[1] : 0);
+    }
+
+    private static double ParseTransformCoordinate(ReadOnlySpan<char> value)
+    {
+        ReadOnlySpan<char> token = value.Trim();
+        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform coordinate values exceed the configured syntax limit.");
+        if (token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px transform coordinates are implemented.");
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite transform coordinates are implemented.");
+        return result;
     }
 
     internal static (SvgViewBoxAlignment HorizontalAlignment, SvgViewBoxAlignment VerticalAlignment, SvgViewBoxFit Fit) ParsePreserveAspectRatio(string? value)

@@ -1,7 +1,7 @@
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Represents the calibrated integer transform subset and its geometry application.</summary>
-internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int OffsetX, int OffsetY)
+/// <summary>Represents the axis-aligned transform subset with finite scales and offsets, plus its geometry application.</summary>
+internal readonly record struct AxisTransform(double ScaleX, double ScaleY, double OffsetX, double OffsetY)
 {
     internal static AxisTransform Identity { get; } = new(1, 1, 0, 0);
 
@@ -22,10 +22,10 @@ internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int Offset
     /// <summary>Applies this axis-aligned transform to a retained axis-aligned line, keeping the stroke width non-negative.</summary>
     internal SvgAxisAlignedLine Apply(SvgAxisAlignedLine line)
     {
-        int strokeScale = line.X1 != line.X2 ? ScaleY : ScaleX;
-        int strokeWidth;
-        try { strokeWidth = checked(Math.Abs(strokeScale) * line.StrokeWidth); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the line stroke-width range."); }
+        double strokeScale = line.X1 != line.X2 ? ScaleY : ScaleX;
+        double scaledWidth = Math.Abs(strokeScale) * line.StrokeWidth;
+        if (!double.IsFinite(scaledWidth) || scaledWidth != Math.Truncate(scaledWidth) || scaledWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer effective line widths are implemented.");
+        int strokeWidth = checked((int)scaledWidth);
         return line with
         {
             X1 = ScaleX * line.X1 + OffsetX,
@@ -36,17 +36,13 @@ internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int Offset
         };
     }
 
-    /// <summary>Maps one integer contour vertex through this admitted integer transform, keeping integer vertices exact.</summary>
+    /// <summary>Maps one integer contour vertex through this transform, keeping integer vertices exact under integer offsets.</summary>
     internal (double X, double Y) ApplyToVertex(int x, int y)
     {
-        int mappedX;
-        int mappedY;
-        try { mappedX = checked(ScaleX * x + OffsetX); mappedY = checked(ScaleY * y + OffsetY); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
-        return (mappedX, mappedY);
+        return (Offset(ScaleX, x, OffsetX), Offset(ScaleY, y, OffsetY));
     }
 
-    /// <summary>Maps one user-space gradient vector endpoint through this admitted integer transform.</summary>
+    /// <summary>Maps one user-space gradient vector endpoint through this transform.</summary>
     internal (double X, double Y) ApplyToUserPoint(double x, double y)
     {
         double mappedX = ScaleX * x + OffsetX;
@@ -69,8 +65,8 @@ internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int Offset
     /// <summary>Applies this transform to an integer orthogonal band while preserving its checked coordinate range.</summary>
     internal SvgRectangle ApplyOrthogonalRectangle(int x, int y, long width, long height, SvgColor color, bool hasFill)
     {
-        int mappedX = ApplyCoordinate(ScaleX, x, OffsetX);
-        int mappedY = ApplyCoordinate(ScaleY, y, OffsetY);
+        double mappedX = ApplyCoordinate(ScaleX, x, OffsetX);
+        double mappedY = ApplyCoordinate(ScaleY, y, OffsetY);
         double extentX = ApplyExtent(ScaleX, width);
         double extentY = ApplyExtent(ScaleY, height);
         if (extentX < 0) { mappedX = ShiftCoordinate(mappedX, extentX); extentX = -extentX; }
@@ -78,29 +74,33 @@ internal readonly record struct AxisTransform(int ScaleX, int ScaleY, int Offset
         return new(mappedX, mappedY, extentX, extentY, color, hasFill, null);
     }
 
-    private static int Multiply(int left, int right)
+    private static double Multiply(double left, double right)
     {
-        try { return checked(left * right); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+        double product = left * right;
+        if (!double.IsFinite(product) || product < int.MinValue || product > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported transform exceeds the coordinate range.");
+        return product;
     }
 
-    private static int Offset(int scale, int value, int offset)
+    private static double Offset(double scale, double value, double offset)
     {
-        try { return checked(scale * value + offset); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+        double mapped = scale * value + offset;
+        if (!double.IsFinite(mapped) || mapped < int.MinValue || mapped > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported transform exceeds the coordinate range.");
+        return mapped;
     }
 
-    private static int ApplyCoordinate(int scale, int value, int offset) => Offset(scale, value, offset);
+    private static double ApplyCoordinate(double scale, int value, double offset) => Offset(scale, value, offset);
 
-    private static int ShiftCoordinate(int coordinate, double extent)
+    private static double ShiftCoordinate(double coordinate, double extent)
     {
-        try { return checked(coordinate + checked((int)extent)); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+        double shifted = coordinate + extent;
+        if (!double.IsFinite(shifted) || shifted < int.MinValue || shifted > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported transform exceeds the coordinate range.");
+        return shifted;
     }
 
-    private static double ApplyExtent(int scale, long value)
+    private static double ApplyExtent(double scale, long value)
     {
-        try { return checked((long)scale * value); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported integer transform exceeds the coordinate range."); }
+        double extent = scale * value;
+        if (!double.IsFinite(extent) || extent < long.MinValue || extent > long.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported transform exceeds the coordinate range.");
+        return extent;
     }
 }

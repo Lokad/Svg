@@ -160,8 +160,7 @@ Status 2026-09-28: row 3 byte-rule calibration is redirected, not completed. Ten
 ### Rows 5–7: coordinates, curves, strokes and composition
 
 Define user, object, viewport, instance, device and paint spaces explicitly.
-`AxisTransform` is still the calibrated integer subset; `SvgDevicePoint` can still
-precede the root map. A leaf-only double parser cannot fix container inheritance.
+`AxisTransform` now carries finite double scales and offsets with int-range result discipline proven identical for the integer subset; `SvgDevicePoint` can still precede the root map. A leaf-only double parser cannot fix container inheritance.
 Introduce the common affine carrier/composition path with explicit integer fast
 paths, updating consumers together. Preserve original geometry bounds for paint
 and clip binding; stroke/clipped/layer bounds have separate purposes.
@@ -172,6 +171,8 @@ magnification gates are sound restrictions, not completion of scalable instances
 Test root/nested viewBox, outputScale, use/symbol frames, collinear overshoot,
 reflections, singular/nonfinite maps and nonuniform stroke transforms. Mathematical
 flatness bounds and independent endpoint/tangent tests do not establish S11 pixels.
+
+Status 2026-09-29: row 5 first slice complete for fractional axis-aligned transforms. The carrier widened to finite doubles with int-range result checks (bitwise-identical for integers; extents keep their long-range bound); translate/scale/matrix arguments parse as finite doubles while rotate/skew functions, zero scales and effective-width integer discipline stay gated with exact use-instance uniformity. Three inventory dispositions flip (inv-004, inv-006, inv-072 render with curve-family known differences, numbers in their entries, all oracles re-verified 3/3 byte-identical) and three advance with zero regressions; one message reworded plus seven new transform unit tests. Full gate holds 2537 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
 
 Round caps/joins need a bounded weighted-conic representation or justified
 conversion: the current flattener supports only polynomial quadratics/cubics.

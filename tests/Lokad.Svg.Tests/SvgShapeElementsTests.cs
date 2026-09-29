@@ -341,6 +341,37 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Fractional_translate_shifts_exact_coverage()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g transform='translate(2.5, 0)'><rect x='0' y='2' width='2' height='2' fill='red'/></g></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 8, 2, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 3, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 8, 4, 2));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 2));
+    }
+
+    [Fact]
+    public void Fractional_scale_maps_exact_coverage()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='scale(1.5)'><rect x='1' y='1' width='3' height='3' fill='red'/></g></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 16, 1, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 3, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 0, 0));
+    }
+
+    [Fact]
+    public void Fractional_effective_line_width_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><line id='l' x1='0' y1='0' x2='4' y2='0' stroke='red' stroke-width='2'/></defs><use href='#l' transform='scale(1.25)'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Fractional_rectangle_stroke_renders_exact_bands()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='4.5' y='4.5' width='5' height='5' fill='none' stroke='black' stroke-width='2'/></svg>", out _, out _);
