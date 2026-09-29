@@ -1,0 +1,21 @@
+{
+  "fixtureId": "original-logo-stroke-dash-closed-seam-mark",
+  "referencePng": "original-logo-stroke-dash-closed-seam-mark.png",
+  "referenceSha256": "6fe66e090596e3c1a0e3781e77dbb948304b84a46c953e758817ae897c727dc5",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": { "width": 16, "height": 16, "deviceScaleFactor": 1 },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "7918e6043a61b3935957b6ef0ae98a114ac2634f8341f837e14d14bf2d08b1b0",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-29"
+}
