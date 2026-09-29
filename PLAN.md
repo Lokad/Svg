@@ -223,6 +223,8 @@ Status 2026-09-29: row 4 fifth slice complete for coincident-merge ordering. Bit
 
 Status 2026-09-29: row 4 diagnosis without product change. Parsed signs on the mixed crossing-plus-touch probe read 1,-1,1, proving the shared-pixel residual is opposite-role subtraction through the shared first vertex (Abs-masked elsewhere), not accumulator wrap; correcting the role cannot improve fidelity (clamp lands equally far on the other side), so spatial union stays the queued fix and the skip flag stays scoped. inv-050 advances past the stylesheet gate to the Default raster work limit at intrinsic 30in with explicit-size comparison ruled out by the viewport contract. Full gate holds 2557 core plus 100 visual plus 6 font green.
 
+Status 2026-09-29: row 4 union-mapping probe work without product change. Separated same-fill diagonal overlaps already compose correctly through role-weighted fan-area summation with clamping (axis-aligned twins and diagonal pairs render byte-exact or within single-level fringe); only coincident partial-edge sharing and mixed touch/crossing sets reject at classification, confirming the queued spatial-union work sits in lowering-time contour surgery, not the rasterizer. One diagonal-overlap configuration graduates into the research corpus as a 1-pixel ratchet. Full gate holds 2635 core plus 100 visual plus 6 font green with no exact-corpus change besides the research admission; memory and package checks pass.
+
 For row 3, retain geometric coverage, mask alpha, paint alpha, premultiplied
 intermediates and final straight RGBA as distinct operations. The opaque 0.75
 observation (192 in Chrome versus 191) motivates a coverage change. It does not
