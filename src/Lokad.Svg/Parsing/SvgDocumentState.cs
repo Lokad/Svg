@@ -37,6 +37,8 @@ internal sealed class SvgDocumentState : IDisposable
         PendingGroupClips = new BudgetedParserList<PendingGroupClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLeafMasks = new BudgetedParserList<PendingLeafMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingGroupMasks = new BudgetedParserList<PendingGroupMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        PendingLinearGradientHrefs = new BudgetedParserList<PendingLinearGradientHref>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        PendingRadialGradientHrefs = new BudgetedParserList<PendingRadialGradientHref>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopeSnapshots = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
     }
@@ -99,11 +101,21 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<PendingGroupMask> PendingGroupMasks { get; }
 
+    internal BudgetedParserList<PendingLinearGradientHref> PendingLinearGradientHrefs { get; }
+
+    internal BudgetedParserList<PendingRadialGradientHref> PendingRadialGradientHrefs { get; }
+
     internal int GeometryElementCount { get; set; }
 
     internal bool DeferringLeafClip { get; set; }
 
     internal bool DeferringLeafMask { get; set; }
+
+    /// <summary>Gets or sets whether a gradient href drain is already running, guarding reentrant drains during nested registration.</summary>
+    internal bool DrainingGradientHrefs { get; set; }
+
+    /// <summary>Gets or sets whether missing gradient href targets throw at registration instead of deferring, used for the document-end leftover pass.</summary>
+    internal bool ThrowOnMissingGradientHref { get; set; }
 
     internal int ScaledViewportPushes { get; set; }
 
@@ -197,6 +209,8 @@ internal sealed class SvgDocumentState : IDisposable
         PendingGroupClips.Dispose();
         PendingLeafMasks.Dispose();
         PendingGroupMasks.Dispose();
+        PendingLinearGradientHrefs.Dispose();
+        PendingRadialGradientHrefs.Dispose();
         Definitions.Dispose();
         foreach (RenderBudget.BudgetReservation reservation in DefinitionReservations) reservation.Dispose();
         DefinitionReservations.Clear();

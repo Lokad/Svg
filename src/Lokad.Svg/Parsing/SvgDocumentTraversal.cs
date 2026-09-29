@@ -206,7 +206,7 @@ internal static class SvgDocumentTraversal
             if (reader.NodeType == XmlNodeType.EndElement)
             {
                 if (reader.Depth == state.SkipDepth) state.SkipDepth = -1;
-                if (state.Switches.Count > 0 && state.Switches[state.Switches.Count - 1].Depth == reader.Depth) state.Switches.RemoveLast();
+                if (reader.Depth == state.DefinitionsDepth) SvgDefinitionParser.DrainPendingGradientHrefs(state, workCounter, cancellationToken);
                 if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
                 if (reader.Depth == state.GradientDepth)
                 {
@@ -292,6 +292,7 @@ internal static class SvgDocumentTraversal
                 }
                 if (reader.Depth == rootDepth)
                 {
+                    SvgDefinitionParser.ResolvePendingGradientHrefs(state, workCounter, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);

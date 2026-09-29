@@ -24,6 +24,12 @@ internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius, bool HasFocalX, bool HasFocalY, bool HasFocalRadius);
 
+/// <summary>Retains one linear-gradient href inheritance whose target was missing at registration for document-end resolution.</summary>
+internal readonly record struct PendingLinearGradientHref(string Id, string HrefId, SvgGradientTemplate Template, SvgGradientStop[] Stops);
+
+/// <summary>Retains one radial-gradient href inheritance whose target was missing at registration for document-end resolution.</summary>
+internal readonly record struct PendingRadialGradientHref(string Id, string HrefId, SvgRadialTemplate Template, SvgGradientStop[] Stops);
+
 /// <summary>Retains one admitted axis-aligned gradient transform with finite coordinates.</summary>
 internal readonly record struct SvgGradientTransform(double ScaleX, double ScaleY, double OffsetX, double OffsetY)
 {

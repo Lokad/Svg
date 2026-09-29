@@ -776,15 +776,15 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Forward_cross_type_gradient_href_stays_unsupported()
+    public void Forward_cross_type_gradient_href_resolves()
     {
-        // S13: forward references stay gated in both directions and across
-        // types; only backward cross-type hrefs resolve.
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='l' href='#r'/><radialGradient id='r'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><rect x='2' y='2' width='12' height='12' fill='url(#l)'/></svg>");
+        // S9: forward hrefs resolve in document order like backward ones;
+        // a forward cross-type href renders exactly like its backward twin.
+        byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='l' href='#r'/><radialGradient id='r'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><rect x='2' y='2' width='12' height='12' fill='url(#l)'/></svg>", out _, out _);
+        byte[] backward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='r'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><linearGradient id='l' href='#r'/></defs><rect x='2' y='2' width='12' height='12' fill='url(#l)'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(backward, forward);
+        Assert.True(Pixel(forward, 16, 2, 2).Red > Pixel(forward, 16, 2, 2).Blue);
     }
 
     [Fact]
