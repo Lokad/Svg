@@ -22,8 +22,13 @@ internal static class SvgGroupParser
             if (state.Masks.TryGetValue(maskId, out byte knownMask)) mask = knownMask;
             else if (reader.IsEmptyElement) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
             else deferredMask = state.Strings.Copy(maskId);
+            if (mask is not null && SvgMaskSyntax.HasCustomRegion(reader, state))
+            {
+                // Custom regions validate at document-end resolution (vacuous check), so a backward mask with a custom region takes the deferred path.
+                deferredMask = state.Strings.Copy(maskId);
+                mask = null;
+            }
         }
-        if (mask is not null && SvgMaskSyntax.HasCustomRegion(reader, state)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on masked groups are not implemented.");
         byte combined = mask is null ? resolved.Opacity : SvgReferenceResolver.MultiplyAlpha(resolved.Opacity, mask.Value);
         bool hasMaskScope = reader.IsEmptyElement ? false : PushMaskScope(reader, state);
         SvgGroupKind kind = reader.LocalName == "switch" ? SvgGroupKind.Switch : SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;

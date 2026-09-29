@@ -1230,6 +1230,36 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Custom_region_masks_clip_group_content()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><mask id='m' maskUnits='userSpaceOnUse' x='4' y='4' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#ffffff'/></mask></defs><g mask='url(#m)'><rect x='0' y='0' width='16' height='16' fill='red'/></g></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 4, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 11, 11));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 3, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 12, 12));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 0, 0));
+    }
+
+    [Fact]
+    public void Custom_region_masks_combine_with_mask_value()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><mask id='m' maskUnits='userSpaceOnUse' x='4' y='4' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#808080'/></mask></defs><g mask='url(#m)'><rect x='0' y='0' width='16' height='16' fill='red'/></g></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 16, 8, 8));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 0, 0));
+    }
+
+    [Fact]
+    public void Custom_region_masks_combine_with_group_opacity()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><mask id='m' maskUnits='userSpaceOnUse' x='4' y='4' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#ffffff'/></mask></defs><g opacity='0.5' mask='url(#m)'><rect x='0' y='0' width='16' height='16' fill='red'/></g></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 16, 8, 8));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 0, 0));
+    }
+
+    [Fact]
     public void Explicitly_closed_empty_leaf_matches_self_closing_twin()
     {
         // An explicitly closed leaf with an element-free subtree renders exactly like the self-closing form.

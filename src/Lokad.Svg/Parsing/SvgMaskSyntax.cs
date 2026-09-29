@@ -9,7 +9,7 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int GeometryCount, string MaskId, SvgViewportFrame? Parent);
 
 /// <summary>Retains one masked group command range whose mask reference resolves at document end.</summary>
-internal readonly record struct PendingGroupMask(string MaskId, byte Opacity, int FirstCommandIndex, int EndCommandIndex, int Depth);
+internal readonly record struct PendingGroupMask(string MaskId, byte Opacity, int FirstCommandIndex, int EndCommandIndex, int Depth, SvgViewportFrame? Parent);
 
 internal static class SvgMaskSyntax
 {
@@ -301,11 +301,15 @@ internal static class SvgMaskSyntax
             workCounter.Consume(cancellationToken);
             PendingGroupMask pending = state.PendingGroupMasks[pendingIndex];
             if (!state.Masks.TryGetValue(pending.MaskId, out byte value)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-            if (state.MaskRegions.TryGetValue(pending.MaskId, out _) || state.MaskFractionRegions.TryGetValue(pending.MaskId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions on masked groups are not implemented.");
+            bool hasExplicitRegion = state.MaskRegions.TryGetValue(pending.MaskId, out SvgClipBox customRegion);
+            SvgClipBox fractionRegion = default;
+            bool hasFractionRegion = !hasExplicitRegion && state.MaskFractionRegions.TryGetValue(pending.MaskId, out fractionRegion);
+            SvgClipBox? maskRegion = null;
+            if (hasExplicitRegion || hasFractionRegion) maskRegion = ResolveGroupMaskRegion(state, pending, hasExplicitRegion, customRegion, fractionRegion, workCounter, cancellationToken);
             byte combined = SvgReferenceResolver.MultiplyAlpha(pending.Opacity, value);
             if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content)) ValidateGroupMaskCoverage(state, pending, content, workCounter, cancellationToken);
-            if (pending.Opacity != 255) RewriteGroupMaskScope(state, pending, combined);
-            else if (combined != 255) InsertGroupMaskScope(state, pending, combined, workCounter, cancellationToken);
+            if (pending.Opacity != 255) RewriteGroupMaskScope(state, pending, combined, maskRegion);
+            else if (combined != 255 || maskRegion is not null) InsertGroupMaskScope(state, pending, combined, maskRegion, workCounter, cancellationToken);
         }
 
         static void ValidateGroupMaskCoverage(SvgDocumentState state, PendingGroupMask pending, SvgClipBox content, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -322,26 +326,75 @@ internal static class SvgMaskSyntax
             }
         }
 
-        static void RewriteGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte combined)
+        static void RewriteGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte combined, SvgClipBox? maskRegion)
         {
             SvgDrawCommand scope = state.Scene.CommandAt(pending.FirstCommandIndex);
             if (scope.Kind != SvgDrawCommandKind.BeginGroup) throw new InvalidOperationException("Deferred group mask resolution requires its isolation scope.");
-            state.Scene.ReplaceCommand(pending.FirstCommandIndex, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, combined));
+            state.Scene.ReplaceCommand(pending.FirstCommandIndex, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, combined, maskRegion));
         }
 
-        static void InsertGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte combined, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static void InsertGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte combined, SvgClipBox? maskRegion, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
             {
                 workCounter.Consume(cancellationToken);
-                if (state.Scene.CommandAt(commandIndex).Kind == SvgDrawCommandKind.BeginGroup) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
+                if (combined != 255 && state.Scene.CommandAt(commandIndex).Kind == SvgDrawCommandKind.BeginGroup) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
             }
-            state.Scene.InsertCommands(pending.EndCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255)]);
-            state.Scene.InsertCommands(pending.FirstCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, combined)]);
+            state.Scene.InsertCommands(pending.EndCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null)]);
+            state.Scene.InsertCommands(pending.FirstCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, combined, maskRegion)]);
             SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.FirstCommandIndex, 1, workCounter, cancellationToken);
             SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.EndCommandIndex + 1, 1, workCounter, cancellationToken);
         }
     }
+    /// <summary>Resolves a custom group-mask region into root-user space for scope compositing.</summary>
+    /// <remarks>Explicit boxes map through the captured ancestor frame (axis scales and offsets); bounding-box fractions resolve against the masked children union like direct leaves. Glyph rules stay separate; empty groups resolve degenerate regions that composite nothing.</remarks>
+    private static SvgClipBox ResolveGroupMaskRegion(SvgDocumentState state, PendingGroupMask pending, bool hasExplicitRegion, SvgClipBox customRegion, SvgClipBox fractionRegion, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        SvgClipBox region;
+        if (hasExplicitRegion) region = customRegion;
+        else
+        {
+            SvgRectangle union = GroupChildrenUnion(state, pending, workCounter, cancellationToken);
+            region = new SvgClipBox(union.X + fractionRegion.X * union.Width, union.Y + fractionRegion.Y * union.Height, fractionRegion.Width * union.Width, fractionRegion.Height * union.Height);
+        }
+        if (pending.Parent is null) return region;
+        SvgViewportFrame parent = pending.Parent.Value;
+        double x = region.X * parent.ScaleX + parent.OffsetX;
+        double y = region.Y * parent.ScaleY + parent.OffsetY;
+        double width = region.Width * parent.ScaleX;
+        double height = region.Height * parent.ScaleY;
+        if (width < 0) { x += width; width = -width; }
+        if (height < 0) { y += height; height = -height; }
+        return new SvgClipBox(x, y, width, height);
+    }
+
+    /// <summary>Unions coverage boxes over one masked group command range for bounding-box region resolution.</summary>
+    private static SvgRectangle GroupChildrenUnion(SvgDocumentState state, PendingGroupMask pending, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        double left = double.PositiveInfinity;
+        double top = double.PositiveInfinity;
+        double right = double.NegativeInfinity;
+        double bottom = double.NegativeInfinity;
+        for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
+        {
+            workCounter.Consume(cancellationToken);
+            SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
+            if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+            SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
+            if (geometry.Kind == SvgGeometryKind.GlyphContours) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
+            SvgRectangle box = CoverageBox(geometry);
+            if (box.X < left) left = box.X;
+            if (box.Y < top) top = box.Y;
+            if (box.X + box.Width > right) right = box.X + box.Width;
+            if (box.Y + box.Height > bottom) bottom = box.Y + box.Height;
+        }
+        return new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, false, null);
+    }
+
     internal static SvgRectangle BoundingBox(SvgGeometry geometry)
     {
         return geometry.Kind switch

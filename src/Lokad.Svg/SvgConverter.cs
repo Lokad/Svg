@@ -243,11 +243,20 @@ public static class SvgConverter
                     long compositionWork = pixelCount;
                     if (compositionWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Group opacity composition exceeds the configured limit.");
                     workUnits += compositionWork;
+                    (double regionLeft, double regionTop, double regionRight, double regionBottom) = command.MaskRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
                     for (int pixel = 0; pixel < pixelCount; pixel++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         int offset = pixel * 4;
-                        SvgColor source = new(groupPixels[offset], groupPixels[offset + 1], groupPixels[offset + 2], MultiplyAlpha(groupPixels[offset + 3], command.Opacity));
+                        byte opacity = MultiplyAlpha(groupPixels[offset + 3], command.Opacity);
+                        if (command.MaskRegion is not null)
+                        {
+                            int x = pixel % outputWidth;
+                            int y = pixel / outputWidth;
+                            opacity = (byte)(opacity * ClipBoxCoverage((regionLeft, regionTop, regionRight, regionBottom), x, y));
+                        }
+                        if (opacity == 0) continue;
+                        SvgColor source = new(groupPixels[offset], groupPixels[offset + 1], groupPixels[offset + 2], opacity);
                         BlendSourceOver(destination.AsSpan(offset, 4), source, false);
                     }
                     continue;

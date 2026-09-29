@@ -45,7 +45,7 @@ public sealed class SvgGeometryTests
         RenderBudget commandBudget = new(long.MaxValue);
         using (BudgetedSceneList<SvgDrawCommand> commands = new(commandBudget, new ParserWorkCounter(long.MaxValue), CancellationToken.None))
         {
-            for (int index = 0; index < 4; index++) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, index, 255));
+            for (int index = 0; index < 4; index++) commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, index, 255, null));
             Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), commandBudget.Snapshot().PeakBytes);
         }
     }

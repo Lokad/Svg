@@ -198,7 +198,7 @@ internal static class SvgDocumentTraversal
                             }
                         }
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
-                        if (parsedGroup.DeferredMask is not null) state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, parsedGroup.Opacity, state.Scene.CommandCount, -1, reader.Depth));
+                        if (parsedGroup.DeferredMask is not null) state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, parsedGroup.Opacity, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame));
                         if (parsedGroup.Scope.IsolatesOpacity)
                         {
                             state.Scene.BeginOpacityScope(parsedGroup.Opacity);

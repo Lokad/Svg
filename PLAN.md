@@ -190,6 +190,8 @@ Status 2026-09-29: row 5 fourth slice complete for nested viewport threading. Th
 
 Status 2026-09-29: row 6 fourth slice complete for unpainted-fill bypass on stroke-only paths. ParsePath resolves shape once up front and skips fill lowering with empty geometry when the fill is unpainted and no paint-server stroke, mask or clip needs it, so degenerate subpaths skip fill validation while stroke lowering still outlines every subpath; mask, clip, paint-server and magnification behavior preserved through the exclusions and the shared outline gates. Full 92-document re-probe advances inv-057 and inv-061 past closed-path fill validation with zero other drift. Full gate holds 2613 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
 
+Status 2026-09-29: row 7 mask-region slice complete for custom regions on masked groups. Backward masks with custom regions take the deferred path; regions resolve into root-user space through the captured ancestor frame and ride scope commands into clip-discipline raster blending (out-of-region pixels skipped, edge coverage scaled like clip boxes); scope emission no longer depends on opacity alone while nested-opacity calibration stays gated for opacity scopes. Full 92-document re-probe advances inv-094 past custom regions to single-rectangle mask content with zero other drift. Full gate holds 2616 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
+
 Round caps/joins need a bounded weighted-conic representation or justified
 conversion: the current flattener supports only polynomial quadratics/cubics.
 Preserve authored corners through curve subdivision so smooth rounded rectangles
