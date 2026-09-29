@@ -23,7 +23,7 @@ internal enum SvgViewBoxFit { Meet, Slice, None }
 
 internal readonly record struct SvgRectangle(double X, double Y, double Width, double Height, SvgColor Color, bool HasFill, SvgStroke? Stroke);
 
-internal readonly record struct SvgStroke(SvgColor Color, int Width);
+internal readonly record struct SvgStroke(SvgColor Color, double Width);
 
 /// <summary>Represents the supported axis-aligned line before backend rasterization.</summary>
 internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double X2, double Y2, SvgColor Color, bool IsPainted, int StrokeWidth)

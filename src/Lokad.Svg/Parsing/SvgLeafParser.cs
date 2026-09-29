@@ -521,7 +521,7 @@ internal static class SvgLeafParser
             return null;
         }
         _ = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
-        int width = SvgGeometrySyntax.ParseInteger(element.Style.Width ?? reader.GetAttribute("stroke-width") ?? "1");
+        double width = SvgStrokeStyleSyntax.ParseStrokeWidth(element.Style.Width ?? reader.GetAttribute("stroke-width") ?? "1", "circle");
         if (width <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive circle stroke widths are implemented.");
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(element.Presentation.StrokeColor.Value, element.Presentation.Opacity), width);
     }
