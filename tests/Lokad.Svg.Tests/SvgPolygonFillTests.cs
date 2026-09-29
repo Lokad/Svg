@@ -1131,6 +1131,20 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Identical_diagonal_duplicates_render_once()
+    {
+        // R34 coincident merge runs before classification, so repeated identical
+        // diagonal contours union without doubling shared fringes: the twin render
+        // is byte-identical to the single triangle.
+        byte[] single = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] duplicate = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z M0,0 L8,0 L0,8 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(single, duplicate);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(duplicate, 8, 1, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(duplicate, 8, 7, 7));
+    }
+
+    [Fact]
     public void Degenerate_ring_renders_empty()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 2,0 0,0 0,2' fill='red'/></svg>", out _, out _);

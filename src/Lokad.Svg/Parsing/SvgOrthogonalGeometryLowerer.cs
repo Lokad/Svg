@@ -970,6 +970,14 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
             ValidateDeviceRange(retained);
             ChargePairs(_workCounter, (long)retained.Length * (retained.Length - 1) / 2, _cancellationToken);
+            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
+            if (SvgContourNesting.MergeIdenticalContours(retained, ends, _workCounter, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, _cancellationToken))
+            {
+                reservation?.Dispose();
+                reservation = ReserveScene(mergedPoints.Length, mergedEnds.Length, mergedEnds.Length, budget);
+                retained = mergedPoints;
+                ends = mergedEnds;
+            }
             SvgContourFlags structure = SvgContourStructure.ClassifySet(retained, ends, _cancellationToken);
             bool touchResolved = false;
             bool interLoopResolved = false;
@@ -990,14 +998,6 @@ internal ref struct SvgOrthogonalGeometryLowering
                 ends = splitEnds.AsSpan().ToArray();
                 ValidateDeviceRange(retained);
                 mapping = UpgradeSplitMapping(retained, mapping);
-            }
-            ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
-            if (SvgContourNesting.MergeIdenticalContours(retained, ends, _workCounter, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, _cancellationToken))
-            {
-                reservation?.Dispose();
-                reservation = ReserveScene(mergedPoints.Length, mergedEnds.Length, mergedEnds.Length, budget);
-                retained = mergedPoints;
-                ends = mergedEnds;
             }
             int[] signs = new int[ends.Length];
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
