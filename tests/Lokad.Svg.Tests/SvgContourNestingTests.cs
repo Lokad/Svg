@@ -49,14 +49,14 @@ public sealed class SvgContourNestingTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] signs = new int[1];
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeParitySigns(points, [2], signs, CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeParitySigns(points, [3], new int[2], CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeParitySigns(points, [2], signs, false, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeParitySigns(points, [3], new int[2], false, CancellationToken.None));
     }
 
     [Fact]
     public void Empty_set_is_noop()
     {
-        SvgContourNesting.ComputeParitySigns([], [], [], CancellationToken.None);
+        SvgContourNesting.ComputeParitySigns([], [], [], false, CancellationToken.None);
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public sealed class SvgContourNestingTests
         using CancellationTokenSource cancelled = new();
         cancelled.Cancel();
 
-        Assert.Throws<OperationCanceledException>(() => SvgContourNesting.ComputeParitySigns(points, [3], new int[1], cancelled.Token));
+        Assert.Throws<OperationCanceledException>(() => SvgContourNesting.ComputeParitySigns(points, [3], new int[1], false, cancelled.Token));
     }
 
     private static (SvgDevicePoint[] Points, int[] Ends) OuterWithSameWoundHole()
@@ -208,8 +208,8 @@ public sealed class SvgContourNestingTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] roles = new int[1];
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeWindingRoles(points, [2], roles, CancellationToken.None));
-        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeWindingRoles(points, [3], new int[2], CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeWindingRoles(points, [2], roles, false, CancellationToken.None));
+        Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourNesting.ComputeWindingRoles(points, [3], new int[2], false, CancellationToken.None));
     }
 
     [Fact]
@@ -219,20 +219,67 @@ public sealed class SvgContourNestingTests
         using CancellationTokenSource cancelled = new();
         cancelled.Cancel();
 
-        Assert.Throws<OperationCanceledException>(() => SvgContourNesting.ComputeWindingRoles(points, [3], new int[1], cancelled.Token));
+        Assert.Throws<OperationCanceledException>(() => SvgContourNesting.ComputeWindingRoles(points, [3], new int[1], false, cancelled.Token));
     }
 
     private static int[] ParitySigns(SvgDevicePoint[] points, int[] ends)
     {
         int[] signs = new int[ends.Length];
-        SvgContourNesting.ComputeParitySigns(points, ends, signs, CancellationToken.None);
+        SvgContourNesting.ComputeParitySigns(points, ends, signs, false, CancellationToken.None);
         return signs;
     }
 
     private static int[] WindingRoles(SvgDevicePoint[] points, int[] ends)
     {
         int[] roles = new int[ends.Length];
-        SvgContourNesting.ComputeWindingRoles(points, ends, roles, CancellationToken.None);
+        SvgContourNesting.ComputeWindingRoles(points, ends, roles, false, CancellationToken.None);
+        return roles;
+    }
+
+    [Fact]
+    public void Touching_nested_pair_alternates_through_unshared_vertices()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 0), new SvgDevicePoint(1, 4), new SvgDevicePoint(4, 1)];
+
+        Assert.Equal([1, -1], ParitySignsSkipping(points, [4, 7]));
+    }
+
+    [Fact]
+    public void Corner_touching_siblings_share_positive_roles()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(4, 0), new SvgDevicePoint(4, 4), new SvgDevicePoint(0, 4), new SvgDevicePoint(4, 4), new SvgDevicePoint(8, 4), new SvgDevicePoint(8, 8), new SvgDevicePoint(4, 8)];
+
+        Assert.Equal([1, 1], WindingRolesSkipping(points, [4, 8]));
+    }
+
+    [Fact]
+    public void Nested_touch_hole_subtracts()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 0), new SvgDevicePoint(1, 4), new SvgDevicePoint(4, 1)];
+
+        Assert.Equal([1, -1], WindingRolesSkipping(points, [4, 7]));
+    }
+
+    [Fact]
+    public void Fully_shared_loops_report_uncontained()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
+
+        Assert.Equal([1, 1], ParitySignsSkipping(points, [4, 7]));
+        Assert.Equal([1, 1], WindingRolesSkipping(points, [4, 7]));
+    }
+
+    private static int[] ParitySignsSkipping(SvgDevicePoint[] points, int[] ends)
+    {
+        int[] signs = new int[ends.Length];
+        SvgContourNesting.ComputeParitySigns(points, ends, signs, true, CancellationToken.None);
+        return signs;
+    }
+
+    private static int[] WindingRolesSkipping(SvgDevicePoint[] points, int[] ends)
+    {
+        int[] roles = new int[ends.Length];
+        SvgContourNesting.ComputeWindingRoles(points, ends, roles, true, CancellationToken.None);
         return roles;
     }
 }

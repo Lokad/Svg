@@ -47,17 +47,13 @@ public sealed class SvgContourTopologyTests
         Assert.Throws<ArgumentOutOfRangeException>(() => SvgContourTopology.Classify(points, 2, 1));
     }
 
-    [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='m0,0 l8,0 l0,8 l-8,0 z m8,4 l4,-4 l0,8 z' fill='red'/></svg>", "Only simple diagonal polygon contours are implemented;")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8 H0 Z M8,4 L12,0 L12,8 Z' fill='red'/></svg>", "Only simple diagonal polygon contours are implemented;")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 M16,16 H24 V24 H16 Z' fill='red'/></svg>", "Only closed axis-aligned integer path contours are implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><polyline points='0,0 8,8 4,4 0,8' fill='red'/></svg>", "Only simple diagonal polygon contours are implemented;")]
-    public void Non_simple_diagonal_contours_stay_unsupported(string svg, string messageFragment)
+    [Fact]
+    public void Open_contours_stay_unsupported()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderLimits.Default, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 M16,16 H24 V24 H16 Z' fill='red'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-        Assert.Contains(messageFragment, exception.Message);
+        Assert.Contains("Only closed axis-aligned integer path contours are implemented.", exception.Message);
     }
 
     [Fact]

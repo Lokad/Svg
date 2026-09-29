@@ -122,6 +122,79 @@ internal static class SvgContourStructure
         return TryFindProperCrossingCore(points, start, end, excludeFirst, excludeSecond, cancellationToken, out _, out _, out _);
     }
 
+    /// <summary>Finds one polygon vertex strictly inside a non-incident edge of any contour slice.</summary>
+    /// <remarks>Vertex-on-edge contact mirrors the classifier's touch rule: zero orientation with the point inside the other bounding box, excluding shared endpoints by value so corners and welded vertices never report. Deterministic first-found order over loops, vertices and edges; callers charge one validation work unit per examined pair.</remarks>
+    internal static bool TryFindVertexOnEdge(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, out int loop, out int edge, out int vertex, CancellationToken cancellationToken)
+    {
+        SvgPolygonCoverage.ValidateContourEnds(points, contourEnds);
+        loop = -1;
+        edge = -1;
+        vertex = -1;
+        int pairs = 0;
+        for (int contour = 0; contour < contourEnds.Length; contour++)
+        {
+            int start = contour == 0 ? 0 : contourEnds[contour - 1];
+            int end = contourEnds[contour];
+            for (int vertexIndex = start; vertexIndex < end; vertexIndex++)
+            {
+                SvgDevicePoint candidate = points[vertexIndex];
+                for (int other = 0; other < contourEnds.Length; other++)
+                {
+                    int otherStart = other == 0 ? 0 : contourEnds[other - 1];
+                    int otherEnd = contourEnds[other];
+                    int otherCount = otherEnd - otherStart;
+                    for (int edgeIndex = 0; edgeIndex < otherCount; edgeIndex++)
+                    {
+                        if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        (SvgDevicePoint edgeStart, SvgDevicePoint edgeEnd) = EdgeAt(points, otherStart, otherCount, edgeIndex);
+                        if (edgeStart == edgeEnd) continue;
+                        if (candidate == edgeStart || candidate == edgeEnd) continue;
+                        if (Orient(edgeStart, edgeEnd, candidate) != 0 || !WithinBox(candidate, edgeStart, edgeEnd)) continue;
+                        loop = other;
+                        edge = edgeIndex;
+                        vertex = vertexIndex;
+                        return true;
+                    }
+                }
+            }
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        return false;
+    }
+
+    /// <summary>Finds one shared endpoint value between non-adjacent edges of one closed contour slice.</summary>
+    /// <remarks>Mirrors the classifier's adjacency exclusions: neighboring edges and the closing pair never count, and zero-length edges are skipped. Any of the four endpoint combinations may report; callers split the ring at the two occurrences. Deterministic first-found order; callers charge one validation work unit per examined pair.</remarks>
+    internal static bool TryFindSelfTouch(ReadOnlySpan<SvgDevicePoint> points, int start, int end, out int firstEdge, out int secondEdge, out SvgDevicePoint touch, CancellationToken cancellationToken)
+    {
+        if (start < 0 || start > points.Length) throw new ArgumentOutOfRangeException(nameof(start));
+        if (end < start || end > points.Length) throw new ArgumentOutOfRangeException(nameof(end));
+        firstEdge = -1;
+        secondEdge = -1;
+        touch = default;
+        int count = end - start;
+        int pairs = 0;
+        for (int first = 0; first < count; first++)
+        {
+            (SvgDevicePoint firstStart, SvgDevicePoint firstEnd) = EdgeAt(points, start, count, first);
+            if (firstStart == firstEnd) continue;
+            for (int second = first + 1; second < count; second++)
+            {
+                if (second == first + 1 || (first == 0 && second == count - 1)) continue;
+                if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                (SvgDevicePoint secondStart, SvgDevicePoint secondEnd) = EdgeAt(points, start, count, second);
+                if (secondStart == secondEnd) continue;
+                if (firstEnd == secondStart) { firstEdge = first; secondEdge = second; touch = firstEnd; return true; }
+                if (firstEnd == secondEnd) { firstEdge = first; secondEdge = second; touch = firstEnd; return true; }
+                if (firstStart == secondStart) { firstEdge = first; secondEdge = second; touch = firstStart; return true; }
+                if (firstStart == secondEnd) { firstEdge = first; secondEdge = second; touch = firstStart; return true; }
+            }
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        return false;
+    }
+
     private static bool TryFindProperCrossingCore(ReadOnlySpan<SvgDevicePoint> points, int start, int end, int excludeFirst, int excludeSecond, CancellationToken cancellationToken, out int firstEdge, out int secondEdge, out SvgDevicePoint crossing)
     {
         if (start < 0 || start > points.Length) throw new ArgumentOutOfRangeException(nameof(start));

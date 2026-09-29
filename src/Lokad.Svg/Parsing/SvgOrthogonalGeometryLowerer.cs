@@ -929,7 +929,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             ValidateDeviceRange(retainedOutlines);
             int[] roles = new int[ends.Length];
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
-            SvgContourNesting.ComputeWindingRoles(retainedOutlines, ends, roles, _cancellationToken);
+            SvgContourNesting.ComputeWindingRoles(retainedOutlines, ends, roles, false, _cancellationToken);
             for (int contour = 0; contour < ends.Length; contour++)
             {
                 if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
@@ -971,11 +971,18 @@ internal ref struct SvgOrthogonalGeometryLowering
             ValidateDeviceRange(retained);
             ChargePairs(_workCounter, (long)retained.Length * (retained.Length - 1) / 2, _cancellationToken);
             SvgContourFlags structure = SvgContourStructure.ClassifySet(retained, ends, _cancellationToken);
+            bool touchResolved = false;
             if (structure != SvgContourFlags.None)
             {
                 using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
                 using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-                if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+                if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget))
+                {
+                    splitPoints.Clear();
+                    splitEnds.Clear();
+                    if (!TryResolveTouchContours(structure, retained, ends, splitPoints, splitEnds)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+                    touchResolved = true;
+                }
                 reservation?.Dispose();
                 reservation = ReserveScene(splitPoints.Count, splitEnds.Count, splitEnds.Count, budget);
                 retained = splitPoints.AsSpan().ToArray();
@@ -993,8 +1000,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             }
             int[] signs = new int[ends.Length];
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
-            if (_isEvenOdd) SvgContourNesting.ComputeParitySigns(retained, ends, signs, _cancellationToken);
-            else SvgContourNesting.ComputeWindingRoles(retained, ends, signs, _cancellationToken);
+            if (_isEvenOdd) SvgContourNesting.ComputeParitySigns(retained, ends, signs, touchResolved, _cancellationToken);
+            else SvgContourNesting.ComputeWindingRoles(retained, ends, signs, touchResolved, _cancellationToken);
             return new SeparatedContours(retained, ends, signs, mapping, reservation);
         }
         catch
@@ -1110,6 +1117,250 @@ internal ref struct SvgOrthogonalGeometryLowering
         long totalPoints = splitPoints.Count;
         ChargePairs(_workCounter, totalPoints * totalPoints, _cancellationToken);
         return SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken);
+    }
+
+    /// <summary>Resolves point-touching contours into simple loops sharing only vertices.</summary>
+    /// <remarks>Admits sets whose only defects are endpoint contacts at identical coordinates. Edges split at interior touch vertices with bitwise copies and self-touching rings split at shared vertices into lobes, so no computed points ever appear. Every loop keeps a non-shared vertex for robust nesting tests, and the split-loop guard verifies the result. Crossings, collinear overlaps and degenerate edges stay rejected, as do fully-inscribed loops and mixed sets. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps. Charges pair estimates for scans plus one work unit per copied vertex, and observes cancellation.</remarks>
+    private bool TryResolveTouchContours(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(splitPoints);
+        ArgumentNullException.ThrowIfNull(splitEnds);
+        if (structure == SvgContourFlags.None) return false;
+        if ((structure & ~(SvgContourFlags.SelfTouch | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return false;
+        splitPoints.Clear();
+        splitEnds.Clear();
+        SvgDevicePoint[] workPoints = new SvgDevicePoint[points.Length];
+        int[] workEnds = new int[ends.Length];
+        for (int index = 0; index < points.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            workPoints[index] = points[index];
+        }
+        for (int index = 0; index < ends.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            workEnds[index] = ends[index];
+        }
+        long sweeps = 0;
+        long maximumSweeps = checked((long)points.Length * points.Length + ends.Length + 1);
+        while (true)
+        {
+            if (++sweeps > maximumSweeps) return false;
+            if (SvgContourStructure.TryFindVertexOnEdge(workPoints, workEnds, out int loop, out int edge, out int vertex, _cancellationToken))
+            {
+                SubdivideTouchEdge(ref workPoints, ref workEnds, loop, edge, vertex);
+                continue;
+            }
+            if (TrySplitSelfTouchLoop(ref workPoints, ref workEnds, out bool blocked))
+            {
+                continue;
+            }
+            if (blocked) return false;
+            break;
+        }
+        if (!EveryLoopHasUnsharedVertex(workPoints, workEnds)) return false;
+        for (int index = 0; index < workPoints.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            splitPoints.Add(workPoints[index]);
+        }
+        for (int index = 0; index < workEnds.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            splitEnds.Add(workEnds[index]);
+        }
+        ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+        return SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken);
+    }
+
+    /// <summary>Splits one edge at an interior touch vertex by inserting a bitwise copy.</summary>
+    private void SubdivideTouchEdge(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int loop, int edge, int vertex)
+    {
+        int loopStart = loop == 0 ? 0 : workEnds[loop - 1];
+        int insertAt = loopStart + edge + 1;
+        SvgDevicePoint[] nextPoints = new SvgDevicePoint[workPoints.Length + 1];
+        int[] nextEnds = new int[workEnds.Length];
+        for (int index = 0; index < insertAt; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            nextPoints[index] = workPoints[index];
+        }
+        _workCounter.Consume(_cancellationToken);
+        nextPoints[insertAt] = workPoints[vertex];
+        for (int index = insertAt; index < workPoints.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            nextPoints[index + 1] = workPoints[index];
+        }
+        for (int index = 0; index < workEnds.Length; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            nextEnds[index] = workEnds[index] + (insertAt <= workEnds[index] ? 1 : 0);
+        }
+        workPoints = nextPoints;
+        workEnds = nextEnds;
+    }
+
+    /// <summary>Splits one self-touching ring at a shared vertex into two lobes sharing only that value.</summary>
+    /// <remarks>Out-and-back spikes under three edges drop only when the tip is unshared elsewhere and the main lobe keeps three vertices. Reports through blocked when a found touch cannot resolve: callers fail the whole set because the split-loop guard cannot see defects inside a single loop. Reports false with blocked clear only when no loop holds a self-touch.</remarks>
+    private bool TrySplitSelfTouchLoop(ref SvgDevicePoint[] workPoints, ref int[] workEnds, out bool blocked)
+    {
+        blocked = false;
+        for (int loop = 0; loop < workEnds.Length; loop++)
+        {
+            int start = loop == 0 ? 0 : workEnds[loop - 1];
+            int end = workEnds[loop];
+            int count = end - start;
+            if (!SvgContourStructure.TryFindSelfTouch(workPoints, start, end, out int firstEdge, out int secondEdge, out SvgDevicePoint touch, _cancellationToken)) continue;
+            int firstOccurrence = FindTouchOccurrence(workPoints, start, count, firstEdge, touch);
+            int secondOccurrence = FindTouchOccurrence(workPoints, start, count, secondEdge, touch);
+            if (firstOccurrence < 0 || secondOccurrence < 0) { blocked = true; return false; }
+            int firstLength = (secondOccurrence - firstOccurrence + count) % count;
+            int secondLength = count - firstLength;
+            if (firstLength < 3 || secondLength < 3)
+            {
+                int spikeStart = firstLength < 3 ? firstOccurrence : secondOccurrence;
+                int spikeLength = firstLength < 3 ? firstLength : secondLength;
+                int mainLength = count - spikeLength;
+                if (mainLength < 3) { blocked = true; return false; }
+                for (int offset = 0; offset < spikeLength; offset++)
+                {
+                    SvgDevicePoint spikeVertex = workPoints[start + ((spikeStart - start + offset) % count)];
+                    if (spikeVertex == touch) continue;
+                    for (int other = 0; other < workEnds.Length; other++)
+                    {
+                        if (other == loop) continue;
+                        int otherStart = other == 0 ? 0 : workEnds[other - 1];
+                        for (int otherIndex = otherStart; otherIndex < workEnds[other]; otherIndex++)
+                        {
+                            _workCounter.Consume(_cancellationToken);
+                            if (spikeVertex == workPoints[otherIndex]) { blocked = true; return false; }
+                        }
+                    }
+                }
+                DropSpikeOccurrences(ref workPoints, ref workEnds, loop, spikeStart, spikeLength);
+                return true;
+            }
+            SvgDevicePoint[] nextPoints = new SvgDevicePoint[workPoints.Length];
+            int[] nextEnds = new int[workEnds.Length + 1];
+            int target = 0;
+            int targetEnd = 0;
+            for (int other = 0; other < loop; other++)
+            {
+                for (int source = other == 0 ? 0 : workEnds[other - 1]; source < workEnds[other]; source++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    nextPoints[target++] = workPoints[source];
+                }
+                _workCounter.Consume(_cancellationToken);
+                nextEnds[targetEnd++] = target;
+            }
+            for (int offset = 0; offset < firstLength; offset++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                nextPoints[target++] = workPoints[start + ((firstOccurrence - start + offset) % count)];
+            }
+            _workCounter.Consume(_cancellationToken);
+            nextEnds[targetEnd++] = target;
+            for (int offset = 0; offset < secondLength; offset++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                nextPoints[target++] = workPoints[start + ((secondOccurrence - start + offset) % count)];
+            }
+            _workCounter.Consume(_cancellationToken);
+            nextEnds[targetEnd++] = target;
+            for (int other = loop + 1; other < workEnds.Length; other++)
+            {
+                for (int source = workEnds[other - 1]; source < workEnds[other]; source++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    nextPoints[target++] = workPoints[source];
+                }
+                _workCounter.Consume(_cancellationToken);
+                nextEnds[targetEnd++] = target;
+            }
+            workPoints = nextPoints;
+            workEnds = nextEnds;
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>Drops zero-area spike occurrences from one ring, keeping the main lobe.</summary>
+    private void DropSpikeOccurrences(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int loop, int spikeStart, int spikeLength)
+    {
+        int start = loop == 0 ? 0 : workEnds[loop - 1];
+        int end = workEnds[loop];
+        int count = end - start;
+        SvgDevicePoint[] nextPoints = new SvgDevicePoint[workPoints.Length - spikeLength];
+        int[] nextEnds = new int[workEnds.Length];
+        int target = 0;
+        int targetEnd = 0;
+        for (int other = 0; other < workEnds.Length; other++)
+        {
+            int otherStart = other == 0 ? 0 : workEnds[other - 1];
+            int otherEnd = workEnds[other];
+            if (other == loop)
+            {
+                for (int offset = spikeLength; offset < count; offset++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    nextPoints[target++] = workPoints[start + ((spikeStart - start + offset) % count)];
+                }
+            }
+            else
+            {
+                for (int source = otherStart; source < otherEnd; source++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    nextPoints[target++] = workPoints[source];
+                }
+            }
+            _workCounter.Consume(_cancellationToken);
+            nextEnds[targetEnd++] = target;
+        }
+        workPoints = nextPoints;
+        workEnds = nextEnds;
+    }
+
+    private static int FindTouchOccurrence(SvgDevicePoint[] workPoints, int start, int count, int edge, SvgDevicePoint touch)
+    {
+        int first = start + edge;
+        int second = start + ((edge + 1) % count);
+        if (workPoints[first] == touch) return first;
+        if (workPoints[second] == touch) return second;
+        return -1;
+    }
+
+    /// <summary>Reports whether every loop keeps a vertex shared with no other loop.</summary>
+    private bool EveryLoopHasUnsharedVertex(SvgDevicePoint[] workPoints, int[] workEnds)
+    {
+        for (int loop = 0; loop < workEnds.Length; loop++)
+        {
+            int start = loop == 0 ? 0 : workEnds[loop - 1];
+            int end = workEnds[loop];
+            bool found = false;
+            for (int index = start; index < end && !found; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                bool shared = false;
+                for (int other = 0; other < workEnds.Length && !shared; other++)
+                {
+                    if (other == loop) continue;
+                    int otherStart = other == 0 ? 0 : workEnds[other - 1];
+                    for (int otherIndex = otherStart; otherIndex < workEnds[other]; otherIndex++)
+                    {
+                        _workCounter.Consume(_cancellationToken);
+                        if (workPoints[index] == workPoints[otherIndex]) { shared = true; break; }
+                    }
+                }
+                if (!shared) found = true;
+            }
+            if (!found) return false;
+        }
+        return true;
     }
 
 

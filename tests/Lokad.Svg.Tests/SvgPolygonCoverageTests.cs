@@ -301,7 +301,7 @@ public sealed class SvgPolygonCoverageTests
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(2, 2), new SvgDevicePoint(6, 2), new SvgDevicePoint(6, 6), new SvgDevicePoint(2, 6)];
         int[] ends = [4, 8];
         int[] signs = new int[2];
-        SvgContourNesting.ComputeParitySigns(points, ends, signs, CancellationToken.None);
+        SvgContourNesting.ComputeParitySigns(points, ends, signs, false, CancellationToken.None);
 
         Assert.Equal([1, -1], signs);
         Assert.Equal(48, SumEvenOdd(points, ends, signs, -1, 9, -1, 9), precision: 10);

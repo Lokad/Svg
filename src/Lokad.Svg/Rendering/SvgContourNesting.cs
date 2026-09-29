@@ -7,7 +7,7 @@ using Lokad.Svg.Parsing;
 /// <para>Each contour scores plus one when an even number of other contours strictly contain its first
 /// vertex and minus one otherwise, so nested holes alternate while siblings stay positive. Containment
 /// uses half-open ray casting, which is deterministic but meaningless for touching or coincident
-/// contours; those stay outside the admitted family. Degenerate contours under three points never count
+/// contours; callers outside touch handling keep those outside the admitted family, while touch-resolved sets skip shared test vertices for strictly interior samples. Degenerate contours under three points never count
 /// as containers yet still receive a sign; they contribute no coverage either way.</para>
 /// <para>This runs once per contour set, not per pixel: the wiring level resolves signs, then the
 /// coverage kernel applies them. Callers charge one nesting work unit per contour pair; this resolver
@@ -16,7 +16,7 @@ using Lokad.Svg.Parsing;
 internal static class SvgContourNesting
 {
     /// <summary>Writes plus or minus one per contour into the caller signs span.</summary>
-    internal static void ComputeParitySigns(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, Span<int> signs, CancellationToken cancellationToken)
+    internal static void ComputeParitySigns(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, Span<int> signs, bool skipSharedVertices, CancellationToken cancellationToken)
     {
         SvgPolygonCoverage.ValidateContourEnds(points, contourEnds);
         if (signs.Length != contourEnds.Length) throw new ArgumentOutOfRangeException(nameof(signs));
@@ -31,7 +31,10 @@ internal static class SvgContourNesting
                 int otherStart = other == 0 ? 0 : contourEnds[other - 1];
                 int otherEnd = contourEnds[other];
                 if (otherEnd - otherStart < 3) continue;
-                if (ContainsPoint(points, otherStart, otherEnd, points[start].X, points[start].Y)) depth++;
+                double testX = points[start].X;
+                double testY = points[start].Y;
+                if (skipSharedVertices && !TryFindUnsharedTestVertex(points, start, contourEnds[contour], otherStart, otherEnd, out testX, out testY)) continue;
+                if (ContainsPoint(points, otherStart, otherEnd, testX, testY)) depth++;
             }
 
             signs[contour] = depth % 2 == 0 ? 1 : -1;
@@ -43,9 +46,9 @@ internal static class SvgContourNesting
     /// <summary>Writes nonzero-fill roles per contour into the caller roles span.</summary>
     /// <remarks>
     /// <para>Each contour scores plus one when its interior newly paints, minus one when it newly erases, and zero when the enclosing winding already decides the region: top-level contours always paint regardless of orientation, opposite-wound holes subtract, same-wound islands add nothing, and deeper stacks resolve through accumulated container orientations. Roles therefore make contour reversal unobservable while preserving holes, unlike raw signed accumulation, which cancels disjoint opposite contours sharing a pixel.</para>
-    /// <para>Like parity signs this runs once per contour set, not per pixel: the wiring level resolves roles, then the coverage kernel applies them to unsigned fan areas. Containment reuses the same first-vertex test, so touching or coincident contours stay outside the admitted family. Degenerate contours score zero. Callers charge one nesting work unit per contour pair; this resolver holds no budget itself and allocates nothing.</para>
+    /// <para>Like parity signs this runs once per contour set, not per pixel: the wiring level resolves roles, then the coverage kernel applies them to unsigned fan areas. Containment reuses the same first-vertex test; when skipSharedVertices is set, test vertices shared with the tested contour are skipped for strictly interior samples, so point-touching sets resolved by touch handling combine correctly while all other inputs behave exactly as before. Degenerate contours score zero. Callers charge one nesting work unit per contour pair; this resolver holds no budget itself and allocates nothing.</para>
     /// </remarks>
-    internal static void ComputeWindingRoles(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, Span<int> roles, CancellationToken cancellationToken)
+    internal static void ComputeWindingRoles(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, Span<int> roles, bool skipSharedVertices, CancellationToken cancellationToken)
     {
         SvgPolygonCoverage.ValidateContourEnds(points, contourEnds);
         if (roles.Length != contourEnds.Length) throw new ArgumentOutOfRangeException(nameof(roles));
@@ -68,7 +71,10 @@ internal static class SvgContourNesting
                 int otherStart = other == 0 ? 0 : contourEnds[other - 1];
                 int otherEnd = contourEnds[other];
                 if (otherEnd - otherStart < 3) continue;
-                if (ContainsPoint(points, otherStart, otherEnd, points[start].X, points[start].Y)) winding += FullOrientation(points, otherStart, otherEnd);
+                double testX = points[start].X;
+                double testY = points[start].Y;
+                if (skipSharedVertices && !TryFindUnsharedTestVertex(points, start, end, otherStart, otherEnd, out testX, out testY)) continue;
+                if (ContainsPoint(points, otherStart, otherEnd, testX, testY)) winding += FullOrientation(points, otherStart, otherEnd);
             }
 
             roles[contour] = Painted(winding + orientation) - Painted(winding);
@@ -168,6 +174,31 @@ internal static class SvgContourNesting
         if (twice > 0) return 1;
         if (twice < 0) return -1;
         return 0;
+    }
+
+    /// <summary>Finds the first contour vertex that is not bitwise-shared with the tested contour range.</summary>
+    /// <remarks>Touch-resolved sets share only vertices, so a non-shared vertex lies strictly inside or outside every other loop once the split-loop guard passes; fully-shared loops have no robust test vertex and report false so callers treat them as uncontained.</remarks>
+    private static bool TryFindUnsharedTestVertex(ReadOnlySpan<SvgDevicePoint> points, int start, int end, int otherStart, int otherEnd, out double x, out double y)
+    {
+        for (int index = start; index < end; index++)
+        {
+            bool shared = false;
+            for (int other = otherStart; other < otherEnd; other++)
+            {
+                if (points[index] == points[other]) { shared = true; break; }
+            }
+
+            if (!shared)
+            {
+                x = points[index].X;
+                y = points[index].Y;
+                return true;
+            }
+        }
+
+        x = 0;
+        y = 0;
+        return false;
     }
 
     /// <summary>Reports whether a point lies strictly inside one closed contour slice under half-open ray casting.</summary>

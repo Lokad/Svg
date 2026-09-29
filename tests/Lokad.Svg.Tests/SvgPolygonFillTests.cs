@@ -174,13 +174,14 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Coincident_spike_stays_unsupported()
+    public void Retraced_spike_renders_main_triangle()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 4,4 0,8' fill='red'/></svg>");
+        byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 4,4 0,8' fill='red'/></svg>", out _, out _);
+        byte[] polyline = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,0 8,8 4,4 0,8' fill='red'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(polygon, polyline);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(polygon, 8, 1, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(polygon, 8, 6, 6));
     }
 
     [Fact]
@@ -588,13 +589,11 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Touching_hole_stays_unsupported()
+    public void Touching_hole_renders()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M0,4 L4,2 L4,6 Z' fill='red'/></svg>");
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L8,0 L8,8 L0,8 Z M0,4 L4,2 L4,6 Z' fill='red'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.True(AlphaSum(pixels) > 0);
     }
 
     [Fact]
@@ -998,6 +997,105 @@ public sealed class SvgPolygonFillTests
         int offset = (y * width + x) * 4;
         return new SvgColor(pixels[offset], pixels[offset + 1], pixels[offset + 2], pixels[offset + 3]);
     }
+
+    [Fact]
+    public void Corner_touching_siblings_paint_union()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H4 V4 H0 Z M4,4 H8 V8 H4 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 2, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 6, 6));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 2));
+    }
+
+    [Fact]
+    public void Relative_absolute_touch_twins_paint_union()
+    {
+        byte[] relative = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='m0,0 l8,0 l0,8 l-8,0 z m8,4 l4,-4 l0,8 z' fill='red'/></svg>", out _, out _);
+        byte[] absolute = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M0,0 H8 V8 H0 Z M8,4 L12,0 L12,8 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(relative, absolute);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(absolute, 16, 2, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(absolute, 16, 10, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(absolute, 16, 14, 4));
+    }
+
+    [Fact]
+    public void Nested_touch_hole_stays_empty()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 H0 Z M0,0 L1,4 L4,1 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 7, 7));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 7, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 1, 1));
+    }
+
+    [Fact]
+    public void Evenodd_touch_hole_stays_empty()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 H0 Z M0,0 L1,4 L4,1 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 7, 7));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 1, 1));
+    }
+
+    [Fact]
+    public void Self_touch_hourglass_paints_both_lobes()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,0 L2,2 L4,4 L0,4 L2,2' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 2, 3));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 2, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 2));
+    }
+
+    [Fact]
+    public void Coincident_edge_overlap_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,0 L0,4 Z M0,4 L4,4 L4,0 Z' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Crossing_plus_touch_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,4 L4,0 L0,4 Z M2,2 L8,4 L8,8 L2,8 Z' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Dust_spike_drops_leaving_main_lobe()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L2,1 L4,0 L2,1 L2,4 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 6));
+    }
+
+    [Fact]
+    public void Shared_spike_tip_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L2,1 L4,0 L2,1 L2,4 Z M4,0 L6,0 L6,2 Z' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Degenerate_ring_renders_empty()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 2,0 0,0 0,2' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(pixels));
+    }
+
 
     private static long AlphaSum(byte[] pixels)
     {
