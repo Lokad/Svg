@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -15,6 +16,10 @@ internal static class SvgDocumentTraversal
 
     /// <summary>Traverses one document under a caller-owned operation work counter with a known root and output magnification.</summary>
     internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY)
+        => Parse(reader, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken, outputScaleX, outputScaleY, null);
+
+    /// <summary>Traverses one document under a caller-owned operation work counter with a known root, output magnification and explicit viewport.</summary>
+    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
         while (reader.Read())
@@ -24,12 +29,20 @@ internal static class SvgDocumentTraversal
             SvgStructuralAdmission.ValidateElementStructure(reader, limits);
             SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
             SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, workCounter, cancellationToken);
-            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputScaleX, outputScaleY);
+            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputScaleX, outputScaleY, explicitViewport);
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
     }
 
-    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, double outputScaleX, double outputScaleY)
+    /// <summary>Resolves a percentage root dimension in parent user units for nested percentage bases: the viewBox size when present (keeping scene content in root user space for the single output map), else against the explicit viewport or the default intrinsic side.</summary>
+    private static double? ResolvePercentageRootBase(SvgRootLength? length, SvgViewBox? viewBox, bool isWidth, double? viewportSide, double defaultSide)
+    {
+        if (length is not SvgRootLength rootLength || !rootLength.IsPercentage) return null;
+        if (viewBox is SvgViewBox box) return isWidth ? box.Width : box.Height;
+        return rootLength.Resolve(viewportSide, defaultSide);
+    }
+
+    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport)
     {
         if (reader.IsEmptyElement)
         {
@@ -83,7 +96,7 @@ internal static class SvgDocumentTraversal
                 {
                     SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
                     SvgViewportFrame? parentFrame = state.EffectiveFrame;
-                    SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.Width?.ToAbsoluteOrNull(), parentFrame?.ViewportHeight ?? root.Height?.ToAbsoluteOrNull());
+                    SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.Width?.ToAbsoluteOrNull() ?? ResolvePercentageRootBase(root.Width, root.ViewBox, true, explicitViewport?.Width, 300), parentFrame?.ViewportHeight ?? root.Height?.ToAbsoluteOrNull() ?? ResolvePercentageRootBase(root.Height, root.ViewBox, false, explicitViewport?.Height, 150));
                     SvgViewBox? nestedViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
                     double localScaleX = 1;
                     double localScaleY = 1;
@@ -139,7 +152,11 @@ internal static class SvgDocumentTraversal
                 else if (state.MaskScopes.Count > 0 && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
                 else if (SvgRenderedLeafParser.TryParse(reader, directChild, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {
-                    state.HasUnsupportedContent |= !textElement && !reader.IsEmptyElement;
+                    // Rendered leaves admit no rendered children: an explicitly closed leaf with an element-free
+                    // subtree renders exactly like the self-closing form, while any child element keeps the
+                    // unsupported flag (animation, unknown and nested content stay rejected). Text consumes
+                    // its own subtree and keeps its path.
+                    if (!textElement && !reader.IsEmptyElement && ConsumeLeafSubtreeWithElements(reader, state, limits, workCounter, cancellationToken)) state.HasUnsupportedContent = true;
                     state.SawStyleableNode = true;
                 }
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
@@ -361,6 +378,30 @@ internal static class SvgDocumentTraversal
         }
 
         return false;
+    }
+
+    /// <summary>Consumes one non-empty rendered-leaf subtree, reporting whether it holds any child elements.</summary>
+    /// <remarks>Element-free subtrees (whitespace or text only, which the leaf lowerers and the main loop both ignore) render exactly like the self-closing form. Mirrors the main-loop per-element accounting while consuming, and leaves the reader on the leaf end element so end-element bookkeeping runs normally.</remarks>
+    private static bool ConsumeLeafSubtreeWithElements(System.Xml.XmlReader reader, SvgDocumentState state, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        int leafDepth = reader.Depth;
+        bool hasElements = false;
+        while (reader.Read())
+        {
+            workCounter.Consume(cancellationToken);
+            if (reader.NodeType == System.Xml.XmlNodeType.Element)
+            {
+                SvgStructuralAdmission.ValidateElementStructure(reader, limits);
+                if (state.NodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                state.NodeCount++;
+                hasElements = true;
+            }
+            else if (reader.NodeType == System.Xml.XmlNodeType.EndElement && reader.Depth == leafDepth) return hasElements;
+        }
+        return hasElements;
     }
 
     private static void ValidateDocumentEnd(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)

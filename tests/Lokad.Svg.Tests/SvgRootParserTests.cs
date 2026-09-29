@@ -2987,6 +2987,47 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
+    public void Nested_percentage_viewport_resolves_against_default_intrinsic_size()
+    {
+        // Omitted nested dimensions default to 100 percent of the resolved root output size.
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><svg><rect x='10' y='10' width='20' height='20' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(10, 10, 20, 20, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Nested_percentage_viewport_resolves_against_explicit_viewport()
+    {
+        // The explicit viewport sizes percentage roots, so omitted nested dimensions match the absolute twin.
+        SvgRenderOptions options = new(new SvgViewport(64, 32), 1, new SvgColor(0, 0, 0, 0), SvgRenderLimits.Default);
+        byte[] percent = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><svg><rect x='4' y='4' width='8' height='8' fill='red'/></svg></svg>");
+        byte[] absolute = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='32'><svg x='0' y='0' width='64' height='32'><rect x='4' y='4' width='8' height='8' fill='red'/></svg></svg>");
+
+        ReadOnlyMemory<byte> percentPng = SvgConverter.ConvertToPng(percent, options, CancellationToken.None);
+        ReadOnlyMemory<byte> absolutePng = SvgConverter.ConvertToPng(absolute, options, CancellationToken.None);
+
+        Assert.True(percentPng.Span.SequenceEqual(absolutePng.Span));
+    }
+
+    [Fact]
+    public void Nested_percentage_bases_use_viewBox_user_units()
+    {
+        // Percentage bases resolve in parent user units, keeping scene content in root user space for the single output map.
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' width='100%' height='100%'><svg x='50%' width='5' height='5'><rect width='5' height='5' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.Equal(new SvgRectangle(5, 0, 5, 5, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+    }
+
+    [Fact]
+    public void Omitted_nested_dimensions_with_dimensionless_root_stay_unsupported()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><svg><rect width='5' height='5' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("unknown parent dimensions", rejected.Message);
+    }
+
+    [Fact]
     public void Admits_empty_nested_viewports_with_opacity()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><svg x='0' y='0' width='8' height='8' opacity='0.5'/><rect x='0' y='0' width='8' height='8' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

@@ -1230,6 +1230,16 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Explicitly_closed_empty_leaf_matches_self_closing_twin()
+    {
+        // An explicitly closed leaf with an element-free subtree renders exactly like the self-closing form.
+        byte[] closed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,2 H14 V14 H2 Z' fill='red'></path></svg>", out _, out _);
+        byte[] selfClosed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,2 H14 V14 H2 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(selfClosed, closed);
+    }
+
+    [Fact]
     public void Doubly_reflected_pattern_stays_unsupported()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p)' transform='scale(-1,-1)'/></svg>");

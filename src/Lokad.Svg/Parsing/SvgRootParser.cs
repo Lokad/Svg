@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -175,7 +176,7 @@ internal static class SvgRootParser
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
-        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, 1.0, 1.0); }
+        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, 1.0, 1.0, null); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
@@ -183,18 +184,26 @@ internal static class SvgRootParser
     internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
-        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, outputScaleX, outputScaleY); }
+        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, outputScaleX, outputScaleY, null); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
-    private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY)
+    /// <summary>Parses one SVG document with a known root, output magnification and explicit viewport for nested percentage bases.</summary>
+    internal static SvgRoot Parse(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport)
+    {
+        ArgumentNullException.ThrowIfNull(workCounter);
+        try { return ParseCore(svg, limits, budget, fontSnapshot, workCounter, cancellationToken, outputScaleX, outputScaleY, explicitViewport); }
+        catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
+    }
+
+    private static SvgRoot ParseCore(ReadOnlyMemory<byte> svg, SvgRenderLimits limits, RenderBudget budget, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport)
     {
         if (svg.Length > limits.MaximumInputBytes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG input exceeds the configured input limit.");
         using RenderBudget.BudgetReservation xmlReaderWorkspace = budget.Reserve(GetXmlReaderWorkspaceBytes(svg.Length, limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
         XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, settings);
-        return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, workCounter, cancellationToken, outputScaleX, outputScaleY);
+        return SvgDocumentTraversal.Parse(reader, limits, budget, CssNamedColors, fontSnapshot, workCounter, cancellationToken, outputScaleX, outputScaleY, explicitViewport);
     }
 
     internal static long GetXmlReaderWorkspaceBytes(int inputBytes, int maximumAttributes)

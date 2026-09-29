@@ -35,7 +35,7 @@ public sealed class SvgPreparedDocument : IDisposable
             SvgRenderOptions preparedOptions = new(options.Viewport, options.OutputScale, options.BackgroundColor, options.Limits, snapshot);
             RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
             (double outputScaleX, double outputScaleY) = SvgConverter.TryResolveOutputScales(svg, options, budget, cancellationToken);
-            SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, snapshot, workCounter, cancellationToken, outputScaleX, outputScaleY);
+            SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, snapshot, workCounter, cancellationToken, outputScaleX, outputScaleY, options.Viewport);
             if (root.HasUnsupportedChild)
             {
                 root.Dispose();
