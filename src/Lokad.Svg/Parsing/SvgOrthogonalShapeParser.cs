@@ -53,7 +53,8 @@ internal static class SvgOrthogonalShapeParser
         {
             using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds, true);
-            if (AllContoursDegenerate(points, contourEnds))
+            if (!paintOutline && !paintRadialOutline && !paintPatternOutline && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0) DropSingletonContours(points, contourEnds, context.WorkCounter, context.CancellationToken);
+            if (contourEnds.Count == 0 || AllContoursDegenerate(points, contourEnds))
             {
                 // Sealed subpaths with fewer than three points enclose no area, so the fill contributes nothing while stroke lowering still outlines every subpath.
                 using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -447,6 +448,34 @@ internal static class SvgOrthogonalShapeParser
         }
 
         return true;
+    }
+
+    /// <summary>Drops single-point and two-point subpaths from fill lowering in place; they enclose no area while strokes outline them separately.</summary>
+    private static void DropSingletonContours(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(contourEnds);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        int sourceStart = 0;
+        int target = 0;
+        int targetEnd = 0;
+        for (int contour = 0; contour < contourEnds.Count; contour++)
+        {
+            int sourceEnd = contourEnds[contour];
+            if (sourceEnd - sourceStart >= 3)
+            {
+                for (int index = sourceStart; index < sourceEnd; index++)
+                {
+                    workCounter.Consume(cancellationToken);
+                    points[target++] = points[index];
+                }
+                contourEnds[targetEnd++] = target;
+                workCounter.Consume(cancellationToken);
+            }
+            sourceStart = sourceEnd;
+        }
+        while (points.Count > target) points.RemoveLast();
+        while (contourEnds.Count > targetEnd) contourEnds.RemoveLast();
     }
 
     internal static bool HasDiagonalContour(BudgetedParserList<SvgPoint> points, BudgetedParserList<int> contourEnds)

@@ -13,8 +13,8 @@ namespace Lokad.Svg.Rendering;
 /// the single boundary that fills under either fill rule. Spike reversals retrace both chains, which
 /// nonzero winding still fills; route spike loops through contour-structure validation before even-odd
 /// filling since coincident retracing cancels there. Acute inner turns may self-intersect with the same
-/// nonzero caveat. Zero-length segments are skipped, and all-degenerate butt input draws nothing per the
-/// zero-length rule. Callers charge one stroke-expansion work unit per appended point; this kernel holds
+/// nonzero caveat. Zero-length segments are skipped; all-degenerate solid open input draws nothing with butt caps,
+/// a flatness-bounded disc with round caps, and an axis-aligned square with square caps per the zero-length subpath rule, while dashed outlining discards zero-length runs before stroking. Callers charge one stroke-expansion work unit per appended point; this kernel holds
 /// no budget itself and allocates nothing beyond the caller buffer it fills through.</para>
 /// </remarks>
 /// <summary>Selects the admitted open-end cap style for one stroke.</summary>
@@ -45,14 +45,47 @@ internal enum SvgStrokeJoin
 
 internal static class SvgStrokeOutline
 {
-    /// <summary>Appends one sealed outline loop for an open polyline, or nothing when degenerate.</summary>
+    /// <summary>Reports whether a centerline holds fewer than two distinct points.</summary>
+    /// <remarks>Dashed outlining discards zero-length runs before stroking while solid zero-length subpaths lower to cap-determined dots.</remarks>
+    internal static bool IsAllIdentical(ReadOnlySpan<SvgDevicePoint> points)
+    {
+        for (int index = 1; index < points.Length; index++)
+        {
+            if (points[index] != points[index - 1]) return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>Appends one sealed outline loop for an open polyline, a cap-determined dot when fully degenerate, or nothing for butt dots.</summary>
     internal static void StrokeOpenPolyline(ReadOnlySpan<SvgDevicePoint> points, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, SvgContourBuilder builder, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ValidateWidth(width);
         ValidateMiterLimit(miterLimit);
         int first = SkipDegenerate(points, 0);
-        if (first >= points.Length - 1) return;
+        if (first >= points.Length - 1)
+        {
+            if (points.Length == 0 || cap == SvgStrokeCap.Butt) return;
+            SvgDevicePoint center = points[first];
+            double dotHalfWidth = width / 2;
+            if (cap == SvgStrokeCap.Round)
+            {
+                builder.BeginContour(new SvgDevicePoint(RequireFinite(center.X + dotHalfWidth), RequireFinite(center.Y)));
+                EmitArcFan(builder, center, dotHalfWidth, (1, 0), (0, 1), (-1, 0), cancellationToken);
+                EmitArcFan(builder, center, dotHalfWidth, (-1, 0), (0, -1), (1, 0), cancellationToken);
+                builder.EndContour();
+                return;
+            }
+            SvgDevicePoint squareMin = new SvgDevicePoint(RequireFinite(center.X - dotHalfWidth), RequireFinite(center.Y - dotHalfWidth));
+            SvgDevicePoint squareMax = new SvgDevicePoint(RequireFinite(center.X + dotHalfWidth), RequireFinite(center.Y + dotHalfWidth));
+            builder.BeginContour(new SvgDevicePoint(squareMin.X, squareMin.Y));
+            builder.AddLine(new SvgDevicePoint(squareMax.X, squareMin.Y));
+            builder.AddLine(new SvgDevicePoint(squareMax.X, squareMax.Y));
+            builder.AddLine(new SvgDevicePoint(squareMin.X, squareMax.Y));
+            builder.EndContour();
+            return;
+        }
         int last = SkipDegenerateBackward(points, points.Length - 1);
         double halfWidth = width / 2;
         (double firstX, double firstY) = UnitDirection(points[first], points[SkipDegenerate(points, first + 1)]);

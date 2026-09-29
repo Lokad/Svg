@@ -725,7 +725,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     if (runs == 0) active = current;
                     else
                     {
-                        SvgStrokeOutline.StrokeOpenPolyline(active.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
+                        if (!SvgStrokeOutline.IsAllIdentical(active.AsSpan())) SvgStrokeOutline.StrokeOpenPolyline(active.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
                         active.Clear();
                     }
 
@@ -769,12 +769,12 @@ internal ref struct SvgOrthogonalGeometryLowering
             ReadOnlySpan<SvgDevicePoint> head = leading.AsSpan();
             ReadOnlySpan<SvgDevicePoint> tail = current.AsSpan();
             current.AddRange(head.Length > 0 && tail.Length > 0 && head[0] == tail[tail.Length - 1] ? head[1..] : head);
-            SvgStrokeOutline.StrokeOpenPolyline(current.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
+            if (!SvgStrokeOutline.IsAllIdentical(current.AsSpan())) SvgStrokeOutline.StrokeOpenPolyline(current.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
         }
         else
         {
-            SvgStrokeOutline.StrokeOpenPolyline(leading.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
-            if (endedAtEnd && current.Count > 0) SvgStrokeOutline.StrokeOpenPolyline(current.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
+            if (!SvgStrokeOutline.IsAllIdentical(leading.AsSpan())) SvgStrokeOutline.StrokeOpenPolyline(leading.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
+            if (endedAtEnd && current.Count > 0 && !SvgStrokeOutline.IsAllIdentical(current.AsSpan())) SvgStrokeOutline.StrokeOpenPolyline(current.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
         }
 
         static SvgDevicePoint DashCutPoint(SvgDevicePoint start, SvgDevicePoint end, double fraction)

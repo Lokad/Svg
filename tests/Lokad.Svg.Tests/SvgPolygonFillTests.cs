@@ -266,25 +266,21 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Single_point_path_stays_unsupported()
+    public void Single_point_fill_renders_nothing()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M4,4' fill='red'/></svg>");
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M4,4' fill='red'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only closed axis-aligned integer paths are implemented.", rejected.Message);
+        Assert.Equal(0, AlphaSum(pixels));
     }
 
     [Fact]
-    public void Mixed_open_closed_path_stays_unsupported()
+    public void Mixed_open_closed_path_drops_open_segment()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M0,4 L8,4' fill='red' stroke='red' stroke-width='2'/></svg>");
+        byte[] mixed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z M0,4 L8,4' fill='red' stroke='red' stroke-width='2'/></svg>", out _, out _);
+        byte[] square = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L8,8 L0,8 Z' fill='red' stroke='red' stroke-width='2'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only closed axis-aligned integer path contours are implemented.", rejected.Message);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(mixed, 8, 4, 4));
+        Assert.Equal(square, mixed);
     }
 
     [Fact]

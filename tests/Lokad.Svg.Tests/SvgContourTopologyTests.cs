@@ -48,21 +48,21 @@ public sealed class SvgContourTopologyTests
     }
 
     [Fact]
-    public void Open_contours_stay_unsupported()
+    public void Open_segment_plus_square_parses_single_fill()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 M16,16 H24 V24 H16 Z' fill='red'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 M16,16 H24 V24 H16 Z' fill='red'/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-        Assert.Contains("Only closed axis-aligned integer path contours are implemented.", exception.Message);
+        Assert.Single(root.Geometries);
+        Assert.False(root.HasUnsupportedChild);
     }
 
     [Fact]
-    public void Degenerate_contours_still_reject_at_tokenizing()
+    public void Closed_two_point_fill_parses_empty()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L0,0 L8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L0,0 L8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-        Assert.Contains("Only closed axis-aligned integer paths are implemented.", exception.Message);
+        Assert.Empty(root.Geometries);
+        Assert.False(root.HasUnsupportedChild);
     }
     [Fact]
     public void Diagonal_open_fill_parses_to_empty_geometries()

@@ -91,12 +91,12 @@ internal static class SvgOrthogonalGeometryTokenizer
                 }
                 // A closepath moves the current point back to the subpath start; open ends stay in place.
                 if (closedExplicit) current = points[contourStart];
-                // An explicit return to the contour start without closepath seals the contour for fill.
-                if (points.Count > contourStart && points[points.Count - 1] == points[contourStart]) points.RemoveLast();
+                // An explicit return to the contour start without closepath seals the contour for fill, keeping single-point contours for stroke outlining.
+                if (points.Count > contourStart + 1 && points[points.Count - 1] == points[contourStart]) points.RemoveLast();
                 int contourEnd = points.Count;
-                if (contourEnd - contourStart < 3 && (!allowDegenerateContours || contourEnd - contourStart < 2 || points[contourStart] == points[contourStart + 1])) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
+                if (contourEnd - contourStart < 3 && (!allowDegenerateContours || contourEnd == contourStart)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 if (points.Count > maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
-                for (int pointIndex = contourStart; pointIndex < contourEnd; pointIndex++)
+                for (int pointIndex = contourStart; pointIndex < contourEnd && contourEnd - contourStart > 1; pointIndex++)
                 {
                     SvgPoint start = points[pointIndex]; SvgPoint end = pointIndex + 1 < contourEnd ? points[pointIndex + 1] : points[contourStart];
                     if (start.X == end.X && start.Y == end.Y) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
@@ -122,6 +122,7 @@ internal static class SvgOrthogonalGeometryTokenizer
 
     private static SvgPoint AddLinePoint(BudgetedParserList<SvgPoint> points, int contourStart, SvgPoint current, SvgPoint next)
     {
+        if (next.X == current.X && next.Y == current.Y) return current;
         if (points.Count - contourStart >= 2)
         {
             SvgPoint previous = points[points.Count - 2];

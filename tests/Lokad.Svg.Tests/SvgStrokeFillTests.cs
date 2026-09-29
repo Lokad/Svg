@@ -1780,11 +1780,12 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(absolute, relative);
     }
     [Fact]
-    public void Bare_moveto_subpath_stays_unsupported()
+    public void Bare_moveto_with_butt_caps_is_noop()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\"><path d=\"M192,100H8M0,0\" stroke=\"#036\" stroke-width=\"2\"/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
+        byte[] dotted = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><path d='M192,100H8M0,0' stroke='#036' stroke-width='2'/></svg>", out _, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><path d='M192,100H8' stroke='#036' stroke-width='2'/></svg>", out _, out _);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(plain, dotted);
     }
     [Fact]
     public void Fractional_path_gradient_fill_matches_solid_coverage()
@@ -1878,6 +1879,68 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
         Assert.Contains("closed axis-aligned integer path contours", rejected.Message);
     }
+    [Fact]
+    public void Round_cap_dot_renders_disc()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4h0' fill='none' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 8, 4));
+        Assert.NotEqual(0, Pixel(pixels, 16, 6, 4).Alpha);
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 5, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 11, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 0, 0));
+        Assert.NotEqual(0, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Butt_dot_renders_nothing()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4h0' fill='none' stroke='red' stroke-width='4'/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Square_cap_dot_renders_square()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4h0' fill='none' stroke='red' stroke-width='4' stroke-linecap='square'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 8, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 6, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 9, 5));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 5, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 10, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 8, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 8, 6));
+    }
+
+    [Fact]
+    public void Zero_length_dash_run_paints_nothing()
+    {
+        byte[] full = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,8 H14' fill='none' stroke='#000' stroke-width='4' stroke-dasharray='4 2' stroke-linecap='round'/></svg>", out _, out _);
+        byte[] trimmed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,8 H12' fill='none' stroke='#000' stroke-width='4' stroke-dasharray='4 2' stroke-linecap='round'/></svg>", out _, out _);
+
+        Assert.Equal(trimmed, full);
+    }
+
+    [Fact]
+    public void Bare_moveto_dot_matches_zero_segment_dot()
+    {
+        byte[] bare = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4' fill='none' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>", out _, out _);
+        byte[] segment = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4h0' fill='none' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>", out _, out _);
+
+        Assert.Equal(segment, bare);
+    }
+
+    [Fact]
+    public void Mixed_square_and_dot_fill_drops_dot()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M0,0 H8 V8 H0 Z M12,4h0' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 12, 4));
+    }
+
 
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {

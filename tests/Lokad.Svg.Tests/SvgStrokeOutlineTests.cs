@@ -305,6 +305,79 @@ public sealed class SvgStrokeOutlineTests
         Assert.Equal(1, builder.ContourCount);
         Assert.InRange(builder.GetContour(0).ToArray().Select(point => point.X).Max(), 8.75, 9);
     }
+    [Fact]
+    public void Butt_dot_draws_nothing()
+    {
+        SvgDevicePoint[] dot = [new SvgDevicePoint(4, 6)];
+        SvgContourBuilder builder = new(32, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(dot, 4, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+
+        Assert.Equal(0, builder.ContourCount);
+    }
+
+    [Fact]
+    public void Round_dot_makes_disc_on_half_width_circle()
+    {
+        SvgDevicePoint center = new(4, 6);
+        SvgDevicePoint[] dot = [center];
+        SvgContourBuilder builder = new(64, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(dot, 4, 4, SvgStrokeCap.Round, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+
+        Assert.Equal(1, builder.ContourCount);
+        SvgDevicePoint[] contour = builder.GetContour(0).ToArray();
+        Assert.Equal(center.X + 2, contour[0].X);
+        Assert.Equal(center.Y, contour[0].Y);
+        Assert.True(contour.Length > 8, "Disc fan samples the full circle.");
+        foreach (SvgDevicePoint vertex in contour)
+        {
+            double dx = vertex.X - center.X;
+            double dy = vertex.Y - center.Y;
+            Assert.InRange(Math.Sqrt(dx * dx + dy * dy), 1.999999999, 2.000000001);
+        }
+    }
+
+    [Fact]
+    public void Square_dot_makes_axis_aligned_square()
+    {
+        SvgDevicePoint[] dot = [new SvgDevicePoint(4, 6)];
+        SvgContourBuilder builder = new(16, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(dot, 4, 4, SvgStrokeCap.Square, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+
+        Assert.Equal(1, builder.ContourCount);
+        Assert.Equal([new SvgDevicePoint(2, 4), new SvgDevicePoint(6, 4), new SvgDevicePoint(6, 8), new SvgDevicePoint(2, 8)], builder.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Repeated_point_collapses_to_round_dot()
+    {
+        SvgDevicePoint[] dot = [new SvgDevicePoint(4, 6), new SvgDevicePoint(4, 6), new SvgDevicePoint(4, 6)];
+        SvgContourBuilder builder = new(64, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(dot, 4, 4, SvgStrokeCap.Round, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+
+        Assert.Equal(1, builder.ContourCount);
+        foreach (SvgDevicePoint vertex in builder.GetContour(0).ToArray())
+        {
+            double dx = vertex.X - 4;
+            double dy = vertex.Y - 6;
+            Assert.InRange(Math.Sqrt(dx * dx + dy * dy), 1.999999999, 2.000000001);
+        }
+    }
+
+    [Fact]
+    public void Closed_singleton_draws_nothing()
+    {
+        SvgDevicePoint[] dot = [new SvgDevicePoint(4, 6)];
+        SvgContourBuilder builder = new(16, 4);
+
+        SvgStrokeOutline.StrokeClosedPolyline(dot, 4, 4, SvgStrokeJoin.Miter, builder, CancellationToken.None);
+
+        Assert.Equal(0, builder.ContourCount);
+    }
+
 
     [Fact]
     public void Cancelled_strokes_throw()
