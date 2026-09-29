@@ -150,6 +150,8 @@ Status 2026-09-29: row 4 fourth slice complete for inter-loop planar crossing re
 
 Status 2026-09-29: row 4 fifth slice complete for coincident-merge ordering. Bitwise-identical contours merge to first occurrence before classification instead of after splitting, where the CoincidentOverlap flag made the fill-path merge unreachable; the stroke path is unchanged. Full 92-document re-probe shows zero disposition drift with identical byte counts. Diagnosis: inv-001 path 0 keeps overlap plus touches between near-identical arc variants (overlap union work), and inv-026 group g56 fails on 1e-13 dust from unclosed-curve endpoints (proven tolerance work). Full gate holds 2557 core plus 100 visual plus 6 font green; memory and package checks pass. Coincident overlaps, even-odd multi-crossings and stroke unions stay queued.
 
+Status 2026-09-29: row 4 diagnosis without product change. Parsed signs on the mixed crossing-plus-touch probe read 1,-1,1, proving the shared-pixel residual is opposite-role subtraction through the shared first vertex (Abs-masked elsewhere), not accumulator wrap; correcting the role cannot improve fidelity (clamp lands equally far on the other side), so spatial union stays the queued fix and the skip flag stays scoped. inv-050 advances past the stylesheet gate to the Default raster work limit at intrinsic 30in with explicit-size comparison ruled out by the viewport contract. Full gate holds 2557 core plus 100 visual plus 6 font green.
+
 For row 3, retain geometric coverage, mask alpha, paint alpha, premultiplied
 intermediates and final straight RGBA as distinct operations. The opaque 0.75
 observation (192 in Chrome versus 191) motivates a coverage change. It does not

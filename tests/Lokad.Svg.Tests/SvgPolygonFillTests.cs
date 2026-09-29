@@ -1065,8 +1065,10 @@ public sealed class SvgPolygonFillTests
         // R34 planar split: the triangle corner (2,2) is bitwise-identical to the
         // computed bowtie crossing, so the touch becomes a shared split vertex and
         // the union paints. Staged oracle runs mixt-o1..o3 agree 3/3 byte-identical
-        // SHA-256 317b08359b73ce8af25043340c5063d1464fa315633d3f7335a42d01010769f6;
-        // the only residual is overlap summation at the shared pixel (85 vs 170).
+        // SHA-256 317b08359b73ce8af25043340c5063d1464fa315633d3f7335a42d01010769f6.
+        // Parsed signs read 1,-1,1: the triangle resolves -1 through its shared
+        // first vertex while Abs masks the sign everywhere except overlap pixels,
+        // so the shared pixel subtracts (85) instead of unioning (170).
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,4 L4,0 L0,4 Z M2,2 L8,4 L8,8 L2,8 Z' fill='red'/></svg>", out _, out _);
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 6));
