@@ -467,7 +467,7 @@ public sealed class RenderBudgetTests
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1)], false, 0, null);
             SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 375);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
-            Assert.Equal(375, surface.WorkUnits);
+            Assert.Equal(247, surface.WorkUnits);
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);
@@ -484,7 +484,7 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1)], false, 0, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 100);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 80);
             SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None));
             Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
             Assert.Contains("raster work", exception.Message);

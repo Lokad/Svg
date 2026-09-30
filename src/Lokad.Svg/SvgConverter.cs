@@ -417,14 +417,15 @@ public static class SvgConverter
             if (!polygon.HasFill || polygon.Points.Length < 3) return;
             using MappedPolygon raster = MapPolygon(polygon.Points, polygon.Mapping, polygon.Clip);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
-            long coverage = (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
-            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
-            workUnits += coverage;
             ReadOnlySpan<int> contourEnds = polygon.ContourEnds;
             ReadOnlySpan<int> nestingSigns = polygon.Signs is int[] signs ? signs : Array.Empty<int>();
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
+            // Charge the taken traversal: analytic rows cost pixels while the fan evaluates every contour per pixel.
+            long coverage = useAnalytic ? (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) : (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
+            workUnits += coverage;
             long scanSetup = 0;
             using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
             if (!useAnalytic)
@@ -477,9 +478,6 @@ public static class SvgConverter
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
             using MappedPolygon raster = MapPolygon(outline.Points, outline.Mapping, outline.Clip);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
-            long coverage = (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
-            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
-            workUnits += coverage;
             SvgLinearGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
             double directionX = definition.X2 - definition.X1;
@@ -497,6 +495,9 @@ public static class SvgConverter
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
+            long coverage = useAnalytic ? (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) : (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
+            workUnits += coverage;
             long scanSetup = 0;
             using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
             if (!useAnalytic)
@@ -583,9 +584,6 @@ public static class SvgConverter
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
             using MappedPolygon raster = MapPolygon(outline.Points, outline.Mapping, outline.Clip);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
-            long coverage = (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
-            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
-            workUnits += coverage;
             SvgRadialGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
             if (definition.Radius <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
@@ -599,6 +597,9 @@ public static class SvgConverter
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
+            long coverage = useAnalytic ? (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) : (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
+            workUnits += coverage;
             long scanSetup = 0;
             using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
             if (!useAnalytic)
@@ -737,9 +738,6 @@ public static class SvgConverter
             if (!outline.HasFill || outline.Points.Length < 3) return;
             using MappedPolygon raster = MapPolygon(outline.Points, outline.Mapping, outline.Clip);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
-            long coverage = (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
-            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
-            workUnits += coverage;
             SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null);
             if (!TryMapPatternTile(source, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry tile = mappedTile ?? source;
@@ -753,6 +751,9 @@ public static class SvgConverter
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
+            long coverage = useAnalytic ? (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) : (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
+            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
+            workUnits += coverage;
             long scanSetup = 0;
             using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
             if (!useAnalytic)
