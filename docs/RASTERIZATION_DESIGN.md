@@ -1289,3 +1289,9 @@ Question: which lowering path renders the axis-aligned union probes that were at
 Method: read the orthogonal shape dispatch and band scan conversion, then probe a notch-tab multi-span interlock that polygon union must reject.
 Facts: paths without diagonal contours lower through winding-grouped rectangle bands where doubled spans union and opposite spans cancel natively, so every H-V union probe including the notch-tab interlock renders exact without polygon surgery. Genuine splice, drop, admission and guard evidence stands on the diagonal probes and diagonal unit tests only, which rejected before union and render after. The axis fixtures stay valid exact controls with corrected attribution, and the notch-tab probe is discarded as duplicate coverage. Band winding already completes the axis-aligned duplicate and overlap classes.
 Decision: no product change. Next: row-5 curve retention or the clip mask-layer slice.
+
+## Redundant shared-vertex gate removed as ClassifySet covers touches (2026-09-30 cleanup)
+Question: does the explicit HasSharedContourVertex gate change any admission beyond ClassifySet.
+Method: remove the helper, its call and its quadratic charge with the twin pin back to 68, keeping the shared-vertex fan test which passes through the classifier touch flags.
+Facts: the full gate holds with zero behavior change across every exact fixture, research tuple and inventory disposition sampled, confirming the gate duplicated classifier detection while taxing every multi-contour prepare. The fan test stays green as the regression lock.
+Decision: landed as the removal with the pin revert. Next: row-5 curve retention or the clip mask-layer slice.

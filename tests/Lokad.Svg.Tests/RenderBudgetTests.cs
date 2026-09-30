@@ -1113,7 +1113,7 @@ public sealed class RenderBudgetTests
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(twin, [3, 6], [], false, [1, 1], 0, 16, 0, 16, 16, 16, budget, out long twinSetup, out bool twinEligible, CancellationToken.None))
         {
             Assert.True(twinEligible);
-            Assert.Equal(104, twinSetup);
+            Assert.Equal(68, twinSetup);
         }
         SvgDevicePoint[] touching = [new(0, 0), new(8, 0), new(0, 8), new(8, 0), new(8, 8), new(0, 8)];
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(touching, [3, 6], [], false, [1, 1], 0, 16, 0, 16, 16, 16, budget, out long touchingSetup, out bool touchingEligible, CancellationToken.None))

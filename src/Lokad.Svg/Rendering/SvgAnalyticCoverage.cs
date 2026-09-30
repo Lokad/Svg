@@ -354,9 +354,6 @@ internal ref struct SvgAnalyticCoverage
             SvgContourFlags setStructure = SvgContourStructure.ClassifySet(points, ends, cancellationToken);
             setupWork += (long)points.Length * points.Length;
             if ((setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
-            bool sharesVertices = HasSharedContourVertex(points, ends, cancellationToken);
-            setupWork += (long)points.Length * points.Length;
-            if (sharesVertices) return default;
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
             RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth), SvgMemoryCategory.Surface);
@@ -924,31 +921,6 @@ internal ref struct SvgAnalyticCoverage
         rite -= SnapHalf;
         return (left, rite, y);
     }
-    /// <summary>Reports whether any vertex value repeats across contours or non-adjacently within one, which the contact classifier cannot see.</summary>
-    /// <remarks>Split-loop shared vertices and degenerate revisits need the fan path with its shared-vertex nesting rules; bitwise-adjacent joints (including closing pairs) stay invisible like in classification. Charges nothing here; the caller charges a dedicated quadratic upper bound after the call.</remarks>
-    private static bool HasSharedContourVertex(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, CancellationToken cancellationToken)
-    {
-        int previousEnd = 0;
-        for (int contour = 0; contour < ends.Length; contour++)
-        {
-            if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-            int start = previousEnd;
-            int end = ends[contour];
-            previousEnd = end;
-            for (int first = start; first < end; first++)
-            {
-                if ((first & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                for (int second = first + 1; second < points.Length; second++)
-                {
-                    if (points[first].X != points[second].X || points[first].Y != points[second].Y) continue;
-                    if (second < end && (second == first + 1 || (first == start && second == end - 1))) continue;
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     /// <summary>Walks the retained edges from the top and emits the requested row coverage, charging measured work.</summary>
     /// <remarks>Rows must arrive in ascending order from the preparation x-y window; each call rebuilds links and edge positions from setup, so calls are independent apart from ascending order. The row span holds mask alphas for the window width after the call. Row work covers zeroing, link and position rebuilds, visited strips and a sorting-free walk for the caller ledger.</remarks>
     internal void PrepareRow(int y, out long rowWork, CancellationToken cancellationToken)
