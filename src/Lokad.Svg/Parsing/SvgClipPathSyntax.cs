@@ -5,7 +5,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one direct leaf geometry range whose userSpace clip-path reference resolves at document end.</summary>
-internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, bool AdmitsBoundingBox, bool SubjectMapIsIdentity);
+internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, bool AdmitsBoundingBox);
 
 /// <summary>Retains one group command range whose userSpace clip-path reference resolves at document end, after use expansion.</summary>
 internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame? Parent, int FirstCommandIndex, int EndCommandIndex, int Depth, int ScaledPushesAtOpen, int ScaledPushesAtClose);
@@ -93,7 +93,6 @@ internal static class SvgClipPathSyntax
             }
             else if (state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon clipPolygon))
             {
-                if (!pending.SubjectMapIsIdentity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths with transformed content are not implemented.");
                 if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths in transformed viewports are not implemented.");
                 if (state.GroupUseExpanded) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths with use instances are not implemented.");
                 for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)

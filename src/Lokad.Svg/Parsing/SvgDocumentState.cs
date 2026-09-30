@@ -26,6 +26,7 @@ internal sealed class SvgDocumentState : IDisposable
         ClipPolygons = new BudgetedParserDictionary<string, SvgClipPolygon>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         ObjectClips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Masks = new BudgetedParserDictionary<string, byte>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
+        MaskContents = new BudgetedParserDictionary<string, SvgMaskContent>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         MaskRegions = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         MaskFractionRegions = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         MaskContentBoxes = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
@@ -83,6 +84,14 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserDictionary<string, byte> Masks { get; }
 
+    internal BudgetedParserDictionary<string, SvgMaskContent> MaskContents { get; }
+
+    internal SvgGeometry[]? MaskContentGeometries { get; set; }
+
+    internal byte MaskContentLuminance { get; set; }
+
+    internal bool MaskContentIsAlpha { get; set; }
+
     internal BudgetedParserDictionary<string, SvgClipBox> MaskRegions { get; }
 
     internal BudgetedParserDictionary<string, SvgClipBox> MaskFractionRegions { get; }
@@ -106,6 +115,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserList<SvgGroupSnapshotStart> GroupSnapshotStarts { get; }
 
     internal BudgetedParserList<PendingLeafClip> PendingLeafClips { get; }
+
+
 
     internal BudgetedParserList<PendingGroupClip> PendingGroupClips { get; }
 
@@ -239,6 +250,8 @@ internal sealed class SvgDocumentState : IDisposable
         ClipPolygons.Dispose();
         ObjectClips.Dispose();
         Masks.Dispose();
+        foreach (SvgMaskContent content in MaskContents.Values) foreach (SvgGeometry geometry in content.Geometries) geometry.Dispose();
+        MaskContents.Dispose();
         MaskRegions.Dispose();
         MaskFractionRegions.Dispose();
         MaskContentBoxes.Dispose();

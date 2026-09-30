@@ -40,6 +40,7 @@ internal static class SvgGroupParser
     {
         string? reference = reader.GetAttribute("mask");
         if (reference is null) return false;
+        if (state.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(reference), out _)) return false;
         if (!state.MaskContentBoxes.TryGetValue(SvgMaskSyntax.ParseMaskId(reference), out SvgClipBox scope)) return false;
         state.MaskScopes.Add(scope);
         return true;

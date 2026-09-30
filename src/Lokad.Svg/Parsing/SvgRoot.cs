@@ -941,7 +941,7 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
 /// <summary>References retained scene geometry or marks an opacity-scope boundary.</summary>
-internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, byte Opacity, SvgClipBox? MaskRegion);
+internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, byte Opacity, SvgClipBox? MaskRegion, int MaskContentIndex);
 
 internal readonly record struct SvgPoint(int X, int Y);
 
@@ -953,14 +953,19 @@ internal sealed class SvgSceneStorage : IDisposable
     private readonly RenderBudget.BudgetReservation? _geometryReservation;
     private readonly RenderBudget.BudgetReservation? _commandReservation;
     private readonly List<RenderBudget.BudgetReservation> _paintReservations;
+    private readonly RenderBudget.BudgetReservation? _maskContentReservation;
+    private readonly List<RenderBudget.BudgetReservation> _maskReservations;
 
-    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation, List<RenderBudget.BudgetReservation> paintReservations)
+    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation, List<RenderBudget.BudgetReservation> paintReservations, SvgMaskContent[] maskContents, RenderBudget.BudgetReservation? maskContentReservation, List<RenderBudget.BudgetReservation> maskReservations)
     {
         Geometries = geometries;
         Commands = commands;
+        MaskContents = maskContents;
         _geometryReservation = geometryReservation;
         _commandReservation = commandReservation;
         _paintReservations = paintReservations;
+        _maskContentReservation = maskContentReservation;
+        _maskReservations = maskReservations;
     }
 
     internal SvgGeometry[] Geometries { get; }
@@ -970,14 +975,28 @@ internal sealed class SvgSceneStorage : IDisposable
 
     internal SvgDrawCommand[] Commands { get; }
 
-    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands, List<RenderBudget.BudgetReservation> paintReservations)
+    internal SvgMaskContent[] MaskContents { get; }
+
+    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands, List<RenderBudget.BudgetReservation> paintReservations, BudgetedSceneList<SvgMaskContent> maskContents, List<RenderBudget.BudgetReservation> maskReservations)
     {
         ArgumentNullException.ThrowIfNull(paintReservations);
+        ArgumentNullException.ThrowIfNull(maskContents);
+        ArgumentNullException.ThrowIfNull(maskReservations);
         OwnedSceneArray<SvgGeometry> ownedGeometries = geometries.Detach();
         try
         {
             OwnedSceneArray<SvgDrawCommand> ownedCommands = commands.Detach();
-            return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation, paintReservations);
+            try
+            {
+                OwnedSceneArray<SvgMaskContent> ownedMasks = maskContents.Detach();
+                return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation, paintReservations, ownedMasks.Items, ownedMasks.Reservation, maskReservations);
+            }
+            catch
+            {
+                ownedCommands.Dispose();
+                foreach (RenderBudget.BudgetReservation reservation in maskReservations) reservation.Dispose();
+                throw;
+            }
         }
         catch
         {
@@ -991,9 +1010,12 @@ internal sealed class SvgSceneStorage : IDisposable
     public void Dispose()
     {
         foreach (SvgGeometry geometry in Geometries) geometry.Dispose();
+        foreach (SvgMaskContent content in MaskContents) foreach (SvgGeometry geometry in content.Geometries) geometry.Dispose();
         _geometryReservation?.Dispose();
         _commandReservation?.Dispose();
         foreach (RenderBudget.BudgetReservation reservation in _paintReservations) reservation.Dispose();
+        _maskContentReservation?.Dispose();
+        foreach (RenderBudget.BudgetReservation reservation in _maskReservations) reservation.Dispose();
     }
 }
 
@@ -1001,18 +1023,26 @@ internal sealed class SvgSceneStorage : IDisposable
 internal sealed class SvgSceneBuilder : IDisposable
 {
     private readonly RenderBudget _budget;
+    private readonly ParserWorkCounter _workCounter;
+    private readonly CancellationToken _cancellationToken;
     private readonly BudgetedSceneList<SvgGeometry> _geometries;
     private readonly BudgetedSceneList<SvgDrawCommand> _commands;
     private List<RenderBudget.BudgetReservation> _paintReservations = new();
+    private readonly BudgetedSceneList<SvgMaskContent> _maskContents;
+    private List<RenderBudget.BudgetReservation> _maskReservations = new();
     private readonly HashSet<SvgGradientStop[]> _reservedStopArrays = new();
     private bool _built;
 
     internal SvgSceneBuilder(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
+        ArgumentNullException.ThrowIfNull(workCounter);
         _budget = budget;
+        _workCounter = workCounter;
+        _cancellationToken = cancellationToken;
         _geometries = new(budget, workCounter, cancellationToken);
         _commands = new(budget, workCounter, cancellationToken);
+        _maskContents = new(budget, workCounter, cancellationToken);
     }
 
     internal void AddGeometry(SvgGeometry geometry)
@@ -1020,7 +1050,7 @@ internal sealed class SvgSceneBuilder : IDisposable
         ReserveGradientStops(geometry);
         int geometryIndex = _geometries.Count;
         _geometries.Add(geometry);
-        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255, null));
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255, null, -1));
     }
 
     internal int GeometryCount => _geometries.Count;
@@ -1062,14 +1092,14 @@ internal sealed class SvgSceneBuilder : IDisposable
         foreach (SvgGeometry geometry in geometries) ReserveGradientStops(geometry);
         int firstGeometryIndex = _geometries.Count;
         _geometries.AddRange(geometries);
-        for (int index = 0; index < geometries.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null));
+        for (int index = 0; index < geometries.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1));
     }
 
     internal SvgSceneSlot AddReferencePlaceholder()
     {
         SvgSceneSlot slot = new(_geometries.Count, _commands.Count);
         _geometries.Add(default);
-        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null));
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null, -1));
         return slot;
     }
 
@@ -1079,26 +1109,84 @@ internal sealed class SvgSceneBuilder : IDisposable
         if (applied.Length == 0) throw new InvalidOperationException("Deferred reference resolution requires at least one geometry.");
         foreach (SvgGeometry geometry in applied) ReserveGradientStops(geometry);
         _geometries[slot.GeometryIndex] = applied[0];
-        _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null);
+        _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null, -1);
         if (applied.Length == 1) return 0;
         int firstGeometryIndex = _geometries.Count;
         for (int index = 1; index < applied.Length; index++) _geometries.Add(applied[index]);
         SvgDrawCommand[] extra = new SvgDrawCommand[applied.Length - 1];
-        for (int index = 0; index < extra.Length; index++) extra[index] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null);
+        for (int index = 0; index < extra.Length; index++) extra[index] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1);
         _commands.Insert(slot.CommandIndex + 1, extra);
         return extra.Length;
     }
 
-    internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, null));
+    internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, null, -1));
 
-    internal void EndOpacityScope() => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null));
+    internal void EndOpacityScope() => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1));
+
+    /// <summary>Copies one mask content evaluation under scene ownership, returning its command index.</summary>
+    internal int AddMaskContent(SvgMaskContent content)
+    {
+        SvgGeometry[] copied = new SvgGeometry[content.Geometries.Length];
+        try
+        {
+            for (int index = 0; index < content.Geometries.Length; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                if (content.Geometries[index].Kind != SvgGeometryKind.PolygonFill) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid mask content is implemented.");
+                SvgPolygonFill polygon = content.Geometries[index].Polygon;
+                long bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(polygon.ContourEnds.Length) + (polygon.Signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(polygon.Signs.Length)));
+                RenderBudget.BudgetReservation reservation = _budget.Reserve(bytes, SvgMemoryCategory.Scene);
+                try
+                {
+                    SvgDevicePoint[] points = new SvgDevicePoint[polygon.Points.Length];
+                    int[] ends = new int[polygon.ContourEnds.Length];
+                    int[]? signs = null;
+                    if (polygon.Signs is int[] sourceSigns)
+                    {
+                        signs = new int[sourceSigns.Length];
+                        for (int sign = 0; sign < signs.Length; sign++)
+                        {
+                            _workCounter.Consume(_cancellationToken);
+                            signs[sign] = sourceSigns[sign];
+                        }
+                    }
+                    for (int point = 0; point < points.Length; point++)
+                    {
+                        _workCounter.Consume(_cancellationToken);
+                        points[point] = polygon.Points[point];
+                    }
+                    for (int end = 0; end < ends.Length; end++)
+                    {
+                        _workCounter.Consume(_cancellationToken);
+                        ends[end] = polygon.ContourEnds[end];
+                    }
+                    copied[index] = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(points, ends, signs, polygon.Color, polygon.HasFill, polygon.IsEvenOdd, polygon.Mapping, polygon.Clip, reservation, _budget));
+                }
+                catch
+                {
+                    reservation.Dispose();
+                    throw;
+                }
+            }
+        }
+        catch
+        {
+            foreach (SvgGeometry geometry in copied) geometry.Dispose();
+            throw;
+        }
+        _maskReservations.Add(_budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(copied.Length), SvgMemoryCategory.Scene));
+        int contentIndex = _maskContents.Count;
+        _maskContents.Add(new SvgMaskContent(copied, content.Luminance, content.IsAlpha));
+        return contentIndex;
+    }
 
     internal SvgSceneStorage Build()
     {
         if (_built) throw new InvalidOperationException("The SVG scene has already been built.");
         _built = true;
-        SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations);
+        SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations, _maskContents, _maskReservations);
         _paintReservations = new();
+        _maskReservations = new();
         return storage;
     }
 
@@ -1109,6 +1197,9 @@ internal sealed class SvgSceneBuilder : IDisposable
         _commands.Dispose();
         foreach (RenderBudget.BudgetReservation reservation in _paintReservations) reservation.Dispose();
         _paintReservations.Clear();
+        _maskContents.Dispose();
+        foreach (RenderBudget.BudgetReservation reservation in _maskReservations) reservation.Dispose();
+        _maskReservations.Clear();
     }
 }
 

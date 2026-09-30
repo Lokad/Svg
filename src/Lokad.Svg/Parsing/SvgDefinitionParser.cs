@@ -126,6 +126,23 @@ internal static class SvgDefinitionParser
                 state.SawStyleableNode = true;
                 return true;
             }
+            if (reader.LocalName == "circle")
+            {
+                if (state.MaskValue is not null || state.MaskContentGeometries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
+                SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
+                if (reader.GetAttribute("clip-path") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on mask content are not implemented.");
+                if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
+                SvgPaintableElementContext contentContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                using SvgParsedGeometry lowered = SvgLeafParser.ParseCircle(reader, contentContext, null, state);
+                (SvgGeometry[] contentGeometries, SvgColor contentPaint) = RetainPaintedMaskContent(lowered.Geometries, state, workCounter, cancellationToken);
+                state.MaskContentGeometries = contentGeometries;
+                state.MaskContentLuminance = contentPaint.Red;
+                state.MaskContentIsAlpha = state.MaskIsAlpha;
+                state.MaskContentBox = UnionMaskContentBox(state.MaskContentGeometries, workCounter, cancellationToken);
+                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                state.SawStyleableNode = true;
+                return true;
+            }
             state.HasUnsupportedContent = true;
             return true;
         }
@@ -252,6 +269,7 @@ internal static class SvgDefinitionParser
             string? maskAttribute = useReader.GetAttribute("mask");
             if (maskAttribute is null) return null;
             if (document.Masks.TryGetValue(SvgMaskSyntax.ParseMaskId(maskAttribute), out byte value)) return value;
+            if (document.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(maskAttribute), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content on use instances is not implemented.");
             return null;
         }
 
@@ -299,6 +317,54 @@ internal static class SvgDefinitionParser
             SvgRectangle instanceBox = new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null);
             SvgClipBox viewport = useReference.Transform.Apply(new SvgClipBox(useReference.X, useReference.Y, useReference.Width.Value, useReference.Height.Value));
             return SvgClipPathSyntax.ResolveLeafClipOrPlacement(useReader, document, document.EffectiveFrame, viewport.ClipRectangle(instanceBox));
+        }
+
+        static SvgClipBox UnionMaskContentBox(SvgGeometry[] geometries, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            double left = double.PositiveInfinity;
+            double top = double.PositiveInfinity;
+            double right = double.NegativeInfinity;
+            double bottom = double.NegativeInfinity;
+            foreach (SvgGeometry geometry in geometries)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgRectangle box = SvgMaskSyntax.BoundingBox(geometry);
+                if (box.X < left) left = box.X;
+                if (box.Y < top) top = box.Y;
+                if (box.X + box.Width > right) right = box.X + box.Width;
+                if (box.Y + box.Height > bottom) bottom = box.Y + box.Height;
+            }
+            return new SvgClipBox(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top));
+        }
+
+        static (SvgGeometry[] Geometries, SvgColor Paint) RetainPaintedMaskContent(ReadOnlySpan<SvgGeometry> geometries, SvgDocumentState maskState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            ArgumentNullException.ThrowIfNull(maskState);
+            ArgumentNullException.ThrowIfNull(workCounter);
+            using BudgetedParserList<int> kept = new(maskState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+            SvgColor paint = default;
+            bool hasPaint = false;
+            for (int index = 0; index < geometries.Length; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                if (geometries[index].Kind != SvgGeometryKind.PolygonFill) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid mask content is implemented.");
+                if (!geometries[index].Polygon.HasFill) continue;
+                SvgColor color = geometries[index].Polygon.Color;
+                if (color.Red != color.Green || color.Red != color.Blue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only grayscale luminance mask content is implemented.");
+                if (!hasPaint) paint = color;
+                else if (!paint.Equals(color)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-paint mask content is implemented.");
+                hasPaint = true;
+                kept.Add(index);
+            }
+            if (!hasPaint) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Invisible mask content is not implemented.");
+            maskState.DefinitionReservations.Add(maskState.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(kept.Count), SvgMemoryCategory.Scene));
+            SvgGeometry[] retained = new SvgGeometry[kept.Count];
+            for (int index = 0; index < kept.Count; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                retained[index] = geometries[kept[index]];
+            }
+            return (retained, paint);
         }
 
         static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, SvgDocumentState clipState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -820,6 +886,17 @@ internal static class SvgDefinitionParser
         string retainedId = state.Strings.Copy(state.PatternId ?? throw new InvalidOperationException("Pattern registration requires an identifier."));
         SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern registration requires pattern dimensions.");
         if (!state.Patterns.TryAdd(retainedId, tile)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
+    }
+
+    internal static void RegisterMaskContent(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        workCounter.Consume(cancellationToken);
+        string retainedId = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask content registration requires an identifier."));
+        SvgGeometry[] geometries = state.MaskContentGeometries ?? throw new InvalidOperationException("Mask content registration requires retained geometries.");
+        if (state.Masks.TryGetValue(retainedId, out _) || !state.MaskContents.TryAdd(retainedId, new SvgMaskContent(geometries, state.MaskContentLuminance, state.MaskContentIsAlpha))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+        if (state.MaskCustomRegion is SvgClipBox region && !state.MaskRegions.TryAdd(retainedId, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+        if (state.MaskFractionRegion is SvgClipBox fractions && !state.MaskFractionRegions.TryAdd(retainedId, fractions)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+        if (state.MaskContentBox is SvgClipBox content && !state.MaskContentBoxes.TryAdd(retainedId, content)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
     }
 
     internal static void RegisterMask(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

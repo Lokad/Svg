@@ -253,11 +253,16 @@ internal static class SvgDocumentTraversal
                 }
                 if (reader.Depth == state.MaskDepth)
                 {
-                    if (state.MaskId is not null) SvgDefinitionParser.RegisterMask(state, workCounter, cancellationToken);
+                    if (state.MaskId is not null)
+                    {
+                        if (state.MaskContentGeometries is not null) SvgDefinitionParser.RegisterMaskContent(state, workCounter, cancellationToken);
+                        else SvgDefinitionParser.RegisterMask(state, workCounter, cancellationToken);
+                    }
                     state.MaskDepth = -1;
                     state.MaskId = null;
                     state.MaskIsAlpha = false;
                     state.MaskValue = null;
+                    state.MaskContentGeometries = null;
                     state.MaskCustomRegion = null;
                     state.MaskFractionRegion = null;
                 }

@@ -244,11 +244,41 @@ public static class SvgConverter
                     if (compositionWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Group opacity composition exceeds the configured limit.");
                     workUnits += compositionWork;
                     (double regionLeft, double regionTop, double regionRight, double regionBottom) = command.MaskRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
+                    byte[] maskSurface = [];
+                    byte maskLuminance = 255;
+                    bool maskIsAlpha = false;
+                    bool hasMaskContent = command.MaskContentIndex >= 0;
+                    RenderBudget.BudgetReservation? maskReservation = null;
+                    if (hasMaskContent)
+                    {
+                        if (root.SceneStorage is null || (uint)command.MaskContentIndex >= (uint)root.SceneStorage.MaskContents.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group references missing mask content.");
+                        SvgMaskContent maskContent = root.SceneStorage.MaskContents[command.MaskContentIndex];
+                        maskLuminance = maskContent.Luminance;
+                        maskIsAlpha = maskContent.IsAlpha;
+                        maskReservation = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
+                        try
+                        {
+                            maskSurface = new byte[checked(pixelCount * 4)];
+                            foreach (SvgGeometry contentGeometry in maskContent.Geometries) RasterizeGeometry(contentGeometry, maskSurface);
+                        }
+                        catch
+                        {
+                            maskReservation.Dispose();
+                            throw;
+                        }
+                    }
+                    using RenderBudget.BudgetReservation? maskLease = maskReservation;
                     for (int pixel = 0; pixel < pixelCount; pixel++)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         int offset = pixel * 4;
                         byte opacity = MultiplyAlpha(groupPixels[offset + 3], command.Opacity);
+                        if (hasMaskContent)
+                        {
+                            byte contentAlpha = maskSurface[offset + 3];
+                            byte maskValue = maskIsAlpha ? contentAlpha : (byte)(contentAlpha * maskLuminance / 255);
+                            opacity = MultiplyAlpha(opacity, maskValue);
+                        }
                         if (command.MaskRegion is not null)
                         {
                             int x = pixel % outputWidth;
