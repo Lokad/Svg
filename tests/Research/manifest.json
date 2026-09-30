@@ -2452,7 +2452,16 @@
       "featureTags": ["geometry", "path", "diagonal-edge", "coincident-overlap", "union", "coverage"],
       "width": 16,
       "height": 16,
-      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 4,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 4,
+        "minimumMismatchX": 6,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 9,
+        "maximumMismatchY": 5
+      },
       "oracle": {
         "referencePng": "references/union-coincident-share-diag-16x16.png",
         "referenceSha256": "8e4aeb1a7abc628d7cd299e65770bcbcdda804dd0de1f6c707c652688663f644",
@@ -2478,7 +2487,16 @@
       "featureTags": ["geometry", "path", "diagonal-edge", "coincident-overlap", "union", "coverage"],
       "width": 16,
       "height": 16,
-      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 9,
+        "maximumChannelError": 11,
+        "maximumAlphaError": 11,
+        "alphaChangedPixelCount": 9,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 10,
+        "maximumMismatchY": 11
+      },
       "oracle": {
         "referencePng": "references/union-double-strike-diag-16x16.png",
         "referenceSha256": "4f6eff1b7c9809afd9aa9c1fc0b3e039acd0c53614c02a5e1a921440cba83d25",

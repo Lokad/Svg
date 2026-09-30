@@ -1048,13 +1048,13 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Coincident_edge_overlap_stays_unsupported()
+    public void Coincident_edge_overlap_unions_like_outline()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,0 L0,4 Z M0,4 L4,4 L4,0 Z' fill='red'/></svg>");
+        // R34: two loops sharing one coincident span splice into the union boundary.
+        byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,0 L0,4 Z M0,4 L4,4 L4,0 Z' fill='red'/></svg>", out _, out _);
+        byte[] outline = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,0 L4,4 L0,4 Z' fill='red'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(outline, union);
     }
 
     [Fact]
@@ -1351,5 +1351,37 @@ public sealed class SvgPolygonFillTests
             wholeWalker.PrepareRow(4, out long _, CancellationToken.None);
             Assert.Equal(wholeWalker.Row.ToArray(), splitWalker.Row.ToArray());
         }
+    }
+
+    [Fact]
+    public void Coincident_shared_edge_unions_like_outline()
+    {
+        // R34: two loops sharing one coincident span splice into the union boundary.
+        byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,2 L10,2 L2,10 Z M10,2 L6,6 L10,6 Z' fill='red'/></svg>", out _, out _);
+        byte[] outline = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M6,6 L2,10 L2,2 L10,2 L10,6 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(outline, union);
+    }
+
+    [Fact]
+    public void Contained_double_strike_renders_like_outer()
+    {
+        // R34: a loop contained in a larger same-direction loop drops, keeping the outer fill.
+        byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,2 L12,2 L2,12 Z M6,2 L12,2 L6,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] outer = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,2 L12,2 L2,12 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(outer, union);
+    }
+
+    [Fact]
+    public void Nested_touching_hole_stays_unsupported()
+    {
+        // R34: opposite-direction containment sharing boundary stays rejected to preserve the hole.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 L16,0 L0,16 Z M0,8 L0,12 L4,8 Z' fill='red'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only simple diagonal polygon contours are implemented;", rejected.Message);
     }
 }

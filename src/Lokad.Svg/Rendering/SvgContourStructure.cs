@@ -243,6 +243,108 @@ internal static class SvgContourStructure
         return false;
     }
 
+    /// <summary>Finds one positive-length collinear overlap between edges of two distinct contour loops.</summary>
+    /// <remarks>Loop pairs share the classifier bounding-box precheck then require all-zero orientations with a dominant-axis interval test that separates positive-length coincidence from single-point contact; zero-length edges never report. Each reported overlap value always equals an endpoint of at least one of the two edges, so callers subdivide with bitwise copies and never compute points. Deterministic first-found order over loop pairs, first edges and second edges; observes cancellation at the pair checkpoint; allocates nothing and holds no budget.</remarks>
+    internal static bool TryFindInterLoopCoincidentOverlap(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, out int firstLoop, out int firstEdge, out int secondLoop, out int secondEdge, out SvgDevicePoint overlapFirst, out SvgDevicePoint overlapSecond, CancellationToken cancellationToken)
+    {
+        SvgPolygonCoverage.ValidateContourEnds(points, contourEnds);
+        firstLoop = -1;
+        firstEdge = -1;
+        secondLoop = -1;
+        secondEdge = -1;
+        overlapFirst = default;
+        overlapSecond = default;
+        int pairs = 0;
+        for (int first = 0; first < contourEnds.Length; first++)
+        {
+            int firstStart = first == 0 ? 0 : contourEnds[first - 1];
+            int firstCount = contourEnds[first] - firstStart;
+            for (int second = first + 1; second < contourEnds.Length; second++)
+            {
+                int secondStart = second == 0 ? 0 : contourEnds[second - 1];
+                int secondCount = contourEnds[second] - secondStart;
+                for (int firstIndex = 0; firstIndex < firstCount; firstIndex++)
+                {
+                    (SvgDevicePoint firstEdgeStart, SvgDevicePoint firstEdgeEnd) = EdgeAt(points, firstStart, firstCount, firstIndex);
+                    if (firstEdgeStart == firstEdgeEnd) continue;
+                    for (int secondIndex = 0; secondIndex < secondCount; secondIndex++)
+                    {
+                        if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        (SvgDevicePoint secondEdgeStart, SvgDevicePoint secondEdgeEnd) = EdgeAt(points, secondStart, secondCount, secondIndex);
+                        if (secondEdgeStart == secondEdgeEnd) continue;
+                        if (Math.Max(firstEdgeStart.X, firstEdgeEnd.X) < Math.Min(secondEdgeStart.X, secondEdgeEnd.X) || Math.Max(secondEdgeStart.X, secondEdgeEnd.X) < Math.Min(firstEdgeStart.X, firstEdgeEnd.X)) continue;
+                        if (Math.Max(firstEdgeStart.Y, firstEdgeEnd.Y) < Math.Min(secondEdgeStart.Y, secondEdgeEnd.Y) || Math.Max(secondEdgeStart.Y, secondEdgeEnd.Y) < Math.Min(firstEdgeStart.Y, firstEdgeEnd.Y)) continue;
+                        if (Orient(firstEdgeStart, firstEdgeEnd, secondEdgeStart) != 0 || Orient(firstEdgeStart, firstEdgeEnd, secondEdgeEnd) != 0) continue;
+                        if (Orient(secondEdgeStart, secondEdgeEnd, firstEdgeStart) != 0 || Orient(secondEdgeStart, secondEdgeEnd, firstEdgeEnd) != 0) continue;
+                        double deltaX = RequireFinite(firstEdgeEnd.X - firstEdgeStart.X);
+                        double deltaY = RequireFinite(firstEdgeEnd.Y - firstEdgeStart.Y);
+                        double firstLow;
+                        double firstHigh;
+                        double secondLow;
+                        double secondHigh;
+                        if (Math.Abs(deltaX) >= Math.Abs(deltaY))
+                        {
+                            firstLow = Math.Min(firstEdgeStart.X, firstEdgeEnd.X);
+                            firstHigh = Math.Max(firstEdgeStart.X, firstEdgeEnd.X);
+                            secondLow = Math.Min(secondEdgeStart.X, secondEdgeEnd.X);
+                            secondHigh = Math.Max(secondEdgeStart.X, secondEdgeEnd.X);
+                        }
+                        else
+                        {
+                            firstLow = Math.Min(firstEdgeStart.Y, firstEdgeEnd.Y);
+                            firstHigh = Math.Max(firstEdgeStart.Y, firstEdgeEnd.Y);
+                            secondLow = Math.Min(secondEdgeStart.Y, secondEdgeEnd.Y);
+                            secondHigh = Math.Max(secondEdgeStart.Y, secondEdgeEnd.Y);
+                        }
+                        if (Math.Min(firstHigh, secondHigh) <= Math.Max(firstLow, secondLow)) continue;
+                        SvgDevicePoint foundFirst = default;
+                        SvgDevicePoint foundSecond = default;
+                        int found = 0;
+                        CollectOverlapEndpoint(firstEdgeStart, secondEdgeStart, secondEdgeEnd, ref foundFirst, ref foundSecond, ref found);
+                        CollectOverlapEndpoint(firstEdgeEnd, secondEdgeStart, secondEdgeEnd, ref foundFirst, ref foundSecond, ref found);
+                        CollectOverlapEndpoint(secondEdgeStart, firstEdgeStart, firstEdgeEnd, ref foundFirst, ref foundSecond, ref found);
+                        CollectOverlapEndpoint(secondEdgeEnd, firstEdgeStart, firstEdgeEnd, ref foundFirst, ref foundSecond, ref found);
+                        if (found != 2) continue;
+                        firstLoop = first;
+                        firstEdge = firstIndex;
+                        secondLoop = second;
+                        secondEdge = secondIndex;
+                        overlapFirst = foundFirst;
+                        overlapSecond = foundSecond;
+                        return true;
+                    }
+                }
+            }
+        }
+        cancellationToken.ThrowIfCancellationRequested();
+        return false;
+    }
+
+    /// <summary>Adds one endpoint value to the overlap pair when it lies inside the other segment.</summary>
+    private static void CollectOverlapEndpoint(SvgDevicePoint candidate, SvgDevicePoint segmentStart, SvgDevicePoint segmentEnd, ref SvgDevicePoint foundFirst, ref SvgDevicePoint foundSecond, ref int found)
+    {
+        if (!WithinBox(candidate, segmentStart, segmentEnd)) return;
+        if (found > 0 && foundFirst == candidate) return;
+        if (found > 1 && foundSecond == candidate) return;
+        if (found == 0) foundFirst = candidate;
+        else if (found == 1) foundSecond = candidate;
+        found++;
+    }
+
+    /// <summary>Reports whether a vertex lies on the boundary of one closed contour slice.</summary>
+    /// <remarks>Zero orientation with containment in the edge box reports contact while zero-length edges never do; boundary points are the union drop and splice gate exclusions. Deterministic edge order; allocates nothing and holds no budget.</remarks>
+    internal static bool IsPointOnLoopBoundary(ReadOnlySpan<SvgDevicePoint> points, int start, int end, SvgDevicePoint candidate)
+    {
+        int count = end - start;
+        for (int edge = 0; edge < count; edge++)
+        {
+            (SvgDevicePoint edgeStart, SvgDevicePoint edgeEnd) = EdgeAt(points, start, count, edge);
+            if (edgeStart == edgeEnd) continue;
+            if (Orient(edgeStart, edgeEnd, candidate) == 0 && WithinBox(candidate, edgeStart, edgeEnd)) return true;
+        }
+        return false;
+    }
+
     private static bool TryFindProperCrossingCore(ReadOnlySpan<SvgDevicePoint> points, int start, int end, int excludeFirst, int excludeSecond, CancellationToken cancellationToken, out int firstEdge, out int secondEdge, out SvgDevicePoint crossing)
     {
         if (start < 0 || start > points.Length) throw new ArgumentOutOfRangeException(nameof(start));
