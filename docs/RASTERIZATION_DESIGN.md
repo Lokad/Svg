@@ -1367,3 +1367,9 @@ Question: does second-order cut estimation beat the linear blend without new reg
 Method: differentiate the chordal Lagrange parabola at cut fractions behind the hasCurves gate, then re-measure every dash touchpoint plus the 512px control with full-gate validation.
 Facts: the control falls 782 to 678 with maxima 255 to 84 while polyline unit tests hold bitwise through the gate. Ratchets move with improved or equal maxima except ellipse-dash alpha 119 to 128: butt 76 to 77 at 119, offset 152 to 150, aperiodic 95 to 90, circle-single bbox edge only, ellipse-single 21 to 19 at 40, circle-dash 89 to 90 at 142, offset fixture alpha 138, offset-ellipse 71 to 72 at 96. Round-cap tuples and offset-zero exact fixtures hold.
 Decision: landed with the tangent overload, two kernel tests and all ratchets explained. Dash-cut orientation now waits on retained-curve tangents for non-uniform curvature.
+
+## Ellipse residual splits stroke phase from fill fringe, redirecting to analytic curve edges (2026-09-30 probe work)
+Question: what carries the ellipse-dash residual after cap orientation, stroke phase or fill fringe.
+Method: decode all 72 changed pixels of the ellipse-dash probe by dominant channel in both renderers.
+Facts: 44 blue-dominant pixels against 22 red-dominant with opposite-signed neighbors two pixels apart, which reads as dash phase shift along the stroke plus flattened fill fringe rather than cap tilt alone. Uniform-angle ellipse sampling mismeasures arc length in chord space, which no cap reorientation can repair. The pinned release-tag SkAnalyticEdge already converts quads, cubics and conics to monotonic line streams per scan band, so the row-5 step is porting curve-native analytic edges into the existing walker, not denser flattening or retained tangents alone.
+Decision: no product change. Next: analytic quadratic edge port with the quadratic fixture and Ford wordmark as acceptance.
