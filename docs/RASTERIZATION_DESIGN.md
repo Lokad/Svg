@@ -1295,3 +1295,9 @@ Question: does the explicit HasSharedContourVertex gate change any admission bey
 Method: remove the helper, its call and its quadratic charge with the twin pin back to 68, keeping the shared-vertex fan test which passes through the classifier touch flags.
 Facts: the full gate holds with zero behavior change across every exact fixture, research tuple and inventory disposition sampled, confirming the gate duplicated classifier detection while taxing every multi-contour prepare. The fan test stays green as the regression lock.
 Decision: landed as the removal with the pin revert. Next: row-5 curve retention or the clip mask-layer slice.
+
+## Raster work-limit denials are pixel-driven and honest at native size (2026-09-30 probe work)
+Question: does the pixels-times-points raster work bound pessimistically deny inputs the engine could cheaply render.
+Method: render inv-086 Turkey natively under Default, at an explicit 600x400 viewport, and under tenfold work units, timing the native render.
+Facts: Default denies at 1200x800 while the 600x400 viewport renders and tenfold work renders natively in 4205 ms, so the binding scales with pixels and actual conversion costs seconds, confirming the batch capacity-gate reading rather than a thirtyfold accounting artifact. Explicit sizes render where the viewBox scales, which keeps variant level evidence separate from Default disposition. No bound recalibration follows from this probe.
+Decision: no product change. Next: row-5 curve retention or the clip mask-layer slice.
