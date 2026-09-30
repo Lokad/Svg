@@ -982,6 +982,7 @@ internal static class SvgReferenceResolver
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!state.GroupSnapshots.TryGetValue(pendingUse.Reference.Id, out _)) continue;
             if (pendingUse.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
+            state.GroupUseExpanded = true;
             SvgGeometry[] expanded = ExpandGroupUse(pendingUse.Reference.Id, new HashSet<string>(StringComparer.Ordinal), scene, state, workCounter, cancellationToken);
             InsertResolvedUse(new SvgDefinition(expanded, false, null, null), pendingUse, scene, state, ref commandShift, workCounter, cancellationToken);
         }

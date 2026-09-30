@@ -328,7 +328,7 @@ clip-child union versus nested intersection, clip rules/units and use transforms
 remain S14. inv-085's diagonal clip is not a rectangle-union shortcut. Status 2026-09-28: clip application scoped (ghost composite proves triangle-union geometry and part correctness with all 5762 residual pixels in the diagonal-AA family; needs contour intersection with union semantics from row 4; expected Czech-like known-difference render). Keep group
 opacity isolated, support nested layers, crop surfaces with correct origins and
 bounds, then implement the mask regions/content evidenced by inv-094. Constant
-mask opacity is not general alpha/luminance masking.
+mask opacity is not general alpha/luminance masking. Status 2026-09-30: row 7 triangle-clip slice complete for single convex path content (leaf polygon intersection at resolve time with rect-like paths as boxes; inv-061 graduates known-difference at 4159 px max 29 with stroke-fringe residuals; multi-contour, groups, use narrowing and z-continuation stay queued).
 
 Use one bounded isolated-layer operation for the required group effects: compute
 conservative device bounds, retain the surface origin, render children, apply

@@ -2907,12 +2907,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_path_content_in_direct_child_clip_paths()
+    public void Rejects_multi_contour_path_content_in_direct_child_clip_paths()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><clipPath id='c'><path d='M2,0 L6,0 L2,8 Z'/></clipPath><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><clipPath id='c'><path d='M0,0 H4 V4 H0 Z M5,5 H8 V8 H5 Z'/></clipPath><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("This SVG child element is not implemented yet.", rejected.Message);
+        Assert.Contains("Only straight single-contour clip paths are implemented.", rejected.Message);
     }
 
     [Fact]

@@ -69,7 +69,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
-                if (deferRectClip && deferredRectClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectClip, state.EffectiveFrame, true));
+                if (deferRectClip && deferredRectClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectClip, state.EffectiveFrame, true, context.ResolveTransform(reader) == SvgAffineTransform.Identity));
                 if (deferRectMask && deferredRectMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectMask, state.EffectiveFrame));
                 return true;
             case "line":
@@ -100,7 +100,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
-                if (deferLineClip && deferredLineClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineClip, state.EffectiveFrame, false));
+                if (deferLineClip && deferredLineClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineClip, state.EffectiveFrame, false, context.ResolveTransform(reader) == SvgAffineTransform.Identity));
                 if (deferLineMask && deferredLineMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineMask, state.EffectiveFrame));
                 return true;
             case "circle":
@@ -131,7 +131,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
-                if (deferCircleClip && deferredCircleClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleClip, state.EffectiveFrame, false));
+                if (deferCircleClip && deferredCircleClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleClip, state.EffectiveFrame, false, context.ResolveTransform(reader) == SvgAffineTransform.Identity));
                 if (deferCircleMask && deferredCircleMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleMask, state.EffectiveFrame));
                 return true;
             case "ellipse":
@@ -162,7 +162,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
-                if (deferEllipseClip && deferredEllipseClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseClip, state.EffectiveFrame, false));
+                if (deferEllipseClip && deferredEllipseClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseClip, state.EffectiveFrame, false, context.ResolveTransform(reader) == SvgAffineTransform.Identity));
                 if (deferEllipseMask && deferredEllipseMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseMask, state.EffectiveFrame));
                 return true;
             case "path":
@@ -185,7 +185,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
-                if (deferPathClip && deferredPathClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathClip, state.EffectiveFrame, true));
+                if (deferPathClip && deferredPathClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathClip, state.EffectiveFrame, true, context.ResolveTransform(reader) == SvgAffineTransform.Identity));
                 if (deferPathMask && deferredPathMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathMask, state.EffectiveFrame));
                 return true;
             case "polygon" or "polyline":
@@ -208,7 +208,7 @@ internal static class SvgRenderedLeafParser
                     }
                 }
                 finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
-                if (deferPointListClip && deferredPointListClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListClip, state.EffectiveFrame, true));
+                if (deferPointListClip && deferredPointListClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListClip, state.EffectiveFrame, true, context.ResolveTransform(reader) == SvgAffineTransform.Identity));
                 if (deferPointListMask && deferredPointListMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListMask, state.EffectiveFrame));
                 return true;
             case "image":
@@ -229,7 +229,7 @@ internal static class SvgRenderedLeafParser
                     state.Scene.AddGeometry(state.DeferringLeafMask ? image : SvgMaskSyntax.ApplyMaskedLeaf(reader, state, image));
                 }
                 finally { state.DeferringLeafClip = false; state.DeferringLeafMask = false; }
-                if (deferImageClip && deferredImageClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageClip, state.EffectiveFrame, false));
+                if (deferImageClip && deferredImageClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageClip, state.EffectiveFrame, false, context.ResolveTransform(reader) == SvgAffineTransform.Identity));
                 if (deferImageMask && deferredImageMask is not null) state.PendingLeafMasks.Add(new PendingLeafMask(imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageMask, state.EffectiveFrame));
                 return true;
             }

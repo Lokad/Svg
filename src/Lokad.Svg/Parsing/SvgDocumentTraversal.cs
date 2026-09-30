@@ -263,10 +263,15 @@ internal static class SvgDocumentTraversal
                 }
                 if (reader.Depth == state.ClipPathDepth)
                 {
-                    if (state.ClipPathId is not null) SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
+                    if (state.ClipPathId is not null)
+                    {
+                        if (state.ClipPolygonPoints is not null) SvgDefinitionParser.RegisterClipPolygon(state, workCounter, cancellationToken);
+                        else SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
+                    }
                     state.ClipPathDepth = -1;
                     state.ClipPathId = null;
                     state.ClipBox = null;
+                    state.ClipPolygonPoints = null;
                     state.ClipIsObjectBoundingBox = false;
                 }
                 if (reader.Depth == state.SymbolDepth) { state.SymbolDepth = -1; state.SymbolId = null; state.SymbolViewBox = null; }
