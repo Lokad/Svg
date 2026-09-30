@@ -301,6 +301,25 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 7));
     }
     [Fact]
+    public void ZContinued_fill_matches_explicit_moveto_twin()
+    {
+        byte[] continued = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M5,5 H15 V15 Z h10 v10 z' fill='red'/></svg>", out _, out _);
+        byte[] explicitTwin = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M5,5 H15 V15 Z M5,5 H15 V15 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(explicitTwin, continued);
+    }
+
+    [Fact]
+    public void Dangling_segment_after_close_stays_malformed()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 Z h' fill='red'/>");
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.MalformedInput, rejected.ErrorCode);
+        Assert.Contains("Path data ends inside a command.", rejected.Message);
+    }
+
+    [Fact]
     public void Fractional_clip_path_scales_edge_pixels()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='1.5' y='0' width='5' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);

@@ -308,9 +308,10 @@ internal static class SvgDefinitionParser
             if (string.IsNullOrEmpty(pathData)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
             int letters = ScanClipPathData(pathData, workCounter, cancellationToken);
             int pointCapacity = Math.Min(pathData.Length / 2 + 2, SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints);
-            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + (2 * ParserCollectionMemory.GetArrayByteCount<int>(2)));
+            int contourCapacity = Math.Min(letters + 1, pointCapacity);
+            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + (2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)));
             using RenderBudget.BudgetReservation scratch = clipState.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(pointCapacity, 2);
+            SvgContourBuilder builder = new(pointCapacity, contourCapacity);
             SvgFlattenPolicy flattenPolicy = new(SvgOrthogonalGeometryLowering.FlattenFlatness, SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand);
             SvgPathDataParser.ParsePath(pathData, clipTransform, builder, flattenPolicy, letters, workCounter, cancellationToken, null);
             if (builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only straight single-contour clip paths are implemented.");

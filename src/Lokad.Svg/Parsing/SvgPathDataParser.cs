@@ -66,6 +66,7 @@ internal static class SvgPathDataParser
         double currentX = 0;
         double currentY = 0;
         bool open = false;
+        bool hasSubpathStart = false;
         double subpathStartX = 0;
         double subpathStartY = 0;
         double previousCubicX = 0;
@@ -90,6 +91,7 @@ internal static class SvgPathDataParser
                     currentY = absolute ? y : RequireFinite(currentY + y);
                     subpathStartX = currentX;
                     subpathStartY = currentY;
+                    hasSubpathStart = true;
                     builder.BeginContour(transform.Apply(currentX, currentY));
                     open = true;
                     hasPreviousCubic = false;
@@ -112,7 +114,12 @@ internal static class SvgPathDataParser
                 case 'V':
                 case 'v':
                 {
-                    if (!open) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data line commands need a current point from a moveto command.");
+                    if (!open)
+                    {
+                        if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data line commands need a current point from a moveto command.");
+                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        open = true;
+                    }
                     hasPreviousCubic = false;
                     hasPreviousQuadratic = false;
                     bool absolute = char.IsUpper(command);
@@ -157,7 +164,12 @@ internal static class SvgPathDataParser
                 case 'C':
                 case 'c':
                 {
-                    if (!open) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
+                    if (!open)
+                    {
+                        if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
+                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        open = true;
+                    }
                     bool absolute = command == 'C';
                     do
                     {
@@ -185,7 +197,12 @@ internal static class SvgPathDataParser
                 case 'S':
                 case 's':
                 {
-                    if (!open) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
+                    if (!open)
+                    {
+                        if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
+                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        open = true;
+                    }
                     bool absolute = command == 'S';
                     do
                     {
@@ -212,7 +229,12 @@ internal static class SvgPathDataParser
                 case 'Q':
                 case 'q':
                 {
-                    if (!open) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
+                    if (!open)
+                    {
+                        if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
+                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        open = true;
+                    }
                     bool absolute = command == 'Q';
                     do
                     {
@@ -237,7 +259,12 @@ internal static class SvgPathDataParser
                 case 'T':
                 case 't':
                 {
-                    if (!open) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
+                    if (!open)
+                    {
+                        if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
+                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        open = true;
+                    }
                     bool absolute = command == 'T';
                     do
                     {
@@ -261,7 +288,12 @@ internal static class SvgPathDataParser
                 case 'A':
                 case 'a':
                 {
-                    if (!open) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
+                    if (!open)
+                    {
+                        if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
+                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        open = true;
+                    }
                     bool absolute = command == 'A';
                     do
                     {

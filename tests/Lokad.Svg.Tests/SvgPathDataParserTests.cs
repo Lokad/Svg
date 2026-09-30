@@ -302,6 +302,39 @@ public sealed class SvgPathDataParserTests
     }
 
     [Fact]
+    public void ZContinued_lineto_resumes_at_subpath_start()
+    {
+        SvgContourBuilder builder = Parse("M5,5 H15 V15 Z h10 v10 z");
+
+        Assert.Equal(2, builder.ContourCount);
+        Assert.Equal(builder.GetContour(0).ToArray(), builder.GetContour(1).ToArray());
+    }
+
+    [Fact]
+    public void ZContinued_curve_resumes_at_subpath_start()
+    {
+        SvgContourBuilder builder = Parse("M0,0 L8,0 L8,8 Z Q0,0 0,8 z");
+
+        Assert.Equal(2, builder.ContourCount);
+        Assert.Equal(new SvgDevicePoint(0, 0), builder.GetContour(1)[0]);
+    }
+
+    [Fact]
+    public void ZContinued_arc_resumes_at_subpath_start()
+    {
+        SvgContourBuilder builder = Parse("M0,0 H8 V8 Z a4,4 0 0,1 8,0 z");
+
+        Assert.Equal(2, builder.ContourCount);
+        Assert.Equal(new SvgDevicePoint(0, 0), builder.GetContour(1)[0]);
+    }
+
+    [Fact]
+    public void Dangling_curve_after_close_stays_malformed()
+    {
+        Assert.Equal(SvgErrorCode.MalformedInput, ParseError("M0,0 L8,8 Z Q"));
+    }
+
+    [Fact]
     public void Single_closed_subpath_reads_closed_single()
     {
         ParserWorkCounter counter = new(1000);

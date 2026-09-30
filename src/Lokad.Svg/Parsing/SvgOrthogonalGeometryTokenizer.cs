@@ -22,42 +22,70 @@ internal static class SvgOrthogonalGeometryTokenizer
             bool hasMore = true;
             bool firstMove = true;
             char moveCommand = firstCommand;
+            bool justClosed = false;
             while (hasMore)
             {
+                bool continuedContour = false;
                 if (!firstMove)
                 {
                     if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                     moveCommand = tokens.ReadCommand();
-                    if (moveCommand is not ('M' or 'm')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
+                    if (moveCommand is 'M' or 'm') justClosed = false;
+                    else if (justClosed && moveCommand is 'L' or 'l' or 'H' or 'h' or 'V' or 'v') continuedContour = true;
+                    else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 }
                 firstMove = false;
                 bool closedExplicit = false;
-                int dx = tokens.ReadInteger();
-                int dy = tokens.ReadInteger();
-                current = moveCommand == 'M' ? new SvgPoint(dx, dy) : AddOffset(current, dx, dy);
-                points.Add(current);
-                int contourStart = points.Count - 1;
-                char implicitLine = moveCommand == 'M' ? 'L' : 'l';
-                while (tokens.PeekIsValueStart() && !tokens.End)
+                int contourStart;
+                char implicitLine;
+                char? pendingSegment = null;
+                if (continuedContour)
                 {
-                    if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    int ix = tokens.ReadInteger();
-                    int iy = tokens.ReadInteger();
-                    current = AddLinePoint(points, contourStart, current, implicitLine == 'L' ? new SvgPoint(ix, iy) : AddOffset(current, ix, iy));
+                    // A z-continued contour resumes at the closed subpath start, matching the general path parser.
+                    justClosed = false;
+                    points.Add(current);
+                    contourStart = points.Count - 1;
+                    implicitLine = moveCommand;
+                    pendingSegment = moveCommand;
+                }
+                else
+                {
+                    int dx = tokens.ReadInteger();
+                    int dy = tokens.ReadInteger();
+                    current = moveCommand == 'M' ? new SvgPoint(dx, dy) : AddOffset(current, dx, dy);
+                    points.Add(current);
+                    contourStart = points.Count - 1;
+                    implicitLine = moveCommand == 'M' ? 'L' : 'l';
+                    while (tokens.PeekIsValueStart() && !tokens.End)
+                    {
+                        if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        int ix = tokens.ReadInteger();
+                        int iy = tokens.ReadInteger();
+                        current = AddLinePoint(points, contourStart, current, implicitLine == 'L' ? new SvgPoint(ix, iy) : AddOffset(current, ix, iy));
+                    }
                 }
                 while (!tokens.End)
                 {
                     if ((commandIndex++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    if (tokens.PeekIsValueStart())
+                    char command;
+                    if (pendingSegment is char resumed)
                     {
-                        int ix = tokens.ReadInteger();
-                        int iy = tokens.ReadInteger();
-                        current = AddLinePoint(points, contourStart, current, implicitLine == 'L' ? new SvgPoint(ix, iy) : AddOffset(current, ix, iy));
-                        continue;
+                        command = resumed;
+                        pendingSegment = null;
                     }
-                    // An unclosed subpath seals implicitly for fill when the next subpath begins; the outer loop consumes the moveto.
-                    if (tokens.PeekCommand() is 'M' or 'm') break;
-                    char command = tokens.ReadCommand();
+                    else
+                    {
+                        if (tokens.PeekIsValueStart())
+                        {
+                            int ix = tokens.ReadInteger();
+                            int iy = tokens.ReadInteger();
+                            current = AddLinePoint(points, contourStart, current, implicitLine == 'L' ? new SvgPoint(ix, iy) : AddOffset(current, ix, iy));
+                            continue;
+                        }
+                        // An unclosed subpath seals implicitly for fill when the next subpath begins; the outer loop consumes the moveto.
+                        if (tokens.PeekCommand() is 'M' or 'm') break;
+                        command = tokens.ReadCommand();
+                    }
                     if (command == 'H' || command == 'h')
                     {
                         do
@@ -86,9 +114,10 @@ internal static class SvgOrthogonalGeometryTokenizer
                         } while (tokens.PeekIsValueStart() && !tokens.End);
                         implicitLine = command;
                     }
-                    else if (command is 'Z' or 'z') { closedExplicit = true; break; }
+                    else if (command is 'Z' or 'z') { closedExplicit = true; justClosed = true; break; }
                     else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer paths are implemented.");
                 }
+                if (pendingSegment is not null) throw new SvgException(SvgErrorCode.MalformedInput, "Path data ends inside a command.");
                 // A closepath moves the current point back to the subpath start; open ends stay in place.
                 if (closedExplicit) current = points[contourStart];
                 // An explicit return to the contour start without closepath seals the contour for fill, keeping single-point contours for stroke outlining.
