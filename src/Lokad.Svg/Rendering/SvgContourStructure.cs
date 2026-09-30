@@ -507,7 +507,13 @@ internal static class SvgContourStructure
                         if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                         (SvgDevicePoint secondEdgeStart, SvgDevicePoint secondEdgeEnd) = EdgeAt(points, secondStart, secondCount, secondEdge);
                         if (secondEdgeStart == secondEdgeEnd) return false;
-                        if (LoopEdgesOverlapBeyondSharedVertices(firstEdgeStart, firstEdgeEnd, secondEdgeStart, secondEdgeEnd)) return false;
+                        if (LoopEdgesOverlapBeyondSharedVertices(firstEdgeStart, firstEdgeEnd, secondEdgeStart, secondEdgeEnd))
+                        {
+                            if (EdgesShareExactSpan(firstEdgeStart, firstEdgeEnd, secondEdgeStart, secondEdgeEnd)
+                                && (LoopVerticesWithinLoop(points, firstStart, firstCount, secondStart, secondCount, ref pairs, cancellationToken)
+                                    || LoopVerticesWithinLoop(points, secondStart, secondCount, firstStart, firstCount, ref pairs, cancellationToken))) continue;
+                            return false;
+                        }
                     }
                 }
 
@@ -516,6 +522,28 @@ internal static class SvgContourStructure
         }
 
         cancellationToken.ThrowIfCancellationRequested();
+        return true;
+    }
+
+    /// <summary>Reports whether two edges span the same segment in either direction.</summary>
+    private static bool EdgesShareExactSpan(SvgDevicePoint firstStart, SvgDevicePoint firstEnd, SvgDevicePoint secondStart, SvgDevicePoint secondEnd)
+    {
+        return (firstStart == secondStart && firstEnd == secondEnd) || (firstStart == secondEnd && firstEnd == secondStart);
+    }
+
+    /// <summary>Reports whether every vertex of one loop is shared with, inside, or on the boundary of another.</summary>
+    /// <remarks>Nested span-sharing loops keep hole and island roles through the fan path, so the guard admits them while adjacent sharing stays rejected for union surgery. Deterministic vertex order; observes cancellation through the shared pair counter.</remarks>
+    private static bool LoopVerticesWithinLoop(ReadOnlySpan<SvgDevicePoint> points, int innerStart, int innerCount, int outerStart, int outerCount, ref int pairs, CancellationToken cancellationToken)
+    {
+        for (int index = 0; index < innerCount; index++)
+        {
+            if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            SvgDevicePoint candidate = points[innerStart + index];
+            if (IsSharedVertex(candidate, points, outerStart, outerStart + outerCount)) continue;
+            if (IsPointOnLoopBoundary(points, outerStart, outerStart + outerCount, candidate)) continue;
+            if (SvgContourNesting.ContainsPoint(points, outerStart, outerStart + outerCount, candidate.X, candidate.Y)) continue;
+            return false;
+        }
         return true;
     }
 

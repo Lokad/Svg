@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-union-shared-hole-16x16",
+  "referencePng": "original-union-shared-hole-16x16.png",
+  "referenceSha256": "b3661715d163f98dbec9bad15855d1d9247d6444b9d29f4750286b84e33da63e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "8c638fc83d3c4a573eae8b4e5459536e7e1b04aa83d65a9a54a5361afcd031f4",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

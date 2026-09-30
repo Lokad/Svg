@@ -686,6 +686,46 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-union-single-retrace-half-16x16.json",
       "referenceSha256": "b6ca2459d8c47c1e42637f8aecb6e6adc2c0de203c20561b6f6213ef027c4f1c"
+    },
+    {
+      "id": "original-union-shared-hole-16x16",
+      "path": "original/union-shared-hole-16x16.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "2ce6d28aec0ea79fc0270596234b11dfd4f10b7a34935ccee65511d7518bd5f8",
+      "materializedSha256": "2ce6d28aec0ea79fc0270596234b11dfd4f10b7a34935ccee65511d7518bd5f8",
+      "featureTags": ["geometry", "path", "rectangular", "coincident-overlap", "nested-hole", "union", "coverage"],
+      "width": 16,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-union-shared-hole-16x16.json",
+      "referenceSha256": "b3661715d163f98dbec9bad15855d1d9247d6444b9d29f4750286b84e33da63e"
+    },
+    {
+      "id": "original-union-shared-hole-diag-16x16",
+      "path": "original/union-shared-hole-diag-16x16.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "954f27dae5af50c2e677795efc1806168ad9044d57f65846031f8d223b50a5d0",
+      "materializedSha256": "954f27dae5af50c2e677795efc1806168ad9044d57f65846031f8d223b50a5d0",
+      "featureTags": ["geometry", "path", "diagonal-edge", "coincident-overlap", "nested-hole", "union", "coverage"],
+      "width": 16,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-union-shared-hole-diag-16x16.json",
+      "referenceSha256": "234a4120f06d319bc101fc994a692d746712bd8098ed7546bb78afa7cf35d53d"
     }
   ]
 }

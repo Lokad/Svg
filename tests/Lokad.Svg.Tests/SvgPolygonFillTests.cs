@@ -1376,12 +1376,10 @@ public sealed class SvgPolygonFillTests
     [Fact]
     public void Nested_touching_hole_stays_unsupported()
     {
-        // R34: opposite-direction containment sharing boundary stays rejected to preserve the hole.
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 L16,0 L0,16 Z M0,8 L0,12 L4,8 Z' fill='red'/></svg>");
+        // R34: nested loops sharing one coincident span keep hole roles through the fan path.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 L16,0 L0,16 Z M0,8 L0,12 L4,8 Z' fill='red'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only simple diagonal polygon contours are implemented;", rejected.Message);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 8, 2));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 1, 9));
     }
 }
