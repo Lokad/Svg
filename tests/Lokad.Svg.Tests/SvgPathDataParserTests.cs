@@ -300,4 +300,24 @@ public sealed class SvgPathDataParserTests
     {
         return Assert.Throws<SvgException>(() => Parse(value)).ErrorCode;
     }
+
+    [Fact]
+    public void Single_closed_subpath_reads_closed_single()
+    {
+        ParserWorkCounter counter = new(1000);
+        Assert.True(SvgPathDataParser.IsSingleClosedPath("M0,0 L8,0 L8,8 Z", counter, CancellationToken.None));
+        Assert.True(SvgPathDataParser.IsSingleClosedPath("m0 0l8 0l-8 8z", counter, CancellationToken.None));
+        Assert.True(SvgPathDataParser.IsSingleClosedPath("M1e-2,0 L2,2e0 A24,24 0 1 1 5,5 Z", counter, CancellationToken.None));
+    }
+
+    [Fact]
+    public void Open_or_multi_subpaths_read_not_closed_single()
+    {
+        ParserWorkCounter counter = new(1000);
+        Assert.False(SvgPathDataParser.IsSingleClosedPath(null, counter, CancellationToken.None));
+        Assert.False(SvgPathDataParser.IsSingleClosedPath(string.Empty, counter, CancellationToken.None));
+        Assert.False(SvgPathDataParser.IsSingleClosedPath("M0,0 L8,0 L8,8", counter, CancellationToken.None));
+        Assert.False(SvgPathDataParser.IsSingleClosedPath("M0,0Z M2,2Z", counter, CancellationToken.None));
+        Assert.False(SvgPathDataParser.IsSingleClosedPath("M0,0 L8,0 Z L2,2", counter, CancellationToken.None));
+    }
 }

@@ -39,4 +39,44 @@ public sealed class SvgLocalReferencePresentationResolverTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
+
+    [Fact]
+    public void Resolves_solid_use_stroke_with_width_and_defaulted_mechanics()
+    {
+        SvgComputedStyle style = new(null, null, null, "#ff0000", null, null, null, null) { Width = "5.165", Linejoin = "round" };
+        IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase);
+
+        SvgResolvedLocalReferencePresentation presentation = SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), namedColors, new BudgetedParserStringStore(new RenderBudget(10_000)));
+
+        Assert.Null(presentation.FillOverride);
+        Assert.NotNull(presentation.StrokeOverride);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), presentation.StrokeOverride.Value.Paint.FillColor);
+        Assert.Equal(5.165, presentation.StrokeOverride.Value.Width);
+        Assert.Equal(SvgStrokeJoin.Round, presentation.StrokeOverride.Value.Join);
+        Assert.Null(presentation.StrokeOverride.Value.MiterLimit);
+    }
+
+    [Fact]
+    public void Rejects_dashed_use_strokes_with_an_honest_message()
+    {
+        SvgComputedStyle style = new(null, null, null, "#ff0000", null, null, null, null) { Dasharray = "4 4" };
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000))));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Contains("Dashed strokes on use elements", exception.Message);
+    }
+
+    [Fact]
+    public void Rejects_paint_server_and_opacity_use_strokes()
+    {
+        SvgComputedStyle painted = new(null, null, null, "url(#g)", null, null, null, null);
+        SvgException server = Assert.Throws<SvgException>(() => SvgLocalReferencePresentationResolver.Resolve(painted, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000))));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, server.ErrorCode);
+
+        SvgComputedStyle translucent = new(null, null, null, "#ff0000", null, null, null, null) { StrokeOpacity = "0.5" };
+        SvgException opacity = Assert.Throws<SvgException>(() => SvgLocalReferencePresentationResolver.Resolve(translucent, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000))));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, opacity.ErrorCode);
+        Assert.Contains("Stroke opacity on use elements", opacity.Message);
+    }
 }

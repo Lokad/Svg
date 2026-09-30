@@ -24,6 +24,34 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgPathDataParser
 {
     /// <summary>Parses path data, mapping each vertex and appending sealed contours to the builder.</summary>
+    /// <summary>Reports whether path data holds one moveto subpath sealed by a trailing closepath.</summary>
+    /// <remarks>Letters outside digit-or-dot exponents are commands, so single M/m plus single Z/z with a trailing Z reads closed-single without tokenizing; lowering validates the grammar first, so callers only invoke this on successfully lowered paths. Charges scanning work by input length and observes cancellation through the counter.</remarks>
+    internal static bool IsSingleClosedPath(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (string.IsNullOrEmpty(value)) return false;
+        workCounter.ConsumeBytes(value.Length, cancellationToken);
+        int movetos = 0;
+        int closes = 0;
+        char lastCommand = '\0';
+        bool hasCommand = false;
+        for (int index = 0; index < value.Length; index++)
+        {
+            char current = value[index];
+            if (current is 'e' or 'E')
+            {
+                if (index > 0 && (char.IsDigit(value[index - 1]) || value[index - 1] == '.')) continue;
+                return false;
+            }
+            if ((current < 'A' || current > 'Z') && (current < 'a' || current > 'z')) continue;
+            hasCommand = true;
+            lastCommand = current;
+            if (current is 'M' or 'm') movetos++;
+            else if (current is 'Z' or 'z') closes++;
+        }
+        return hasCommand && movetos == 1 && closes == 1 && lastCommand is 'Z' or 'z';
+    }
+
     internal static void ParsePath(string? value, SvgAffineTransform transform, SvgContourBuilder builder, SvgFlattenPolicy flattenPolicy, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds)
     {
         ArgumentNullException.ThrowIfNull(builder);

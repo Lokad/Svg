@@ -22,7 +22,7 @@ internal static class SvgDefinitionParser
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
             SvgViewBox? symbolViewBox = state.SymbolDepth >= 0 ? state.SymbolViewBox : null;
             SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, symbolViewBox)
-                : reader.LocalName == "line" ? new SvgDefinition(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state)), false, symbolViewBox)
+                : reader.LocalName == "line" ? new SvgDefinition(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state)), false, null, symbolViewBox)
                 : ParseShapeDefinition(reader, context, state, symbolViewBox);
             if (id is not null)
             {
@@ -705,6 +705,9 @@ internal static class SvgDefinitionParser
         // Element-local lowering: the shape lowerers compose the inherited transform with the element attribute themselves, so the inherited
         // side stays identity here; carrying the parsed attribute would apply it twice. Use clones exclude definition ancestors.
         SvgPaintableElementContext localContext = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
+        string? pathData = reader.LocalName == "path" ? reader.GetAttribute("d") : null;
+        string? definitionTransform = reader.LocalName == "path" ? reader.GetAttribute("transform") : null;
+        string? vectorEffect = reader.LocalName == "path" ? reader.GetAttribute("vector-effect") : null;
         SvgGeometry[] geometries = reader.LocalName switch
         {
             "polygon" or "polyline" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, localContext, int.MaxValue, state.Budget, null, state)),
@@ -715,7 +718,24 @@ internal static class SvgDefinitionParser
             _ => throw new InvalidOperationException("Unsupported definition leaf reached shape lowering."),
         };
         if (geometries.Length > 0) state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Scene));
-        return new SvgDefinition(geometries, IsOverrideableFill(style, geometries), symbolViewBox);
+        return new SvgDefinition(geometries, IsOverrideableFill(style, geometries), ResolveInstanceStrokeMiterLimit(style, geometries, pathData, definitionTransform, vectorEffect, context.WorkCounter, context.CancellationToken), symbolViewBox);
+
+        static double? ResolveInstanceStrokeMiterLimit(SvgComputedStyle computed, SvgGeometry[] lowered, string? pathData, string? transformAttribute, string? vectorEffect, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            if (lowered.Length != 1 || lowered[0].Kind != SvgGeometryKind.PolygonFill) return null;
+            if (lowered[0].Polygon.ContourEnds.Length != 1) return null;
+            if (computed.Stroke is not null || computed.Width is not null || computed.StrokeOpacity is not null) return null;
+            if (computed.Linejoin is not null && !computed.Linejoin.AsSpan().Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase)) return null;
+            if (computed.Dasharray is not null && !computed.Dasharray.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return null;
+            if (vectorEffect is not null && SvgStrokeStyleSyntax.ParseVectorEffect(vectorEffect)) return null;
+            if (transformAttribute is not null)
+            {
+                SvgAffineTransform elementMap = SvgGeometrySyntax.ParseTransform(transformAttribute);
+                if (!elementMap.TryGetUniformScale(out double definitionScale) || Math.Abs(definitionScale - 1) > 1e-9) return null;
+            }
+            if (!SvgPathDataParser.IsSingleClosedPath(pathData, workCounter, cancellationToken)) return null;
+            return SvgStrokeStyleSyntax.ParseMiterLimit(computed.Miterlimit);
+        }
 
         static SvgGeometry[] RetainCircleGeometries(SvgParsedGeometry parsed)
         {
@@ -725,7 +745,7 @@ internal static class SvgDefinitionParser
 
         static bool IsOverrideableFill(SvgComputedStyle computed, SvgGeometry[] lowered)
         {
-            if (computed != default || lowered.Length != 1) return false;
+            if (computed.Color is not null || computed.Fill is not null || computed.FillOpacity is not null || computed.Stroke is not null || computed.Display is not null || computed.Visibility is not null || computed.Opacity is not null || computed.FillRule is not null || lowered.Length != 1) return false;
             return lowered[0].Kind switch
             {
                 SvgGeometryKind.OrthogonalBand => lowered[0].Rectangle.HasFill,
@@ -747,9 +767,9 @@ internal static class SvgDefinitionParser
         SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader);
         if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox);
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return new SvgDefinition(RetainParsedGeometries(SvgPatternSyntax.LowerPatternStrokeRect(reader, context, style, state, null)), false, symbolViewBox);
-        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return new SvgDefinition(RetainParsedGeometries(SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null)), false, symbolViewBox);
+        if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return new SvgDefinition(RetainParsedGeometries(SvgPatternSyntax.LowerPatternStrokeRect(reader, context, style, state, null)), false, null, symbolViewBox);
+        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return new SvgDefinition(RetainParsedGeometries(SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null)), false, null, symbolViewBox);
         SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
-        return new SvgDefinition([parsed.Geometry], parsed.Geometry.Rectangle.HasFill && parsed.Style == default, symbolViewBox);
+        return new SvgDefinition([parsed.Geometry], parsed.Geometry.Rectangle.HasFill && parsed.Style == default, null, symbolViewBox);
     }
 }

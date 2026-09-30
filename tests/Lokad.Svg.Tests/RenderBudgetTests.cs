@@ -369,10 +369,10 @@ public sealed class RenderBudgetTests
         SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
-            SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill), SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null))], false, null);
+            SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill), SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null))], false, null, null);
             using SvgDocumentState state = new(new RenderBudget(100_000), new ParserWorkCounter(100_000), CancellationToken.None);
             ParserWorkCounter workCounter = new(100_000);
-            SvgGeometry[] applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null), null, state, workCounter, CancellationToken.None);
+            SvgGeometry[] applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null, null), null, state, workCounter, CancellationToken.None);
             Assert.Equal(3, workCounter.Used);
             Assert.Equal(2, applied.Length);
         }
@@ -391,11 +391,11 @@ public sealed class RenderBudgetTests
         SvgPolygonFill fill = SvgPolygonFill.Create(points, ends, null, new SvgColor(255, 0, 0, 255), true, false, SvgPolygonMapping.FiniteEdges, null, null, budget);
         try
         {
-            SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill)], false, null);
+            SvgDefinition definition = new([SvgGeometry.FromPolygonFill(fill)], false, null, null);
             using SvgDocumentState state = new(new RenderBudget(100_000), new ParserWorkCounter(100_000), CancellationToken.None);
             using CancellationTokenSource cancelled = new();
             cancelled.Cancel();
-            Assert.Throws<OperationCanceledException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null), null, state, new ParserWorkCounter(100_000), cancelled.Token));
+            Assert.Throws<OperationCanceledException>(() => SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null, null), null, state, new ParserWorkCounter(100_000), cancelled.Token));
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);

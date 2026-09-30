@@ -1566,7 +1566,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
 
-    private static void ChargePairs(ParserWorkCounter workCounter, long pairs, CancellationToken cancellationToken)
+    internal static void ChargePairs(ParserWorkCounter workCounter, long pairs, CancellationToken cancellationToken)
     {
         for (long charged = 0; charged < pairs; charged += ParserWorkCounter.ByteCheckpointSize) workCounter.Consume(cancellationToken);
     }

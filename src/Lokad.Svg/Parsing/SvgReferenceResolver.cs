@@ -3,7 +3,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents a parsed direct local use reference before its target is resolved.</summary>
-internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, SvgAffineTransform Transform, SvgAffineTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId);
+internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, SvgAffineTransform Transform, SvgAffineTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId, SvgUseStrokeOverride? StrokeOverride);
 
 /// <summary>Retains one clip-path reference whose box needs a forward definition or clip-path definition.</summary>
 internal readonly record struct SvgDeferredClip(string ClipId, SvgViewportFrame? Parent, int Depth);
@@ -36,31 +36,125 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(workCounter);
         if (definition.SymbolViewBox is SvgViewBox symbolBox) return ApplySymbol(definition, symbolBox, reference, frame, state, workCounter, cancellationToken);
+        if (reference.StrokeOverride is not null && reference.PaintServerId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked paint-server use instances are not implemented.");
         if (reference.PaintServerId is not null) return [LowerDirectInstancePaintFill(definition, reference, frame, state)];
         RequireUniformOutlineScales(definition, reference);
         RequireAdmittedInstanceMagnification(definition, reference);
         SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
-        SvgGeometry[] applied = new SvgGeometry[sources.Length];
+        List<SvgGeometry> applied = new(sources.Length);
         for (int index = 0; index < sources.Length; index++)
         {
-            applied[index] = sources[index].Kind switch
+            switch (sources[index].Kind)
             {
-                SvgGeometryKind.Rectangle => ClipStrokedInstance(ApplyRectangle(sources[index].Rectangle, reference), frame),
-                SvgGeometryKind.OrthogonalBand => SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)),
-                SvgGeometryKind.AxisAlignedLine => ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame),
-                SvgGeometryKind.PolygonFill => ApplyPolygon(sources[index].Polygon, reference, frame, state, workCounter, cancellationToken),
-                SvgGeometryKind.GradientPolygon => ApplyGradientPolygon(sources[index].GradientPolygon, reference, frame, state, workCounter, cancellationToken),
-                SvgGeometryKind.RadialPolygon => ApplyRadialPolygon(sources[index].RadialPolygon, reference, frame, state, workCounter, cancellationToken),
-                SvgGeometryKind.PatternPolygon => ApplyPatternPolygon(sources[index].PatternPolygon, reference, frame, state, workCounter, cancellationToken),
-                SvgGeometryKind.GradientFill => LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame),
-                SvgGeometryKind.RadialGradient => LowerEmbeddedInstanceRadialFill(sources[index].Radial, reference, frame),
-                SvgGeometryKind.PatternFill => LowerEmbeddedInstancePatternFill(sources[index].Pattern, reference, frame),
-                SvgGeometryKind.GradientStroke => LowerEmbeddedInstanceGradientStroke(sources[index].GradientStroke, reference, frame),
-                _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.")
-            };
+                case SvgGeometryKind.Rectangle:
+                    applied.Add(ClipStrokedInstance(ApplyRectangle(sources[index].Rectangle, reference), frame));
+                    break;
+                case SvgGeometryKind.OrthogonalBand:
+                    applied.Add(SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)));
+                    break;
+                case SvgGeometryKind.AxisAlignedLine:
+                    applied.Add(ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame));
+                    break;
+                case SvgGeometryKind.PolygonFill:
+                    applied.Add(ApplyPolygon(sources[index].Polygon, reference, frame, state, workCounter, cancellationToken));
+                    if (reference.StrokeOverride is not null)
+                    {
+                        if (definition.InstanceStrokeMiterLimit is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke styles on use elements require an unstyled single-contour definition.");
+                        foreach (SvgGeometry outline in ApplyInstanceStrokeOutlines(applied[^1].Polygon, definition, reference, reference.StrokeOverride.Value, frame, state, workCounter, cancellationToken)) applied.Add(outline);
+                    }
+                    break;
+                case SvgGeometryKind.GradientPolygon:
+                    applied.Add(ApplyGradientPolygon(sources[index].GradientPolygon, reference, frame, state, workCounter, cancellationToken));
+                    break;
+                case SvgGeometryKind.RadialPolygon:
+                    applied.Add(ApplyRadialPolygon(sources[index].RadialPolygon, reference, frame, state, workCounter, cancellationToken));
+                    break;
+                case SvgGeometryKind.PatternPolygon:
+                    applied.Add(ApplyPatternPolygon(sources[index].PatternPolygon, reference, frame, state, workCounter, cancellationToken));
+                    break;
+                case SvgGeometryKind.GradientFill:
+                    applied.Add(LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame));
+                    break;
+                case SvgGeometryKind.RadialGradient:
+                    applied.Add(LowerEmbeddedInstanceRadialFill(sources[index].Radial, reference, frame));
+                    break;
+                case SvgGeometryKind.PatternFill:
+                    applied.Add(LowerEmbeddedInstancePatternFill(sources[index].Pattern, reference, frame));
+                    break;
+                case SvgGeometryKind.GradientStroke:
+                    applied.Add(LowerEmbeddedInstanceGradientStroke(sources[index].GradientStroke, reference, frame));
+                    break;
+                default: throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.");
+            }
         }
 
-        return applied;
+        return applied.ToArray();
+
+        static SvgGeometry[] ApplyInstanceStrokeOutlines(SvgPolygonFill placed, SvgDefinition definition, SvgUseReference reference, SvgUseStrokeOverride stroke, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            ArgumentNullException.ThrowIfNull(state);
+            ArgumentNullException.ThrowIfNull(workCounter);
+            double miterLimit = stroke.MiterLimit ?? definition.InstanceStrokeMiterLimit ?? throw new InvalidOperationException("Instance stroke expansion requires a retained definition miter limit.");
+            if (!reference.Transform.TryGetUniformScale(out double placementScale)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled use strokes are implemented.");
+            double frameScaleX = frame?.ScaleX ?? 1;
+            double frameScaleY = frame?.ScaleY ?? 1;
+            if (frame is not null && Math.Abs(frameScaleX) != Math.Abs(frameScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled use strokes are implemented.");
+            double deviceWidth = stroke.Width * Math.Abs(placementScale) * Math.Abs(frameScaleX);
+            if (Math.Abs(deviceWidth - Math.Round(deviceWidth)) <= 1e-9) deviceWidth = Math.Round(deviceWidth);
+            if (!double.IsFinite(deviceWidth) || deviceWidth <= 0 || deviceWidth > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
+            long wantedPoints = 6L * placed.Points.Length + 8;
+            if (stroke.Join == SvgStrokeJoin.Round)
+            {
+                int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
+                try { wantedPoints = checked(4L * placed.Points.Length * (fanSegments + 1) + 32); }
+                catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
+            }
+            int pointCapacity = wantedPoints > SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints ? SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints : (int)wantedPoints;
+            long wantedContours;
+            try { wantedContours = checked(2L * placed.ContourEnds.Length + 2); }
+            catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
+            int contourCapacity = wantedContours > SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints ? SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints : (int)wantedContours;
+            long scratchBytes;
+            try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)); }
+            catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
+            using RenderBudget.BudgetReservation scratch = state.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
+            SvgContourBuilder outlines = new(pointCapacity, contourCapacity);
+            for (int contour = 0; contour < placed.ContourEnds.Length; contour++)
+            {
+                if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                int start = contour == 0 ? 0 : placed.ContourEnds[contour - 1];
+                SvgStrokeOutline.StrokeClosedPolyline(placed.Points.AsSpan(start, placed.ContourEnds[contour] - start), deviceWidth, miterLimit, stroke.Join, outlines, cancellationToken);
+            }
+            using BudgetedParserList<SvgDevicePoint> mapped = new(state.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+            using BudgetedParserList<int> ends = new(state.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+            for (int contour = 0; contour < outlines.ContourCount; contour++)
+            {
+                foreach (SvgDevicePoint vertex in outlines.GetContour(contour))
+                {
+                    workCounter.Consume(cancellationToken);
+                    mapped.Add(vertex);
+                }
+
+                workCounter.Consume(cancellationToken);
+                ends.Add(mapped.Count);
+            }
+            SvgOrthogonalGeometryLowering.ChargePairs(workCounter, (long)ends.Count * (ends.Count - 1) / 2, cancellationToken);
+            SvgDevicePoint[] retainedOutlines = mapped.AsSpan().ToArray();
+            int[] outlineEnds = ends.AsSpan().ToArray();
+            SvgContourNesting.MergeIdenticalContours(retainedOutlines, outlineEnds, workCounter, out SvgDevicePoint[] mergedOutlines, out int[] mergedEnds, cancellationToken);
+            int[] roles = new int[mergedEnds.Length];
+            SvgOrthogonalGeometryLowering.ChargePairs(workCounter, (long)mergedEnds.Length * (mergedEnds.Length - 1) / 2, cancellationToken);
+            SvgContourNesting.ComputeWindingRoles(mergedOutlines, mergedEnds, roles, false, cancellationToken);
+            for (int contour = 0; contour < mergedEnds.Length; contour++)
+            {
+                if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                int start = contour == 0 ? 0 : mergedEnds[contour - 1];
+                if (roles[contour] == 0 && mergedEnds[contour] - start >= 3) roles[contour] = 1;
+            }
+            SvgColor color = SvgPaintResolver.ResolveFillColor(stroke.Paint, 255);
+            color = new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, reference.Opacity));
+            return [SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mergedOutlines, mergedEnds, roles, color, reference.IsPainted, false, placed.Mapping, placed.Clip, null, state.Budget))];
+        }
 
         static SvgGeometry LowerEmbeddedInstancePatternFill(SvgPatternGeometry band, SvgUseReference instance, SvgViewportFrame? viewportFrame)
         {
@@ -434,6 +528,7 @@ internal static class SvgReferenceResolver
 
     private static SvgGeometry[] ApplySymbol(SvgDefinition definition, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        if (reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of symbols are not implemented.");
         if (reference.PaintServerId is null)
         {
             RequireUniformOutlineScales(definition, reference);
@@ -886,8 +981,9 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!state.GroupSnapshots.TryGetValue(pendingUse.Reference.Id, out _)) continue;
+            if (pendingUse.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
             SvgGeometry[] expanded = ExpandGroupUse(pendingUse.Reference.Id, new HashSet<string>(StringComparer.Ordinal), scene, state, workCounter, cancellationToken);
-            InsertResolvedUse(new SvgDefinition(expanded, false, null), pendingUse, scene, state, ref commandShift, workCounter, cancellationToken);
+            InsertResolvedUse(new SvgDefinition(expanded, false, null, null), pendingUse, scene, state, ref commandShift, workCounter, cancellationToken);
         }
     }
 
@@ -978,8 +1074,9 @@ internal static class SvgReferenceResolver
                 }
                 if (owner is null) throw new InvalidOperationException("Group snapshot placeholder has no owning use.");
                 if (state.Definitions.TryGetValue(owner.Value.Reference.Id, out _)) throw new InvalidOperationException("Group snapshot placeholder owns a resolved leaf use.");
+                if (owner.Value.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
                 SvgGeometry[] nested = ExpandGroupUse(owner.Value.Reference.Id, visited, scene, state, workCounter, cancellationToken);
-                SvgGeometry[] mapped = ResolveUseGeometries(new SvgDefinition(nested, false, null), owner.Value, state, workCounter, cancellationToken);
+                SvgGeometry[] mapped = ResolveUseGeometries(new SvgDefinition(nested, false, null, null), owner.Value, state, workCounter, cancellationToken);
                 foreach (SvgGeometry geometry in mapped)
                 {
                     workCounter.Consume(cancellationToken);

@@ -936,7 +936,7 @@ internal sealed class SvgGradientStrokeGeometry : IDisposable
 }
 
 /// <summary>Retains one local definition's typed geometry and the narrow instance-style override capability.</summary>
-internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool AllowsInstanceFillOverride, SvgViewBox? SymbolViewBox);
+internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool AllowsInstanceFillOverride, double? InstanceStrokeMiterLimit, SvgViewBox? SymbolViewBox);
 
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
