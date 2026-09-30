@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-diagonal-triangle-half-grid-8x8",
+  "referencePng": "original-diagonal-triangle-half-grid-8x8.png",
+  "referenceSha256": "acb37b75bc3f19fd9ad580ec4a8ed15246de3d345ce4dc1ed9b30250e2543ce3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "2",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "c2dfb0a302a7feda3ad12d8719bd42b7eeb89cf02d4eca9ded44af9853980fb5",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-fractional-polyline-16x16",
+  "referencePng": "original-fractional-polyline-16x16.png",
+  "referenceSha256": "eb52981bfbceb50d0318f77387fd2af880bc580626c36ed32781c0a4c68a4b2c",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "ffbaf227f6f00f92542620e8d0c0ab63fab7ff4d21dea4d0bd999db2be16005e",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

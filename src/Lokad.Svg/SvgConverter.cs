@@ -11,7 +11,7 @@ public static class SvgConverter
 {
     private const int GlyphSamplesPerAxis = 4;
     /// <summary>Owns mapped polygon points with raster bounds, clip and their surface reservation until the rasterizer releases them.</summary>
-    private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, (double Left, double Top, double Right, double Bottom)? Clip, bool HasFractionalEdge, RenderBudget.BudgetReservation? Reservation) : IDisposable
+    private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, int PathStartX, int PathStartY, int PathEndX, int PathEndY, (double Left, double Top, double Right, double Bottom)? Clip, bool HasFractionalEdge, RenderBudget.BudgetReservation? Reservation) : IDisposable
     {
         public void Dispose() => Reservation?.Dispose();
     }
@@ -364,13 +364,17 @@ public static class SvgConverter
                 int endY = ClampCeiling(bottom, outputHeight);
                 int startX = ClampFloor(left, outputWidth);
                 int endX = ClampCeiling(right, outputWidth);
+                int pathStartX = startX;
+                int pathStartY = startY;
+                int pathEndX = endX;
+                int pathEndY = endY;
                 (double Left, double Top, double Right, double Bottom)? mappedClip = null;
                 if (clip is SvgClipBox clipBox)
                 {
                     (startX, startY, endX, endY) = IntersectMappedClip(clipBox, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
                     mappedClip = MapClipBounds(clipBox, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
                 }
-                return new MappedPolygon(mapped, startX, startY, endX, endY, mappedClip, hasFractionalEdge, mappedReservation);
+                return new MappedPolygon(mapped, startX, startY, endX, endY, pathStartX, pathStartY, pathEndX, pathEndY, mappedClip, hasFractionalEdge, mappedReservation);
             }
             catch
             {
@@ -388,19 +392,43 @@ public static class SvgConverter
             workUnits += coverage;
             ReadOnlySpan<int> contourEnds = polygon.ContourEnds;
             ReadOnlySpan<int> nestingSigns = polygon.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, raster.StartX, raster.EndX, budget, out long scanSetup, cancellationToken);
-            if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
-            workUnits += scanSetup;
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+            workUnits += analyticSetup;
+            long scanSetup = 0;
+            using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
+            if (!useAnalytic)
+            {
+                if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += scanSetup;
+            }
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                scan.PrepareRow(y, out long rowWork, cancellationToken);
-                if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
-                workUnits += rowWork;
+                ReadOnlySpan<byte> analyticRow = default;
+                if (useAnalytic)
+                {
+                    walker.PrepareRow(y, out long analyticRowWork, cancellationToken);
+                    if (analyticRowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                    workUnits += analyticRowWork;
+                    analyticRow = walker.Row;
+                }
+                else
+                {
+                    scan.PrepareRow(y, out long rowWork, cancellationToken);
+                    if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                    workUnits += rowWork;
+                }
                 for (int x = raster.StartX; x < raster.EndX; x++)
                 {
                     double pixelCoverage;
-                    if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, x, y, cancellationToken);
+                    if (useAnalytic)
+                    {
+                        pixelCoverage = analyticRow[x - raster.PathStartX] / 255.0;
+                        if (raster.Clip is not null) pixelCoverage *= ClipBoxCoverage(raster.Clip.Value, x, y);
+                        if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    }
+                    else if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, x, y, cancellationToken);
                     else
                     {
                         pixelCoverage = 0.0;
@@ -436,21 +464,45 @@ public static class SvgConverter
             }
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out long scanSetup, cancellationToken);
-            if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
-            workUnits += scanSetup;
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+            workUnits += analyticSetup;
+            long scanSetup = 0;
+            using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
+            if (!useAnalytic)
+            {
+                if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += scanSetup;
+            }
             if (denominator != 0 || definition.Stops.Length == 1)
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
-            scan.PrepareRow(y, out long rowWork, cancellationToken);
-            if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
-            workUnits += rowWork;
+            ReadOnlySpan<byte> analyticRow = default;
+            if (useAnalytic)
+            {
+                walker.PrepareRow(y, out long analyticRowWork, cancellationToken);
+                if (analyticRowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += analyticRowWork;
+                analyticRow = walker.Row;
+            }
+            else
+            {
+                scan.PrepareRow(y, out long rowWork, cancellationToken);
+                if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += rowWork;
+            }
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
             for (int x = raster.StartX; x < raster.EndX; x++)
             {
                 double pixelCoverage;
-                if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
+                if (useAnalytic)
+                {
+                    pixelCoverage = analyticRow[x - raster.PathStartX] / 255.0;
+                    if (raster.Clip is not null) pixelCoverage *= ClipBoxCoverage(raster.Clip.Value, x, y);
+                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                }
+                else if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
                 else
                 {
                     pixelCoverage = 0.0;
@@ -514,20 +566,44 @@ public static class SvgConverter
             }
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out long scanSetup, cancellationToken);
-            if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
-            workUnits += scanSetup;
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+            workUnits += analyticSetup;
+            long scanSetup = 0;
+            using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
+            if (!useAnalytic)
+            {
+                if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += scanSetup;
+            }
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
+            ReadOnlySpan<byte> analyticRow = default;
+            if (useAnalytic)
+            {
+                walker.PrepareRow(y, out long analyticRowWork, cancellationToken);
+                if (analyticRowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += analyticRowWork;
+                analyticRow = walker.Row;
+            }
+            else
+            {
                 scan.PrepareRow(y, out long rowWork, cancellationToken);
                 if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                 workUnits += rowWork;
+            }
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
             for (int x = raster.StartX; x < raster.EndX; x++)
             {
                 double pixelCoverage;
-                if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
+                if (useAnalytic)
+                {
+                    pixelCoverage = analyticRow[x - raster.PathStartX] / 255.0;
+                    if (raster.Clip is not null) pixelCoverage *= ClipBoxCoverage(raster.Clip.Value, x, y);
+                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                }
+                else if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
                 else
                 {
                     pixelCoverage = 0.0;
@@ -644,19 +720,43 @@ public static class SvgConverter
             BlitPatternTile(tile, blitted);
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgScanlineCoverage scan = SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out long scanSetup, cancellationToken);
-            if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
-            workUnits += scanSetup;
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+            workUnits += analyticSetup;
+            long scanSetup = 0;
+            using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
+            if (!useAnalytic)
+            {
+                if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += scanSetup;
+            }
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
+            ReadOnlySpan<byte> analyticRow = default;
+            if (useAnalytic)
+            {
+                walker.PrepareRow(y, out long analyticRowWork, cancellationToken);
+                if (analyticRowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
+                workUnits += analyticRowWork;
+                analyticRow = walker.Row;
+            }
+            else
+            {
                 scan.PrepareRow(y, out long rowWork, cancellationToken);
                 if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                 workUnits += rowWork;
+            }
             for (int x = raster.StartX; x < raster.EndX; x++)
             {
                 double pixelCoverage;
-                if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
+                if (useAnalytic)
+                {
+                    pixelCoverage = analyticRow[x - raster.PathStartX] / 255.0;
+                    if (raster.Clip is not null) pixelCoverage *= ClipBoxCoverage(raster.Clip.Value, x, y);
+                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                }
+                else if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
                 else
                 {
                     pixelCoverage = 0.0;

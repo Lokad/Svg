@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-diagonal-layer-opacity-half-grid-16x8",
+  "referencePng": "original-diagonal-layer-opacity-half-grid-16x8.png",
+  "referenceSha256": "7ebc094784c0e8803734273547b3d42044a76a2b38464df083e7d3942e16ee3a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "2",
+  "viewport": {
+    "width": 16,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "ba4941463ec77e76e5ca8ce5153995cf3c57a8dad2c7924e7526a94c8a23e899",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

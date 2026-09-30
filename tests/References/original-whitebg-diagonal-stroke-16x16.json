@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-whitebg-diagonal-stroke-16x16",
+  "referencePng": "original-whitebg-diagonal-stroke-16x16.png",
+  "referenceSha256": "a1ce50f6f4ca22b04f5471df612115bcf9a7c6a0a4f3e81f8531717efc841eea",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "70feabc946ae32bf40c69b6f54172d0bbf373d1b8201893490f6f02c998c308a",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

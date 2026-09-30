@@ -42,10 +42,11 @@ public sealed class SvgUseInstanceTests
         // Staged oracle runs tu2-o1..o2 agree 2/2 byte-identical
         // SHA-256 c2bea74d219be45468d679ebf1855802fb5a3c5a1c34de404f87f0a648250a38;
         // the only residual is edge fringe (25 px at max channel error 16).
+        // Pixel (9,1) decodes to alpha 251 in that triple, which the analytic coverage row reproduces.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g id='a' transform='rotate(30)'><polygon points='0,0 4,0 0,4' fill='red'/></g><use href='#a' x='8'/></svg>", out _, out _);
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 0, 1));
-        Assert.Equal(new SvgColor(255, 0, 0, 250), Pixel(pixels, 16, 9, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 251), Pixel(pixels, 16, 9, 1));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 15, 15));
     }
 

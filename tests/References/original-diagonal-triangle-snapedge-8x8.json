@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-diagonal-triangle-snapedge-8x8",
+  "referencePng": "original-diagonal-triangle-snapedge-8x8.png",
+  "referenceSha256": "0cf53ac228bf04db42ebd54280e4de087829e458842400613622d898c1253c43",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "fc0b0ec5e58b1c6b1f545b88919e274f74904720c3e381f9b790db3b7a4fbad3",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

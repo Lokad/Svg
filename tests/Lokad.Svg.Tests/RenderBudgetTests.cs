@@ -465,9 +465,9 @@ public sealed class RenderBudgetTests
         {
             SvgGeometry geometry = SvgGeometry.FromPolygonFill(fill);
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null)], false, 0, null);
-            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 263);
+            SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 375);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
-            Assert.Equal(263, surface.WorkUnits);
+            Assert.Equal(375, surface.WorkUnits);
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);
@@ -617,7 +617,7 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
-    public void Polygon_rasterization_evaluates_interior_and_fringe_pixels_per_contour()
+    public void Polygon_rasterization_emits_analytic_rows_without_fan_per_contour()
     {
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
@@ -631,14 +631,14 @@ public sealed class RenderBudgetTests
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
-            Assert.Equal(43, fanEvaluations);
+            Assert.Equal(0, fanEvaluations);
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);
     }
 
     [Fact]
-    public void Polygon_rasterization_evaluates_interior_and_fringe_pixels_under_evenodd_roles()
+    public void Polygon_rasterization_emits_analytic_rows_without_fan_under_evenodd_roles()
     {
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
@@ -653,14 +653,14 @@ public sealed class RenderBudgetTests
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
-            Assert.Equal(43, fanEvaluations);
+            Assert.Equal(0, fanEvaluations);
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);
     }
 
     [Fact]
-    public void Polygon_rasterization_evaluates_interior_and_fringe_pixels_under_nonzero_roles()
+    public void Polygon_rasterization_emits_analytic_rows_without_fan_under_nonzero_roles()
     {
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
@@ -675,7 +675,7 @@ public sealed class RenderBudgetTests
             int fanEvaluations = 0;
             using IDisposable fanScope = SvgPolygonCoverageProbe.Arm(() => fanEvaluations++);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
-            Assert.Equal(43, fanEvaluations);
+            Assert.Equal(0, fanEvaluations);
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);

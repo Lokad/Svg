@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-diagonal-switch-300-8x8",
+  "referencePng": "original-diagonal-switch-300-8x8.png",
+  "referenceSha256": "1607374f6c0301ec2919129ba4d9f9af2b560159af0dd48fc41e0db1dde8f382",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "503e2bdb1ad2aa56942195e2ff4a5779f108fb5575dc4bddebd37a5c794ab1e9",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

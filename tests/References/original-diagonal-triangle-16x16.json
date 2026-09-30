@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-diagonal-triangle-16x16",
+  "referencePng": "original-diagonal-triangle-16x16.png",
+  "referenceSha256": "4a88a6607ece995828d7eafab67a4219216e8189e419bc3bd01740736c144c3f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "fe454657bc54433bd288915a4ce889f8fa2bd0f2f31771f9553e9be0d5ef1c9e",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

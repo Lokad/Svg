@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-diagonal-triangle-fractional-8x8",
+  "referencePng": "original-diagonal-triangle-fractional-8x8.png",
+  "referenceSha256": "bee46b4e55a89b9fdbf0c801a2cc888bd4b98851ddf3137108964e5a051b3bb7",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "2",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "a4dfed10a22e98d35665143c33ec8420a4e3710383d09ec89b8d868fee63a8e5",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

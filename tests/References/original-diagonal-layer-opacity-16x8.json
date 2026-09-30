@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-diagonal-layer-opacity-16x8",
+  "referencePng": "original-diagonal-layer-opacity-16x8.png",
+  "referenceSha256": "5a950a21def082b1cc1205b40edb0cc003f97018848763667c8c5e9b3120592d",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "2",
+  "viewport": {
+    "width": 16,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "31b1969bbec490f659a1d67aeb1650a3e358d0909ac82ae3a3bf02bf14636aff",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

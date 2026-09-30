@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-stroke-single-diagonal-16x16",
+  "referencePng": "original-stroke-single-diagonal-16x16.png",
+  "referenceSha256": "958462075398e73f4b8226944a72a071a497c7b4a8e1842734d1cf93e841c44c",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "91325477eaa585586f533654e7967cb299e78b43def4f957424d840cdaaf09d3",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}
