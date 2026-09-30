@@ -1319,3 +1319,9 @@ Question: is the disjoint-opposite 38-versus-37 the same phenomenon as the diago
 Method: recapture the R34 sliver input fresh and decode every nonzero pixel through the repo decoder.
 Facts: Chrome paints exactly one pixel at alpha 37 where the walker paints 38, and both slivers land inside pixel (0,0) with disjoint geometry, so this is shared-pixel combination without any shared span. The diagonal seam instead needs a shared span with per-pixel equality elsewhere. The two one-quantum effects need different fixes: a combination rule for shared pixels here against a span-fringe rule there, each with held-out probes declared before any tuning.
 Decision: no product change. Next: declare held-out shared-pixel probes, then row-5 curve retention or the clip mask-layer slice.
+
+## Shared-pixel family sums small pairs exactly and steps larger ones once (2026-09-30 probe work)
+Question: how does combined coverage relate to single-sliver coverages across magnitudes for disjoint slivers sharing one pixel.
+Method: author four disjoint sliver pairs with legs 0.15, 0.3, 0.45 and mixed 0.2 plus 0.5 inside pixel (0,0), capture fresh 3 out of 3 stable triples, render pairs and all eight singles, and diff through VisualDiff.
+Facts: tiny and mixed pairs sum exactly in both engines while medium and large pairs step once in both, with singles reading 4 plus 4, 16 plus 16, 32 plus 28 and 6 plus 32 against combined 8 and 38 exact plus 37 and 60 against 60. The medium pair exceeds its singles sum in both engines, which confounds a pure combination rule with preparation-window quantization since singles ride the convex path while pairs ride the edges path. The 030 probe reproduces the pinned R34 oracle hash exactly, anchoring the family.
+Decision: graduate the two exact pairs as fixtures and admit the two stepped pairs at 1 px max 1 with no product change. Next: window-controlled singles to separate combination rule from quantization, then tune.

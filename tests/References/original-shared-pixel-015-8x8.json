@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-shared-pixel-015-8x8",
+  "referencePng": "original-shared-pixel-015-8x8.png",
+  "referenceSha256": "cf60e01de2477f33208c7248786ebf541c9b089ff84db832af0bc3ad86e21067",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "933b844c8152325d0d7ac6ada6e29924e04da62aa4c2fca7119e94a378ea62fa",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

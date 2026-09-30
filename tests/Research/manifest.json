@@ -2545,6 +2545,76 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-shared-pixel-030-8x8",
+      "path": "shared-pixel-030-8x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "ff341b6e1fdf13260fcbb826f249b8785a33f01cea1e7355ac30b09cb9cccc75",
+      "featureTags": ["geometry", "path", "fractional-coordinates", "shared-pixel", "coverage"],
+      "width": 8,
+      "height": 8,
+      "admittedRendering": {
+        "changedPixelCount": 1,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 1,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 0,
+        "maximumMismatchX": 0,
+        "maximumMismatchY": 0
+      },
+      "oracle": {
+        "referencePng": "references/shared-pixel-030-8x8.png",
+        "referenceSha256": "a6c2aee0c5ea0c602f677c9e6fe0f32d5117f3f718f1fa1259157619094cd410",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-shared-pixel-050-8x8",
+      "path": "shared-pixel-050-8x8.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "1a87482dc3a235298236d990ec1c4914728dd521ee5a54b363f36444fc8213a3",
+      "featureTags": ["geometry", "path", "fractional-coordinates", "shared-pixel", "coverage"],
+      "width": 8,
+      "height": 8,
+      "admittedRendering": {
+        "changedPixelCount": 1,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 1,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 0,
+        "maximumMismatchX": 0,
+        "maximumMismatchY": 0
+      },
+      "oracle": {
+        "referencePng": "references/shared-pixel-050-8x8.png",
+        "referenceSha256": "9f20b9d8a9b35e1db16c3bdda71e0da8845d05518414ef8bc66bc85766140ebb",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
