@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-union-single-retrace-half-16x16",
+  "referencePng": "original-union-single-retrace-half-16x16.png",
+  "referenceSha256": "b6ca2459d8c47c1e42637f8aecb6e6adc2c0de203c20561b6f6213ef027c4f1c",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "55291abaa503ee847a42aa7852ee33912af566fee98a445dbe40b697e4ade4f0",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

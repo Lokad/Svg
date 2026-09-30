@@ -646,6 +646,46 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-union-pennon-retrace-diag-16x16.json",
       "referenceSha256": "8e15bbd331854e33ffbf0a02928e621d4573e7da637641152c5a83d72428e2ac"
+    },
+    {
+      "id": "original-union-single-retrace-16x16",
+      "path": "original/union-single-retrace-16x16.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "b0ff03668c8bdec2e1bb46745ec89ac6a4211be3a0e52c54b71574b5bc48b7cc",
+      "materializedSha256": "b0ff03668c8bdec2e1bb46745ec89ac6a4211be3a0e52c54b71574b5bc48b7cc",
+      "featureTags": ["geometry", "path", "rectangular", "coincident-overlap", "union", "coverage"],
+      "width": 16,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-union-single-retrace-16x16.json",
+      "referenceSha256": "2415f28a1b97e480543ccfd4d8e0253220278908e43f43fb6e5e418f292d2585"
+    },
+    {
+      "id": "original-union-single-retrace-half-16x16",
+      "path": "original/union-single-retrace-half-16x16.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "2222e0c20fc4f07589ab031f38e3226e7a33407b10c6752d1d08391b2bfba863",
+      "materializedSha256": "2222e0c20fc4f07589ab031f38e3226e7a33407b10c6752d1d08391b2bfba863",
+      "featureTags": ["geometry", "path", "rectangular", "fractional-coordinates", "coincident-overlap", "union", "coverage"],
+      "width": 16,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-union-single-retrace-half-16x16.json",
+      "referenceSha256": "b6ca2459d8c47c1e42637f8aecb6e6adc2c0de203c20561b6f6213ef027c4f1c"
     }
   ]
 }
