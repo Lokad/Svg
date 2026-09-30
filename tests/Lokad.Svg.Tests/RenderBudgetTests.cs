@@ -1113,7 +1113,7 @@ public sealed class RenderBudgetTests
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(twin, [3, 6], [], false, [1, 1], 0, 16, 0, 16, 16, 16, budget, out long twinSetup, out bool twinEligible, CancellationToken.None))
         {
             Assert.True(twinEligible);
-            Assert.Equal(68, twinSetup);
+            Assert.Equal(104, twinSetup);
         }
         SvgDevicePoint[] touching = [new(0, 0), new(8, 0), new(0, 8), new(8, 0), new(8, 8), new(0, 8)];
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(touching, [3, 6], [], false, [1, 1], 0, 16, 0, 16, 16, 16, budget, out long touchingSetup, out bool touchingEligible, CancellationToken.None))
@@ -1124,6 +1124,19 @@ public sealed class RenderBudgetTests
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(degenerate, [3], [], false, [0], 0, 16, 0, 16, 16, 16, budget, out long degenerateSetup, out bool degenerateEligible, CancellationToken.None))
         {
             Assert.False(degenerateEligible);
+        }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+    public void Shared_vertex_multi_keeps_fan_path()
+    {
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] lobes = [new(2, 2), new(4, 3), new(8, 4), new(8, 8), new(2, 8), new(4, 4), new(4, 2), new(4, 0), new(2, 2), new(0, 4), new(0, 0), new(2, 2)];
+        int[] ends = [5, 9, 12];
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(lobes, ends, [], false, null, 0, 16, 0, 16, 16, 16, budget, out long _, out bool eligible, CancellationToken.None))
+        {
+            Assert.False(eligible);
         }
         AssertBudgetReleased(budget);
     }

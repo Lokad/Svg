@@ -1335,4 +1335,21 @@ public sealed class SvgPolygonFillTests
         for (int index = 3; index < pixels.Length; index += 4) total += pixels[index];
         return total;
     }
+
+    [Fact]
+    public void Split_vertical_edge_walks_like_unsplit_edge()
+    {
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] split = [new(0, 0), new(0, 4), new(0, 8), new(8, 0)];
+        SvgDevicePoint[] whole = [new(0, 0), new(0, 8), new(8, 0)];
+        using (SvgAnalyticCoverage splitWalker = SvgAnalyticCoverage.Prepare(split, [4], [], false, null, 0, 16, 0, 16, 16, 16, budget, out long _, out bool splitEligible, CancellationToken.None))
+        using (SvgAnalyticCoverage wholeWalker = SvgAnalyticCoverage.Prepare(whole, [3], [], false, null, 0, 16, 0, 16, 16, 16, budget, out long _, out bool wholeEligible, CancellationToken.None))
+        {
+            Assert.True(splitEligible);
+            Assert.True(wholeEligible);
+            splitWalker.PrepareRow(4, out long _, CancellationToken.None);
+            wholeWalker.PrepareRow(4, out long _, CancellationToken.None);
+            Assert.Equal(wholeWalker.Row.ToArray(), splitWalker.Row.ToArray());
+        }
+    }
 }
