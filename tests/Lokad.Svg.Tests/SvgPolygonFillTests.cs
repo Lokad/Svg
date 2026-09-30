@@ -1382,4 +1382,14 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 8, 2));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 1, 9));
     }
+
+    [Fact]
+    public void Multi_span_nested_island_drops_like_outer()
+    {
+        // R34: a nested island sharing several boundary spans drops, keeping the outer fill.
+        byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 H16 V16 H0 Z M0,4 H16 V12 H0 Z' fill='red'/></svg>", out _, out _);
+        byte[] outer = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 H16 V16 H0 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(outer, union);
+    }
 }
