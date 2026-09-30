@@ -17,6 +17,10 @@ internal ref struct SvgOrthogonalGeometryLowering
 {
     internal const double FlattenFlatness = 0.25;
 
+    /// <summary>Collapses consecutive device-space joints within this Chebyshev distance during fill lowering.</summary>
+    /// <remarks>Curve endpoints that agree in source can diverge by mapping dust (observed 1e-13) once the finite-double affine map applies different operation orders to flattened-curve ends versus directly mapped starts. The bound exceeds worst-case divergence for admitted coordinates (a handful of roundings at magnitude 32767 with unit roundoff 2^-53, totalling below 1e-10) while sitting far below the 1/256 coverage quantum, hence invisibly.</remarks>
+    private const double WeldEpsilon = 1e-9;
+
     /// <summary>Scales flattening tolerance down with root and output magnification, never coarsening past the nominal flatness.</summary>
     internal static double ScaledFlatness(double outputMagnification)
         => outputMagnification <= 1 ? FlattenFlatness : FlattenFlatness / outputMagnification;
@@ -996,6 +1000,55 @@ internal ref struct SvgOrthogonalGeometryLowering
         return bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
     }
 
+    /// <summary>Compacts dust-scale consecutive joints (including each contour closing joint) in place, writing cumulative compacted ends and returning the compacted total.</summary>
+    /// <remarks>Snapping keeps the earlier bitwise value so no computed points ever appear and the touch pipeline keeps its bitwise invariant; strictly-bitwise-equal joints keep the existing zero-length path untouched. Results under three points per contour flow to the existing degenerate guards exactly like any degenerate input. Charges one work unit per examined point and observes cancellation through the counter; compacted ends reuse caller-reserved ends-sized storage.</remarks>
+    internal static int WeldDustJoints(SvgDevicePoint[] points, int[] ends, int[] weldedEnds, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(points);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(weldedEnds);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (weldedEnds.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(weldedEnds));
+        int total = 0;
+        int previousEnd = 0;
+        for (int contour = 0; contour < ends.Length; contour++)
+        {
+            if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+            int start = previousEnd;
+            int end = ends[contour];
+            previousEnd = end;
+            if (start < 0 || end > points.Length || end < start) throw new ArgumentOutOfRangeException(nameof(ends));
+            int write = total;
+            SvgDevicePoint anchor = default;
+            bool hasAnchor = false;
+            for (int index = start; index < end; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                if (hasAnchor && IsDustJoint(anchor, points[index]))
+                {
+                    continue;
+                }
+                anchor = points[index];
+                hasAnchor = true;
+                points[write] = points[index];
+                write++;
+            }
+            if (hasAnchor && write - total > 2 && IsDustJoint(points[total], anchor))
+            {
+                write--;
+            }
+            total = write;
+            weldedEnds[contour] = total;
+        }
+        return total;
+
+        static bool IsDustJoint(SvgDevicePoint kept, SvgDevicePoint candidate)
+        {
+            if (kept.X == candidate.X && kept.Y == candidate.Y) return false;
+            return Math.Abs(kept.X - candidate.X) <= WeldEpsilon && Math.Abs(kept.Y - candidate.Y) <= WeldEpsilon;
+        }
+    }
+
     /// <summary>Validates separated device contours once and resolves per-contour combination weights, returning paint-independent retained storage with its scene reservation, which transfers to the retained fill.</summary>
     private SeparatedContours PrepareSeparatedContours(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgPolygonMapping mapping, RenderBudget budget)
     {
@@ -1007,7 +1060,22 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
             ValidateDeviceRange(retained);
-            ChargePairs(_workCounter, (long)retained.Length * (retained.Length - 1) / 2, _cancellationToken);
+            int[] weldedEnds = new int[ends.Length];
+            int weldedTotal = WeldDustJoints(retained, ends, weldedEnds, _workCounter, _cancellationToken);
+            if (weldedTotal < retained.Length)
+            {
+                reservation?.Dispose();
+                reservation = ReserveScene(weldedTotal, ends.Length, ends.Length, budget);
+                SvgDevicePoint[] tightPoints = new SvgDevicePoint[weldedTotal];
+                for (int index = 0; index < weldedTotal; index++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    tightPoints[index] = retained[index];
+                }
+                retained = tightPoints;
+                ends = weldedEnds;
+            }
+            ChargePairs(_workCounter, (long)weldedTotal * (weldedTotal - 1) / 2, _cancellationToken);
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
             if (SvgContourNesting.MergeIdenticalContours(retained, ends, _workCounter, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, _cancellationToken))
             {
