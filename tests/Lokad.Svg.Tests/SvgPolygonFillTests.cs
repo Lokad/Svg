@@ -1402,4 +1402,14 @@ public sealed class SvgPolygonFillTests
 
         Assert.Equal(outer, union);
     }
+
+    [Fact]
+    public void Opposite_adjacent_triangles_splice_like_rect()
+    {
+        // R34: adjacent loops sharing one span in opposite directions splice into the union boundary.
+        byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 L16,0 L0,16 Z M16,0 L16,16 L0,16 Z' fill='red'/></svg>", out _, out _);
+        byte[] outer = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 H16 V16 H0 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(outer, union);
+    }
 }

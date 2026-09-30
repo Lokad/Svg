@@ -1301,3 +1301,15 @@ Question: does the pixels-times-points raster work bound pessimistically deny in
 Method: render inv-086 Turkey natively under Default, at an explicit 600x400 viewport, and under tenfold work units, timing the native render.
 Facts: Default denies at 1200x800 while the 600x400 viewport renders and tenfold work renders natively in 4205 ms, so the binding scales with pixels and actual conversion costs seconds, confirming the batch capacity-gate reading rather than a thirtyfold accounting artifact. Explicit sizes render where the viewBox scales, which keeps variant level evidence separate from Default disposition. No bound recalibration follows from this probe.
 Decision: no product change. Next: row-5 curve retention or the clip mask-layer slice.
+
+## Chrome keeps a one-step diagonal union seam our splice erases (2026-09-30 probe work)
+Question: does opposite-direction adjacent splicing match Chrome, and why do two identical full-red captures differ across sessions.
+Method: author two triangles forming a square across one shared diagonal span, capture a fresh 3 out of 3 stable triple, diff ours against Chrome and against the rect twin, then decode both oracles pixel by pixel.
+Facts: the splice renders byte-identical to the rect twin, proving the surgery transparent, while Chrome keeps alpha 254 along the sixteen diagonal seam pixels against 255 elsewhere, so the admitted tuple reads 16 px max 1 across the full image. Axis-aligned unions show no seam, which bounds the effect to diagonal coincidence. A cross-session oracle scare resolves as geometry, not nondeterminism, since each triple is self-stable and the seam pixels sit exactly on the shared span.
+Decision: admit the probe as a 16 px max 1 research ratchet with a twin unit test. Next: row-5 curve retention or the clip mask-layer slice.
+
+## Chrome keeps a one-step diagonal union seam our splice erases (2026-09-30 probe work)
+Question: does opposite-direction adjacent splicing match Chrome, and why do two identical full-red captures differ across sessions.
+Method: author two triangles forming a square across one shared diagonal span, capture a fresh 3 out of 3 stable triple, diff ours against Chrome and against the rect twin, then decode both oracles pixel by pixel.
+Facts: the splice renders byte-identical to the rect twin, proving the surgery transparent, while Chrome keeps alpha 254 along the sixteen diagonal seam pixels against 255 elsewhere, so the admitted tuple reads 16 px max 1 across the full image. Axis-aligned unions show no seam, which bounds the effect to diagonal coincidence. A cross-session oracle scare resolves as geometry, not nondeterminism, since each triple is self-stable and the seam pixels sit exactly on the shared span.
+Decision: admit the probe as a 16 px max 1 research ratchet with a twin unit test. Next: row-5 curve retention or the clip mask-layer slice.
