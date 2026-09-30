@@ -2,9 +2,9 @@ using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Emits pinned-construction coverage rows for one single-contour straight-edge fill.</summary>
+/// <summary>Emits pinned-construction coverage rows for straight-edge fills with contact-free contours.</summary>
 /// <remarks>
-/// <para>For one closed ring with nonzero area and finite vertices inside the 16.16 device range, row preparation walks the retained analytic edges with signed winding into spatial intervals, then paints trapezoid coverage through fixed-point alpha operations into one mask row, mirroring the pinned Skia analytic walkers (convex fast path for convex rings, winding intervals otherwise). Masks accumulate with saturation; close edges select assign-vs-add exactly like the pinned blitters. Multi-contour, degenerate, non-finite, out-of-range, canvas-exceeding and self-contacting payloads stay ineligible so the existing fan path keeps their behavior bitwise; canvas-exceeding rings need edge clipping before walking, and self-contacting rings keep fan roles, mirroring the pinned clip build.</para>
+/// <para>For one closed ring with nonzero area and finite vertices inside the 16.16 device range, row preparation walks the retained analytic edges with signed winding into spatial intervals, then paints trapezoid coverage through fixed-point alpha operations into one mask row, mirroring the pinned Skia analytic walkers (convex fast path for convex rings, winding intervals otherwise). Masks accumulate with saturation; close edges select assign-vs-add exactly like the pinned blitters. Multi-contour sets walk all kept contours together through winding intervals with per-contour votes skipping masked-out contours; degenerate, non-finite, out-of-range, canvas-exceeding, self-contacting and across-contacting payloads stay ineligible so the existing fan path keeps their behavior bitwise; canvas-exceeding rings need edge clipping before walking, and self-contacting rings keep fan roles, mirroring the pinned clip build.</para>
 /// <para>Ownership: preparation reserves caller-charged scratch storage sized by ScratchByteCount and releases it through Dispose; this type allocates nothing else and holds no budget itself. Cancellation is observed while validating, setting up and sorting edges and while walking every row; Row is only valid until the next PrepareRow call. Instances are single-threaded like the raster loops that own them.</para>
 /// </remarks>
 internal ref struct SvgAnalyticCoverage
@@ -293,8 +293,8 @@ internal ref struct SvgAnalyticCoverage
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic coverage storage exceeds the supported accounting range."); }
         return bytes;
     }
-    /// <summary>Validates retained contours like the shared fan path, then reserves analytic scratch for one single-contour fill.</summary>
-    /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically. Multi-contour, degenerate, non-finite, out-of-range, canvas-exceeding and self-contacting payloads report ineligible without reserving, so the caller keeps the legacy path; the returned value still requires disposal. The setup cost covers validation, area, convexity and self-contact scoring, edge setup and a sorting upper bound for the caller work ledger.</remarks>
+    /// <summary>Validates retained contours like the shared fan path, then reserves analytic scratch for one contact-free fill.</summary>
+    /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically. Single rings keep the exact legacy sequence; multi-contour sets additionally admit disjoint-or-nested contact-free loops with per-contour area and vote filtering plus a set-level contact scan, reporting ineligible without reserving otherwise, so the caller keeps the legacy path; the returned value still requires disposal. The setup cost covers validation, area, convexity and self-contact scoring, edge setup and a sorting upper bound for the caller work ledger.</remarks>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
@@ -310,7 +310,7 @@ internal ref struct SvgAnalyticCoverage
         }
         setupWork = (long)points.Length + ends.Length;
         eligible = false;
-        if (ends.Length != 1 || points.Length < 3 || xEnd <= xStart) return default;
+        if (ends.Length < 1 || points.Length < 3 || xEnd <= xStart) return default;
         double maxAbs = 0;
         double minX = double.PositiveInfinity;
         double minY = double.PositiveInfinity;
@@ -333,6 +333,77 @@ internal ref struct SvgAnalyticCoverage
         }
         if (maxAbs > MaxRange) return default;
         if (Math.Floor(minX) < 0 || Math.Floor(minY) < 0 || Math.Ceiling(maxX) > outputWidth || Math.Ceiling(maxY) > outputHeight) return default;
+        if (ends.Length > 1)
+        {
+            int keptContours = 0;
+            int previousEnd = 0;
+            for (int contour = 0; contour < ends.Length; contour++)
+            {
+                if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                int start = previousEnd;
+                int end = ends[contour];
+                previousEnd = end;
+                int count = end - start;
+                if (count < 3) continue;
+                if (TwiceArea(points.Slice(start, count)) == 0) continue;
+                if (hasVotes && votes[contour] == 0) continue;
+                keptContours++;
+            }
+            if (keptContours == 0) return default;
+            SvgContourFlags setStructure = SvgContourStructure.ClassifySet(points, ends, cancellationToken);
+            setupWork += (long)points.Length * points.Length;
+            if ((setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
+            int multiWidth = xEnd - xStart;
+            bool multiSkipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
+            RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth), SvgMemoryCategory.Surface);
+            try
+            {
+                List<AnalyticEdge> multiKept = new(points.Length);
+                int priorEnd = 0;
+                for (int contour = 0; contour < ends.Length; contour++)
+                {
+                    if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    int start = priorEnd;
+                    int end = ends[contour];
+                    priorEnd = end;
+                    int count = end - start;
+                    if (count < 3) continue;
+                    if (TwiceArea(points.Slice(start, count)) == 0) continue;
+                    if (hasVotes && votes[contour] == 0) continue;
+                    int contourEdges = 0;
+                    for (int index = start; index < end; index++)
+                    {
+                        if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        SvgDevicePoint multiFirst = points[index];
+                        SvgDevicePoint multiSecond = points[start + ((index - start + 1) % count)];
+                        AnalyticEdge? multiEdge = SetLine(multiFirst.X, multiFirst.Y, multiSecond.X, multiSecond.Y);
+                        if (multiEdge is null) continue;
+                        if (multiEdge.DX == 0 && contourEdges > 0 && CombineVertical(multiEdge, multiKept[^1])) continue;
+                        multiKept.Add(multiEdge);
+                        contourEdges++;
+                    }
+                }
+                AnalyticEdge[] multiEdges = multiKept.ToArray();
+                System.Array.Sort(multiEdges, EdgeOrder.Instance);
+                AnalyticEdge multiHead = new() { UpperY = int.MinValue, LowerY = int.MinValue, X = int.MinValue, UpperX = int.MinValue, DY = int.MaxValue };
+                AnalyticEdge multiTail = new() { UpperY = int.MaxValue, LowerY = int.MaxValue, X = int.MaxValue, UpperX = int.MaxValue, DY = int.MaxValue };
+                multiHead.Next = multiEdges.Length > 0 ? multiEdges[0] : multiTail;
+                if (multiEdges.Length > 0) multiEdges[0].Prev = multiHead;
+                else multiHead.Next = multiTail;
+                for (int index = 1; index < multiEdges.Length; index++) { multiEdges[index - 1].Next = multiEdges[index]; multiEdges[index].Prev = multiEdges[index - 1]; }
+                if (multiEdges.Length > 0) { multiEdges[^1].Next = multiTail; multiTail.Prev = multiEdges[^1]; }
+                else multiTail.Prev = multiHead;
+                byte[] multiRow = new byte[multiWidth + 2];
+                int[] multiTemp = new int[multiWidth + 4];
+                int[] multiAlphas = new int[multiWidth + 4];
+                int multiLevels = 0;
+                for (int level = multiEdges.Length; level > 0; level >>= 1) multiLevels++;
+                setupWork += (long)multiEdges.Length * (multiLevels + 3);
+                eligible = true;
+                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, multiScratch);
+            }
+            catch { multiScratch?.Dispose(); throw; }
+        }
         if (TwiceArea(points) == 0) return default;
         SvgContourFlags structure = SvgContourStructure.ClassifyContour(points, 0, points.Length, cancellationToken);
         setupWork += (long)points.Length * (points.Length - 1) / 2;

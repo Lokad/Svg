@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-quantum-sliver-v-twin-002-16x16",
+  "referencePng": "original-quantum-sliver-v-twin-002-16x16.png",
+  "referenceSha256": "2390dc5e2ad03cbd116f3868653f3016e4f6159938ca928c4b05cc94c58e520f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "5387b9a08406df52c235d3aa82748d4d048512dd601dc56505d0eb780f41c0b8",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

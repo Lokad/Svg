@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-quantum-floor-v-twin-002-16x16",
+  "referencePng": "original-quantum-floor-v-twin-002-16x16.png",
+  "referenceSha256": "c2b7f28463bb8f9c05c2deb7ca2ca0508feb893e115435c61736202f63b72415",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "84f2ab4d1589d5515cb9147f45ebc316642e40b76caa2dda73c9cea466402048",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}
