@@ -1283,3 +1283,9 @@ Question: do adjacent loop chains sharing one span per pair splice sequentially 
 Method: author three adjacent squares sharing single spans pairwise, capture a fresh 3 out of 3 stable recipe-3 triple, and diff ours against Chrome and against the outer-alone twin.
 Facts: each sweep splices one pair and re-scans, composing the full union with zero code change and rendering byte-exact against Chrome and byte-identical to the outer twin. Adjacent multi-span interlock narrows to pairs sharing two or more spans at once, which stays queued with even-odd multi-crossings, stroke unions and the faithful kTotal port.
 Decision: graduate the probe as one exact fixture with a twin unit test.
+
+## Correction as axis multis ride bands while only diagonals prove union (2026-09-30 probe work)
+Question: which lowering path renders the axis-aligned union probes that were attributed to splice and drop surgery.
+Method: read the orthogonal shape dispatch and band scan conversion, then probe a notch-tab multi-span interlock that polygon union must reject.
+Facts: paths without diagonal contours lower through winding-grouped rectangle bands where doubled spans union and opposite spans cancel natively, so every H-V union probe including the notch-tab interlock renders exact without polygon surgery. Genuine splice, drop, admission and guard evidence stands on the diagonal probes and diagonal unit tests only, which rejected before union and render after. The axis fixtures stay valid exact controls with corrected attribution, and the notch-tab probe is discarded as duplicate coverage. Band winding already completes the axis-aligned duplicate and overlap classes.
+Decision: no product change. Next: row-5 curve retention or the clip mask-layer slice.
