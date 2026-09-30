@@ -2907,12 +2907,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_multi_contour_path_content_in_direct_child_clip_paths()
+    public void Rect_subject_with_multi_contour_clip_stays_unsupported()
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><clipPath id='c'><path d='M0,0 H4 V4 H0 Z M5,5 H8 V8 H5 Z'/></clipPath><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only straight single-contour clip paths are implemented.", rejected.Message);
+        Assert.Contains("Polygon clip-paths on this geometry are not implemented.", rejected.Message);
     }
 
     [Fact]

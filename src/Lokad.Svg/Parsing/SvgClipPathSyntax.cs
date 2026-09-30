@@ -145,7 +145,7 @@ internal static class SvgClipPathSyntax
 
             static SvgGeometry ClipSolidPolygon(SvgPolygonFill polygon, SvgClipPolygon clip, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
             {
-                (OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<int> signs) = IntersectSubjectContours(polygon.Points, polygon.ContourEnds, polygon.Signs, clip.Points, budget, workCounter, cancellationToken);
+                (OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<int> signs) = IntersectSubjectContours(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, clip, budget, workCounter, cancellationToken);
                 try
                 {
                     SvgPolygonFill clipped = SvgPolygonFill.Create(points.Items, ends.Items, polygon.Signs is null ? null : signs.Items, polygon.Color, polygon.HasFill, polygon.IsEvenOdd, polygon.Mapping, polygon.Clip, null, budget);
@@ -165,7 +165,7 @@ internal static class SvgClipPathSyntax
 
             static SvgGeometry ClipGradientPolygon(SvgGradientPolygon polygon, SvgClipPolygon clip, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
             {
-                (OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<int> signs) = IntersectSubjectContours(polygon.Points, polygon.ContourEnds, polygon.Signs, clip.Points, budget, workCounter, cancellationToken);
+                (OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<int> signs) = IntersectSubjectContours(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, clip, budget, workCounter, cancellationToken);
                 try
                 {
                     SvgGradientPolygon clipped = SvgGradientPolygon.Create(points.Items, ends.Items, polygon.Signs is null ? null : signs.Items, polygon.Gradient, polygon.Box, polygon.HasFill, polygon.IsEvenOdd, polygon.Opacity, polygon.Mapping, polygon.Clip, null, budget);
@@ -185,7 +185,7 @@ internal static class SvgClipPathSyntax
 
             static SvgGeometry ClipRadialPolygon(SvgRadialPolygon polygon, SvgClipPolygon clip, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
             {
-                (OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<int> signs) = IntersectSubjectContours(polygon.Points, polygon.ContourEnds, polygon.Signs, clip.Points, budget, workCounter, cancellationToken);
+                (OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<int> signs) = IntersectSubjectContours(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, clip, budget, workCounter, cancellationToken);
                 try
                 {
                     SvgRadialPolygon clipped = SvgRadialPolygon.Create(points.Items, ends.Items, polygon.Signs is null ? null : signs.Items, polygon.Gradient, polygon.Box, polygon.HasFill, polygon.IsEvenOdd, polygon.Opacity, polygon.Mapping, polygon.Clip, null, budget);
@@ -205,7 +205,7 @@ internal static class SvgClipPathSyntax
 
             static SvgGeometry ClipPatternPolygon(SvgPatternPolygon polygon, SvgClipPolygon clip, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
             {
-                (OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<int> signs) = IntersectSubjectContours(polygon.Points, polygon.ContourEnds, polygon.Signs, clip.Points, budget, workCounter, cancellationToken);
+                (OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<int> signs) = IntersectSubjectContours(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, clip, budget, workCounter, cancellationToken);
                 try
                 {
                     SvgPatternPolygon clipped = SvgPatternPolygon.Create(points.Items, ends.Items, polygon.Signs is null ? null : signs.Items, polygon.Content, polygon.OriginX, polygon.OriginY, polygon.TileWidth, polygon.TileHeight, polygon.HasFill, polygon.IsEvenOdd, polygon.Opacity, polygon.Mapping, polygon.Clip, budget);
@@ -224,35 +224,43 @@ internal static class SvgClipPathSyntax
             }
         }
 
-        static (OwnedParserArray<SvgDevicePoint> Points, OwnedParserArray<int> Ends, OwnedParserArray<int> Signs) IntersectSubjectContours(SvgDevicePoint[] points, int[] ends, int[]? signs, SvgDevicePoint[] clip, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static (OwnedParserArray<SvgDevicePoint> Points, OwnedParserArray<int> Ends, OwnedParserArray<int> Signs) IntersectSubjectContours(SvgDevicePoint[] points, int[] ends, int[]? signs, bool subjectIsEvenOdd, SvgClipPolygon clip, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(points);
             ArgumentNullException.ThrowIfNull(ends);
-            ArgumentNullException.ThrowIfNull(clip);
+            ArgumentNullException.ThrowIfNull(clip.Points);
+            ArgumentNullException.ThrowIfNull(clip.ContourEnds);
             ArgumentNullException.ThrowIfNull(budget);
             ArgumentNullException.ThrowIfNull(workCounter);
+            if (subjectIsEvenOdd) RequireDisjointClipContours(clip, workCounter, cancellationToken);
             using BudgetedParserList<SvgDevicePoint> kept = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             using BudgetedParserList<int> keptEnds = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             using BudgetedParserList<int> keptSigns = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             using BudgetedParserList<SvgDevicePoint> ping = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             using BudgetedParserList<SvgDevicePoint> pong = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
-            bool clipCounterClockwise = ClipPolygonArea(clip, workCounter, cancellationToken) > 0;
-            int start = 0;
-            for (int contour = 0; contour < ends.Length; contour++)
+            int clipStart = 0;
+            for (int clipContour = 0; clipContour < clip.ContourEnds.Length; clipContour++)
             {
                 workCounter.Consume(cancellationToken);
-                int end = ends[contour];
-                ping.Clear();
-                for (int index = start; index < end; index++)
+                int clipEnd = clip.ContourEnds[clipContour];
+                ReadOnlySpan<SvgDevicePoint> clipRing = clip.Points.AsSpan(clipStart, clipEnd - clipStart);
+                bool clipCounterClockwise = ClipPolygonArea(clipRing, workCounter, cancellationToken) > 0;
+                int start = 0;
+                for (int contour = 0; contour < ends.Length; contour++)
                 {
                     workCounter.Consume(cancellationToken);
-                    SvgDevicePoint vertex = points[index];
-                    if (ping.Count > 0 && ping[ping.Count - 1] == vertex) continue;
-                    ping.Add(vertex);
-                }
-                if (ping.Count > 1 && ping[0] == ping[ping.Count - 1]) ping.RemoveLast();
-                if (ping.Count >= 3) ClipRingToConvexPolygon(ping, pong, clip, clipCounterClockwise, workCounter, cancellationToken);
-                else ping.Clear();
+                    int end = ends[contour];
+                    ping.Clear();
+                    for (int index = start; index < end; index++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        SvgDevicePoint vertex = points[index];
+                        if (ping.Count > 0 && ping[ping.Count - 1] == vertex) continue;
+                        ping.Add(vertex);
+                    }
+                    if (ping.Count > 1 && ping[0] == ping[ping.Count - 1]) ping.RemoveLast();
+                    if (ping.Count >= 3) ClipRingToConvexPolygon(ping, pong, clipRing, clipCounterClockwise, workCounter, cancellationToken);
+                    else ping.Clear();
                 int keptBefore = kept.Count;
                 for (int index = 0; index < ping.Count; index++)
                 {
@@ -269,10 +277,108 @@ internal static class SvgClipPathSyntax
                 }
                 else while (kept.Count > keptBefore) kept.RemoveLast();
                 start = end;
+                }
+                clipStart = clipEnd;
             }
             return (kept.Detach(), keptEnds.Detach(), keptSigns.Detach());
 
-            static double ClipPolygonArea(SvgDevicePoint[] ring, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+            static void RequireDisjointClipContours(SvgClipPolygon clip, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+            {
+                for (int first = 0; first < clip.ContourEnds.Length; first++)
+                {
+                    for (int second = first + 1; second < clip.ContourEnds.Length; second++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        ReadOnlySpan<SvgDevicePoint> left = ClipContourSpan(clip, first);
+                        ReadOnlySpan<SvgDevicePoint> right = ClipContourSpan(clip, second);
+                        for (int leftEdge = 0; leftEdge < left.Length; leftEdge++)
+                        {
+                            for (int rightEdge = 0; rightEdge < right.Length; rightEdge++)
+                            {
+                                workCounter.Consume(cancellationToken);
+                                SvgDevicePoint p1 = left[leftEdge];
+                                SvgDevicePoint p2 = left[(leftEdge + 1) % left.Length];
+                                SvgDevicePoint q1 = right[rightEdge];
+                                SvgDevicePoint q2 = right[(rightEdge + 1) % right.Length];
+                                if (SegmentsProperlyCross(p1, p2, q1, q2) || SegmentsOverlap(p1, p2, q1, q2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Overlapping multi-contour clip paths are not implemented.");
+                            }
+                        }
+                        if (RingStrictlyContains(left, right, workCounter, cancellationToken) || RingStrictlyContains(right, left, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Overlapping multi-contour clip paths are not implemented.");
+                    }
+                }
+
+                static ReadOnlySpan<SvgDevicePoint> ClipContourSpan(SvgClipPolygon clip, int contour)
+                {
+                    int start = contour == 0 ? 0 : clip.ContourEnds[contour - 1];
+                    return clip.Points.AsSpan(start, clip.ContourEnds[contour] - start);
+                }
+
+                static double Orient(SvgDevicePoint a, SvgDevicePoint b, SvgDevicePoint c)
+                    => ((b.X - a.X) * (c.Y - a.Y)) - ((b.Y - a.Y) * (c.X - a.X));
+
+                static bool SegmentsProperlyCross(SvgDevicePoint p1, SvgDevicePoint p2, SvgDevicePoint q1, SvgDevicePoint q2)
+                {
+                    double o1 = Orient(p1, p2, q1);
+                    double o2 = Orient(p1, p2, q2);
+                    double o3 = Orient(q1, q2, p1);
+                    double o4 = Orient(q1, q2, p2);
+                    return ((o1 > 0 && o2 < 0) || (o1 < 0 && o2 > 0)) && ((o3 > 0 && o4 < 0) || (o3 < 0 && o4 > 0));
+                }
+
+                static bool SegmentsOverlap(SvgDevicePoint p1, SvgDevicePoint p2, SvgDevicePoint q1, SvgDevicePoint q2)
+                {
+                    if (Orient(p1, p2, q1) != 0 || Orient(p1, p2, q2) != 0) return false;
+                    double ax = Math.Abs(p2.X - p1.X);
+                    double ay = Math.Abs(p2.Y - p1.Y);
+                    if (ax >= ay)
+                    {
+                        double lo = Math.Max(Math.Min(p1.X, p2.X), Math.Min(q1.X, q2.X));
+                        double hi = Math.Min(Math.Max(p1.X, p2.X), Math.Max(q1.X, q2.X));
+                        return hi > lo;
+                    }
+                    double loY = Math.Max(Math.Min(p1.Y, p2.Y), Math.Min(q1.Y, q2.Y));
+                    double hiY = Math.Min(Math.Max(p1.Y, p2.Y), Math.Max(q1.Y, q2.Y));
+                    return hiY > loY;
+                }
+
+                static bool RingStrictlyContains(ReadOnlySpan<SvgDevicePoint> outer, ReadOnlySpan<SvgDevicePoint> inner, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+                {
+                    for (int index = 0; index < inner.Length; index++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        if (RingTouchesBoundary(outer, inner[index])) continue;
+                        if (IsStrictlyInside(outer, inner[index])) return true;
+                    }
+                    return false;
+                }
+
+                static bool RingTouchesBoundary(ReadOnlySpan<SvgDevicePoint> ring, SvgDevicePoint point)
+                {
+                    for (int index = 0; index < ring.Length; index++)
+                    {
+                        if (Orient(ring[index], ring[(index + 1) % ring.Length], point) == 0) return true;
+                    }
+                    return false;
+                }
+
+                static bool IsStrictlyInside(ReadOnlySpan<SvgDevicePoint> ring, SvgDevicePoint point)
+                {
+                    bool inside = false;
+                    for (int index = 0; index < ring.Length; index++)
+                    {
+                        SvgDevicePoint a = ring[index];
+                        SvgDevicePoint b = ring[(index + 1) % ring.Length];
+                        if ((a.Y > point.Y) != (b.Y > point.Y))
+                        {
+                            double x = a.X + ((point.Y - a.Y) * (b.X - a.X) / (b.Y - a.Y));
+                            if (x > point.X) inside = !inside;
+                        }
+                    }
+                    return inside;
+                }
+            }
+
+            static double ClipPolygonArea(ReadOnlySpan<SvgDevicePoint> ring, ParserWorkCounter workCounter, CancellationToken cancellationToken)
             {
                 double twiceArea = 0;
                 for (int index = 0; index < ring.Length; index++)
@@ -285,7 +391,7 @@ internal static class SvgClipPathSyntax
                 return twiceArea / 2;
             }
 
-            static void ClipRingToConvexPolygon(BudgetedParserList<SvgDevicePoint> ping, BudgetedParserList<SvgDevicePoint> pong, SvgDevicePoint[] clip, bool clipCounterClockwise, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+            static void ClipRingToConvexPolygon(BudgetedParserList<SvgDevicePoint> ping, BudgetedParserList<SvgDevicePoint> pong, ReadOnlySpan<SvgDevicePoint> clip, bool clipCounterClockwise, ParserWorkCounter workCounter, CancellationToken cancellationToken)
             {
                 bool outputInPing = true;
                 for (int edge = 0; edge < clip.Length; edge++)

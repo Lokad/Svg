@@ -198,7 +198,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal SvgClipBox? ClipBox { get; set; }
 
-    internal SvgDevicePoint[]? ClipPolygonPoints { get; set; }
+    internal SvgClipPolygon? ClipPolygon { get; set; }
 
     internal bool ClipIsObjectBoundingBox { get; set; }
 

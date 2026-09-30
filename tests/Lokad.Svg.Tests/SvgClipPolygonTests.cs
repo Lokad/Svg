@@ -30,6 +30,37 @@ public sealed class SvgClipPolygonTests
     }
 
     [Fact]
+    public void Two_triangle_clip_unites_disjoint_halves()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V4 H0 Z M0,4 H8 V8 H0 Z'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 6));
+    }
+
+    [Fact]
+    public void Overlapping_clips_paint_opaque_nonzero_union()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V4 H0 Z M0,2 H8 V6 H0 Z'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 3));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 5));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 6));
+    }
+
+    [Fact]
+    public void Evenodd_disjoint_clips_keep_holes()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><path d='M0,0 L10,0 L0,10 Z M0,32 L0,22 L10,32 Z'/></clipPath></defs><path d='M0,0 L32,0 L0,32 Z M12,12 L18,12 L12,18 Z' fill='red' fill-rule='evenodd' clip-path='url(#c)'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 32, 2, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 32, 2, 28));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 32, 14, 14));
+    }
+
+    [Fact]
     public void Rect_path_clip_matches_rect_element_clip()
     {
         byte[] element = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
@@ -47,9 +78,15 @@ public sealed class SvgClipPolygonTests
         Assert.Equal(direct, scaled);
     }
 
+    [Fact]
+    public void Unreferenced_multi_contour_clip_parses()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H4 V4 H0 Z M5,5 H8 V8 H5 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
+    }
     [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 Q4,4 8,0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only straight single-contour clip paths are implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H4 V4 H0 Z M5,5 H8 V8 H5 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only straight single-contour clip paths are implemented.")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 Q4,4 8,0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only straight clip paths are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V8 H4 V4 H0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only convex clip paths are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d=''/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Degenerate clip paths are not implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 L8,0 L16,0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Degenerate clip paths are not implemented.")]
@@ -59,6 +96,9 @@ public sealed class SvgClipPolygonTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='t'><path d='M0,0 L8,4 L0,8 Z'/></clipPath></defs><g transform='translate(1,0)'><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#t)'/></g></svg>", "Polygon clip-paths with transformed content are not implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='t'><path d='M0,0 L8,4 L0,8 Z'/></clipPath></defs><g id='g'><rect width='2' height='2' fill='red'/></g><use href='#g'/><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#t)'/></svg>", "Polygon clip-paths with use instances are not implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='t'><path d='M0,0 L8,4 L0,8 Z'/></clipPath></defs><rect width='8' height='8' fill='red' clip-path='url(#t)'/></svg>", "Polygon clip-paths on this geometry are not implemented.")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V4 H0 Z M0,0 H8 V8 H4 V4 H0 Z'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", "Only convex clip paths are implemented.")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V4 H0 Z M1,1 Z'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", "Degenerate clip paths are not implemented.")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V4 H0 Z M0,2 H8 V6 H0 Z'/></clipPath></defs><path d='M0,0 L8,0 L0,8 Z M2,2 L4,2 L2,4 Z' fill='red' fill-rule='evenodd' clip-path='url(#c)'/></svg>", "Overlapping multi-contour clip paths are not implemented.")]
     public void Polygon_clip_gates_reject_honestly(string svg, string message)
     {
         SvgException rejected = Assert.Throws<SvgException>(() => RenderPixels(svg, out _, out _));
