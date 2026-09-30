@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-union-pennon-retrace-diag-16x16",
+  "referencePng": "original-union-pennon-retrace-diag-16x16.png",
+  "referenceSha256": "8e15bbd331854e33ffbf0a02928e621d4573e7da637641152c5a83d72428e2ac",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "c10385c544f7ace6cad166e760eb25d1d1b98f98f96933fe27012bddf6189028",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

@@ -2440,6 +2440,58 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-union-coincident-share-diag-16x16",
+      "path": "union-coincident-share-diag-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "2114fcb817e44ca7ad8249604e953d3e4bad90900e95118e3ab74a052f8712ce",
+      "featureTags": ["geometry", "path", "diagonal-edge", "coincident-overlap", "union", "coverage"],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/union-coincident-share-diag-16x16.png",
+        "referenceSha256": "8e4aeb1a7abc628d7cd299e65770bcbcdda804dd0de1f6c707c652688663f644",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-union-double-strike-diag-16x16",
+      "path": "union-double-strike-diag-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "59f0d398d03eb201407e0f030ceb068d30f79768ad61678f2b2be8be7925c59f",
+      "featureTags": ["geometry", "path", "diagonal-edge", "coincident-overlap", "union", "coverage"],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "oracle": {
+        "referencePng": "references/union-double-strike-diag-16x16.png",
+        "referenceSha256": "4f6eff1b7c9809afd9aa9c1fc0b3e039acd0c53614c02a5e1a921440cba83d25",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }

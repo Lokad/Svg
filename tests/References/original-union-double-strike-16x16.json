@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-union-double-strike-16x16",
+  "referencePng": "original-union-double-strike-16x16.png",
+  "referenceSha256": "b997e66f2f60ef66f3136865939ad42ab73a96c0b6a9c6afc79fc18430e39abf",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "3a0c90389ba20704366d135337422632ad289f77a8a1efbcdecac33486f606df",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}

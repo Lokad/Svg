@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-union-coincident-share-16x16",
+  "referencePng": "original-union-coincident-share-16x16.png",
+  "referenceSha256": "93ed9fe26b11884b3a7b3f3b47277600fcd3c4652475270695deea820f889ab4",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "fb6b343786edd902848ac2e62cd8fe89f32e910c1987fb3266003b18633f1147",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}
