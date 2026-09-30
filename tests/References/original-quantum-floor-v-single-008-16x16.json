@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-quantum-floor-v-single-008-16x16",
+  "referencePng": "original-quantum-floor-v-single-008-16x16.png",
+  "referenceSha256": "cf9ea1d82b47b5b2619a6ce4d266ec5088cdd7346a7d3fbe8c13e0a8e3203bca",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "7936cacf84f87f12df3ef12e97b37c6076758e158693dee208713bc90189893a",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}
