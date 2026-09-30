@@ -1392,4 +1392,14 @@ public sealed class SvgPolygonFillTests
 
         Assert.Equal(outer, union);
     }
+
+    [Fact]
+    public void Adjacent_squares_splice_like_outer()
+    {
+        // R34: adjacent loops sharing single spans splice sequentially into the union boundary.
+        byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 H5 V16 H0 Z M5,0 H11 V16 H5 Z M11,0 H16 V16 H11 Z' fill='red'/></svg>", out _, out _);
+        byte[] outer = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 H16 V16 H0 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(outer, union);
+    }
 }

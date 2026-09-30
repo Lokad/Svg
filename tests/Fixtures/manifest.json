@@ -746,6 +746,26 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-union-multi-share-16x16.json",
       "referenceSha256": "c8fbce2447d33f1b2abd786cdeb05e3f40aed6696a2076118b90ec5411fb60f1"
+    },
+    {
+      "id": "original-union-three-squares-16x16",
+      "path": "original/union-three-squares-16x16.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "a62f7393d254baeaba8161047f71644a1f92334b264101251cc0dcc333d76c8d",
+      "materializedSha256": "a62f7393d254baeaba8161047f71644a1f92334b264101251cc0dcc333d76c8d",
+      "featureTags": ["geometry", "path", "rectangular", "coincident-overlap", "adjacent-union", "coverage"],
+      "width": 16,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-union-three-squares-16x16.json",
+      "referenceSha256": "c8fbce2447d33f1b2abd786cdeb05e3f40aed6696a2076118b90ec5411fb60f1"
     }
   ]
 }

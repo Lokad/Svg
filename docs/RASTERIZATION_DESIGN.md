@@ -1277,3 +1277,9 @@ Question: does the coincident drop generalize past single shared spans to nested
 Method: author a nested island sharing two full spans with its outer loop, capture a fresh 3 out of 3 stable recipe-3 triple, and diff ours against Chrome and against the outer-alone twin.
 Facts: the island drops through the existing pair-iterating drop with zero code change, rendering byte-exact against Chrome and byte-identical to the outer-alone twin. Nested multi-edge sharing is therefore done by construction. Genuinely queued union work narrows to adjacent multi-span interlock, even-odd multi-crossings, stroke unions and the faithful kTotal port, none with inventory traction today.
 Decision: graduate the probe as one exact fixture with a twin unit test. Next: row-5 curve retention which gates curve-aware caps, or the clip mask-layer slice.
+
+## Sequential splices compose adjacent chains with no code change (2026-09-30 probe work)
+Question: do adjacent loop chains sharing one span per pair splice sequentially through the existing sweep.
+Method: author three adjacent squares sharing single spans pairwise, capture a fresh 3 out of 3 stable recipe-3 triple, and diff ours against Chrome and against the outer-alone twin.
+Facts: each sweep splices one pair and re-scans, composing the full union with zero code change and rendering byte-exact against Chrome and byte-identical to the outer twin. Adjacent multi-span interlock narrows to pairs sharing two or more spans at once, which stays queued with even-odd multi-crossings, stroke unions and the faithful kTotal port.
+Decision: graduate the probe as one exact fixture with a twin unit test.
