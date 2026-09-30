@@ -17,6 +17,32 @@ public sealed class SvgStrokeOutlineTests
     }
 
     [Fact]
+    public void Explicit_chord_tangents_match_default_caps()
+    {
+        SvgDevicePoint[] turn = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8)];
+        SvgContourBuilder chordBuilder = new(16, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, chordBuilder, CancellationToken.None);
+        SvgContourBuilder tangentBuilder = new(16, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(turn, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, (1, 0), (0, 1), tangentBuilder, CancellationToken.None);
+
+        Assert.Equal(chordBuilder.GetContour(0).ToArray(), tangentBuilder.GetContour(0).ToArray());
+    }
+
+    [Fact]
+    public void Explicit_end_tangent_tilts_butt_cap()
+    {
+        SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];
+        SvgContourBuilder builder = new(16, 4);
+
+        SvgStrokeOutline.StrokeOpenPolyline(line, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, (1, 0), (0, 1), builder, CancellationToken.None);
+
+        Assert.Equal(1, builder.ContourCount);
+        Assert.Equal([new SvgDevicePoint(0, 1), new SvgDevicePoint(7, 0), new SvgDevicePoint(9, 0), new SvgDevicePoint(0, -1)], builder.GetContour(0).ToArray());
+    }
+
+    [Fact]
     public void Horizontal_band_has_square_caps()
     {
         SvgDevicePoint[] line = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0)];

@@ -60,6 +60,21 @@ internal static class SvgStrokeOutline
     /// <summary>Appends one sealed outline loop for an open polyline, a cap-determined dot when fully degenerate, or nothing for butt dots.</summary>
     internal static void StrokeOpenPolyline(ReadOnlySpan<SvgDevicePoint> points, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, SvgContourBuilder builder, CancellationToken cancellationToken)
     {
+        int chordFirst = SkipDegenerate(points, 0);
+        int chordLast = points.Length == 0 ? -1 : SkipDegenerateBackward(points, points.Length - 1);
+        (double firstX, double firstY) = chordFirst >= chordLast ? (1, 0) : UnitDirection(points[chordFirst], points[SkipDegenerate(points, chordFirst + 1)]);
+        (double lastX, double lastY) = chordFirst >= chordLast ? (1, 0) : UnitDirection(points[SkipDegenerateBackward(points, chordLast - 1)], points[chordLast]);
+        StrokeOpenPolylineCore(points, width, miterLimit, cap, join, (firstX, firstY), (lastX, lastY), builder, cancellationToken);
+    }
+
+    /// <summary>Appends one sealed outline loop for an open polyline with caller-supplied end tangents for dash-cut caps.</summary>
+    internal static void StrokeOpenPolyline(ReadOnlySpan<SvgDevicePoint> points, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, (double X, double Y) startTangent, (double X, double Y) endTangent, SvgContourBuilder builder, CancellationToken cancellationToken)
+    {
+        StrokeOpenPolylineCore(points, width, miterLimit, cap, join, startTangent, endTangent, builder, cancellationToken);
+    }
+
+    private static void StrokeOpenPolylineCore(ReadOnlySpan<SvgDevicePoint> points, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, (double X, double Y) startTangent, (double X, double Y) endTangent, SvgContourBuilder builder, CancellationToken cancellationToken)
+    {
         ArgumentNullException.ThrowIfNull(builder);
         ValidateWidth(width);
         ValidateMiterLimit(miterLimit);
@@ -88,26 +103,24 @@ internal static class SvgStrokeOutline
         }
         int last = SkipDegenerateBackward(points, points.Length - 1);
         double halfWidth = width / 2;
-        (double firstX, double firstY) = UnitDirection(points[first], points[SkipDegenerate(points, first + 1)]);
-        (double lastX, double lastY) = UnitDirection(points[SkipDegenerateBackward(points, last - 1)], points[last]);
-        SvgDevicePoint firstTip = points[first];
+                SvgDevicePoint firstTip = points[first];
         SvgDevicePoint lastTip = points[last];
         if (cap == SvgStrokeCap.Square)
         {
-            firstTip = new SvgDevicePoint(RequireFinite(points[first].X - firstX * halfWidth), RequireFinite(points[first].Y - firstY * halfWidth));
-            lastTip = new SvgDevicePoint(RequireFinite(points[last].X + lastX * halfWidth), RequireFinite(points[last].Y + lastY * halfWidth));
+            firstTip = new SvgDevicePoint(RequireFinite(points[first].X - startTangent.X * halfWidth), RequireFinite(points[first].Y - startTangent.Y * halfWidth));
+            lastTip = new SvgDevicePoint(RequireFinite(points[last].X + endTangent.X * halfWidth), RequireFinite(points[last].Y + endTangent.Y * halfWidth));
         }
-        builder.BeginContour(OffsetPoint(firstTip, (firstX, firstY), halfWidth));
+        builder.BeginContour(OffsetPoint(firstTip, (startTangent.X, startTangent.Y), halfWidth));
         EmitForwardChain(builder, points, first, last, halfWidth, miterLimit, join, cancellationToken);
-        if (cap == SvgStrokeCap.Round) EmitArcFan(builder, points[last], halfWidth, (-lastY, lastX), (lastX, lastY), (lastY, -lastX), cancellationToken);
+        if (cap == SvgStrokeCap.Round) EmitArcFan(builder, points[last], halfWidth, (-endTangent.Y, endTangent.X), (endTangent.X, endTangent.Y), (endTangent.Y, -endTangent.X), cancellationToken);
         else
         {
-            builder.AddLine(OffsetPoint(lastTip, (lastX, lastY), halfWidth));
-            builder.AddLine(OffsetPoint(lastTip, (lastX, lastY), -halfWidth));
+            builder.AddLine(OffsetPoint(lastTip, (endTangent.X, endTangent.Y), halfWidth));
+            builder.AddLine(OffsetPoint(lastTip, (endTangent.X, endTangent.Y), -halfWidth));
         }
         EmitBackwardChain(builder, points, first, last, halfWidth, miterLimit, join, cancellationToken);
-        if (cap == SvgStrokeCap.Round) EmitArcFan(builder, points[first], halfWidth, (firstY, -firstX), (-firstX, -firstY), (-firstY, firstX), cancellationToken);
-        else builder.AddLine(OffsetPoint(firstTip, (-firstX, -firstY), halfWidth));
+        if (cap == SvgStrokeCap.Round) EmitArcFan(builder, points[first], halfWidth, (startTangent.Y, -startTangent.X), (-startTangent.X, -startTangent.Y), (-startTangent.Y, startTangent.X), cancellationToken);
+        else builder.AddLine(OffsetPoint(firstTip, (-startTangent.X, -startTangent.Y), halfWidth));
         builder.EndContour();
     }
 
