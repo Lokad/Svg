@@ -1801,6 +1801,70 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(direct, grouped);
     }
     [Fact]
+    public void Bevel_join_cuts_outer_miter_tip()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L32,8 L32,32 L56,32\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 64, 32, 8));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 64, 35, 5));
+    }
+
+    [Fact]
+    public void Bevel_join_matches_miter_on_straight_runs()
+    {
+        byte[] beveled = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L32,8 L32,32 L56,32\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/></svg>", out _, out _);
+        byte[] mitered = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L32,8 L32,32 L56,32\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"miter\"/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(beveled, 64, 32, 12));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(beveled, 64, 40, 32));
+        Assert.NotEqual(mitered, beveled);
+    }
+
+    [Fact]
+    public void Bevel_join_renders_curved_corners()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L32,8 Q32,32 56,32 L56,56\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 64, 12, 8));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 64, 20, 8));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 64, 56, 50));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 64, 56, 44));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 64, 8, 56));
+    }
+
+    [Fact]
+    public void Bevel_join_renders_closed_loops()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L56,8 L56,56 L8,56 Z\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 64, 32, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 64, 4, 32));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 64, 32, 60));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 64, 60, 32));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 64, 32, 32));
+    }
+
+    [Fact]
+    public void Bevel_join_renders_dashed_runs()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><path d=\"M8,8 L32,8 L32,32 L56,32\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\" stroke-dasharray=\"12 6\"/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 64, 12, 8));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 64, 20, 8));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 64, 32, 20));
+    }
+
+    [Fact]
+    public void Bevel_join_on_polygons_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><polygon points=\"8,8 32,8 32,32\" fill=\"none\" stroke=\"red\" stroke-width=\"8\" stroke-linejoin=\"bevel\"/>");
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only miter and round stroke linejoins are implemented.", rejected.Message);
+    }
+
+    [Fact]
     public void Relative_moveto_offsets_from_open_subpath_end()
     {
         byte[] relative = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\"><path d=\"M8,36h184m0,64H8\" stroke=\"#036\" stroke-width=\"2\"/></svg>", out _, out _);

@@ -124,7 +124,7 @@ internal static class SvgOrthogonalShapeParser
 
         try
         {
-            stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, pathStrokeStyle, pathStrokeShape, "path", false);
+            stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, pathStrokeStyle, pathStrokeShape, "path", true);
             if (stroke is null) return filled;
             using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);

@@ -303,6 +303,8 @@ Status 2026-09-29: row 6 eighth slice complete for fractional circle-stroke admi
 
 Status 2026-09-29: row 6 seam-slice probe work without product change. Rebuilding the uncommitted 2026-09-28 closed-loop dash-seam analysis as a committed reconstruction (16x16 closed rect path, dasharray 4 4, dashoffset 2.5, butt caps) shows the historical 4-pixel corner residual no longer reproduces: the seam-crossing merged run plus the offset-0 control both render byte-exact against fresh 3/3-stable triples, so the configuration graduates into the exact fixture corpus instead of a mismatch ratchet. Full gate holds 2635 core plus 100 visual plus 6 font green with no exact-corpus change besides the graduation; memory and package checks pass.
 
+Status 2026-09-30: row 6 ninth slice complete for bevel joins on path strokes. Bevel admits at path attribute validation plus path stroke resolution through the implemented kernel join (other families keep their gates); the straight probe renders byte-exact while the curved probe matches the miter control fringe exactly, proving join-independent curve-stroke residuals. Closed and dashed bevel variants render with pinned spots. Full gate holds 2715 core plus 100 visual plus 6 font green with no exact-corpus change; memory and package checks pass.
+
 Round caps/joins need a bounded weighted-conic representation or justified
 conversion: the current flattener supports only polynomial quadratics/cubics.
 Preserve authored corners through curve subdivision so smooth rounded rectangles
