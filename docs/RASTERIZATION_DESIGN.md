@@ -1325,3 +1325,9 @@ Question: how does combined coverage relate to single-sliver coverages across ma
 Method: author four disjoint sliver pairs with legs 0.15, 0.3, 0.45 and mixed 0.2 plus 0.5 inside pixel (0,0), capture fresh 3 out of 3 stable triples, render pairs and all eight singles, and diff through VisualDiff.
 Facts: tiny and mixed pairs sum exactly in both engines while medium and large pairs step once in both, with singles reading 4 plus 4, 16 plus 16, 32 plus 28 and 6 plus 32 against combined 8 and 38 exact plus 37 and 60 against 60. The medium pair exceeds its singles sum in both engines, which confounds a pure combination rule with preparation-window quantization since singles ride the convex path while pairs ride the edges path. The 030 probe reproduces the pinned R34 oracle hash exactly, anchoring the family.
 Decision: graduate the two exact pairs as fixtures and admit the two stepped pairs at 1 px max 1 with no product change. Next: window-controlled singles to separate combination rule from quantization, then tune.
+
+## Window control dissolves the combination rule as snap phase (2026-09-30 probe work)
+Question: does single-fill union follow a combination operator over single coverages, or joint quantization in the pair window.
+Method: spell the R34 slivers as two paint operations with fresh triples, render all four spellings in both engines, and compare against the singles and the one-path union.
+Facts: two-paint composite reads 31 in both engines, matching byte source-over math over the 16-step singles, while one-path union reads 37 in Chrome against 38 here. The engines therefore agree exactly on composition and differ only inside joint union quantization, which makes the residual snap phase like tip slivers rather than an operator to tune. The two-paint probe graduates as an exact source-over control.
+Decision: no product change and no combination tuning. Next: row-5 curve retention or the clip mask-layer slice.

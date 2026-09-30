@@ -806,6 +806,26 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-shared-pixel-mixed-8x8.json",
       "referenceSha256": "9243bddec7153b103d42b74781472175e87d27c59b99015a13e5c9fd794ebf91"
+    },
+    {
+      "id": "original-two-paint-sliver-union-8x8",
+      "path": "original/two-paint-sliver-union-8x8.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-09-30",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "c2fa6454debe4870f1be60e6c1971c9ba3fc8f3f9fb1b3c521cda9f0339f234c",
+      "materializedSha256": "c2fa6454debe4870f1be60e6c1971c9ba3fc8f3f9fb1b3c521cda9f0339f234c",
+      "featureTags": ["geometry", "path", "fractional-coordinates", "shared-pixel", "source-over", "coverage"],
+      "width": 8,
+      "height": 8,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-two-paint-sliver-union-8x8.json",
+      "referenceSha256": "fb536dd328b816d8892e1826253f1fec4223848c813d80c3b3d0e4f3b5f20259"
     }
   ]
 }

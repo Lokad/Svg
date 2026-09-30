@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-two-paint-sliver-union-8x8",
+  "referencePng": "original-two-paint-sliver-union-8x8.png",
+  "referenceSha256": "fb536dd328b816d8892e1826253f1fec4223848c813d80c3b3d0e4f3b5f20259",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "303c1fda570187f2d8be83de76129e7201aa9c39093229db762709d7242ba472",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-09-30"
+}
