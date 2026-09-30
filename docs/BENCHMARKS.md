@@ -191,3 +191,60 @@ strictly-less-work with identical semantics (full suite green). After segmented 
 | `DecodeGlyphContours` | 674.0 ns | 2,192 B |
 | `TransformAndCopyContours` | 151.2 ns | 688 B |
 | `DecodeTransformAndCopyContours` | 795.9 ns | 2,680 B |
+
+## Baseline captured 2026-09-30 (post row-4 landings)
+
+- BenchmarkDotNet 0.14.0; .NET SDK 10.0.401; .NET 10.0.12 x64 RyuJIT AVX-512.
+- Windows 10 22H2 (10.0.19045.6456), Intel Xeon W-2223 3.60 GHz, four physical
+  / eight logical cores, concurrent workstation GC, High performance plan.
+- `ShortRun`: one launch, three warmups and three measured iterations with broad
+  confidence intervals; same reproduction command as above.
+
+### Conversion (same red-rectangle inputs as 2026-09-20)
+
+| API form | 1x1 | 64x64 | 512x512 |
+| --- | ---: | ---: | ---: |
+| Owned memory | 28.09 us / 15.8 KB | 142.98 us / 32.49 KB | 3,292.60 us / 1,054.21 KB |
+| Caller memory | 28.45 us / 15.63 KB | 136.33 us / 32.14 KB | 3,295.25 us / 1,048.02 KB |
+| Stream | 22.93 us / 15.46 KB | 119.61 us / 32.34 KB | 3,198.67 us / 1,058.16 KB |
+| Async stream | 34.56 us / 16.26 KB | 154.13 us / 33.07 KB | 3,392.14 us / 1,058.95 KB |
+
+The 512 cells match the 2026-09-20 table within noise; the 1x1 and 64x64 deltas sit
+inside their broad ShortRun intervals and claim no regression in either direction.
+
+### Curve-heavy conversion (first measurement, no earlier baseline)
+
+- `ConvertOutlinedWordmark` converts one outlined wordmark with counters through
+  the public owned-memory API.
+- `ConvertGradientClip` and `ConvertIsolatedOpacity` convert one gradient-clipped
+  scene and one isolated-opacity group respectively.
+
+| Method | Mean | Allocated |
+| --- | ---: | ---: |
+| `ConvertOutlinedWordmark` | 1,449.21 us | 5,965.08 KB |
+| `ConvertGradientClip` | 59.44 us | 24.57 KB |
+| `ConvertIsolatedOpacity` | 53.56 us | 22.05 KB |
+
+The wordmark corridors about 6 MB of managed traffic per conversion with Gen2
+collections, which is the first measured many-contour allocation data point for
+the row-2 exit evidence. It is traffic, not retained memory or `RenderBudget` peak.
+
+### Parse, text and glyph re-measurement
+
+| Method | Mean | Allocated |
+| --- | ---: | ---: |
+| `ConvertAttributeHeavyShapes` | 779.0 us | 246.53 KB |
+| `DiscoverStyledTextRequests` | 31.93 us | 31.29 KB |
+| `CreateSnapshotAsync` | 34.53 us | 32.56 KB |
+| `LowerStyledText` | 74.67 us | 155.67 KB |
+| `ConvertPreparedStyledTextAsync` | 225.00 us | 212.90 KB |
+| `DecodeGlyphContours` | 669.3 ns | 2,192 B |
+| `TransformAndCopyContours` | 149.7 ns | 688 B |
+| `DecodeTransformAndCopyContours` | 777.0 ns | 2,680 B |
+
+A false regression alarm on `ConvertAttributeHeavyShapes` (317.16 us / 92.1 KB on
+2026-09-21) was bisected across the window and exonerated: the f6ad5e4c product
+remeasures 246.53 KB today with bit-identical source, input and locked harness
+versions, and six runs across 09-22 to HEAD agree on 246.53 KB to the byte, so
+current-era product allocation is stable and the old table is not comparable in
+this environment. Time varies run to run while allocation stays deterministic.

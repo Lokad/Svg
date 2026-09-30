@@ -1331,3 +1331,9 @@ Question: does single-fill union follow a combination operator over single cover
 Method: spell the R34 slivers as two paint operations with fresh triples, render all four spellings in both engines, and compare against the singles and the one-path union.
 Facts: two-paint composite reads 31 in both engines, matching byte source-over math over the 16-step singles, while one-path union reads 37 in Chrome against 38 here. The engines therefore agree exactly on composition and differ only inside joint union quantization, which makes the residual snap phase like tip slivers rather than an operator to tune. The two-paint probe graduates as an exact source-over control.
 Decision: no product change and no combination tuning. Next: row-5 curve retention or the clip mask-layer slice.
+
+## Parse alloc alarm exonerated as environment with stable current era (2026-09-30 probe work)
+Question: did product changes regress style-heavy parse allocation from 92.1 KB to 246.53 KB.
+Method: full ShortRun suite plus bisection of the 09-21 to 09-24 window on the deterministic allocation number across nine worktrees.
+Facts: every run from 09-22 through HEAD measures exactly 246.53 KB including the f6ad5e4c product that read 92.1 KB on 09-22 with bit-identical source, input and locked harness versions, so the delta is environmental and current-era allocation is stable. Time varies run to run while allocation stays put. The fresh suite also banks first wordmark numbers at 1449 us with about 6 MB traffic for the row-2 exit evidence.
+Decision: refresh BENCHMARKS.md with the current tables and retire the 09-21 parse comparison. No product change.
