@@ -1143,14 +1143,43 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Mixed_crossing_and_corner_touch_evenodd_stays_unsupported()
+    public void Evenodd_crossing_triangles_clear_lens()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M8,0 L16,0 L16,8 L8,8 Z M4,4 L12,4 L4,12 Z' fill='red' fill-rule='evenodd'/></svg>");
+        byte[] nonzero = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 L11,3 L4,12 Z M7,0 L15,5 L9,13 Z' fill='red'/></svg>", out _, out _);
+        byte[] evenodd = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 L11,3 L4,12 Z M7,0 L15,5 L9,13 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(nonzero, 16, 5, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(evenodd, 16, 5, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(nonzero, 16, 11, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(evenodd, 16, 11, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(nonzero, 16, 8, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(evenodd, 16, 8, 3));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(nonzero, 16, 9, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(evenodd, 16, 9, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(evenodd, 16, 0, 15));
+    }
+
+    [Fact]
+    public void Evenodd_mixed_crossing_and_corner_touch_paints_solos()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M8,0 L16,0 L16,8 L8,8 Z M4,4 L12,4 L4,12 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 12, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 5, 9));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 0, 15));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 2, 2));
+    }
+
+    [Fact]
+    public void Evenodd_three_loop_crossing_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 L11,3 L4,12 Z M7,0 L15,5 L9,13 Z M0,8 L6,8 L6,14 Z' fill='red' fill-rule='evenodd'/></svg>");
 
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
+
 
     [Fact]
     public void Dust_spike_drops_leaving_main_lobe()

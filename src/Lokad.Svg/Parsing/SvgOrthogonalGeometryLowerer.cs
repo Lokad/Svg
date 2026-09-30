@@ -1154,6 +1154,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             bool touchResolved = false;
             bool unionResolved = false;
             bool interLoopResolved = false;
+            bool subdividedCrossings = false;
             if (structure != SvgContourFlags.None)
             {
                 using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
@@ -1166,7 +1167,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     {
                         splitPoints.Clear();
                         splitEnds.Clear();
-                        if (!TryResolveTouchContours(structure, retained, ends, splitPoints, splitEnds)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+                        if (!TryResolveTouchContours(structure, retained, ends, splitPoints, splitEnds, out subdividedCrossings)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
                         touchResolved = true;
                     }
                 }
@@ -1182,6 +1183,12 @@ internal ref struct SvgOrthogonalGeometryLowering
             bool skipSharedVertices = touchResolved || interLoopResolved || unionResolved;
             if (_isEvenOdd) SvgContourNesting.ComputeParitySigns(retained, ends, signs, skipSharedVertices, _cancellationToken);
             else SvgContourNesting.ComputeWindingRoles(retained, ends, signs, skipSharedVertices, _cancellationToken);
+            if (_isEvenOdd && touchResolved && subdividedCrossings)
+            {
+                if (ends.Length != 2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+                signs[0] = 1;
+                signs[1] = -1;
+            }
             return new SeparatedContours(retained, ends, signs, mapping, reservation);
         }
         catch
@@ -1658,13 +1665,15 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Resolves point-touching contours into simple loops sharing only vertices.</summary>
-    /// <remarks>Admits sets whose only defects are endpoint contacts plus, under nonzero fill, strict crossings between loops. Edges split at interior touch vertices with bitwise copies, inter-loop crossings subdivide both edges at the computed crossing, and self-touching rings split at shared vertices into lobes. Every loop keeps a vertex that is neither shared nor on another loop boundary for robust nesting tests, and the split-loop guard verifies the result. Intra-loop crossings, collinear overlaps and degenerate edges stay rejected, as do fully-inscribed loops and even-odd inter-loop crossings. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps. Charges pair estimates for scans plus one work unit per copied vertex, and observes cancellation.</remarks>
-    private bool TryResolveTouchContours(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds)
+    /// <remarks>Admits sets whose only defects are endpoint contacts plus strict crossings between loops: nonzero sets of any loop count resolve crossings alongside touches, while even-odd resolution admits exactly two-loop sets without self-touches (opposite parity signs are exact for every two-loop configuration under absolute-value combination, so crossing subdivision reports through subdividedCrossings for sign forcing and larger even-odd sets stay gated). Edges split at interior touch vertices with bitwise copies, inter-loop crossings subdivide both edges at the computed crossing, and self-touching rings split at shared vertices into lobes. Every loop keeps a vertex that is neither shared nor on another loop boundary for robust nesting tests, and the split-loop guard verifies the result. Intra-loop crossings, collinear overlaps and degenerate edges stay rejected, as do fully-inscribed loops and larger even-odd crossing sets. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps. Charges pair estimates for scans plus one work unit per copied vertex, and observes cancellation.</remarks>
+    private bool TryResolveTouchContours(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, out bool subdividedCrossings)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(splitPoints);
         ArgumentNullException.ThrowIfNull(splitEnds);
+        subdividedCrossings = false;
+        bool allowEvenOddCrossings = _isEvenOdd && (structure & SvgContourFlags.SelfTouch) == SvgContourFlags.None && ends.Length == 2;
         if (structure == SvgContourFlags.None) return false;
         if ((structure & ~(SvgContourFlags.SelfTouch | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return false;
         splitPoints.Clear();
@@ -1686,13 +1695,14 @@ internal ref struct SvgOrthogonalGeometryLowering
         while (true)
         {
             if (++sweeps > maximumSweeps) return false;
-            if (!_isEvenOdd)
+            if (!_isEvenOdd || allowEvenOddCrossings)
             {
                 ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
                 if (SvgContourStructure.TryFindInterLoopProperCrossing(workPoints, workEnds, out int crossingFirstLoop, out int crossingFirstEdge, out int crossingSecondLoop, out int crossingSecondEdge, out SvgDevicePoint crossing, _cancellationToken))
                 {
                     InsertSplitVertex(ref workPoints, workEnds, crossingFirstLoop, crossingFirstEdge, crossing);
                     InsertSplitVertex(ref workPoints, workEnds, crossingSecondLoop, crossingSecondEdge, crossing);
+                    subdividedCrossings = true;
                     continue;
                 }
             }
