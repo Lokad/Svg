@@ -1313,3 +1313,9 @@ Question: does opposite-direction adjacent splicing match Chrome, and why do two
 Method: author two triangles forming a square across one shared diagonal span, capture a fresh 3 out of 3 stable triple, diff ours against Chrome and against the rect twin, then decode both oracles pixel by pixel.
 Facts: the splice renders byte-identical to the rect twin, proving the surgery transparent, while Chrome keeps alpha 254 along the sixteen diagonal seam pixels against 255 elsewhere, so the admitted tuple reads 16 px max 1 across the full image. Axis-aligned unions show no seam, which bounds the effect to diagonal coincidence. A cross-session oracle scare resolves as geometry, not nondeterminism, since each triple is self-stable and the seam pixels sit exactly on the shared span.
 Decision: admit the probe as a 16 px max 1 research ratchet with a twin unit test. Next: row-5 curve retention or the clip mask-layer slice.
+
+## R34 one-step splits into shared-pixel combination versus shared-span seam (2026-09-30 probe work)
+Question: is the disjoint-opposite 38-versus-37 the same phenomenon as the diagonal union seam.
+Method: recapture the R34 sliver input fresh and decode every nonzero pixel through the repo decoder.
+Facts: Chrome paints exactly one pixel at alpha 37 where the walker paints 38, and both slivers land inside pixel (0,0) with disjoint geometry, so this is shared-pixel combination without any shared span. The diagonal seam instead needs a shared span with per-pixel equality elsewhere. The two one-quantum effects need different fixes: a combination rule for shared pixels here against a span-fringe rule there, each with held-out probes declared before any tuning.
+Decision: no product change. Next: declare held-out shared-pixel probes, then row-5 curve retention or the clip mask-layer slice.
