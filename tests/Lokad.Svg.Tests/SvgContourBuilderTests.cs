@@ -261,4 +261,31 @@ public sealed class SvgContourBuilderTests
 
         return total;
     }
+
+    [Fact]
+    public void Growing_builder_matches_fixed_contours_and_bounds_maxima()
+    {
+        SvgFlattenPolicy policy = new(0.25, 64, 256);
+        SvgContourBuilder fixedBuilder = new(4096, 64);
+        SvgContourBuilder growingBuilder = SvgContourBuilder.CreateGrowing(4096, 64);
+        for (int figure = 0; figure < 10; figure++)
+        {
+            double origin = figure * 20;
+            fixedBuilder.BeginContour(new SvgDevicePoint(origin, 0));
+            fixedBuilder.AddCubic(new SvgDevicePoint(origin + 8, 0), new SvgDevicePoint(origin + 8, 8), new SvgDevicePoint(origin, 8), policy, CancellationToken.None);
+            fixedBuilder.AddCubic(new SvgDevicePoint(origin - 8, 8), new SvgDevicePoint(origin - 8, 0), new SvgDevicePoint(origin, 0), policy, CancellationToken.None);
+            fixedBuilder.EndContour();
+            growingBuilder.BeginContour(new SvgDevicePoint(origin, 0));
+            growingBuilder.AddCubic(new SvgDevicePoint(origin + 8, 0), new SvgDevicePoint(origin + 8, 8), new SvgDevicePoint(origin, 8), policy, CancellationToken.None);
+            growingBuilder.AddCubic(new SvgDevicePoint(origin - 8, 8), new SvgDevicePoint(origin - 8, 0), new SvgDevicePoint(origin, 0), policy, CancellationToken.None);
+            growingBuilder.EndContour();
+        }
+
+        Assert.Equal(10, growingBuilder.ContourCount);
+        for (int figure = 0; figure < 10; figure++) Assert.Equal(fixedBuilder.GetContour(figure).ToArray(), growingBuilder.GetContour(figure).ToArray());
+        Assert.True(growingBuilder.PointCapacity < 4096);
+        SvgContourBuilder boundedBuilder = SvgContourBuilder.CreateGrowing(4, 64);
+        boundedBuilder.BeginContour(new SvgDevicePoint(0, 0));
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => boundedBuilder.AddCubic(new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), policy, CancellationToken.None)).ErrorCode);
+    }
 }

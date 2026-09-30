@@ -6,19 +6,27 @@ namespace Lokad.Svg.Rendering;
 /// device points only and never transforms. Quadratic, cubic and arc segments flatten eagerly with the
 /// caller policy, chaining <see cref="SvgCurveFlatten"/> and <see cref="SvgEllipticalArc"/>. Figures close
 /// implicitly from their last point back to their start, matching the contour-topology convention.</para>
-/// <para>Storage is two fixed arrays sized at construction; exhausting either fails with
+/// <para>Storage starts small and doubles toward the construction maxima; exhausting a maximum fails with
 /// <see cref="SvgErrorCode.LimitExceeded"/>. There is nothing to dispose: the arrays are plain managed
 /// memory. Callers charge one geometry work unit per stored point; this buffer holds no budget itself and
 /// allocates nothing after construction. One conversion owns a builder; concurrent use is not supported.</para>
 /// </remarks>
 internal sealed class SvgContourBuilder
 {
-    private readonly SvgDevicePoint[] _points;
-    private readonly int[] _starts;
-    private readonly int[] _ends;
+    private SvgDevicePoint[] _points;
+    private int[] _starts;
+    private int[] _ends;
+    private int _maxPoints;
+    private int _maxContours;
     private int _pointCount;
     private int _contourCount;
     private int _openStart = -1;
+
+    /// <summary>Starting point storage for growing builders, doubled toward the maxima.</summary>
+    private const int InitialPointCapacity = 64;
+
+    /// <summary>Starting contour storage for growing builders, doubled toward the maxima.</summary>
+    private const int InitialContourCapacity = 4;
 
     /// <summary>Initializes a builder with fixed point and contour capacities.</summary>
     internal SvgContourBuilder(int pointCapacity, int contourCapacity)
@@ -28,12 +36,26 @@ internal sealed class SvgContourBuilder
         _points = new SvgDevicePoint[pointCapacity];
         _starts = new int[contourCapacity];
         _ends = new int[contourCapacity];
+        _maxPoints = pointCapacity;
+        _maxContours = contourCapacity;
     }
 
-    /// <summary>Gets the fixed point capacity.</summary>
+    /// <summary>Creates a builder that grows from small storage toward bounded maxima.</summary>
+    /// <remarks>Growth doubles toward the maxima with identical admission: past-maximum appends fail with the same errors as the fixed builder, and all stored points match. Callers charge per stored point exactly as before.</remarks>
+    internal static SvgContourBuilder CreateGrowing(int maxPointCapacity, int maxContourCapacity)
+    {
+        if (maxPointCapacity < 1) throw new ArgumentOutOfRangeException(nameof(maxPointCapacity));
+        if (maxContourCapacity < 1) throw new ArgumentOutOfRangeException(nameof(maxContourCapacity));
+        SvgContourBuilder builder = new(Math.Min(maxPointCapacity, InitialPointCapacity), Math.Min(maxContourCapacity, InitialContourCapacity));
+        builder._maxPoints = maxPointCapacity;
+        builder._maxContours = maxContourCapacity;
+        return builder;
+    }
+
+    /// <summary>Gets the current point storage length, growing toward the maximum.</summary>
     internal int PointCapacity => _points.Length;
 
-    /// <summary>Gets the fixed contour capacity.</summary>
+    /// <summary>Gets the current contour storage length, growing toward the maximum.</summary>
     internal int ContourCapacity => _starts.Length;
 
     /// <summary>Gets the stored point count across open and sealed contours.</summary>
@@ -46,7 +68,7 @@ internal sealed class SvgContourBuilder
     internal void BeginContour(SvgDevicePoint start)
     {
         if (_openStart >= 0) throw new InvalidOperationException("A contour is already open.");
-        if (_contourCount >= _starts.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported contour range.");
+        if (_contourCount >= _starts.Length) GrowContours();
         ValidatePoint(start, nameof(start));
         Append(start);
         _openStart = _pointCount - 1;
@@ -65,7 +87,20 @@ internal sealed class SvgContourBuilder
     {
         RequireOpenContour();
         SvgDevicePoint current = _points[_pointCount - 1];
-        _pointCount += SvgCurveFlatten.FlattenQuadratic(current, control, end, policy, _points.AsSpan(_pointCount), cancellationToken);
+        int before = _pointCount;
+        while (true)
+        {
+            try
+            {
+                _pointCount += SvgCurveFlatten.FlattenQuadratic(current, control, end, policy, _points.AsSpan(_pointCount), cancellationToken);
+                return;
+            }
+            catch (SvgException)
+            {
+                _pointCount = before;
+                GrowPoints();
+            }
+        }
     }
 
     /// <summary>Appends the flattened cubic segment from the current point to <paramref name="end"/>.</summary>
@@ -73,7 +108,20 @@ internal sealed class SvgContourBuilder
     {
         RequireOpenContour();
         SvgDevicePoint current = _points[_pointCount - 1];
-        _pointCount += SvgCurveFlatten.FlattenCubic(current, firstControl, secondControl, end, policy, _points.AsSpan(_pointCount), cancellationToken);
+        int before = _pointCount;
+        while (true)
+        {
+            try
+            {
+                _pointCount += SvgCurveFlatten.FlattenCubic(current, firstControl, secondControl, end, policy, _points.AsSpan(_pointCount), cancellationToken);
+                return;
+            }
+            catch (SvgException)
+            {
+                _pointCount = before;
+                GrowPoints();
+            }
+        }
     }
 
     /// <summary>Appends the endpoint arc from the current point to <paramref name="end"/> as lines or samples.</summary>
@@ -83,7 +131,18 @@ internal sealed class SvgContourBuilder
         SvgDevicePoint current = _points[_pointCount - 1];
         SvgNormalizedArc arc = SvgEllipticalArc.Normalize(current, radiusX, radiusY, rotationDegrees, largeArc, sweep, end);
         if (arc.Kind == SvgArcKind.Line) Append(end);
-        else _pointCount += SvgEllipticalArc.Sample(arc, policy, _points.AsSpan(_pointCount), cancellationToken);
+        else while (true)
+        {
+            try
+            {
+                _pointCount += SvgEllipticalArc.Sample(arc, policy, _points.AsSpan(_pointCount), cancellationToken);
+                return;
+            }
+            catch (SvgException)
+            {
+                GrowPoints();
+            }
+        }
     }
 
     /// <summary>Appends one sampled full-ellipse loop as a sealed contour.</summary>
@@ -95,12 +154,23 @@ internal sealed class SvgContourBuilder
     internal void AddEllipse(SvgDevicePoint center, double radiusX, double radiusY, double rotationRadians, SvgFlattenPolicy policy, CancellationToken cancellationToken)
     {
         if (_openStart >= 0) throw new InvalidOperationException("A contour is already open.");
-        if (_contourCount >= _starts.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported contour range.");
+        if (_contourCount >= _starts.Length) GrowContours();
         ValidatePoint(center, nameof(center));
         if (!double.IsFinite(radiusX) || !double.IsFinite(radiusY) || radiusX <= 0 || radiusY <= 0) throw new ArgumentOutOfRangeException(nameof(radiusX));
         if (!double.IsFinite(rotationRadians)) throw new ArgumentOutOfRangeException(nameof(rotationRadians));
         int start = _pointCount;
-        _pointCount += SvgEllipticalArc.SampleFull(center, radiusX, radiusY, rotationRadians, policy, _points.AsSpan(_pointCount), cancellationToken);
+        while (true)
+        {
+            try
+            {
+                _pointCount += SvgEllipticalArc.SampleFull(center, radiusX, radiusY, rotationRadians, policy, _points.AsSpan(_pointCount), cancellationToken);
+                break;
+            }
+            catch (SvgException)
+            {
+                GrowPoints();
+            }
+        }
         _starts[_contourCount] = start;
         _ends[_contourCount] = _pointCount;
         _contourCount++;
@@ -118,7 +188,7 @@ internal sealed class SvgContourBuilder
         if (!double.IsFinite(cornerX) || !double.IsFinite(cornerY) || cornerX < 0 || cornerY < 0) throw new ArgumentOutOfRangeException(nameof(cornerX));
         if (width < 0 || height < 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (width == 0 || height == 0) return;
-        if (_contourCount >= _starts.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported contour range.");
+        if (_contourCount >= _starts.Length) GrowContours();
         double radiusX = Math.Min(cornerX, width / 2);
         double radiusY = Math.Min(cornerY, height / 2);
         BeginContour(new SvgDevicePoint(RequireFinite(x + radiusX), y));
@@ -154,6 +224,7 @@ internal sealed class SvgContourBuilder
     }
 
     /// <summary>Returns one sealed contour, including its start point but excluding any implicit closing duplicate.</summary>
+    /// <remarks>The span borrows builder storage, so callers must not retain it across mutating calls that may relocate through growth.</remarks>
     internal ReadOnlySpan<SvgDevicePoint> GetContour(int index)
     {
         if (index < 0 || index >= _contourCount) throw new ArgumentOutOfRangeException(nameof(index));
@@ -170,9 +241,25 @@ internal sealed class SvgContourBuilder
 
     private void Append(SvgDevicePoint point)
     {
-        if (_pointCount >= _points.Length) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported point range.");
+        if (_pointCount >= _points.Length) GrowPoints();
         _points[_pointCount] = point;
         _pointCount++;
+    }
+
+    /// <summary>Doubles point storage toward its maximum, failing past it exactly like fixed storage.</summary>
+    private void GrowPoints()
+    {
+        if (_points.Length >= _maxPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported point range.");
+        Array.Resize(ref _points, _points.Length > _maxPoints / 2 ? _maxPoints : _points.Length * 2);
+    }
+
+    /// <summary>Doubles contour storage toward its maximum, failing past it exactly like fixed storage.</summary>
+    private void GrowContours()
+    {
+        if (_starts.Length >= _maxContours) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported contour range.");
+        int grown = _starts.Length > _maxContours / 2 ? _maxContours : _starts.Length * 2;
+        Array.Resize(ref _starts, grown);
+        Array.Resize(ref _ends, grown);
     }
 
     private void RequireOpenContour()

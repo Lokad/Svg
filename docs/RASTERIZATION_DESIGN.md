@@ -1343,3 +1343,9 @@ Question: what drives the 6 MB wordmark allocation traffic and is any of it stat
 Method: scale glyph counts through MemoryProbe to separate per-glyph from fixed costs, then read the flattening buffer sizing against its proof obligations.
 Facts: traffic scales linearly at about 300 KB per curve glyph with counters adding 150 KB through split copies. Contour builder arrays sized by curve expansion dominate while contours provably start at most once per command, so bounding contour capacity by command count plus one stays below every prior backstop with identical admission. Single-glyph traffic falls 364 KB to 266 KB with byte-identical renders, locked by a peak-bytes regression test that fails on the old sizing.
 Decision: landed on the two curve-lowering sites with the regression lock. Point arrays stay worst-case until a growable builder slice. Next: row-5 curve retention or the clip mask-layer slice.
+
+## Growing contour builder cuts curve traffic by three quarters (2026-09-30 implementation)
+Question: what drives the remaining curve-glyph traffic after contour bounding, and can points grow safely.
+Method: keep the fixed builder contract with its pinned throw tests intact, add a growing factory starting at 64 points with doubling retries toward the same maxima, and migrate the two curve-lowering sites.
+Facts: single-glyph traffic falls 266 KB to 70 KB with byte-identical renders, which compounds the contour fix to an 81 percent cut from 364 KB. Growth retries roll back partial appends with identical admission, errors and per-point charges. An equivalence test pins growing against fixed contours with a past-maximum throw lock. Full gate holds 2671 core plus 100 visual plus 6 font green with zero warnings.
+Decision: landed with the equivalence test. Next: row-5 curve retention or the clip mask-layer slice.
