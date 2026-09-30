@@ -1349,3 +1349,9 @@ Question: what drives the remaining curve-glyph traffic after contour bounding, 
 Method: keep the fixed builder contract with its pinned throw tests intact, add a growing factory starting at 64 points with doubling retries toward the same maxima, and migrate the two curve-lowering sites.
 Facts: single-glyph traffic falls 266 KB to 70 KB with byte-identical renders, which compounds the contour fix to an 81 percent cut from 364 KB. Growth retries roll back partial appends with identical admission, errors and per-point charges. An equivalence test pins growing against fixed contours with a past-maximum throw lock. Full gate holds 2671 core plus 100 visual plus 6 font green with zero warnings.
 Decision: landed with the equivalence test. Next: row-5 curve retention or the clip mask-layer slice.
+
+## Remaining queue sorts by system with no small slice left (2026-09-30 decision)
+Question: what implementation slice comes after the union landings given the full reject census.
+Method: census all 16 reject messages, probe each candidate fix class for a bounded mechanism, and close every lead without traction.
+Facts: the rejects sort into DTD four which stay rejected, work-limit four proven honest by timing, geometry-mixed four needing combined crossing plus coincident surgery, clip and mask content three needing a content evaluation engine, and gradient matrix one needing an affine paint model. Element matrix, physical units and single-loop retrace each closed with no file waiting. Mixed loop partition fails because cross-loop defects do not partition. Curve-aware caps wait on retained-curve data through dash traversal, and the flattening builder already flattens eagerly by contract.
+Decision: no product change. Next architectural step is row-5 retained-curve data for dash tangents with the 512px control as acceptance, or the clip content engine with the 061 triangle as acceptance, each opened as its own slice with a worktree spike first.
