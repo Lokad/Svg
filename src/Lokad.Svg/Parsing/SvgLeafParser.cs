@@ -244,7 +244,7 @@ internal static class SvgLeafParser
             using BudgetedParserList<SvgPoint> noStrokePoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, "rect", false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
-            return strokeLowering.LowerStrokePointList(roundedPoints, true, element, stroke.Color, element.Presentation.IsPainted, stroke.Width, stroke.MiterLimit, stroke.Cap, stroke.Join, stroke.DashPattern, stroke.DashOffset, stroke.PathLength, stroke.NonScalingStroke, frame, state.Budget);
+            return strokeLowering.LowerStrokePointList(roundedPoints, true, cornerX > 0 || cornerY > 0, element, stroke.Color, element.Presentation.IsPainted, stroke.Width, stroke.MiterLimit, stroke.Cap, stroke.Join, stroke.DashPattern, stroke.DashOffset, stroke.PathLength, stroke.NonScalingStroke, frame, state.Budget);
         }
     }
 
@@ -424,7 +424,7 @@ internal static class SvgLeafParser
             using BudgetedParserList<int> noStrokeEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, shapeName, false, shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
             SvgParsedGeometry dashed;
-            try { dashed = strokeLowering.LowerStrokePointList(circlePoints, true, shape, ringStroke.Color, shape.Presentation.IsPainted, ringStroke.Width, miterLimit, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, dashes, dashOffset, pathLength, nonScaling, frame, state.Budget); }
+            try { dashed = strokeLowering.LowerStrokePointList(circlePoints, true, true, shape, ringStroke.Color, shape.Presentation.IsPainted, ringStroke.Width, miterLimit, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, dashes, dashOffset, pathLength, nonScaling, frame, state.Budget); }
             catch { fill.Dispose(); throw; }
             return ConcatGeometries(fill, dashed, state.Budget, context.WorkCounter, context.CancellationToken);
         }

@@ -370,7 +370,7 @@ internal static class SvgStrokeOutline
         return index;
     }
 
-    private static (double X, double Y) UnitDirection(SvgDevicePoint from, SvgDevicePoint to)
+    internal static (double X, double Y) UnitDirection(SvgDevicePoint from, SvgDevicePoint to)
     {
         double deltaX = RequireFinite(to.X - from.X);
         double deltaY = RequireFinite(to.Y - from.Y);

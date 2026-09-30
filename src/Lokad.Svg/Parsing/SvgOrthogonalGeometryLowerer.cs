@@ -490,7 +490,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes user-space fractional point-list vertices through device-space contours with the caller cap and join styles.</summary>
-    internal SvgParsedGeometry LowerStrokePointList(BudgetedParserList<SvgFractionalPoint> points, bool closed, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerStrokePointList(BudgetedParserList<SvgFractionalPoint> points, bool closed, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
@@ -512,7 +512,7 @@ internal ref struct SvgOrthogonalGeometryLowering
 
         builder.EndContour();
         bool[] closedEnds = [closed];
-        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds, false, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget);
+        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds, hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget);
         return stroked with { ElementCount = points.Count + 1 };
     }
 
@@ -589,7 +589,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         using BudgetedParserList<SvgDevicePoint> current = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         double scaledOffset = dashOffset * dashScale * dashFactor;
         if (!double.IsFinite(scaledOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
-        StrokeDashedContour(mapped.AsSpan(), closed, pattern, scaledOffset, deviceWidth, miterLimit, cap, join, outlines, leading, current);
+        StrokeDashedContour(mapped.AsSpan(), closed, pattern, scaledOffset, deviceWidth, miterLimit, cap, join, false, outlines, leading, current);
         return FinishStrokeFill(outlines, color, hasFill, false, frame, budget);
     }
 
@@ -665,7 +665,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Strokes one device-space contour as pattern runs sharing one outline fill, merging seam-touching runs on closed loops.</summary>
-    private void StrokeDashedContour(ReadOnlySpan<SvgDevicePoint> contour, bool closed, double[] pattern, double offset, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, SvgContourBuilder outlines, BudgetedParserList<SvgDevicePoint> leading, BudgetedParserList<SvgDevicePoint> current)
+    private void StrokeDashedContour(ReadOnlySpan<SvgDevicePoint> contour, bool closed, double[] pattern, double offset, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, bool hasCurves, SvgContourBuilder outlines, BudgetedParserList<SvgDevicePoint> leading, BudgetedParserList<SvgDevicePoint> current)
     {
         ArgumentNullException.ThrowIfNull(pattern);
         ArgumentNullException.ThrowIfNull(outlines);
@@ -700,6 +700,15 @@ internal ref struct SvgOrthogonalGeometryLowering
         bool runOpen = false;
         bool runOpenInitial = onEntry;
         int runs = 0;
+        int leadOpenSeg = -1;
+        double leadOpenFrac = 0;
+        int leadCloseSeg = -1;
+        double leadCloseFrac = 1;
+        int currOpenSeg = -1;
+        double currOpenFrac = 0;
+        int currCloseSeg = -1;
+        double currCloseFrac = 1;
+        int lastSeg = -1;
         BudgetedParserList<SvgDevicePoint> active = leading;
         int segments = closed ? contour.Length : contour.Length - 1;
         for (int index = 0; index < segments; index++)
@@ -708,6 +717,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgDevicePoint segmentStart = contour[index];
             SvgDevicePoint segmentEnd = contour[(index + 1) % contour.Length];
             if (segmentStart == segmentEnd) continue;
+            lastSeg = index;
             _workCounter.Consume(_cancellationToken);
             double segmentLength = Math.Sqrt((segmentEnd.X - segmentStart.X) * (segmentEnd.X - segmentStart.X) + (segmentEnd.Y - segmentStart.Y) * (segmentEnd.Y - segmentStart.Y));
             double traveled = 0;
@@ -715,7 +725,10 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 if (onEntry && !runOpen)
                 {
-                    active.Add(traveled == 0 ? segmentStart : DashCutPoint(segmentStart, segmentEnd, traveled / segmentLength));
+                    double openFrac = traveled == 0 ? 0 : traveled / segmentLength;
+                    active.Add(traveled == 0 ? segmentStart : DashCutPoint(segmentStart, segmentEnd, openFrac));
+                    if (runs == 0) { leadOpenSeg = index; leadOpenFrac = openFrac; }
+                    else { currOpenSeg = index; currOpenFrac = openFrac; }
                     runOpen = true;
                 }
 
@@ -727,11 +740,16 @@ internal ref struct SvgOrthogonalGeometryLowering
                 if (remaining > 0) break;
                 if (onEntry)
                 {
-                    active.Add(finished ? segmentEnd : DashCutPoint(segmentStart, segmentEnd, traveled / segmentLength));
+                    double closeFrac = finished ? 1 : traveled / segmentLength;
+                    active.Add(finished ? segmentEnd : DashCutPoint(segmentStart, segmentEnd, closeFrac));
+                    int openSeg = runs == 0 ? leadOpenSeg : currOpenSeg;
+                    double openFrac = runs == 0 ? leadOpenFrac : currOpenFrac;
+                    if (runs == 0) { leadCloseSeg = index; leadCloseFrac = closeFrac; }
+                    else { currCloseSeg = index; currCloseFrac = closeFrac; }
                     if (runs == 0) active = current;
                     else
                     {
-                        if (!SvgStrokeOutline.IsAllIdentical(active.AsSpan())) SvgStrokeOutline.StrokeOpenPolyline(active.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
+                        if (!SvgStrokeOutline.IsAllIdentical(active.AsSpan())) StrokeDashRun(active.AsSpan(), width, miterLimit, cap, join, contour, closed, openSeg, openFrac, index, closeFrac, hasCurves, outlines);
                         active.Clear();
                     }
 
@@ -759,6 +777,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         bool endedAtEnd = runOpen;
         if (runOpen)
         {
+            if (runs == 0) { leadCloseSeg = lastSeg; leadCloseFrac = 1; }
+            else { currCloseSeg = lastSeg; currCloseFrac = 1; }
             runs++;
             runOpen = false;
         }
@@ -775,16 +795,58 @@ internal ref struct SvgOrthogonalGeometryLowering
             ReadOnlySpan<SvgDevicePoint> head = leading.AsSpan();
             ReadOnlySpan<SvgDevicePoint> tail = current.AsSpan();
             current.AddRange(head.Length > 0 && tail.Length > 0 && head[0] == tail[tail.Length - 1] ? head[1..] : head);
-            if (!SvgStrokeOutline.IsAllIdentical(current.AsSpan())) SvgStrokeOutline.StrokeOpenPolyline(current.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
+            if (!SvgStrokeOutline.IsAllIdentical(current.AsSpan())) StrokeDashRun(current.AsSpan(), width, miterLimit, cap, join, contour, closed, currOpenSeg, currOpenFrac, leadCloseSeg, leadCloseFrac, hasCurves, outlines);
         }
         else
         {
-            if (!SvgStrokeOutline.IsAllIdentical(leading.AsSpan())) SvgStrokeOutline.StrokeOpenPolyline(leading.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
-            if (endedAtEnd && current.Count > 0 && !SvgStrokeOutline.IsAllIdentical(current.AsSpan())) SvgStrokeOutline.StrokeOpenPolyline(current.AsSpan(), width, miterLimit, cap, join, outlines, _cancellationToken);
+            if (!SvgStrokeOutline.IsAllIdentical(leading.AsSpan())) StrokeDashRun(leading.AsSpan(), width, miterLimit, cap, join, contour, closed, leadOpenSeg, leadOpenFrac, leadCloseSeg, leadCloseFrac, hasCurves, outlines);
+            if (endedAtEnd && current.Count > 0 && !SvgStrokeOutline.IsAllIdentical(current.AsSpan())) StrokeDashRun(current.AsSpan(), width, miterLimit, cap, join, contour, closed, currOpenSeg, currOpenFrac, currCloseSeg, currCloseFrac, hasCurves, outlines);
         }
 
         static SvgDevicePoint DashCutPoint(SvgDevicePoint start, SvgDevicePoint end, double fraction)
             => new(start.X + (end.X - start.X) * fraction, start.Y + (end.Y - start.Y) * fraction);
+    }
+
+    /// <summary>Strokes one dash run with parabolic end tangents on curves and chord caps elsewhere.</summary>
+    private void StrokeDashRun(ReadOnlySpan<SvgDevicePoint> run, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, ReadOnlySpan<SvgDevicePoint> contour, bool closed, int openSeg, double openFrac, int closeSeg, double closeFrac, bool hasCurves, SvgContourBuilder outlines)
+    {
+        if (!hasCurves) { SvgStrokeOutline.StrokeOpenPolyline(run, width, miterLimit, cap, join, outlines, _cancellationToken); return; }
+        SvgStrokeOutline.StrokeOpenPolyline(run, width, miterLimit, cap, join, DashEndpointTangent(contour, closed, openSeg, openFrac), DashEndpointTangent(contour, closed, closeSeg, closeFrac), outlines, _cancellationToken);
+    }
+
+    /// <summary>Differentiates a chordal parabola through the cut neighborhood for a dash-cut tangent, falling back to the cut chord.</summary>
+    /// <remarks>Vertex cuts keep chord directions so offset-zero dash behavior holds bitwise; interior cuts on curves differentiate the Lagrange parabola through the previous joint, the cut start and the cut end at the cut position, which matches uniformly sampled tangents and stays second-order otherwise. Pure deterministic arithmetic with no budget or cancellation footprint.</remarks>
+    private static (double X, double Y) DashEndpointTangent(ReadOnlySpan<SvgDevicePoint> contour, bool closed, int edgeIndex, double fraction)
+    {
+        int count = contour.Length;
+        SvgDevicePoint cutStart = contour[edgeIndex];
+        SvgDevicePoint cutEnd = closed ? contour[(edgeIndex + 1) % count] : contour[edgeIndex + 1];
+        (double chordX, double chordY) = SvgStrokeOutline.UnitDirection(cutStart, cutEnd);
+        if (!(fraction >= 0) || !(fraction <= 1)) return (chordX, chordY);
+        int beforeIndex = closed ? ((edgeIndex - 1 + count) % count) : edgeIndex - 1;
+        if (beforeIndex < 0 || beforeIndex >= count) return (chordX, chordY);
+        SvgDevicePoint joint = contour[beforeIndex];
+        if (joint == cutStart || joint == cutEnd) return (chordX, chordY);
+        double firstLeg = ChordLength(joint, cutStart);
+        double secondLeg = ChordLength(cutStart, cutEnd);
+        if (firstLeg == 0 || secondLeg == 0) return (chordX, chordY);
+        double position = firstLeg + fraction * secondLeg;
+        double total = firstLeg + secondLeg;
+        double firstWeight = ((position - firstLeg) + (position - firstLeg - secondLeg)) / ((0 - firstLeg) * (0 - firstLeg - secondLeg));
+        double secondWeight = ((position - 0) + (position - firstLeg - secondLeg)) / ((firstLeg - 0) * (firstLeg - firstLeg - secondLeg));
+        double thirdWeight = ((position - 0) + (position - firstLeg)) / ((firstLeg + secondLeg - 0) * (firstLeg + secondLeg - firstLeg));
+        double tangentX = firstWeight * joint.X + secondWeight * cutStart.X + thirdWeight * cutEnd.X;
+        double tangentY = firstWeight * joint.Y + secondWeight * cutStart.Y + thirdWeight * cutEnd.Y;
+        double length = System.Math.Sqrt(tangentX * tangentX + tangentY * tangentY);
+        if (!double.IsFinite(length) || length == 0) return (chordX, chordY);
+        return (tangentX / length, tangentY / length);
+
+        static double ChordLength(SvgDevicePoint from, SvgDevicePoint to)
+        {
+            double deltaX = from.X - to.X;
+            double deltaY = from.Y - to.Y;
+            return System.Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+        }
     }
 
     /// <summary>Strokes sampled contours through the dash pattern into one nonzero outline fill.</summary>
@@ -835,7 +897,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         for (int contour = 0; contour < source.ContourCount; contour++)
         {
             if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
-            StrokeDashedContour(source.GetContour(contour), closedEnds[contour], pattern, scaledOffset, deviceWidth, miterLimit, cap, join, outlines, leading, current);
+            StrokeDashedContour(source.GetContour(contour), closedEnds[contour], pattern, scaledOffset, deviceWidth, miterLimit, cap, join, hasCurves, outlines, leading, current);
         }
 
         return FinishStrokeFill(outlines, color, hasFill, hasCurves, frame, budget);

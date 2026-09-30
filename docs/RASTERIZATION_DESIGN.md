@@ -1361,3 +1361,9 @@ Question: can windowed secant tangents orient dash-cut caps without retained-cur
 Method: worktree spike with a tangent overload on the open-polyline kernel plus cut-context tracking and neighbor blending in the contour dash path, measured on a 512px dashed-circle control against Chrome with the full gate.
 Facts: uniform-circle control falls 782 to 678 with maxima 255 to 84, but polyline corner caps move wrongly until a hasCurves gate restores them, and ellipse caps still regress slightly while micro ratchets wobble. Neighbor secants cannot tell smooth flattening from authored corners without provenance, so the blend stays out and only the tangent plumbing lands with two kernel tests and zero behavior change.
 Decision: land plumbing without behavior change. True cap orientation needs retained-curve tangents, which stays row-5 work with the 512px control as acceptance.
+
+## Parabola dash caps land with a 512px control win and documented wobbles (2026-09-30 implementation)
+Question: does second-order cut estimation beat the linear blend without new regressions.
+Method: differentiate the chordal Lagrange parabola at cut fractions behind the hasCurves gate, then re-measure every dash touchpoint plus the 512px control with full-gate validation.
+Facts: the control falls 782 to 678 with maxima 255 to 84 while polyline unit tests hold bitwise through the gate. Ratchets move with improved or equal maxima except ellipse-dash alpha 119 to 128: butt 76 to 77 at 119, offset 152 to 150, aperiodic 95 to 90, circle-single bbox edge only, ellipse-single 21 to 19 at 40, circle-dash 89 to 90 at 142, offset fixture alpha 138, offset-ellipse 71 to 72 at 96. Round-cap tuples and offset-zero exact fixtures hold.
+Decision: landed with the tangent overload, two kernel tests and all ratchets explained. Dash-cut orientation now waits on retained-curve tangents for non-uniform curvature.

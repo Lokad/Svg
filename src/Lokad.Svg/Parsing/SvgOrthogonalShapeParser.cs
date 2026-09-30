@@ -236,7 +236,7 @@ internal static class SvgOrthogonalShapeParser
             {
                 fractionalStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, fractionalStrokeStyle, fractionalStrokeShape, elementName, false);
                 if (fractionalStroke is null) return filled;
-                fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", fractionalStrokeShape, fractionalStroke.Value.Color, fractionalStrokeShape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, fractionalStroke.Value.Cap, fractionalStroke.Value.Join, fractionalStroke.Value.DashPattern, fractionalStroke.Value.DashOffset, fractionalStroke.Value.PathLength, fractionalStroke.Value.NonScalingStroke, frame, budget);
+                fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", false, fractionalStrokeShape, fractionalStroke.Value.Color, fractionalStrokeShape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, fractionalStroke.Value.Cap, fractionalStroke.Value.Join, fractionalStroke.Value.DashPattern, fractionalStroke.Value.DashOffset, fractionalStroke.Value.PathLength, fractionalStroke.Value.NonScalingStroke, frame, budget);
                 if (paintOutline || paintRadialOutline || paintPatternOutline)
                 {
                     bool needsFractionalBox = (paintOutline && !outlineCandidate.IsUserSpace) || (paintRadialOutline && !outlineRadialCandidate.IsUserSpace);
