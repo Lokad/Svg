@@ -1373,3 +1373,9 @@ Question: what carries the ellipse-dash residual after cap orientation, stroke p
 Method: decode all 72 changed pixels of the ellipse-dash probe by dominant channel in both renderers.
 Facts: 44 blue-dominant pixels against 22 red-dominant with opposite-signed neighbors two pixels apart, which reads as dash phase shift along the stroke plus flattened fill fringe rather than cap tilt alone. Uniform-angle ellipse sampling mismeasures arc length in chord space, which no cap reorientation can repair. The pinned release-tag SkAnalyticEdge already converts quads, cubics and conics to monotonic line streams per scan band, so the row-5 step is porting curve-native analytic edges into the existing walker, not denser flattening or retained tangents alone.
 Decision: no product change. Next: analytic quadratic edge port with the quadratic fixture and Ford wordmark as acceptance.
+
+## Flatness sweep is U-shaped so analytic edges earn no presumption (2026-09-30 probe work)
+Question: do curve residuals come from tessellation coarseness that finer flattening or analytic edges would heal.
+Method: render the quadratic and cubic fixtures at quarter, nominal and quadruple flatness in a scratch worktree with no product change.
+Facts: quadratic reads 65, 54 and 79 pixels with alpha maxima 37, 18 and 80 while cubic reads 80, 38 and 98 with alpha maxima 53, 31 and 108, so both directions worsen and the nominal density is a local optimum. Residuals ride coverage-model phase response to vertex placement rather than geometric fidelity, which removes the presumption that analytic curve edges would land better and forbids flatness tuning per fixture.
+Decision: no product change. Next: row-5 curve work must target phase response with pinned-source evidence, or the clip mask-layer slice.
