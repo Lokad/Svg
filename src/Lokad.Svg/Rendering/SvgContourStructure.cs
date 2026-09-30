@@ -593,7 +593,7 @@ internal static class SvgContourStructure
         return overlapHigh == overlapLow && firstStart != secondStart && firstStart != secondEnd && firstEnd != secondStart && firstEnd != secondEnd;
     }
 
-    /// <summary>Reports whether either loop contains the other only partially, ignoring shared vertices.</summary>
+    /// <summary>Reports whether either loop contains the other only partially, ignoring shared or boundary vertices.</summary>
     private static bool LoopPairOverlapsPartially(ReadOnlySpan<SvgDevicePoint> points, int firstStart, int firstCount, int secondStart, int secondCount, ref int pairs, CancellationToken cancellationToken)
     {
         bool firstInSecond = false;
@@ -604,6 +604,7 @@ internal static class SvgContourStructure
         {
             if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
             if (IsSharedVertex(points[index], points, secondStart, secondEnd)) continue;
+            if (IsPointOnLoopBoundary(points, secondStart, secondEnd, points[index])) continue;
             if (SvgContourNesting.ContainsPoint(points, secondStart, secondEnd, points[index].X, points[index].Y)) firstInSecond = true;
         }
 
@@ -611,6 +612,7 @@ internal static class SvgContourStructure
         {
             if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
             if (IsSharedVertex(points[index], points, firstStart, firstEnd)) continue;
+            if (IsPointOnLoopBoundary(points, firstStart, firstEnd, points[index])) continue;
             if (SvgContourNesting.ContainsPoint(points, firstStart, firstEnd, points[index].X, points[index].Y)) secondInFirst = true;
         }
 

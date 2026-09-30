@@ -1131,6 +1131,28 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Mixed_crossing_and_corner_touch_paints_union()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M8,0 L16,0 L16,8 L8,8 Z M4,4 L12,4 L4,12 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 12, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 5, 9));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 10, 6));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 0, 15));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 2, 2));
+    }
+
+    [Fact]
+    public void Mixed_crossing_and_corner_touch_evenodd_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M8,0 L16,0 L16,8 L8,8 Z M4,4 L12,4 L4,12 Z' fill='red' fill-rule='evenodd'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Dust_spike_drops_leaving_main_lobe()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L2,1 L4,0 L2,1 L2,4 Z' fill='red'/></svg>", out _, out _);

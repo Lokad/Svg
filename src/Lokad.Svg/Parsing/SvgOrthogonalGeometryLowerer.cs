@@ -1658,7 +1658,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Resolves point-touching contours into simple loops sharing only vertices.</summary>
-    /// <remarks>Admits sets whose only defects are endpoint contacts at identical coordinates. Edges split at interior touch vertices with bitwise copies and self-touching rings split at shared vertices into lobes, so no computed points ever appear. Every loop keeps a non-shared vertex for robust nesting tests, and the split-loop guard verifies the result. Crossings, collinear overlaps and degenerate edges stay rejected, as do fully-inscribed loops and mixed sets. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps. Charges pair estimates for scans plus one work unit per copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Admits sets whose only defects are endpoint contacts plus, under nonzero fill, strict crossings between loops. Edges split at interior touch vertices with bitwise copies, inter-loop crossings subdivide both edges at the computed crossing, and self-touching rings split at shared vertices into lobes. Every loop keeps a vertex that is neither shared nor on another loop boundary for robust nesting tests, and the split-loop guard verifies the result. Intra-loop crossings, collinear overlaps and degenerate edges stay rejected, as do fully-inscribed loops and even-odd inter-loop crossings. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps. Charges pair estimates for scans plus one work unit per copied vertex, and observes cancellation.</remarks>
     private bool TryResolveTouchContours(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -1686,6 +1686,17 @@ internal ref struct SvgOrthogonalGeometryLowering
         while (true)
         {
             if (++sweeps > maximumSweeps) return false;
+            if (!_isEvenOdd)
+            {
+                ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
+                if (SvgContourStructure.TryFindInterLoopProperCrossing(workPoints, workEnds, out int crossingFirstLoop, out int crossingFirstEdge, out int crossingSecondLoop, out int crossingSecondEdge, out SvgDevicePoint crossing, _cancellationToken))
+                {
+                    InsertSplitVertex(ref workPoints, workEnds, crossingFirstLoop, crossingFirstEdge, crossing);
+                    InsertSplitVertex(ref workPoints, workEnds, crossingSecondLoop, crossingSecondEdge, crossing);
+                    continue;
+                }
+            }
+
             if (SvgContourStructure.TryFindVertexOnEdge(workPoints, workEnds, out int loop, out int edge, out int vertex, _cancellationToken))
             {
                 SubdivideTouchEdge(ref workPoints, ref workEnds, loop, edge, vertex);
@@ -1872,7 +1883,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         return -1;
     }
 
-    /// <summary>Reports whether every loop keeps a vertex shared with no other loop.</summary>
+    /// <summary>Reports whether every loop keeps a vertex neither shared with nor lying on any other loop.</summary>
     private bool EveryLoopHasUnsharedVertex(SvgDevicePoint[] workPoints, int[] workEnds)
     {
         for (int loop = 0; loop < workEnds.Length; loop++)
@@ -1892,6 +1903,15 @@ internal ref struct SvgOrthogonalGeometryLowering
                     {
                         _workCounter.Consume(_cancellationToken);
                         if (workPoints[index] == workPoints[otherIndex]) { shared = true; break; }
+                    }
+                }
+                if (!shared)
+                {
+                    for (int other = 0; other < workEnds.Length && !shared; other++)
+                    {
+                        if (other == loop) continue;
+                        int otherStart = other == 0 ? 0 : workEnds[other - 1];
+                        if (SvgContourStructure.IsPointOnLoopBoundary(workPoints, otherStart, workEnds[other], workPoints[index])) { shared = true; break; }
                     }
                 }
                 if (!shared) found = true;

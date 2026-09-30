@@ -176,8 +176,8 @@ internal static class SvgContourNesting
         return 0;
     }
 
-    /// <summary>Finds the first contour vertex that is not bitwise-shared with the tested contour range.</summary>
-    /// <remarks>Touch-resolved sets share only vertices, so a non-shared vertex lies strictly inside or outside every other loop once the split-loop guard passes; fully-shared loops have no robust test vertex and report false so callers treat them as uncontained.</remarks>
+    /// <summary>Finds the first contour vertex that is neither bitwise-shared with nor lying on the tested contour range.</summary>
+    /// <remarks>Touch-resolved sets share only vertices, so a vertex that is neither shared nor lying on the other loop boundary lies strictly inside or outside that loop once the split-loop guard passes; fully-shared loops have no robust test vertex and report false so callers treat them as uncontained. Boundary exclusion uses exact orientation plus box containment, mirroring the classifier touch rule.</remarks>
     private static bool TryFindUnsharedTestVertex(ReadOnlySpan<SvgDevicePoint> points, int start, int end, int otherStart, int otherEnd, out double x, out double y)
     {
         for (int index = start; index < end; index++)
@@ -186,6 +186,11 @@ internal static class SvgContourNesting
             for (int other = otherStart; other < otherEnd; other++)
             {
                 if (points[index] == points[other]) { shared = true; break; }
+            }
+
+            if (!shared && SvgContourStructure.IsPointOnLoopBoundary(points, otherStart, otherEnd, points[index]))
+            {
+                shared = true;
             }
 
             if (!shared)

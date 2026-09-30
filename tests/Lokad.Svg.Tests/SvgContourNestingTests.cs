@@ -270,6 +270,15 @@ public sealed class SvgContourNestingTests
     }
 
     [Fact]
+    public void Boundary_first_vertex_skips_to_off_boundary_sample()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 0), new SvgDevicePoint(12, 0), new SvgDevicePoint(12, 4)];
+
+        Assert.Equal([1, 1], ParitySignsSkipping(points, [4, 7]));
+        Assert.Equal([1, 1], WindingRolesSkipping(points, [4, 7]));
+    }
+
+    [Fact]
     public void Shared_first_vertex_keeps_positive_roles()
     {
         // Split-lobe shape: the second loop starts at the shared vertex, so the
