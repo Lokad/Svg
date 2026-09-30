@@ -1337,3 +1337,9 @@ Question: did product changes regress style-heavy parse allocation from 92.1 KB 
 Method: full ShortRun suite plus bisection of the 09-21 to 09-24 window on the deterministic allocation number across nine worktrees.
 Facts: every run from 09-22 through HEAD measures exactly 246.53 KB including the f6ad5e4c product that read 92.1 KB on 09-22 with bit-identical source, input and locked harness versions, so the delta is environmental and current-era allocation is stable. Time varies run to run while allocation stays put. The fresh suite also banks first wordmark numbers at 1449 us with about 6 MB traffic for the row-2 exit evidence.
 Decision: refresh BENCHMARKS.md with the current tables and retire the 09-21 parse comparison. No product change.
+
+## Contour arrays bound by commands cut wordmark traffic by a quarter (2026-09-30 implementation)
+Question: what drives the 6 MB wordmark allocation traffic and is any of it statically oversized.
+Method: scale glyph counts through MemoryProbe to separate per-glyph from fixed costs, then read the flattening buffer sizing against its proof obligations.
+Facts: traffic scales linearly at about 300 KB per curve glyph with counters adding 150 KB through split copies. Contour builder arrays sized by curve expansion dominate while contours provably start at most once per command, so bounding contour capacity by command count plus one stays below every prior backstop with identical admission. Single-glyph traffic falls 364 KB to 266 KB with byte-identical renders, locked by a peak-bytes regression test that fails on the old sizing.
+Decision: landed on the two curve-lowering sites with the regression lock. Point arrays stay worst-case until a growable builder slice. Next: row-5 curve retention or the clip mask-layer slice.

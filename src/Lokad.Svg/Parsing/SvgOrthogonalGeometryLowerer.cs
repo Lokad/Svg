@@ -430,7 +430,9 @@ internal ref struct SvgOrthogonalGeometryLowering
             ? (long)commandCount * (CurveSegmentsPerCommand + 1)
             : (long)d.Length + commandCount + 1;
         int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
-        int contourCapacity = pointCapacity < _maximumGeometryElements ? pointCapacity : _maximumGeometryElements;
+        // Contours start at most once per command plus the implicit first, so command-bounded contour arrays stay below the point bound without changing admission.
+        int contourCapacity = commandCount + 1 > pointCapacity ? pointCapacity : commandCount + 1;
+        if (contourCapacity > _maximumGeometryElements) contourCapacity = _maximumGeometryElements;
         long scratchBytes;
         try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported expansion range."); }
@@ -925,7 +927,9 @@ internal ref struct SvgOrthogonalGeometryLowering
             ? (long)commandCount * (CurveSegmentsPerCommand + 1)
             : (long)d.Length + commandCount + 1;
         int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
-        int contourCapacity = pointCapacity < _maximumGeometryElements ? pointCapacity : _maximumGeometryElements;
+        // Contours start at most once per command plus the implicit first, so command-bounded contour arrays stay below the point bound without changing admission.
+        int contourCapacity = commandCount + 1 > pointCapacity ? pointCapacity : commandCount + 1;
+        if (contourCapacity > _maximumGeometryElements) contourCapacity = _maximumGeometryElements;
         long scratchBytes;
         try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }

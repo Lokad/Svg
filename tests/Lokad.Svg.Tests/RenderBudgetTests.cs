@@ -1140,4 +1140,14 @@ public sealed class RenderBudgetTests
         }
         AssertBudgetReleased(budget);
     }
+
+    [Fact]
+    public void Curve_contour_arrays_fit_command_bound()
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M1,0 C4,0 7,1 7,4 C7,7 4,8 1,8 C0,8 0,7 0,4 C0,1 0,0 1,0 Z' fill='red'/></svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget budget = new(limits.MaximumAccountedBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
+        Assert.True(budget.Snapshot().PeakBytes < 260_000, "Curve contour arrays must scale with commands, not curve expansion.");
+    }
 }
