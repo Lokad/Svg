@@ -966,6 +966,46 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-eighth-bar-k7-16x16.json",
       "referenceSha256": "6e3399cfda96ba2dfc15446ad5b613817923b8faff8cd539e6be6ab550e6001b"
+    },
+    {
+      "id": "original-slanted-triangle-int-64x64",
+      "path": "original/original-slanted-triangle-int-64x64.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-01",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "0e5146cf5708bce9f0647dad56f9fb6fb6497435676b4e22ee16ab646de170a2",
+      "materializedSha256": "0e5146cf5708bce9f0647dad56f9fb6fb6497435676b4e22ee16ab646de170a2",
+      "featureTags": ["geometry", "polygon", "diagonal-edge", "coverage", "calibration"],
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-slanted-triangle-int-64x64.json",
+      "referenceSha256": "5a971e14b3d8fe2cff2f0743bd4f58e2e591a662e093a8c2a037ddd1bf9c8092"
+    },
+    {
+      "id": "original-slanted-triangle-eighth-64x64",
+      "path": "original/original-slanted-triangle-eighth-64x64.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-01",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "2e9df13c1c7704f7dbb35e2d9d18c37aa041a4c5ccb84e4b4ba732c3a41fabf4",
+      "materializedSha256": "2e9df13c1c7704f7dbb35e2d9d18c37aa041a4c5ccb84e4b4ba732c3a41fabf4",
+      "featureTags": ["geometry", "polygon", "diagonal-edge", "coverage", "calibration"],
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-slanted-triangle-eighth-64x64.json",
+      "referenceSha256": "4eef266c01b198f6b6041348b601c570b5416a407dceb85e4b0ab45371b90c8a"
     }
   ]
 }
