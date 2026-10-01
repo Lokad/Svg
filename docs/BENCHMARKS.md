@@ -248,3 +248,18 @@ remeasures 246.53 KB today with bit-identical source, input and locked harness
 versions, and six runs across 09-22 to HEAD agree on 246.53 KB to the byte, so
 current-era product allocation is stable and the old table is not comparable in
 this environment. Time varies run to run while allocation stays deterministic.
+
+## Inventory-shaped conversion (2026-10-01)
+
+- BenchmarkDotNet 0.14.0; .NET 10.0.12 x64 RyuJIT (same machine family as the baseline table).
+- `ShortRun`: one launch, three warmups and three measured iterations; confidence intervals stay broad, so read orders of magnitude, not deltas.
+- New `SvgInventoryBenchmarks` inputs (committed alongside): a tiny 8x8 triangle mark, a 737x371 wordmark letter-pair fragment with curve unions (public-domain SDL wordmark content), and dense 800x480 dragon curves (public-domain Wales flag content). Each benchmark converts to owned memory under `SvgRenderOptions.Default`, so destination bytes ride the allocation figure.
+- Native-size inv-050 (intrinsic 2880x2880) renders under default limits in about 717 ms with about 34 MB managed-allocated (fresh-process probe measurement, dominated by the 33 MB destination surface): no default-limit denial to record, the row-4 analytic charging keeps it in budget.
+
+| Method | Mean | Allocated |
+| --- | ---: | ---: |
+| `ConvertTinyMark` | 32.21 us | 18.65 KB |
+| `ConvertWordmarkPair` | 1,971.83 us | 1123.71 KB |
+| `ConvertDenseDragon` | 253,303.72 us | 3025.75 KB |
+
+The wordmark pair stays near 2 ms because its opaque content covers a small fraction of the canvas; the dragon pays about 660 ns per canvas pixel across dense flattened curves with analytic interval coverage. These are throughput anchors for row-4/row-5 work, not gates.
