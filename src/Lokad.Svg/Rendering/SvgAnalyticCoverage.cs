@@ -1,3 +1,4 @@
+using System.Numerics;
 using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
@@ -182,6 +183,7 @@ internal ref struct SvgAnalyticCoverage
     private static int FixedCeilToInt(int value) => (value + Fixed1 - 1) >> 16;
     private static int FixedCeilToFixed(int value) => (int)(((uint)(value + Fixed1 - 1)) & 0xFFFF0000u);
     private static int FixedFloorToFixed(int value) => (int)(((uint)value) & 0xFFFF0000u);
+    private static int FixedRoundToFixed(int value) => (int)(((uint)(value + 0x8000)) & 0xFFFF0000u);
     private static int FixedDiv(int numerator, int denominator)
     {
         long quotient = ((long)numerator << 16) / denominator;
@@ -212,21 +214,220 @@ internal ref struct SvgAnalyticCoverage
         int fixedY0 = snapY ? SnapY((ScalarToFDot6Trunc((float)y0 * 4) << 10) >> 2) : (ScalarToFDot6Trunc((float)y0 * 4) << 10) >> 2;
         int fixedX1 = (ScalarToFDot6Trunc((float)x1 * 4) << 10) >> 2;
         int fixedY1 = snapY ? SnapY((ScalarToFDot6Trunc((float)y1 * 4) << 10) >> 2) : (ScalarToFDot6Trunc((float)y1 * 4) << 10) >> 2;
+        return SetLineFixed(fixedX0, fixedY0, fixedX1, fixedY1);
+    }
+    /// <summary>Builds one walker edge from pinned fixed-point endpoints without float re-encoding.</summary>
+    /// <remarks>Analytic curve steppers emit pre-snapped fixed endpoints like Skia updateLine; re-encoding through floats would shift negative values by truncation, so this path enters fixed space directly with the same winding, slope and inverse-DY construction as SetLine.</remarks>
+    private static AnalyticEdge? SetLineFixed(int x0, int y0, int x1, int y1)
+    {
         int winding = 1;
-        if (fixedY0 > fixedY1)
+        if (y0 > y1)
         {
-            (fixedX0, fixedX1) = (fixedX1, fixedX0);
-            (fixedY0, fixedY1) = (fixedY1, fixedY0);
+            (x0, x1) = (x1, x0);
+            (y0, y1) = (y1, y0);
             winding = -1;
         }
-        int deltaY = (fixedY1 - fixedY0) >> 10;
+        int deltaY = (y1 - y0) >> 10;
         if (deltaY == 0) return null;
-        int deltaX = (fixedX1 - fixedX0) >> 10;
+        int deltaX = (x1 - x0) >> 10;
         int slope = QuickDiv(deltaX, deltaY);
         int absoluteSlope = SkAbs32(slope);
         int inverseDY = (deltaX == 0 || slope == 0) ? int.MaxValue : absoluteSlope < 1024 ? QuickInverse(absoluteSlope) : SkAbs32(QuickDiv(deltaY, deltaX));
-        return new AnalyticEdge { X = fixedX0, DX = slope, UpperX = fixedX0, Y = fixedY0, UpperY = fixedY0, LowerY = fixedY1, DY = inverseDY, Winding = winding };
+        return new AnalyticEdge { X = x0, DX = slope, UpperX = x0, Y = y0, UpperY = y0, LowerY = y1, DY = inverseDY, Winding = winding };
     }
+    /// <summary>Reports whether Y is monotonic across one float quadratic.</summary>
+    private static bool QuadMonotonic(float y0, float y1, float y2)
+    {
+        float ab = y0 - y1;
+        float bc = y1 - y2;
+        if (ab < 0.0f) bc = -bc;
+        return !(ab == 0.0f || bc < 0.0f);
+    }
+
+    /// <summary>Computes the Y-extremum split position for a non-monotonic float quadratic.</summary>
+    private static bool QuadUnitDivide(float y0, float y1, float y2, out float split)
+    {
+        float numer = y0 - y1;
+        float denom = y0 - y1 - y1 + y2;
+        if (numer < 0.0f) { numer = -numer; denom = -denom; }
+        if (denom == 0.0f || numer == 0.0f || numer >= denom) { split = 0.0f; return false; }
+        float ratio = numer / denom;
+        if (float.IsNaN(ratio) || ratio == 0.0f) { split = 0.0f; return false; }
+        split = ratio;
+        return true;
+    }
+
+    /// <summary>Appends analytic quadratic segments for one retained span, returning the emitted edge count for flattened fallback when zero.</summary>
+    /// <remarks>Ports the pinned Skia quad builder in float plus fixed point: Y-extrema chop into monotonics, curvature-driven forward-difference steps with snapping, and identical line-edge construction through SetLineFixed. Cost charges setups plus stepping iterations like per-edge charging.</remarks>
+    private static int AppendQuadSpanEdges(List<AnalyticEdge> kept, double startX, double startY, double controlX, double controlY, double endX, double endY, ref long setupCost, CancellationToken cancellationToken)
+    {
+        float x0 = (float)startX;
+        float y0 = (float)startY;
+        float x1 = (float)controlX;
+        float y1 = (float)controlY;
+        float x2 = (float)endX;
+        float y2 = (float)endY;
+        if (QuadMonotonic(y0, y1, y2))
+        {
+            return AppendQuadPiece(kept, x0, y0, x1, y1, x2, y2, ref setupCost, cancellationToken);
+        }
+        if (!QuadUnitDivide(y0, y1, y2, out float split))
+        {
+            y1 = MathF.Abs(y0 - y1) < MathF.Abs(y1 - y2) ? y0 : y2;
+            return AppendQuadPiece(kept, x0, y0, x1, y1, x2, y2, ref setupCost, cancellationToken);
+        }
+        float p01x = x0 + (x1 - x0) * split;
+        float p01y = y0 + (y1 - y0) * split;
+        float p12x = x1 + (x2 - x1) * split;
+        float p12y = y1 + (y2 - y1) * split;
+        float midx = p01x + (p12x - p01x) * split;
+        float midy = p01y + (p12y - p01y) * split;
+        int emitted = AppendQuadPiece(kept, x0, y0, p01x, midy, midx, midy, ref setupCost, cancellationToken);
+        emitted += AppendQuadPiece(kept, midx, midy, p12x, midy, x2, y2, ref setupCost, cancellationToken);
+        return emitted;
+    }
+
+    /// <summary>Steps one Y-monotonic float quad into walker edges, returning the emitted count.</summary>
+    /// <remarks>Ports setQuadratic plus updateQuadratic with the truncation float-to-FDot6 path Chrome builds without even rounding. Zero-height pieces emit nothing so the caller falls back to flattened chords.</remarks>
+    private static int AppendQuadPiece(List<AnalyticEdge> kept, float x0, float y0, float x1, float y1, float x2, float y2, ref long setupCost, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        const int scale = 1 << (2 + 6);
+        int fx0 = (int)(x0 * scale);
+        int fy0 = (int)(y0 * scale);
+        int fx1 = (int)(x1 * scale);
+        int fy1 = (int)(y1 * scale);
+        int fx2 = (int)(x2 * scale);
+        int fy2 = (int)(y2 * scale);
+        if (fy0 > fy2) { (fx0, fx2) = (fx2, fx0); (fy0, fy2) = (fy2, fy0); }
+        if (((fy0 + 32) >> 6) == ((fy2 + 32) >> 6)) return 0;
+        int shift = QuadStepShift(((fx1 << 1) - fx0 - fx2) >> 2, ((fy1 << 1) - fy0 - fy2) >> 2);
+        if (shift == 0) shift = 1;
+        else if (shift > 6) shift = 6;
+        int curveShift = shift - 1;
+        int count = 1 << shift;
+        setupCost += 4;
+        int emitted = 0;
+        unchecked
+        {
+            int ax = (fx0 - fx1 - fx1 + fx2) << 9;
+            int bx = (fx1 - fx0) << 10;
+            int qx = fx0 << 10;
+            int qDx = bx + (ax >> shift);
+            int qDDx = ax >> (shift - 1);
+            int ay = (fy0 - fy1 - fy1 + fy2) << 9;
+            int by = (fy1 - fy0) << 10;
+            int qy = fy0 << 10;
+            int qDy = by + (ay >> shift);
+            int qDDy = ay >> (shift - 1);
+            int qLastX = fx2 << 10;
+            int qLastY = fy2 << 10;
+            qx >>= 2;
+            qy >>= 2;
+            qDx >>= 2;
+            qDy >>= 2;
+            qDDx >>= 2;
+            qDDy >>= 2;
+            qLastX >>= 2;
+            qLastY >>= 2;
+            qy = SnapY(qy);
+            qLastY = SnapY(qLastY);
+            emitted = StepQuadPiece(kept, qx, qy, qDx, qDy, qDDx, qDDy, qLastX, qLastY, curveShift, count, ref setupCost);
+        }
+        return emitted;
+    }
+
+    /// <summary>Advances one quad forward-difference state into snapped walker edges, skipping zero-height steps exactly like updateLine.</summary>
+    private static int StepQuadPiece(List<AnalyticEdge> kept, int qx, int qy, int qDx, int qDy, int qDDx, int qDDy, int qLastX, int qLastY, int curveShift, int count, ref long setupCost)
+    {
+        int emitted = 0;
+        int oldx = qx;
+        int oldy = qy;
+        int dx = qDx;
+        int dy = qDy;
+        int sx = qx;
+        int sy = qy;
+        while (true)
+        {
+            int newx;
+            int newy;
+            int endx;
+            int endy;
+            if (--count > 0)
+            {
+                unchecked
+                {
+                    newx = oldx + (dx >> curveShift);
+                    newy = oldy + (dy >> curveShift);
+                }
+                if (SkAbs32(dy >> curveShift) >= 2 * Fixed1 && ((long)SkAbs32(dy) << 6) > SkAbs32(dx))
+                {
+                    int diffY = (newy - sy) >> 10;
+                    int slope = diffY != 0 ? QuickDiv((newx - sx) >> 10, diffY) : int.MaxValue;
+                    endy = Math.Min(qLastY, FixedRoundToFixed(newy));
+                    endx = unchecked(newx - FixedMul(slope, newy - endy));
+                }
+                else
+                {
+                    endy = Math.Min(qLastY, SnapY(newy));
+                    endx = newx;
+                }
+                unchecked
+                {
+                    dx += qDDx;
+                    dy += qDDy;
+                }
+            }
+            else
+            {
+                newx = qLastX;
+                newy = qLastY;
+                endx = newx;
+                endy = newy;
+            }
+            AnalyticEdge? edge = SetLineFixed(sx, sy, endx, endy);
+            if (edge is not null)
+            {
+                if (!(edge.DX == 0 && kept.Count > 0 && CombineVertical(edge, kept[^1]))) kept.Add(edge);
+                emitted++;
+            }
+            oldx = newx;
+            oldy = newy;
+            sx = endx;
+            sy = endy;
+            setupCost += 2;
+            if (count <= 0) break;
+        }
+        return emitted;
+    }
+
+    /// <summary>Validates retained spans for walker substitution: single clean contour with ordered non-overlapping ranges inside it.</summary>
+    /// <remarks>Any anomaly falls back to flattened walking rather than failing; spans are an optimization hint and the flattened path stays canonical. Overlapping or out-of-range spans decline substitution while disjoint touching-at-joint spans tile exactly.</remarks>
+    private static bool QuadSpansEligible(ReadOnlySpan<int> ends, SvgQuadSpan[] quadSpans, bool isEvenOdd, SvgPolygonMapping mapping, SvgContourFlags structure)
+    {
+        if (quadSpans.Length == 0 || isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.None || ends.Length != 1) return false;
+        int count = ends[0];
+        int previousEnd = 0;
+        for (int index = 0; index < quadSpans.Length; index++)
+        {
+            SvgQuadSpan span = quadSpans[index];
+            if (span.Contour != 0 || span.StartIndex < 0 || span.EndIndex <= span.StartIndex || span.EndIndex >= count || span.StartIndex < previousEnd) return false;
+            if (!double.IsFinite(span.Control.X) || !double.IsFinite(span.Control.Y)) return false;
+            previousEnd = span.EndIndex;
+        }
+        return true;
+    }
+
+    /// <summary>Derives the forward-difference subdivision shift from quad curvature, mirroring diff_to_shift.</summary>
+    private static int QuadStepShift(int dx, int dy)
+    {
+        int adx = SkAbs32(dx);
+        int ady = SkAbs32(dy);
+        int dist = adx > ady ? adx + (ady / 2) : ady + (adx / 2);
+        dist = (dist + (1 << 4)) >> 5;
+        return (32 - BitOperations.LeadingZeroCount((uint)dist)) >> 1;
+    }
+
     private static void GoY(AnalyticEdge edge, int y)
     {
         if (y == edge.Y + Fixed1) { edge.X += edge.DX; edge.Y = y; }
@@ -298,7 +499,14 @@ internal ref struct SvgAnalyticCoverage
     /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically. Single rings keep the exact legacy sequence, extended to nonzero pure-crossing rings on curve-flattened payloads whose signed winding the edge walk accumulates directly; multi-contour sets additionally admit disjoint-or-nested contact-free loops with per-contour area and vote filtering plus a set-level contact scan, extended to nonzero crossing-, touching- or self-touching sets on curve-flattened payloads without coincident contacts, keeping integer and fractional straight-edge payloads on the exact fan path, with self-touching loops walking their shared vertices through the same signed-winding accumulation, reporting ineligible without reserving otherwise, so the caller keeps the legacy path; the returned value still requires disposal. The setup cost covers validation, area, convexity and self-contact scoring, edge setup and a sorting upper bound for the caller work ledger.</remarks>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
     {
+        return Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, Array.Empty<SvgQuadSpan>(), xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, budget, out setupWork, out eligible, cancellationToken);
+    }
+
+    /// <summary>Prepares one analytic fill, substituting analytic quad segments for retained span ranges under single-contour clean-structure gating.</summary>
+    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
+    {
         ArgumentNullException.ThrowIfNull(budget);
+        ArgumentNullException.ThrowIfNull(quadSpans);
         SvgPolygonCoverage.ValidateContourEnds(points, ends);
         ReadOnlySpan<int> votes = isEvenOdd ? nestingSigns : (signs is int[] roles ? roles : ReadOnlySpan<int>.Empty);
         if (!isEvenOdd && signs is not null && signs.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(signs));
@@ -441,6 +649,7 @@ internal ref struct SvgAnalyticCoverage
                 }
             }
         }
+        bool useQuadSpans = QuadSpansEligible(ends, quadSpans, isEvenOdd, mapping, structure);
         setupWork += points.Length;
         int width = xEnd - xStart;
         bool skipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
@@ -448,9 +657,21 @@ internal ref struct SvgAnalyticCoverage
         try
         {
             List<AnalyticEdge> kept = new(points.Length);
+            int spanCursor = 0;
             for (int index = 0; index < points.Length; index++)
             {
                 if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                if (useQuadSpans && spanCursor < quadSpans.Length && quadSpans[spanCursor].StartIndex == index)
+                {
+                    SvgQuadSpan span = quadSpans[spanCursor];
+                    spanCursor++;
+                    if (span.EndIndex - index >= 2 && AppendQuadSpanEdges(kept, points[span.StartIndex].X, points[span.StartIndex].Y, span.Control.X, span.Control.Y, points[span.EndIndex].X, points[span.EndIndex].Y, ref setupWork, cancellationToken) > 0)
+                    {
+                        // Resume on the span end so the edge leaving it (including the implicit close) still walks flattened, which also chains touching spans exactly.
+                        index = span.EndIndex - 1;
+                        continue;
+                    }
+                }
                 SvgDevicePoint first = points[index];
                 SvgDevicePoint second = points[(index + 1) % points.Length];
                 AnalyticEdge? edge = SetLine(first.X, first.Y, second.X, second.Y, !desnapBox);

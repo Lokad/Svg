@@ -11,7 +11,7 @@ public static class SvgConverter
 {
     private const int GlyphSamplesPerAxis = 4;
     /// <summary>Owns mapped polygon points with raster bounds, clip and their surface reservation until the rasterizer releases them.</summary>
-    private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, int PathStartX, int PathStartY, int PathEndX, int PathEndY, (double Left, double Top, double Right, double Bottom)? Clip, bool HasFractionalEdge, RenderBudget.BudgetReservation? Reservation) : IDisposable
+    private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, int PathStartX, int PathStartY, int PathEndX, int PathEndY, (double Left, double Top, double Right, double Bottom)? Clip, bool HasFractionalEdge, SvgQuadSpan[] QuadSpans, RenderBudget.BudgetReservation? Reservation) : IDisposable
     {
         public void Dispose() => Reservation?.Dispose();
     }
@@ -364,15 +364,16 @@ public static class SvgConverter
             return coverage;
         }
 
-        MappedPolygon MapPolygon(SvgDevicePoint[] points, SvgPolygonMapping mapping, SvgClipBox? clip)
+        MappedPolygon MapPolygon(SvgDevicePoint[] points, SvgQuadSpan[] quadSpans, SvgPolygonMapping mapping, SvgClipBox? clip)
         {
-            long mappingWork = points.Length;
+            long mappingWork = (long)points.Length + quadSpans.Length;
             if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
             workUnits += mappingWork;
-            RenderBudget.BudgetReservation mappedReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length), SvgMemoryCategory.Surface);
+            RenderBudget.BudgetReservation mappedReservation = budget.Reserve(checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length)), SvgMemoryCategory.Surface);
             try
             {
                 SvgDevicePoint[] mapped = new SvgDevicePoint[points.Length];
+                SvgQuadSpan[] mappedSpans = MapQuadSpanControls(quadSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, cancellationToken);
                 bool hasFractionalEdge = false;
                 double left = double.PositiveInfinity;
                 double top = double.PositiveInfinity;
@@ -404,7 +405,7 @@ public static class SvgConverter
                     (startX, startY, endX, endY) = IntersectMappedClip(clipBox, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
                     mappedClip = MapClipBounds(clipBox, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
                 }
-                return new MappedPolygon(mapped, startX, startY, endX, endY, pathStartX, pathStartY, pathEndX, pathEndY, mappedClip, hasFractionalEdge, mappedReservation);
+                return new MappedPolygon(mapped, startX, startY, endX, endY, pathStartX, pathStartY, pathEndX, pathEndY, mappedClip, hasFractionalEdge, mappedSpans, mappedReservation);
             }
             catch
             {
@@ -415,11 +416,11 @@ public static class SvgConverter
         void RasterizePolygonFill(SvgPolygonFill polygon, byte[] destination)
         {
             if (!polygon.HasFill || polygon.Points.Length < 3) return;
-            using MappedPolygon raster = MapPolygon(polygon.Points, polygon.Mapping, polygon.Clip);
+            using MappedPolygon raster = MapPolygon(polygon.Points, polygon.QuadSpans, polygon.Mapping, polygon.Clip);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             ReadOnlySpan<int> contourEnds = polygon.ContourEnds;
             ReadOnlySpan<int> nestingSigns = polygon.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, raster.QuadSpans, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
             // Charge the taken traversal: analytic rows cost pixels while the fan evaluates every contour per pixel.
@@ -476,7 +477,7 @@ public static class SvgConverter
             if (!outline.HasFill || outline.Points.Length < 3) return;
             // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
-            using MappedPolygon raster = MapPolygon(outline.Points, outline.Mapping, outline.Clip);
+            using MappedPolygon raster = MapPolygon(outline.Points, Array.Empty<SvgQuadSpan>(), outline.Mapping, outline.Clip);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgLinearGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
@@ -492,7 +493,7 @@ public static class SvgConverter
             }
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, Array.Empty<SvgQuadSpan>(), raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
             long coverage = useAnalytic ? (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) : (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
@@ -582,7 +583,7 @@ public static class SvgConverter
             if (!outline.HasFill || outline.Points.Length < 3) return;
             // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
-            using MappedPolygon raster = MapPolygon(outline.Points, outline.Mapping, outline.Clip);
+            using MappedPolygon raster = MapPolygon(outline.Points, Array.Empty<SvgQuadSpan>(), outline.Mapping, outline.Clip);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgRadialGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
@@ -594,7 +595,7 @@ public static class SvgConverter
             }
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, Array.Empty<SvgQuadSpan>(), raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
             long coverage = useAnalytic ? (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) : (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
@@ -738,7 +739,7 @@ public static class SvgConverter
         void RasterizePatternPolygon(SvgPatternPolygon outline, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
-            using MappedPolygon raster = MapPolygon(outline.Points, outline.Mapping, outline.Clip);
+            using MappedPolygon raster = MapPolygon(outline.Points, Array.Empty<SvgQuadSpan>(), outline.Mapping, outline.Clip);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null);
             if (!TryMapPatternTile(source, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
@@ -750,7 +751,7 @@ public static class SvgConverter
             BlitPatternTile(tile, blitted);
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, Array.Empty<SvgQuadSpan>(), raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
             long coverage = useAnalytic ? (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) : (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
@@ -1319,7 +1320,21 @@ public static class SvgConverter
             }
         }
 
-        static double MapEdge(double value, double scale, double offset)
+        // Maps retained quadratic controls through the output scale without grid snapping; curve data never takes the quarter discipline.
+        static SvgQuadSpan[] MapQuadSpanControls(SvgQuadSpan[] spans, double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset, CancellationToken cancellationToken)
+        {
+            if (spans.Length == 0) return Array.Empty<SvgQuadSpan>();
+            SvgQuadSpan[] mapped = new SvgQuadSpan[spans.Length];
+            for (int index = 0; index < spans.Length; index++)
+            {
+                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                SvgDevicePoint control = spans[index].Control;
+                mapped[index] = new SvgQuadSpan(spans[index].Contour, spans[index].StartIndex, spans[index].EndIndex, new SvgDevicePoint(MapEdge(control.X, horizontalScale, horizontalOffset), MapEdge(control.Y, verticalScale, verticalOffset)));
+            }
+            return mapped;
+        }
+
+                static double MapEdge(double value, double scale, double offset)
         {
             double scaled = value * scale + offset;
             if (!double.IsFinite(scaled)) throw new SvgException(SvgErrorCode.LimitExceeded, "Output scaling and viewBox mapping exceed the admitted numeric range.");
