@@ -2338,7 +2338,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         return spliced == SvgContourFlags.None;
     }
     /// <summary>Splices loop pairs sharing two or more opposite duplicate edges into union boundaries.</summary>
-    /// <remarks>Collects every opposite-directed exact-span duplicate between loop pairs that neither contain, requires a remainder edge on both loops with vertex-disjoint spans, then drops every shared span and links remainder ends across loops at each shared vertex while keeping same-loop continuation at merely touched values. Deterministic walks cover each remainder edge once with a step cap as backstop; degenerate or non-simple results keep the set rejected so the split-loop guard still arbitrates. Single shared spans stay with the single-edge splice, same-directed sharing and fully-shared pairs stay gated, and even-odd sets keep their coincident ban at the caller. Charges one work unit per examined pair and copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Collects every opposite-directed exact-span duplicate between loop pairs that neither contain, requires a remainder edge on both loops, then drops every shared span and links remainder ends across loops at each shared vertex while keeping same-loop continuation at merely touched values. Adjacent shared edges form chains the walk skips in one jump from the chain-entry vertex, so multi-edge wordmark chains link exactly like disjoint spans. Deterministic walks cover each remainder edge once with a step cap as backstop; degenerate or non-simple results keep the set rejected so the split-loop guard still arbitrates. Single shared spans stay with the single-edge splice, same-directed sharing and fully-shared pairs stay gated, and even-odd sets keep their coincident ban at the caller. Charges one work unit per examined pair and copied vertex, and observes cancellation.</remarks>
     private bool TrySpliceSharedUnionEdges(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
     {
         for (int first = 0; first < workEnds.Length; first++)
@@ -2406,18 +2406,6 @@ internal ref struct SvgOrthogonalGeometryLowering
             }
         }
         if (found != sharedPairs) return false;
-        for (int outer = 0; outer < found; outer++)
-        {
-            SvgDevicePoint outerStart = workPoints[firstStart + firstEdges[outer]];
-            SvgDevicePoint outerEnd = workPoints[firstStart + ((firstEdges[outer] + 1) % firstCount)];
-            for (int inner = outer + 1; inner < found; inner++)
-            {
-                _workCounter.Consume(_cancellationToken);
-                SvgDevicePoint innerStart = workPoints[firstStart + firstEdges[inner]];
-                SvgDevicePoint innerEnd = workPoints[firstStart + ((firstEdges[inner] + 1) % firstCount)];
-                if (innerStart == outerStart || innerStart == outerEnd || innerEnd == outerStart || innerEnd == outerEnd) return false;
-            }
-        }
         bool[] firstShared = new bool[firstCount];
         bool[] secondShared = new bool[secondCount];
         for (int index = 0; index < found; index++)
