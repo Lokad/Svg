@@ -1803,8 +1803,6 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Replaces one span interior with bitwise copies of another span interior.</summary>
-    /// <remarks>Both spans share endpoints with the donor interior already validated within the conform bound; copies reuse existing vertices so no computed points appear. The receiver keeps its span endpoints and all off-span vertices in order while later loops shift by the interior-count delta, so cyclic spans wrapping past the loop end stay consistent. Charges one work unit per copied vertex, and observes cancellation.</remarks>
-    /// <summary>Replaces one span interior with bitwise copies of another span interior.</summary>
     /// <remarks>Both spans share endpoints with the donor interior already validated within the conform bound; copies reuse existing donor vertices in receiver traversal order so no computed points appear, with reversed copies producing opposite exact spans for the well-tested opposite splice. The receiver keeps the span endpoints and all off-span vertices in cyclic order while later loops shift by the interior-count delta, so cyclic spans wrapping past the loop end stay consistent. Charges one work unit per copied vertex, and observes cancellation.</remarks>
     private void ConformSpanInterior(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int firstBegin, int firstLength, int second, int secondAnchor, int secondLength, bool receiverReversed)
     {
@@ -1911,6 +1909,280 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (SpanInteriorDeviation(workPoints, secondStart, secondCount, secondAnchor, secondLength, firstStart, firstCount, firstBegin, firstLength) > UnionConformEpsilon) return false;
         ConformSpanInterior(ref workPoints, ref workEnds, first, firstBegin, firstLength, second, secondAnchor, secondLength, receiverReversed);
         return true;
+    }
+
+    /// <summary>Links boundary arcs at shared vertices into union rings, dropping interior arcs.</summary>
+    /// <remarks>Same-wound uncontained loop pairs split at every shared vertex; arcs strictly inside the other loop drop as covered while boundary arcs link deterministically where each shared vertex keeps exactly two boundary ends, otherwise the pair stays rejected for tangent weaving. Opposite-wound pairs, contained pairs, zero-area loops, repeated shared values and degenerate arcs stay rejected, and each firing drops at least one interior arc while linking creates no vertices, so the sweep cannot revisit the same pair. The split-loop guard still arbitrates. Charges one work unit per examined pair and copied vertex, and observes cancellation.</remarks>
+    private bool TryLinkSharedVertexArcs(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
+    {
+        for (int first = 0; first < workEnds.Length; first++)
+        {
+            int firstStart = first == 0 ? 0 : workEnds[first - 1];
+            int firstCount = workEnds[first] - firstStart;
+            if (firstCount < 3) continue;
+            double firstArea = UnionDoubledArea(workPoints, firstStart, firstStart + firstCount);
+            if (firstArea == 0) continue;
+            for (int second = first + 1; second < workEnds.Length; second++)
+            {
+                int secondStart = second == 0 ? 0 : workEnds[second - 1];
+                int secondCount = workEnds[second] - secondStart;
+                if (secondCount < 3) continue;
+                double secondArea = UnionDoubledArea(workPoints, secondStart, secondStart + secondCount);
+                if (secondArea == 0 || Math.Sign(secondArea) != Math.Sign(firstArea)) continue;
+                if (LoopContainsLoop(workPoints, firstStart, firstStart + firstCount, secondStart, secondStart + secondCount)) continue;
+                if (LoopContainsLoop(workPoints, secondStart, secondStart + secondCount, firstStart, firstStart + firstCount)) continue;
+                if (TryLinkLoopPairArcs(ref workPoints, ref workEnds, first, second)) return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>Collects the relative indices whose values occur in another loop, in loop order.</summary>
+    private int[] CollectSharedVertices(SvgDevicePoint[] points, int start, int count, int otherStart, int otherCount)
+    {
+        int[] found = new int[count];
+        int total = 0;
+        for (int index = 0; index < count; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            if (IsSharedLoopVertex(points[start + index], points, otherStart, otherStart + otherCount)) found[total++] = index;
+        }
+        int[] shared = new int[total];
+        for (int index = 0; index < total; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            shared[index] = found[index];
+        }
+        return shared;
+    }
+
+    /// <summary>Reports whether every collected shared vertex occurs exactly once in its loop.</summary>
+    private bool SharedVerticesAreSimple(SvgDevicePoint[] points, int start, int[] shared)
+    {
+        for (int first = 0; first < shared.Length; first++)
+        {
+            for (int second = first + 1; second < shared.Length; second++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                if (points[start + shared[first]] == points[start + shared[second]]) return false;
+            }
+        }
+        return true;
+    }
+
+    /// <summary>Reports whether one arc lies strictly inside another loop, endpoints excluded.</summary>
+    /// <remarks>Endpoints sit on the boundary by construction, so only interior vertices and edge midpoints witness, mirroring the strict-inside rule of the overlap test. Deterministic order; allocates nothing and holds no budget, with callers charging the pair estimate.</remarks>
+    private static bool IsArcStrictlyInside(SvgDevicePoint[] points, int start, int count, int begin, int length, int otherStart, int otherCount)
+    {
+        for (int offset = 1; offset < length; offset++)
+        {
+            if (!IsStrictlyInside(points[start + ((begin + offset) % count)], points, otherStart, otherCount)) return false;
+        }
+        for (int edge = 0; edge < length; edge++)
+        {
+            SvgDevicePoint edgeStart = points[start + ((begin + edge) % count)];
+            SvgDevicePoint edgeEnd = points[start + ((begin + edge + 1) % count)];
+            SvgDevicePoint middle = new((edgeStart.X + edgeEnd.X) / 2, (edgeStart.Y + edgeEnd.Y) / 2);
+            if (middle == edgeStart || middle == edgeEnd) continue;
+            if (!IsStrictlyInside(middle, points, otherStart, otherCount)) return false;
+        }
+        return true;
+    }
+
+    /// <summary>Reports whether one vertex lies strictly inside a loop, excluding shared and boundary points.</summary>
+    private static bool IsStrictlyInside(SvgDevicePoint candidate, SvgDevicePoint[] points, int start, int count)
+    {
+        if (IsSharedLoopVertex(candidate, points, start, start + count)) return false;
+        if (SvgContourStructure.IsPointOnLoopBoundary(points, start, start + count, candidate)) return false;
+        return SvgContourNesting.ContainsPoint(points, start, start + count, candidate.X, candidate.Y);
+    }
+
+    /// <summary>Replaces two loops with linked rings, keeping every other loop bitwise.</summary>
+    /// <remarks>Ring vertices reuse existing points in walked order; later loop indices shift with the count delta. Charges one work unit per copied vertex, and observes cancellation.</remarks>
+    private bool ReplaceLoopPair(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int second, SvgDevicePoint[] ringVerts, int[] ringEnds, int ringCount, int ringTotal)
+    {
+        if (ringCount <= 0) return false;
+        int firstStart = first == 0 ? 0 : workEnds[first - 1];
+        int firstEnd = workEnds[first];
+        int secondStart = second == 0 ? 0 : workEnds[second - 1];
+        int secondEnd = workEnds[second];
+        SvgDevicePoint[] nextPoints = new SvgDevicePoint[workPoints.Length - (firstEnd - firstStart) - (secondEnd - secondStart) + ringTotal];
+        int[] nextEnds = new int[workEnds.Length - 2 + ringCount];
+        int target = 0;
+        int targetEnd = 0;
+        for (int other = 0; other < workEnds.Length; other++)
+        {
+            if (other == first || other == second) continue;
+            int otherStart = other == 0 ? 0 : workEnds[other - 1];
+            int otherEnd = workEnds[other];
+            for (int source = otherStart; source < otherEnd; source++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                nextPoints[target++] = workPoints[source];
+            }
+            _workCounter.Consume(_cancellationToken);
+            nextEnds[targetEnd++] = target;
+        }
+        int ringStart = 0;
+        for (int ring = 0; ring < ringCount; ring++)
+        {
+            for (int source = ringStart; source < ringEnds[ring]; source++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                nextPoints[target++] = ringVerts[source];
+            }
+            _workCounter.Consume(_cancellationToken);
+            nextEnds[targetEnd++] = target;
+            ringStart = ringEnds[ring];
+        }
+        if (target != nextPoints.Length || targetEnd != nextEnds.Length) return false;
+        workPoints = nextPoints;
+        workEnds = nextEnds;
+        return true;
+    }
+
+    /// <summary>Links two loops boundary arcs at their shared vertices into union rings.</summary>
+    /// <remarks>Walks unvisited boundary arcs forward from each vertex, preferring traversals from the other loop and stopping only with no candidates left; closed walks become rings while dead ends and ambiguous vertices fail the pair. Each step consumes an unvisited arc while linking creates no vertices, so walks terminate short of the step cap with forward chaining preserving parent orientation. Reports whether the pair relinked.</remarks>
+    private bool LinkBoundaryArcs(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int second, int[] firstShared, bool[] firstInterior, int[] secondShared, bool[] secondInterior)
+    {
+        int firstStart = first == 0 ? 0 : workEnds[first - 1];
+        int firstCount = workEnds[first] - firstStart;
+        int secondStart = second == 0 ? 0 : workEnds[second - 1];
+        int secondCount = workEnds[second] - secondStart;
+        int firstArcs = firstShared.Length;
+        int secondArcs = secondShared.Length;
+        int[] arcLoop = new int[firstArcs + secondArcs];
+        int[] arcBegin = new int[firstArcs + secondArcs];
+        int[] arcLength = new int[firstArcs + secondArcs];
+        int boundaryTotal = 0;
+        for (int arc = 0; arc < firstArcs; arc++)
+        {
+            if (firstInterior[arc]) continue;
+            _workCounter.Consume(_cancellationToken);
+            int begin = firstShared[arc];
+            int length = (firstShared[(arc + 1) % firstArcs] - begin + firstCount) % firstCount;
+            if (length <= 0 || length >= firstCount) return false;
+            arcLoop[boundaryTotal] = 0;
+            arcBegin[boundaryTotal] = begin;
+            arcLength[boundaryTotal] = length;
+            boundaryTotal++;
+        }
+        for (int arc = 0; arc < secondArcs; arc++)
+        {
+            if (secondInterior[arc]) continue;
+            _workCounter.Consume(_cancellationToken);
+            int begin = secondShared[arc];
+            int length = (secondShared[(arc + 1) % secondArcs] - begin + secondCount) % secondCount;
+            if (length <= 0 || length >= secondCount) return false;
+            arcLoop[boundaryTotal] = 1;
+            arcBegin[boundaryTotal] = begin;
+            arcLength[boundaryTotal] = length;
+            boundaryTotal++;
+        }
+        if (boundaryTotal == 0) return false;
+        bool[] visited = new bool[boundaryTotal];
+        SvgDevicePoint[] ringVerts = new SvgDevicePoint[firstCount + secondCount];
+        int[] ringEnds = new int[boundaryTotal];
+        int ringCount = 0;
+        int ringTotal = 0;
+        for (int seed = 0; seed < boundaryTotal; seed++)
+        {
+            if (visited[seed]) continue;
+            visited[seed] = true;
+            int seedLoop = arcLoop[seed];
+            int seedStart = seedLoop == 0 ? firstStart : secondStart;
+            int seedCount = seedLoop == 0 ? firstCount : secondCount;
+            SvgDevicePoint walkStart = workPoints[seedStart + arcBegin[seed]];
+            SvgDevicePoint walkVertex = workPoints[seedStart + ((arcBegin[seed] + arcLength[seed]) % seedCount)];
+            for (int offset = 1; offset <= arcLength[seed]; offset++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                ringVerts[ringTotal++] = workPoints[seedStart + ((arcBegin[seed] + offset) % seedCount)];
+            }
+            int arrivalLoop = seedLoop;
+            int steps = 0;
+            while (true)
+            {
+                if (++steps > boundaryTotal + 1) return false;
+                _workCounter.Consume(_cancellationToken);
+                int otherChoice = -1;
+                int sameChoice = -1;
+                for (int candidate = 0; candidate < boundaryTotal; candidate++)
+                {
+                    if (visited[candidate]) continue;
+                    int candidateLoop = arcLoop[candidate];
+                    int candidateStart = candidateLoop == 0 ? firstStart : secondStart;
+                    int candidateCount = candidateLoop == 0 ? firstCount : secondCount;
+                    if (workPoints[candidateStart + arcBegin[candidate]] != walkVertex) continue;
+                    if (candidateLoop != arrivalLoop)
+                    {
+                        if (otherChoice >= 0) return false;
+                        otherChoice = candidate;
+                    }
+                    else
+                    {
+                        if (sameChoice >= 0) return false;
+                        sameChoice = candidate;
+                    }
+                }
+                int choice = otherChoice >= 0 ? otherChoice : sameChoice;
+                if (choice < 0)
+                {
+                    if (!(walkVertex == walkStart)) return false;
+                    break;
+                }
+                visited[choice] = true;
+                int choiceLoop = arcLoop[choice];
+                int choiceStart = choiceLoop == 0 ? firstStart : secondStart;
+                int choiceCount = choiceLoop == 0 ? firstCount : secondCount;
+                for (int offset = 1; offset <= arcLength[choice]; offset++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    ringVerts[ringTotal++] = workPoints[choiceStart + ((arcBegin[choice] + offset) % choiceCount)];
+                }
+                walkVertex = workPoints[choiceStart + ((arcBegin[choice] + arcLength[choice]) % choiceCount)];
+                arrivalLoop = choiceLoop;
+            }
+            ringEnds[ringCount++] = ringTotal;
+        }
+        return ReplaceLoopPair(ref workPoints, ref workEnds, first, second, ringVerts, ringEnds, ringCount, ringTotal);
+    }
+
+    /// <summary>Links one loop pair through shared-vertex arc surgery into union rings.</summary>
+    /// <remarks>Both loops split at every shared vertex; arcs strictly inside the other loop drop as covered while boundary arcs link head-to-tail. Reports whether the pair relinked.</remarks>
+    private bool TryLinkLoopPairArcs(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int second)
+    {
+        int firstStart = first == 0 ? 0 : workEnds[first - 1];
+        int firstCount = workEnds[first] - firstStart;
+        int secondStart = second == 0 ? 0 : workEnds[second - 1];
+        int secondCount = workEnds[second] - secondStart;
+        int[] firstShared = CollectSharedVertices(workPoints, firstStart, firstCount, secondStart, secondCount);
+        int[] secondShared = CollectSharedVertices(workPoints, secondStart, secondCount, firstStart, firstCount);
+        if (firstShared.Length < 2 || secondShared.Length < 2) return false;
+        if (!SharedVerticesAreSimple(workPoints, firstStart, firstShared) || !SharedVerticesAreSimple(workPoints, secondStart, secondShared)) return false;
+        int firstArcs = firstShared.Length;
+        int secondArcs = secondShared.Length;
+        bool[] firstInterior = new bool[firstArcs];
+        bool[] secondInterior = new bool[secondArcs];
+        int dropped = 0;
+        for (int arc = 0; arc < firstArcs; arc++)
+        {
+            int begin = firstShared[arc];
+            int end = firstShared[(arc + 1) % firstArcs];
+            int length = (end - begin + firstCount) % firstCount;
+            if (length == 0) return false;
+            if (IsArcStrictlyInside(workPoints, firstStart, firstCount, begin, length, secondStart, secondCount)) { firstInterior[arc] = true; dropped++; }
+        }
+        for (int arc = 0; arc < secondArcs; arc++)
+        {
+            int begin = secondShared[arc];
+            int end = secondShared[(arc + 1) % secondArcs];
+            int length = (end - begin + secondCount) % secondCount;
+            if (length == 0) return false;
+            if (IsArcStrictlyInside(workPoints, secondStart, secondCount, begin, length, firstStart, firstCount)) { secondInterior[arc] = true; dropped++; }
+        }
+        if (dropped == 0) return false;
+        return LinkBoundaryArcs(ref workPoints, ref workEnds, first, second, firstShared, firstInterior, secondShared, secondInterior);
     }
 
     private bool TryLinkDoubledSpanPair(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
@@ -2340,7 +2612,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(splitEnds);
         mixedResolved = false;
         if (_isEvenOdd) return false;
-        if ((structure & SvgContourFlags.CoincidentOverlap) == SvgContourFlags.None) return false;
+        if (structure == SvgContourFlags.None) return false;
         splitPoints.Clear();
         splitEnds.Clear();
         SvgDevicePoint[] workPoints = new SvgDevicePoint[points.Length];
@@ -2386,6 +2658,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (TrySpliceSharedUnionEdges(ref workPoints, ref workEnds)) continue;
             if (!doubledSpent && TryLinkDoubledSpanPair(ref workPoints, ref workEnds)) { doubledSpent = true; continue; }
             if (conforms < maximumConforms && TryConformNearSpans(ref workPoints, ref workEnds)) { conforms++; continue; }
+            if (TryLinkSharedVertexArcs(ref workPoints, ref workEnds)) continue;
             break;
         }
         if (!EveryLoopHasUnsharedVertex(workPoints, workEnds)) return false;
