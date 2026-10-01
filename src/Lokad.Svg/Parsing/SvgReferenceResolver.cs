@@ -523,7 +523,7 @@ internal static class SvgReferenceResolver
         static SvgGeometry ApplyInstancePolygonFill(SvgPolygonFill source, SvgPaint paint, SvgDocumentState document)
         {
             ArgumentNullException.ThrowIfNull(document);
-            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(source.Points, source.ContourEnds, source.Signs, source.QuadSpans, SvgPaintResolver.ResolveFillColor(paint, 255), paint.HasFill, source.IsEvenOdd, source.Mapping, source.Clip, null, document.Budget));
+            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(source.Points, source.ContourEnds, source.Signs, source.QuadSpans, source.CubicSpans, SvgPaintResolver.ResolveFillColor(paint, 255), paint.HasFill, source.IsEvenOdd, source.Mapping, source.Clip, null, document.Budget));
         }
     }
 

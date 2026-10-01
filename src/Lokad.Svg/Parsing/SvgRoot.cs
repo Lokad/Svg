@@ -376,12 +376,13 @@ internal sealed class SvgPolygonFill : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
 
-    private SvgPolygonFill(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
+    private SvgPolygonFill(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
     {
         Points = points;
         ContourEnds = contourEnds;
         Signs = signs;
         QuadSpans = quadSpans;
+        CubicSpans = cubicSpans;
         Color = color;
         HasFill = hasFill;
         IsEvenOdd = isEvenOdd;
@@ -400,6 +401,9 @@ internal sealed class SvgPolygonFill : IDisposable
     /// <summary>Retained quadratic spans in retained-point index space; empty when the fill carries no analytic curves.</summary>
     internal SvgQuadSpan[] QuadSpans { get; }
 
+    /// <summary>Retained cubic spans in retained-point index space; empty when the fill carries no analytic cubics.</summary>
+    internal SvgCubicSpan[] CubicSpans { get; }
+
     internal SvgColor Color { get; }
 
     internal bool HasFill { get; }
@@ -414,25 +418,33 @@ internal sealed class SvgPolygonFill : IDisposable
     /// <summary>Creates one polygon fill without recorded curves; quadratic spans stay empty on this route.</summary>
     internal static SvgPolygonFill Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
-        return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), color, hasFill, isEvenOdd, mapping, clip, reservation, budget);
+        return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), color, hasFill, isEvenOdd, mapping, clip, reservation, budget);
     }
 
-    /// <summary>Creates one polygon fill carrying retained quadratic spans; adopts the caller scene reservation when supplied, which must cover exactly points, contourEnds, signs and spans, and otherwise reserves exact scene storage. Ownership transfers to the fill in both cases.</summary>
+    /// <summary>Creates one polygon fill carrying retained quadratic spans; adopts the caller scene reservation when supplied, which must cover exactly points, contourEnds, signs, quad spans and cubic spans, and otherwise reserves exact scene storage. Ownership transfers to the fill in both cases.</summary>
+    /// <summary>Creates one polygon fill carrying retained quadratic spans but no cubic spans.</summary>
     internal static SvgPolygonFill Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
+    {
+        return Create(points, contourEnds, signs, quadSpans, Array.Empty<SvgCubicSpan>(), color, hasFill, isEvenOdd, mapping, clip, reservation, budget);
+    }
+
+    /// <summary>Creates one polygon fill carrying retained quadratic and cubic spans.</summary>
+    internal static SvgPolygonFill Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
         ArgumentNullException.ThrowIfNull(quadSpans);
+        ArgumentNullException.ThrowIfNull(cubicSpans);
         ArgumentNullException.ThrowIfNull(budget);
         if (isEvenOdd) ArgumentNullException.ThrowIfNull(signs);
         long bytes;
-        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length)) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length)); }
+        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length)) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
         if (reservation is null)
         {
             reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
         }
-        return new SvgPolygonFill(points, contourEnds, signs, quadSpans, color, hasFill, isEvenOdd, mapping, clip, reservation);
+        return new SvgPolygonFill(points, contourEnds, signs, quadSpans, cubicSpans, color, hasFill, isEvenOdd, mapping, clip, reservation);
     }
 
     /// <summary>Stamps one polygon fill with a mask value inside its mask region, transferring scene ownership to the stamped fill.</summary>
@@ -443,7 +455,7 @@ internal sealed class SvgPolygonFill : IDisposable
         SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
         RenderBudget.BudgetReservation? reservation = _reservation;
         _reservation = null;
-        return new SvgPolygonFill(Points, ContourEnds, Signs, QuadSpans, stamped, HasFill, IsEvenOdd, Mapping, clipped, reservation);
+        return new SvgPolygonFill(Points, ContourEnds, Signs, QuadSpans, CubicSpans, stamped, HasFill, IsEvenOdd, Mapping, clipped, reservation);
     }
 
     public void Dispose()

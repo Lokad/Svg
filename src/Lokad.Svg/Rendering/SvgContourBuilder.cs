@@ -22,6 +22,13 @@ internal sealed class SvgContourBuilder
     private int _contourCount;
     private int _openStart = -1;
     private bool _retainSpans;
+    private bool _retainCubicSpans;
+    private int[] _cubicContours = Array.Empty<int>();
+    private int[] _cubicStarts = Array.Empty<int>();
+    private int[] _cubicEnds = Array.Empty<int>();
+    private SvgDevicePoint[] _cubicFirstControls = Array.Empty<SvgDevicePoint>();
+    private SvgDevicePoint[] _cubicSecondControls = Array.Empty<SvgDevicePoint>();
+    private int _cubicCount;
     private int[] _quadContours = Array.Empty<int>();
     private int[] _quadStarts = Array.Empty<int>();
     private int[] _quadEnds = Array.Empty<int>();
@@ -75,6 +82,13 @@ internal sealed class SvgContourBuilder
     internal void EnableQuadSpanRetention()
     {
         _retainSpans = true;
+    }
+
+    /// <summary>Enables cubic span retention for subsequent verbs.</summary>
+    /// <remarks>Same lazy storage discipline as quadratic spans; the path-fill lowering enables both together when curves are present.</remarks>
+    internal void EnableCubicSpanRetention()
+    {
+        _retainCubicSpans = true;
     }
 
     /// <summary>Opens one contour seeded with its start point.</summary>
@@ -136,6 +150,27 @@ internal sealed class SvgContourBuilder
         _quadCount++;
     }
 
+    /// <summary>Records one cubic span with contour-slice-relative indices when retention is enabled; the flattened points stay canonical.</summary>
+    private void RecordCubicSpan(int start, int end, SvgDevicePoint firstControl, SvgDevicePoint secondControl)
+    {
+        if (!_retainCubicSpans) return;
+        if (_cubicContours.Length == 0)
+        {
+            _cubicContours = new int[4];
+            _cubicStarts = new int[4];
+            _cubicEnds = new int[4];
+            _cubicFirstControls = new SvgDevicePoint[4];
+            _cubicSecondControls = new SvgDevicePoint[4];
+        }
+        else if (_cubicCount >= _cubicContours.Length) GrowCubicSpans();
+        _cubicContours[_cubicCount] = _contourCount;
+        _cubicStarts[_cubicCount] = start;
+        _cubicEnds[_cubicCount] = end;
+        _cubicFirstControls[_cubicCount] = firstControl;
+        _cubicSecondControls[_cubicCount] = secondControl;
+        _cubicCount++;
+    }
+
     /// <summary>Appends the flattened cubic segment from the current point to <paramref name="end"/>.</summary>
     internal void AddCubic(SvgDevicePoint firstControl, SvgDevicePoint secondControl, SvgDevicePoint end, SvgFlattenPolicy policy, CancellationToken cancellationToken)
     {
@@ -147,6 +182,7 @@ internal sealed class SvgContourBuilder
             try
             {
                 _pointCount += SvgCurveFlatten.FlattenCubic(current, firstControl, secondControl, end, policy, _points.AsSpan(_pointCount), cancellationToken);
+                RecordCubicSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, firstControl, secondControl);
                 return;
             }
             catch (SvgException)
@@ -276,6 +312,18 @@ internal sealed class SvgContourBuilder
         return spans;
     }
 
+    /// <summary>Returns all recorded cubic spans in record order. Empty when retention is disabled or no cubics were added.</summary>
+    internal SvgCubicSpan[] GetCubicSpans()
+    {
+        if (_cubicCount == 0) return Array.Empty<SvgCubicSpan>();
+        SvgCubicSpan[] spans = new SvgCubicSpan[_cubicCount];
+        for (int index = 0; index < _cubicCount; index++)
+        {
+            spans[index] = new SvgCubicSpan(_cubicContours[index], _cubicStarts[index], _cubicEnds[index], _cubicFirstControls[index], _cubicSecondControls[index]);
+        }
+        return spans;
+    }
+
     /// <summary>Clears all points, contours and recorded spans while keeping the allocated storage.</summary>
     internal void Clear()
     {
@@ -283,6 +331,7 @@ internal sealed class SvgContourBuilder
         _contourCount = 0;
         _openStart = -1;
         _quadCount = 0;
+        _cubicCount = 0;
     }
 
     private void Append(SvgDevicePoint point)
@@ -309,6 +358,19 @@ internal sealed class SvgContourBuilder
         Array.Resize(ref _quadStarts, grown);
         Array.Resize(ref _quadEnds, grown);
         Array.Resize(ref _quadControls, grown);
+    }
+
+    /// <summary>Doubles cubic span storage toward the point maximum, failing past it exactly like point storage.</summary>
+    /// <remarks>Span records trail point appends, so the point cap always trips first on legitimate inputs; reaching this cap alone reports the same range error.</remarks>
+    private void GrowCubicSpans()
+    {
+        if (_cubicContours.Length >= _maxPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported point range.");
+        int grown = _cubicContours.Length > _maxPoints / 2 ? _maxPoints : _cubicContours.Length * 2;
+        Array.Resize(ref _cubicContours, grown);
+        Array.Resize(ref _cubicStarts, grown);
+        Array.Resize(ref _cubicEnds, grown);
+        Array.Resize(ref _cubicFirstControls, grown);
+        Array.Resize(ref _cubicSecondControls, grown);
     }
 
     /// <summary>Doubles contour storage toward its maximum, failing past it exactly like fixed storage.</summary>
