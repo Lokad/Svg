@@ -1142,6 +1142,19 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Self_touching_curve_multi_takes_analytic_path()
+    {
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] loops = [new(0, 0), new(8, 0), new(0, 8), new(16, 0), new(24, 8), new(24, 0), new(20, 4)];
+        int[] ends = [3, 7];
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(loops, ends, [], false, null, SvgPolygonMapping.FlattenedCurves, 0, 32, 0, 16, 32, 16, budget, out long _, out bool eligible, CancellationToken.None))
+        {
+            Assert.True(eligible);
+        }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
     public void Curve_contour_arrays_fit_command_bound()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M1,0 C4,0 7,1 7,4 C7,7 4,8 1,8 C0,8 0,7 0,4 C0,1 0,0 1,0 Z' fill='red'/></svg>");
