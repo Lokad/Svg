@@ -1553,4 +1553,35 @@ public sealed class SvgPolygonFillTests
 
         Assert.Equal(outer, union);
     }
+    [Fact]
+    public void Retraced_span_plus_crossing_unions_like_outline()
+    {
+        // R34: a single loop retracing one span across a crossing subdivides,
+        // splits and cross-chains into the same ring the separated
+        // ring-plus-island twin reaches through contained-drop.
+        byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='70' height='95'><path d='M5,43 h60 L5,5 v80 h60 L5,25 z' fill='#DC143C'/></svg>", out int width, out int height);
+        byte[] outline = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='70' height='95'><path d='M5,25 L5,43 L5,85 L65,85 L23,43 L65,43 L5,5 Z M5,25 L5,43 L23,43 Z' fill='#DC143C'/></svg>", out _, out _);
+
+        Assert.Equal(outline, union);
+        Assert.Equal(70, width);
+        Assert.Equal(95, height);
+        Assert.Equal(new SvgColor(220, 20, 60, 255), Pixel(union, width, 30, 55));
+        Assert.Equal(new SvgColor(220, 20, 60, 255), Pixel(union, width, 10, 30));
+        Assert.Equal(new SvgColor(220, 20, 60, 255), Pixel(union, width, 5, 25));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 60, 50));
+    }
+
+    [Fact]
+    public void Retraced_span_plus_crossing_evenodd_twin_stays_unsupported()
+    {
+        // R34: the mixed-contact union keeps nonzero semantics, so the
+        // even-odd twin stays gated at the simplicity check.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='70' height='95'><path d='M5,43 h60 L5,5 v80 h60 L5,25 z' fill='#DC143C' fill-rule='evenodd'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only simple diagonal polygon contours are implemented;", rejected.Message);
+    }
 }
