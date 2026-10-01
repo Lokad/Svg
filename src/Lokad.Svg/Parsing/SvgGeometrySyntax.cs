@@ -190,8 +190,25 @@ internal static class SvgGeometrySyntax
         {
             if (valueCount != 6) throw new SvgException(SvgErrorCode.MalformedInput, "matrix() requires six coordinates.");
             double scaleX = values[0]; double skewY = values[1]; double skewX = values[2]; double scaleY = values[3]; double offsetX = values[4]; double offsetY = values[5];
-            if (skewX != 0 || skewY != 0 || scaleX == 0 || scaleY == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero axis-aligned finite matrix() transforms are implemented.");
-            return SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY);
+            if (scaleX * scaleY - skewY * skewX == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonsingular finite matrix() transforms are implemented.");
+            if (skewX == 0 && skewY == 0)
+            {
+                if (scaleX == 0 || scaleY == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero axis-aligned or similar finite matrix() transforms are implemented.");
+                return SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY);
+            }
+            if (!IsSimilarityMatrix(scaleX, skewY, skewX, scaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero axis-aligned or similar finite matrix() transforms are implemented.");
+            return SvgAffineTransform.FromMatrix(scaleX, skewY, skewX, scaleY, offsetX, offsetY);
+        }
+        static bool IsSimilarityMatrix(double a, double b, double c, double d)
+        {
+            double first = Math.Sqrt(a * a + b * b);
+            double second = Math.Sqrt(c * c + d * d);
+            double dot = a * c + b * d;
+            if (first == second && dot == 0) return true;
+            double magnitude = Math.Max(first, second);
+            if (magnitude == 0) return false;
+            if (Math.Abs(first - second) > 1e-9 * magnitude) return false;
+            return Math.Abs(dot) <= 1e-9 * magnitude * magnitude;
         }
         if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
         double first = values[0]; double second = valueCount == 2 ? values[1] : first;

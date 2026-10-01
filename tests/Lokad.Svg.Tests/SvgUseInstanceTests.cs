@@ -37,6 +37,30 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Matrix_rotation_use_matches_direct_rendering()
+    {
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='1,7 1,3 5,7' fill='red'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='1,1 5,1 1,5' fill='red'/></defs><use href='#p' transform='matrix(0,-1,1,0,0,8)'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
+    public void Degenerate_fill_use_with_round_dots_renders()
+    {
+        // R41-adjacent: the degenerate fill channel lowers to an empty fill while
+        // the round-cap stroke still emits its dot discs; expanding the use must
+        // not fail reserving zero bytes.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><path id='e' d='M236.074,195.742v0M244.392,195.742v0M240.225,199.735v0M236.074,203.916v0M244.383,203.905v0' stroke='#fff' stroke-width='2.972' stroke-linecap='round'/></defs><use href='#e' x='-232' y='-191'/></svg>", out int width, out int height);
+
+        Assert.Equal(8, width);
+        Assert.Equal(8, height);
+        Assert.Equal(new SvgColor(255, 255, 255, 255), Pixel(pixels, 8, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 7));
+    }
+
+    [Fact]
     public void Transformed_group_use_matches_oracle_fringe()
     {
         // Staged oracle runs tu2-o1..o2 agree 2/2 byte-identical

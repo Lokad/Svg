@@ -229,7 +229,7 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Geometry);
+        using RenderBudget.BudgetReservation? mappedReservation = polygon.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -254,7 +254,7 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
+        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -284,7 +284,7 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
+        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -313,7 +313,7 @@ internal static class SvgReferenceResolver
     {
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
+        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -353,10 +353,11 @@ internal static class SvgReferenceResolver
     }
 
     /// <summary>Rejects magnified use instances of tolerance-flattened curve outlines, whose lowering-time subdivision error would magnify past the admitted device tolerance.</summary>
+    /// <remarks>Column lengths within one part per million of unity pass as authoring noise: 1e-6 times the device extent stays far below the 1/256 coverage quantum, while true magnification keeps the gate for scaled re-flattening.</remarks>
     /// <remarks>Straight outlines map exactly under any affine instance transform, and unit-or-smaller integer scales never magnify the quarter-pixel flattening budget; only FlattenedCurves content under a magnifying integer scale rejects.</remarks>
     private static void RequireAdmittedInstanceMagnification(SvgDefinition definition, SvgUseReference reference)
     {
-        if (ColumnLength(reference.Transform.A, reference.Transform.B) <= 1 && ColumnLength(reference.Transform.C, reference.Transform.D) <= 1) return;
+        if (ColumnLength(reference.Transform.A, reference.Transform.B) <= 1.000001 && ColumnLength(reference.Transform.C, reference.Transform.D) <= 1.000001) return;
         foreach (SvgGeometry source in definition.Geometries)
         {
             SvgPolygonMapping? mapping = source.Kind switch
@@ -1101,7 +1102,7 @@ internal static class SvgReferenceResolver
             {
                 SvgPolygonFill polygon = geometry.Polygon;
                 if (polygon.Mapping == SvgPolygonMapping.FlattenedCurves && (ColumnLength(ancestor.A, ancestor.B) < 1 || ColumnLength(ancestor.C, ancestor.D) < 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with minified flattened-curve content are not implemented.");
-                using RenderBudget.BudgetReservation mappedReservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Geometry);
+                using RenderBudget.BudgetReservation? mappedReservation = polygon.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Geometry);
                 SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
                 for (int index = 0; index < mapped.Length; index++)
                 {

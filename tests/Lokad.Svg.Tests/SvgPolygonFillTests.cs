@@ -1432,13 +1432,14 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Rotation_matrix_stays_unsupported()
+    public void Rotation_matrix_matches_direct_rendering()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 H0 Z' fill='red' transform='matrix(0,-1,1,0,0,0)'/></svg>");
+        // R37: exact rotation matrices parse as similarities and map path
+        // vertices exactly like the hand-rotated twin.
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='1,7 1,3 5,7' fill='red'/></svg>", out _, out _);
+        byte[] rotated = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M1,1 L5,1 L1,5 Z' fill='red' transform='matrix(0,-1,1,0,0,8)'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(direct, rotated);
     }
 
     [Fact]
