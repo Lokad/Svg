@@ -1384,7 +1384,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Unions same-fill loops that share coincident boundary spans into simple loops.</summary>
-    /// <remarks>Nonzero fill only; even-odd keeps its gate because parity signs are meaningless for vertex-sharing loops. Admits sets whose only non-touch defect is positive-length collinear overlap between loops: edges subdivide at overlap endpoints with bitwise copies of existing vertices, loops contained in larger same-direction loops drop, and loop pairs sharing exactly one duplicate edge splice into a single boundary while pairs sharing two or more opposite spans splice every span at once with remainder linking. Opposite-direction containment, same-directed multi-span sharing, crossings, spikes and degenerate edges stay rejected. No computed points ever appear. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps, reporting resolved loops so nesting tests skip bitwise-shared vertices through the union flag. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Partial output on denial stays caller-discarded.</remarks>
+    /// <remarks>Nonzero sets resolve contained-drop and single-edge splices by union semantics while even-odd sets keep those gates; both fill rules share bitwise endpoint subdivision, simultaneous multi-span splicing with remainder linking, guard arbitration and nesting resolution, which stay exact because subdivision preserves geometry and linked boundaries resolve through parity depth. Admits sets whose only non-touch defect is positive-length collinear overlap between loops: edges subdivide at overlap endpoints with bitwise copies of existing vertices, loops contained in larger same-direction loops drop, and loop pairs sharing exactly one duplicate edge splice into a single boundary while pairs sharing two or more opposite spans splice every span at once with remainder linking. Opposite-direction containment, same-directed multi-span sharing, crossings, spikes and degenerate edges stay rejected. No computed points ever appear. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps, reporting resolved loops so nesting tests skip bitwise-shared vertices through the union flag. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Partial output on denial stays caller-discarded.</remarks>
     private bool TryResolveCoincidentUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, out bool unionResolved)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -1392,7 +1392,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(splitPoints);
         ArgumentNullException.ThrowIfNull(splitEnds);
         unionResolved = false;
-        if (_isEvenOdd) return false;
+        bool nonzeroOnly = !_isEvenOdd;
         if ((structure & SvgContourFlags.CoincidentOverlap) == SvgContourFlags.None) return false;
         if ((structure & SvgContourFlags.ProperCrossing) != SvgContourFlags.None) return false;
         splitPoints.Clear();
@@ -1416,8 +1416,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (++sweeps > maximumSweeps) return false;
             ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
             if (SubdivideCoincidentOverlapEndpoints(ref workPoints, ref workEnds)) continue;
-            if (TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
-            if (TrySpliceSharedUnionEdge(ref workPoints, ref workEnds)) continue;
+            if (nonzeroOnly && TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
+            if (nonzeroOnly && TrySpliceSharedUnionEdge(ref workPoints, ref workEnds)) continue;
             if (TrySpliceSharedUnionEdges(ref workPoints, ref workEnds)) continue;
             break;
         }
