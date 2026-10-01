@@ -1208,13 +1208,16 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Shared_single_span_evenodd_stays_unsupported()
+    public void Shared_single_span_evenodd_matches_separate_paths()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,8 L8,8 L4,14 Z M0,8 L4,2 L8,8 Z' fill='red' fill-rule='evenodd'/></svg>");
+        byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,8 L8,8 L4,14 Z M0,8 L4,2 L8,8 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
+        byte[] separate = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,8 L8,8 L4,14 Z' fill='red' fill-rule='evenodd'/><path d='M0,8 L4,2 L8,8 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(separate, union);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 4, 11));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 4, 5));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 4, 8));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, 20, 10, 10));
     }
 
 

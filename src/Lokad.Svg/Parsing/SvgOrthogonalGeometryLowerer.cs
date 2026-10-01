@@ -1393,6 +1393,12 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(splitEnds);
         unionResolved = false;
         bool nonzeroOnly = !_isEvenOdd;
+        bool singleEvenOdd = false;
+        if (_isEvenOdd && (structure & SvgContourFlags.SelfTouch) == SvgContourFlags.None)
+        {
+            ChargePairs(_workCounter, (long)points.Length * points.Length, _cancellationToken);
+            singleEvenOdd = !SvgContourStructure.TryFindInterLoopProperCrossing(points, ends, out _, out _, out _, out _, out _, _cancellationToken);
+        }
         if ((structure & SvgContourFlags.CoincidentOverlap) == SvgContourFlags.None) return false;
         if ((structure & SvgContourFlags.ProperCrossing) != SvgContourFlags.None) return false;
         splitPoints.Clear();
@@ -1417,7 +1423,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
             if (SubdivideCoincidentOverlapEndpoints(ref workPoints, ref workEnds)) continue;
             if (nonzeroOnly && TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
-            if (nonzeroOnly && TrySpliceSharedUnionEdge(ref workPoints, ref workEnds)) continue;
+            if (nonzeroOnly && TrySpliceSharedUnionEdge(ref workPoints, ref workEnds, false)) continue;
+            if (singleEvenOdd && TrySpliceSharedUnionEdge(ref workPoints, ref workEnds, true)) continue;
             if (TrySpliceSharedUnionEdges(ref workPoints, ref workEnds)) continue;
             break;
         }
@@ -1560,8 +1567,8 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Splices two loops sharing exactly one duplicate edge into a single boundary.</summary>
-    /// <remarks>Same-directed sharing drops the shared span and reverses the second remainder while opposite-directed sharing concatenates remainders. Either loop containing the other, multi-edge sharing and degenerate results stay rejected. Reports whether a splice happened.</remarks>
-    private bool TrySpliceSharedUnionEdge(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
+    /// <remarks>Same-directed sharing drops the shared span and reverses the second remainder while opposite-directed sharing concatenates remainders. Either loop containing the other, multi-edge sharing and degenerate results stay rejected. With opposite-only admission for even-odd fills, same-directed pairs never count and strictly overlapping pairs stay gated because splicing would absorb their lens. Reports whether a splice happened.</remarks>
+    private bool TrySpliceSharedUnionEdge(ref SvgDevicePoint[] workPoints, ref int[] workEnds, bool oppositeOnly)
     {
         for (int first = 0; first < workEnds.Length; first++)
         {
@@ -1588,12 +1595,14 @@ internal ref struct SvgOrthogonalGeometryLowering
                         SvgDevicePoint secondEdgeEnd = workPoints[secondStart + ((secondEdge + 1) % secondCount)];
                         if (secondEdgeStart == secondEdgeEnd) continue;
                         if (!((firstEdgeStart == secondEdgeStart && firstEdgeEnd == secondEdgeEnd) || (firstEdgeStart == secondEdgeEnd && firstEdgeEnd == secondEdgeStart))) continue;
+                        if (oppositeOnly && firstEdgeStart == secondEdgeStart) continue;
                         sharedFirst = firstEdge;
                         sharedSecond = secondEdge;
                         sharedPairs++;
                     }
                 }
                 if (sharedPairs != 1) continue;
+                if (oppositeOnly && SvgContourStructure.LoopsOverlapStrictly(workPoints, firstStart, firstCount, secondStart, secondCount, _cancellationToken)) continue;
                 if (SpliceUnionLoops(ref workPoints, ref workEnds, first, sharedFirst, second, sharedSecond)) return true;
             }
         }

@@ -5,6 +5,40 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgContourStructureTests
 {
     [Fact]
+    public void Overlapping_stub_reports_strict_overlap()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 0), new SvgDevicePoint(12, 0), new SvgDevicePoint(12, 2), new SvgDevicePoint(4, 2)];
+
+        Assert.True(SvgContourStructure.LoopsOverlapStrictly(points, 0, 4, 4, 4, CancellationToken.None));
+        Assert.True(SvgContourStructure.LoopsOverlapStrictly(points, 4, 4, 0, 4, CancellationToken.None));
+    }
+
+    [Fact]
+    public void Touching_twins_report_no_strict_overlap()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 8), new SvgDevicePoint(8, 8), new SvgDevicePoint(4, 14), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 2), new SvgDevicePoint(8, 8)];
+
+        Assert.False(SvgContourStructure.LoopsOverlapStrictly(points, 0, 3, 3, 3, CancellationToken.None));
+        Assert.False(SvgContourStructure.LoopsOverlapStrictly(points, 3, 3, 0, 3, CancellationToken.None));
+    }
+
+    [Fact]
+    public void Nested_loops_report_strict_overlap()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(16, 0), new SvgDevicePoint(16, 16), new SvgDevicePoint(0, 16), new SvgDevicePoint(4, 4), new SvgDevicePoint(12, 4), new SvgDevicePoint(12, 12), new SvgDevicePoint(4, 12)];
+
+        Assert.True(SvgContourStructure.LoopsOverlapStrictly(points, 0, 4, 4, 4, CancellationToken.None));
+    }
+
+    [Fact]
+    public void Poking_vertex_reports_strict_overlap()
+    {
+        SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), new SvgDevicePoint(4, 4), new SvgDevicePoint(12, 4), new SvgDevicePoint(4, 10)];
+
+        Assert.True(SvgContourStructure.LoopsOverlapStrictly(points, 0, 4, 4, 3, CancellationToken.None));
+    }
+
+    [Fact]
     public void Simple_square_reports_none()
     {
         SvgDevicePoint[] square = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8)];

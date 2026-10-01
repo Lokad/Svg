@@ -631,6 +631,53 @@ internal static class SvgContourStructure
         return firstInSecond && secondInFirst;
     }
 
+    /// <summary>Reports whether either loop covers area strictly inside the other loop.</summary>
+    /// <remarks>Strict vertices and edge midpoints test inside-or-outside with shared and boundary points excluded, so shared spans, endpoint contacts and span-touching nested loops never report by themselves; any report means positive-area overlap. Contained loops report too, so callers apply boundary-inclusive containment gating first. Deterministic vertex, edge and midpoint order; observes cancellation at the pair checkpoint; allocates nothing and holds no budget, with callers charging the quadratic pair estimate.</remarks>
+    internal static bool LoopsOverlapStrictly(ReadOnlySpan<SvgDevicePoint> points, int firstStart, int firstCount, int secondStart, int secondCount, CancellationToken cancellationToken)
+    {
+        static bool StrictlyInside(ReadOnlySpan<SvgDevicePoint> vertices, int outerStart, int outerCount, SvgDevicePoint candidate)
+        {
+            if (IsSharedVertex(candidate, vertices, outerStart, outerStart + outerCount)) return false;
+            if (IsPointOnLoopBoundary(vertices, outerStart, outerStart + outerCount, candidate)) return false;
+            return SvgContourNesting.ContainsPoint(vertices, outerStart, outerStart + outerCount, candidate.X, candidate.Y);
+        }
+
+        int pairs = 0;
+        for (int index = firstStart; index < firstStart + firstCount; index++)
+        {
+            if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            if (StrictlyInside(points, secondStart, secondCount, points[index])) return true;
+        }
+
+        for (int index = secondStart; index < secondStart + secondCount; index++)
+        {
+            if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            if (StrictlyInside(points, firstStart, firstCount, points[index])) return true;
+        }
+
+        for (int edge = 0; edge < firstCount; edge++)
+        {
+            if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            SvgDevicePoint edgeStart = points[firstStart + edge];
+            SvgDevicePoint edgeEnd = points[firstStart + ((edge + 1) % firstCount)];
+            if (edgeStart == edgeEnd) continue;
+            SvgDevicePoint middle = new((edgeStart.X + edgeEnd.X) / 2, (edgeStart.Y + edgeEnd.Y) / 2);
+            if (StrictlyInside(points, secondStart, secondCount, middle)) return true;
+        }
+
+        for (int edge = 0; edge < secondCount; edge++)
+        {
+            if ((pairs++ & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+            SvgDevicePoint edgeStart = points[secondStart + edge];
+            SvgDevicePoint edgeEnd = points[secondStart + ((edge + 1) % secondCount)];
+            if (edgeStart == edgeEnd) continue;
+            SvgDevicePoint middle = new((edgeStart.X + edgeEnd.X) / 2, (edgeStart.Y + edgeEnd.Y) / 2);
+            if (StrictlyInside(points, firstStart, firstCount, middle)) return true;
+        }
+
+        return false;
+    }
+
     /// <summary>Reports whether a vertex matches any vertex of another loop by value.</summary>
     private static bool IsSharedVertex(SvgDevicePoint candidate, ReadOnlySpan<SvgDevicePoint> points, int start, int end)
     {
