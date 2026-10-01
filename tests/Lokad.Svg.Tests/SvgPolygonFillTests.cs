@@ -1584,4 +1584,32 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
         Assert.Contains("Only simple diagonal polygon contours are implemented;", rejected.Message);
     }
+    [Fact]
+    public void Variant_envelope_arcs_render_with_fringe_pins()
+    {
+        // R34: near-duplicate variant arcs conform span-by-span into exact duplicates,
+        // then splice and drop into one ring; the banked oracle triple reads fringe-level
+        // residuals only while structural pins lock placement.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='59' height='58' viewBox='0 0 58.894 57.681'><defs><linearGradient id='g' y1='0.5' x2='1' y2='0.5' gradientUnits='objectBoundingBox'><stop offset='0' stop-color='#e3156a'/><stop offset='1' stop-color='#91187f'/></linearGradient></defs><g transform='translate(1528.394 -821.497)'><path d='M-1501.434,839.988a25.146,25.146,0,0,1-10.955-6.246A25.162,25.162,0,0,1-1523.4,840a17.836,17.836,0,0,0-.316,3.349,17.817,17.817,0,0,0,11.08,16.421,17.744,17.744,0,0,0,11.49-16.583A17.852,17.852,0,0,0-1501.434,839.988Zm-11.786,13.107h0l-6.754-6.754,2.076-2.082,4.681,4.681,7.321-7.323,2.079,2.079Zm11.786-13.107a25.146,25.146,0,0,1-10.955-6.246A25.162,25.162,0,0,1-1523.4,840a17.836,17.836,0,0,0-.316,3.349,17.817,17.817,0,0,0,11.08,16.421,17.744,17.744,0,0,0,11.49-16.583A17.852,17.852,0,0,0-1501.434,839.988Zm-11.786,13.107h0l-6.754-6.754,2.076-2.082,4.681,4.681,7.321-7.323,2.079,2.079Zm.831-19.353A25.162,25.162,0,0,1-1523.4,840a17.836,17.836,0,0,0-.316,3.349,17.817,17.817,0,0,0,11.08,16.421,17.744,17.744,0,0,0,11.49-16.583,17.852,17.852,0,0,0-.289-3.2A25.146,25.146,0,0,1-1512.389,833.742Zm-.831,19.353h0l-6.754-6.754,2.076-2.082,4.681,4.681,7.321-7.323,2.079,2.079Zm11.786-13.107a25.146,25.146,0,0,1-10.955-6.246A25.162,25.162,0,0,1-1523.4,840a17.836,17.836,0,0,0-.316,3.349,17.817,17.817,0,0,0,11.08,16.421,17.744,17.744,0,0,0,11.49-16.583A17.852,17.852,0,0,0-1501.434,839.988Zm-11.786,13.107h0l-6.754-6.754,2.076-2.082,4.681,4.681,7.321-7.323,2.079,2.079Zm11.786-13.107a25.146,25.146,0,0,1-10.955-6.246A25.162,25.162,0,0,1-1523.4,840a17.836,17.836,0,0,0-.316,3.349,17.817,17.817,0,0,0,11.08,16.421,17.744,17.744,0,0,0,11.49-16.583A17.852,17.852,0,0,0-1501.434,839.988Zm-11.786,13.107h0l-6.754-6.754,2.076-2.082,4.681,4.681,7.321-7.323,2.079,2.079Z' fill='url(#g)'/></g></svg>", out int width, out int height);
+
+        Assert.Equal(59, width);
+        Assert.Equal(58, height);
+        Assert.Equal(new SvgColor(169, 23, 120, 255), Pixel(pixels, width, 20, 20));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 58, 57));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 29, 29));
+    }
+
+    [Fact]
+    public void Variant_arc_pair_without_checks_stays_unsupported()
+    {
+        // R34: the isolated variant pair keeps a multi-span same-directed endgame past
+        // span conforming, so it stays honestly gated while the positioned full path admits.
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='59' height='58' viewBox='0 0 58.894 57.681'><defs><linearGradient id='g' y1='0.5' x2='1' y2='0.5' gradientUnits='objectBoundingBox'><stop offset='0' stop-color='#e3156a'/><stop offset='1' stop-color='#91187f'/></linearGradient></defs><g transform='translate(1528.394 -821.497)'><path d='M-1501.434,839.988A25.146,25.146,0,0,1,-1512.389,833.742A25.162,25.162,0,0,1,-1523.4,840A17.836,17.836,0,0,0,-1523.716,843.349A17.852,17.852,0,0,0,-1501.434,839.988ZM-1512.389,833.742A25.162,25.162,0,0,1,-1523.4,840A17.836,17.836,0,0,0,-1523.716,843.349A25.146,25.146,0,0,1,-1512.389,833.742Z' fill='url(#g)'/></g></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only simple diagonal polygon contours are implemented;", rejected.Message);
+    }
 }

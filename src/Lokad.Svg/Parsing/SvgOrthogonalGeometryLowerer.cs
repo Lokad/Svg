@@ -21,6 +21,10 @@ internal ref struct SvgOrthogonalGeometryLowering
     /// <remarks>Curve endpoints that agree in source can diverge by mapping dust (observed 1e-13) once the finite-double affine map applies different operation orders to flattened-curve ends versus directly mapped starts. The bound exceeds worst-case divergence for admitted coordinates (a handful of roundings at magnitude 32767 with unit roundoff 2^-53, totalling below 1e-10) while sitting far below the 1/256 coverage quantum, hence invisibly.</remarks>
     private const double WeldEpsilon = 1e-9;
 
+    /// <summary>Bounds near-span conforming deviation to one device pixel.</summary>
+    /// <remarks>Variant arcs flatten to spans that share endpoints but weave within a pixel, which exact subdivision can never align; conforming such lenses moves boundaries within accepted union fringe (the pinned oracle adjudicates per admission), far above weld dust yet far below feature scale. Deterministic bound; allocates nothing.</remarks>
+    private const double UnionConformEpsilon = 1.0;
+
     /// <summary>Scales flattening tolerance down with root and output magnification, never coarsening past the nominal flatness.</summary>
     internal static double ScaledFlatness(double outputMagnification)
         => outputMagnification <= 1 ? FlattenFlatness : FlattenFlatness / outputMagnification;
@@ -1480,6 +1484,46 @@ internal ref struct SvgOrthogonalGeometryLowering
         return true;
     }
 
+    /// <summary>Drops zero-area loops whose edges all duplicate other loops exactly.</summary>
+    /// <remarks>Retraced spikes cancel pairwise to weld-scale area while their edges coincide with surviving boundaries, so removing them changes no coverage: zero-area loops contribute no winding under either fill rule while their fringe coincides with the duplicated edges. Opposite-sign pairs, nonzero areas and non-duplicated edges stay rejected. Charges one work unit per examined pair and vertex, and observes cancellation.</remarks>
+    private bool TryDropSpikeUnionLoop(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
+    {
+        for (int inner = 0; inner < workEnds.Length; inner++)
+        {
+            int innerStart = inner == 0 ? 0 : workEnds[inner - 1];
+            int innerEnd = workEnds[inner];
+            if (innerEnd - innerStart < 3) continue;
+            if (Math.Abs(UnionDoubledArea(workPoints, innerStart, innerEnd)) > 1e-9) continue;
+            bool allDuplicate = true;
+            for (int edge = 0; edge < innerEnd - innerStart && allDuplicate; edge++)
+            {
+                SvgDevicePoint edgeStart = workPoints[innerStart + edge];
+                SvgDevicePoint edgeEnd = workPoints[innerStart + ((edge + 1) % (innerEnd - innerStart))];
+                if (edgeStart == edgeEnd) continue;
+                bool found = false;
+                for (int other = 0; other < workEnds.Length && !found; other++)
+                {
+                    if (other == inner) continue;
+                    int otherStart = other == 0 ? 0 : workEnds[other - 1];
+                    int otherCount = workEnds[other] - otherStart;
+                    for (int otherEdge = 0; otherEdge < otherCount; otherEdge++)
+                    {
+                        _workCounter.Consume(_cancellationToken);
+                        SvgDevicePoint otherEdgeStart = workPoints[otherStart + otherEdge];
+                        SvgDevicePoint otherEdgeEnd = workPoints[otherStart + ((otherEdge + 1) % otherCount)];
+                        if (otherEdgeStart == edgeStart && otherEdgeEnd == edgeEnd) { found = true; break; }
+                        if (otherEdgeStart == edgeEnd && otherEdgeEnd == edgeStart) { found = true; break; }
+                    }
+                }
+                if (!found) allDuplicate = false;
+            }
+            if (!allDuplicate) continue;
+            DropUnionLoop(ref workPoints, ref workEnds, inner);
+            return true;
+        }
+        return false;
+    }
+
     /// <summary>Drops one loop contained in a larger same-direction loop, keeping holes.</summary>
     /// <remarks>Containment needs every inner vertex shared with, strictly inside, or on the boundary of the outer loop, a strictly smaller same-sign doubled area, and no containment the other way. Opposite-direction containment stays for hole rendering. Reports whether a loop dropped.</remarks>
     private bool TryDropContainedUnionLoop(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
@@ -1678,7 +1722,6 @@ internal ref struct SvgOrthogonalGeometryLowering
         return true;
     }
 
-
     /// <summary>Reports whether two loops sharing one same-directed span wind the same way, doubling the span instead of interfacing two regions.</summary>
     /// <remarks>Zero-area loops never count: without a winding side the reversal path keeps its existing behavior. Deterministic sign comparison; allocates nothing and holds no budget.</remarks>
     private static bool IsDoubledSpan(SvgDevicePoint[] points, int firstStart, int firstCount, int secondStart, int secondCount)
@@ -1690,6 +1733,186 @@ internal ref struct SvgOrthogonalGeometryLowering
 
     /// <summary>Links one same-wound doubled span between two loops into outer ring plus doubled island.</summary>
     /// <remarks>Scans loop pairs like the shared-edge splice but admits only same-directed exact spans with no opposite-directed sharing between uncontained loops; the doubled-span link itself rechecks orientation signs, common vertices and the split-loop guard. At most one link fires per sweep through the caller spent flag, so linked outputs never re-trigger the same pair. Charges one work unit per examined pair and delegates copy charging to the link.</remarks>
+    /// <summary>Conforms near-coincident spans between shared vertices to bitwise duplicates.</summary>
+    /// <remarks>Variant arcs flatten to spans that share endpoints but weave within a pixel: exact subdivision finds no vertex to copy while computed crossings never saturate, so the sweep grinds without admitting. When two same-wound uncontained loops share distinct vertices u and v with interior-vertex-free spans on both sides deviating at most one device pixel symmetrically, the higher-index span takes bitwise copies of the lower-index span interior, turning the lens into exact spans for the splice and drop steps. Opposite-wound pairs, zero-area loops, contained pairs and wider deviations stay rejected; exact spans never re-trigger, so each conform strictly reduces differing-span pairs with the insertion cap as backstop. Charges one work unit per examined pair and copied vertex, and observes cancellation.</remarks>
+    private bool TryConformNearSpans(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
+    {
+        for (int first = 0; first < workEnds.Length; first++)
+        {
+            int firstStart = first == 0 ? 0 : workEnds[first - 1];
+            int firstCount = workEnds[first] - firstStart;
+            double firstArea = UnionDoubledArea(workPoints, firstStart, firstStart + firstCount);
+            if (firstArea == 0) continue;
+            for (int second = first + 1; second < workEnds.Length; second++)
+            {
+                int secondStart = second == 0 ? 0 : workEnds[second - 1];
+                int secondCount = workEnds[second] - secondStart;
+                double secondArea = UnionDoubledArea(workPoints, secondStart, secondStart + secondCount);
+                if (secondArea == 0 || Math.Sign(secondArea) != Math.Sign(firstArea)) continue;
+                if (LoopContainsLoop(workPoints, firstStart, firstStart + firstCount, secondStart, secondStart + secondCount)) continue;
+                if (LoopContainsLoop(workPoints, secondStart, secondStart + secondCount, firstStart, firstStart + firstCount)) continue;
+                if (TryConformNearSpanPair(ref workPoints, ref workEnds, first, second)) return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>Reports whether two spans carry bitwise-equal interiors in order.</summary>
+    private static bool SpanInteriorsMatch(SvgDevicePoint[] points, int firstStart, int firstCount, int firstBegin, int firstLength, int secondStart, int secondCount, int secondBegin, int secondLength)
+    {
+        if (firstLength != secondLength) return false;
+        for (int offset = 1; offset < firstLength; offset++)
+        {
+            if (points[firstStart + ((firstBegin + offset) % firstCount)] != points[secondStart + ((secondBegin + offset) % secondCount)]) return false;
+        }
+        return true;
+    }
+
+    /// <summary>Measures the symmetric-free one-sided deviation of one span interior from another polyline.</summary>
+    /// <remarks>Empty interiors read zero; projection clamps to each segment like the classifier box rule. Exact double arithmetic consistent with orientation predicates; callers compare against the conform bound.</remarks>
+    private static double SpanInteriorDeviation(SvgDevicePoint[] points, int firstStart, int firstCount, int firstBegin, int firstLength, int secondStart, int secondCount, int secondBegin, int secondLength)
+    {
+        double maximum = 0;
+        for (int offset = 1; offset < firstLength; offset++)
+        {
+            SvgDevicePoint candidate = points[firstStart + ((firstBegin + offset) % firstCount)];
+            for (int edge = 0; edge < secondLength; edge++)
+            {
+                SvgDevicePoint edgeStart = points[secondStart + ((secondBegin + edge) % secondCount)];
+                SvgDevicePoint edgeEnd = points[secondStart + ((secondBegin + edge + 1) % secondCount)];
+                double distance = PointToSegmentDistance(candidate, edgeStart, edgeEnd);
+                if (distance > maximum) maximum = distance;
+            }
+        }
+        return maximum;
+    }
+
+    /// <summary>Measures the Euclidean distance from one point to one segment with clamped projection.</summary>
+    private static double PointToSegmentDistance(SvgDevicePoint candidate, SvgDevicePoint edgeStart, SvgDevicePoint edgeEnd)
+    {
+        double deltaX = edgeEnd.X - edgeStart.X;
+        double deltaY = edgeEnd.Y - edgeStart.Y;
+        double squared = deltaX * deltaX + deltaY * deltaY;
+        if (squared == 0) return Math.Sqrt((candidate.X - edgeStart.X) * (candidate.X - edgeStart.X) + (candidate.Y - edgeStart.Y) * (candidate.Y - edgeStart.Y));
+        double position = ((candidate.X - edgeStart.X) * deltaX + (candidate.Y - edgeStart.Y) * deltaY) / squared;
+        if (position < 0) position = 0;
+        else if (position > 1) position = 1;
+        double closestX = edgeStart.X + position * deltaX;
+        double closestY = edgeStart.Y + position * deltaY;
+        return Math.Sqrt((candidate.X - closestX) * (candidate.X - closestX) + (candidate.Y - closestY) * (candidate.Y - closestY));
+    }
+
+    /// <summary>Replaces one span interior with bitwise copies of another span interior.</summary>
+    /// <remarks>Both spans share endpoints with the donor interior already validated within the conform bound; copies reuse existing vertices so no computed points appear. The receiver keeps its span endpoints and all off-span vertices in order while later loops shift by the interior-count delta, so cyclic spans wrapping past the loop end stay consistent. Charges one work unit per copied vertex, and observes cancellation.</remarks>
+    /// <summary>Replaces one span interior with bitwise copies of another span interior.</summary>
+    /// <remarks>Both spans share endpoints with the donor interior already validated within the conform bound; copies reuse existing donor vertices in receiver traversal order so no computed points appear, with reversed copies producing opposite exact spans for the well-tested opposite splice. The receiver keeps the span endpoints and all off-span vertices in cyclic order while later loops shift by the interior-count delta, so cyclic spans wrapping past the loop end stay consistent. Charges one work unit per copied vertex, and observes cancellation.</remarks>
+    private void ConformSpanInterior(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int firstBegin, int firstLength, int second, int secondAnchor, int secondLength, bool receiverReversed)
+    {
+        int firstStart = first == 0 ? 0 : workEnds[first - 1];
+        int firstCount = workEnds[first] - firstStart;
+        int secondStart = second == 0 ? 0 : workEnds[second - 1];
+        int secondCount = workEnds[second] - secondStart;
+        int donorInterior = firstLength - 1;
+        int receiverInterior = secondLength - 1;
+        int delta = donorInterior - receiverInterior;
+        int spanEnd = (secondAnchor + secondLength) % secondCount;
+        SvgDevicePoint anchorValue = workPoints[secondStart + secondAnchor];
+        SvgDevicePoint endValue = workPoints[secondStart + spanEnd];
+        SvgDevicePoint[] nextPoints = new SvgDevicePoint[workPoints.Length + delta];
+        int[] nextEnds = new int[workEnds.Length];
+        int target = 0;
+        int targetEnd = 0;
+        for (int other = 0; other < workEnds.Length; other++)
+        {
+            int otherStart = other == 0 ? 0 : workEnds[other - 1];
+            int otherEnd = workEnds[other];
+            if (other != second)
+            {
+                for (int source = otherStart; source < otherEnd; source++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    nextPoints[target++] = workPoints[source];
+                }
+            }
+            else
+            {
+                _workCounter.Consume(_cancellationToken);
+                nextPoints[target++] = anchorValue;
+                for (int offset = 0; offset < donorInterior; offset++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    int donorOffset = receiverReversed ? donorInterior - offset : 1 + offset;
+                    nextPoints[target++] = workPoints[firstStart + ((firstBegin + donorOffset) % firstCount)];
+                }
+                _workCounter.Consume(_cancellationToken);
+                nextPoints[target++] = endValue;
+                int rest = secondCount - receiverInterior - 2;
+                for (int offset = 1; offset <= rest; offset++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    nextPoints[target++] = workPoints[otherStart + ((spanEnd + offset) % secondCount)];
+                }
+            }
+            _workCounter.Consume(_cancellationToken);
+            nextEnds[targetEnd++] = target;
+        }
+        if (target != nextPoints.Length || targetEnd != nextEnds.Length) return;
+        workPoints = nextPoints;
+        workEnds = nextEnds;
+    }
+
+    /// <summary>Conforms one near-coincident span pair between two loops, copying the lower-index span.</summary>
+    /// <remarks>Walks the first loop forward from each shared vertex to its next shared vertex and pairs it with the second loop forward span between the same endpoints; both spans must carry no other shared vertex while deviating within the conform bound symmetrically, and differing interiors are required so exact spans never re-trigger. Reports whether a span conformed.</remarks>
+    private bool TryConformNearSpanPair(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int second)
+    {
+        int firstStart = first == 0 ? 0 : workEnds[first - 1];
+        int firstCount = workEnds[first] - firstStart;
+        int secondStart = second == 0 ? 0 : workEnds[second - 1];
+        int secondCount = workEnds[second] - secondStart;
+        for (int firstEdge = 0; firstEdge < firstCount; firstEdge++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            SvgDevicePoint spanStart = workPoints[firstStart + firstEdge];
+            if (!IsSharedLoopVertex(spanStart, workPoints, secondStart, secondStart + secondCount)) continue;
+            for (int firstLength = 2; firstLength < firstCount; firstLength++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                SvgDevicePoint spanEnd = workPoints[firstStart + ((firstEdge + firstLength) % firstCount)];
+                if (spanEnd == spanStart) continue;
+                if (!IsSharedLoopVertex(spanEnd, workPoints, secondStart, secondStart + secondCount)) continue;
+                if (TryConformSpanEndpoints(ref workPoints, ref workEnds, first, firstEdge, firstLength, second, spanStart, spanEnd, false)) return true;
+                if (TryConformSpanEndpoints(ref workPoints, ref workEnds, first, firstEdge, firstLength, second, spanEnd, spanStart, true)) return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>Conforms the second-loop span between two shared endpoints to the first-loop span.</summary>
+    /// <remarks>Walks the second loop forward from the anchor to the far endpoint regardless of intermediate shared vertices; the flipped call pairs the same unordered endpoints in opposite traversal. Both spans need differing interiors with symmetric deviation within the conform bound. Reports whether a span conformed.</remarks>
+    private bool TryConformSpanEndpoints(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int firstBegin, int firstLength, int second, SvgDevicePoint spanStart, SvgDevicePoint spanEnd, bool receiverReversed)
+    {
+        int firstStart = first == 0 ? 0 : workEnds[first - 1];
+        int firstCount = workEnds[first] - firstStart;
+        int secondStart = second == 0 ? 0 : workEnds[second - 1];
+        int secondCount = workEnds[second] - secondStart;
+        int secondAnchor = -1;
+        for (int secondEdge = 0; secondEdge < secondCount; secondEdge++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            if (workPoints[secondStart + secondEdge] == spanStart) { secondAnchor = secondEdge; break; }
+        }
+        if (secondAnchor < 0) return false;
+        int secondLength = 1;
+        while (secondLength < secondCount && workPoints[secondStart + ((secondAnchor + secondLength) % secondCount)] != spanEnd) secondLength++;
+        if (secondLength >= secondCount) return false;
+        if (firstLength < 2 && secondLength < 2) return false;
+        if (SpanInteriorsMatch(workPoints, firstStart, firstCount, firstBegin, firstLength, secondStart, secondCount, secondAnchor, secondLength)) return false;
+        if (SpanInteriorDeviation(workPoints, firstStart, firstCount, firstBegin, firstLength, secondStart, secondCount, secondAnchor, secondLength) > UnionConformEpsilon) return false;
+        if (SpanInteriorDeviation(workPoints, secondStart, secondCount, secondAnchor, secondLength, firstStart, firstCount, firstBegin, firstLength) > UnionConformEpsilon) return false;
+        ConformSpanInterior(ref workPoints, ref workEnds, first, firstBegin, firstLength, second, secondAnchor, secondLength, receiverReversed);
+        return true;
+    }
+
     private bool TryLinkDoubledSpanPair(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
     {
         for (int first = 0; first < workEnds.Length; first++)
@@ -2108,7 +2331,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         return SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken);
     }
     /// <summary>Unions nonzero loops mixing crossings, coincident spans and touches through one subdivision sweep.</summary>
-    /// <remarks>Earlier stages refuse mixed sets at their entry gates even though every needed operation already exists: vertex-on-edge subdivision already covers intra-loop coincident endpoints with bitwise copies, self-touch splitting turns the mixed single loop into loop pairs, inter-loop crossing subdivision shares the computed crossing as a bitwise value between loops, and contained-drop plus shared-edge splicing remove the resulting exact duplicates, with at most one doubled-span link per sweep so linked outputs never re-trigger the same pair. The sweep repeats those operations to a fixpoint so the retraced-span-plus-crossing class resolves while pure-crossing, pure-touch and even-odd sets keep their existing stages and gates. Computed crossing points appear exactly like the touch sweep; every other inserted value copies an existing vertex. The split-loop guard still arbitrates the final set. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Inserted vertices stay within twice the initial points plus ends because near-duplicate weaving would otherwise subdivide without saturating; deeper sets stay honestly rejected. Partial output on denial stays caller-discarded.</remarks>
+    /// <remarks>Earlier stages refuse mixed sets at their entry gates even though every needed operation already exists: vertex-on-edge subdivision already covers intra-loop coincident endpoints with bitwise copies, self-touch splitting turns the mixed single loop into loop pairs, inter-loop crossing subdivision shares the computed crossing as a bitwise value between loops, and contained-drop, spike-drop plus shared-edge splicing remove the resulting exact duplicates, with near-span conforming aligning variant arcs first, with at most one doubled-span link per sweep so linked outputs never re-trigger the same pair. The sweep repeats those operations to a fixpoint so the retraced-span-plus-crossing class resolves while pure-crossing, pure-touch and even-odd sets keep their existing stages and gates. Computed crossing points appear exactly like the touch sweep; every other inserted value copies an existing vertex. The split-loop guard still arbitrates the final set. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Inserted vertices stay within twice the initial points plus ends because near-duplicate weaving would otherwise subdivide without saturating; deeper sets stay honestly rejected. Partial output on denial stays caller-discarded.</remarks>
     private bool TryResolveMixedContactUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, out bool mixedResolved)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -2135,6 +2358,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         long sweeps = 0;
         long maximumSweeps = checked((long)points.Length * points.Length + ends.Length + 1);
         long maximumInsertions = checked(2 * (long)points.Length + 2 * ends.Length + 8);
+        long conforms = 0;
+        long maximumConforms = checked(8 * (long)ends.Length + 8);
         bool doubledSpent = false;
         while (true)
         {
@@ -2156,9 +2381,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (TrySplitSelfTouchLoop(ref workPoints, ref workEnds, out bool blocked)) continue;
             if (blocked) return false;
             if (TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
+            if (TryDropSpikeUnionLoop(ref workPoints, ref workEnds)) continue;
             if (TrySpliceSharedUnionEdge(ref workPoints, ref workEnds, false)) continue;
             if (TrySpliceSharedUnionEdges(ref workPoints, ref workEnds)) continue;
             if (!doubledSpent && TryLinkDoubledSpanPair(ref workPoints, ref workEnds)) { doubledSpent = true; continue; }
+            if (conforms < maximumConforms && TryConformNearSpans(ref workPoints, ref workEnds)) { conforms++; continue; }
             break;
         }
         if (!EveryLoopHasUnsharedVertex(workPoints, workEnds)) return false;
