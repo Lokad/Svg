@@ -442,20 +442,17 @@ internal ref struct SvgOrthogonalGeometryLowering
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = new int[builder.ContourCount];
         int kept = 0;
-        bool droppedDegenerate = false;
         for (int contour = 0; contour < builder.ContourCount; contour++)
         {
             int before = mapped.Count;
             if (AppendStrippedContour(mapped, builder.GetContour(contour), _workCounter, _cancellationToken) < 3)
             {
-                // Sealed degenerate contours enclose no area; drop them instead of rejecting.
+                // Degenerate contours enclose no area while strokes outline them separately, mirroring singleton-drop tolerance.
                 while (mapped.Count > before) mapped.RemoveLast();
-                droppedDegenerate = true;
                 continue;
             }
             ends[kept++] = mapped.Count;
         }
-        if (droppedDegenerate && kept > 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer path contours are implemented.");
         if (kept != ends.Length) Array.Resize(ref ends, kept);
 
         return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);

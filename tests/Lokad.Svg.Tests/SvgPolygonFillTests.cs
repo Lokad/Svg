@@ -1449,6 +1449,26 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(0, AlphaSum(pixels));
     }
 
+    [Fact]
+    public void Dropped_degenerate_line_leaves_fractional_fill_untouched()
+    {
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2.5,2.5 L14.5,2.5 L2.5,14.5 Z' fill='red'/></svg>", out _, out _);
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M5.5,5.5 L9.5,9.5 M2.5,2.5 L14.5,2.5 L2.5,14.5 Z' fill='red'/></svg>", out int width, out _);
+
+        Assert.Equal(plain, pixels);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 15, 15));
+    }
+
+    [Fact]
+    public void Dropped_degenerate_dot_leaves_fractional_fill_untouched()
+    {
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2.5,2.5 L14.5,2.5 L2.5,14.5 Z' fill='red'/></svg>", out _, out _);
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M5.5,5.5 L5.5,5.5 Z M2.5,2.5 L14.5,2.5 L2.5,14.5 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(plain, pixels);
+    }
+
 
     private static long AlphaSum(byte[] pixels)
     {

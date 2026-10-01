@@ -143,14 +143,13 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
-    public void Mixed_curve_degenerate_stays_unsupported()
+    public void Mixed_curve_degenerate_drops_line_untouched()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4,0 8,8 Z M0.5,0.5 L1.5,0.5' fill='red'/></svg>");
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4,0 8,8 Z' fill='red'/></svg>", out _, out _);
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4,0 8,8 Z M0.5,0.5 L1.5,0.5' fill='red'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only closed axis-aligned integer path contours are implemented.", rejected.Message);
+        Assert.Equal(plain, pixels);
+        Assert.True(AlphaSum(pixels) > 0);
     }
 
     [Fact]
