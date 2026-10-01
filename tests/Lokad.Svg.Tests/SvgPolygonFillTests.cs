@@ -680,6 +680,23 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Eighth_phase_walker_bars_render_true_fractional_truncation()
+    {
+        // Row 4: proven axis-aligned boxes walk desnapped events, so eighth phases
+        // evaluate true fractional coverage (k=1 and the held-out k=7 from the banked family).
+        byte[] first = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='2,4.125 14,4.125 14,5.125 2,5.125' fill='black'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 0, 0, 223), Pixel(first, 16, 7, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 31), Pixel(first, 16, 7, 5));
+        Assert.Equal(3048, AlphaSum(first));
+        byte[] seventh = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='2,4.875 14,4.875 14,5.875 2,5.875' fill='black'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 0, 0, 31), Pixel(seventh, 16, 7, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 223), Pixel(seventh, 16, 7, 5));
+        Assert.Equal(3048, AlphaSum(seventh));
+    }
+
+    [Fact]
     public void Fractional_viewBox_matches_integer_rendering()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 4 4'><path d='M0.5,0.5 L3.5,0.5 L0.5,3.5 Z' fill='red'/></svg>", out _, out _);

@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-eighth-bar-k1-16x16",
+  "referencePng": "original-eighth-bar-k1-16x16.png",
+  "referenceSha256": "619b56bc5db558164e27029ad53fff40c0127d3d6eb22b230137ce0a441fcd08",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "b4381bfccb66994926d3db500a39f20baea0eecb47f37d6433171f1d5cbe4f36",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-01"
+}

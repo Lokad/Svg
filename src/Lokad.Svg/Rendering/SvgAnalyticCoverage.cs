@@ -205,12 +205,13 @@ internal ref struct SvgAnalyticCoverage
     private static int QuickInverse(int value) => value > 0 ? -InverseTable[1024 - value] : InverseTable[1024 + value];
     private static int ScalarToFDot6Trunc(float value) => (int)(value * 64.0f);
     private static int SnapY(int value) => (int)((((uint)value + (65536 >> 3)) >> 14) << 14);
-    private static AnalyticEdge? SetLine(double x0, double y0, double x1, double y1)
+    /// <summary>Builds one walker edge with pinned fixed-point setup, snapping Y to quarters unless the caller proves an axis-aligned box whose shared vertices stay bitwise identical without it.</summary>
+    private static AnalyticEdge? SetLine(double x0, double y0, double x1, double y1, bool snapY)
     {
         int fixedX0 = (ScalarToFDot6Trunc((float)x0 * 4) << 10) >> 2;
-        int fixedY0 = SnapY((ScalarToFDot6Trunc((float)y0 * 4) << 10) >> 2);
+        int fixedY0 = snapY ? SnapY((ScalarToFDot6Trunc((float)y0 * 4) << 10) >> 2) : (ScalarToFDot6Trunc((float)y0 * 4) << 10) >> 2;
         int fixedX1 = (ScalarToFDot6Trunc((float)x1 * 4) << 10) >> 2;
-        int fixedY1 = SnapY((ScalarToFDot6Trunc((float)y1 * 4) << 10) >> 2);
+        int fixedY1 = snapY ? SnapY((ScalarToFDot6Trunc((float)y1 * 4) << 10) >> 2) : (ScalarToFDot6Trunc((float)y1 * 4) << 10) >> 2;
         int winding = 1;
         if (fixedY0 > fixedY1)
         {
@@ -378,7 +379,7 @@ internal ref struct SvgAnalyticCoverage
                         if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                         SvgDevicePoint multiFirst = points[index];
                         SvgDevicePoint multiSecond = points[start + ((index - start + 1) % count)];
-                        AnalyticEdge? multiEdge = SetLine(multiFirst.X, multiFirst.Y, multiSecond.X, multiSecond.Y);
+                        AnalyticEdge? multiEdge = SetLine(multiFirst.X, multiFirst.Y, multiSecond.X, multiSecond.Y, true);
                         if (multiEdge is null) continue;
                         if (multiEdge.DX == 0 && contourEdges > 0 && CombineVertical(multiEdge, multiKept[^1])) continue;
                         multiKept.Add(multiEdge);
@@ -412,6 +413,25 @@ internal ref struct SvgAnalyticCoverage
         bool rigidRing = isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.ProperCrossing;
         if (rigidRing && (structure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) != SvgContourFlags.None) return default;
         bool convex = IsConvexRing(points, cancellationToken);
+        // Desnap only proven axis-aligned boxes: identical doubles convert identically, so shared
+        // vertices stay shared without snap, and the convex walk consumes true fractional events
+        // directly. Everything else keeps quarter snap for event-handoff topology.
+        bool desnapBox = convex;
+        if (desnapBox)
+        {
+            for (int boxIndex = 0; boxIndex < points.Length; boxIndex++)
+            {
+                if ((boxIndex & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                SvgDevicePoint boxFirst = points[boxIndex];
+                SvgDevicePoint boxSecond = points[(boxIndex + 1) % points.Length];
+                if (boxFirst.X != boxSecond.X && boxFirst.Y != boxSecond.Y)
+                {
+                    desnapBox = false;
+                    break;
+                }
+            }
+        }
+        setupWork += points.Length;
         int width = xEnd - xStart;
         bool skipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
         RenderBudget.BudgetReservation? scratch = budget.Reserve(ScratchByteCount(points.Length, width), SvgMemoryCategory.Surface);
@@ -423,7 +443,7 @@ internal ref struct SvgAnalyticCoverage
                 if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                 SvgDevicePoint first = points[index];
                 SvgDevicePoint second = points[(index + 1) % points.Length];
-                AnalyticEdge? edge = SetLine(first.X, first.Y, second.X, second.Y);
+                AnalyticEdge? edge = SetLine(first.X, first.Y, second.X, second.Y, !desnapBox);
                 if (edge is null) continue;
                 if (edge.DX == 0 && kept.Count > 0 && CombineVertical(edge, kept[^1])) continue;
                 kept.Add(edge);

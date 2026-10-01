@@ -926,6 +926,46 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-fractional-stroke-narrow-16x16.json",
       "referenceSha256": "81aa6f547082649881ca33bc6c9eccd7894ab6eb529e8dd7b87a6a7577b6e1da"
+    },
+    {
+      "id": "original-eighth-bar-k1-16x16",
+      "path": "original/original-eighth-bar-k1-16x16.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-01",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "ba2ff65764c637633e648d9770119922dd40052f635e9b8378e174e243380646",
+      "materializedSha256": "ba2ff65764c637633e648d9770119922dd40052f635e9b8378e174e243380646",
+      "featureTags": ["geometry", "polygon", "coverage", "calibration", "coverage-quantum"],
+      "width": 16,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-eighth-bar-k1-16x16.json",
+      "referenceSha256": "619b56bc5db558164e27029ad53fff40c0127d3d6eb22b230137ce0a441fcd08"
+    },
+    {
+      "id": "original-eighth-bar-k7-16x16",
+      "path": "original/original-eighth-bar-k7-16x16.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-01",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "f6a1b145d7535afc788c382468a6a3d2b1c3bdfd05fc9840b7af371db670f0e3",
+      "materializedSha256": "f6a1b145d7535afc788c382468a6a3d2b1c3bdfd05fc9840b7af371db670f0e3",
+      "featureTags": ["geometry", "polygon", "coverage", "calibration", "coverage-quantum"],
+      "width": 16,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-eighth-bar-k7-16x16.json",
+      "referenceSha256": "6e3399cfda96ba2dfc15446ad5b613817923b8faff8cd539e6be6ab550e6001b"
     }
   ]
 }
