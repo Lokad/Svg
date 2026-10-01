@@ -651,6 +651,7 @@ public static class SvgConverter
                 {
                     sampleX = deviceX;
                     sampleY = deviceY;
+                    if (definition.HasGeneralTransform) { (sampleX, sampleY) = definition.Inverse.Apply(sampleX, sampleY); }
                     focalX = definition.FocalX;
                     focalY = definition.FocalY;
                     circleX = definition.CenterX;
@@ -660,6 +661,7 @@ public static class SvgConverter
                 {
                     sampleX = (deviceX - box.X) / box.Width;
                     sampleY = (deviceY - box.Y) / box.Height;
+                    if (definition.HasGeneralTransform) { (sampleX, sampleY) = definition.Inverse.Apply(sampleX, sampleY); }
                     focalX = definition.FocalX;
                     focalY = definition.FocalY;
                     circleX = definition.CenterX;
@@ -1112,6 +1114,7 @@ public static class SvgConverter
                 {
                     sampleX = deviceX;
                     sampleY = deviceY;
+                    if (definition.HasGeneralTransform) { (sampleX, sampleY) = definition.Inverse.Apply(sampleX, sampleY); }
                     focalX = definition.FocalX;
                     focalY = definition.FocalY;
                     circleX = definition.CenterX;
@@ -1121,6 +1124,7 @@ public static class SvgConverter
                 {
                     sampleX = (deviceX - box.X) / box.Width;
                     sampleY = (deviceY - box.Y) / box.Height;
+                    if (definition.HasGeneralTransform) { (sampleX, sampleY) = definition.Inverse.Apply(sampleX, sampleY); }
                     focalX = definition.FocalX;
                     focalY = definition.FocalY;
                     circleX = definition.CenterX;

@@ -17,9 +17,9 @@ internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);
 /// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2);
 
-/// <summary>Retains one admitted one-to-eight-stop radial gradient with a strictly inside focal point, contained focal circle and referencing scale record.</summary>
+/// <summary>Retains one admitted one-to-eight-stop radial gradient with a strictly inside focal point, contained focal circle and referencing scale record, with an inverse paint map for general transforms.</summary>
 /// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored circle after the local definition, so raster evaluation inverts the exact paint map under non-uniform referencing transforms.</remarks>
-internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation);
+internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation, SvgGradientTransform Inverse, bool HasGeneralTransform);
 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius, bool HasFocalX, bool HasFocalY, bool HasFocalRadius);
@@ -60,6 +60,26 @@ internal readonly record struct SvgGradientTransform(double A, double B, double 
         return (mappedX, mappedY);
     }
 
+
+    /// <summary>Composes two gradient transforms, applying the inner transform first.</summary>
+    internal static SvgGradientTransform Compose(SvgGradientTransform outer, SvgGradientTransform inner)
+        => new(outer.A * inner.A + outer.C * inner.B, outer.B * inner.A + outer.D * inner.B, outer.A * inner.C + outer.C * inner.D, outer.B * inner.C + outer.D * inner.D, outer.A * inner.E + outer.C * inner.F + outer.E, outer.B * inner.E + outer.D * inner.F + outer.F);
+
+    /// <summary>Inverts this gradient transform when its determinant is nonzero, reporting singular or overflowing maps as missing.</summary>
+    internal bool TryInvert(out SvgGradientTransform inverse)
+    {
+        double determinant = A * D - B * C;
+        if (determinant == 0 || !double.IsFinite(determinant)) { inverse = Identity; return false; }
+        double a = D / determinant;
+        double b = -B / determinant;
+        double c = -C / determinant;
+        double d = A / determinant;
+        double e = (C * F - D * E) / determinant;
+        double f = (B * E - A * F) / determinant;
+        if (!double.IsFinite(a) || !double.IsFinite(b) || !double.IsFinite(c) || !double.IsFinite(d) || !double.IsFinite(e) || !double.IsFinite(f)) { inverse = Identity; return false; }
+        inverse = new SvgGradientTransform(a, b, c, d, e, f);
+        return true;
+    }
 }
 
 /// <summary>Parses the bounded linear-gradient definition syntax and lowers gradient-filled rectangles.</summary>
@@ -102,8 +122,6 @@ internal static class SvgGradientSyntax
         SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
         string? transformValue = reader.GetAttribute("gradientTransform");
         SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue);
-        if ((gradientTransform.B != 0 || gradientTransform.C != 0) && !gradientTransform.IsSimilarity()) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar radial gradient transforms are implemented.");
-        if (gradientTransform.A != gradientTransform.D && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform radial gradient transforms are not implemented.");
         string? rawFocalRadius = reader.GetAttribute("fr");
         string? rawCenterX = reader.GetAttribute("cx");
         string? rawCenterY = reader.GetAttribute("cy");
@@ -142,15 +160,15 @@ internal static class SvgGradientSyntax
             }
             int nameStart = position;
             while (position < input.Length && char.IsAsciiLetter(input[position])) position++;
-            if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
+            if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and finite matrix() gradient transforms are implemented.");
             ReadOnlySpan<char> name = input[nameStart..position];
             while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
-            if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
+            if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and finite matrix() gradient transforms are implemented.");
             position++;
             int argumentsStart = position;
             while (position < input.Length && input[position] != ')') position++;
-            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
-            transform = ComposeGradientTransform(transform, ParseGradientTransformFunction(name, input[argumentsStart..position]));
+            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and finite matrix() gradient transforms are implemented.");
+            transform = SvgGradientTransform.Compose(transform, ParseGradientTransformFunction(name, input[argumentsStart..position]));
             position++;
             hasFunction = true;
         }
@@ -161,7 +179,7 @@ internal static class SvgGradientSyntax
         bool isMatrix = name.Equals("matrix".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool isTranslate = name.Equals("translate".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool isRotate = name.Equals("rotate".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        if (!isMatrix && !isTranslate && !isRotate && !name.Equals("scale".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
+        if (!isMatrix && !isTranslate && !isRotate && !name.Equals("scale".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and finite matrix() gradient transforms are implemented.");
         Span<double> values = stackalloc double[6];
         int valueCount = 0;
         SvgGeometrySyntax.DelimitedTokenReader tokens = new(arguments);
@@ -173,8 +191,7 @@ internal static class SvgGradientSyntax
         if (isMatrix)
         {
             if (valueCount != 6) throw new SvgException(SvgErrorCode.MalformedInput, "matrix() requires six coordinates.");
-            if (values[1] != 0 || values[2] != 0 || values[0] <= 0 || values[3] <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive axis-aligned matrix() gradient transforms are implemented.");
-            return new SvgGradientTransform(values[0], 0, 0, values[3], values[4], values[5]);
+            return new SvgGradientTransform(values[0], values[1], values[2], values[3], values[4], values[5]);
         }
         if (isRotate)
         {
@@ -186,7 +203,7 @@ internal static class SvgGradientSyntax
             if (valueCount == 1) return rotation;
             SvgGradientTransform toCenter = new(1, 0, 0, 1, values[1], values[2]);
             SvgGradientTransform fromCenter = new(1, 0, 0, 1, -values[1], -values[2]);
-            return ComposeGradientTransform(ComposeGradientTransform(toCenter, rotation), fromCenter);
+            return SvgGradientTransform.Compose(SvgGradientTransform.Compose(toCenter, rotation), fromCenter);
         }
         if (valueCount is < 1 or > 2) throw new SvgException(SvgErrorCode.MalformedInput, "Transforms require one or two coordinates.");
         double first = values[0];
@@ -202,8 +219,6 @@ internal static class SvgGradientSyntax
         return result;
     }
 
-    private static SvgGradientTransform ComposeGradientTransform(SvgGradientTransform outer, SvgGradientTransform inner)
-        => new(outer.A * inner.A + outer.C * inner.B, outer.B * inner.A + outer.D * inner.B, outer.A * inner.C + outer.C * inner.D, outer.B * inner.C + outer.D * inner.D, outer.A * inner.E + outer.C * inner.F + outer.E, outer.B * inner.E + outer.D * inner.F + outer.F);
 
     internal static SvgGradientSpread ParseSpreadMethod(string? value)
     {
@@ -260,11 +275,34 @@ internal static class SvgGradientSyntax
 
     internal static SvgColor ParseStopColor(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        string? colorValue = reader.GetAttribute("stop-color");
+        string? styleColor = null;
+        string? styleOpacity = null;
+        string? styleValue = reader.GetAttribute("style");
+        if (styleValue is not null) ParseStopStyle(styleValue, out styleColor, out styleOpacity, workCounter, cancellationToken);
+        string? colorValue = styleColor ?? reader.GetAttribute("stop-color");
         SvgColor color = colorValue is null ? new SvgColor(0, 0, 0, 255) : SvgColorParser.Parse(colorValue, namedColors);
-        byte stopOpacity = SvgColorParser.ParseOpacity(reader.GetAttribute("stop-opacity"));
+        byte stopOpacity = SvgColorParser.ParseOpacity(styleOpacity ?? reader.GetAttribute("stop-opacity"));
         workCounter.Consume(cancellationToken);
         return new SvgColor(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, stopOpacity));
+    }
+
+    /// <summary>Reads stop-color and stop-opacity declarations from one stop style attribute, ignoring other properties.</summary>
+    /// <remarks>Style declarations outrank presentation attributes per CSS, so callers prefer these values; unknown or malformed declarations stay tolerated like editor cruft while values themselves parse strictly. Charges one work unit per declaration, and observes cancellation.</remarks>
+    private static void ParseStopStyle(string value, out string? styleColor, out string? styleOpacity, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        styleColor = null;
+        styleOpacity = null;
+        foreach (string declaration in value.Split(';'))
+        {
+            workCounter.Consume(cancellationToken);
+            int colon = declaration.IndexOf(':');
+            if (colon < 0) continue;
+            string name = declaration[..colon].Trim();
+            string declared = declaration[(colon + 1)..].Trim();
+            if (declared.EndsWith("!important", StringComparison.OrdinalIgnoreCase)) declared = declared[..^10].TrimEnd();
+            if (name.Equals("stop-color", StringComparison.OrdinalIgnoreCase)) styleColor = declared;
+            else if (name.Equals("stop-opacity", StringComparison.OrdinalIgnoreCase)) styleOpacity = declared;
+        }
     }
 
     internal static SvgGeometry LowerGradientRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
@@ -557,6 +595,33 @@ internal static class SvgGradientSyntax
     internal static bool IsGradientStrokeUrl(string? stroke)
         => stroke is not null && stroke.StartsWith("url(", StringComparison.Ordinal);
 
+    /// <summary>Inverts one axis-aligned scale-plus-offset map, refusing singular scales.</summary>
+    internal static bool TryInvertAxisMap(double scaleX, double scaleY, double offsetX, double offsetY, out SvgGradientTransform inverse)
+    {
+        inverse = SvgGradientTransform.Identity;
+        if (scaleX == 0 || scaleY == 0) return false;
+        double a = 1 / scaleX;
+        double d = 1 / scaleY;
+        double e = -offsetX / scaleX;
+        double f = -offsetY / scaleY;
+        if (!double.IsFinite(a) || !double.IsFinite(d) || !double.IsFinite(e) || !double.IsFinite(f)) return false;
+        inverse = new SvgGradientTransform(a, 0, 0, d, e, f);
+        return true;
+    }
+
+    /// <summary>Shifts one general radial gradient through a translation, composing its inverse paint map.</summary>
+    internal static SvgRadialGradient ShiftGeneralRadial(SvgRadialGradient gradient, double offsetX, double offsetY)
+    {
+        return gradient with { Inverse = SvgGradientTransform.Compose(gradient.Inverse, new SvgGradientTransform(1, 0, 0, 1, -offsetX, -offsetY)) };
+    }
+
+    /// <summary>Shifts one general radial gradient through an axis-aligned scale plus offset, composing its inverse paint map.</summary>
+    internal static SvgRadialGradient ScaleGeneralRadial(SvgRadialGradient gradient, double scaleX, double scaleY, double offsetX, double offsetY)
+    {
+        if (!TryInvertAxisMap(scaleX, scaleY, offsetX, offsetY, out SvgGradientTransform inverseMap)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular gradient referencing maps are not implemented.");
+        return gradient with { Inverse = SvgGradientTransform.Compose(gradient.Inverse, inverseMap) };
+    }
+
     internal static SvgLinearGradient MapUserSpaceVector(SvgAffineTransform transform, SvgLinearGradient gradient, SvgViewportFrame? frame)
     {
         if (!gradient.IsUserSpace) return gradient;
@@ -583,6 +648,7 @@ internal static class SvgGradientSyntax
     {
         if (!gradient.IsUserSpace) return gradient;
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
+        if (gradient.HasGeneralTransform) return ScaleGeneralRadial(ScaleGeneralRadial(gradient, transform.A, transform.D, transform.E, transform.F), frame?.ScaleX ?? 1, frame?.ScaleY ?? 1, frame?.OffsetX ?? 0, frame?.OffsetY ?? 0);
         (double mappedX, double mappedY) = transform.ApplyToUserPoint(gradient.CenterX, gradient.CenterY);
         (double mappedFocalX, double mappedFocalY) = transform.ApplyToUserPoint(gradient.FocalX, gradient.FocalY);
         double mappedRadius = gradient.Radius * Math.Abs(transform.A);

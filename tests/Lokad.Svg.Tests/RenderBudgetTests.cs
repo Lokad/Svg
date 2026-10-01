@@ -781,14 +781,14 @@ public sealed class RenderBudgetTests
 
     private static SvgGeometry RadialFill(SvgGradientStop[] stops)
     {
-        SvgRadialGradient gradient = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, stops, 1, 1, false);
+        SvgRadialGradient gradient = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, stops, 1, 1, false, SvgGradientTransform.Identity, false);
         SvgRectangle box = new(0, 0, 2, 2, default, true, null);
         return SvgGeometry.FromRadialFill(new SvgRadialGeometry(gradient, box, box, 255, null));
     }
 
     private static SvgGeometry EmptyRadialFill()
     {
-        SvgRadialGradient gradient = new(default, default, 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, true, false, SvgGradientSpread.Pad, Array.Empty<SvgGradientStop>(), 1, 1, false);
+        SvgRadialGradient gradient = new(default, default, 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, true, false, SvgGradientSpread.Pad, Array.Empty<SvgGradientStop>(), 1, 1, false, SvgGradientTransform.Identity, false);
         SvgRectangle box = new(8, 0, 2, 2, default, true, null);
         return SvgGeometry.FromRadialFill(new SvgRadialGeometry(gradient, box, box, 255, null));
     }
@@ -927,7 +927,7 @@ public sealed class RenderBudgetTests
         using BudgetedParserList<int> ends = new(roomyBudget, SvgMemoryCategory.Geometry, roomyCounter, CancellationToken.None);
         ends.Add(3);
         RenderBudget tightBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) - 1);
-        SvgRadialGradient circle = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))], 1, 1, false);
+        SvgRadialGradient circle = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))], 1, 1, false, SvgGradientTransform.Identity, false);
         SvgRectangle box = new(0, 0, 8, 8, default, true, null);
 
         SvgException denied = Assert.Throws<SvgException>(() =>

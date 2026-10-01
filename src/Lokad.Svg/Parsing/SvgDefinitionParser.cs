@@ -692,9 +692,9 @@ internal static class SvgDefinitionParser
             }
         }
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveRadialStops(state, template);
-        (double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasRadialRotation) = ResolveRadialVector(template, state);
+        (double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasRadialRotation, SvgGradientTransform inverse, bool hasGeneralTransform) = ResolveRadialVector(template, state);
         if (!isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
-        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, focalX, focalY, focalRadius, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasRadialRotation);
+        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, focalX, focalY, focalRadius, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasRadialRotation, inverse, hasGeneralTransform);
         string retainedId = state.Strings.Copy(state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier."));
         if (state.Gradients.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
         if (!state.RadialGradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
@@ -729,7 +729,15 @@ internal static class SvgDefinitionParser
         return (linear.Start, linear.End, linear.Offset1, linear.Offset2, linear.IsEmpty, linear.Stops);
     }
 
-    private static (double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientSpread Spread, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation) ResolveRadialVector(SvgRadialTemplate template, SvgDocumentState state)
+    /// <summary>Reports whether one radial gradient transform stays on the legacy endpoint-mapping path.</summary>
+    /// <remarks>Mirrors the historical admission gates exactly so previously admitted inputs keep bitwise-identical records: axis-aligned transforms without rotated-chain non-uniformity, plus similarities under uniform incoming scales; objectBoundingBox axis maps need uniformity outright since only userSpace evaluation carries reference scales. Everything else routes to the inverse-map path when href-free and invertible.</remarks>
+    private static bool IsLegacyRadialTransform(SvgGradientTransform transform, bool isUserSpace, bool hasRotation, double referenceScaleX, double referenceScaleY)
+    {
+        if (transform.B != 0 || transform.C != 0) return transform.IsSimilarity() && Math.Abs(referenceScaleX) == Math.Abs(referenceScaleY);
+        return isUserSpace ? (!hasRotation || transform.A == transform.D) : transform.A == transform.D;
+    }
+
+    private static (double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientSpread Spread, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation, SvgGradientTransform Inverse, bool HasGeneralTransform) ResolveRadialVector(SvgRadialTemplate template, SvgDocumentState state)
     {
         double centerX = template.CenterX;
         double centerY = template.CenterY;
@@ -739,6 +747,8 @@ internal static class SvgDefinitionParser
         double referenceScaleX = 1;
         double referenceScaleY = 1;
         SvgGradientSpread spread = template.Spread;
+        SvgGradientTransform inverse = SvgGradientTransform.Identity;
+        bool hasGeneralTransform = false;
         bool hasRotation = false;
         double focalX;
         double focalY;
@@ -779,6 +789,15 @@ internal static class SvgDefinitionParser
         if (isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
         if (template.HasTransform)
         {
+            if (template.Href is null && !IsLegacyRadialTransform(template.Transform, isUserSpace, hasRotation, referenceScaleX, referenceScaleY))
+            {
+                if (!template.Transform.TryInvert(out SvgGradientTransform generalInverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular radial gradient transforms are not implemented.");
+                hasRotation = true;
+                hasGeneralTransform = true;
+                inverse = generalInverse;
+            }
+            else
+            {
             if ((template.Transform.B != 0 || template.Transform.C != 0) && (!template.Transform.IsSimilarity() || Math.Abs(referenceScaleX) != Math.Abs(referenceScaleY))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar radial gradient transforms are implemented.");
             if (template.Transform.B == 0 && template.Transform.C == 0 && hasRotation && template.Transform.A != template.Transform.D) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar radial gradient transforms are implemented.");
             hasRotation = hasRotation || template.Transform.B != 0 || template.Transform.C != 0;
@@ -792,8 +811,9 @@ internal static class SvgDefinitionParser
                 referenceScaleX *= template.Transform.A;
                 referenceScaleY *= template.Transform.D;
             }
+            }
         }
-        return (centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, spread, referenceScaleX, referenceScaleY, hasRotation);
+        return (centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, spread, referenceScaleX, referenceScaleY, hasRotation, inverse, hasGeneralTransform);
     }
 
     private static void ValidateRadialFocalCircle(double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius)

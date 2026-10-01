@@ -1568,4 +1568,59 @@ public sealed class SvgShapeElementsTests
         for (int index = 3; index < pixels.Length; index += 4) total += pixels[index];
         return total;
     }
+    [Fact]
+    public void General_matrix_radial_renders_centered_hotspot()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='32' cy='32' r='20' gradientTransform='matrix(1 0.5 0.5 1 -16 -16)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out int width, out int height);
+
+        Assert.Equal(64, width);
+        Assert.Equal(64, height);
+        Assert.Equal(new SvgColor(248, 0, 6, 255), Pixel(pixels, width, 32, 32));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 63, 63));
+        Assert.Equal(new SvgColor(32, 0, 222, 255), Pixel(pixels, width, 50, 50));
+    }
+
+    [Fact]
+    public void Skewed_matrix_radial_moves_focal_hotspot()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='32' cy='32' r='20' fx='40' fy='32' gradientTransform='matrix(1 0 0.5 1 0 0)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out int width, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='32' cy='32' r='20' fx='40' fy='32'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.NotEqual(plain, pixels);
+        Assert.Equal(new SvgColor(38, 0, 216, 255), Pixel(pixels, width, 32, 32));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(3, 0, 251, 255), Pixel(pixels, width, 50, 50));
+    }
+
+    [Fact]
+    public void Off_canvas_general_radial_paints_solid_stop()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='32' cy='32' r='20' gradientTransform='matrix(3 1 2 2 8 8)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out int width, out _);
+
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 32, 32));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 63, 63));
+    }
+
+    [Fact]
+    public void General_matrix_radial_paints_shared_polygon_path()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='32' cy='32' r='20' gradientTransform='matrix(1 0.5 0.5 1 -16 -16)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><path d='M32,0 L64,32 L32,64 L0,32 Z' fill='url(#g)'/></svg>", out int width, out _);
+
+        Assert.Equal(new SvgColor(248, 0, 6, 255), Pixel(pixels, width, 32, 32));
+        Assert.Equal(new SvgColor(28, 0, 226, 255), Pixel(pixels, width, 32, 20));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, width, 63, 63));
+    }
+    [Fact]
+    public void Nonuniform_object_bounding_box_radial_renders_stretched_ellipse()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5' gradientTransform='scale(2 1)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out int width, out _);
+
+        Assert.Equal(new SvgColor(251, 0, 5, 255), Pixel(pixels, width, 63, 32));
+        Assert.Equal(new SvgColor(129, 0, 125, 255), Pixel(pixels, width, 32, 32));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 32, 0));
+    }
 }

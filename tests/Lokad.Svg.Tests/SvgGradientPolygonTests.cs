@@ -53,7 +53,7 @@ public sealed class SvgGradientPolygonTests
     {
         RenderBudget budget = new(1_000);
         SvgGradientStop[] stops = [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
-        SvgRadialGradient circle = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, stops, 1, 1, false);
+        SvgRadialGradient circle = new(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0.5, 0.5, 0.5, 0.5, 0.5, 0, 0, 1, false, false, SvgGradientSpread.Pad, stops, 1, 1, false, SvgGradientTransform.Identity, false);
         SvgDevicePoint[] points = [new SvgDevicePoint(0, 0), new SvgDevicePoint(8, 0), new SvgDevicePoint(0, 8)];
         int[] ends = [3];
         SvgRectangle box = new(0, 0, 8, 8, default, true, null);
@@ -65,5 +65,90 @@ public sealed class SvgGradientPolygonTests
         Assert.Same(polygon, geometry.RadialPolygon);
         Assert.Equal(0.5, geometry.RadialPolygon.Gradient.Radius);
         Assert.True(geometry.RadialPolygon.HasFill);
+    }
+    [Fact]
+    public void Gradient_transform_compose_applies_inner_first()
+    {
+        SvgGradientTransform outer = new(2, 0, 0, 3, 5, 7);
+        SvgGradientTransform inner = new(1, 0, 0, 1, -2, 4);
+
+        SvgGradientTransform composed = SvgGradientTransform.Compose(outer, inner);
+        (double innerX, double innerY) = inner.Apply(11, 13);
+        (double expectedX, double expectedY) = outer.Apply(innerX, innerY);
+        (double actualX, double actualY) = composed.Apply(11, 13);
+
+        Assert.Equal(expectedX, actualX);
+        Assert.Equal(expectedY, actualY);
+    }
+
+    [Fact]
+    public void Gradient_transform_try_invert_round_trips_general_matrix()
+    {
+        SvgGradientTransform forward = new(-4.228, -8.251, 14.01, -7.18, 5688, 455.1);
+
+        Assert.True(forward.TryInvert(out SvgGradientTransform inverse));
+        (double forwardX, double forwardY) = forward.Apply(204.9, -244);
+        (double x, double y) = inverse.Apply(forwardX, forwardY);
+
+        Assert.Equal(204.9, x, 6);
+        Assert.Equal(-244, y, 6);
+    }
+
+    [Fact]
+    public void Gradient_transform_try_invert_rejects_singular_matrix()
+    {
+        SvgGradientTransform singular = new(1, 2, 2, 4, 0, 0);
+
+        Assert.False(singular.TryInvert(out _));
+    }
+
+    [Fact]
+    public void Shift_general_radial_composes_translation_exactly()
+    {
+        SvgRadialGradient circle = GeneralCircle(new SvgGradientTransform(0.5, 0, 0, 0.25, 0, 0));
+
+        SvgRadialGradient shifted = SvgGradientSyntax.ShiftGeneralRadial(circle, 8, -3);
+
+        Assert.Equal(new SvgGradientTransform(0.5, 0, 0, 0.25, -4, 0.75), shifted.Inverse);
+    }
+
+    [Fact]
+    public void Scale_general_radial_composes_axis_map_exactly()
+    {
+        SvgRadialGradient circle = GeneralCircle(new SvgGradientTransform(0.5, 0, 0, 0.25, 0, 0));
+
+        SvgRadialGradient scaled = SvgGradientSyntax.ScaleGeneralRadial(circle, 2, 0.5, 8, -4);
+
+        Assert.Equal(new SvgGradientTransform(0.25, 0, 0, 0.5, -2, 2), scaled.Inverse);
+    }
+
+    [Fact]
+    public void Scale_general_radial_rejects_singular_referencing_map()
+    {
+        SvgRadialGradient circle = GeneralCircle(SvgGradientTransform.Identity);
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgGradientSyntax.ScaleGeneralRadial(circle, 0, 1, 0, 0));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    private static SvgRadialGradient GeneralCircle(SvgGradientTransform inverse)
+    {
+        SvgGradientStop[] stops = [new SvgGradientStop(0, new SvgColor(255, 0, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
+        return new SvgRadialGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 4, 4, 4, 4, 4, 0, 0, 1, false, true, SvgGradientSpread.Pad, stops, 1, 1, false, inverse, true);
+    }
+    [Fact]
+    public void Map_user_space_radial_general_composes_element_and_frame()
+    {
+        SvgRadialGradient circle = GeneralCircle(new SvgGradientTransform(0.5, 0, 0, 0.25, 0, 0));
+        SvgAffineTransform element = SvgAffineTransform.FromTranslation(8, -3);
+        SvgViewportFrame frame = new(4, -2, 2, 0.5, null, null, new SvgClipBox(0, 0, 64, 64), 0);
+
+        SvgRadialGradient mapped = SvgGradientSyntax.MapUserSpaceRadial(element, circle, frame);
+
+        Assert.Equal(4, mapped.CenterX);
+        (double x, double y) = mapped.Inverse.Apply(36, 8.5);
+        Assert.Equal(4, x);
+        Assert.Equal(6, y);
     }
 }

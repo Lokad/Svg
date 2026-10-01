@@ -189,7 +189,7 @@ internal static class SvgReferenceResolver
             SvgRectangle placement = InstancePlacement(radial.Fill, instance);
             SvgRectangle box = InstanceBox(radial.Box, instance, viewportFrame);
             SvgRadialGradient circle = radial.Gradient;
-            if (circle.IsUserSpace) circle = circle with { CenterX = circle.CenterX + instance.X, CenterY = circle.CenterY + instance.Y, FocalX = circle.FocalX + instance.X, FocalY = circle.FocalY + instance.Y };
+            if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, instance.X, instance.Y) : circle with { CenterX = circle.CenterX + instance.X, CenterY = circle.CenterY + instance.Y, FocalX = circle.FocalX + instance.X, FocalY = circle.FocalY + instance.Y };
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(radial.Opacity, instance.Opacity), IsPainted = radial.Fill.HasFill && instance.IsPainted };
             return LowerPlacedRadialFill(circle, placement, box, composed.Opacity, composed.IsPainted, instance.Transform, viewportFrame);
         }
@@ -300,7 +300,7 @@ internal static class SvgReferenceResolver
             mapped[index] = placed;
         }
         SvgRadialGradient circle = outline.Gradient;
-        if (circle.IsUserSpace) circle = circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
+        if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, reference.X, reference.Y) : circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
         SvgRectangle box = InstanceBox(outline.Box, reference, frame);
         circle = SvgGradientSyntax.MapUserSpaceRadial(reference.Transform, circle, frame);
         SvgClipBox? clip = outline.Clip;
@@ -681,7 +681,7 @@ internal static class SvgReferenceResolver
             SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
             if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
             SvgRadialGradient circle = radial.Gradient;
-            if (circle.IsUserSpace) circle = circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
+            if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y) : circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
             return LowerPlacedRadialFill(circle, fill, box, MultiplyAlpha(radial.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame);
         }
 
@@ -711,7 +711,7 @@ internal static class SvgReferenceResolver
                 mapped[index] = new SvgDevicePoint(placedX, placedY);
             }
             SvgRadialGradient circle = source.Gradient;
-            if (circle.IsUserSpace) circle = circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX) };
+            if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y) : circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX) };
             SvgRectangle contentBox = source.Box;
             SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
             if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
@@ -849,7 +849,7 @@ internal static class SvgReferenceResolver
 
     private static SvgGeometry LowerInstanceRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, SvgUseReference reference, SvgViewportFrame? frame)
     {
-        if (circle.IsUserSpace) circle = circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
+        if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, reference.X, reference.Y) : circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
         return LowerPlacedRadialFill(circle, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame);
     }
 
@@ -930,7 +930,7 @@ internal static class SvgReferenceResolver
         }
         if (state.RadialGradients.TryGetValue(paintId, out SvgRadialGradient circle))
         {
-            if (circle.IsUserSpace) circle = circle with { CenterX = (circle.CenterX * scaleX + offsetX) + reference.X, CenterY = (circle.CenterY * scaleY + offsetY) + reference.Y, FocalX = (circle.FocalX * scaleX + offsetX) + reference.X, FocalY = (circle.FocalY * scaleY + offsetY) + reference.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
+            if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + reference.X, offsetY + reference.Y) : circle with { CenterX = (circle.CenterX * scaleX + offsetX) + reference.X, CenterY = (circle.CenterY * scaleY + offsetY) + reference.Y, FocalX = (circle.FocalX * scaleX + offsetX) + reference.X, FocalY = (circle.FocalY * scaleY + offsetY) + reference.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
             circle = SvgGradientSyntax.MapUserSpaceRadial(reference.Transform, circle, frame);
             return FinishInstanceRadialFill(circle, box, fillBox, reference.Opacity, reference.IsPainted);
         }
