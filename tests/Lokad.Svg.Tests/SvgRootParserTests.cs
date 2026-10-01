@@ -6127,12 +6127,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_reflected_radial_transform_scales()
+    public void Admits_mirrored_radial_circles()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientTransform='scale(-1, 1)' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='44' cy='32' r='22' fx='52' fy='32' gradientTransform='translate(64 0) scale(-1 1)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only positive radial gradient transform scales are implemented.", rejected.Message);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
+        Assert.Equal(20, geometry.Radial.Gradient.CenterX);
+        Assert.Equal(32, geometry.Radial.Gradient.CenterY);
+        Assert.Equal(22, geometry.Radial.Gradient.Radius);
+        Assert.Equal(12, geometry.Radial.Gradient.FocalX);
+        Assert.Equal(32, geometry.Radial.Gradient.FocalY);
     }
 
     [Fact]

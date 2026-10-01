@@ -53,6 +53,26 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Mirrored_radial_matches_unmirrored_twin()
+    {
+        byte[] mirrored = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='44' cy='32' r='22' fx='52' fy='32' gradientTransform='translate(64 0) scale(-1 1)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out int width, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='20' cy='32' r='22' fx='12' fy='32'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.Equal(plain, mirrored);
+        Assert.Equal(new SvgColor(248, 0, 6, 255), Pixel(mirrored, width, 12, 32));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(mirrored, width, 63, 63));
+    }
+
+    [Fact]
+    public void Mirrored_nonuniform_radial_matches_scaled_twin()
+    {
+        byte[] mirrored = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='22' cy='32' r='11' fx='26' fy='32' gradientTransform='translate(64 0) scale(-2 1)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out _, out _);
+        byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='10' cy='32' r='11' fx='6' fy='32' gradientTransform='scale(2 1)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.Equal(scaled, mirrored);
+    }
+
+    [Fact]
     public void Composed_mirror_linear_gradient_flips_blend()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='8' y1='32' x2='56' y2='32' gradientTransform='translate(64 0) scale(-1 1)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out int width, out _);

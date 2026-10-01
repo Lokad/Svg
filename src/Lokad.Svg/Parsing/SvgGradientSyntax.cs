@@ -88,7 +88,6 @@ internal static class SvgGradientSyntax
         string? transformValue = reader.GetAttribute("gradientTransform");
         SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue);
         if (gradientTransform.B != 0 || gradientTransform.C != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned radial gradient transforms are implemented.");
-        if (gradientTransform.A < 0 || gradientTransform.D < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive radial gradient transform scales are implemented.");
         if (gradientTransform.A != gradientTransform.D && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform radial gradient transforms are not implemented.");
         string? rawFocalRadius = reader.GetAttribute("fr");
         string? rawCenterX = reader.GetAttribute("cx");

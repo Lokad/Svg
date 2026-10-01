@@ -778,8 +778,8 @@ internal static class SvgDefinitionParser
         {
             (centerX, centerY) = template.Transform.Apply(centerX, centerY);
             (focalX, focalY) = template.Transform.Apply(focalX, focalY);
-            radius *= template.Transform.A;
-            focalRadius *= template.Transform.A;
+            radius *= Math.Abs(template.Transform.A);
+            focalRadius *= Math.Abs(template.Transform.A);
             if (isUserSpace)
             {
                 referenceScaleX *= template.Transform.A;
