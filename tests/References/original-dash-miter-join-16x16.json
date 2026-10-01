@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-dash-miter-join-16x16",
+  "referencePng": "original-dash-miter-join-16x16.png",
+  "referenceSha256": "a945b6c0ec0512b472a255cce69463131ae5019801f854d61a44bdf8439310f1",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "7ee9cf10558ae500e5c394cfc67d6a5e0103fb34fd54b0bb79f0b97f4f1fef56",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-01"
+}

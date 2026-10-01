@@ -1113,7 +1113,7 @@ public sealed class RenderBudgetTests
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(twin, [3, 6], [], false, [1, 1], SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out long twinSetup, out bool twinEligible, CancellationToken.None))
         {
             Assert.True(twinEligible);
-            Assert.Equal(68, twinSetup);
+            Assert.Equal(104, twinSetup);
         }
         SvgDevicePoint[] touching = [new(0, 0), new(8, 0), new(0, 8), new(8, 0), new(8, 8), new(0, 8)];
         using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(touching, [3, 6], [], false, [1, 1], SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out long touchingSetup, out bool touchingEligible, CancellationToken.None))
@@ -1155,6 +1155,22 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
+    public void Transversal_crossing_straight_multi_takes_analytic_path()
+    {
+        // Row 4: straight-edge loops meeting only in transversal crossings union through
+        // signed-winding intervals on any mapping; touches and coincident spans keep the fan path.
+        RenderBudget budget = new(100_000);
+        SvgDevicePoint[] bands = [new(0, 0), new(4, 0), new(4, 4), new(0, 4), new(2, 2), new(6, 2), new(6, 6), new(2, 6)];
+        int[] ends = [4, 8];
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(bands, ends, [], false, [1, 1], SvgPolygonMapping.FiniteEdges, 0, 8, 0, 8, 8, 8, budget, out long _, out bool eligible, CancellationToken.None))
+        {
+            Assert.True(eligible);
+        }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+
     public void Curve_contour_arrays_fit_command_bound()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M1,0 C4,0 7,1 7,4 C7,7 4,8 1,8 C0,8 0,7 0,4 C0,1 0,0 1,0 Z' fill='red'/></svg>");

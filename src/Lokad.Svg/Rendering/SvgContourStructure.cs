@@ -108,6 +108,40 @@ internal static class SvgContourStructure
         return flags;
     }
 
+    /// <summary>Reports whether every contact between distinct contours is a transversal proper crossing.</summary>
+    /// <remarks>
+    /// <para>Mirrors the set-classification pair scan, but keeps the transversal verdict instead of collapsing it: separated pairs and strict opposite-sign crossings pass while vertex-on-edge contacts, shared endpoints, collinear overlaps and single-point contacts fail. Zero-length edges skip like classification. Observes cancellation at the pair checkpoint; allocates nothing and holds no budget; callers charge the quadratic pair estimate up front.</para>
+    /// </remarks>
+    internal static bool AllInterLoopContactsTransversal(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, CancellationToken cancellationToken)
+    {
+        SvgPolygonCoverage.ValidateContourEnds(points, ends);
+        int pairs = 0;
+        for (int first = 0; first < ends.Length; first++)
+        {
+            int firstStart = first == 0 ? 0 : ends[first - 1];
+            int firstCount = ends[first] - firstStart;
+            for (int second = first + 1; second < ends.Length; second++)
+            {
+                int secondStart = ends[second - 1];
+                int secondCount = ends[second] - secondStart;
+                for (int firstEdge = 0; firstEdge < firstCount; firstEdge++)
+                {
+                    (SvgDevicePoint firstEdgeStart, SvgDevicePoint firstEdgeEnd) = EdgeAt(points, firstStart, firstCount, firstEdge);
+                    if (firstEdgeStart == firstEdgeEnd) continue;
+                    for (int secondEdge = 0; secondEdge < secondCount; secondEdge++)
+                    {
+                        (SvgDevicePoint secondEdgeStart, SvgDevicePoint secondEdgeEnd) = EdgeAt(points, secondStart, secondCount, secondEdge);
+                        if (secondEdgeStart == secondEdgeEnd) continue;
+                        SvgContourFlags hit = TestEdgePair(firstEdgeStart, firstEdgeEnd, secondEdgeStart, secondEdgeEnd, ref pairs, cancellationToken);
+                        if (hit != SvgContourFlags.None && hit != SvgContourFlags.ProperCrossing) return false;
+                    }
+                }
+            }
+        }
+        cancellationToken.ThrowIfCancellationRequested();
+        return true;
+    }
+
     /// <summary>Finds the first interior crossing between non-adjacent edges of one closed contour slice.</summary>
     /// <remarks>Uses the same adjacency exclusions as classification: neighboring edges and the closing pair never count. Strict opposite orientation signs on both sides guarantee an interior intersection, which is verified in unit coordinates before reporting. Observes cancellation at the pair checkpoint; allocates nothing and holds no budget.</remarks>
     internal static bool TryFindProperCrossing(ReadOnlySpan<SvgDevicePoint> points, int start, int end, CancellationToken cancellationToken, out int firstEdge, out int secondEdge, out SvgDevicePoint crossing)

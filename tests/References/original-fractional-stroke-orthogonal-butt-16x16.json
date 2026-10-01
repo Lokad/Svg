@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-fractional-stroke-orthogonal-butt-16x16",
+  "referencePng": "original-fractional-stroke-orthogonal-butt-16x16.png",
+  "referenceSha256": "3862482570c4b2656544531e38153ac48da54f7867d25a8272b86f9469de85a8",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "18ef70e8b07cd4cb8a000d5a37312825bce05d57a93485577da57c98801b7ac4",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-01"
+}

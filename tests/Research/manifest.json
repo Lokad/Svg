@@ -472,47 +472,6 @@
       }
     },
     {
-      "id": "research-fractional-stroke-orthogonal-butt-16x16",
-      "path": "fractional-stroke-orthogonal-butt-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "c557b77eb571c0ed39ea38674dd78b36bb524ff3ad94aa699760330ae6cc479a",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "coverage",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 4,
-        "maximumChannelError": 16,
-        "maximumAlphaError": 16,
-        "alphaChangedPixelCount": 4,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 9,
-        "maximumMismatchY": 9
-      },
-      "oracle": {
-        "referencePng": "references/fractional-stroke-orthogonal-butt-16x16.png",
-        "referenceSha256": "3862482570c4b2656544531e38153ac48da54f7867d25a8272b86f9469de85a8",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
       "id": "research-fractional-stroke-round-cap-16x16",
       "path": "fractional-stroke-round-cap-16x16.svg",
       "creator": "Lokad.Svg contributors",
@@ -624,88 +583,6 @@
       "oracle": {
         "referencePng": "references/fractional-stroke-closed-16x16.png",
         "referenceSha256": "5c05d46c00b684c42d535efd22ee6b329e347ad1e794e65e70d80e90fc79dc56",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
-      "id": "research-overlap-stroke-diagonal-even-16x16",
-      "path": "overlap-stroke-diagonal-even-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "69ab5665e7c347558795305654232fe869689e679275e3dcd34c4fd3a1631fd2",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "coverage",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 87,
-        "maximumChannelError": 32,
-        "maximumAlphaError": 32,
-        "alphaChangedPixelCount": 87,
-        "minimumMismatchX": 1,
-        "minimumMismatchY": 1,
-        "maximumMismatchX": 14,
-        "maximumMismatchY": 14
-      },
-      "oracle": {
-        "referencePng": "references/overlap-stroke-diagonal-even-16x16.png",
-        "referenceSha256": "cff7bb37e4ab1c2a0672f7ecacb9dca68a88c2aa09313e0ef975c5dc4e6c76b6",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
-      "id": "research-odd-stroke-orthogonal-butt-16x16",
-      "path": "odd-stroke-orthogonal-butt-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "456681eeb9f188eaa7f4763b67ed8cdcb697d07bac3a7ddbbd024c8ede0cdebf",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "coverage",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-    "admittedRendering": {
-      "changedPixelCount": 4,
-      "maximumChannelError": 63,
-      "maximumAlphaError": 63,
-      "alphaChangedPixelCount": 4,
-      "minimumMismatchX": 6,
-      "minimumMismatchY": 6,
-      "maximumMismatchX": 9,
-      "maximumMismatchY": 9
-    },
-      "oracle": {
-        "referencePng": "references/odd-stroke-orthogonal-butt-16x16.png",
-        "referenceSha256": "5365a348573ef71b8018fdf2edbb7087f4e402d692a56fb628d0c7f01c87faea",
         "chromeVersion": "153.0.8010.52",
         "chromiumRevision": "1681091",
         "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -1977,47 +1854,6 @@
       "oracle": {
         "referencePng": "references/dash-round-cap-16x16.png",
         "referenceSha256": "da1f2907a9a1db5cbe0d90acf712dfeb94dfd801ee0d1a453d4388f93288bbf1",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
-      "id": "research-dash-miter-join-16x16",
-      "path": "dash-miter-join-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "d373a72c11bf3ce81f116c358fb9c58c0b9be4484055365f61e2b958a6ed44dd",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "dash",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 55,
-        "maximumChannelError": 27,
-        "maximumAlphaError": 27,
-        "alphaChangedPixelCount": 55,
-        "minimumMismatchX": 0,
-        "minimumMismatchY": 2,
-        "maximumMismatchX": 14,
-        "maximumMismatchY": 13
-      },
-      "oracle": {
-        "referencePng": "references/dash-miter-join-16x16.png",
-        "referenceSha256": "a945b6c0ec0512b472a255cce69463131ae5019801f854d61a44bdf8439310f1",
         "chromeVersion": "153.0.8010.52",
         "chromiumRevision": "1681091",
         "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",

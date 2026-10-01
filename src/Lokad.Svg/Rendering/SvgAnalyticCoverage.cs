@@ -355,7 +355,17 @@ internal ref struct SvgAnalyticCoverage
             SvgContourFlags setStructure = SvgContourStructure.ClassifySet(points, ends, cancellationToken);
             setupWork += (long)points.Length * points.Length;
             bool hasRigidContact = isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || (setStructure & SvgContourFlags.CoincidentOverlap) != SvgContourFlags.None;
-            if (hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
+            // Transversal-only unions walk exact signed-winding intervals on any mapping: strict
+            // crossings carry no shared vertices, so event handoff stays clean while each interval
+            // keeps its own trapezoid fringe instead of the fan exact-area underestimate.
+            // Touches, self-touches, coincident spans and even-odd sets keep their gates.
+            bool transversalUnion = false;
+            if (!isEvenOdd && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) == SvgContourFlags.None)
+            {
+                setupWork += (long)points.Length * points.Length;
+                transversalUnion = SvgContourStructure.AllInterLoopContactsTransversal(points, ends, cancellationToken);
+            }
+            if (!transversalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
             RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth), SvgMemoryCategory.Surface);
