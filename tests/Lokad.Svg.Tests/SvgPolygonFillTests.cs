@@ -1171,6 +1171,29 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
+    public void Shared_two_span_pair_splices_to_union()
+    {
+        byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,0 L10,0 L10,4 L6,6 L10,8 L10,10 L0,10 Z M10,0 L16,0 L16,10 L10,10 Z' fill='red'/></svg>", out _, out _);
+        byte[] separate = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,0 L10,0 L10,4 L6,6 L10,8 L10,10 L0,10 Z' fill='red'/><path d='M10,0 L16,0 L16,10 L10,10 Z' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(separate, union);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 2, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 12, 5));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, 20, 8, 6));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, 20, 18, 18));
+    }
+
+    [Fact]
+    public void Shared_two_span_evenodd_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,0 L10,0 L10,4 L6,6 L10,8 L10,10 L0,10 Z M10,0 L16,0 L16,10 L10,10 Z' fill='red' fill-rule='evenodd'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
     public void Evenodd_three_loop_crossing_stays_unsupported()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 L11,3 L4,12 Z M7,0 L15,5 L9,13 Z M0,8 L6,8 L6,14 Z' fill='red' fill-rule='evenodd'/></svg>");

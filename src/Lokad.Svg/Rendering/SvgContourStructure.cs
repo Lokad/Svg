@@ -243,8 +243,8 @@ internal static class SvgContourStructure
         return false;
     }
 
-    /// <summary>Finds one positive-length collinear overlap between edges of two distinct contour loops.</summary>
-    /// <remarks>Loop pairs share the classifier bounding-box precheck then require all-zero orientations with a dominant-axis interval test that separates positive-length coincidence from single-point contact; zero-length edges never report. Each reported overlap value always equals an endpoint of at least one of the two edges, so callers subdivide with bitwise copies and never compute points. Deterministic first-found order over loop pairs, first edges and second edges; observes cancellation at the pair checkpoint; allocates nothing and holds no budget.</remarks>
+    /// <summary>Finds one positive-length collinear overlap between edges of two distinct contour loops that still needs endpoint subdivision.</summary>
+    /// <remarks>Loop pairs share the classifier bounding-box precheck then require all-zero orientations with a dominant-axis interval test that separates positive-length coincidence from single-point contact; zero-length edges never report. Each reported overlap value always equals an endpoint of at least one of the two edges, so callers subdivide with bitwise copies and never compute points. Overlaps whose values already subdivide nothing, because every value coincides with the endpoints of any edge it lies strictly inside while occurring as a vertex, are skipped so subdivision sweeps keep progressing. Deterministic first-found order over loop pairs, first edges and second edges; observes cancellation at the pair checkpoint; allocates nothing and holds no budget.</remarks>
     internal static bool TryFindInterLoopCoincidentOverlap(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> contourEnds, out int firstLoop, out int firstEdge, out int secondLoop, out int secondEdge, out SvgDevicePoint overlapFirst, out SvgDevicePoint overlapSecond, CancellationToken cancellationToken)
     {
         SvgPolygonCoverage.ValidateContourEnds(points, contourEnds);
@@ -254,6 +254,17 @@ internal static class SvgContourStructure
         secondEdge = -1;
         overlapFirst = default;
         overlapSecond = default;
+        static bool NeedsSubdivisionVertex(ReadOnlySpan<SvgDevicePoint> vertices, SvgDevicePoint edgeStart, SvgDevicePoint edgeEnd, SvgDevicePoint value)
+        {
+            if (value == edgeStart || value == edgeEnd) return false;
+            if (!WithinBox(value, edgeStart, edgeEnd)) return false;
+            for (int index = 0; index < vertices.Length; index++)
+            {
+                if (vertices[index] == value) return true;
+            }
+            return false;
+        }
+
         int pairs = 0;
         for (int first = 0; first < contourEnds.Length; first++)
         {
@@ -305,6 +316,7 @@ internal static class SvgContourStructure
                         CollectOverlapEndpoint(secondEdgeStart, firstEdgeStart, firstEdgeEnd, ref foundFirst, ref foundSecond, ref found);
                         CollectOverlapEndpoint(secondEdgeEnd, firstEdgeStart, firstEdgeEnd, ref foundFirst, ref foundSecond, ref found);
                         if (found != 2) continue;
+                        if (!NeedsSubdivisionVertex(points, firstEdgeStart, firstEdgeEnd, foundFirst) && !NeedsSubdivisionVertex(points, firstEdgeStart, firstEdgeEnd, foundSecond) && !NeedsSubdivisionVertex(points, secondEdgeStart, secondEdgeEnd, foundFirst) && !NeedsSubdivisionVertex(points, secondEdgeStart, secondEdgeEnd, foundSecond)) continue;
                         firstLoop = first;
                         firstEdge = firstIndex;
                         secondLoop = second;

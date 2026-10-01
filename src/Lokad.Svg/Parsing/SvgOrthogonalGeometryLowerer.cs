@@ -1384,7 +1384,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Unions same-fill loops that share coincident boundary spans into simple loops.</summary>
-    /// <remarks>Nonzero fill only; even-odd keeps its gate because parity signs are meaningless for vertex-sharing loops. Admits sets whose only non-touch defect is positive-length collinear overlap between loops: edges subdivide at overlap endpoints with bitwise copies of existing vertices, loops contained in larger same-direction loops drop, and loop pairs sharing exactly one duplicate edge splice into a single boundary. Opposite-direction containment, multi-edge sharing, crossings, spikes and degenerate edges stay rejected. No computed points ever appear. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps, reporting resolved loops so nesting tests skip bitwise-shared vertices through the union flag. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Partial output on denial stays caller-discarded.</remarks>
+    /// <remarks>Nonzero fill only; even-odd keeps its gate because parity signs are meaningless for vertex-sharing loops. Admits sets whose only non-touch defect is positive-length collinear overlap between loops: edges subdivide at overlap endpoints with bitwise copies of existing vertices, loops contained in larger same-direction loops drop, and loop pairs sharing exactly one duplicate edge splice into a single boundary while pairs sharing two or more opposite spans splice every span at once with remainder linking. Opposite-direction containment, same-directed multi-span sharing, crossings, spikes and degenerate edges stay rejected. No computed points ever appear. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps, reporting resolved loops so nesting tests skip bitwise-shared vertices through the union flag. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Partial output on denial stays caller-discarded.</remarks>
     private bool TryResolveCoincidentUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, out bool unionResolved)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -1418,6 +1418,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (SubdivideCoincidentOverlapEndpoints(ref workPoints, ref workEnds)) continue;
             if (TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
             if (TrySpliceSharedUnionEdge(ref workPoints, ref workEnds)) continue;
+            if (TrySpliceSharedUnionEdges(ref workPoints, ref workEnds)) continue;
             break;
         }
         if (!EveryLoopHasUnsharedVertex(workPoints, workEnds)) return false;
@@ -1659,6 +1660,202 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
         _workCounter.Consume(_cancellationToken);
         nextEnds[targetEnd++] = target;
+        workPoints = nextPoints;
+        workEnds = nextEnds;
+        return true;
+    }
+
+    /// <summary>Splices loop pairs sharing two or more opposite duplicate edges into union boundaries.</summary>
+    /// <remarks>Collects every opposite-directed exact-span duplicate between loop pairs that neither contain, requires a remainder edge on both loops with vertex-disjoint spans, then drops every shared span and links remainder ends across loops at each shared vertex while keeping same-loop continuation at merely touched values. Deterministic walks cover each remainder edge once with a step cap as backstop; degenerate or non-simple results keep the set rejected so the split-loop guard still arbitrates. Single shared spans stay with the single-edge splice, same-directed sharing and fully-shared pairs stay gated, and even-odd sets keep their coincident ban at the caller. Charges one work unit per examined pair and copied vertex, and observes cancellation.</remarks>
+    private bool TrySpliceSharedUnionEdges(ref SvgDevicePoint[] workPoints, ref int[] workEnds)
+    {
+        for (int first = 0; first < workEnds.Length; first++)
+        {
+            int firstStart = first == 0 ? 0 : workEnds[first - 1];
+            int firstCount = workEnds[first] - firstStart;
+            for (int second = first + 1; second < workEnds.Length; second++)
+            {
+                int secondStart = second == 0 ? 0 : workEnds[second - 1];
+                int secondCount = workEnds[second] - secondStart;
+                if (LoopContainsLoop(workPoints, firstStart, firstStart + firstCount, secondStart, secondStart + secondCount)) continue;
+                if (LoopContainsLoop(workPoints, secondStart, secondStart + secondCount, firstStart, firstStart + firstCount)) continue;
+                int sharedPairs = 0;
+                bool sameDirected = false;
+                for (int firstEdge = 0; firstEdge < firstCount; firstEdge++)
+                {
+                    SvgDevicePoint firstEdgeStart = workPoints[firstStart + firstEdge];
+                    SvgDevicePoint firstEdgeEnd = workPoints[firstStart + ((firstEdge + 1) % firstCount)];
+                    if (firstEdgeStart == firstEdgeEnd) continue;
+                    for (int secondEdge = 0; secondEdge < secondCount; secondEdge++)
+                    {
+                        _workCounter.Consume(_cancellationToken);
+                        SvgDevicePoint secondEdgeStart = workPoints[secondStart + secondEdge];
+                        SvgDevicePoint secondEdgeEnd = workPoints[secondStart + ((secondEdge + 1) % secondCount)];
+                        if (secondEdgeStart == secondEdgeEnd) continue;
+                        if (!((firstEdgeStart == secondEdgeStart && firstEdgeEnd == secondEdgeEnd) || (firstEdgeStart == secondEdgeEnd && firstEdgeEnd == secondEdgeStart))) continue;
+                        if (firstEdgeStart == secondEdgeStart) sameDirected = true;
+                        sharedPairs++;
+                    }
+                }
+                if (sharedPairs < 2 || sameDirected) continue;
+                if (SpliceSharedUnionEdges(ref workPoints, ref workEnds, first, second, sharedPairs)) return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>Splices every opposite duplicate edge between two loops into union boundary loops.</summary>
+    /// <remarks>Recollects the counted opposite pairs, requires vertex-disjoint spans with remainder edges on both loops, then walks remainder edges alternating loops at shared-span endpoints. Holds no budget beyond per-vertex copies; callers charge the pair scan.</remarks>
+    private bool SpliceSharedUnionEdges(ref SvgDevicePoint[] workPoints, ref int[] workEnds, int first, int second, int sharedPairs)
+    {
+        int firstStart = first == 0 ? 0 : workEnds[first - 1];
+        int firstCount = workEnds[first] - firstStart;
+        int secondStart = second == 0 ? 0 : workEnds[second - 1];
+        int secondCount = workEnds[second] - secondStart;
+        int[] firstEdges = new int[sharedPairs];
+        int[] secondEdges = new int[sharedPairs];
+        int found = 0;
+        for (int firstEdge = 0; firstEdge < firstCount; firstEdge++)
+        {
+            SvgDevicePoint firstEdgeStart = workPoints[firstStart + firstEdge];
+            SvgDevicePoint firstEdgeEnd = workPoints[firstStart + ((firstEdge + 1) % firstCount)];
+            if (firstEdgeStart == firstEdgeEnd) continue;
+            for (int secondEdge = 0; secondEdge < secondCount; secondEdge++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                SvgDevicePoint secondEdgeStart = workPoints[secondStart + secondEdge];
+                SvgDevicePoint secondEdgeEnd = workPoints[secondStart + ((secondEdge + 1) % secondCount)];
+                if (secondEdgeStart == secondEdgeEnd) continue;
+                if (!(firstEdgeStart == secondEdgeEnd && firstEdgeEnd == secondEdgeStart)) continue;
+                if (found >= sharedPairs) return false;
+                firstEdges[found] = firstEdge;
+                secondEdges[found] = secondEdge;
+                found++;
+            }
+        }
+        if (found != sharedPairs) return false;
+        for (int outer = 0; outer < found; outer++)
+        {
+            SvgDevicePoint outerStart = workPoints[firstStart + firstEdges[outer]];
+            SvgDevicePoint outerEnd = workPoints[firstStart + ((firstEdges[outer] + 1) % firstCount)];
+            for (int inner = outer + 1; inner < found; inner++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                SvgDevicePoint innerStart = workPoints[firstStart + firstEdges[inner]];
+                SvgDevicePoint innerEnd = workPoints[firstStart + ((firstEdges[inner] + 1) % firstCount)];
+                if (innerStart == outerStart || innerStart == outerEnd || innerEnd == outerStart || innerEnd == outerEnd) return false;
+            }
+        }
+        bool[] firstShared = new bool[firstCount];
+        bool[] secondShared = new bool[secondCount];
+        for (int index = 0; index < found; index++)
+        {
+            firstShared[firstEdges[index]] = true;
+            secondShared[secondEdges[index]] = true;
+        }
+        int firstRemainder = 0;
+        for (int edge = 0; edge < firstCount; edge++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            if (!firstShared[edge]) firstRemainder++;
+        }
+        int secondRemainder = 0;
+        for (int edge = 0; edge < secondCount; edge++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            if (!secondShared[edge]) secondRemainder++;
+        }
+        if (firstRemainder == 0 || secondRemainder == 0) return false;
+        bool[] firstSeen = new bool[firstCount];
+        bool[] secondSeen = new bool[secondCount];
+        SvgDevicePoint[] linked = new SvgDevicePoint[(firstRemainder + secondRemainder) * 2];
+        int[] linkedEnds = new int[workEnds.Length + firstRemainder + secondRemainder];
+        int linkedTotal = 0;
+        int linkedLoops = 0;
+        for (int lookLoop = 0; lookLoop < 2; lookLoop++)
+        {
+            int lookCount = lookLoop == 0 ? firstCount : secondCount;
+            bool[] lookSeen = lookLoop == 0 ? firstSeen : secondSeen;
+            bool[] lookShared = lookLoop == 0 ? firstShared : secondShared;
+            for (int lookEdge = 0; lookEdge < lookCount; lookEdge++)
+            {
+                if (lookShared[lookEdge] || lookSeen[lookEdge]) continue;
+                int walkStartLoop = lookLoop;
+                int walkStartEdge = lookEdge;
+                int walkLoop = lookLoop;
+                int walkEdge = lookEdge;
+                int steps = 0;
+                while (true)
+                {
+                    if (++steps > firstRemainder + secondRemainder + 1) return false;
+                    _workCounter.Consume(_cancellationToken);
+                    if (walkLoop == 0) firstSeen[walkEdge] = true;
+                    else secondSeen[walkEdge] = true;
+                    int walkStart = walkLoop == 0 ? firstStart : secondStart;
+                    int walkCount = walkLoop == 0 ? firstCount : secondCount;
+                    linked[linkedTotal++] = workPoints[walkStart + walkEdge];
+                    int next = (walkEdge + 1) % walkCount;
+                    bool[] walkShared = walkLoop == 0 ? firstShared : secondShared;
+                    if (!walkShared[next])
+                    {
+                        walkEdge = next;
+                    }
+                    else
+                    {
+                        SvgDevicePoint vertex = workPoints[walkStart + next];
+                        int other = 1 - walkLoop;
+                        int otherStart = other == 0 ? firstStart : secondStart;
+                        int otherCount = other == 0 ? firstCount : secondCount;
+                        bool[] otherShared = other == 0 ? firstShared : secondShared;
+                        int continuation = -1;
+                        for (int otherEdge = 0; otherEdge < otherCount; otherEdge++)
+                        {
+                            _workCounter.Consume(_cancellationToken);
+                            if (otherShared[otherEdge] || workPoints[otherStart + otherEdge] != vertex) continue;
+                            if (continuation >= 0) return false;
+                            continuation = otherEdge;
+                        }
+                        if (continuation < 0) return false;
+                        walkLoop = other;
+                        walkEdge = continuation;
+                    }
+                    if (walkLoop == walkStartLoop && walkEdge == walkStartEdge) break;
+                }
+                linkedEnds[linkedLoops++] = linkedTotal;
+            }
+        }
+        for (int loop = 0; loop < linkedLoops; loop++)
+        {
+            int start = loop == 0 ? 0 : linkedEnds[loop - 1];
+            if (SvgContourStructure.ClassifyContour(linked, start, linkedEnds[loop], _cancellationToken) != SvgContourFlags.None) return false;
+        }
+        SvgDevicePoint[] nextPoints = new SvgDevicePoint[workPoints.Length - firstCount - secondCount + linkedTotal];
+        int[] nextEnds = new int[workEnds.Length - 2 + linkedLoops];
+        int target = 0;
+        int targetEnd = 0;
+        for (int other = 0; other < workEnds.Length; other++)
+        {
+            if (other == first || other == second) continue;
+            int otherStart = other == 0 ? 0 : workEnds[other - 1];
+            int otherEnd = workEnds[other];
+            for (int source = otherStart; source < otherEnd; source++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                nextPoints[target++] = workPoints[source];
+            }
+            _workCounter.Consume(_cancellationToken);
+            nextEnds[targetEnd++] = target;
+        }
+        for (int index = 0; index < linkedTotal; index++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            nextPoints[target++] = linked[index];
+        }
+        for (int loop = 0; loop < linkedLoops; loop++)
+        {
+            _workCounter.Consume(_cancellationToken);
+            nextEnds[targetEnd++] = target - linkedTotal + linkedEnds[loop];
+        }
         workPoints = nextPoints;
         workEnds = nextEnds;
         return true;
