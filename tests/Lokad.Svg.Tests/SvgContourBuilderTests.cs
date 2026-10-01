@@ -288,4 +288,75 @@ public sealed class SvgContourBuilderTests
         boundedBuilder.BeginContour(new SvgDevicePoint(0, 0));
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => boundedBuilder.AddCubic(new SvgDevicePoint(8, 0), new SvgDevicePoint(8, 8), new SvgDevicePoint(0, 8), policy, CancellationToken.None)).ErrorCode);
     }
+
+    [Fact]
+    public void Quadratic_records_slice_relative_span_with_control()
+    {
+        SvgContourBuilder builder = new(256, 4);
+        builder.EnableQuadSpanRetention();
+        builder.BeginContour(new SvgDevicePoint(0, 0));
+        builder.AddLine(new SvgDevicePoint(8, 0));
+        builder.AddQuadratic(new SvgDevicePoint(12, 8), new SvgDevicePoint(16, 0), new SvgFlattenPolicy(2.0, 64, 256), CancellationToken.None);
+        builder.EndContour();
+
+        SvgQuadSpan span = Assert.Single(builder.GetQuadSpans());
+        Assert.Equal(0, span.Contour);
+        Assert.Equal(new SvgDevicePoint(12, 8), span.Control);
+        ReadOnlySpan<SvgDevicePoint> contour = builder.GetContour(0);
+        Assert.Equal(new SvgDevicePoint(8, 0), contour[span.StartIndex]);
+        Assert.Equal(new SvgDevicePoint(16, 0), contour[span.EndIndex]);
+        Assert.True(span.EndIndex > span.StartIndex);
+    }
+    [Fact]
+    public void Quad_spans_stay_empty_without_retention_and_clear_resets()
+    {
+        SvgContourBuilder builder = new(256, 4);
+        builder.BeginContour(new SvgDevicePoint(0, 0));
+        builder.AddQuadratic(new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), new SvgFlattenPolicy(2.0, 64, 256), CancellationToken.None);
+        builder.EndContour();
+        Assert.Empty(builder.GetQuadSpans());
+
+        builder.Clear();
+        builder.EnableQuadSpanRetention();
+        builder.BeginContour(new SvgDevicePoint(0, 0));
+        builder.AddQuadratic(new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), new SvgFlattenPolicy(2.0, 64, 256), CancellationToken.None);
+        builder.EndContour();
+        Assert.Single(builder.GetQuadSpans());
+        builder.Clear();
+        Assert.Empty(builder.GetQuadSpans());
+    }
+
+    [Fact]
+    public void Quad_spans_track_contours_with_flattened_points_unchanged()
+    {
+        SvgContourBuilder retained = new(256, 8);
+        retained.EnableQuadSpanRetention();
+        retained.BeginContour(new SvgDevicePoint(0, 0));
+        retained.AddQuadratic(new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), new SvgFlattenPolicy(2.0, 64, 256), CancellationToken.None);
+        retained.EndContour();
+        retained.BeginContour(new SvgDevicePoint(16, 0));
+        retained.AddLine(new SvgDevicePoint(24, 0));
+        retained.AddQuadratic(new SvgDevicePoint(28, 8), new SvgDevicePoint(32, 0), new SvgFlattenPolicy(2.0, 64, 256), CancellationToken.None);
+        retained.EndContour();
+
+        SvgContourBuilder plain = new(256, 8);
+        plain.BeginContour(new SvgDevicePoint(0, 0));
+        plain.AddQuadratic(new SvgDevicePoint(4, 8), new SvgDevicePoint(8, 0), new SvgFlattenPolicy(2.0, 64, 256), CancellationToken.None);
+        plain.EndContour();
+        plain.BeginContour(new SvgDevicePoint(16, 0));
+        plain.AddLine(new SvgDevicePoint(24, 0));
+        plain.AddQuadratic(new SvgDevicePoint(28, 8), new SvgDevicePoint(32, 0), new SvgFlattenPolicy(2.0, 64, 256), CancellationToken.None);
+        plain.EndContour();
+
+        Assert.Equal(plain.GetContour(0).ToArray(), retained.GetContour(0).ToArray());
+        Assert.Equal(plain.GetContour(1).ToArray(), retained.GetContour(1).ToArray());
+        SvgQuadSpan[] spans = retained.GetQuadSpans();
+        Assert.Equal(2, spans.Length);
+        Assert.Equal(0, spans[0].Contour);
+        Assert.Equal(1, spans[1].Contour);
+        Assert.Equal(new SvgDevicePoint(4, 8), spans[0].Control);
+        Assert.Equal(new SvgDevicePoint(28, 8), spans[1].Control);
+        Assert.Equal(new SvgDevicePoint(32, 0), retained.GetContour(1)[spans[1].EndIndex]);
+        Assert.Equal(new SvgDevicePoint(24, 0), retained.GetContour(1)[spans[1].StartIndex]);
+    }
 }

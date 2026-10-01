@@ -21,6 +21,12 @@ internal sealed class SvgContourBuilder
     private int _pointCount;
     private int _contourCount;
     private int _openStart = -1;
+    private bool _retainSpans;
+    private int[] _quadContours = Array.Empty<int>();
+    private int[] _quadStarts = Array.Empty<int>();
+    private int[] _quadEnds = Array.Empty<int>();
+    private SvgDevicePoint[] _quadControls = Array.Empty<SvgDevicePoint>();
+    private int _quadCount;
 
     /// <summary>Starting point storage for growing builders, doubled toward the maxima.</summary>
     private const int InitialPointCapacity = 64;
@@ -64,6 +70,13 @@ internal sealed class SvgContourBuilder
     /// <summary>Gets the sealed contour count.</summary>
     internal int ContourCount => _contourCount;
 
+    /// <summary>Enables quadratic span retention for subsequent verbs.</summary>
+    /// <remarks>Only the path-fill lowering enables retention before parsing; every other route keeps flatten-only behavior with no extra storage. Span arrays allocate lazily on the first recorded quad and double toward the point maximum, so quad-free paths pay nothing and dense quad paths stay within the point denial bound.</remarks>
+    internal void EnableQuadSpanRetention()
+    {
+        _retainSpans = true;
+    }
+
     /// <summary>Opens one contour seeded with its start point.</summary>
     internal void BeginContour(SvgDevicePoint start)
     {
@@ -93,6 +106,7 @@ internal sealed class SvgContourBuilder
             try
             {
                 _pointCount += SvgCurveFlatten.FlattenQuadratic(current, control, end, policy, _points.AsSpan(_pointCount), cancellationToken);
+                RecordQuadSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, control);
                 return;
             }
             catch (SvgException)
@@ -101,6 +115,25 @@ internal sealed class SvgContourBuilder
                 GrowPoints();
             }
         }
+    }
+
+    /// <summary>Records one quadratic span with contour-slice-relative indices when retention is enabled; the flattened points stay canonical.</summary>
+    private void RecordQuadSpan(int start, int end, SvgDevicePoint control)
+    {
+        if (!_retainSpans) return;
+        if (_quadContours.Length == 0)
+        {
+            _quadContours = new int[4];
+            _quadStarts = new int[4];
+            _quadEnds = new int[4];
+            _quadControls = new SvgDevicePoint[4];
+        }
+        else if (_quadCount >= _quadContours.Length) GrowQuadSpans();
+        _quadContours[_quadCount] = _contourCount;
+        _quadStarts[_quadCount] = start;
+        _quadEnds[_quadCount] = end;
+        _quadControls[_quadCount] = control;
+        _quadCount++;
     }
 
     /// <summary>Appends the flattened cubic segment from the current point to <paramref name="end"/>.</summary>
@@ -231,12 +264,25 @@ internal sealed class SvgContourBuilder
         return _points.AsSpan(_starts[index], _ends[index] - _starts[index]);
     }
 
-    /// <summary>Clears all points and contours while keeping the allocated storage.</summary>
+    /// <summary>Returns all recorded quadratic spans in record order. Empty when retention is disabled or no quads were added.</summary>
+    internal SvgQuadSpan[] GetQuadSpans()
+    {
+        if (_quadCount == 0) return Array.Empty<SvgQuadSpan>();
+        SvgQuadSpan[] spans = new SvgQuadSpan[_quadCount];
+        for (int index = 0; index < _quadCount; index++)
+        {
+            spans[index] = new SvgQuadSpan(_quadContours[index], _quadStarts[index], _quadEnds[index], _quadControls[index]);
+        }
+        return spans;
+    }
+
+    /// <summary>Clears all points, contours and recorded spans while keeping the allocated storage.</summary>
     internal void Clear()
     {
         _pointCount = 0;
         _contourCount = 0;
         _openStart = -1;
+        _quadCount = 0;
     }
 
     private void Append(SvgDevicePoint point)
@@ -251,6 +297,18 @@ internal sealed class SvgContourBuilder
     {
         if (_points.Length >= _maxPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported point range.");
         Array.Resize(ref _points, _points.Length > _maxPoints / 2 ? _maxPoints : _points.Length * 2);
+    }
+
+    /// <summary>Doubles span storage toward the point maximum, failing past it exactly like point storage.</summary>
+    /// <remarks>Span records trail point appends, so the point cap always trips first on legitimate inputs; reaching this cap alone reports the same range error.</remarks>
+    private void GrowQuadSpans()
+    {
+        if (_quadContours.Length >= _maxPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour storage exceeds the supported point range.");
+        int grown = _quadContours.Length > _maxPoints / 2 ? _maxPoints : _quadContours.Length * 2;
+        Array.Resize(ref _quadContours, grown);
+        Array.Resize(ref _quadStarts, grown);
+        Array.Resize(ref _quadEnds, grown);
+        Array.Resize(ref _quadControls, grown);
     }
 
     /// <summary>Doubles contour storage toward its maximum, failing past it exactly like fixed storage.</summary>

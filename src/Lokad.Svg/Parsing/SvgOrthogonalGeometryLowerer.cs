@@ -259,8 +259,16 @@ internal ref struct SvgOrthogonalGeometryLowering
 
     private static int AppendStrippedContour(BudgetedParserList<SvgDevicePoint> mapped, ReadOnlySpan<SvgDevicePoint> source, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        return AppendMappedContour(mapped, source, null, workCounter, cancellationToken);
+    }
+
+    /// <summary>Appends one stripped contour while recording each source index surviving mapped index into indexMap, or -1 for dropped vertices.</summary>
+    /// <remarks>Callers pass a map sized to the source slice only when translating retained spans; every other route passes null with identical stripping. The map lets span translation resolve endpoints without value matching.</remarks>
+    private static int AppendMappedContour(BudgetedParserList<SvgDevicePoint> mapped, ReadOnlySpan<SvgDevicePoint> source, int[]? indexMap, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(workCounter);
+        if (indexMap is not null && indexMap.Length != source.Length) throw new ArgumentOutOfRangeException(nameof(indexMap));
         SvgDevicePoint previous = default;
         SvgDevicePoint first = default;
         bool hasKept = false;
@@ -269,11 +277,20 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             workCounter.Consume(cancellationToken);
             SvgDevicePoint vertex = source[index];
-            if (hasKept && previous == vertex) continue;
-            if (hasKept && vertex == first && index == source.Length - 1) continue;
+            if (hasKept && previous == vertex)
+            {
+                if (indexMap is not null) indexMap[index] = -1;
+                continue;
+            }
+            if (hasKept && vertex == first && index == source.Length - 1)
+            {
+                if (indexMap is not null) indexMap[index] = -1;
+                continue;
+            }
             if (!hasKept) first = vertex;
             previous = vertex;
             hasKept = true;
+            if (indexMap is not null) indexMap[index] = mapped.Count;
             mapped.Add(vertex);
         }
 
@@ -438,28 +455,55 @@ internal ref struct SvgOrthogonalGeometryLowering
         int contourCapacity = commandCount + 1 > pointCapacity ? pointCapacity : commandCount + 1;
         if (contourCapacity > _maximumGeometryElements) contourCapacity = _maximumGeometryElements;
         long scratchBytes;
-        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)); }
+        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(commandCount) + ParserCollectionMemory.GetArrayByteCount<int>(pointCapacity)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Curve flattening exceeds the supported expansion range."); }
         using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         SvgContourBuilder builder = hasCurve ? SvgContourBuilder.CreateGrowing(pointCapacity, contourCapacity) : new(pointCapacity, contourCapacity);
+        if (hasCurve) builder.EnableQuadSpanRetention();
         SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, null);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        SvgQuadSpan[] recorded = builder.GetQuadSpans();
+        List<SvgQuadSpan> keptSpans = new(recorded.Length);
         int[] ends = new int[builder.ContourCount];
         int kept = 0;
+        int spanCursor = 0;
         for (int contour = 0; contour < builder.ContourCount; contour++)
         {
             int before = mapped.Count;
-            if (AppendStrippedContour(mapped, builder.GetContour(contour), _workCounter, _cancellationToken) < 3)
+            ReadOnlySpan<SvgDevicePoint> slice = builder.GetContour(contour);
+            while (spanCursor < recorded.Length && recorded[spanCursor].Contour < contour) spanCursor++;
+            int spanRunEnd = spanCursor;
+            while (spanRunEnd < recorded.Length && recorded[spanRunEnd].Contour == contour) spanRunEnd++;
+            int[]? indexMap = spanRunEnd > spanCursor ? new int[slice.Length] : null;
+            if (AppendMappedContour(mapped, slice, indexMap, _workCounter, _cancellationToken) < 3)
             {
                 // Degenerate contours enclose no area while strokes outline them separately, mirroring singleton-drop tolerance.
                 while (mapped.Count > before) mapped.RemoveLast();
                 continue;
             }
             ends[kept++] = mapped.Count;
+            if (indexMap is not null) TranslateQuadSpans(recorded, spanCursor, spanRunEnd, kept - 1, indexMap, keptSpans);
         }
         if (kept != ends.Length) Array.Resize(ref ends, kept);
 
-        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
+        return FinishPolygonFill(mapped, ends, keptSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
+    }
+
+    /// <summary>Translates one contour slice run of recorded spans into mapped-global indices, renumbering to the kept contour and dropping endpoints lost to stripping.</summary>
+    private static void TranslateQuadSpans(SvgQuadSpan[] recorded, int runStart, int runEnd, int keptContour, int[] indexMap, List<SvgQuadSpan> keptSpans)
+    {
+        ArgumentNullException.ThrowIfNull(recorded);
+        ArgumentNullException.ThrowIfNull(indexMap);
+        ArgumentNullException.ThrowIfNull(keptSpans);
+        for (int index = runStart; index < runEnd; index++)
+        {
+            SvgQuadSpan span = recorded[index];
+            if (span.StartIndex < 0 || span.StartIndex >= indexMap.Length || span.EndIndex < 0 || span.EndIndex >= indexMap.Length) continue;
+            int mappedStart = indexMap[span.StartIndex];
+            int mappedEnd = indexMap[span.EndIndex];
+            if (mappedStart < 0 || mappedEnd < 0 || mappedEnd <= mappedStart) continue;
+            keptSpans.Add(new SvgQuadSpan(keptContour, mappedStart, mappedEnd, span.Control));
+        }
     }
 
     /// <summary>Lowers user-space fractional point-list vertices through the device map into one polygon fill.</summary>
@@ -1032,7 +1076,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ends = mergedEnds;
 
         SvgPolygonMapping mapping = flattenedCenterline ? SvgPolygonMapping.FlattenedCurves : fractionalVertices ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.QuarterEdges;
-        RenderBudget.BudgetReservation? reservation = ReserveScene(retainedOutlines.Length, ends.Length, ends.Length, budget);
+        RenderBudget.BudgetReservation? reservation = ReserveScene(retainedOutlines.Length, ends.Length, ends.Length, 0, budget);
         try
         {
             ValidateDeviceRange(retainedOutlines);
@@ -1045,7 +1089,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 int start = contour == 0 ? 0 : ends[contour - 1];
                 if (roles[contour] == 0 && ends[contour] - start >= 3) roles[contour] = 1;
             }
-            return RetainPolygonFill(retainedOutlines, ends, roles, color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
+            return RetainPolygonFill(retainedOutlines, ends, roles, Array.Empty<SvgQuadSpan>(), color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
         }
         catch
         {
@@ -1055,14 +1099,14 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Validated separated contour storage with resolved combination weights and its scene reservation, ready for paint-specific retention. The reservation transfers to the retained fill.</summary>
-    private readonly record struct SeparatedContours(SvgDevicePoint[] Points, int[] Ends, int[] Signs, SvgPolygonMapping Mapping, RenderBudget.BudgetReservation? SceneReservation);
+    private readonly record struct SeparatedContours(SvgDevicePoint[] Points, int[] Ends, int[] Signs, SvgQuadSpan[] Spans, SvgPolygonMapping Mapping, RenderBudget.BudgetReservation? SceneReservation);
 
-    /// <summary>Reserves exact scene storage for retained contour arrays before allocation, returning null when nothing is retained.</summary>
-    private static RenderBudget.BudgetReservation? ReserveScene(int pointCount, int endCount, int signCount, RenderBudget budget)
+    /// <summary>Reserves exact scene storage for retained contour and span arrays before allocation, returning null when nothing is retained.</summary>
+    private static RenderBudget.BudgetReservation? ReserveScene(int pointCount, int endCount, int signCount, int spanCount, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         long bytes;
-        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCount) + ParserCollectionMemory.GetArrayByteCount<int>(endCount) + ParserCollectionMemory.GetArrayByteCount<int>(signCount)); }
+        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCount) + ParserCollectionMemory.GetArrayByteCount<int>(endCount) + ParserCollectionMemory.GetArrayByteCount<int>(signCount) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(spanCount)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
         return bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
     }
@@ -1116,13 +1160,21 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
     }
 
-    /// <summary>Validates separated device contours once and resolves per-contour combination weights, returning paint-independent retained storage with its scene reservation, which transfers to the retained fill.</summary>
+    /// <summary>Separates contours without recorded curves; quadratic spans stay empty on this route.</summary>
     private SeparatedContours PrepareSeparatedContours(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgPolygonMapping mapping, RenderBudget budget)
+    {
+        return PrepareSeparatedContours(mapped, ends, Array.Empty<SvgQuadSpan>(), mapping, budget);
+    }
+
+    /// <summary>Separates contours carrying quadratic spans, dropping them across any rewriting stage.</summary>
+    /// <remarks>Weld compaction, identical-contour merging and every crossing resolver rewrite point indices, so spans survive only the clean path where points flow through bitwise; the walker re-gates on structure anyway.</remarks>
+    private SeparatedContours PrepareSeparatedContours(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgQuadSpan[] quadSpans, SvgPolygonMapping mapping, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(quadSpans);
         ArgumentNullException.ThrowIfNull(budget);
-        RenderBudget.BudgetReservation? reservation = ReserveScene(mapped.Count, ends.Length, ends.Length, budget);
+        RenderBudget.BudgetReservation? reservation = ReserveScene(mapped.Count, ends.Length, ends.Length, quadSpans.Length, budget);
         try
         {
             SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
@@ -1131,8 +1183,9 @@ internal ref struct SvgOrthogonalGeometryLowering
             int weldedTotal = WeldDustJoints(retained, ends, weldedEnds, _workCounter, _cancellationToken);
             if (weldedTotal < retained.Length)
             {
+                quadSpans = Array.Empty<SvgQuadSpan>();
                 reservation?.Dispose();
-                reservation = ReserveScene(weldedTotal, ends.Length, ends.Length, budget);
+                reservation = ReserveScene(weldedTotal, ends.Length, ends.Length, quadSpans.Length, budget);
                 SvgDevicePoint[] tightPoints = new SvgDevicePoint[weldedTotal];
                 for (int index = 0; index < weldedTotal; index++)
                 {
@@ -1146,8 +1199,9 @@ internal ref struct SvgOrthogonalGeometryLowering
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
             if (SvgContourNesting.MergeIdenticalContours(retained, ends, _workCounter, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, _cancellationToken))
             {
+                quadSpans = Array.Empty<SvgQuadSpan>();
                 reservation?.Dispose();
-                reservation = ReserveScene(mergedPoints.Length, mergedEnds.Length, mergedEnds.Length, budget);
+                reservation = ReserveScene(mergedPoints.Length, mergedEnds.Length, mergedEnds.Length, quadSpans.Length, budget);
                 retained = mergedPoints;
                 ends = mergedEnds;
             }
@@ -1159,6 +1213,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             bool subdividedCrossings = false;
             if (structure != SvgContourFlags.None)
             {
+                quadSpans = Array.Empty<SvgQuadSpan>();
                 using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
                 using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
                 if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget, out interLoopResolved))
@@ -1179,7 +1234,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                     }
                 }
                 reservation?.Dispose();
-                reservation = ReserveScene(splitPoints.Count, splitEnds.Count, splitEnds.Count, budget);
+                reservation = ReserveScene(splitPoints.Count, splitEnds.Count, splitEnds.Count, quadSpans.Length, budget);
                 retained = splitPoints.AsSpan().ToArray();
                 ends = splitEnds.AsSpan().ToArray();
                 ValidateDeviceRange(retained);
@@ -1196,7 +1251,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 signs[0] = 1;
                 signs[1] = -1;
             }
-            return new SeparatedContours(retained, ends, signs, mapping, reservation);
+            return new SeparatedContours(retained, ends, signs, quadSpans, mapping, reservation);
         }
         catch
         {
@@ -1205,14 +1260,20 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
     }
 
-    /// <summary>Retains one polygon fill from validated separated contours with scene-owned storage.</summary>
+    /// <summary>Retains one polygon fill without recorded curves; quadratic spans stay empty on this route.</summary>
     private SvgParsedGeometry FinishPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgColor color, bool hasFill, SvgPolygonMapping mapping, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        return FinishPolygonFill(mapped, ends, Array.Empty<SvgQuadSpan>(), color, hasFill, mapping, frame, budget);
+    }
+
+    /// <summary>Retains one polygon fill carrying translated quadratic spans into separation.</summary>
+    private SvgParsedGeometry FinishPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgQuadSpan[] quadSpans, SvgColor color, bool hasFill, SvgPolygonMapping mapping, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
-        SeparatedContours separated = PrepareSeparatedContours(mapped, ends, mapping, budget);
-        return RetainPolygonFill(separated.Points, separated.Ends, separated.Signs, color, hasFill, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
+        SeparatedContours separated = PrepareSeparatedContours(mapped, ends, quadSpans, mapping, budget);
+        return RetainPolygonFill(separated.Points, separated.Ends, separated.Signs, separated.Spans, color, hasFill, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
     }
 
     /// <summary>Splits self-crossing contours at interior crossings into simple loops sharing only split vertices, then eliminates crossings between loops the same way.</summary>
@@ -2895,12 +2956,13 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
     }
 
-    private SvgParsedGeometry RetainPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
+    /// <summary>Retains one polygon fill carrying translated spans from the path-fill route.</summary>
+    private SvgParsedGeometry RetainPolygonFill(SvgDevicePoint[] retained, int[] ends, int[]? signs, SvgQuadSpan[] spans, SvgColor color, bool hasFill, bool isEvenOdd, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(retained);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
-        SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, color, hasFill, isEvenOdd, mapping, clip, reservation, budget);
+        SvgPolygonFill fill = SvgPolygonFill.Create(retained, ends, signs, spans, color, hasFill, isEvenOdd, mapping, clip, reservation, budget);
         try { _geometries.Add(SvgGeometry.FromPolygonFill(fill)); }
         catch { fill.Dispose(); throw; }
         _geometryElementCount++;
