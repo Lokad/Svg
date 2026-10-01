@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one admitted one-to-eight-stop linear gradient with its vector and referencing scale record.</summary>
 /// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored endpoints after the local vector definition, so raster evaluation inverts the exact paint map.</remarks>
-internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY);
+internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation);
 
 /// <summary>Identifies the admitted stop-range extension rule.</summary>
 internal enum SvgGradientSpread { Pad, Repeat, Reflect }
@@ -19,7 +19,7 @@ internal readonly record struct SvgGradientTemplate(double X1, double Y1, double
 
 /// <summary>Retains one admitted one-to-eight-stop radial gradient with a strictly inside focal point, contained focal circle and referencing scale record.</summary>
 /// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored circle after the local definition, so raster evaluation inverts the exact paint map under non-uniform referencing transforms.</remarks>
-internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY);
+internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation);
 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius, bool HasFocalX, bool HasFocalY, bool HasFocalRadius);
@@ -35,6 +35,21 @@ internal readonly record struct PendingRadialGradientHref(string Id, string Href
 internal readonly record struct SvgGradientTransform(double A, double B, double C, double D, double E, double F)
 {
     internal static SvgGradientTransform Identity { get; } = new(1, 0, 0, 1, 0, 0);
+
+    /// <summary>Reports whether the columns are orthogonal with a shared length, covering rotation, reflection and uniform scales.</summary>
+    /// <remarks>Mirrors the contour uniform-scale check with an orthogonality requirement added: exact equality first with a relative tolerance fallback, so composed rotations admit exactly while skew and non-uniform rotation stay gated. Such maps send circles to circles, which the radial evaluator handles without ellipse math.</remarks>
+    internal bool IsSimilarity()
+    {
+        double first = Math.Sqrt(A * A + B * B);
+        double second = Math.Sqrt(C * C + D * D);
+        double dot = A * C + B * D;
+        if (!double.IsFinite(first) || !double.IsFinite(second) || !double.IsFinite(dot)) return false;
+        if (first == second && dot == 0) return true;
+        double magnitude = Math.Max(first, second);
+        if (magnitude == 0) return false;
+        if (Math.Abs(first - second) > 1e-9 * magnitude) return false;
+        return Math.Abs(dot) <= 1e-9 * magnitude * magnitude;
+    }
 
     /// <summary>Maps one gradient vector endpoint, rejecting non-finite results.</summary>
     internal (double X, double Y) Apply(double x, double y)
@@ -87,7 +102,7 @@ internal static class SvgGradientSyntax
         SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
         string? transformValue = reader.GetAttribute("gradientTransform");
         SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue);
-        if (gradientTransform.B != 0 || gradientTransform.C != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned radial gradient transforms are implemented.");
+        if ((gradientTransform.B != 0 || gradientTransform.C != 0) && !gradientTransform.IsSimilarity()) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar radial gradient transforms are implemented.");
         if (gradientTransform.A != gradientTransform.D && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform radial gradient transforms are not implemented.");
         string? rawFocalRadius = reader.GetAttribute("fr");
         string? rawCenterX = reader.GetAttribute("cx");

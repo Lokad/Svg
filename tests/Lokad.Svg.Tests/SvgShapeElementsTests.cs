@@ -85,6 +85,43 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Rotated_radial_gradient_moves_focal_hotspot()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='32' cy='32' r='22' fx='44' fy='32' gradientTransform='rotate(30 32 32)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out int width, out int height);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='32' cy='32' r='22' fx='44' fy='32'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.NotEqual(plain, pixels);
+        Assert.Equal(64, width);
+        Assert.Equal(64, height);
+        Assert.Equal(new SvgColor(244, 0, 10, 255), Pixel(pixels, width, 42, 38));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 63, 63));
+        Assert.Equal(new SvgColor(170, 0, 84, 255), Pixel(pixels, width, 32, 32));
+    }
+
+    [Fact]
+    public void Rotated_then_scaled_gradient_chain_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='p' gradientUnits='userSpaceOnUse' x1='8' y1='32' x2='56' y2='32' gradientTransform='rotate(45 32 32)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='g' href='#p' gradientTransform='scale(2 1)'/></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only axis-aligned or similar linear gradient transforms are implemented.", rejected.Message);
+    }
+
+    [Fact]
+    public void Scaled_then_rotated_gradient_chain_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='p' gradientUnits='userSpaceOnUse' x1='8' y1='32' x2='56' y2='32' gradientTransform='scale(2 1)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><linearGradient id='g' href='#p' gradientTransform='rotate(45 32 32)'/></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only axis-aligned or similar linear gradient transforms are implemented.", rejected.Message);
+    }
+
+    [Fact]
     public void Rotated_linear_gradient_paints_diagonal_blend()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='8' y1='32' x2='56' y2='32' gradientTransform='rotate(45 32 32)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out int width, out _);

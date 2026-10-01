@@ -524,8 +524,8 @@ internal static class SvgDefinitionParser
             }
         }
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveGradientStops(state, template);
-        (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY) = ResolveGradientVector(template, state);
-        SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY);
+        (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasLinearRotation) = ResolveGradientVector(template, state);
+        SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasLinearRotation);
         string retainedId = state.Strings.Copy(state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier."));
         if (!state.Gradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
         DrainPendingGradientHrefs(state, workCounter, cancellationToken);
@@ -692,9 +692,9 @@ internal static class SvgDefinitionParser
             }
         }
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveRadialStops(state, template);
-        (double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY) = ResolveRadialVector(template, state);
+        (double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasRadialRotation) = ResolveRadialVector(template, state);
         if (!isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
-        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, focalX, focalY, focalRadius, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY);
+        SvgRadialGradient gradient = new(start, end, centerX, centerY, radius, focalX, focalY, focalRadius, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasRadialRotation);
         string retainedId = state.Strings.Copy(state.RadialGradientId ?? throw new InvalidOperationException("Radial gradient registration requires an identifier."));
         if (state.Gradients.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
         if (!state.RadialGradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
@@ -729,7 +729,7 @@ internal static class SvgDefinitionParser
         return (linear.Start, linear.End, linear.Offset1, linear.Offset2, linear.IsEmpty, linear.Stops);
     }
 
-    private static (double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientSpread Spread, double ReferenceScaleX, double ReferenceScaleY) ResolveRadialVector(SvgRadialTemplate template, SvgDocumentState state)
+    private static (double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientSpread Spread, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation) ResolveRadialVector(SvgRadialTemplate template, SvgDocumentState state)
     {
         double centerX = template.CenterX;
         double centerY = template.CenterY;
@@ -739,6 +739,7 @@ internal static class SvgDefinitionParser
         double referenceScaleX = 1;
         double referenceScaleY = 1;
         SvgGradientSpread spread = template.Spread;
+        bool hasRotation = false;
         double focalX;
         double focalY;
         if (template.Href is not null && template.VectorCount == 0 && !template.HasFocalX && !template.HasFocalY && !template.HasFocalRadius)
@@ -756,6 +757,7 @@ internal static class SvgDefinitionParser
                 focalRadius = parent.FocalRadius;
                 referenceScaleX = parent.ReferenceScaleX;
                 referenceScaleY = parent.ReferenceScaleY;
+                hasRotation = parent.HasRotation;
             }
             else if (state.Gradients.TryGetValue(vectorHrefId, out SvgLinearGradient linear))
             {
@@ -765,6 +767,7 @@ internal static class SvgDefinitionParser
                 focalY = centerY;
                 referenceScaleX = linear.ReferenceScaleX;
                 referenceScaleY = linear.ReferenceScaleY;
+                hasRotation = linear.HasRotation;
             }
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local radial gradient references are implemented.");
         }
@@ -776,17 +779,21 @@ internal static class SvgDefinitionParser
         if (isUserSpace) ValidateRadialFocalCircle(centerX, centerY, radius, focalX, focalY, focalRadius);
         if (template.HasTransform)
         {
+            if ((template.Transform.B != 0 || template.Transform.C != 0) && (!template.Transform.IsSimilarity() || Math.Abs(referenceScaleX) != Math.Abs(referenceScaleY))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar radial gradient transforms are implemented.");
+            if (template.Transform.B == 0 && template.Transform.C == 0 && hasRotation && template.Transform.A != template.Transform.D) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar radial gradient transforms are implemented.");
+            hasRotation = hasRotation || template.Transform.B != 0 || template.Transform.C != 0;
             (centerX, centerY) = template.Transform.Apply(centerX, centerY);
             (focalX, focalY) = template.Transform.Apply(focalX, focalY);
-            radius *= Math.Abs(template.Transform.A);
-            focalRadius *= Math.Abs(template.Transform.A);
+            double radiusScale = template.Transform.B == 0 && template.Transform.C == 0 ? Math.Abs(template.Transform.A) : Math.Sqrt(template.Transform.A * template.Transform.A + template.Transform.B * template.Transform.B);
+            radius *= radiusScale;
+            focalRadius *= radiusScale;
             if (isUserSpace)
             {
                 referenceScaleX *= template.Transform.A;
                 referenceScaleY *= template.Transform.D;
             }
         }
-        return (centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, spread, referenceScaleX, referenceScaleY);
+        return (centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, spread, referenceScaleX, referenceScaleY, hasRotation);
     }
 
     private static void ValidateRadialFocalCircle(double centerX, double centerY, double radius, double focalX, double focalY, double focalRadius)
@@ -833,7 +840,7 @@ internal static class SvgDefinitionParser
         return (clamped[0].Color, clamped[^1].Color, clamped[0].Offset, clamped[^1].Offset, false, clamped);
     }
 
-    private static (double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientSpread Spread, double ReferenceScaleX, double ReferenceScaleY) ResolveGradientVector(SvgGradientTemplate template, SvgDocumentState state)
+    private static (double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientSpread Spread, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation) ResolveGradientVector(SvgGradientTemplate template, SvgDocumentState state)
     {
         double x1 = template.X1;
         double y1 = template.Y1;
@@ -843,6 +850,7 @@ internal static class SvgDefinitionParser
         double referenceScaleX = 1;
         double referenceScaleY = 1;
         SvgGradientSpread spread = template.Spread;
+        bool hasRotation = false;
         if (template.Href is not null && template.VectorCount < 4)
         {
             if (!state.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(template.Href), out SvgLinearGradient parent))
@@ -853,6 +861,7 @@ internal static class SvgDefinitionParser
                 if (!template.HasSpread) spread = radial.Spread;
                 referenceScaleX = radial.ReferenceScaleX;
                 referenceScaleY = radial.ReferenceScaleY;
+                hasRotation = radial.HasRotation;
             }
             else
             {
@@ -864,10 +873,14 @@ internal static class SvgDefinitionParser
                 if (!template.HasSpread) spread = parent.Spread;
                 referenceScaleX = parent.ReferenceScaleX;
                 referenceScaleY = parent.ReferenceScaleY;
+                hasRotation = parent.HasRotation;
             }
         }
         if (template.HasTransform)
         {
+            if ((template.Transform.B != 0 || template.Transform.C != 0) && (!template.Transform.IsSimilarity() || Math.Abs(referenceScaleX) != Math.Abs(referenceScaleY))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar linear gradient transforms are implemented.");
+            if (template.Transform.B == 0 && template.Transform.C == 0 && hasRotation && template.Transform.A != template.Transform.D) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar linear gradient transforms are implemented.");
+            hasRotation = hasRotation || template.Transform.B != 0 || template.Transform.C != 0;
             (x1, y1) = template.Transform.Apply(x1, y1);
             (x2, y2) = template.Transform.Apply(x2, y2);
             if (isUserSpace)
@@ -876,7 +889,7 @@ internal static class SvgDefinitionParser
                 referenceScaleY *= template.Transform.D;
             }
         }
-        return (x1, y1, x2, y2, isUserSpace, spread, referenceScaleX, referenceScaleY);
+        return (x1, y1, x2, y2, isUserSpace, spread, referenceScaleX, referenceScaleY, hasRotation);
 
     }
 
