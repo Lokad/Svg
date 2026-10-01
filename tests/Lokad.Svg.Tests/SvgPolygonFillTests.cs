@@ -1265,7 +1265,6 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, 20, 10, 10));
     }
 
-
     [Fact]
     public void Evenodd_three_loop_crossing_stays_unsupported()
     {
@@ -1275,7 +1274,6 @@ public sealed class SvgPolygonFillTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
-
 
     [Fact]
     public void Dust_spike_drops_leaving_main_lobe()
@@ -1485,6 +1483,17 @@ public sealed class SvgPolygonFillTests
         byte[] rotated = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M1,1 L5,1 L1,5 Z' fill='red' transform='matrix(0,-1,1,0,0,8)'/></svg>", out _, out _);
 
         Assert.Equal(direct, rotated);
+    }
+
+    [Fact]
+    public void Translated_gradient_ancestor_matches_baked_twin()
+    {
+        // Row 7: translated-ancestor userSpaceOnUse composition evaluates exactly like
+        // the hand-translated twin with adjusted gradient center.
+        byte[] translated = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='translate(6,3)'><defs><radialGradient id='g' cx='0' cy='0' r='4' gradientTransform='matrix(2 0 0 1 0 0)' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='black'/><stop offset='1' stop-color='white'/></radialGradient></defs><rect x='-5' y='-3' width='10' height='6' fill='url(#g)'/></g></svg>", out _, out _);
+        byte[] baked = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='g' cx='3' cy='3' r='4' gradientTransform='matrix(2 0 0 1 0 0)' gradientUnits='userSpaceOnUse'><stop offset='0' stop-color='black'/><stop offset='1' stop-color='white'/></radialGradient></defs><rect x='1' y='0' width='10' height='6' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.Equal(translated, baked);
     }
 
     [Fact]

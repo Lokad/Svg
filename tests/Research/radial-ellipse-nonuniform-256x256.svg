@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="1000 100 800 800"><defs><radialGradient id="g" cx="204.9" cy="-244" r="25.72" gradientTransform="matrix(-4.228 -8.251 14.01 -7.18 5688 455.1)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#656f71"/><stop offset="1" stop-color="#d3d4cf"/></radialGradient></defs><rect x="1000" y="100" width="800" height="800" fill="url(#g)"/></svg>
