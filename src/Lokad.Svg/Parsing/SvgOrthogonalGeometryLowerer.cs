@@ -2522,7 +2522,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Resolves point-touching contours into simple loops sharing only vertices.</summary>
-    /// <remarks>Admits sets whose only defects are endpoint contacts plus strict crossings between loops: nonzero sets of any loop count resolve crossings alongside touches, while even-odd resolution admits exactly two-loop sets without self-touches (opposite parity signs are exact for every two-loop configuration under absolute-value combination, so crossing subdivision reports through subdividedCrossings for sign forcing and larger even-odd sets stay gated). Edges split at interior touch vertices with bitwise copies, inter-loop crossings subdivide both edges at the computed crossing, and self-touching rings split at shared vertices into lobes. Every loop keeps a vertex that is neither shared nor on another loop boundary for robust nesting tests, and the split-loop guard verifies the result. Intra-loop crossings, collinear overlaps and degenerate edges stay rejected, as do fully-inscribed loops and larger even-odd crossing sets. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps. Charges pair estimates for scans plus one work unit per copied vertex, and observes cancellation.</remarks>
+    /// <remarks>Admits sets whose only defects are endpoint contacts plus strict crossings between loops: nonzero sets of any loop count resolve crossings alongside touches, while even-odd resolution admits exactly two-loop sets without self-touches, including pure-crossing sets with no touch to anchor on (opposite parity signs are exact for every two-loop configuration under absolute-value combination, so crossing subdivision reports through subdividedCrossings for sign forcing and larger even-odd sets stay gated). Edges split at interior touch vertices with bitwise copies, inter-loop crossings subdivide both edges at the computed crossing, and self-touching rings split at shared vertices into lobes. Every loop keeps a vertex that is neither shared nor on another loop boundary for robust nesting tests, and the split-loop guard verifies the result. Intra-loop crossings, collinear overlaps and degenerate edges stay rejected, as do fully-inscribed loops and larger even-odd crossing sets. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps. Charges pair estimates for scans plus one work unit per copied vertex, and observes cancellation.</remarks>
     private bool TryResolveTouchContours(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, out bool subdividedCrossings)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -2532,7 +2532,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         subdividedCrossings = false;
         bool allowEvenOddCrossings = _isEvenOdd && (structure & SvgContourFlags.SelfTouch) == SvgContourFlags.None && ends.Length == 2;
         if (structure == SvgContourFlags.None) return false;
-        if ((structure & ~(SvgContourFlags.SelfTouch | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return false;
+        bool pureEvenOddCrossing = allowEvenOddCrossings && structure == SvgContourFlags.ProperCrossing;
+        if (!pureEvenOddCrossing && (structure & ~(SvgContourFlags.SelfTouch | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return false;
         splitPoints.Clear();
         splitEnds.Clear();
         SvgDevicePoint[] workPoints = new SvgDevicePoint[points.Length];

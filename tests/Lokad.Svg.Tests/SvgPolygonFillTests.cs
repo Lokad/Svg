@@ -1651,4 +1651,17 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 0, 0));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 736, 370));
     }
+    [Fact]
+    public void Evenodd_crossing_ring_pair_fills_like_outline()
+    {
+        // R34: an even-odd ring pair with only strict crossings subdivides both
+        // edges at each computed crossing and forces opposite parity signs.
+        byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='600' height='400'><g fill='#ff0' fill-rule='evenodd' stroke-width='0.573' stroke-linecap='round' stroke-linejoin='round'><path d='m154.59,146.4c-2.7101,7.2937,36.149,31.318,82.903,59.754,46.752,28.434,87.065,46.006,90.053,43.486,0.18256-0.32544,1.4701-2.5409,1.352-2.5232-0.56001,0.84402-1.9234,1.1104-4.0506,0.49741-12.631-3.6433-45.575-18.765-86.374-43.506-40.798-24.743-76.294-47.544-81.811-57.232-0.38363-0.67116-0.65702-1.8962-0.60146-2.8487l-0.13405-0.002-1.1747,2.0532-0.16139,0.32191h-0.00088zm164.36,116.04c-0.51238,0.92957-1.4675,0.96044-3.2816,0.76112-11.3-1.2506-45.589-17.925-86.162-42.213-47.21-28.26-86.2-54.01-81.97-60.74l1.1509-2.0346,0.22665,0.0706c-3.8037,11.405,76.948,57.578,81.702,60.522,46.724,28.947,86.115,45.851,89.601,41.458l-1.2682,2.181v-0.002z'/></g></svg>", out int width, out int height);
+
+        Assert.Equal(600, width);
+        Assert.Equal(400, height);
+        Assert.Equal(new SvgColor(255, 255, 0, 255), Pixel(union, width, 214, 210));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 599, 399));
+    }
 }
