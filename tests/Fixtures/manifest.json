@@ -1086,6 +1086,46 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-dash-miter-join-16x16.json",
       "referenceSha256": "a945b6c0ec0512b472a255cce69463131ae5019801f854d61a44bdf8439310f1"
+    },
+    {
+      "id": "original-bevel-join-single-64x64",
+      "path": "original/original-bevel-join-single-64x64.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-01",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "3f738b012bcf1746c692d4b440538acbea6fe521a3982c373210b0abaa8e1c3b",
+      "materializedSha256": "3f738b012bcf1746c692d4b440538acbea6fe521a3982c373210b0abaa8e1c3b",
+      "featureTags": ["geometry", "stroke", "bevel", "join", "coverage", "calibration"],
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-bevel-join-single-64x64.json",
+      "referenceSha256": "d5593dc0ed65713d03292cf3e1dd661ebe06e2449e49720f198d7adc2e0b0739"
+    },
+    {
+      "id": "original-bevel-join-double-64x64",
+      "path": "original/original-bevel-join-double-64x64.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-01",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "be56b4c1a3f470f58c80c26c0ab9db957cba8e28c6219581fae8a96346115541",
+      "materializedSha256": "be56b4c1a3f470f58c80c26c0ab9db957cba8e28c6219581fae8a96346115541",
+      "featureTags": ["geometry", "stroke", "bevel", "join", "coverage", "calibration"],
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-bevel-join-double-64x64.json",
+      "referenceSha256": "51b8dd88413e3f10b770f59c3ffac50039794641f32497f9912b9db0ec2aa84a"
     }
   ]
 }
