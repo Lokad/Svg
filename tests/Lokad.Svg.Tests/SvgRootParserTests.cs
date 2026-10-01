@@ -5035,11 +5035,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_rotated_gradient_transforms()
+    public void Admits_rotated_linear_gradient_vectors()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientTransform='rotate(45)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0' gradientTransform='rotate(45)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(0, geometry.Gradient.Gradient.X1);
+        Assert.Equal(0, geometry.Gradient.Gradient.Y1);
+        Assert.Equal(Math.Cos(Math.PI / 4), geometry.Gradient.Gradient.X2);
+        Assert.Equal(Math.Sin(Math.PI / 4), geometry.Gradient.Gradient.Y2);
     }
     [Fact]
     public void Lowers_repeat_spread_gradients_with_retained_spread()

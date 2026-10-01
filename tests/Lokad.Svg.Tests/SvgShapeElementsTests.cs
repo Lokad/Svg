@@ -38,6 +38,20 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
+    public void Rotated_linear_gradient_paints_diagonal_blend()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='8' y1='32' x2='56' y2='32' gradientTransform='rotate(45 32 32)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out int width, out _);
+        byte[] plain = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='8' y1='32' x2='56' y2='32'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect x='0' y='0' width='64' height='64' fill='url(#g)'/></svg>", out _, out _);
+
+        Assert.NotEqual(plain, pixels);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 63, 63));
+        Assert.Equal(new SvgColor(128, 0, 128, 255), Pixel(pixels, width, 0, 63));
+        Assert.Equal(new SvgColor(128, 0, 128, 255), Pixel(pixels, width, 63, 0));
+        Assert.Equal(new SvgColor(123, 0, 131, 255), Pixel(pixels, width, 32, 32));
+    }
+
+    [Fact]
     public void Root_linear_gradient_matches_defs_twin()
     {
         byte[] rooted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#g)\"/></svg>", out _, out _);

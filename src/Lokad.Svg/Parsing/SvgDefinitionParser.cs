@@ -778,12 +778,13 @@ internal static class SvgDefinitionParser
         {
             (centerX, centerY) = template.Transform.Apply(centerX, centerY);
             (focalX, focalY) = template.Transform.Apply(focalX, focalY);
-            radius *= template.Transform.ScaleX;
-            focalRadius *= template.Transform.ScaleX;
+            radius *= template.Transform.A;
+            focalRadius *= template.Transform.A;
             if (isUserSpace)
             {
-                referenceScaleX *= template.Transform.ScaleX;
-                referenceScaleY *= template.Transform.ScaleY;
+                (double referenceColumnX, double referenceColumnY) = template.Transform.ColumnLengths();
+                referenceScaleX *= referenceColumnX;
+                referenceScaleY *= referenceColumnY;
             }
         }
         return (centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, spread, referenceScaleX, referenceScaleY);
@@ -872,8 +873,9 @@ internal static class SvgDefinitionParser
             (x2, y2) = template.Transform.Apply(x2, y2);
             if (isUserSpace)
             {
-                referenceScaleX *= template.Transform.ScaleX;
-                referenceScaleY *= template.Transform.ScaleY;
+                (double referenceColumnX, double referenceColumnY) = template.Transform.ColumnLengths();
+                referenceScaleX *= referenceColumnX;
+                referenceScaleY *= referenceColumnY;
             }
         }
         return (x1, y1, x2, y2, isUserSpace, spread, referenceScaleX, referenceScaleY);
