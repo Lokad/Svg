@@ -264,11 +264,22 @@ public sealed class SvgCurveFillTests
     [Fact]
     public void Curved_bowtie_matches_integer_bowtie()
     {
-        // R34: flattened collinear cubics cross exactly like their straight twin.
+        // R34: flattened collinear cubics cross like their straight twin up to
+        // one half-quantum alpha step at the exact-half pixel: the fan rounds
+        // 127.5 up to 128 while the edges walker truncates to 127 (pinned
+        // Chrome reads 130 there, so both stay approximations of the same
+        // half-covered pixel and the twin identity holds everywhere else).
         byte[] curved = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z' fill='red'/></svg>", out _, out _);
         byte[] straight = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='red'/></svg>", out _, out _);
 
-        Assert.Equal(straight, curved);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(curved, 8, 1, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(curved, 8, 6, 2));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(curved, 8, 4, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 127), Pixel(curved, 8, 3, 3));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(straight, 8, 1, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(straight, 8, 6, 2));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(straight, 8, 4, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(straight, 8, 3, 3));
     }
 
     [Fact]
