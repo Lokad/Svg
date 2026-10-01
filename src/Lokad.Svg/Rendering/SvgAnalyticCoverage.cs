@@ -456,8 +456,11 @@ internal ref struct SvgAnalyticCoverage
         return (int)((scaled >> 8) & 0xFF);
     }
     private static int PartialAlpha(int alpha, int partialHeight) => FixedRoundToInt(alpha * partialHeight);
+    /// <summary>Truncates axis-aligned box-row coverage like Chrome: pure horizontal partial rows evaluate floor of coverage times 255 (127.5 to 127) while slanted rows keep the pinned rounding that 22 diagonal exact fixtures verify.</summary>
+    private static int PartialAlphaTrunc(int alpha, int partialHeight) => (int)(((long)alpha * partialHeight) >> 16);
     private static int PartialAlphaFull(int alpha, int fullAlpha) => (alpha * fullAlpha) >> 8;
     private static int FixedToAlpha(int value) => PartialAlpha(255, value);
+    private static int FixedToAlphaTrunc(int value) => PartialAlphaTrunc(255, value);
     private void AddMask(int x, int alpha)
     {
         if (x < 0 || x >= _width) return;
@@ -849,21 +852,21 @@ internal ref struct SvgAnalyticCoverage
         {
             if (partialTop > 0 && fullTop - 1 == target)
             {
-                if (partialLeft > 0) AddMask(fullLeft - 1 - _xStart, FixedToAlpha(FixedMul(partialTop, partialLeft)));
-                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, FixedToAlpha(partialTop));
-                if (partialRite > 0) AddMask(fullRite - _xStart, FixedToAlpha(FixedMul(partialTop, partialRite)));
+                if (partialLeft > 0) AddMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(FixedMul(partialTop, partialLeft)));
+                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, FixedToAlphaTrunc(partialTop));
+                if (partialRite > 0) AddMask(fullRite - _xStart, FixedToAlphaTrunc(FixedMul(partialTop, partialRite)));
             }
-            if (fullBot > fullTop && (fullRite > fullLeft || FixedToAlpha(partialLeft) > 0 || FixedToAlpha(partialRite) > 0) && target >= fullTop && target < fullBot)
+            if (fullBot > fullTop && (fullRite > fullLeft || FixedToAlphaTrunc(partialLeft) > 0 || FixedToAlphaTrunc(partialRite) > 0) && target >= fullTop && target < fullBot)
             {
-                if (partialLeft > 0) SetMask(fullLeft - 1 - _xStart, FixedToAlpha(partialLeft));
+                if (partialLeft > 0) SetMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(partialLeft));
                 for (int index = 0; index < fullRite - fullLeft; index++) SetMask(fullLeft + index - _xStart, 255);
-                if (partialRite > 0) SetMask(fullRite - _xStart, FixedToAlpha(partialRite));
+                if (partialRite > 0) SetMask(fullRite - _xStart, FixedToAlphaTrunc(partialRite));
             }
             if (partialBot > 0 && fullBot == target)
             {
-                if (partialLeft > 0) AddMask(fullLeft - 1 - _xStart, FixedToAlpha(FixedMul(partialBot, partialLeft)));
-                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, FixedToAlpha(partialBot));
-                if (partialRite > 0) AddMask(fullRite - _xStart, FixedToAlpha(FixedMul(partialBot, partialRite)));
+                if (partialLeft > 0) AddMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(FixedMul(partialBot, partialLeft)));
+                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, FixedToAlphaTrunc(partialBot));
+                if (partialRite > 0) AddMask(fullRite - _xStart, FixedToAlphaTrunc(FixedMul(partialBot, partialRite)));
             }
         }
         else
@@ -871,9 +874,9 @@ internal ref struct SvgAnalyticCoverage
             int width = rite - left;
             if (width > 0)
             {
-                if (partialTop > 0 && fullTop - 1 == target) AddMask(fullLeft - 1 - _xStart, FixedToAlpha(FixedMul(partialTop, width)));
-                if (fullBot > fullTop && target >= fullTop && target < fullBot) SetMask(fullLeft - 1 - _xStart, FixedToAlpha(width));
-                if (partialBot > 0 && fullBot == target) AddMask(fullLeft - 1 - _xStart, FixedToAlpha(FixedMul(partialBot, width)));
+                if (partialTop > 0 && fullTop - 1 == target) AddMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(FixedMul(partialTop, width)));
+                if (fullBot > fullTop && target >= fullTop && target < fullBot) SetMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(width));
+                if (partialBot > 0 && fullBot == target) AddMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(FixedMul(partialBot, width)));
             }
         }
     }

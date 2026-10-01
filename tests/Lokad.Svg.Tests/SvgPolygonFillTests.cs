@@ -630,11 +630,11 @@ public sealed class SvgPolygonFillTests
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L4.5,0.5 L4.5,4.5 L0.5,4.5 Z' fill='red'/></svg>", out _, out _);
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 2, 2));
-        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 8, 0, 2));
-        Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 8, 0, 0));
-        Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 8, 4, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 127), Pixel(pixels, 8, 0, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 63), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 63), Pixel(pixels, 8, 4, 4));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 7));
-        Assert.Equal(4087, AlphaSum(pixels));
+        Assert.Equal(4071, AlphaSum(pixels));
     }
 
     [Fact]
@@ -649,6 +649,34 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 32), Pixel(pixels, 8, 4, 0));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 3, 3));
         Assert.Equal(2045, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Half_phase_walker_bar_truncates_fringe_bytes()
+    {
+        // Row 4: axis-aligned box partial rows truncate like Chrome (127.5 to 127),
+        // verified against the banked eighth-phase polygon-bar oracle family.
+        byte[] half = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='2,4.5 14,4.5 14,5.5 2,5.5' fill='black'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 0, 0, 127), Pixel(half, 16, 7, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 127), Pixel(half, 16, 7, 5));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(half, 16, 7, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(half, 16, 7, 6));
+        Assert.Equal(3048, AlphaSum(half));
+    }
+
+    [Fact]
+    public void Quarter_phase_walker_bar_truncates_fringe_bytes()
+    {
+        // Row 4: quarter-phase box fringe truncates (63.75 to 63), matching
+        // the banked oracle while round-half-up produced 64.
+        byte[] quarter = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><polygon points='2,4.25 14,4.25 14,5.25 2,5.25' fill='black'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 0, 0, 191), Pixel(quarter, 16, 7, 4));
+        Assert.Equal(new SvgColor(0, 0, 0, 63), Pixel(quarter, 16, 7, 5));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(quarter, 16, 7, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(quarter, 16, 7, 6));
+        Assert.Equal(3048, AlphaSum(quarter));
     }
 
     [Fact]

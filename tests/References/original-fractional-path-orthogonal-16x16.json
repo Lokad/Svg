@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-fractional-path-orthogonal-16x16",
+  "referencePng": "original-fractional-path-orthogonal-16x16.png",
+  "referenceSha256": "b34e871a71882fd758bc296065e316139ad48ca63376bd60051c5cd6e39e2279",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "9c80d6779ac64613a7c4869f0aa8bb8e4c901b795e7df61a92b067c66259e108",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-01"
+}

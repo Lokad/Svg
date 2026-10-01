@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-quantum-tenth-edge-path-16x16",
+  "referencePng": "original-quantum-tenth-edge-path-16x16.png",
+  "referenceSha256": "71bf42cee3fee1b651a197befa7b84cc7c01b62ef46c0984d0a592a9be139f93",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "a7a3015fff593ae4990742d0045d9c241ecaabda11add4d9143caf279a667299",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-01"
+}
