@@ -5025,8 +5025,9 @@ public sealed class SvgRootParserTests
 
     [Theory]
     [InlineData("scale(0)")]
-    [InlineData("scale(-1)")]
     [InlineData("matrix(1, 1, 0, 1, 0, 0)")]
+    [InlineData("skewX(30)")]
+    [InlineData("skewY(15)")]
     public void Rejects_unsupported_gradient_transform_forms(string transform)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientTransform='" + transform + "'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
@@ -6123,6 +6124,15 @@ public sealed class SvgRootParserTests
         SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientTransform='matrix(2, 0, 0, 1, 0, 0)' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Rejects_reflected_radial_transform_scales()
+    {
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientTransform='scale(-1, 1)' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("Only positive radial gradient transform scales are implemented.", rejected.Message);
     }
 
     [Fact]

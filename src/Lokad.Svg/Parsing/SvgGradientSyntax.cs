@@ -45,14 +45,6 @@ internal readonly record struct SvgGradientTransform(double A, double B, double 
         return (mappedX, mappedY);
     }
 
-    /// <summary>Reports the column lengths that reference-scale accumulation inverts.</summary>
-    internal (double X, double Y) ColumnLengths()
-    {
-        double columnX = Math.Sqrt(A * A + B * B);
-        double columnY = Math.Sqrt(C * C + D * D);
-        if (!double.IsFinite(columnX) || !double.IsFinite(columnY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported gradient transform exceeds the gradient coordinate range.");
-        return (columnX, columnY);
-    }
 }
 
 /// <summary>Parses the bounded linear-gradient definition syntax and lowers gradient-filled rectangles.</summary>
@@ -96,6 +88,7 @@ internal static class SvgGradientSyntax
         string? transformValue = reader.GetAttribute("gradientTransform");
         SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue);
         if (gradientTransform.B != 0 || gradientTransform.C != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned radial gradient transforms are implemented.");
+        if (gradientTransform.A < 0 || gradientTransform.D < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive radial gradient transform scales are implemented.");
         if (gradientTransform.A != gradientTransform.D && !isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform radial gradient transforms are not implemented.");
         string? rawFocalRadius = reader.GetAttribute("fr");
         string? rawCenterX = reader.GetAttribute("cx");
@@ -135,14 +128,14 @@ internal static class SvgGradientSyntax
             }
             int nameStart = position;
             while (position < input.Length && char.IsAsciiLetter(input[position])) position++;
-            if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), positive scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
+            if (nameStart == position) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
             ReadOnlySpan<char> name = input[nameStart..position];
             while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
-            if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), positive scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
+            if (position == input.Length || input[position] != '(') throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
             position++;
             int argumentsStart = position;
             while (position < input.Length && input[position] != ')') position++;
-            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), positive scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
+            if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
             transform = ComposeGradientTransform(transform, ParseGradientTransformFunction(name, input[argumentsStart..position]));
             position++;
             hasFunction = true;
@@ -154,7 +147,7 @@ internal static class SvgGradientSyntax
         bool isMatrix = name.Equals("matrix".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool isTranslate = name.Equals("translate".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool isRotate = name.Equals("rotate".AsSpan(), StringComparison.OrdinalIgnoreCase);
-        if (!isMatrix && !isTranslate && !isRotate && !name.Equals("scale".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), positive scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
+        if (!isMatrix && !isTranslate && !isRotate && !name.Equals("scale".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and positive axis-aligned matrix() gradient transforms are implemented.");
         Span<double> values = stackalloc double[6];
         int valueCount = 0;
         SvgGeometrySyntax.DelimitedTokenReader tokens = new(arguments);
@@ -185,7 +178,7 @@ internal static class SvgGradientSyntax
         double first = values[0];
         double second = valueCount == 2 ? values[1] : (isTranslate ? 0 : first);
         if (isTranslate) return new SvgGradientTransform(1, 0, 0, 1, first, second);
-        if (first <= 0 || second <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive scale() gradient transforms are implemented.");
+        if (first == 0 || second == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero scale() gradient transforms are implemented.");
         return new SvgGradientTransform(first, 0, 0, second, 0, 0);
     }
 
