@@ -77,6 +77,17 @@ public sealed class SvgCubicSpanRetentionTests
         Assert.Empty(geometry.Polygon.QuadSpans);
         Assert.Empty(geometry.Polygon.CubicSpans);
     }
+    [Fact]
+    public void Dusty_multi_contour_path_remaps_both_channels()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 Q4,0 8,8 Z M0,0 L0.0000000004,0 C2,-4 6,-4 8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        SvgQuadSpan quad = Assert.Single(geometry.Polygon.QuadSpans);
+        Assert.Equal(new SvgDevicePoint(4, 0), quad.Control);
+        SvgCubicSpan cubic = Assert.Single(geometry.Polygon.CubicSpans);
+        Assert.Equal(new SvgDevicePoint(2, -4), cubic.FirstControl);
+        Assert.Equal(new SvgDevicePoint(6, -4), cubic.SecondControl);
+        Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[cubic.StartIndex]);
+        Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[cubic.EndIndex]);
+    }
 }
-
-

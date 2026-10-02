@@ -92,4 +92,5 @@ public sealed class SvgCubicSpanWalkerTests
         Assert.True(RowMass(flat) > 0);
         Assert.Equal(flat, declined);
     }
+    
 }

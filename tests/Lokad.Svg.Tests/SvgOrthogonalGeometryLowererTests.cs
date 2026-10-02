@@ -37,7 +37,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 8), new(8 + 1e-13, 8), new(0, 8)];
         int[] ends = [5];
         int[] weldedEnds = new int[1];
-        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, new ParserWorkCounter(100), CancellationToken.None);
+        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, null, new ParserWorkCounter(100), CancellationToken.None);
         Assert.Equal(4, total);
         Assert.Equal([4], weldedEnds);
         Assert.Equal(new SvgDevicePoint(8, 8), points[2]);
@@ -49,7 +49,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 0), new(0, 8)];
         int[] ends = [4];
         int[] weldedEnds = new int[1];
-        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, new ParserWorkCounter(100), CancellationToken.None);
+        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, null, new ParserWorkCounter(100), CancellationToken.None);
         Assert.Equal(4, total);
         Assert.Equal([4], weldedEnds);
     }
@@ -60,7 +60,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8 + 1e-6, 8), new(0, 8)];
         int[] ends = [4];
         int[] weldedEnds = new int[1];
-        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, new ParserWorkCounter(100), CancellationToken.None);
+        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, null, new ParserWorkCounter(100), CancellationToken.None);
         Assert.Equal(4, total);
         Assert.Equal(new SvgDevicePoint(8 + 1e-6, 8), points[2]);
     }
@@ -71,7 +71,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 8), new(0, 8), new(1e-13, 1e-13)];
         int[] ends = [5];
         int[] weldedEnds = new int[1];
-        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, new ParserWorkCounter(100), CancellationToken.None);
+        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, null, new ParserWorkCounter(100), CancellationToken.None);
         Assert.Equal(4, total);
         Assert.Equal([4], weldedEnds);
     }
@@ -82,7 +82,7 @@ public sealed class SvgOrthogonalGeometryLowererTests
         SvgDevicePoint[] points = [new(0, 0), new(1e-13, 0), new(0, 8)];
         int[] ends = [3];
         int[] weldedEnds = new int[1];
-        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, new ParserWorkCounter(100), CancellationToken.None);
+        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, null, new ParserWorkCounter(100), CancellationToken.None);
         Assert.Equal(2, total);
         Assert.Equal([2], weldedEnds);
         Assert.Equal(new SvgDevicePoint(0, 8), points[1]);
@@ -94,9 +94,34 @@ public sealed class SvgOrthogonalGeometryLowererTests
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8), new(20, 20), new(28, 20), new(28, 28), new(28 + 1e-13, 28), new(20, 28)];
         int[] ends = [3, 8];
         int[] weldedEnds = new int[2];
-        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, new ParserWorkCounter(100), CancellationToken.None);
+        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, null, new ParserWorkCounter(100), CancellationToken.None);
         Assert.Equal(7, total);
         Assert.Equal([3, 7], weldedEnds);
         Assert.Equal(new SvgDevicePoint(28, 28), points[5]);
+    }
+    [Fact]
+    public void WeldDustJoints_maps_kept_indices_and_marks_dropped_ones()
+    {
+        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8 + 5e-10, 0), new(8, 8)];
+        int[] ends = [4];
+        int[] weldedEnds = new int[1];
+        int[] map = new int[4];
+        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, map, new ParserWorkCounter(100), CancellationToken.None);
+        Assert.Equal(3, total);
+        Assert.Equal([3], weldedEnds);
+        Assert.Equal([0, 1, -1, 2], map);
+    }
+
+    [Fact]
+    public void WeldDustJoints_marks_closing_drop_in_map()
+    {
+        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 8), new(5e-10, 0)];
+        int[] ends = [4];
+        int[] weldedEnds = new int[1];
+        int[] map = new int[4];
+        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, map, new ParserWorkCounter(100), CancellationToken.None);
+        Assert.Equal(3, total);
+        Assert.Equal([3], weldedEnds);
+        Assert.Equal([0, 1, 2, -1], map);
     }
 }

@@ -503,7 +503,84 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishPolygonFill(mapped, ends, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
     }
 
-    /// <summary>Translates one contour slice run of recorded spans into mapped-global indices, renumbering to the kept contour and dropping endpoints lost to stripping.</summary>
+    /// <summary>Resolves one pre-weld point index to its compacted position, snapping dust-dropped joints to their surviving anchor.</summary>
+    private static int ResolveWeldIndex(int[] weldMap, int oldStart, int oldIndex, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (oldIndex < oldStart) return -1;
+        if (weldMap[oldIndex] >= 0) return weldMap[oldIndex];
+        for (int probe = oldIndex - 1; probe >= oldStart; probe--)
+        {
+            workCounter.Consume(cancellationToken);
+            if (weldMap[probe] >= 0) return weldMap[probe];
+        }
+        return -1;
+    }
+
+        /// <summary>Re-anchors cubic spans to compacted weld indices, dropping unresolvable or degenerate ranges.</summary>
+    private static SvgCubicSpan[] RemapWeldCubicSpans(SvgCubicSpan[] spans, int[] weldMap, int[] ends, int[] weldedEnds, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(spans);
+        ArgumentNullException.ThrowIfNull(weldMap);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(weldedEnds);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (spans.Length == 0) return spans;
+        List<SvgCubicSpan> kept = new(spans.Length);
+        int contour = -1;
+        int previousEnd = 0;
+        int oldStart = 0;
+        foreach (SvgCubicSpan span in spans)
+        {
+            workCounter.Consume(cancellationToken);
+            if (span.Contour != contour)
+            {
+                contour = span.Contour;
+                if (contour < 0 || contour >= ends.Length || contour >= weldedEnds.Length) continue;
+                oldStart = contour == 0 ? 0 : ends[contour - 1];
+                previousEnd = contour == 0 ? 0 : weldedEnds[contour - 1];
+            }
+            int start = ResolveWeldIndex(weldMap, oldStart, span.StartIndex, workCounter, cancellationToken);
+            int end = ResolveWeldIndex(weldMap, oldStart, span.EndIndex, workCounter, cancellationToken);
+            if (start < previousEnd || end <= start || end > weldedEnds[contour]) continue;
+            previousEnd = end;
+            kept.Add(new SvgCubicSpan(contour, start, end, span.FirstControl, span.SecondControl));
+        }
+        return kept.ToArray();
+    }
+
+        /// <summary>Re-anchors quadratic spans to compacted weld indices, dropping unresolvable or degenerate ranges.</summary>
+    private static SvgQuadSpan[] RemapWeldQuadSpans(SvgQuadSpan[] spans, int[] weldMap, int[] ends, int[] weldedEnds, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(spans);
+        ArgumentNullException.ThrowIfNull(weldMap);
+        ArgumentNullException.ThrowIfNull(ends);
+        ArgumentNullException.ThrowIfNull(weldedEnds);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (spans.Length == 0) return spans;
+        List<SvgQuadSpan> kept = new(spans.Length);
+        int contour = -1;
+        int previousEnd = 0;
+        int oldStart = 0;
+        foreach (SvgQuadSpan span in spans)
+        {
+            workCounter.Consume(cancellationToken);
+            if (span.Contour != contour)
+            {
+                contour = span.Contour;
+                if (contour < 0 || contour >= ends.Length || contour >= weldedEnds.Length) continue;
+                oldStart = contour == 0 ? 0 : ends[contour - 1];
+                previousEnd = contour == 0 ? 0 : weldedEnds[contour - 1];
+            }
+            int start = ResolveWeldIndex(weldMap, oldStart, span.StartIndex, workCounter, cancellationToken);
+            int end = ResolveWeldIndex(weldMap, oldStart, span.EndIndex, workCounter, cancellationToken);
+            if (start < previousEnd || end <= start || end > weldedEnds[contour]) continue;
+            previousEnd = end;
+            kept.Add(new SvgQuadSpan(contour, start, end, span.Control));
+        }
+        return kept.ToArray();
+    }
+
+        /// <summary>Translates one contour slice run of recorded spans into mapped-global indices, renumbering to the kept contour and dropping endpoints lost to stripping.</summary>
     private static void TranslateQuadSpans(SvgQuadSpan[] recorded, int runStart, int runEnd, int keptContour, int[] indexMap, List<SvgQuadSpan> keptSpans)
     {
         ArgumentNullException.ThrowIfNull(recorded);
@@ -1144,13 +1221,14 @@ internal ref struct SvgOrthogonalGeometryLowering
 
     /// <summary>Compacts dust-scale consecutive joints (including each contour closing joint) in place, writing cumulative compacted ends and returning the compacted total.</summary>
     /// <remarks>Snapping keeps the earlier bitwise value so no computed points ever appear and the touch pipeline keeps its bitwise invariant; strictly-bitwise-equal joints keep the existing zero-length path untouched. Results under three points per contour flow to the existing degenerate guards exactly like any degenerate input. Charges one work unit per examined point and observes cancellation through the counter; compacted ends reuse caller-reserved ends-sized storage.</remarks>
-    internal static int WeldDustJoints(SvgDevicePoint[] points, int[] ends, int[] weldedEnds, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static int WeldDustJoints(SvgDevicePoint[] points, int[] ends, int[] weldedEnds, int[]? indexMap, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(weldedEnds);
         ArgumentNullException.ThrowIfNull(workCounter);
         if (weldedEnds.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(weldedEnds));
+        if (indexMap is not null && indexMap.Length != points.Length) throw new ArgumentOutOfRangeException(nameof(indexMap));
         int total = 0;
         int previousEnd = 0;
         for (int contour = 0; contour < ends.Length; contour++)
@@ -1163,21 +1241,26 @@ internal ref struct SvgOrthogonalGeometryLowering
             int write = total;
             SvgDevicePoint anchor = default;
             bool hasAnchor = false;
+            int lastOld = -1;
             for (int index = start; index < end; index++)
             {
                 workCounter.Consume(cancellationToken);
                 if (hasAnchor && IsDustJoint(anchor, points[index]))
                 {
+                    if (indexMap is not null) indexMap[index] = -1;
                     continue;
                 }
                 anchor = points[index];
                 hasAnchor = true;
                 points[write] = points[index];
+                if (indexMap is not null) indexMap[index] = write;
+                lastOld = index;
                 write++;
             }
             if (hasAnchor && write - total > 2 && IsDustJoint(points[total], anchor))
             {
                 write--;
+                if (indexMap is not null && lastOld >= 0) indexMap[lastOld] = -1;
             }
             total = write;
             weldedEnds[contour] = total;
@@ -1212,11 +1295,25 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
             ValidateDeviceRange(retained);
             int[] weldedEnds = new int[ends.Length];
-            int weldedTotal = WeldDustJoints(retained, ends, weldedEnds, _workCounter, _cancellationToken);
+            bool trackWeldSpans = (quadSpans.Length > 0 || cubicSpans.Length > 0) && retained.Length > 0;
+            int weldedTotal;
+            {
+                using RenderBudget.BudgetReservation? weldMapReservation = trackWeldSpans ? budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(retained.Length), SvgMemoryCategory.Geometry) : null;
+                int[]? weldMap = trackWeldSpans ? new int[retained.Length] : null;
+                weldedTotal = WeldDustJoints(retained, ends, weldedEnds, weldMap, _workCounter, _cancellationToken);
+                if (weldedTotal < retained.Length && trackWeldSpans && weldMap is not null)
+                {
+                    quadSpans = RemapWeldQuadSpans(quadSpans, weldMap, ends, weldedEnds, _workCounter, _cancellationToken);
+                    cubicSpans = RemapWeldCubicSpans(cubicSpans, weldMap, ends, weldedEnds, _workCounter, _cancellationToken);
+                }
+                else if (weldedTotal < retained.Length)
+                {
+                    quadSpans = Array.Empty<SvgQuadSpan>();
+                    cubicSpans = Array.Empty<SvgCubicSpan>();
+                }
+            }
             if (weldedTotal < retained.Length)
             {
-                quadSpans = Array.Empty<SvgQuadSpan>();
-                cubicSpans = Array.Empty<SvgCubicSpan>();
                 reservation?.Dispose();
                 reservation = ReserveScene(weldedTotal, ends.Length, ends.Length, quadSpans.Length, cubicSpans.Length, budget);
                 SvgDevicePoint[] tightPoints = new SvgDevicePoint[weldedTotal];
