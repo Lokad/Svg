@@ -1118,10 +1118,13 @@ internal ref struct SvgAnalyticCoverage
         if (fullAlpha == 255 && !noRealBlitter) SetMask(x, alpha);
         else AddMask(x, PartialAlphaFull(alpha, fullAlpha));
     }
+    /// <summary>Adds one two-pixel fringe pair into the mask row, always accumulating like the pinned mask blitter.</summary>
     private void BlitTwoAlphas(int x, int first, int second, int fullAlpha, bool noRealBlitter)
     {
-        if (fullAlpha == 255 && !noRealBlitter) { SetMask(x, first); SetMask(x + 1, second); }
-        else { AddMask(x, first); AddMask(x + 1, second); }
+        _ = fullAlpha;
+        _ = noRealBlitter;
+        AddMask(x, first);
+        AddMask(x + 1, second);
     }
     private void BlitFullAlpha(int x, int length, int fullAlpha)
     {
