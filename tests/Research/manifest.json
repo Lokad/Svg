@@ -881,47 +881,7 @@
         "decodedPixelStability": "identical"
       }
     },
-    {
-      "id": "research-gradient-transparent-stop-16x16",
-      "path": "gradient-transparent-stop-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "047fbdda66aa19118ff59fb92eaa4be2a8d32722e1b46dcf5d43a9bc9de1dc4a",
-      "featureTags": [
-        "paint",
-        "gradient",
-        "interpolation",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 1,
-        "maximumChannelError": 1,
-        "maximumAlphaError": 0,
-        "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 11,
-        "minimumMismatchY": 8,
-        "maximumMismatchX": 11,
-        "maximumMismatchY": 8
-      },
-      "oracle": {
-        "referencePng": "references/gradient-transparent-stop-16x16.png",
-        "referenceSha256": "7cb57ad7406ddcfdefda837b9ad2ece767306dd9c5dc87a3a705bffc6d43f2cc",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
+
     {
       "id": "research-radial-disc-16x16",
       "path": "radial-disc-16x16.svg",
@@ -1004,47 +964,7 @@
         "decodedPixelStability": "identical"
       }
     },
-    {
-      "id": "research-gradient-multistop-alpha-16x16",
-      "path": "gradient-multistop-alpha-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "d00af44d833d4fcbea743e97958a3c211a7452e50eb3f9887bdef364064b23d6",
-      "featureTags": [
-        "paint",
-        "gradient",
-        "interpolation",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 2,
-        "maximumChannelError": 2,
-        "maximumAlphaError": 0,
-        "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 4,
-        "minimumMismatchY": 4,
-        "maximumMismatchX": 4,
-        "maximumMismatchY": 12
-      },
-      "oracle": {
-        "referencePng": "references/gradient-multistop-alpha-16x16.png",
-        "referenceSha256": "ade0b124d607cc79fadd6e121caf0f7eaebf75317a2ed00b236c85e56f776966",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
+
     {
       "id": "research-radial-rect-16x16",
       "path": "radial-rect-16x16.svg",
@@ -1291,47 +1211,7 @@
         "decodedPixelStability": "identical"
       }
     },
-    {
-      "id": "research-gradient-transparent-stop-shifted-16x16",
-      "path": "gradient-transparent-stop-shifted-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "22680812ab00d0020a00115cf7efbf42d3ee7e11a8da74d6b4c2c6b4c0ced19d",
-      "featureTags": [
-        "paint",
-        "gradient",
-        "interpolation",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 4,
-        "maximumChannelError": 23,
-        "maximumAlphaError": 0,
-        "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 3,
-        "minimumMismatchY": 2,
-        "maximumMismatchX": 11,
-        "maximumMismatchY": 11
-      },
-      "oracle": {
-        "referencePng": "references/gradient-transparent-stop-shifted-16x16.png",
-        "referenceSha256": "3f35bf6a9d0c6314683d4c28f42d0283059fdecb22ea1639ed8a4ae9b07efdce",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
+
     {
       "id": "research-miter-limit10-acute-16x16",
       "path": "miter-limit10-acute-16x16.svg",

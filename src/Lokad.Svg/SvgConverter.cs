@@ -952,9 +952,13 @@ public static class SvgConverter
             double alpha = ((double)first.Alpha + ((double)second.Alpha - first.Alpha) * blend) * opacity / 255;
             byte mask = (byte)Math.Floor(alpha + 0.5);
             if (mask == 0) return new SvgColor(0, 0, 0, 0);
-            double red = ((double)first.Red + ((double)second.Red - first.Red) * blend) * alpha / 255 + dither;
-            double green = ((double)first.Green + ((double)second.Green - first.Green) * blend) * alpha / 255 + dither;
-            double blue = ((double)first.Blue + ((double)second.Blue - first.Blue) * blend) * alpha / 255 + dither;
+            // Translucent premultiplication dithers around cell centers ((matrix + 0.5) / 64) while opaque channels
+            // dither from cell origins (matrix / 64): the transparent-stop probes reproduce the pinned oracle
+            // byte-for-byte only with the centered value, and opaque ramps pin the uncentered one.
+            double centered = dither + 0.5 / 64;
+            double red = ((double)first.Red + ((double)second.Red - first.Red) * blend) * alpha / 255 + centered;
+            double green = ((double)first.Green + ((double)second.Green - first.Green) * blend) * alpha / 255 + centered;
+            double blue = ((double)first.Blue + ((double)second.Blue - first.Blue) * blend) * alpha / 255 + centered;
             byte premultRed = (byte)Math.Floor(red + 1e-9);
             byte premultGreen = (byte)Math.Floor(green + 1e-9);
             byte premultBlue = (byte)Math.Floor(blue + 1e-9);

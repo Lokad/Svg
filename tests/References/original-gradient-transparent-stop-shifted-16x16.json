@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-gradient-transparent-stop-shifted-16x16",
+  "referencePng": "original-gradient-transparent-stop-shifted-16x16.png",
+  "referenceSha256": "3f35bf6a9d0c6314683d4c28f42d0283059fdecb22ea1639ed8a4ae9b07efdce",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "ff121525c7440a15f851d797d5366c6105d999707c5237063376cbfaf9b7aa78",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-02"
+}
