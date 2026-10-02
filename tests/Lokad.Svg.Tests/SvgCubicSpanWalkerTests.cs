@@ -94,7 +94,7 @@ public sealed class SvgCubicSpanWalkerTests
     }
 
     [Fact]
-    public void Multi_quad_substitutes_while_cubic_contour_walks_flattened()
+    public void Multi_quad_and_cubic_substitute_per_contour()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z M8,20 C12,12 20,12 24,20 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
@@ -109,7 +109,7 @@ public sealed class SvgCubicSpanWalkerTests
         Assert.True(curvedEligible);
         Assert.True(RowMass(flat) > 0);
         Assert.NotEqual(flat, quadOnly);
-        Assert.Equal(quadOnly, curved);
+        Assert.NotEqual(quadOnly, curved);
     }
 
     [Fact]
@@ -130,5 +130,23 @@ public sealed class SvgCubicSpanWalkerTests
         Assert.Equal(flatLow, declinedLow);
         Assert.Equal(subsetHigh, partialHigh);
         Assert.NotEqual(flatHigh, partialHigh);
+    }
+    [Fact]
+    public void Multi_cubic_spans_substitute_per_contour()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,30 C20,4 44,4 56,30 Z M8,60 C20,34 44,34 56,60 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(2, geometry.Polygon.ContourEnds.Length);
+        SvgCubicSpan[] spans = geometry.Polygon.CubicSpans;
+        Assert.Equal(2, spans.Length);
+        Assert.Equal(0, spans[0].Contour);
+        Assert.Equal(1, spans[1].Contour);
+        Assert.Empty(geometry.Polygon.QuadSpans);
+        byte[] flat = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, Array.Empty<SvgCubicSpan>(), false, 4, 60, out bool flatEligible);
+        byte[] curved = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, spans, false, 4, 60, out bool curvedEligible);
+        Assert.True(flatEligible);
+        Assert.True(curvedEligible);
+        Assert.True(RowMass(flat) > 0);
+        Assert.NotEqual(flat, curved);
     }
 }

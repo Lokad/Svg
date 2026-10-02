@@ -899,7 +899,7 @@ internal ref struct SvgAnalyticCoverage
             try
             {
                 List<AnalyticEdge> multiKept = new(points.Length);
-                bool useMultiSpans = quadSpans.Length > 0 && !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves;
+                bool useMultiSpans = (quadSpans.Length > 0 || cubicSpans.Length > 0) && !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves;
                 int quadCursor = 0;
                 int cubicCursor = 0;
                 int priorEnd = 0;
@@ -926,12 +926,13 @@ internal ref struct SvgAnalyticCoverage
                         while (quadRunEnd < quadSpans.Length && quadSpans[quadRunEnd].Contour == contour) quadRunEnd++;
                         cubicRunEnd = cubicRun;
                         while (cubicRunEnd < cubicSpans.Length && cubicSpans[cubicRunEnd].Contour == contour) cubicRunEnd++;
-                        contourSpans = quadRunEnd > quadRun && cubicRunEnd == cubicRun && ContourSpansValid(start, end, quadSpans, quadRun, quadRunEnd, cubicSpans, cubicRun, cubicRun);
+                        contourSpans = (quadRunEnd > quadRun || cubicRunEnd > cubicRun) && ContourSpansValid(start, end, quadSpans, quadRun, quadRunEnd, cubicSpans, cubicRun, cubicRunEnd);
                         quadCursor = quadRun;
                         cubicCursor = cubicRun;
                     }
                     int contourEdges = 0;
                     int quadAt = quadRun;
+                    int cubicAt = cubicRun;
                     for (int index = start; index < end; index++)
                     {
                         if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
@@ -942,6 +943,16 @@ internal ref struct SvgAnalyticCoverage
                             if (span.EndIndex - index >= 2 && AppendQuadSpanEdges(multiKept, points[span.StartIndex].X, points[span.StartIndex].Y, span.Control.X, span.Control.Y, points[span.EndIndex].X, points[span.EndIndex].Y, ref contourEdges, ref setupWork, cancellationToken) > 0)
                             {
                                 index = span.EndIndex - 1;
+                                continue;
+                            }
+                        }
+                        else if (contourSpans && cubicAt < cubicRunEnd && cubicSpans[cubicAt].StartIndex == index)
+                        {
+                            SvgCubicSpan cubic = cubicSpans[cubicAt];
+                            cubicAt++;
+                            if (cubic.EndIndex - index >= 2 && AppendCubicSpanEdges(multiKept, points[cubic.StartIndex].X, points[cubic.StartIndex].Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, points[cubic.EndIndex].X, points[cubic.EndIndex].Y, ref contourEdges, ref setupWork, cancellationToken) > 0)
+                            {
+                                index = cubic.EndIndex - 1;
                                 continue;
                             }
                         }
