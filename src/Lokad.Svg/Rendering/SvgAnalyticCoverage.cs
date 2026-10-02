@@ -220,12 +220,18 @@ internal ref struct SvgAnalyticCoverage
     /// <remarks>Analytic curve steppers emit pre-snapped fixed endpoints like Skia updateLine; re-encoding through floats would shift negative values by truncation, so this path enters fixed space directly with the same winding, slope and inverse-DY construction as SetLine.</remarks>
     private static AnalyticEdge? SetLineFixed(int x0, int y0, int x1, int y1)
     {
-        int winding = 1;
+        return SetLineWound(x0, y0, x1, y1, 1);
+    }
+    /// <summary>Builds one walker edge with caller winding, negating on downward swaps exactly like updateLine.</summary>
+    /// <remarks>Analytic curve setup orients pieces bottom-to-top while recording path-direction winding; each emitted segment keeps that winding unless it steps downward, when the swap negates it. Deriving winding from final order instead would flip swapped pieces and corrupt nonzero interiors on non-convex contours.</remarks>
+    private static AnalyticEdge? SetLineWound(int x0, int y0, int x1, int y1, int winding)
+    {
+        if (winding != 1 && winding != -1) throw new ArgumentOutOfRangeException(nameof(winding));
         if (y0 > y1)
         {
             (x0, x1) = (x1, x0);
             (y0, y1) = (y1, y0);
-            winding = -1;
+            winding = -winding;
         }
         int deltaY = (y1 - y0) >> 10;
         if (deltaY == 0) return null;
@@ -299,7 +305,8 @@ internal ref struct SvgAnalyticCoverage
         int fy1 = (int)(y1 * scale);
         int fx2 = (int)(x2 * scale);
         int fy2 = (int)(y2 * scale);
-        if (fy0 > fy2) { (fx0, fx2) = (fx2, fx0); (fy0, fy2) = (fy2, fy0); }
+        int winding = 1;
+        if (fy0 > fy2) { (fx0, fx2) = (fx2, fx0); (fy0, fy2) = (fy2, fy0); winding = -1; }
         if (((fy0 + 32) >> 6) == ((fy2 + 32) >> 6)) return 0;
         int shift = QuadStepShift(((fx1 << 1) - fx0 - fx2) >> 2, ((fy1 << 1) - fy0 - fy2) >> 2);
         if (shift == 0) shift = 1;
@@ -332,13 +339,13 @@ internal ref struct SvgAnalyticCoverage
             qLastY >>= 2;
             qy = SnapY(qy);
             qLastY = SnapY(qLastY);
-            emitted = StepQuadPiece(kept, qx, qy, qDx, qDy, qDDx, qDDy, qLastX, qLastY, curveShift, count, ref setupCost);
+            emitted = StepQuadPiece(kept, qx, qy, qDx, qDy, qDDx, qDDy, qLastX, qLastY, curveShift, count, winding, ref setupCost);
         }
         return emitted;
     }
 
     /// <summary>Advances one quad forward-difference state into snapped walker edges, skipping zero-height steps exactly like updateLine.</summary>
-    private static int StepQuadPiece(List<AnalyticEdge> kept, int qx, int qy, int qDx, int qDy, int qDDx, int qDDy, int qLastX, int qLastY, int curveShift, int count, ref long setupCost)
+    private static int StepQuadPiece(List<AnalyticEdge> kept, int qx, int qy, int qDx, int qDy, int qDDx, int qDDy, int qLastX, int qLastY, int curveShift, int count, int winding, ref long setupCost)
     {
         int emitted = 0;
         int oldx = qx;
@@ -385,7 +392,7 @@ internal ref struct SvgAnalyticCoverage
                 endx = newx;
                 endy = newy;
             }
-            AnalyticEdge? edge = SetLineFixed(sx, sy, endx, endy);
+            AnalyticEdge? edge = SetLineWound(sx, sy, endx, endy, winding);
             if (edge is not null)
             {
                 if (!(edge.DX == 0 && kept.Count > 0 && CombineVertical(edge, kept[^1]))) kept.Add(edge);
