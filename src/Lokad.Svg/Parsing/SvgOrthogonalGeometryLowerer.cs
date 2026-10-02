@@ -1420,11 +1420,11 @@ internal ref struct SvgOrthogonalGeometryLowering
                 cubicSpans = Array.Empty<SvgCubicSpan>();
                 using BudgetedParserList<SvgDevicePoint> splitPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
                 using BudgetedParserList<int> splitEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-                if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget, out interLoopResolved))
+                if (!TrySplitCrossingContours(structure, retained, ends, _isEvenOdd, splitPoints, splitEnds, budget, keepUnresolved, out interLoopResolved))
                 {
                     splitPoints.Clear();
                     splitEnds.Clear();
-                    if (!TryResolveCoincidentUnion(structure, retained, ends, splitPoints, splitEnds, !keepUnresolved, out unionResolved))
+                    if (!TryResolveCoincidentUnion(structure, retained, ends, splitPoints, splitEnds, !keepUnresolved, keepUnresolved, out unionResolved))
                     {
                         splitPoints.Clear();
                         splitEnds.Clear();
@@ -1432,7 +1432,9 @@ internal ref struct SvgOrthogonalGeometryLowering
                         {
                             splitPoints.Clear();
                             splitEnds.Clear();
-                            if (!TryResolveMixedContactUnion(structure, retained, ends, splitPoints, splitEnds, !keepUnresolved, out mixedResolved))
+                            bool strokeMixedAdmitted = !keepUnresolved || (structure & SvgContourFlags.ProperCrossing) != SvgContourFlags.None;
+                            // Stroke outlines enter the mixed sweep only with crossings to subdivide: every measured stroke win through this stage carries ProperCrossing while crossing-free sets churn its sweep to the cap and fall back anyway.
+                            if (!strokeMixedAdmitted || !TryResolveMixedContactUnion(structure, retained, ends, splitPoints, splitEnds, !keepUnresolved, out mixedResolved))
                             {
                                 if (!keepUnresolved) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
                                 resolvedUnions = false;
@@ -1488,13 +1490,14 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Splits self-crossing contours at interior crossings into simple loops sharing only split vertices, then eliminates crossings between loops the same way.</summary>
-    /// <remarks>Every queued loop classifies either clean, joining the output, or as a pure proper crossing, splitting again; any other flag rejects, so touches, spikes and degenerate edges never enter the output. Even-odd keeps the single-contour single-crossing gate because first-vertex parity signs are meaningless for vertex-sharing loops, while nonzero fill iterates to a fixpoint where each split strictly reduces the remaining intra-loop crossings. Admitted loop sets pass the pairwise split-loop guard, so loops meet at most at bitwise-shared split vertices with nesting resolved by roles. When the guard still sees inter-loop crossings under nonzero fill, a second sweep subdivides both edges at each computed crossing until no strict crossing remains; each round strictly reduces the crossing count, and the guard still rejects touches, overlaps and degenerates exactly as before. Even-odd never enters the second sweep. Sets resolved across loops report through interLoopResolved so nesting tests skip bitwise-shared vertices. Output lists are caller-owned budgeted storage filled after the caller reserves them; each popped loop charges its pair estimate, each copied vertex charges one work unit, and the final guard charges the quadratic pair estimate; observes cancellation in classification, search, copy and guard. Partial output on denial stays caller-discarded.</remarks>
-    private bool TrySplitCrossingContours(SvgContourFlags structure, ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, bool isEvenOdd, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, RenderBudget budget, out bool interLoopResolved)
+    /// <remarks>Every queued loop classifies either clean, joining the output, or as a pure proper crossing, splitting again; any other flag rejects, so touches, spikes and degenerate edges never enter the output. Even-odd keeps the single-contour single-crossing gate because first-vertex parity signs are meaningless for vertex-sharing loops, while nonzero fill iterates to a fixpoint where each split strictly reduces the remaining intra-loop crossings. Admitted loop sets pass the pairwise split-loop guard, so loops meet at most at bitwise-shared split vertices with nesting resolved by roles. When the guard still sees inter-loop crossings under nonzero fill, a second sweep subdivides both edges at each computed crossing until no strict crossing remains; each round strictly reduces the crossing count, and the guard still rejects touches, overlaps and degenerates exactly as before. Even-odd never enters the second sweep. Sets resolved across loops report through interLoopResolved so nesting tests skip bitwise-shared vertices. Stroke outlines bypass this stage: crossing subdivision re-tiles exact abutments by whole quanta and churns multi-loop sets to its cap, while all measured stroke wins resolve through touch, mixed-contact or pass-through paths. Output lists are caller-owned budgeted storage filled after the caller reserves them; each popped loop charges its pair estimate, each copied vertex charges one work unit, and the final guard charges the quadratic pair estimate; observes cancellation in classification, search, copy and guard. Partial output on denial stays caller-discarded.</remarks>
+    private bool TrySplitCrossingContours(SvgContourFlags structure, ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, bool isEvenOdd, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, RenderBudget budget, bool strokeOutlines, out bool interLoopResolved)
     {
         ArgumentNullException.ThrowIfNull(splitPoints);
         ArgumentNullException.ThrowIfNull(splitEnds);
         ArgumentNullException.ThrowIfNull(budget);
         interLoopResolved = false;
+        if (strokeOutlines) return false;
         if (structure == SvgContourFlags.None) return false;
         if (isEvenOdd && (structure != SvgContourFlags.ProperCrossing || ends.Length != 1 || ends[0] != points.Length)) return false;
         using BudgetedParserList<SvgDevicePoint> workPoints = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
@@ -1663,14 +1666,15 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Unions same-fill loops that share coincident boundary spans into simple loops.</summary>
-    /// <remarks>Nonzero sets resolve contained-drop and single-edge splices by union semantics while even-odd sets keep those gates; both fill rules share bitwise endpoint subdivision, simultaneous multi-span splicing with remainder linking, guard arbitration and nesting resolution, which stay exact because subdivision preserves geometry and linked boundaries resolve through parity depth. Admits sets whose only non-touch defect is positive-length collinear overlap between loops: edges subdivide at overlap endpoints with bitwise copies of existing vertices, loops contained in larger same-direction loops drop, and loop pairs sharing exactly one duplicate edge splice into a single boundary while pairs sharing two or more opposite spans splice every span at once with remainder linking. Stroke outlines pass contained-drop as disabled (containment inside an outer ring does not imply coverage for stroke bands) while subdivision and splicing run for both. Opposite-direction containment, same-directed multi-span sharing, crossings, spikes and degenerate edges stay rejected. No computed points ever appear. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps, reporting resolved loops so nesting tests skip bitwise-shared vertices through the union flag. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Partial output on denial stays caller-discarded.</remarks>
-    private bool TryResolveCoincidentUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, bool allowContainedDrop, out bool unionResolved)
+    /// <remarks>Nonzero sets resolve contained-drop and single-edge splices by union semantics while even-odd sets keep those gates; both fill rules share bitwise endpoint subdivision, simultaneous multi-span splicing with remainder linking, guard arbitration and nesting resolution, which stay exact because subdivision preserves geometry and linked boundaries resolve through parity depth. Admits sets whose only non-touch defect is positive-length collinear overlap between loops: edges subdivide at overlap endpoints with bitwise copies of existing vertices, loops contained in larger same-direction loops drop, and loop pairs sharing exactly one duplicate edge splice into a single boundary while pairs sharing two or more opposite spans splice every span at once with remainder linking. Stroke outlines pass contained-drop as disabled (containment inside an outer ring does not imply coverage for stroke bands) while subdivision and splicing run for both. Stroke outlines additionally bypass this stage entirely: no measured stroke win resolves here while multi-loop sets grind its sweep to the cap, so touch, mixed-contact and pass-through paths carry strokes. Opposite-direction containment, same-directed multi-span sharing, crossings, spikes and degenerate edges stay rejected. No computed points ever appear. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps, reporting resolved loops so nesting tests skip bitwise-shared vertices through the union flag. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Partial output on denial stays caller-discarded.</remarks>
+    private bool TryResolveCoincidentUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, bool allowContainedDrop, bool strokeOutlines, out bool unionResolved)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(splitPoints);
         ArgumentNullException.ThrowIfNull(splitEnds);
         unionResolved = false;
+        if (strokeOutlines) return false;
         bool nonzeroOnly = !_isEvenOdd;
         bool singleEvenOdd = false;
         if (_isEvenOdd && (structure & SvgContourFlags.SelfTouch) == SvgContourFlags.None)
