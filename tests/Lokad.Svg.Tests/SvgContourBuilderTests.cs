@@ -199,10 +199,12 @@ public sealed class SvgContourBuilderTests
     [Fact]
     public void Coarse_rounded_rect_is_exact()
     {
+        // The contour starts at the top-right arc entrance with the same cyclic order, so the implicit
+        // closing edge is the straight top edge and no closing duplicate is stored.
         SvgContourBuilder builder = new(256, 4);
         builder.AddRoundedRect(0, 0, 8, 4, 2, 1, new SvgFlattenPolicy(100.0, 64, 256), CancellationToken.None);
 
-        Assert.Equal([new SvgDevicePoint(2, 0), new SvgDevicePoint(6, 0), new SvgDevicePoint(8, 1), new SvgDevicePoint(8, 3), new SvgDevicePoint(6, 4), new SvgDevicePoint(2, 4), new SvgDevicePoint(0, 3), new SvgDevicePoint(0, 1), new SvgDevicePoint(2, 0)], builder.GetContour(0).ToArray());
+        Assert.Equal([new SvgDevicePoint(6, 0), new SvgDevicePoint(8, 1), new SvgDevicePoint(8, 3), new SvgDevicePoint(6, 4), new SvgDevicePoint(2, 4), new SvgDevicePoint(0, 3), new SvgDevicePoint(0, 1), new SvgDevicePoint(2, 0)], builder.GetContour(0).ToArray());
     }
 
     [Fact]

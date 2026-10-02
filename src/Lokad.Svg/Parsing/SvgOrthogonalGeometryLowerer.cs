@@ -425,18 +425,31 @@ internal ref struct SvgOrthogonalGeometryLowering
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
         double mappedRadiusY = radiusY * Math.Abs(scaleY);
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
-        using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(4, ShapeSegmentsPerShape)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry);
+        using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(4, ShapeSegmentsPerShape)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1) + 2 * ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(4) + ParserCollectionMemory.GetArrayByteCount<int>(SampledOutlineCapacity(4, ShapeSegmentsPerShape)), SvgMemoryCategory.Geometry);
         SvgContourBuilder builder = new(SampledOutlineCapacity(4, ShapeSegmentsPerShape), 1);
+        // Degenerate rects share one corner center with zero-length edges, which meets the implicit close
+        // outside the substitution model, so only full-edged rects retain arc spans.
+        if (mappedRadiusX < shifted.Width / 2 && mappedRadiusY < shifted.Height / 2) builder.EnableCubicSpanRetention();
         builder.AddRoundedRect(shifted.X, shifted.Y, shifted.Width, shifted.Height, mappedRadiusX, mappedRadiusY, flattenPolicy, _cancellationToken);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        SvgCubicSpan[] recordedCubics = builder.GetCubicSpans();
+        List<SvgCubicSpan> keptCubicSpans = new(recordedCubics.Length);
         int[] ends = new int[builder.ContourCount];
+        int cubicCursor = 0;
         for (int contour = 0; contour < builder.ContourCount; contour++)
         {
-            if (AppendStrippedContour(mapped, builder.GetContour(contour), _workCounter, _cancellationToken) < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer path contours are implemented.");
+            ReadOnlySpan<SvgDevicePoint> slice = builder.GetContour(contour);
+            while (cubicCursor < recordedCubics.Length && recordedCubics[cubicCursor].Contour < contour) cubicCursor++;
+            int cubicRunEnd = cubicCursor;
+            while (cubicRunEnd < recordedCubics.Length && recordedCubics[cubicRunEnd].Contour == contour) cubicRunEnd++;
+            int[]? indexMap = cubicRunEnd > cubicCursor ? new int[slice.Length] : null;
+            if (AppendMappedContour(mapped, slice, indexMap, _workCounter, _cancellationToken) < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer path contours are implemented.");
             ends[contour] = mapped.Count;
+            if (indexMap is not null) TranslateCubicSpans(recordedCubics, cubicCursor, cubicRunEnd, contour, indexMap, keptCubicSpans);
+            cubicCursor = cubicRunEnd;
         }
 
-        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
+        return FinishPolygonFill(mapped, ends, Array.Empty<SvgQuadSpan>(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
     }
 
     /// <summary>Lowers device-space path data through affine flattening into one polygon fill with the caller mapping discipline.</summary>

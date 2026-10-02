@@ -193,23 +193,34 @@ internal sealed class SvgContourBuilder
         }
     }
 
-    /// <summary>Appends the endpoint arc from the current point to <paramref name="end"/> as lines or samples.</summary>
+    /// <summary>Appends the endpoint arc from the current point to <paramref name="end"/> as samples.</summary>
+    /// <remarks>Sampling stays canonical for every consumer; arcs spanning at most a quarter additionally record kappa-cubic spans when retention is enabled, so the walker substitutes analytic edges while fan and stroke routes keep the sampled points bitwise.</remarks>
     internal void AddArc(double radiusX, double radiusY, double rotationDegrees, bool largeArc, bool sweep, SvgDevicePoint end, SvgFlattenPolicy policy, CancellationToken cancellationToken)
     {
         RequireOpenContour();
         SvgDevicePoint current = _points[_pointCount - 1];
         SvgNormalizedArc arc = SvgEllipticalArc.Normalize(current, radiusX, radiusY, rotationDegrees, largeArc, sweep, end);
         if (arc.Kind == SvgArcKind.Line) Append(end);
-        else while (true)
+        else
         {
-            try
+            int before = _pointCount;
+            while (true)
             {
-                _pointCount += SvgEllipticalArc.Sample(arc, policy, _points.AsSpan(_pointCount), cancellationToken);
-                return;
+                try
+                {
+                    _pointCount += SvgEllipticalArc.Sample(arc, policy, _points.AsSpan(_pointCount), cancellationToken);
+                    break;
+                }
+                catch (SvgException)
+                {
+                    _pointCount = before;
+                    GrowPoints();
+                }
             }
-            catch (SvgException)
+            if (_retainCubicSpans && Math.Abs(arc.SweepRadians) <= Math.PI / 2 + 1e-9)
             {
-                GrowPoints();
+                (SvgDevicePoint first, SvgDevicePoint second) = SvgEllipticalArc.CubicControls(arc, arc.StartAngleRadians, arc.StartAngleRadians + arc.SweepRadians);
+                RecordCubicSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, first, second);
             }
         }
     }
@@ -248,7 +259,11 @@ internal sealed class SvgContourBuilder
     /// <summary>Appends one axis-aligned rounded rectangle as a sealed contour, closing arc endpoint included.</summary>
     /// <remarks>
     /// <para>Corner radii clamp to half the side lengths; a zero radius falls back to sharp corners and a
-    /// zero side draws nothing. Negative sizes or radii are caller contract violations.</para>
+    /// zero side draws nothing. Negative sizes or radii are caller contract violations. The contour starts
+    /// at the top-right arc entrance with the same cyclic order, so the implicit closing edge is the straight
+    /// top edge and every arc span keeps both endpoints: no arc span is lost to closing-duplicate stripping.
+    /// Degenerate rects with zero-length edges keep the legacy start and order, since opposite corners share
+    /// one center there and the touching joint meets the implicit close outside the substitution model.</para>
     /// </remarks>
     internal void AddRoundedRect(double x, double y, double width, double height, double cornerX, double cornerY, SvgFlattenPolicy policy, CancellationToken cancellationToken)
     {
@@ -260,16 +275,28 @@ internal sealed class SvgContourBuilder
         if (_contourCount >= _starts.Length) GrowContours();
         double radiusX = Math.Min(cornerX, width / 2);
         double radiusY = Math.Min(cornerY, height / 2);
-        BeginContour(new SvgDevicePoint(RequireFinite(x + radiusX), y));
         if (radiusX == 0 || radiusY == 0)
         {
+            BeginContour(new SvgDevicePoint(RequireFinite(x), y));
             AddLine(new SvgDevicePoint(RequireFinite(x + width), y));
             AddLine(new SvgDevicePoint(RequireFinite(x + width), RequireFinite(y + height)));
             AddLine(new SvgDevicePoint(x, RequireFinite(y + height)));
         }
+        else if (radiusX >= width / 2 || radiusY >= height / 2)
+        {
+            BeginContour(new SvgDevicePoint(RequireFinite(x + radiusX), y));
+            AddLine(new SvgDevicePoint(RequireFinite(x + width - radiusX), y));
+            AddArc(radiusX, radiusY, 0, false, true, new SvgDevicePoint(RequireFinite(x + width), RequireFinite(y + radiusY)), policy, cancellationToken);
+            AddLine(new SvgDevicePoint(RequireFinite(x + width), RequireFinite(y + height - radiusY)));
+            AddArc(radiusX, radiusY, 0, false, true, new SvgDevicePoint(RequireFinite(x + width - radiusX), RequireFinite(y + height)), policy, cancellationToken);
+            AddLine(new SvgDevicePoint(RequireFinite(x + radiusX), RequireFinite(y + height)));
+            AddArc(radiusX, radiusY, 0, false, true, new SvgDevicePoint(x, RequireFinite(y + height - radiusY)), policy, cancellationToken);
+            AddLine(new SvgDevicePoint(x, RequireFinite(y + radiusY)));
+            AddArc(radiusX, radiusY, 0, false, true, new SvgDevicePoint(RequireFinite(x + radiusX), y), policy, cancellationToken);
+        }
         else
         {
-            AddLine(new SvgDevicePoint(RequireFinite(x + width - radiusX), y));
+            BeginContour(new SvgDevicePoint(RequireFinite(x + width - radiusX), y));
             AddArc(radiusX, radiusY, 0, false, true, new SvgDevicePoint(RequireFinite(x + width), RequireFinite(y + radiusY)), policy, cancellationToken);
             AddLine(new SvgDevicePoint(RequireFinite(x + width), RequireFinite(y + height - radiusY)));
             AddArc(radiusX, radiusY, 0, false, true, new SvgDevicePoint(RequireFinite(x + width - radiusX), RequireFinite(y + height)), policy, cancellationToken);

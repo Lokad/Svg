@@ -155,6 +155,35 @@ internal static class SvgEllipticalArc
         return appended;
     }
 
+    /// <summary>Converts one arc section to cubic Bezier controls with matching endpoints.</summary>
+    /// <remarks>The kappa construction scales each endpoint tangent by four-thirds tan(section / 4); sections beyond a quarter must be split by the caller. Maximum radial deviation stays 2.7e-4 of the radius, far below the coverage quantum, so the cubic walks the arc. A reversed section carries a negative arm that flips both tangents consistently.</remarks>
+    internal static (SvgDevicePoint FirstControl, SvgDevicePoint SecondControl) CubicControls(SvgNormalizedArc arc, double fromAngle, double toAngle)
+    {
+        if (arc.Kind != SvgArcKind.Arc) throw new ArgumentOutOfRangeException(nameof(arc));
+        if (!double.IsFinite(fromAngle) || !double.IsFinite(toAngle)) throw new ArgumentOutOfRangeException(nameof(fromAngle));
+        double section = RequireFinite(toAngle - fromAngle);
+        if (Math.Abs(section) > Math.PI / 2 + 1e-9) throw new ArgumentOutOfRangeException(nameof(toAngle));
+        double arm = RequireFinite(4d / 3d * Math.Tan(section / 4));
+        SvgDevicePoint start = EllipsePointAt(arc.Center.X, arc.Center.Y, arc.RadiusX, arc.RadiusY, arc.RotationRadians, fromAngle);
+        SvgDevicePoint end = EllipsePointAt(arc.Center.X, arc.Center.Y, arc.RadiusX, arc.RadiusY, arc.RotationRadians, toAngle);
+        (double startTX, double startTY) = ArcTangentAt(arc, fromAngle);
+        (double endTX, double endTY) = ArcTangentAt(arc, toAngle);
+        SvgDevicePoint first = new(RequireFinite(start.X + arm * startTX), RequireFinite(start.Y + arm * startTY));
+        SvgDevicePoint second = new(RequireFinite(end.X - arm * endTX), RequireFinite(end.Y - arm * endTY));
+        return (first, second);
+    }
+
+    private static (double X, double Y) ArcTangentAt(SvgNormalizedArc arc, double angle)
+    {
+        double sine = Math.Sin(angle);
+        double cosine = Math.Cos(angle);
+        double tangentX = RequireFinite(-arc.RadiusX * sine);
+        double tangentY = RequireFinite(arc.RadiusY * cosine);
+        double rotationCosine = Math.Cos(arc.RotationRadians);
+        double rotationSine = Math.Sin(arc.RotationRadians);
+        return (RequireFinite(rotationCosine * tangentX - rotationSine * tangentY), RequireFinite(rotationSine * tangentX + rotationCosine * tangentY));
+    }
+
     private static SvgDevicePoint ArcPoint(SvgNormalizedArc arc, double angle)
     {
         return EllipsePointAt(arc.Center.X, arc.Center.Y, arc.RadiusX, arc.RadiusY, arc.RotationRadians, angle);
