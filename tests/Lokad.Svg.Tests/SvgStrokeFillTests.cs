@@ -99,6 +99,19 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Self_crossing_star_stroke_renders_without_denial()
+    {
+        // Row 4 stroke union: clean multi-loop outlines pass through separation with roles only.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><path d='M16,2 L20,12 L30,12 L22,19 L25,29 L16,23 L7,29 L10,19 L2,12 L12,12 Z' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 32, 16, 2));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 32, 25, 12));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 32, 16, 23));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 32, 16, 16));
+        Assert.Equal(53568, AlphaSum(pixels));
+    }
+
+    [Fact]
     public void Curved_stroke_keeps_legacy_tiling()
     {
         // Row 4 stroke union: curve-sourced outlines bypass separation until row-6 curve-aware completion.
