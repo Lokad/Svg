@@ -2090,3 +2090,9 @@ Question: what drives the 48-max residual on the radial disc: gradient evaluatio
 Method: three-way disc-membership truth versus candidate versus banked oracle over all 256 pixels, plus analytic prediction of our sample vertices from the adaptive dyadic subdivision rule at flatness 0.25 (22.5-degree steps from angle zero).
 Facts: both renderers under-cover geometric truth systematically around the rim (shared polygonal sag); the only large deviations sit exactly on predicted vertex pixels with ours over truth (+7/+14) and oracle under (-33 both), i.e. knife-phase divergence between tessellations, while (12,4) shows both-under consistent with strip weights at the neighboring vertex. Gradient colors match everywhere, so paint is exonerated for the third time on this probe class.
 Decision: no product change; drivers deleted with the tree clean. Disc tessellation parks with curve placement; matching Chrome vertex-for-vertex would be tuning without the backend spec. Next per the queue as before.
+
+## Anisotropic radial quanta are one-sided boundary dust (2026-10-02 probe)
+Question: whether the 733 singly-deviant pixels on the nonuniform radial hide a structural evaluation defect or rounding dust.
+Method: per-channel sign/magnitude histogram plus 32px-block spatial map of every deviant channel over the 256x256 field, temporary deleted-after driver.
+Facts: all 737 channel deviations read exactly +1 with zero negatives and zero larger errors, spread across the central blob (rows 1-6 of 8) with empty top/bottom bands; channels split evenly (247/238/252). One-sidedness falsifies dither-phase and noise models; 2.4 percent boundary-sitting pixels with a sub-quantum input offset in the inverse-map evaluation fits exactly, joining the grouped-gradient park. Opaque floor-plus-origin rounding stays pinned by the exact probes.
+Decision: no product change; driver deleted with the tree clean. Next per the queue as before.
