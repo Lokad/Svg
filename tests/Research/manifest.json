@@ -2458,6 +2458,89 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-spike-join-bevel-16x16",
+      "path": "spike-join-bevel-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-02",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "667b0616301c127e06d47f7b8d261378a0e491f085ae5e7c47de75618186a7e2",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "bevel",
+        "join",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "admittedRendering": {
+        "changedPixelCount": 37,
+        "maximumChannelError": 40,
+        "maximumAlphaError": 40,
+        "alphaChangedPixelCount": 37,
+        "minimumMismatchX": 1,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 14,
+        "maximumMismatchY": 12
+      },
+      "oracle": {
+        "referencePng": "references/spike-join-bevel-16x16.png",
+        "referenceSha256": "bb2af2dae178f9d9be31f4a8ff29316c9dfa20a1604b288b381a4f59f9034e9f",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-spike-join-round-16x16",
+      "path": "spike-join-round-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-02",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "de6a01637f1fba404fb92698cbc2fc9a2ebe41015eaee683d87a7a903dbf5b85",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "round-join",
+        "coverage",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "admittedRendering": {
+        "changedPixelCount": 39,
+        "maximumChannelError": 35,
+        "maximumAlphaError": 35,
+        "alphaChangedPixelCount": 39,
+        "minimumMismatchX": 1,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 14,
+        "maximumMismatchY": 12
+      },
+      "oracle": {
+        "referencePng": "references/spike-join-round-16x16.png",
+        "referenceSha256": "671942b42c780f1f1bb50691208e540f10275ae70a0421e02a74861d6678c249",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
