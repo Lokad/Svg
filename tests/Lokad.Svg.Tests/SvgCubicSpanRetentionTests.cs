@@ -101,4 +101,16 @@ public sealed class SvgCubicSpanRetentionTests
         Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[span.StartIndex]);
         Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[span.EndIndex]);
     }
+    [Fact]
+    public void Cubic_controls_map_exactly_through_quarter_turn_matrix()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='matrix(0,1,-1,0,0,0)'><path d='M8,48 C24,8 40,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        SvgCubicSpan span = Assert.Single(geometry.Polygon.CubicSpans);
+        Assert.Equal(new SvgDevicePoint(-8, 24), span.FirstControl);
+        Assert.Equal(new SvgDevicePoint(-8, 40), span.SecondControl);
+        Assert.Equal(new SvgDevicePoint(-48, 8), geometry.Polygon.Points[span.StartIndex]);
+        Assert.Equal(new SvgDevicePoint(-48, 56), geometry.Polygon.Points[span.EndIndex]);
+        Assert.Empty(geometry.Polygon.QuadSpans);
+    }
 }

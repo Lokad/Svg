@@ -114,6 +114,17 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
+    public void Curve_under_skew_transform_stays_unsupported()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='skewX(15)'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></g></svg>");
+
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Contains("uniformly scaled", rejected.Message);
+    }
+
+    [Fact]
     public void Straight_triangle_renders_under_nonuniform_output_mapping()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>", out int width, out int height);

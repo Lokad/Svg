@@ -78,4 +78,24 @@ public sealed class SvgQuadSpanRetentionTests
         Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[span.StartIndex]);
         Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[span.EndIndex]);
     }
+    [Fact]
+    public void Quad_control_maps_exactly_through_nonuniform_scale()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='64'><g transform='scale(2,0.5)'><path d='M8,48 Q32,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        SvgQuadSpan span = Assert.Single(geometry.Polygon.QuadSpans);
+        Assert.Equal(new SvgDevicePoint(64, 4), span.Control);
+        Assert.Equal(new SvgDevicePoint(16, 24), geometry.Polygon.Points[span.StartIndex]);
+        Assert.Equal(new SvgDevicePoint(112, 24), geometry.Polygon.Points[span.EndIndex]);
+    }
+    [Fact]
+    public void Quad_control_maps_exactly_through_reflection()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><g transform='scale(-1,1) translate(-64,0)'><path d='M8,48 Q32,8 56,48 Z' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        SvgQuadSpan span = Assert.Single(geometry.Polygon.QuadSpans);
+        Assert.Equal(new SvgDevicePoint(32, 8), span.Control);
+        Assert.Equal(new SvgDevicePoint(56, 48), geometry.Polygon.Points[span.StartIndex]);
+        Assert.Equal(new SvgDevicePoint(8, 48), geometry.Polygon.Points[span.EndIndex]);
+    }
 }
