@@ -2078,3 +2078,9 @@ Question: how the flag residual scales with size and background for quirk-budget
 Method: partial all-variant measurement (intended plus materialized small, three backgrounds, fresh 3/3-stable pinned triples; large-double out of transport scope).
 Facts: intended reproduces 6186 at max 32/0 to all digits (no drift); small reads 2867 at max 19/0; counts scale 2.16x per 2x size with maxima rising 19 to 32; oracle triples byte-identical across backgrounds per size, so the six reduce to two distinct comparisons.
 Decision: no product change; INVENTORY entry updated, drivers deleted with the tree clean. Quirk-budget input: quirk mass scales near-linearly with size. Next per the queue as before.
+
+## Natural-size pairing removes framing artifact on millimetre wordmark (2026-10-02 measurement)
+Question: whether the 46k wordmark gap is physical-unit sizing or cropped-viewport framing.
+Method: our Default natural-millimetre render (2050x560) against a fresh 3/3-stable natural-size pinned triple, plus edge-dilated family classification and integer shift-search.
+Facts: 16384 at max 255/184 versus 46625 before (65 percent framing artifact); all 16384 fringe-adjacent with zero structural and unique zero-shift minimum, so sizing maps correctly and the remainder is curve-edge fringe.
+Decision: no product change; entry updated, drivers deleted with the tree clean. Framing protocol: pair physical-unit documents at natural size whenever transport allows. Next per the queue as before.
