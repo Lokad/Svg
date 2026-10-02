@@ -359,6 +359,8 @@ Status 2026-10-02: early-float quantization closed by analysis with no product c
 
 Status 2026-10-02: row-6 round-join remainder adjudicated to oracle over-coverage with no product change (probe). Per-pixel delta map of round-join-8x8 shows red-only alpha deltas (max 13 at the apex cap, mixed +-1 to 3 on arms); three-way capsule-plus-disc exact-area attribution over ten disputed pixels reads ours within 0.6 to 8.9 of truth (mean about 4.5, cap pixels within 2.6) against oracle systematically high by 3 to 10 (mean about 7.3, cap plus 10). Our round-join construction already reads truth, so analytic join-arc substitution is not motivated; the remainder joins the parked quirk-budget family with miter, transversal and arc-fringe over-coverage. Temps deleted with the tree clean. No gate rerun: docs-only on the gated tree.
 
+Status 2026-10-02: stroke-union wobble-maxima audit complete with no product change (probe). Per-pixel delta maps of the union wins carrying raised channel maxima (fractional-round-join 15 to 27, odd-round-cap holds 15px at max 3) show steep-gradient edge-placement signatures, not seam doubling: the worst pixel pairs read adjacent under/over (228 vs 255 beside 156 vs 133), which subdivision re-tiling explains and incomplete union cannot. Counts fall multiples (58 to 20) while a few steep pixels trade the other way; the maxima stand as documented wobbles with no seam defect. Temps deleted with the tree clean. No gate rerun: docs-only on the gated tree.
+
 
 
 

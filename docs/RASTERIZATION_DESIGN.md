@@ -1964,3 +1964,9 @@ Question: whether the round-join-8x8 residual (16px at max 13) traces join-arc f
 Method: per-pixel delta map (red-only alpha deltas, max 13 at the apex cap, mixed +-1 to 3 on arms) plus three-way attribution of ten disputed pixels against exact capsule-plus-apex-disc supersampled truth (64x64 sub-pixels) versus the banked oracle versus our render; temporary deleted-after test.
 Facts: ours reads truth within 0.6 to 8.9 (mean about 4.5; apex-cap pixels within 2.6) while the oracle sits systematically high by 3 to 10 (mean about 7.3; apex cap plus 10). Our round-join construction already matches exact area, so analytic join-arc substitution would move away from truth, not toward the oracle.
 Decision: no product change; the remainder joins the parked quirk-budget release-decision family with miter, transversal and arc-fringe over-coverage. Row-6 join-arc work reopens only with a truth-deficit discriminator, not an oracle deficit. Temp deleted with the tree clean.
+
+## Stroke-union wobble maxima are edge placement, not seam doubling (2026-10-02 probe)
+Question: whether the raised channel maxima on union wins (fractional-round-join 15 to 27) signal systematic seam double-paint left by the splice.
+Method: per-pixel delta map of the worst win with a temporary deleted-after test; no product change.
+Facts: the worst deltas pair as adjacent under/over pixels (228 vs 255 beside 156 vs 133) on steep band edges far from any splice line, the signature of sub-pixel boundary placement after re-tiling, which incomplete union cannot produce; counts fall 58 to 20 while a few steep pixels trade the other way.
+Decision: no product change; the maxima stand as documented placement wobbles and the audit closes the seam-defect question on the landed slice. Temp deleted with the tree clean.
