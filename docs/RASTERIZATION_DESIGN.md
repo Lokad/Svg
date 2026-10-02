@@ -1754,3 +1754,9 @@ Question: whether the blowout comes from strip partitions, close decisions, or c
 Method: scratch-worktree row-192 strip tracing in gated versus cubic-multi Ford renders (identical hooks, worktrees removed after).
 Facts: both walks emit 26 strips and 19 blits with zero close=True decisions anywhere on the row, so assign-vs-add is exonerated here. The blowout interval reads rite 63.63 split at 192.5 gated versus rite 66.15 split at 192.75 substituted, with matching left boundaries: only substituted-edge X positions and their LowerY-driven strip splits differ. The rite edge X is isolation-verified, so the remaining suspect is crossing order and winding-interval formation across the sorted active list, not edge placement or strip logic.
 Decision: cubic multi stays gated. Next: active-edge ordering trace per strip around the blowout interval.
+
+## Verification ledger closed except mask accumulation; table exact (2026-10-02 probe)
+Question: what construction stage remains unverified for the blowout edge.
+Method: source-level verification of every remaining artifact against the pinned release, no product change: inverse-table programmatic diff, parse-rounding bit comparison on all blowout coordinates, winding-sign audit of the traced crossings.
+Facts: inverse tables match 1025 of 1025 entries; (float)double versus float parse agree bit-exact on all 16 blowout coordinates; transform is identity-exact; traced windings agree in sign on both sides (left minus one, rite plus one) with identical interval structure. Every cubic construction stage is now verified or bounded-negligible except chop-t association values and per-strip mask-row accumulation. The 183 must therefore compose inside the mask walk, not the edges.
+Decision: cubic multi stays gated. Next: mask-row accumulation trace for row 192 showing each strip and fill contribution to pixels 60 to 68.
