@@ -2084,3 +2084,9 @@ Question: whether the 46k wordmark gap is physical-unit sizing or cropped-viewpo
 Method: our Default natural-millimetre render (2050x560) against a fresh 3/3-stable natural-size pinned triple, plus edge-dilated family classification and integer shift-search.
 Facts: 16384 at max 255/184 versus 46625 before (65 percent framing artifact); all 16384 fringe-adjacent with zero structural and unique zero-shift minimum, so sizing maps correctly and the remainder is curve-edge fringe.
 Decision: no product change; entry updated, drivers deleted with the tree clean. Framing protocol: pair physical-unit documents at natural size whenever transport allows. Next per the queue as before.
+
+## Disc deviations sit on tessellation vertices; both renderers polygonal (2026-10-02 probe)
+Question: what drives the 48-max residual on the radial disc: gradient evaluation, snap phase, or tessellation vertices.
+Method: three-way disc-membership truth versus candidate versus banked oracle over all 256 pixels, plus analytic prediction of our sample vertices from the adaptive dyadic subdivision rule at flatness 0.25 (22.5-degree steps from angle zero).
+Facts: both renderers under-cover geometric truth systematically around the rim (shared polygonal sag); the only large deviations sit exactly on predicted vertex pixels with ours over truth (+7/+14) and oracle under (-33 both), i.e. knife-phase divergence between tessellations, while (12,4) shows both-under consistent with strip weights at the neighboring vertex. Gradient colors match everywhere, so paint is exonerated for the third time on this probe class.
+Decision: no product change; drivers deleted with the tree clean. Disc tessellation parks with curve placement; matching Chrome vertex-for-vertex would be tuning without the backend spec. Next per the queue as before.
