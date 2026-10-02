@@ -470,11 +470,13 @@ internal sealed class SvgGradientPolygon : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
 
-    private SvgGradientPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
+    private SvgGradientPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
     {
         Points = points;
         ContourEnds = contourEnds;
         Signs = signs;
+        QuadSpans = quadSpans;
+        CubicSpans = cubicSpans;
         Gradient = gradient;
         Box = box;
         HasFill = hasFill;
@@ -491,6 +493,12 @@ internal sealed class SvgGradientPolygon : IDisposable
 
     /// <summary>Per-contour combination weights resolved at retention: parity signs for even-odd fills, winding roles for nonzero fills; the rasterizer falls back to signed accumulation when absent.</summary>
     internal int[]? Signs { get; }
+
+    /// <summary>Retained quadratic spans in retained-point index space; empty when the outline carries no analytic curves.</summary>
+    internal SvgQuadSpan[] QuadSpans { get; }
+
+    /// <summary>Retained cubic spans in retained-point index space; empty when the outline carries no analytic cubics.</summary>
+    internal SvgCubicSpan[] CubicSpans { get; }
 
     internal SvgLinearGradient Gradient { get; }
 
@@ -507,20 +515,29 @@ internal sealed class SvgGradientPolygon : IDisposable
     internal SvgClipBox? Clip { get; }
 
     /// <summary>Creates one linear-gradient polygon fill; adopts the caller scene reservation when supplied, which must cover exactly points, contourEnds and signs, and otherwise reserves exact scene storage. Ownership transfers to the fill in both cases.</summary>
+    /// <summary>Creates one gradient outline without recorded curves; spans stay empty on this route.</summary>
     internal static SvgGradientPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
+    {
+        return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation, budget);
+    }
+
+    /// <summary>Creates one gradient outline carrying retained spans with exact scene storage.</summary>
+    internal static SvgGradientPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgLinearGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
+        ArgumentNullException.ThrowIfNull(quadSpans);
+        ArgumentNullException.ThrowIfNull(cubicSpans);
         ArgumentNullException.ThrowIfNull(budget);
         if (isEvenOdd) ArgumentNullException.ThrowIfNull(signs);
         long bytes;
-        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length))); }
+        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length)) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
         if (reservation is null)
         {
             reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
         }
-        return new SvgGradientPolygon(points, contourEnds, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
+        return new SvgGradientPolygon(points, contourEnds, signs, quadSpans, cubicSpans, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
     }
 
     /// <summary>Repaints one solid outline as a linear-gradient outline, rendering single-stop and degenerate paints as solid end-stop fills. Callers admit the paint once for identical errors.</summary>
@@ -529,9 +546,9 @@ internal sealed class SvgGradientPolygon : IDisposable
         if (paint.Stops.Length == 1 || (paint.X1 == paint.X2 && paint.Y1 == paint.Y2 && !paint.IsEmpty))
         {
             if (paint.Stops.Length > 1 && paint.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are not implemented.");
-            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
+            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
         }
-        return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget));
+        return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget));
     }
 
     /// <summary>Stamps one gradient polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
@@ -542,7 +559,7 @@ internal sealed class SvgGradientPolygon : IDisposable
         SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
         RenderBudget.BudgetReservation? reservation = _reservation;
         _reservation = null;
-        return new SvgGradientPolygon(Points, ContourEnds, Signs, Gradient, Box, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
+        return new SvgGradientPolygon(Points, ContourEnds, Signs, QuadSpans, CubicSpans, Gradient, Box, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
     }
 
     public void Dispose()
@@ -557,11 +574,13 @@ internal sealed class SvgRadialPolygon : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
 
-    private SvgRadialPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
+    private SvgRadialPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
     {
         Points = points;
         ContourEnds = contourEnds;
         Signs = signs;
+        QuadSpans = quadSpans;
+        CubicSpans = cubicSpans;
         Gradient = gradient;
         Box = box;
         HasFill = hasFill;
@@ -579,6 +598,12 @@ internal sealed class SvgRadialPolygon : IDisposable
     /// <summary>Per-contour combination weights resolved at retention: parity signs for even-odd fills, winding roles for nonzero fills; the rasterizer falls back to signed accumulation when absent.</summary>
     internal int[]? Signs { get; }
 
+    /// <summary>Retained quadratic spans in retained-point index space; empty when the outline carries no analytic curves.</summary>
+    internal SvgQuadSpan[] QuadSpans { get; }
+
+    /// <summary>Retained cubic spans in retained-point index space; empty when the outline carries no analytic cubics.</summary>
+    internal SvgCubicSpan[] CubicSpans { get; }
+
     internal SvgRadialGradient Gradient { get; }
 
     internal SvgRectangle Box { get; }
@@ -594,27 +619,36 @@ internal sealed class SvgRadialPolygon : IDisposable
     internal SvgClipBox? Clip { get; }
 
     /// <summary>Creates one radial-gradient polygon fill; adopts the caller scene reservation when supplied, which must cover exactly points, contourEnds and signs, and otherwise reserves exact scene storage. Ownership transfers to the fill in both cases.</summary>
+    /// <summary>Creates one radial outline without recorded curves; spans stay empty on this route.</summary>
     internal static SvgRadialPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
+    {
+        return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation, budget);
+    }
+
+    /// <summary>Creates one radial outline carrying retained spans with exact scene storage.</summary>
+    internal static SvgRadialPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
+        ArgumentNullException.ThrowIfNull(quadSpans);
+        ArgumentNullException.ThrowIfNull(cubicSpans);
         ArgumentNullException.ThrowIfNull(budget);
         if (isEvenOdd) ArgumentNullException.ThrowIfNull(signs);
         long bytes;
-        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length))); }
+        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length)) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
         if (reservation is null)
         {
             reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
         }
-        return new SvgRadialPolygon(points, contourEnds, signs, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
+        return new SvgRadialPolygon(points, contourEnds, signs, quadSpans, cubicSpans, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
     }
 
     /// <summary>Repaints one solid outline as a radial-gradient outline, rendering single-stop and degenerate paints as solid end-stop fills. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgRadialGradient paint, SvgRectangle box, byte opacity, RenderBudget budget)
     {
-        if (paint.Stops.Length == 1 || (paint.Radius == 0 && !paint.IsEmpty)) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
-        return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget));
+        if (paint.Stops.Length == 1 || (paint.Radius == 0 && !paint.IsEmpty)) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
+        return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget));
     }
 
     /// <summary>Stamps one radial polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
@@ -625,7 +659,7 @@ internal sealed class SvgRadialPolygon : IDisposable
         SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
         RenderBudget.BudgetReservation? reservation = _reservation;
         _reservation = null;
-        return new SvgRadialPolygon(Points, ContourEnds, Signs, Gradient, Box, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
+        return new SvgRadialPolygon(Points, ContourEnds, Signs, QuadSpans, CubicSpans, Gradient, Box, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
     }
 
     public void Dispose()
@@ -640,11 +674,13 @@ internal sealed class SvgPatternPolygon : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
 
-    private SvgPatternPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRectangle content, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
+    private SvgPatternPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
     {
         Points = points;
         ContourEnds = contourEnds;
         Signs = signs;
+        QuadSpans = quadSpans;
+        CubicSpans = cubicSpans;
         Content = content;
         OriginX = originX;
         OriginY = originY;
@@ -664,6 +700,12 @@ internal sealed class SvgPatternPolygon : IDisposable
 
     /// <summary>Per-contour combination weights resolved at retention: parity signs for even-odd fills, winding roles for nonzero fills; the rasterizer falls back to signed accumulation when absent.</summary>
     internal int[]? Signs { get; }
+
+    /// <summary>Retained quadratic spans in retained-point index space; empty when the outline carries no analytic curves.</summary>
+    internal SvgQuadSpan[] QuadSpans { get; }
+
+    /// <summary>Retained cubic spans in retained-point index space; empty when the outline carries no analytic cubics.</summary>
+    internal SvgCubicSpan[] CubicSpans { get; }
 
     internal SvgRectangle Content { get; }
 
@@ -685,24 +727,33 @@ internal sealed class SvgPatternPolygon : IDisposable
 
     internal SvgClipBox? Clip { get; }
 
+    /// <summary>Creates one pattern outline without recorded curves; spans stay empty on this route.</summary>
     internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRectangle content, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    {
+        return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), content, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, budget);
+    }
+
+    /// <summary>Creates one pattern outline carrying retained spans with exact scene storage.</summary>
+    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
+        ArgumentNullException.ThrowIfNull(quadSpans);
+        ArgumentNullException.ThrowIfNull(cubicSpans);
         ArgumentNullException.ThrowIfNull(budget);
         if (isEvenOdd) ArgumentNullException.ThrowIfNull(signs);
         long bytes;
-        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length))); }
+        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length)) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
         RenderBudget.BudgetReservation? reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
-        return new SvgPatternPolygon(points, contourEnds, signs, content, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
+        return new SvgPatternPolygon(points, contourEnds, signs, quadSpans, cubicSpans, content, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
     }
 
     /// <summary>Repaints one solid outline as a pattern-tile outline, rendering empty tiles as unpainted fills. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgPatternTile tile, byte opacity, RenderBudget budget)
     {
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
-        return SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
+        return SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
     }
 
     /// <summary>Stamps one pattern polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
@@ -713,7 +764,7 @@ internal sealed class SvgPatternPolygon : IDisposable
         SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
         RenderBudget.BudgetReservation? reservation = _reservation;
         _reservation = null;
-        return new SvgPatternPolygon(Points, ContourEnds, Signs, Content, OriginX, OriginY, TileWidth, TileHeight, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
+        return new SvgPatternPolygon(Points, ContourEnds, Signs, QuadSpans, CubicSpans, Content, OriginX, OriginY, TileWidth, TileHeight, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
     }
 
     public void Dispose()

@@ -1897,8 +1897,8 @@ public sealed class SvgStrokeFillTests
     [Fact]
     public void Curved_path_gradient_fill_matches_solid_coverage()
     {
-        byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M2,2 C6,0.67 10,0.67 14,2 L14,14 L2,14 Z\" fill=\"url(#g)\"/></svg>", out _, out _);
-        byte[] solid = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M2,2 C6,0.67 10,0.67 14,2 L14,14 L2,14 Z\" fill=\"red\"/></svg>", out _, out _);
+        byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"red\"/><stop offset=\"1\" stop-color=\"blue\"/></linearGradient></defs><path d=\"M2,2 Q8,0 14,2 L14,14 L2,14 Z\" fill=\"url(#g)\"/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M2,2 Q8,0 14,2 L14,14 L2,14 Z\" fill=\"red\"/></svg>", out _, out _);
         byte[] solidAlpha = new byte[solid.Length / 4];
         byte[] paintedAlpha = new byte[painted.Length / 4];
         for (int i = 0; i < solidAlpha.Length; i++)

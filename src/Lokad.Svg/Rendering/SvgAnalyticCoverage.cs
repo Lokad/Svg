@@ -241,7 +241,281 @@ internal ref struct SvgAnalyticCoverage
         int inverseDY = (deltaX == 0 || slope == 0) ? int.MaxValue : absoluteSlope < 1024 ? QuickInverse(absoluteSlope) : SkAbs32(QuickDiv(deltaY, deltaX));
         return new AnalyticEdge { X = x0, DX = slope, UpperX = x0, Y = y0, UpperY = y0, LowerY = y1, DY = inverseDY, Winding = winding };
     }
-    /// <summary>Reports whether Y is monotonic across one float quadratic.</summary>
+    /// <summary>Builds one walker edge from fixed endpoints with a caller-computed slope.</summary>
+    /// <remarks>Cubic stepping derives slopes by exact division from unsnapped starts, unlike the table lookup, so the slope arrives precomputed while winding still negates on downward swaps.</remarks>
+    private static AnalyticEdge? SetLineSloped(int x0, int y0, int x1, int y1, int winding, int slope)
+    {
+        if (winding != 1 && winding != -1) throw new ArgumentOutOfRangeException(nameof(winding));
+        if (y0 > y1)
+        {
+            (x0, x1) = (x1, x0);
+            (y0, y1) = (y1, y0);
+            winding = -winding;
+        }
+        int deltaY = (y1 - y0) >> 10;
+        if (deltaY == 0) return null;
+        int deltaX = (x1 - x0) >> 10;
+        int dot6Slope = SkAbs32(slope >> 10);
+        int inverseDY = (deltaX == 0 || slope == 0) ? int.MaxValue : dot6Slope < 1024 ? QuickInverse(dot6Slope) : SkAbs32(QuickDiv(deltaY, deltaX));
+        return new AnalyticEdge { X = x0, DX = slope, UpperX = x0, Y = y0, UpperY = y0, LowerY = y1, DY = inverseDY, Winding = winding };
+    }
+
+    /// <summary>Divides two floats into a unit ratio, rejecting empty, overflowing and underflowing divisions.</summary>
+    private static bool CubicUnitDivide(float numer, float denom, out float ratio)
+    {
+        if (numer < 0.0f) { numer = -numer; denom = -denom; }
+        if (denom == 0.0f || numer == 0.0f || numer >= denom) { ratio = 0.0f; return false; }
+        float r = numer / denom;
+        if (float.IsNaN(r) || r == 0.0f) { ratio = 0.0f; return false; }
+        ratio = r;
+        return true;
+    }
+
+    /// <summary>Finds unit Y-extrema of one float cubic in ascending order, mirroring SkFindCubicExtrema.</summary>
+    private static int CubicExtremaY(float a, float b, float c, float d, Span<float> roots)
+    {
+        float A = d - a + 3.0f * (b - c);
+        float B = 2.0f * (a - b - b + c);
+        float C = b - a;
+        if (A == 0.0f) return CubicUnitDivide(-C, B, out roots[0]) ? 1 : 0;
+        double discriminant = (double)B * B - 4.0 * (double)A * C;
+        if (discriminant < 0.0) return 0;
+        float R = (float)Math.Sqrt(discriminant);
+        if (!float.IsFinite(R)) return 0;
+        float Q = (B < 0.0f) ? -(B - R) / 2.0f : -(B + R) / 2.0f;
+        int count = 0;
+        if (CubicUnitDivide(Q, A, out float first)) roots[count++] = first;
+        if (CubicUnitDivide(C, Q, out float second)) roots[count++] = second;
+        if (count == 2)
+        {
+            if (roots[0] > roots[1]) (roots[0], roots[1]) = (roots[1], roots[0]);
+            else if (roots[0] == roots[1]) count = 1;
+        }
+        return count;
+    }
+
+        /// <summary>Interpolates one float point pair without fused operations, matching unchecked_mix rounding.</summary>
+    private static (float X, float Y) CubicMix((float X, float Y) a, (float X, float Y) b, float t)
+    {
+        return (a.X + (b.X - a.X) * t, a.Y + (b.Y - a.Y) * t);
+    }
+
+    /// <summary>Chops one float cubic at one position into two, padding a unit chop with its endpoint.</summary>
+    private static void ChopCubicSingle((float X, float Y) p0, (float X, float Y) p1, (float X, float Y) p2, (float X, float Y) p3, float t, Span<float> dst)
+    {
+        if (t == 1.0f)
+        {
+            dst[0] = p0.X; dst[1] = p0.Y; dst[2] = p1.X; dst[3] = p1.Y; dst[4] = p2.X; dst[5] = p2.Y; dst[6] = p3.X; dst[7] = p3.Y;
+            dst[8] = p3.X; dst[9] = p3.Y; dst[10] = p3.X; dst[11] = p3.Y; dst[12] = p3.X; dst[13] = p3.Y;
+            return;
+        }
+        (float X, float Y) ab = CubicMix(p0, p1, t);
+        (float X, float Y) bc = CubicMix(p1, p2, t);
+        (float X, float Y) cd = CubicMix(p2, p3, t);
+        (float X, float Y) abc = CubicMix(ab, bc, t);
+        (float X, float Y) bcd = CubicMix(bc, cd, t);
+        (float X, float Y) abcd = CubicMix(abc, bcd, t);
+        dst[0] = p0.X; dst[1] = p0.Y; dst[2] = ab.X; dst[3] = ab.Y; dst[4] = abc.X; dst[5] = abc.Y; dst[6] = abcd.X; dst[7] = abcd.Y;
+        dst[8] = bcd.X; dst[9] = bcd.Y; dst[10] = cd.X; dst[11] = cd.Y; dst[12] = p3.X; dst[13] = p3.Y;
+    }
+
+        /// <summary>Chops one float cubic at two ascending positions into three in one pass, mirroring the paired SIMD chop bit-for-bit.</summary>
+    private static void ChopCubicDouble((float X, float Y) p0, (float X, float Y) p1, (float X, float Y) p2, (float X, float Y) p3, float t0, float t1, Span<float> dst)
+    {
+        if (t1 == 1.0f)
+        {
+            ChopCubicSingle(p0, p1, p2, p3, t0, dst);
+            dst[14] = p3.X; dst[15] = p3.Y; dst[16] = p3.X; dst[17] = p3.Y; dst[18] = p3.X; dst[19] = p3.Y;
+            return;
+        }
+        (float X, float Y) ab0 = CubicMix(p0, p1, t0);
+        (float X, float Y) bc0 = CubicMix(p1, p2, t0);
+        (float X, float Y) cd0 = CubicMix(p2, p3, t0);
+        (float X, float Y) abc0 = CubicMix(ab0, bc0, t0);
+        (float X, float Y) bcd0 = CubicMix(bc0, cd0, t0);
+        (float X, float Y) abcd0 = CubicMix(abc0, bcd0, t0);
+        (float X, float Y) ab1 = CubicMix(p0, p1, t1);
+        (float X, float Y) bc1 = CubicMix(p1, p2, t1);
+        (float X, float Y) cd1 = CubicMix(p2, p3, t1);
+        (float X, float Y) abc1 = CubicMix(ab1, bc1, t1);
+        (float X, float Y) bcd1 = CubicMix(bc1, cd1, t1);
+        (float X, float Y) abcd1 = CubicMix(abc1, bcd1, t1);
+        (float X, float Y) midLo = CubicMix(abc0, bcd0, t1);
+        (float X, float Y) midHi = CubicMix(abc1, bcd1, t0);
+        dst[0] = p0.X; dst[1] = p0.Y; dst[2] = ab0.X; dst[3] = ab0.Y; dst[4] = abc0.X; dst[5] = abc0.Y; dst[6] = abcd0.X; dst[7] = abcd0.Y;
+        dst[8] = midLo.X; dst[9] = midLo.Y; dst[10] = midHi.X; dst[11] = midHi.Y;
+        dst[12] = abcd1.X; dst[13] = abcd1.Y; dst[14] = bcd1.X; dst[15] = bcd1.Y; dst[16] = cd1.X; dst[17] = cd1.Y; dst[18] = p3.X; dst[19] = p3.Y;
+    }
+
+    /// <summary>Flattens one chopped-cubic joint onto its endpoint level so joined pieces stay monotonic.</summary>
+    private static void FlattenCubicJoint(Span<float> dst, int @base)
+    {
+        float level = dst[@base + 6];
+        dst[@base + 4] = level;
+        dst[@base + 8] = level;
+    }
+
+        /// <summary>Appends analytic cubic segments for one retained span, returning the emitted edge count for flattened fallback when zero.</summary>
+    /// <remarks>Ports the pinned Skia cubic builder: extrema chop into monotonics with joint flattening, coefficient setup with safe upshifts, and pinned forward-difference stepping with exact-division slopes.</remarks>
+    private static int AppendCubicSpanEdges(List<AnalyticEdge> kept, double startX, double startY, double firstCX, double firstCY, double secondCX, double secondCY, double endX, double endY, ref long setupCost, CancellationToken cancellationToken)
+    {
+        (float X, float Y) p0 = ((float)startX, (float)startY);
+        (float X, float Y) p1 = ((float)firstCX, (float)firstCY);
+        (float X, float Y) p2 = ((float)secondCX, (float)secondCY);
+        (float X, float Y) p3 = ((float)endX, (float)endY);
+        Span<float> roots = stackalloc float[2];
+        int count = CubicExtremaY(p0.Y, p1.Y, p2.Y, p3.Y, roots);
+        if (count == 0)
+        {
+            return AppendCubicPiece(kept, p0, p1, p2, p3, ref setupCost, cancellationToken);
+        }
+        Span<float> dst = stackalloc float[20];
+        if (count == 1) ChopCubicSingle(p0, p1, p2, p3, roots[0], dst);
+        else ChopCubicDouble(p0, p1, p2, p3, roots[0], roots[1], dst);
+        FlattenCubicJoint(dst, 1);
+        if (count == 2) FlattenCubicJoint(dst, 7);
+        int emitted = AppendCubicPiece(kept, (dst[0], dst[1]), (dst[2], dst[3]), (dst[4], dst[5]), (dst[6], dst[7]), ref setupCost, cancellationToken);
+        emitted += AppendCubicPiece(kept, (dst[6], dst[7]), (dst[8], dst[9]), (dst[10], dst[11]), (dst[12], dst[13]), ref setupCost, cancellationToken);
+        if (count == 2) emitted += AppendCubicPiece(kept, (dst[12], dst[13]), (dst[14], dst[15]), (dst[16], dst[17]), (dst[18], dst[19]), ref setupCost, cancellationToken);
+        return emitted;
+    }
+
+        /// <summary>Computes the cubic off-line delta with the pinned 19-over-512 estimator.</summary>
+    private static int CubicDeltaFromLine(int a, int b, int c, int d)
+    {
+        int oneThird;
+        int twoThird;
+        unchecked
+        {
+            oneThird = (a * 8 - b * 15 + 6 * c + d) * 19 >> 9;
+            twoThird = (a + 6 * b - c * 15 + d * 8) * 19 >> 9;
+        }
+        int first = oneThird >= 0 ? oneThird : -oneThird;
+        int second = twoThird >= 0 ? twoThird : -twoThird;
+        return first >= second ? first : second;
+    }
+
+    /// <summary>Steps one Y-monotonic float cubic into walker edges, returning the emitted count.</summary>
+    /// <remarks>Ports setCubic plus updateCubic with the truncation float-to-FDot6 path. Steps pin falling Y to the running value, snap every row, and force termination past the last row; zero-height pieces emit nothing so the caller falls back to flattened chords.</remarks>
+    private static int AppendCubicPiece(List<AnalyticEdge> kept, (float X, float Y) p0, (float X, float Y) p1, (float X, float Y) p2, (float X, float Y) p3, ref long setupCost, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        const int scale = 1 << (2 + 6);
+        int fx0 = (int)(p0.X * scale);
+        int fy0 = (int)(p0.Y * scale);
+        int fx1 = (int)(p1.X * scale);
+        int fy1 = (int)(p1.Y * scale);
+        int fx2 = (int)(p2.X * scale);
+        int fy2 = (int)(p2.Y * scale);
+        int fx3 = (int)(p3.X * scale);
+        int fy3 = (int)(p3.Y * scale);
+        int winding = 1;
+        if (fy0 > fy3) { (fx0, fx3) = (fx3, fx0); (fx1, fx2) = (fx2, fx1); (fy0, fy3) = (fy3, fy0); (fy1, fy2) = (fy2, fy1); winding = -1; }
+        if (((fy0 + 32) >> 6) == ((fy3 + 32) >> 6)) return 0;
+        int shift = QuadStepShift(CubicDeltaFromLine(fx0, fx1, fx2, fx3), CubicDeltaFromLine(fy0, fy1, fy2, fy3)) + 1;
+        if (shift > 6) shift = 6;
+        int upShift = 6;
+        int downShift = shift + upShift - 10;
+        if (downShift < 0) { downShift = 0; upShift = 10 - shift; }
+        setupCost += 4;
+        int emitted;
+        unchecked
+        {
+            int bX = UpShift(3 * (fx1 - fx0), upShift);
+            int cX = UpShift(3 * (fx0 - fx1 - fx1 + fx2), upShift);
+            int dX = UpShift(fx3 + 3 * (fx1 - fx2) - fx0, upShift);
+            int bY = UpShift(3 * (fy1 - fy0), upShift);
+            int cY = UpShift(3 * (fy0 - fy1 - fy1 + fy2), upShift);
+            int dY = UpShift(fy3 + 3 * (fy1 - fy2) - fy0, upShift);
+            int fCx = fx0 << 10;
+            int fCDx = bX + (cX >> shift) + (dX >> (2 * shift));
+            int fCDDx = (int)(2L * cX + ((3L * dX) >> (shift - 1)));
+            int fCDDDx = (int)((3L * dX) >> (shift - 1));
+            int fCy = fy0 << 10;
+            int fCDy = bY + (cY >> shift) + (dY >> (2 * shift));
+            int fCDDy = (int)(2L * cY + ((3L * dY) >> (shift - 1)));
+            int fCDDDy = (int)((3L * dY) >> (shift - 1));
+            int fCLastX = fx3 << 10;
+            int fCLastY = fy3 << 10;
+            fCx >>= 2;
+            fCDx >>= 2;
+            fCDy >>= 2;
+            fCDDx >>= 2;
+            fCDDy >>= 2;
+            fCDDDx >>= 2;
+            fCDDDy >>= 2;
+            fCy >>= 2;
+            fCLastX >>= 2;
+            fCLastY >>= 2;
+            fCy = SnapY(fCy);
+            int snappedY = fCy;
+            fCLastY = SnapY(fCLastY);
+            emitted = StepCubicPiece(kept, fCx, fCy, fCDx, fCDy, fCDDx, fCDDy, fCDDDx, fCDDDy, fCLastX, fCLastY, snappedY, shift, downShift, winding, ref setupCost);
+        }
+        return emitted;
+    }
+
+        /// <summary>Scales one FDot6 value up without range checks, matching SkFDot6UpShift wraparound.</summary>
+    private static int UpShift(int value, int upShift)
+    {
+        unchecked { return value << upShift; }
+    }
+
+    /// <summary>Advances one cubic forward-difference state into snapped walker edges, pinning reversals and forcing termination past the last row.</summary>
+    private static int StepCubicPiece(List<AnalyticEdge> kept, int fCx, int fCy, int fCDx, int fCDy, int fCDDx, int fCDDy, int fCDDDx, int fCDDDy, int fCLastX, int fCLastY, int snappedY, int curveShift, int downShift, int winding, ref long setupCost)
+    {
+        int emitted = 0;
+        int oldx = fCx;
+        int oldy = fCy;
+        int dx = fCDx;
+        int dy = fCDy;
+        int ddx = fCDDx;
+        int ddy = fCDDy;
+        int dddx = fCDDDx;
+        int dddy = fCDDDy;
+        int count = -(1 << curveShift);
+        while (true)
+        {
+            int newx;
+            int newy;
+            if (++count < 0)
+            {
+                unchecked
+                {
+                    newx = oldx + (dx >> downShift);
+                    dx += ddx >> curveShift;
+                    ddx += dddx;
+                    newy = oldy + (dy >> downShift);
+                    dy += ddy >> curveShift;
+                    ddy += dddy;
+                }
+            }
+            else
+            {
+                newx = fCLastX;
+                newy = fCLastY;
+            }
+            if (newy < oldy) newy = oldy;
+            int endy = SnapY(newy);
+            if (fCLastY < endy) { endy = fCLastY; count = 0; }
+            int diffY = (endy - snappedY) >> 10;
+            int slope = diffY != 0 ? FDot6Div((newx - oldx) >> 10, diffY) : int.MaxValue;
+            AnalyticEdge? edge = SetLineSloped(oldx, snappedY, newx, endy, winding, slope);
+            if (edge is not null)
+            {
+                if (!(edge.DX == 0 && kept.Count > 0 && CombineVertical(edge, kept[^1]))) kept.Add(edge);
+                emitted++;
+            }
+            oldx = newx;
+            oldy = newy;
+            snappedY = endy;
+            setupCost += 2;
+            if (count >= 0) break;
+        }
+        return emitted;
+    }
+
+        /// <summary>Reports whether Y is monotonic across one float quadratic.</summary>
     private static bool QuadMonotonic(float y0, float y1, float y2)
     {
         float ab = y0 - y1;
@@ -408,19 +682,40 @@ internal ref struct SvgAnalyticCoverage
         return emitted;
     }
 
-    /// <summary>Validates retained spans for walker substitution: single clean contour with ordered non-overlapping ranges inside it.</summary>
-    /// <remarks>Any anomaly falls back to flattened walking rather than failing; spans are an optimization hint and the flattened path stays canonical. Overlapping or out-of-range spans decline substitution while disjoint touching-at-joint spans tile exactly.</remarks>
-    private static bool QuadSpansEligible(ReadOnlySpan<int> ends, SvgQuadSpan[] quadSpans, bool isEvenOdd, SvgPolygonMapping mapping, SvgContourFlags structure)
+    /// <summary>Validates retained quadratic and cubic spans for walker substitution: single clean contour with ordered non-overlapping ranges inside it.</summary>
+    /// <remarks>Any anomaly falls back to flattened walking rather than failing; spans are an optimization hint and the flattened path stays canonical. Overlapping or out-of-range spans decline substitution while disjoint touching-at-joint spans tile exactly, across both channels alike.</remarks>
+    private static bool CurveSpansEligible(ReadOnlySpan<int> ends, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, bool isEvenOdd, SvgPolygonMapping mapping, SvgContourFlags structure)
     {
-        if (quadSpans.Length == 0 || isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.None || ends.Length != 1) return false;
+        if (isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.None || ends.Length != 1) return false;
+        if (quadSpans.Length == 0 && cubicSpans.Length == 0) return false;
         int count = ends[0];
+        int quad = 0;
+        int cubic = 0;
         int previousEnd = 0;
-        for (int index = 0; index < quadSpans.Length; index++)
+        while (quad < quadSpans.Length || cubic < cubicSpans.Length)
         {
-            SvgQuadSpan span = quadSpans[index];
-            if (span.Contour != 0 || span.StartIndex < 0 || span.EndIndex <= span.StartIndex || span.EndIndex >= count || span.StartIndex < previousEnd) return false;
-            if (!double.IsFinite(span.Control.X) || !double.IsFinite(span.Control.Y)) return false;
-            previousEnd = span.EndIndex;
+            bool takeQuad = cubic >= cubicSpans.Length || (quad < quadSpans.Length && quadSpans[quad].StartIndex <= cubicSpans[cubic].StartIndex);
+            int contour;
+            int start;
+            int end;
+            if (takeQuad)
+            {
+                SvgQuadSpan span = quadSpans[quad++];
+                contour = span.Contour;
+                start = span.StartIndex;
+                end = span.EndIndex;
+                if (!double.IsFinite(span.Control.X) || !double.IsFinite(span.Control.Y)) return false;
+            }
+            else
+            {
+                SvgCubicSpan span = cubicSpans[cubic++];
+                contour = span.Contour;
+                start = span.StartIndex;
+                end = span.EndIndex;
+                if (!double.IsFinite(span.FirstControl.X) || !double.IsFinite(span.FirstControl.Y) || !double.IsFinite(span.SecondControl.X) || !double.IsFinite(span.SecondControl.Y)) return false;
+            }
+            if (contour != 0 || start < 0 || end <= start || end >= count || start < previousEnd) return false;
+            previousEnd = end;
         }
         return true;
     }
@@ -512,8 +807,15 @@ internal ref struct SvgAnalyticCoverage
     /// <summary>Prepares one analytic fill, substituting analytic quad segments for retained span ranges under single-contour clean-structure gating.</summary>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
     {
+        return Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, Array.Empty<SvgCubicSpan>(), xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, budget, out setupWork, out eligible, cancellationToken);
+    }
+
+    /// <summary>Prepares one analytic fill, substituting analytic curve segments for retained quadratic and cubic span ranges under single-contour clean-structure gating.</summary>
+    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
+    {
         ArgumentNullException.ThrowIfNull(budget);
         ArgumentNullException.ThrowIfNull(quadSpans);
+        ArgumentNullException.ThrowIfNull(cubicSpans);
         SvgPolygonCoverage.ValidateContourEnds(points, ends);
         ReadOnlySpan<int> votes = isEvenOdd ? nestingSigns : (signs is int[] roles ? roles : ReadOnlySpan<int>.Empty);
         if (!isEvenOdd && signs is not null && signs.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(signs));
@@ -656,7 +958,7 @@ internal ref struct SvgAnalyticCoverage
                 }
             }
         }
-        bool useQuadSpans = QuadSpansEligible(ends, quadSpans, isEvenOdd, mapping, structure);
+        bool useCurveSpans = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure);
         setupWork += points.Length;
         int width = xEnd - xStart;
         bool skipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
@@ -665,10 +967,11 @@ internal ref struct SvgAnalyticCoverage
         {
             List<AnalyticEdge> kept = new(points.Length);
             int spanCursor = 0;
+            int cubicCursor = 0;
             for (int index = 0; index < points.Length; index++)
             {
                 if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                if (useQuadSpans && spanCursor < quadSpans.Length && quadSpans[spanCursor].StartIndex == index)
+                if (useCurveSpans && spanCursor < quadSpans.Length && quadSpans[spanCursor].StartIndex == index)
                 {
                     SvgQuadSpan span = quadSpans[spanCursor];
                     spanCursor++;
@@ -676,6 +979,16 @@ internal ref struct SvgAnalyticCoverage
                     {
                         // Resume on the span end so the edge leaving it (including the implicit close) still walks flattened, which also chains touching spans exactly.
                         index = span.EndIndex - 1;
+                        continue;
+                    }
+                }
+                else if (useCurveSpans && cubicCursor < cubicSpans.Length && cubicSpans[cubicCursor].StartIndex == index)
+                {
+                    SvgCubicSpan cubic = cubicSpans[cubicCursor];
+                    cubicCursor++;
+                    if (cubic.EndIndex - index >= 2 && AppendCubicSpanEdges(kept, points[cubic.StartIndex].X, points[cubic.StartIndex].Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, points[cubic.EndIndex].X, points[cubic.EndIndex].Y, ref setupWork, cancellationToken) > 0)
+                    {
+                        index = cubic.EndIndex - 1;
                         continue;
                     }
                 }
