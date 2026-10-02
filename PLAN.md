@@ -361,6 +361,8 @@ Status 2026-10-02: row-6 round-join remainder adjudicated to oracle over-coverag
 
 Status 2026-10-02: stroke-union wobble-maxima audit complete with no product change (probe). Per-pixel delta maps of the union wins carrying raised channel maxima (fractional-round-join 15 to 27, odd-round-cap holds 15px at max 3) show steep-gradient edge-placement signatures, not seam doubling: the worst pixel pairs read adjacent under/over (228 vs 255 beside 156 vs 133), which subdivision re-tiling explains and incomplete union cannot. Counts fall multiples (58 to 20) while a few steep pixels trade the other way; the maxima stand as documented wobbles with no seam defect. Temps deleted with the tree clean. No gate rerun: docs-only on the gated tree.
 
+Status 2026-10-02: stroke-slice throughput evidence complete with no regression signal (measurement). New SvgStrokeBenchmarks covers the previously unmeasured straight-stroke hot path (overlapping bands under union, multi-contour strokes, dashed control, miter V) under the ShortRun N=3 protocol on the same box, SDK and runtime: pre-slice 308.7ms plus or minus 53ms, 5.67ms, 207us and 214us versus post-slice 335.2ms plus or minus 184ms, 5.98ms, 289us and 266us. Every delta sits inside the overlapping ShortRun intervals (the identical-code dashed path moves 39 percent within plus or minus 820us error), so per the comparison protocol there is no regression signal and a longer run is unwarranted. The overlapping-bands magnitude itself (300ms for sixteen stroked rects on both trees) is a pre-existing hotspot independent of the slice, noted as a future lever, not a slice regression. Memory allowances already hold through the probe gate.
+
 
 
 

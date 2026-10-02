@@ -1970,3 +1970,9 @@ Question: whether the raised channel maxima on union wins (fractional-round-join
 Method: per-pixel delta map of the worst win with a temporary deleted-after test; no product change.
 Facts: the worst deltas pair as adjacent under/over pixels (228 vs 255 beside 156 vs 133) on steep band edges far from any splice line, the signature of sub-pixel boundary placement after re-tiling, which incomplete union cannot produce; counts fall 58 to 20 while a few steep pixels trade the other way.
 Decision: no product change; the maxima stand as documented placement wobbles and the audit closes the seam-defect question on the landed slice. Temp deleted with the tree clean.
+
+## Stroke-slice throughput shows no regression signal; overlapping-bands hotspot is pre-existing (2026-10-02 measurement)
+Question: whether the stroke-union slice regresses straight-stroke throughput, which had no benchmark coverage.
+Method: new SvgStrokeBenchmarks (overlapping bands, multi-contour strokes, dashed control, miter V) run under ShortRun N=3 on the same box, SDK and runtime, pre-slice worktree versus post-slice tree; memory allowances separately gated by the probe suite.
+Facts: pre 308.7ms plus or minus 53ms, 5.67ms, 207us, 214us versus post 335.2ms plus or minus 184ms, 5.98ms, 289us, 266us; every delta sits inside overlapping intervals with the identical-code dashed path itself moving within noise, so no regression signal. The 300ms overlapping-bands magnitude on both trees is a pre-existing hotspot independent of the slice.
+Decision: recorded as throughput exit evidence with the benchmark kept as a lasting asset; a longer run is unwarranted without a specific signal. The pre-existing hotspot is noted as a future lever, not slice work.
