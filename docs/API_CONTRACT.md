@@ -28,8 +28,7 @@ outer logical dimensions and overrides root `width`/`height`; a root `viewBox`, 
 present, still maps its user coordinates into that viewport.
 The per-axis dimension cap applies after output scaling. Exceeding it with valid
 integral dimensions returns `SvgErrorCode.LimitExceeded` before surface allocation
-or output writes. Nonpositive, non-finite or fractional resolved output dimensions
-remain `UnsupportedFeature`; malformed SVG values retain their parsing errors.
+or output writes. Nonpositive or non-finite resolved output dimensions remain `UnsupportedFeature`; fractional dimensions round to the nearest device pixel (midpoint away from zero) before that check, matching an explicit rounded viewport byte-for-byte; malformed SVG values retain their parsing errors.
 
 `Lokad.Svg.Fonts.SvgFontPackCatalog` parses the public OoxPdf 0.1.4 manifest
 format from caller-owned bytes without network or filesystem access. It validates
