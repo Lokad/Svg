@@ -1748,3 +1748,9 @@ Question: whether the Ford blowout comes from cubic edge construction or multi-c
 Method: scratch diagnostics only, no product change and no corpus additions: extract blowout span B standalone with its close chord at identity map, bank a 3/3 byte-identical pinned-Chrome triple, render through the substituted single-contour walker, compare bottom rows.
 Facts: isolated span B matches the oracle to within two quanta on every bottom row (rows 187 and 188 byte-identical, row 191 identical, row 192 one pixel 255 to 253, overall max alpha error 19), while the same curve inside Ford blows out 27 to 183. Edge construction is exonerated at piece level; the divergence needs the multi-contour context: strip partitioning through intersections and ordering, close assign-vs-add decisions, and winding intervals across substituted contours.
 Decision: cubic multi stays gated. Next: combination-level investigation starting from strip partitions old-versus-new on Ford.
+
+## Strip diff shows same structure with shifted splits; ordering is next (2026-10-02 probe)
+Question: whether the blowout comes from strip partitions, close decisions, or crossing order.
+Method: scratch-worktree row-192 strip tracing in gated versus cubic-multi Ford renders (identical hooks, worktrees removed after).
+Facts: both walks emit 26 strips and 19 blits with zero close=True decisions anywhere on the row, so assign-vs-add is exonerated here. The blowout interval reads rite 63.63 split at 192.5 gated versus rite 66.15 split at 192.75 substituted, with matching left boundaries: only substituted-edge X positions and their LowerY-driven strip splits differ. The rite edge X is isolation-verified, so the remaining suspect is crossing order and winding-interval formation across the sorted active list, not edge placement or strip logic.
+Decision: cubic multi stays gated. Next: active-edge ordering trace per strip around the blowout interval.
