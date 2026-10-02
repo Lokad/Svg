@@ -1473,10 +1473,10 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 10,
+        "changedPixelCount": 8,
         "maximumChannelError": 35,
         "maximumAlphaError": 35,
-        "alphaChangedPixelCount": 10,
+        "alphaChangedPixelCount": 8,
         "minimumMismatchX": 3,
         "minimumMismatchY": 8,
         "maximumMismatchX": 12,

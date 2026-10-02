@@ -538,7 +538,7 @@ internal ref struct SvgAnalyticCoverage
     }
 
     /// <summary>Appends analytic quadratic segments for one retained span, returning the emitted edge count for flattened fallback when zero.</summary>
-    /// <remarks>Ports the pinned Skia quad builder in float plus fixed point: Y-extrema chop into monotonics, curvature-driven forward-difference steps with snapping, and identical line-edge construction through SetLineFixed. Cost charges setups plus stepping iterations like per-edge charging.</remarks>
+    /// <remarks>Ports the pinned Skia quad builder in float plus fixed point: Y-extrema chop into monotonics, resampled forward-difference steps with pinned slope-threaded line-edge construction. Cost charges setups plus stepping iterations like per-edge charging.</remarks>
     private static int AppendQuadSpanEdges(List<AnalyticEdge> kept, double startX, double startY, double controlX, double controlY, double endX, double endY, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
     {
         float x0 = (float)startX;
@@ -618,7 +618,7 @@ internal ref struct SvgAnalyticCoverage
         return emitted;
     }
 
-    /// <summary>Advances one quad forward-difference state into snapped walker edges, skipping zero-height steps exactly like updateLine.</summary>
+    /// <summary>Advances one quad forward-difference state into snapped walker edges, anchoring the snapped start across zero-height steps and threading the pinned slope exactly like updateQuadratic.</summary>
     private static int StepQuadPiece(List<AnalyticEdge> kept, int qx, int qy, int qDx, int qDy, int qDDx, int qDDy, int qLastX, int qLastY, int curveShift, int count, int winding, ref int contourEdges, ref long setupCost)
     {
         int emitted = 0;
@@ -634,6 +634,7 @@ internal ref struct SvgAnalyticCoverage
             int newy;
             int endx;
             int endy;
+            int slope;
             if (--count > 0)
             {
                 unchecked
@@ -644,7 +645,7 @@ internal ref struct SvgAnalyticCoverage
                 if (SkAbs32(dy >> curveShift) >= 2 * Fixed1 && ((long)SkAbs32(dy) << 6) > SkAbs32(dx))
                 {
                     int diffY = (newy - sy) >> 10;
-                    int slope = diffY != 0 ? QuickDiv((newx - sx) >> 10, diffY) : int.MaxValue;
+                    slope = diffY != 0 ? QuickDiv((newx - sx) >> 10, diffY) : int.MaxValue;
                     endy = Math.Min(qLastY, FixedRoundToFixed(newy));
                     endx = unchecked(newx - FixedMul(slope, newy - endy));
                 }
@@ -652,6 +653,8 @@ internal ref struct SvgAnalyticCoverage
                 {
                     endy = Math.Min(qLastY, SnapY(newy));
                     endx = newx;
+                    int diffY = (endy - sy) >> 10;
+                    slope = diffY != 0 ? QuickDiv((newx - sx) >> 10, diffY) : int.MaxValue;
                 }
                 unchecked
                 {
@@ -665,17 +668,22 @@ internal ref struct SvgAnalyticCoverage
                 newy = qLastY;
                 endx = newx;
                 endy = newy;
+                int diffY = (newy - sy) >> 10;
+                slope = diffY != 0 ? QuickDiv((newx - sx) >> 10, diffY) : int.MaxValue;
             }
-            AnalyticEdge? edge = SetLineWound(sx, sy, endx, endy, winding);
-            if (edge is not null)
+            if (slope < int.MaxValue)
             {
-                if (!(edge.DX == 0 && contourEdges > 0 && CombineVertical(edge, kept[^1]))) { kept.Add(edge); contourEdges++; }
-                emitted++;
+                AnalyticEdge? edge = SetLineSloped(sx, sy, endx, endy, winding, slope);
+                if (edge is not null)
+                {
+                    if (!(edge.DX == 0 && contourEdges > 0 && CombineVertical(edge, kept[^1]))) { kept.Add(edge); contourEdges++; }
+                    emitted++;
+                    sx = endx;
+                    sy = endy;
+                }
             }
             oldx = newx;
             oldy = newy;
-            sx = endx;
-            sy = endy;
             setupCost += 2;
             if (count <= 0) break;
         }

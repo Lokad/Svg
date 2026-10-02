@@ -110,6 +110,18 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Reflected_cubic_use_matches_direct_rendering()
+    {
+        // Row 5: use-instance placement maps retained cubic controls alongside
+        // flattened points, so reflected cubic instances walk the same analytic
+        // edges as hand-mirrored geometry.
+        byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><path id=\"c\" d=\"M0,8 C2,4 6,4 8,8 Z\" fill=\"red\"/></defs><use href=\"#c\" transform=\"translate(16,0) scale(-1,1)\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M16,8 C14,4 10,4 8,8 Z\" fill=\"red\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
     public void Magnified_symbol_curve_use_stays_unsupported()
     {
         // R35: symbol viewBox maps magnify the same lowering-time subdivision

@@ -247,7 +247,62 @@ internal static class SvgReferenceResolver
         SvgClipBox? clip = polygon.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         SvgColor color = new(polygon.Color.Red, polygon.Color.Green, polygon.Color.Blue, MultiplyAlpha(polygon.Color.Alpha, reference.Opacity));
-        return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
+        SvgQuadSpan[] quadSpans = MapUseQuadSpans(polygon.QuadSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
+        SvgCubicSpan[] cubicSpans = MapUseCubicSpans(polygon.CubicSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
+        return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, quadSpans, cubicSpans, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
+    }
+
+    /// <summary>Maps retained quad-span controls through one plain use-instance placement, preserving span ranges so the analytic walker consumes instance curves like direct geometry.</summary>
+    private static SvgQuadSpan[] MapUseQuadSpans(SvgQuadSpan[] spans, SvgAffineTransform instanceMap, double offsetX, double offsetY, SvgViewportFrame? frame, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(spans);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        SvgQuadSpan[] mapped = new SvgQuadSpan[spans.Length];
+        for (int index = 0; index < mapped.Length; index++)
+        {
+            workCounter.Consume(cancellationToken);
+            SvgQuadSpan span = spans[index];
+            SvgDevicePoint placed = instanceMap.Apply(span.Control.X + offsetX, span.Control.Y + offsetY);
+            double x = placed.X;
+            double y = placed.Y;
+            if (frame is not null)
+            {
+                x = x * frame.Value.ScaleX + frame.Value.OffsetX;
+                y = y * frame.Value.ScaleY + frame.Value.OffsetY;
+            }
+            if (!double.IsFinite(x) || !double.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+            mapped[index] = new SvgQuadSpan(span.Contour, span.StartIndex, span.EndIndex, new SvgDevicePoint(x, y));
+        }
+        return mapped;
+    }
+
+    /// <summary>Maps retained cubic-span controls through one plain use-instance placement, preserving span ranges so the analytic walker consumes instance curves like direct geometry.</summary>
+    private static SvgCubicSpan[] MapUseCubicSpans(SvgCubicSpan[] spans, SvgAffineTransform instanceMap, double offsetX, double offsetY, SvgViewportFrame? frame, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(spans);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        SvgCubicSpan[] mapped = new SvgCubicSpan[spans.Length];
+        for (int index = 0; index < mapped.Length; index++)
+        {
+            workCounter.Consume(cancellationToken);
+            SvgCubicSpan span = spans[index];
+            SvgDevicePoint first = instanceMap.Apply(span.FirstControl.X + offsetX, span.FirstControl.Y + offsetY);
+            SvgDevicePoint second = instanceMap.Apply(span.SecondControl.X + offsetX, span.SecondControl.Y + offsetY);
+            double firstX = first.X;
+            double firstY = first.Y;
+            double secondX = second.X;
+            double secondY = second.Y;
+            if (frame is not null)
+            {
+                firstX = firstX * frame.Value.ScaleX + frame.Value.OffsetX;
+                firstY = firstY * frame.Value.ScaleY + frame.Value.OffsetY;
+                secondX = secondX * frame.Value.ScaleX + frame.Value.OffsetX;
+                secondY = secondY * frame.Value.ScaleY + frame.Value.OffsetY;
+            }
+            if (!double.IsFinite(firstX) || !double.IsFinite(firstY) || !double.IsFinite(secondX) || !double.IsFinite(secondY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+            mapped[index] = new SvgCubicSpan(span.Contour, span.StartIndex, span.EndIndex, new SvgDevicePoint(firstX, firstY), new SvgDevicePoint(secondX, secondY));
+        }
+        return mapped;
     }
 
     private static SvgGeometry ApplyGradientPolygon(SvgGradientPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -455,7 +510,53 @@ internal static class SvgReferenceResolver
                 clip = placed.Intersect(viewport);
             }
             SvgColor color = new(source.Color.Red, source.Color.Green, source.Color.Blue, MultiplyAlpha(source.Color.Alpha, instance.Opacity));
-            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, source.ContourEnds, source.Signs, color, source.HasFill && instance.IsPainted, source.IsEvenOdd, source.Mapping, clip, null, document.Budget));
+            SvgQuadSpan[] quadSpans = MapSymbolQuadSpans(source.QuadSpans, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, workCounter, cancellationToken);
+            SvgCubicSpan[] cubicSpans = MapSymbolCubicSpans(source.CubicSpans, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, workCounter, cancellationToken);
+            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, source.ContourEnds, source.Signs, quadSpans, cubicSpans, color, source.HasFill && instance.IsPainted, source.IsEvenOdd, source.Mapping, clip, null, document.Budget));
+        }
+
+        static SvgQuadSpan[] MapSymbolQuadSpans(SvgQuadSpan[] spans, double scaleX, double scaleY, double offsetX, double offsetY, SvgUseReference instance, SvgViewportFrame? viewportFrame, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            SvgQuadSpan[] mapped = new SvgQuadSpan[spans.Length];
+            for (int index = 0; index < mapped.Length; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgQuadSpan span = spans[index];
+                SvgDevicePoint placed = MapSymbolControl(span.Control, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, workCounter, cancellationToken);
+                mapped[index] = new SvgQuadSpan(span.Contour, span.StartIndex, span.EndIndex, placed);
+            }
+            return mapped;
+        }
+
+        static SvgCubicSpan[] MapSymbolCubicSpans(SvgCubicSpan[] spans, double scaleX, double scaleY, double offsetX, double offsetY, SvgUseReference instance, SvgViewportFrame? viewportFrame, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            SvgCubicSpan[] mapped = new SvgCubicSpan[spans.Length];
+            for (int index = 0; index < mapped.Length; index++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgCubicSpan span = spans[index];
+                SvgDevicePoint first = MapSymbolControl(span.FirstControl, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, workCounter, cancellationToken);
+                SvgDevicePoint second = MapSymbolControl(span.SecondControl, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, workCounter, cancellationToken);
+                mapped[index] = new SvgCubicSpan(span.Contour, span.StartIndex, span.EndIndex, first, second);
+            }
+            return mapped;
+        }
+
+        static SvgDevicePoint MapSymbolControl(SvgDevicePoint control, double scaleX, double scaleY, double offsetX, double offsetY, SvgUseReference instance, SvgViewportFrame? viewportFrame, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            workCounter.Consume(cancellationToken);
+            double contentX = control.X * scaleX + offsetX + instance.X;
+            double contentY = control.Y * scaleY + offsetY + instance.Y;
+            SvgDevicePoint placedPoint = instance.Transform.Apply(contentX, contentY);
+            double x = placedPoint.X;
+            double y = placedPoint.Y;
+            if (viewportFrame is not null)
+            {
+                x = x * viewportFrame.Value.ScaleX + viewportFrame.Value.OffsetX;
+                y = y * viewportFrame.Value.ScaleY + viewportFrame.Value.OffsetY;
+            }
+            if (!double.IsFinite(x) || !double.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+            return new SvgDevicePoint(x, y);
         }
     }
 
