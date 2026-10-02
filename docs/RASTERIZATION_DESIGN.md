@@ -2006,3 +2006,9 @@ Question: whether the mixed-contact CO-gate domain has CI coverage, since only m
 Method: twin overlapping squares render to mixed union; flip-test the gate back to crossing-required and confirm failure; keep the passing pins.
 Facts: the test locks union pixels plus alpha and fails on the over-narrow gate exactly where fallback paints through. Bowtie, open-X and zigzag variants all resolve through mixed rather than isolating the crossing-split silent-true path, so inv-009 remains that path's inventory guard after repeated shape attempts.
 Decision: landed as one unit test with remarks. Full gate holds 2820 core plus 100 visual green with zero warnings.
+
+## inv-003 residual is fringe throughout; no debris and paint exonerated (2026-10-02 probe)
+Question: whether inv-003's 10112px remainder hides a paint-model defect (swoosh gradient) or sliver debris (wordmark) beneath the assumed fringe.
+Method: per-pixel delta map over the worst zone plus 7x7 alpha neighborhoods around five speck pixels, against the banked 738x371 oracle triple; temporary deleted-after tests.
+Facts: swoosh-zone deltas match gradient colors within 2 to 3 levels with alpha-only edge differences (inverse-map evaluation exonerated); all five speck neighborhoods show rim-adjacent fringe in both renders with empty space beyond, falsifying isolated sliver debris; letter-zone deltas are small alpha differences on strong rims in both directions.
+Decision: no product change; the remainder is curve-edge fringe throughout, joining the parked families. The swoosh-paint row-7 item needs a truth-deficit discriminator, not an oracle deficit. Temps deleted with the tree clean.
