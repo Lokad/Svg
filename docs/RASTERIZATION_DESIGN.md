@@ -2072,3 +2072,9 @@ Question: whether the masked trefoil residual behaves consistently across sizes 
 Method: all-variant measurement with materialized width/height-only inputs for off-intrinsic sizes (raw resized screenshots crop fixed-size roots per the batch-101 rule; first attempt compared crops against scaled candidates at 40-85 percent mismatch and was discarded, not recorded as fidelity).
 Facts: fringe counts read 1174, 2388 and 4816 (linear in size); maxima rise sublinearly (64, 85, 104) toward the ~110 alpha ceiling seen on Ford; alpha exact and backgrounds bit-identical at every size; bboxes scale exactly twofold. Masked-group compositing with rotated use instances shows the same fringe family at every size with no size-dependent structural defect.
 Decision: no product change; INVENTORY entry updated with tuples and hashes, drivers deleted with the tree clean. Row-7 across-sizes evidence complete for the mask path. Next per the queue as before.
+
+## Flag quirk mass scales near-linearly; backgrounds bit-irrelevant (2026-10-02 measurement)
+Question: how the flag residual scales with size and background for quirk-budget sizing.
+Method: partial all-variant measurement (intended plus materialized small, three backgrounds, fresh 3/3-stable pinned triples; large-double out of transport scope).
+Facts: intended reproduces 6186 at max 32/0 to all digits (no drift); small reads 2867 at max 19/0; counts scale 2.16x per 2x size with maxima rising 19 to 32; oracle triples byte-identical across backgrounds per size, so the six reduce to two distinct comparisons.
+Decision: no product change; INVENTORY entry updated, drivers deleted with the tree clean. Quirk-budget input: quirk mass scales near-linearly with size. Next per the queue as before.
