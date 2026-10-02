@@ -2000,3 +2000,9 @@ Question: whether the mixed-contact union handles overlapping hole loops, after 
 Method: old-versus-new pixel maps, loop-plus-sign dumps, fill and even-odd control renders, and a fresh banked 3/3-stable oracle triple for a minimal twin-rings synthetic; no product change.
 Facts: the splicer traces the hole union (H1 union H2) with a hole role, cancelling band pixels covered by exactly one hole while painting doubly-covered hole pixels; legacy fan summation renders the same input correctly and fills sidestep via fast paths and even-odd gates. The oracle-improved inv-057 twin merge through the identical stage forbids a narrow gate without general union-weaving engine work. Admitted as research-twin-stroke-rings-16x16 at 24 pixels max 255 with the tuple pinned; a future fix graduates it.
 Decision: no product change; the limitation and its witness stand recorded. Full gate holds 2819 core plus 100 visual green with zero warnings.
+
+## Mixed-without-overlap domain pinned by twins unit test (2026-10-02 slice)
+Question: whether the mixed-contact CO-gate domain has CI coverage, since only manual inventory guarded it.
+Method: twin overlapping squares render to mixed union; flip-test the gate back to crossing-required and confirm failure; keep the passing pins.
+Facts: the test locks union pixels plus alpha and fails on the over-narrow gate exactly where fallback paints through. Bowtie, open-X and zigzag variants all resolve through mixed rather than isolating the crossing-split silent-true path, so inv-009 remains that path's inventory guard after repeated shape attempts.
+Decision: landed as one unit test with remarks. Full gate holds 2820 core plus 100 visual green with zero warnings.

@@ -86,6 +86,19 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Overlapping_stroke_rings_union_without_overlap()
+    {
+        // Row 4 stroke union: self-touching ring pairs without coincident spans resolve through mixed-contact union; the overlap zone keeps both bands while shared loops merge.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 H9 V9 H1 Z M5,5 H13 V13 H5 Z' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 1, 1));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 5, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 5, 6));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 9, 9));
+        Assert.Equal(24480, AlphaSum(pixels));
+    }
+
+    [Fact]
     public void Curved_stroke_keeps_legacy_tiling()
     {
         // Row 4 stroke union: curve-sourced outlines bypass separation until row-6 curve-aware completion.
