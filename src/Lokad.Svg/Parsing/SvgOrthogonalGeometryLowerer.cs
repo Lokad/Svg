@@ -987,7 +987,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Differentiates a chordal parabola through the cut neighborhood for a dash-cut tangent, falling back to the cut chord.</summary>
-    /// <remarks>Vertex cuts keep chord directions so offset-zero dash behavior holds bitwise; interior cuts on curves differentiate the Lagrange parabola through the previous joint, the cut start and the cut end at the cut position, which matches uniformly sampled tangents and stays second-order otherwise. Pure deterministic arithmetic with no budget or cancellation footprint.</remarks>
+    /// <remarks>Vertex cuts keep chord directions so offset-zero dash behavior holds bitwise; interior cuts on curves differentiate the Lagrange parabola through the previous joint, the cut start and the cut end at the cut position, which matches uniformly sampled tangents and stays second-order otherwise. When the parabola disagrees with the cut edge direction by more than forty-five degrees the neighborhood spans a sharp corner, so the exact edge direction wins over the turning model. Pure deterministic arithmetic with no budget or cancellation footprint.</remarks>
     private static (double X, double Y) DashEndpointTangent(ReadOnlySpan<SvgDevicePoint> contour, bool closed, int edgeIndex, double fraction)
     {
         int count = contour.Length;
@@ -1011,7 +1011,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         double tangentY = firstWeight * joint.Y + secondWeight * cutStart.Y + thirdWeight * cutEnd.Y;
         double length = System.Math.Sqrt(tangentX * tangentX + tangentY * tangentY);
         if (!double.IsFinite(length) || length == 0) return (chordX, chordY);
-        return (tangentX / length, tangentY / length);
+        double unitX = tangentX / length;
+        double unitY = tangentY / length;
+        // A parabola spanning a sharp corner points away from the cut edge, so caps tilt and carve the run end; the cut edge direction stays exact there while agreeing with the parabola on smooth curves within degrees.
+        if (unitX * chordX + unitY * chordY < 0.7071067811865476) return (chordX, chordY);
+        return (unitX, unitY);
 
         static double ChordLength(SvgDevicePoint from, SvgDevicePoint to)
         {
