@@ -295,6 +295,8 @@ Status 2026-10-02: mask composition closed with no product change (probe). Row 1
 
 Status 2026-10-02: span bisection complete with no product change (probe). Contour-0 substitution alone reproduces the blowout, counter substitution is inert, and span B is necessary and sufficient with span A irrelevant; the device map verifies bit-exact and the file needs no smooth or instance handling. Span-B edges are bit-identical across renders while outcomes differ, forcing an interval-neighborhood explanation. Next is disentangling strip-split weights from edge positions on span B alone.
 
+Status 2026-10-02: registration and parse closed with no product change (probe). Shift-search minima sit exactly at zero offset and all 142 spans align with exact arithmetic, leaving strip-split weights versus edge positions as the formal remainder. Next is the inverse-fit experiment on span B.
+
 Status 2026-10-02: static verification ledger complete with no product change (probe). Inverse tables match 1025 of 1025, parse rounding is bit-exact on blowout coordinates, and traced windings agree; ordering, close, intersections, tiling, shifts, joints, and votes are all eliminated, leaving mask-row accumulation as the composition site of the 183. Next is a mask-row accumulation trace for row 192.
 
 Status 2026-10-02: shift-flip hunt complete with no product change (probe). All 169 Ford chopped-piece shifts replicate exactly and none flips under float-ulp perturbation; all emitted edges tile Y with zero gaps or overlaps. The one-pixel blowout divergence is isolated to float-input placement on shallow pieces. Cubic multi stays gated; next is replicating the float pipeline for the two blowout spans.
