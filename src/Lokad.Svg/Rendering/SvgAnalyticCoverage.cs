@@ -357,7 +357,7 @@ internal ref struct SvgAnalyticCoverage
 
         /// <summary>Appends analytic cubic segments for one retained span, returning the emitted edge count for flattened fallback when zero.</summary>
     /// <remarks>Ports the pinned Skia cubic builder: extrema chop into monotonics with joint flattening, coefficient setup with safe upshifts, and pinned forward-difference stepping with exact-division slopes.</remarks>
-    private static int AppendCubicSpanEdges(List<AnalyticEdge> kept, double startX, double startY, double firstCX, double firstCY, double secondCX, double secondCY, double endX, double endY, ref long setupCost, CancellationToken cancellationToken)
+    private static int AppendCubicSpanEdges(List<AnalyticEdge> kept, double startX, double startY, double firstCX, double firstCY, double secondCX, double secondCY, double endX, double endY, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
     {
         (float X, float Y) p0 = ((float)startX, (float)startY);
         (float X, float Y) p1 = ((float)firstCX, (float)firstCY);
@@ -367,16 +367,16 @@ internal ref struct SvgAnalyticCoverage
         int count = CubicExtremaY(p0.Y, p1.Y, p2.Y, p3.Y, roots);
         if (count == 0)
         {
-            return AppendCubicPiece(kept, p0, p1, p2, p3, ref setupCost, cancellationToken);
+            return AppendCubicPiece(kept, p0, p1, p2, p3, ref contourEdges, ref setupCost, cancellationToken);
         }
         Span<float> dst = stackalloc float[20];
         if (count == 1) ChopCubicSingle(p0, p1, p2, p3, roots[0], dst);
         else ChopCubicDouble(p0, p1, p2, p3, roots[0], roots[1], dst);
         FlattenCubicJoint(dst, 1);
         if (count == 2) FlattenCubicJoint(dst, 7);
-        int emitted = AppendCubicPiece(kept, (dst[0], dst[1]), (dst[2], dst[3]), (dst[4], dst[5]), (dst[6], dst[7]), ref setupCost, cancellationToken);
-        emitted += AppendCubicPiece(kept, (dst[6], dst[7]), (dst[8], dst[9]), (dst[10], dst[11]), (dst[12], dst[13]), ref setupCost, cancellationToken);
-        if (count == 2) emitted += AppendCubicPiece(kept, (dst[12], dst[13]), (dst[14], dst[15]), (dst[16], dst[17]), (dst[18], dst[19]), ref setupCost, cancellationToken);
+        int emitted = AppendCubicPiece(kept, (dst[0], dst[1]), (dst[2], dst[3]), (dst[4], dst[5]), (dst[6], dst[7]), ref contourEdges, ref setupCost, cancellationToken);
+        emitted += AppendCubicPiece(kept, (dst[6], dst[7]), (dst[8], dst[9]), (dst[10], dst[11]), (dst[12], dst[13]), ref contourEdges, ref setupCost, cancellationToken);
+        if (count == 2) emitted += AppendCubicPiece(kept, (dst[12], dst[13]), (dst[14], dst[15]), (dst[16], dst[17]), (dst[18], dst[19]), ref contourEdges, ref setupCost, cancellationToken);
         return emitted;
     }
 
@@ -397,7 +397,7 @@ internal ref struct SvgAnalyticCoverage
 
     /// <summary>Steps one Y-monotonic float cubic into walker edges, returning the emitted count.</summary>
     /// <remarks>Ports setCubic plus updateCubic with the truncation float-to-FDot6 path. Steps pin falling Y to the running value, snap every row, and force termination past the last row; zero-height pieces emit nothing so the caller falls back to flattened chords.</remarks>
-    private static int AppendCubicPiece(List<AnalyticEdge> kept, (float X, float Y) p0, (float X, float Y) p1, (float X, float Y) p2, (float X, float Y) p3, ref long setupCost, CancellationToken cancellationToken)
+    private static int AppendCubicPiece(List<AnalyticEdge> kept, (float X, float Y) p0, (float X, float Y) p1, (float X, float Y) p2, (float X, float Y) p3, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         const int scale = 1 << (2 + 6);
@@ -450,7 +450,7 @@ internal ref struct SvgAnalyticCoverage
             fCy = SnapY(fCy);
             int snappedY = fCy;
             fCLastY = SnapY(fCLastY);
-            emitted = StepCubicPiece(kept, fCx, fCy, fCDx, fCDy, fCDDx, fCDDy, fCDDDx, fCDDDy, fCLastX, fCLastY, snappedY, shift, downShift, winding, ref setupCost);
+            emitted = StepCubicPiece(kept, fCx, fCy, fCDx, fCDy, fCDDx, fCDDy, fCDDDx, fCDDDy, fCLastX, fCLastY, snappedY, shift, downShift, winding, ref contourEdges, ref setupCost);
         }
         return emitted;
     }
@@ -462,7 +462,7 @@ internal ref struct SvgAnalyticCoverage
     }
 
     /// <summary>Advances one cubic forward-difference state into snapped walker edges, pinning reversals and forcing termination past the last row.</summary>
-    private static int StepCubicPiece(List<AnalyticEdge> kept, int fCx, int fCy, int fCDx, int fCDy, int fCDDx, int fCDDy, int fCDDDx, int fCDDDy, int fCLastX, int fCLastY, int snappedY, int curveShift, int downShift, int winding, ref long setupCost)
+    private static int StepCubicPiece(List<AnalyticEdge> kept, int fCx, int fCy, int fCDx, int fCDy, int fCDDx, int fCDDy, int fCDDDx, int fCDDDy, int fCLastX, int fCLastY, int snappedY, int curveShift, int downShift, int winding, ref int contourEdges, ref long setupCost)
     {
         int emitted = 0;
         int oldx = fCx;
@@ -503,7 +503,7 @@ internal ref struct SvgAnalyticCoverage
             AnalyticEdge? edge = SetLineSloped(oldx, snappedY, newx, endy, winding, slope);
             if (edge is not null)
             {
-                if (!(edge.DX == 0 && kept.Count > 0 && CombineVertical(edge, kept[^1]))) kept.Add(edge);
+                if (!(edge.DX == 0 && contourEdges > 0 && CombineVertical(edge, kept[^1]))) { kept.Add(edge); contourEdges++; }
                 emitted++;
             }
             oldx = newx;
@@ -539,7 +539,7 @@ internal ref struct SvgAnalyticCoverage
 
     /// <summary>Appends analytic quadratic segments for one retained span, returning the emitted edge count for flattened fallback when zero.</summary>
     /// <remarks>Ports the pinned Skia quad builder in float plus fixed point: Y-extrema chop into monotonics, curvature-driven forward-difference steps with snapping, and identical line-edge construction through SetLineFixed. Cost charges setups plus stepping iterations like per-edge charging.</remarks>
-    private static int AppendQuadSpanEdges(List<AnalyticEdge> kept, double startX, double startY, double controlX, double controlY, double endX, double endY, ref long setupCost, CancellationToken cancellationToken)
+    private static int AppendQuadSpanEdges(List<AnalyticEdge> kept, double startX, double startY, double controlX, double controlY, double endX, double endY, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
     {
         float x0 = (float)startX;
         float y0 = (float)startY;
@@ -549,12 +549,12 @@ internal ref struct SvgAnalyticCoverage
         float y2 = (float)endY;
         if (QuadMonotonic(y0, y1, y2))
         {
-            return AppendQuadPiece(kept, x0, y0, x1, y1, x2, y2, ref setupCost, cancellationToken);
+            return AppendQuadPiece(kept, x0, y0, x1, y1, x2, y2, ref contourEdges, ref setupCost, cancellationToken);
         }
         if (!QuadUnitDivide(y0, y1, y2, out float split))
         {
             y1 = MathF.Abs(y0 - y1) < MathF.Abs(y1 - y2) ? y0 : y2;
-            return AppendQuadPiece(kept, x0, y0, x1, y1, x2, y2, ref setupCost, cancellationToken);
+            return AppendQuadPiece(kept, x0, y0, x1, y1, x2, y2, ref contourEdges, ref setupCost, cancellationToken);
         }
         float p01x = x0 + (x1 - x0) * split;
         float p01y = y0 + (y1 - y0) * split;
@@ -562,14 +562,14 @@ internal ref struct SvgAnalyticCoverage
         float p12y = y1 + (y2 - y1) * split;
         float midx = p01x + (p12x - p01x) * split;
         float midy = p01y + (p12y - p01y) * split;
-        int emitted = AppendQuadPiece(kept, x0, y0, p01x, midy, midx, midy, ref setupCost, cancellationToken);
-        emitted += AppendQuadPiece(kept, midx, midy, p12x, midy, x2, y2, ref setupCost, cancellationToken);
+        int emitted = AppendQuadPiece(kept, x0, y0, p01x, midy, midx, midy, ref contourEdges, ref setupCost, cancellationToken);
+        emitted += AppendQuadPiece(kept, midx, midy, p12x, midy, x2, y2, ref contourEdges, ref setupCost, cancellationToken);
         return emitted;
     }
 
     /// <summary>Steps one Y-monotonic float quad into walker edges, returning the emitted count.</summary>
     /// <remarks>Ports setQuadratic plus updateQuadratic with the truncation float-to-FDot6 path Chrome builds without even rounding. Zero-height pieces emit nothing so the caller falls back to flattened chords.</remarks>
-    private static int AppendQuadPiece(List<AnalyticEdge> kept, float x0, float y0, float x1, float y1, float x2, float y2, ref long setupCost, CancellationToken cancellationToken)
+    private static int AppendQuadPiece(List<AnalyticEdge> kept, float x0, float y0, float x1, float y1, float x2, float y2, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         const int scale = 1 << (2 + 6);
@@ -613,13 +613,13 @@ internal ref struct SvgAnalyticCoverage
             qLastY >>= 2;
             qy = SnapY(qy);
             qLastY = SnapY(qLastY);
-            emitted = StepQuadPiece(kept, qx, qy, qDx, qDy, qDDx, qDDy, qLastX, qLastY, curveShift, count, winding, ref setupCost);
+            emitted = StepQuadPiece(kept, qx, qy, qDx, qDy, qDDx, qDDy, qLastX, qLastY, curveShift, count, winding, ref contourEdges, ref setupCost);
         }
         return emitted;
     }
 
     /// <summary>Advances one quad forward-difference state into snapped walker edges, skipping zero-height steps exactly like updateLine.</summary>
-    private static int StepQuadPiece(List<AnalyticEdge> kept, int qx, int qy, int qDx, int qDy, int qDDx, int qDDy, int qLastX, int qLastY, int curveShift, int count, int winding, ref long setupCost)
+    private static int StepQuadPiece(List<AnalyticEdge> kept, int qx, int qy, int qDx, int qDy, int qDDx, int qDDy, int qLastX, int qLastY, int curveShift, int count, int winding, ref int contourEdges, ref long setupCost)
     {
         int emitted = 0;
         int oldx = qx;
@@ -669,7 +669,7 @@ internal ref struct SvgAnalyticCoverage
             AnalyticEdge? edge = SetLineWound(sx, sy, endx, endy, winding);
             if (edge is not null)
             {
-                if (!(edge.DX == 0 && kept.Count > 0 && CombineVertical(edge, kept[^1]))) kept.Add(edge);
+                if (!(edge.DX == 0 && contourEdges > 0 && CombineVertical(edge, kept[^1]))) { kept.Add(edge); contourEdges++; }
                 emitted++;
             }
             oldx = newx;
@@ -686,22 +686,25 @@ internal ref struct SvgAnalyticCoverage
     /// <remarks>Any anomaly falls back to flattened walking rather than failing; spans are an optimization hint and the flattened path stays canonical. Overlapping or out-of-range spans decline substitution while disjoint touching-at-joint spans tile exactly, across both channels alike.</remarks>
     private static bool CurveSpansEligible(ReadOnlySpan<int> ends, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, bool isEvenOdd, SvgPolygonMapping mapping, SvgContourFlags structure)
     {
-        if (isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.None || ends.Length != 1) return false;
         if (quadSpans.Length == 0 && cubicSpans.Length == 0) return false;
-        int count = ends[0];
-        int quad = 0;
-        int cubic = 0;
-        int previousEnd = 0;
-        while (quad < quadSpans.Length || cubic < cubicSpans.Length)
+        if (isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.None || ends.Length != 1) return false;
+        return ContourSpansValid(0, ends[0], quadSpans, 0, quadSpans.Length, cubicSpans, 0, cubicSpans.Length);
+    }
+
+    /// <summary>Validates one contour slice run pair for walker substitution with ordered non-overlapping ranges inside the contour.</summary>
+    private static bool ContourSpansValid(int contourStart, int contourEnd, SvgQuadSpan[] quadSpans, int quadStart, int quadEnd, SvgCubicSpan[] cubicSpans, int cubicStart, int cubicEnd)
+    {
+        int quad = quadStart;
+        int cubic = cubicStart;
+        int previousEnd = contourStart;
+        while (quad < quadEnd || cubic < cubicEnd)
         {
-            bool takeQuad = cubic >= cubicSpans.Length || (quad < quadSpans.Length && quadSpans[quad].StartIndex <= cubicSpans[cubic].StartIndex);
-            int contour;
+            bool takeQuad = cubic >= cubicEnd || (quad < quadEnd && quadSpans[quad].StartIndex <= cubicSpans[cubic].StartIndex);
             int start;
             int end;
             if (takeQuad)
             {
                 SvgQuadSpan span = quadSpans[quad++];
-                contour = span.Contour;
                 start = span.StartIndex;
                 end = span.EndIndex;
                 if (!double.IsFinite(span.Control.X) || !double.IsFinite(span.Control.Y)) return false;
@@ -709,12 +712,11 @@ internal ref struct SvgAnalyticCoverage
             else
             {
                 SvgCubicSpan span = cubicSpans[cubic++];
-                contour = span.Contour;
                 start = span.StartIndex;
                 end = span.EndIndex;
                 if (!double.IsFinite(span.FirstControl.X) || !double.IsFinite(span.FirstControl.Y) || !double.IsFinite(span.SecondControl.X) || !double.IsFinite(span.SecondControl.Y)) return false;
             }
-            if (contour != 0 || start < 0 || end <= start || end >= count || start < previousEnd) return false;
+            if (start < contourStart || end > contourEnd || end <= start || start < previousEnd) return false;
             previousEnd = end;
         }
         return true;
@@ -889,6 +891,9 @@ internal ref struct SvgAnalyticCoverage
             try
             {
                 List<AnalyticEdge> multiKept = new(points.Length);
+                bool useMultiSpans = quadSpans.Length > 0 && !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves;
+                int quadCursor = 0;
+                int cubicCursor = 0;
                 int priorEnd = 0;
                 for (int contour = 0; contour < ends.Length; contour++)
                 {
@@ -900,10 +905,38 @@ internal ref struct SvgAnalyticCoverage
                     if (count < 3) continue;
                     if (TwiceArea(points.Slice(start, count)) == 0) continue;
                     if (hasVotes && votes[contour] == 0) continue;
+                    bool contourSpans = false;
+                    int quadRun = quadCursor;
+                    int cubicRun = cubicCursor;
+                    int quadRunEnd = quadRun;
+                    int cubicRunEnd = cubicRun;
+                    if (useMultiSpans)
+                    {
+                        while (quadRun < quadSpans.Length && quadSpans[quadRun].Contour < contour) quadRun++;
+                        while (cubicRun < cubicSpans.Length && cubicSpans[cubicRun].Contour < contour) cubicRun++;
+                        quadRunEnd = quadRun;
+                        while (quadRunEnd < quadSpans.Length && quadSpans[quadRunEnd].Contour == contour) quadRunEnd++;
+                        cubicRunEnd = cubicRun;
+                        while (cubicRunEnd < cubicSpans.Length && cubicSpans[cubicRunEnd].Contour == contour) cubicRunEnd++;
+                        contourSpans = quadRunEnd > quadRun && cubicRunEnd == cubicRun && ContourSpansValid(start, end, quadSpans, quadRun, quadRunEnd, cubicSpans, cubicRun, cubicRun);
+                        quadCursor = quadRun;
+                        cubicCursor = cubicRun;
+                    }
                     int contourEdges = 0;
+                    int quadAt = quadRun;
                     for (int index = start; index < end; index++)
                     {
                         if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        if (contourSpans && quadAt < quadRunEnd && quadSpans[quadAt].StartIndex == index)
+                        {
+                            SvgQuadSpan span = quadSpans[quadAt];
+                            quadAt++;
+                            if (span.EndIndex - index >= 2 && AppendQuadSpanEdges(multiKept, points[span.StartIndex].X, points[span.StartIndex].Y, span.Control.X, span.Control.Y, points[span.EndIndex].X, points[span.EndIndex].Y, ref contourEdges, ref setupWork, cancellationToken) > 0)
+                            {
+                                index = span.EndIndex - 1;
+                                continue;
+                            }
+                        }
                         SvgDevicePoint multiFirst = points[index];
                         SvgDevicePoint multiSecond = points[start + ((index - start + 1) % count)];
                         AnalyticEdge? multiEdge = SetLine(multiFirst.X, multiFirst.Y, multiSecond.X, multiSecond.Y, true);
@@ -975,7 +1008,8 @@ internal ref struct SvgAnalyticCoverage
                 {
                     SvgQuadSpan span = quadSpans[spanCursor];
                     spanCursor++;
-                    if (span.EndIndex - index >= 2 && AppendQuadSpanEdges(kept, points[span.StartIndex].X, points[span.StartIndex].Y, span.Control.X, span.Control.Y, points[span.EndIndex].X, points[span.EndIndex].Y, ref setupWork, cancellationToken) > 0)
+                    int spanContourEdges = kept.Count;
+                    if (span.EndIndex - index >= 2 && AppendQuadSpanEdges(kept, points[span.StartIndex].X, points[span.StartIndex].Y, span.Control.X, span.Control.Y, points[span.EndIndex].X, points[span.EndIndex].Y, ref spanContourEdges, ref setupWork, cancellationToken) > 0)
                     {
                         // Resume on the span end so the edge leaving it (including the implicit close) still walks flattened, which also chains touching spans exactly.
                         index = span.EndIndex - 1;
@@ -986,7 +1020,8 @@ internal ref struct SvgAnalyticCoverage
                 {
                     SvgCubicSpan cubic = cubicSpans[cubicCursor];
                     cubicCursor++;
-                    if (cubic.EndIndex - index >= 2 && AppendCubicSpanEdges(kept, points[cubic.StartIndex].X, points[cubic.StartIndex].Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, points[cubic.EndIndex].X, points[cubic.EndIndex].Y, ref setupWork, cancellationToken) > 0)
+                    int cubicContourEdges = kept.Count;
+                    if (cubic.EndIndex - index >= 2 && AppendCubicSpanEdges(kept, points[cubic.StartIndex].X, points[cubic.StartIndex].Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, points[cubic.EndIndex].X, points[cubic.EndIndex].Y, ref cubicContourEdges, ref setupWork, cancellationToken) > 0)
                     {
                         index = cubic.EndIndex - 1;
                         continue;

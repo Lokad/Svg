@@ -57,7 +57,7 @@ public sealed class SvgCubicSpanWalkerTests
     {
         (SvgDevicePoint[] points, int[] ends, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans) = LowerCubicArch(false);
         SvgCubicSpan first = cubicSpans[0];
-        SvgCubicSpan[] overlapping = [first, new SvgCubicSpan(0, first.StartIndex, first.EndIndex, first.FirstControl, first.SecondControl)];
+        SvgCubicSpan[] overlapping = [first, new SvgCubicSpan(first.Contour, first.StartIndex, first.EndIndex, first.FirstControl, first.SecondControl)];
         byte[] flat = WalkRows(points, ends, signs, quadSpans, Array.Empty<SvgCubicSpan>(), false, 8, 48, out bool _);
         byte[] declined = WalkRows(points, ends, signs, quadSpans, overlapping, false, 8, 48, out bool declinedEligible);
         Assert.True(declinedEligible);
@@ -92,5 +92,43 @@ public sealed class SvgCubicSpanWalkerTests
         Assert.True(RowMass(flat) > 0);
         Assert.Equal(flat, declined);
     }
-    
+
+    [Fact]
+    public void Multi_quad_substitutes_while_cubic_contour_walks_flattened()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z M8,20 C12,12 20,12 24,20 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Single(geometry.Polygon.QuadSpans);
+        SvgCubicSpan cubic = Assert.Single(geometry.Polygon.CubicSpans);
+        Assert.Equal(1, cubic.Contour);
+        byte[] flat = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), false, 8, 48, out bool flatEligible);
+        byte[] quadOnly = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, Array.Empty<SvgCubicSpan>(), false, 8, 48, out bool quadEligible);
+        byte[] curved = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, geometry.Polygon.CubicSpans, false, 8, 48, out bool curvedEligible);
+        Assert.True(flatEligible);
+        Assert.True(quadEligible);
+        Assert.True(curvedEligible);
+        Assert.True(RowMass(flat) > 0);
+        Assert.NotEqual(flat, quadOnly);
+        Assert.Equal(quadOnly, curved);
+    }
+
+    [Fact]
+    public void Multi_invalid_spans_fall_back_per_contour()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Z M8,20 C12,12 20,12 24,20 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Single(geometry.Polygon.QuadSpans);
+        SvgCubicSpan cubic = Assert.Single(geometry.Polygon.CubicSpans);
+        SvgCubicSpan[] overlapping = [cubic, new SvgCubicSpan(cubic.Contour, cubic.StartIndex, cubic.EndIndex, cubic.FirstControl, cubic.SecondControl)];
+        byte[] flatLow = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), false, 0, 24, out bool _);
+        byte[] declinedLow = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, overlapping, false, 0, 24, out bool declinedEligible);
+        byte[] partialHigh = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, overlapping, false, 24, 64, out bool _);
+        byte[] subsetHigh = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, geometry.Polygon.QuadSpans, [cubic], false, 24, 64, out bool _);
+        byte[] flatHigh = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), false, 24, 64, out bool _);
+        Assert.True(declinedEligible);
+        Assert.True(RowMass(flatLow) + RowMass(flatHigh) > 0);
+        Assert.Equal(flatLow, declinedLow);
+        Assert.Equal(subsetHigh, partialHigh);
+        Assert.NotEqual(flatHigh, partialHigh);
+    }
 }

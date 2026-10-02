@@ -77,6 +77,24 @@ public sealed class SvgQuadSpanWalkerTests
         Assert.Equal(flat, declined);
     }
     [Fact]
+    public void Multi_quad_spans_substitute_per_contour()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,30 Q32,4 56,30 Z M8,60 Q32,34 56,60 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(2, geometry.Polygon.ContourEnds.Length);
+        SvgQuadSpan[] spans = geometry.Polygon.QuadSpans;
+        Assert.Equal(2, spans.Length);
+        Assert.Equal(0, spans[0].Contour);
+        Assert.Equal(1, spans[1].Contour);
+        byte[] flat = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, Array.Empty<SvgQuadSpan>(), false, 4, 60, out bool flatEligible);
+        byte[] curved = WalkRows(geometry.Polygon.Points, geometry.Polygon.ContourEnds, geometry.Polygon.Signs, spans, false, 4, 60, out bool curvedEligible);
+        Assert.True(flatEligible);
+        Assert.True(curvedEligible);
+        Assert.True(RowMass(flat) > 0);
+        Assert.NotEqual(flat, curved);
+    }
+
+    [Fact]
     public void Single_chord_span_falls_back_to_flattened_rows()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 Q4,0 8,0 L8,8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
