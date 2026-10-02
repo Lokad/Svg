@@ -2420,6 +2420,164 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-dashed-quad-16x16",
+      "path": "dashed-quad-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-02",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "d2918c2742f7d6a0029e0db0aae2a39d1fdd98d51daf463fb64d52e19a179669",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "dash",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "admittedRendering": {
+        "changedPixelCount": 46,
+        "maximumChannelError": 205,
+        "maximumAlphaError": 205,
+        "alphaChangedPixelCount": 46,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 15,
+        "maximumMismatchY": 12
+      },
+      "oracle": {
+        "referencePng": "references/dashed-quad-16x16.png",
+        "referenceSha256": "a81d3926cc39fa9376ae10f7df9f3c899241e108720cc4139809501067eaee72",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-dashed-cubic-16x16",
+      "path": "dashed-cubic-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-02",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "d3edcfb5c67deeb726f4335f03d2c69ae36900fe0bd9ca41f339b6a04ecd9d2d",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "dash",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "admittedRendering": {
+        "changedPixelCount": 41,
+        "maximumChannelError": 134,
+        "maximumAlphaError": 134,
+        "alphaChangedPixelCount": 41,
+        "minimumMismatchX": 1,
+        "minimumMismatchY": 4,
+        "maximumMismatchX": 15,
+        "maximumMismatchY": 10
+      },
+      "oracle": {
+        "referencePng": "references/dashed-cubic-16x16.png",
+        "referenceSha256": "8e57c632348274f2d5edcdf82b9825176056fb1ff6c3969e41a22c3b1da5fdf0",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-quad-stroke-16x16",
+      "path": "quad-stroke-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-02",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "ef3cb6e62263cc311f37b9544f5cec6089e30beec9ee768d0fbc913fec6587f5",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "admittedRendering": {
+        "changedPixelCount": 38,
+        "maximumChannelError": 32,
+        "maximumAlphaError": 32,
+        "alphaChangedPixelCount": 38,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 15,
+        "maximumMismatchY": 12
+      },
+      "oracle": {
+        "referencePng": "references/quad-stroke-16x16.png",
+        "referenceSha256": "df9900476634a877d5621374ef996624f4483e2315c5333ef80397b6ccfe461b",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-cubic-stroke-16x16",
+      "path": "cubic-stroke-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-02",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "dfd952c6e3e056df59b991f88dc751df51338326349381a1d969d8702cca780a",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "admittedRendering": {
+        "changedPixelCount": 31,
+        "maximumChannelError": 70,
+        "maximumAlphaError": 70,
+        "alphaChangedPixelCount": 31,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 4,
+        "maximumMismatchX": 15,
+        "maximumMismatchY": 11
+      },
+      "oracle": {
+        "referencePng": "references/cubic-stroke-16x16.png",
+        "referenceSha256": "4b3322f39a5209d10dc3b3e3ecc4150801353013d6d715140cbde521298ce74a",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
