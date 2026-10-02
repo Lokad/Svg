@@ -349,7 +349,7 @@ internal ref struct SvgAnalyticCoverage
 
 
         /// <summary>Appends analytic cubic segments for one retained span, returning the emitted edge count for flattened fallback when zero.</summary>
-    /// <remarks>Ports the pinned Skia cubic builder: extrema chop into monotonics, coefficient setup with safe upshifts, and pinned forward-difference stepping with exact-division slopes.</remarks>
+    /// <remarks>Ports the pinned Skia cubic builder: extrema chop into monotonics with extremum-adjacent controls flattened onto the extremum like flatten_double_cubic_extrema, coefficient setup with safe upshifts, and pinned forward-difference stepping with exact-division slopes.</remarks>
     private static int AppendCubicSpanEdges(List<AnalyticEdge> kept, double startX, double startY, double firstCX, double firstCY, double secondCX, double secondCY, double endX, double endY, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
     {
         (float X, float Y) p0 = ((float)startX, (float)startY);
@@ -365,6 +365,13 @@ internal ref struct SvgAnalyticCoverage
         Span<float> dst = stackalloc float[20];
         if (count == 1) ChopCubicSingle(p0, p1, p2, p3, roots[0], dst);
         else ChopCubicDouble(p0, p1, p2, p3, roots[0], roots[1], dst);
+        dst[5] = dst[7];
+        dst[9] = dst[7];
+        if (count == 2)
+        {
+            dst[11] = dst[13];
+            dst[15] = dst[13];
+        }
         int emitted = AppendCubicPiece(kept, (dst[0], dst[1]), (dst[2], dst[3]), (dst[4], dst[5]), (dst[6], dst[7]), ref contourEdges, ref setupCost, cancellationToken);
         emitted += AppendCubicPiece(kept, (dst[6], dst[7]), (dst[8], dst[9]), (dst[10], dst[11]), (dst[12], dst[13]), ref contourEdges, ref setupCost, cancellationToken);
         if (count == 2) emitted += AppendCubicPiece(kept, (dst[12], dst[13]), (dst[14], dst[15]), (dst[16], dst[17]), (dst[18], dst[19]), ref contourEdges, ref setupCost, cancellationToken);
