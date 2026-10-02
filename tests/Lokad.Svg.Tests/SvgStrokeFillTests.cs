@@ -63,6 +63,40 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Duplicate_straight_strokes_union_to_single_coverage()
+    {
+        // Row 4 stroke union: bitwise-identical outline loops merge instead of over-painting shared fringe.
+        byte[] single = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,2 H14 V14 H2 Z' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+        byte[] duplicate = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,2 H14 V14 H2 Z M2,2 H14 V14 H2 Z' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(AlphaSum(single), AlphaSum(duplicate));
+        Assert.Equal(24480, AlphaSum(duplicate));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(duplicate, 16, 2, 2));
+    }
+
+    [Fact]
+    public void Contained_stroke_rings_survive_crossing_union()
+    {
+        // Row 4 stroke union: a crossing band pulls the set into contour surgery, but containment inside an outer ring still does not imply coverage for stroke bands, so the inner ring survives while its counter stays empty.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 H15 V15 H1 Z M6,6 H10 V10 H6 Z M1,15 L15,1' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 6, 6));
+        Assert.Equal(new SvgColor(0, 0, 255, 212), Pixel(pixels, 16, 8, 8));
+        Assert.Equal(41980, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Curved_stroke_keeps_legacy_tiling()
+    {
+        // Row 4 stroke union: curve-sourced outlines bypass separation until row-6 curve-aware completion.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,12 Q8,2 14,12' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(8435, AlphaSum(pixels));
+        Assert.Equal(new SvgColor(255, 0, 0, 200), Pixel(pixels, 16, 6, 6));
+        Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 16, 8, 8));
+    }
+
+    [Fact]
     public void Open_polyline_and_closed_polygon_stroke_differently()
     {
         byte[] open = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);

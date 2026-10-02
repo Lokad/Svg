@@ -734,7 +734,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgContourBuilder outlines = new(pointCapacity, closed ? 2 : 1);
             if (closed) SvgStrokeOutline.StrokeClosedPolyline(mapped.AsSpan(), deviceWidth, miterLimit, join, outlines, _cancellationToken);
             else SvgStrokeOutline.StrokeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
-            return FinishStrokeFill(outlines, color, hasFill, false, frame, budget) with { ElementCount = points.Count + 1 };
+            return FinishStrokeFill(outlines, color, hasFill, false, false, frame, budget) with { ElementCount = points.Count + 1 };
         }
         double dashScale = Math.Abs(DashDeviceScale(transform) * (frame?.ScaleX ?? 1));
         return LowerDashedStrokePolyline(mapped, closed, deviceWidth, dashScale, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget) with { ElementCount = points.Count + 1 };
@@ -775,7 +775,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         double scaledOffset = dashOffset * dashScale * dashFactor;
         if (!double.IsFinite(scaledOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
         StrokeDashedContour(mapped.AsSpan(), closed, pattern, scaledOffset, deviceWidth, miterLimit, cap, join, false, outlines, leading, current);
-        return FinishStrokeFill(outlines, color, hasFill, false, frame, budget);
+        return FinishStrokeFill(outlines, color, hasFill, false, true, frame, budget);
     }
 
     /// <summary>Scales one dash pattern into device units.</summary>
@@ -1089,7 +1089,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             StrokeDashedContour(source.GetContour(contour), closedEnds[contour], pattern, scaledOffset, deviceWidth, miterLimit, cap, join, hasCurves, outlines, leading, current);
         }
 
-        return FinishStrokeFill(outlines, color, hasFill, hasCurves, frame, budget);
+        return FinishStrokeFill(outlines, color, hasFill, hasCurves, true, frame, budget);
     }
 
     /// <summary>Strokes device-space contours with the caller cap and join styles into one nonzero outline fill.</summary>
@@ -1126,7 +1126,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             else SvgStrokeOutline.StrokeOpenPolyline(source.GetContour(contour), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
         }
 
-        return FinishStrokeFill(outlines, color, hasFill, hasCurves, frame, budget);
+        return FinishStrokeFill(outlines, color, hasFill, hasCurves, false, frame, budget);
     }
 
     private static double DashDeviceScale(SvgAffineTransform transform)
@@ -1192,9 +1192,43 @@ internal ref struct SvgOrthogonalGeometryLowering
         return stroked with { ElementCount = commandCount + 1 };
     }
 
-    /// <summary>Retains stroke outline loops as one nonzero fill without structure validation, which spike retraces would false-positive.</summary>
-    /// <remarks>Winding roles resolve closed outer and inner rings, then role zero lifts to plus one for non-degenerate loops: a zero role on such a loop always means a same-wound painted island (holes resolve to minus one and degenerate loops contribute nothing), so overlapping bands union instead of cancelling each other while ring holes stay holes. Dashed runs inherit the same rule, which subsumes the earlier dash-only union flag.</remarks>
-    private SvgParsedGeometry FinishStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, bool flattenedCenterline, SvgViewportFrame? frame, RenderBudget budget)
+    /// <summary>Retains stroke outline loops as one nonzero fill through shared contour separation.</summary>
+    /// <remarks>Solid straight-source outlines route through shared separation: weld compaction, identical-contour merging and the crossing, coincident, touch and mixed-contact resolvers run exactly like fills, so overlapping bands merge into union boundaries instead of over-painting shared fringe; dashed runs keep the legacy tiling since abutting run outlines re-tile boundaries without changing geometry; only sets carrying a crossing, coincident overlap or self-touch enter contour surgery while pure-touch and clean sets keep their weld-compacted tiling through roles, since crossing and touch subdivision re-tiles exact abutments by whole quanta; unresolvable spike retraces keep their legacy loops through the unresolved fallback instead of denying. Winding roles resolve closed outer and inner rings, then role zero lifts to plus one for non-degenerate loops: a zero role on such a loop always means a same-wound painted island (holes resolve to minus one and degenerate loops contribute nothing), so overlapping bands union instead of cancelling each other while ring holes stay holes. Dashed-run union stays queued behind row-6 dash completion with outline-level evidence.</remarks>
+    private SvgParsedGeometry FinishStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, bool flattenedCenterline, bool isDashedStroke, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(outlines);
+        ArgumentNullException.ThrowIfNull(budget);
+        if (flattenedCenterline || isDashedStroke) return FinishStrokeFillLegacy(outlines, color, hasFill, flattenedCenterline, frame, budget);
+        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        int[] ends = new int[outlines.ContourCount];
+        bool fractionalVertices = false;
+        for (int contour = 0; contour < outlines.ContourCount; contour++)
+        {
+            ReadOnlySpan<SvgDevicePoint> slice = outlines.GetContour(contour);
+            foreach (SvgDevicePoint vertex in slice)
+            {
+                _workCounter.Consume(_cancellationToken);
+                if (Math.Abs(vertex.X * 4 - Math.Round(vertex.X * 4, MidpointRounding.AwayFromZero)) > 0.000000001 || Math.Abs(vertex.Y * 4 - Math.Round(vertex.Y * 4, MidpointRounding.AwayFromZero)) > 0.000000001) fractionalVertices = true;
+            }
+
+            AppendMappedContour(mapped, slice, null, _workCounter, _cancellationToken);
+            ends[contour] = mapped.Count;
+        }
+
+        SvgPolygonMapping mapping = fractionalVertices ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.QuarterEdges;
+        SeparatedContours separated = PrepareSeparatedContours(mapped, ends, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), mapping, budget, true);
+        for (int contour = 0; contour < separated.Ends.Length; contour++)
+        {
+            if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
+            int start = contour == 0 ? 0 : separated.Ends[contour - 1];
+            if (separated.Signs[contour] == 0 && separated.Ends[contour] - start >= 3) separated.Signs[contour] = 1;
+        }
+        return RetainPolygonFill(separated.Points, separated.Ends, separated.Signs, separated.Spans, separated.CubicSpans, color, hasFill, false, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
+    }
+
+    /// <summary>Retains stroke outline loops as one nonzero fill through the legacy merge without structure surgery.</summary>
+    /// <remarks>Curved-source outlines keep bitwise behavior: dense curve tessellation misfires crossing subdivision with invented slivers, so only straight-source outlines route through shared separation. Winding roles resolve closed outer and inner rings, then role zero lifts to plus one for non-degenerate loops.</remarks>
+    private SvgParsedGeometry FinishStrokeFillLegacy(SvgContourBuilder outlines, SvgColor color, bool hasFill, bool flattenedCenterline, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(outlines);
         ArgumentNullException.ThrowIfNull(budget);
@@ -1313,12 +1347,12 @@ internal ref struct SvgOrthogonalGeometryLowering
     /// <summary>Separates contours without recorded curves; quadratic spans stay empty on this route.</summary>
     private SeparatedContours PrepareSeparatedContours(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgPolygonMapping mapping, RenderBudget budget)
     {
-        return PrepareSeparatedContours(mapped, ends, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), mapping, budget);
+        return PrepareSeparatedContours(mapped, ends, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), mapping, budget, false);
     }
 
     /// <summary>Separates contours carrying quadratic spans, dropping them across any rewriting stage.</summary>
-    /// <remarks>Weld compaction, identical-contour merging and every crossing resolver rewrite point indices, so spans survive only the clean path where points flow through bitwise; the walker re-gates on structure anyway.</remarks>
-    private SeparatedContours PrepareSeparatedContours(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgPolygonMapping mapping, RenderBudget budget)
+    /// <remarks>Weld compaction, identical-contour merging and every crossing resolver rewrite point indices, so spans survive only the clean path where points flow through bitwise; the walker re-gates on structure anyway. Fill callers deny unresolvable sets honestly while stroke outlines keep their legacy loops through the fallback, since every outline paints.</remarks>
+    private SeparatedContours PrepareSeparatedContours(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgPolygonMapping mapping, RenderBudget budget, bool keepUnresolved)
     {
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(ends);
@@ -1378,7 +1412,9 @@ internal ref struct SvgOrthogonalGeometryLowering
             bool mixedResolved = false;
             bool interLoopResolved = false;
             bool subdividedCrossings = false;
-            if (structure != SvgContourFlags.None)
+            bool resolvedUnions = true;
+            if (keepUnresolved && (structure & (SvgContourFlags.ProperCrossing | SvgContourFlags.CoincidentOverlap | SvgContourFlags.SelfTouch)) == 0) resolvedUnions = false;
+            if (structure != SvgContourFlags.None && resolvedUnions)
             {
                 quadSpans = Array.Empty<SvgQuadSpan>();
                 cubicSpans = Array.Empty<SvgCubicSpan>();
@@ -1388,7 +1424,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 {
                     splitPoints.Clear();
                     splitEnds.Clear();
-                    if (!TryResolveCoincidentUnion(structure, retained, ends, splitPoints, splitEnds, out unionResolved))
+                    if (!TryResolveCoincidentUnion(structure, retained, ends, splitPoints, splitEnds, !keepUnresolved, out unionResolved))
                     {
                         splitPoints.Clear();
                         splitEnds.Clear();
@@ -1396,17 +1432,24 @@ internal ref struct SvgOrthogonalGeometryLowering
                         {
                             splitPoints.Clear();
                             splitEnds.Clear();
-                            if (!TryResolveMixedContactUnion(structure, retained, ends, splitPoints, splitEnds, out mixedResolved)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+                            if (!TryResolveMixedContactUnion(structure, retained, ends, splitPoints, splitEnds, !keepUnresolved, out mixedResolved))
+                            {
+                                if (!keepUnresolved) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.");
+                                resolvedUnions = false;
+                            }
                         }
                         else touchResolved = true;
                     }
                 }
-                reservation?.Dispose();
-                reservation = ReserveScene(splitPoints.Count, splitEnds.Count, splitEnds.Count, quadSpans.Length, cubicSpans.Length, budget);
-                retained = splitPoints.AsSpan().ToArray();
-                ends = splitEnds.AsSpan().ToArray();
-                ValidateDeviceRange(retained);
-                mapping = UpgradeSplitMapping(retained, mapping);
+                if (resolvedUnions)
+                {
+                    reservation?.Dispose();
+                    reservation = ReserveScene(splitPoints.Count, splitEnds.Count, splitEnds.Count, quadSpans.Length, cubicSpans.Length, budget);
+                    retained = splitPoints.AsSpan().ToArray();
+                    ends = splitEnds.AsSpan().ToArray();
+                    ValidateDeviceRange(retained);
+                    mapping = UpgradeSplitMapping(retained, mapping);
+                }
             }
             int[] signs = new int[ends.Length];
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
@@ -1440,7 +1483,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
-        SeparatedContours separated = PrepareSeparatedContours(mapped, ends, quadSpans, cubicSpans, mapping, budget);
+        SeparatedContours separated = PrepareSeparatedContours(mapped, ends, quadSpans, cubicSpans, mapping, budget, false);
         return RetainPolygonFill(separated.Points, separated.Ends, separated.Signs, separated.Spans, separated.CubicSpans, color, hasFill, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
     }
 
@@ -1620,8 +1663,8 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Unions same-fill loops that share coincident boundary spans into simple loops.</summary>
-    /// <remarks>Nonzero sets resolve contained-drop and single-edge splices by union semantics while even-odd sets keep those gates; both fill rules share bitwise endpoint subdivision, simultaneous multi-span splicing with remainder linking, guard arbitration and nesting resolution, which stay exact because subdivision preserves geometry and linked boundaries resolve through parity depth. Admits sets whose only non-touch defect is positive-length collinear overlap between loops: edges subdivide at overlap endpoints with bitwise copies of existing vertices, loops contained in larger same-direction loops drop, and loop pairs sharing exactly one duplicate edge splice into a single boundary while pairs sharing two or more opposite spans splice every span at once with remainder linking. Opposite-direction containment, same-directed multi-span sharing, crossings, spikes and degenerate edges stay rejected. No computed points ever appear. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps, reporting resolved loops so nesting tests skip bitwise-shared vertices through the union flag. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Partial output on denial stays caller-discarded.</remarks>
-    private bool TryResolveCoincidentUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, out bool unionResolved)
+    /// <remarks>Nonzero sets resolve contained-drop and single-edge splices by union semantics while even-odd sets keep those gates; both fill rules share bitwise endpoint subdivision, simultaneous multi-span splicing with remainder linking, guard arbitration and nesting resolution, which stay exact because subdivision preserves geometry and linked boundaries resolve through parity depth. Admits sets whose only non-touch defect is positive-length collinear overlap between loops: edges subdivide at overlap endpoints with bitwise copies of existing vertices, loops contained in larger same-direction loops drop, and loop pairs sharing exactly one duplicate edge splice into a single boundary while pairs sharing two or more opposite spans splice every span at once with remainder linking. Stroke outlines pass contained-drop as disabled (containment inside an outer ring does not imply coverage for stroke bands) while subdivision and splicing run for both. Opposite-direction containment, same-directed multi-span sharing, crossings, spikes and degenerate edges stay rejected. No computed points ever appear. Output lists follow the crossing-split convention for the shared reservation, mapping and nesting steps, reporting resolved loops so nesting tests skip bitwise-shared vertices through the union flag. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Partial output on denial stays caller-discarded.</remarks>
+    private bool TryResolveCoincidentUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, bool allowContainedDrop, out bool unionResolved)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(ends);
@@ -1658,7 +1701,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (++sweeps > maximumSweeps) return false;
             ChargePairs(_workCounter, (long)workPoints.Length * workPoints.Length, _cancellationToken);
             if (SubdivideCoincidentOverlapEndpoints(ref workPoints, ref workEnds)) continue;
-            if (nonzeroOnly && TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
+            if (nonzeroOnly && allowContainedDrop && TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
             if (nonzeroOnly && TrySpliceSharedUnionEdge(ref workPoints, ref workEnds, false)) continue;
             if (singleEvenOdd && TrySpliceSharedUnionEdge(ref workPoints, ref workEnds, true)) continue;
             if (TrySpliceSharedUnionEdges(ref workPoints, ref workEnds)) continue;
@@ -2821,8 +2864,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         return SvgContourStructure.AreSplitLoopsAdmissible(splitPoints.AsSpan(), splitEnds.AsSpan(), _cancellationToken);
     }
     /// <summary>Unions nonzero loops mixing crossings, coincident spans and touches through one subdivision sweep.</summary>
-    /// <remarks>Earlier stages refuse mixed sets at their entry gates even though every needed operation already exists: vertex-on-edge subdivision already covers intra-loop coincident endpoints with bitwise copies, self-touch splitting turns the mixed single loop into loop pairs, inter-loop crossing subdivision shares the computed crossing as a bitwise value between loops, and contained-drop, spike-drop plus shared-edge splicing remove the resulting exact duplicates, with near-span conforming aligning variant arcs first, with at most one doubled-span link per sweep so linked outputs never re-trigger the same pair. The sweep repeats those operations to a fixpoint so the retraced-span-plus-crossing class resolves while pure-crossing, pure-touch and even-odd sets keep their existing stages and gates. Computed crossing points appear exactly like the touch sweep; every other inserted value copies an existing vertex. The split-loop guard still arbitrates the final set. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Inserted vertices stay within twice the initial points plus ends because near-duplicate weaving would otherwise subdivide without saturating; deeper sets stay honestly rejected. Partial output on denial stays caller-discarded.</remarks>
-    private bool TryResolveMixedContactUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, out bool mixedResolved)
+    /// <remarks>Earlier stages refuse mixed sets at their entry gates even though every needed operation already exists: vertex-on-edge subdivision already covers intra-loop coincident endpoints with bitwise copies, self-touch splitting turns the mixed single loop into loop pairs, inter-loop crossing subdivision shares the computed crossing as a bitwise value between loops, and spike-drop plus shared-edge splicing remove the resulting exact duplicates (contained-drop runs only when the caller allows it, since stroke bands keep contained loops), with near-span conforming aligning variant arcs first, with at most one doubled-span link per sweep so linked outputs never re-trigger the same pair. The sweep repeats those operations to a fixpoint so the retraced-span-plus-crossing class resolves while pure-crossing, pure-touch and even-odd sets keep their existing stages and gates. Computed crossing points appear exactly like the touch sweep; every other inserted value copies an existing vertex. The split-loop guard still arbitrates the final set. Charges pair estimates per sweep round plus one work unit per copied vertex, and observes cancellation. Inserted vertices stay within twice the initial points plus ends because near-duplicate weaving would otherwise subdivide without saturating; deeper sets stay honestly rejected. Partial output on denial stays caller-discarded.</remarks>
+    private bool TryResolveMixedContactUnion(SvgContourFlags structure, SvgDevicePoint[] points, int[] ends, BudgetedParserList<SvgDevicePoint> splitPoints, BudgetedParserList<int> splitEnds, bool allowContainedDrop, out bool mixedResolved)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(ends);
@@ -2870,7 +2913,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             }
             if (TrySplitSelfTouchLoop(ref workPoints, ref workEnds, out bool blocked)) continue;
             if (blocked) return false;
-            if (TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
+            if (allowContainedDrop && TryDropContainedUnionLoop(ref workPoints, ref workEnds)) continue;
             if (TryDropSpikeUnionLoop(ref workPoints, ref workEnds)) continue;
             if (TrySpliceSharedUnionEdge(ref workPoints, ref workEnds, false)) continue;
             if (TrySpliceSharedUnionEdges(ref workPoints, ref workEnds)) continue;

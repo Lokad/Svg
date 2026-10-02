@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-odd-stroke-closed-16x16",
+  "referencePng": "original-odd-stroke-closed-16x16.png",
+  "referenceSha256": "2f73798604e55925a90da27f3096c62deec7b47d33166662f5601accf2d7c40d",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "a0dadcc46dbb072be47984d582e6f5e698c7faa9ce34985c8bf98ca75b010d12",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-02"
+}
