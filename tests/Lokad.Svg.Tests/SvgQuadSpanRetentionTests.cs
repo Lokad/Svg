@@ -68,4 +68,14 @@ public sealed class SvgQuadSpanRetentionTests
         Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[span.StartIndex]);
         Assert.Equal(new SvgDevicePoint(8, 12), geometry.Polygon.Points[span.EndIndex]);
     }
+    [Fact]
+    public void Closing_dust_drops_final_span_across_weld_compaction()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 Q4,-4 8,0 L8,8 Q4,8 0.0000000004,0.0000000004 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        SvgQuadSpan span = Assert.Single(geometry.Polygon.QuadSpans);
+        Assert.Equal(new SvgDevicePoint(4, -4), span.Control);
+        Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[span.StartIndex]);
+        Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[span.EndIndex]);
+    }
 }

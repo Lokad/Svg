@@ -122,6 +122,6 @@ public sealed class SvgOrthogonalGeometryLowererTests
         int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, map, new ParserWorkCounter(100), CancellationToken.None);
         Assert.Equal(3, total);
         Assert.Equal([3], weldedEnds);
-        Assert.Equal([0, 1, 2, -1], map);
+        Assert.Equal([0, 1, 2, -2], map);
     }
 }

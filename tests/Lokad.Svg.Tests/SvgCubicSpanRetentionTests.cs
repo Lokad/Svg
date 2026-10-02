@@ -90,4 +90,15 @@ public sealed class SvgCubicSpanRetentionTests
         Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[cubic.StartIndex]);
         Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[cubic.EndIndex]);
     }
+    [Fact]
+    public void Closing_dust_drops_final_span_across_weld_compaction()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 C2,-4 6,-4 8,0 L8,8 C6,8 2,8 0.0000000004,0.0000000004 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        SvgCubicSpan span = Assert.Single(geometry.Polygon.CubicSpans);
+        Assert.Equal(new SvgDevicePoint(2, -4), span.FirstControl);
+        Assert.Equal(new SvgDevicePoint(6, -4), span.SecondControl);
+        Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[span.StartIndex]);
+        Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[span.EndIndex]);
+    }
 }

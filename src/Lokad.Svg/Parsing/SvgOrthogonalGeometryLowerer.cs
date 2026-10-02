@@ -20,6 +20,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     /// <summary>Collapses consecutive device-space joints within this Chebyshev distance during fill lowering.</summary>
     /// <remarks>Curve endpoints that agree in source can diverge by mapping dust (observed 1e-13) once the finite-double affine map applies different operation orders to flattened-curve ends versus directly mapped starts. The bound exceeds worst-case divergence for admitted coordinates (a handful of roundings at magnitude 32767 with unit roundoff 2^-53, totalling below 1e-10) while sitting far below the 1/256 coverage quantum, hence invisibly.</remarks>
     private const double WeldEpsilon = 1e-9;
+    private const int WeldClosingDrop = -2;
 
     /// <summary>Bounds near-span conforming deviation to one device pixel.</summary>
     /// <remarks>Variant arcs flatten to spans that share endpoints but weave within a pixel, which exact subdivision can never align; conforming such lenses moves boundaries within accepted union fringe (the pinned oracle adjudicates per admission), far above weld dust yet far below feature scale. Deterministic bound; allocates nothing.</remarks>
@@ -516,7 +517,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         return -1;
     }
 
-        /// <summary>Re-anchors cubic spans to compacted weld indices, dropping unresolvable or degenerate ranges.</summary>
+        /// <summary>Re-anchors cubic spans to compacted weld indices, dropping spans with closing-compacted endpoints as well as unresolvable or degenerate ranges.</summary>
     private static SvgCubicSpan[] RemapWeldCubicSpans(SvgCubicSpan[] spans, int[] weldMap, int[] ends, int[] weldedEnds, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(spans);
@@ -539,6 +540,15 @@ internal ref struct SvgOrthogonalGeometryLowering
                 oldStart = contour == 0 ? 0 : ends[contour - 1];
                 previousEnd = contour == 0 ? 0 : weldedEnds[contour - 1];
             }
+            // A closing-compacted endpoint sits near the contour start while the backward probe
+            // would land on the previous vertex, re-targeting the surviving controls onto a
+            // different chord and fabricating a bulge. The span therefore falls back to its
+            // flattened points, mirroring how the stripping translators drop endpoints lost to
+            // contour removal. Interior drops sit within epsilon of the probed anchor, so they
+            // keep the faithful anchor snap below.
+            if (span.StartIndex < oldStart || span.EndIndex < oldStart ||
+                span.StartIndex >= weldMap.Length || span.EndIndex >= weldMap.Length ||
+                weldMap[span.StartIndex] == WeldClosingDrop || weldMap[span.EndIndex] == WeldClosingDrop) continue;
             int start = ResolveWeldIndex(weldMap, oldStart, span.StartIndex, workCounter, cancellationToken);
             int end = ResolveWeldIndex(weldMap, oldStart, span.EndIndex, workCounter, cancellationToken);
             if (start < previousEnd || end <= start || end > weldedEnds[contour]) continue;
@@ -548,7 +558,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         return kept.ToArray();
     }
 
-        /// <summary>Re-anchors quadratic spans to compacted weld indices, dropping unresolvable or degenerate ranges.</summary>
+        /// <summary>Re-anchors quadratic spans to compacted weld indices, dropping spans with closing-compacted endpoints as well as unresolvable or degenerate ranges.</summary>
     private static SvgQuadSpan[] RemapWeldQuadSpans(SvgQuadSpan[] spans, int[] weldMap, int[] ends, int[] weldedEnds, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(spans);
@@ -571,6 +581,15 @@ internal ref struct SvgOrthogonalGeometryLowering
                 oldStart = contour == 0 ? 0 : ends[contour - 1];
                 previousEnd = contour == 0 ? 0 : weldedEnds[contour - 1];
             }
+            // A closing-compacted endpoint sits near the contour start while the backward probe
+            // would land on the previous vertex, re-targeting the surviving controls onto a
+            // different chord and fabricating a bulge. The span therefore falls back to its
+            // flattened points, mirroring how the stripping translators drop endpoints lost to
+            // contour removal. Interior drops sit within epsilon of the probed anchor, so they
+            // keep the faithful anchor snap below.
+            if (span.StartIndex < oldStart || span.EndIndex < oldStart ||
+                span.StartIndex >= weldMap.Length || span.EndIndex >= weldMap.Length ||
+                weldMap[span.StartIndex] == WeldClosingDrop || weldMap[span.EndIndex] == WeldClosingDrop) continue;
             int start = ResolveWeldIndex(weldMap, oldStart, span.StartIndex, workCounter, cancellationToken);
             int end = ResolveWeldIndex(weldMap, oldStart, span.EndIndex, workCounter, cancellationToken);
             if (start < previousEnd || end <= start || end > weldedEnds[contour]) continue;
@@ -1220,7 +1239,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Compacts dust-scale consecutive joints (including each contour closing joint) in place, writing cumulative compacted ends and returning the compacted total.</summary>
-    /// <remarks>Snapping keeps the earlier bitwise value so no computed points ever appear and the touch pipeline keeps its bitwise invariant; strictly-bitwise-equal joints keep the existing zero-length path untouched. Results under three points per contour flow to the existing degenerate guards exactly like any degenerate input. Charges one work unit per examined point and observes cancellation through the counter; compacted ends reuse caller-reserved ends-sized storage.</remarks>
+    /// <remarks>Snapping keeps the earlier bitwise value so no computed points ever appear and the touch pipeline keeps its bitwise invariant; strictly-bitwise-equal joints keep the existing zero-length path untouched. Results under three points per contour flow to the existing degenerate guards exactly like any degenerate input. Charges one work unit per examined point and observes cancellation through the counter; compacted ends reuse caller-reserved ends-sized storage. When provided, the index map records the compacted position per kept point, -1 per interior dust joint and the WeldClosingDrop mark per compacted closing joint so span re-anchoring can tell the two drops apart.</remarks>
     internal static int WeldDustJoints(SvgDevicePoint[] points, int[] ends, int[] weldedEnds, int[]? indexMap, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -1260,7 +1279,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (hasAnchor && write - total > 2 && IsDustJoint(points[total], anchor))
             {
                 write--;
-                if (indexMap is not null && lastOld >= 0) indexMap[lastOld] = -1;
+                if (indexMap is not null && lastOld >= 0) indexMap[lastOld] = WeldClosingDrop;
             }
             total = write;
             weldedEnds[contour] = total;
