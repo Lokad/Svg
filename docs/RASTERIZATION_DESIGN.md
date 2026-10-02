@@ -1760,3 +1760,9 @@ Question: what construction stage remains unverified for the blowout edge.
 Method: source-level verification of every remaining artifact against the pinned release, no product change: inverse-table programmatic diff, parse-rounding bit comparison on all blowout coordinates, winding-sign audit of the traced crossings.
 Facts: inverse tables match 1025 of 1025 entries; (float)double versus float parse agree bit-exact on all 16 blowout coordinates; transform is identity-exact; traced windings agree in sign on both sides (left minus one, rite plus one) with identical interval structure. Every cubic construction stage is now verified or bounded-negligible except chop-t association values and per-strip mask-row accumulation. The 183 must therefore compose inside the mask walk, not the edges.
 Decision: cubic multi stays gated. Next: mask-row accumulation trace for row 192 showing each strip and fill contribution to pixels 60 to 68.
+
+## Mask semantics close composition; bit-compare of span edges is next (2026-10-02 probe)
+Question: how the 183 composes, and whether Ford span-B edges equal the isolation-verified ones bit-for-bit.
+Method: scratch-worktree mask-op tracing in gated versus cubic-multi Ford renders; fringe-quantum forensics on the banked oracle.
+Facts: row 192 runs all-ADD (fractional slabs, close never fires), so coverage is pure strip summation: x64 sums strip-A interior plus strip fringes to 183 while base lacks strip-A coverage there. Oracle fringe steps (237, 178, 122, 67, 27) are not sample-patterned, supporting the analytic backend for Ford. The rite edge X remains the necessary and sufficient difference, yet the same edge matched in isolation: the next experiment dumps both edge lists and compares bit-for-bit to decide between identical-edges-different-context and different-edges.
+Decision: cubic multi stays gated. Next: bit-compare Ford versus isolated span-B edges.
