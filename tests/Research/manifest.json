@@ -2459,6 +2459,47 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-twin-stroke-rings-16x16",
+      "path": "twin-stroke-rings-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-02",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "ca76363745129a30d72c39671180f7a34db69b2cddcc2529995f497a9c8600db",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "union",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "candidateError": "UnsupportedFeature",
+      "admittedRendering": {
+        "changedPixelCount": 24,
+        "maximumChannelError": 255,
+        "maximumAlphaError": 255,
+        "alphaChangedPixelCount": 24,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 4,
+        "maximumMismatchX": 9,
+        "maximumMismatchY": 9
+      },
+      "oracle": {
+        "referencePng": "references/twin-stroke-rings-16x16.png",
+        "referenceSha256": "815b89820f3ab8633b3125fe51b8b688b7ee13ecc2c192e76231bdc84f0cbe2a",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
