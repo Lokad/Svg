@@ -114,14 +114,14 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
-    public void Curve_under_skew_transform_stays_unsupported()
+    public void Curve_under_skew_transform_renders()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='skewX(15)'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></g></svg>");
+        // Row 5 skew admission: arc-free curve fills map through the general device transform, so a skewed quad renders instead of denying on uniformity.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='skewX(15)'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></g></svg>", out int width, out int height);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("uniformly scaled", rejected.Message);
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.NotEqual(0, AlphaSum(pixels));
     }
 
     [Fact]

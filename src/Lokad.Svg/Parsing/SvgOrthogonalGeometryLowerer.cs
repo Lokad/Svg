@@ -232,7 +232,9 @@ internal ref struct SvgOrthogonalGeometryLowering
     private static SvgDevicePoint ShiftVertex(SvgViewportFrame? viewport, double x, double y)
         => viewport is null ? new SvgDevicePoint(x, y) : new SvgDevicePoint(x * viewport.Value.ScaleX + viewport.Value.OffsetX, y * viewport.Value.ScaleY + viewport.Value.OffsetY);
 
-    private static (SvgAffineTransform Map, double ScaleX, double ScaleY) BuildDeviceMap(SvgAffineTransform transform, SvgViewportFrame? frame)
+    /// <summary>Builds the device map with caller-selected user-scale discipline; arc-free callers admit general affine maps while scale consumers keep uniformity.</summary>
+    /// <remarks>The returned scales are column magnitudes on the general path, consumed only by arc gates that reject non-axis-aligned transforms independently; every other consumer rides the general device map.</remarks>
+    private static (SvgAffineTransform Map, double ScaleX, double ScaleY) BuildDeviceMap(SvgAffineTransform transform, SvgViewportFrame? frame, bool requireUniformUserScale)
     {
         double frameScaleX = frame?.ScaleX ?? 1;
         double frameScaleY = frame?.ScaleY ?? 1;
@@ -246,11 +248,16 @@ internal ref struct SvgOrthogonalGeometryLowering
             userScaleX = transform.A;
             userScaleY = transform.D;
         }
-        else if (!transform.TryGetUniformScale(out double uniformUserScale)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled polygon transforms are implemented.");
-        else
+        else if (transform.TryGetUniformScale(out double uniformUserScale))
         {
             userScaleX = uniformUserScale;
             userScaleY = uniformUserScale;
+        }
+        else if (requireUniformUserScale) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled polygon transforms are implemented.");
+        else
+        {
+            userScaleX = Math.Sqrt(transform.A * transform.A + transform.B * transform.B);
+            userScaleY = Math.Sqrt(transform.C * transform.C + transform.D * transform.D);
         }
         double scaleX = userScaleX * frameScaleX;
         double scaleY = userScaleY * frameScaleY;
@@ -303,7 +310,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (radiusX != radiusY && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rotated ellipse transforms are not implemented.");
-        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
         double mappedRadiusY = radiusY * Math.Abs(scaleY);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
@@ -331,7 +338,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerCircleStrokeFill(double centerX, double centerY, double radius, SvgResolvedPaintableElement element, SvgStroke stroke, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
         if (scaleX != scaleY || scaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Circle strokes under non-uniform polygon transforms stay unsupported.");
         double deviceRadius = radius * scaleX;
         double deviceWidth = nonScaling ? stroke.Width : stroke.Width * scaleX;
@@ -374,7 +381,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (radiusX != radiusY && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rotated ellipse transforms are not implemented.");
-        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
         if (scaleX != scaleY || scaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Ellipse strokes under non-uniform polygon transforms stay unsupported.");
         double deviceRadiusX = radiusX * scaleX;
         double deviceRadiusY = radiusY * scaleX;
@@ -419,7 +426,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerRoundedRectFill(double x, double y, double width, double height, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        (_, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        (_, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
         SvgRectangle placed = element.Transform.Apply(new SvgRectangle(x, y, width, height, default, false, null));
         SvgRectangle shifted = frame is null ? placed : frame.Value.Shift(placed);
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
@@ -457,7 +464,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured path-command limit.");
-        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, hasArc);
         if (hasArc && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under rotated polygon transforms stay unsupported.");
         if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
@@ -677,7 +684,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " vertex count exceeds the configured path-command limit.");
-        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame);
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         SvgFractionalPoint previous = default;
         SvgFractionalPoint first = default;
@@ -706,7 +713,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " stroke point count exceeds the configured path-command limit.");
         if (points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + _elementName + " contours are implemented.");
-        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame);
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
         int pointCapacity = points.Count + 1 > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : points.Count + 1;
         long scratchBytes;
         try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1)); }
@@ -1202,7 +1209,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke command count exceeds the configured path-command limit.");
-        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame);
+        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
         if (hasArc && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under rotated polygon transforms stay unsupported.");
         if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
         double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame, nonScaling);
