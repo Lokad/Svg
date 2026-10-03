@@ -39,26 +39,28 @@ internal enum SvgContourFlags
 internal static class SvgContourStructure
 {
     /// <summary>Classifies one closed contour slice, following the implicit edge from its last point back to its first.</summary>
+    /// <remarks>A bitwise closing duplicate carries no boundary beyond the implicit close, so the scan drops that redundant edge and classifies the loop exactly like its implicitly closed twin; every other zero-length edge still flags.</remarks>
     internal static SvgContourFlags ClassifyContour(ReadOnlySpan<SvgDevicePoint> points, int start, int end, CancellationToken cancellationToken)
     {
         if (start < 0 || start > points.Length) throw new ArgumentOutOfRangeException(nameof(start));
         if (end < start || end > points.Length) throw new ArgumentOutOfRangeException(nameof(end));
         SvgContourFlags flags = SvgContourFlags.None;
         int count = end - start;
+        int edges = count > 1 && points[end - 1] == points[start] ? count - 1 : count;
         int pairs = 0;
-        for (int first = 0; first < count; first++)
+        for (int first = 0; first < edges; first++)
         {
-            (SvgDevicePoint firstStart, SvgDevicePoint firstEnd) = EdgeAt(points, start, count, first);
+            (SvgDevicePoint firstStart, SvgDevicePoint firstEnd) = EdgeAt(points, start, edges, first);
             if (firstStart == firstEnd)
             {
                 flags |= SvgContourFlags.ZeroLengthEdge;
                 continue;
             }
 
-            for (int second = first + 1; second < count; second++)
+            for (int second = first + 1; second < edges; second++)
             {
-                if (second == first + 1 || (first == 0 && second == count - 1)) continue;
-                (SvgDevicePoint secondStart, SvgDevicePoint secondEnd) = EdgeAt(points, start, count, second);
+                if (second == first + 1 || (first == 0 && second == edges - 1)) continue;
+                (SvgDevicePoint secondStart, SvgDevicePoint secondEnd) = EdgeAt(points, start, edges, second);
                 if (secondStart == secondEnd) continue;
                 flags |= TestEdgePair(firstStart, firstEnd, secondStart, secondEnd, ref pairs, cancellationToken);
             }

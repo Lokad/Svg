@@ -1440,14 +1440,21 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Compacts dust-scale consecutive joints (including each contour closing joint) in place, writing cumulative compacted ends and returning the compacted total.</summary>
-    /// <remarks>Snapping keeps the earlier bitwise value so no computed points ever appear and the touch pipeline keeps its bitwise invariant; strictly-bitwise-equal joints keep the existing zero-length path untouched. Results under three points per contour flow to the existing degenerate guards exactly like any degenerate input. Charges one work unit per examined point and observes cancellation through the counter; compacted ends reuse caller-reserved ends-sized storage. When provided, the index map records the compacted position per kept point, -1 per interior dust joint and the WeldClosingDrop mark per compacted closing joint so span re-anchoring can tell the two drops apart.</remarks>
+    /// <remarks>Snapping keeps the earlier bitwise value so no computed points ever appear and the touch pipeline keeps its bitwise invariant; strictly-bitwise-equal joints keep the existing zero-length path untouched. Results under three points per contour flow to the existing degenerate guards exactly like any degenerate input. Charges one work unit per examined point and observes cancellation through the counter; compacted ends reuse caller-reserved ends-sized storage. When provided, the index map records the compacted position per kept point, -1 per interior dust joint and the WeldClosingDrop mark per compacted closing joint so span re-anchoring can tell the two drops apart. Contours flagged in keepClosingVertex snap a dust-divergent closing joint bitwise shut to the contour start instead of compacting it, so a retained span ending there survives with exact verb endpoints and the explicit zero-length close flows to the existing degenerate guards.</remarks>
+    /// <summary>Compacts dust-scale consecutive joints in place, dropping dust-divergent closing joints.</summary>
     internal static int WeldDustJoints(SvgDevicePoint[] points, int[] ends, int[] weldedEnds, int[]? indexMap, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => WeldDustJoints(points, ends, weldedEnds, indexMap, new bool[ends.Length], workCounter, cancellationToken);
+
+    /// <summary>Compacts dust-scale consecutive joints in place, keeping flagged closing joints bitwise shut for retained spans.</summary>
+    internal static int WeldDustJoints(SvgDevicePoint[] points, int[] ends, int[] weldedEnds, int[]? indexMap, bool[] keepClosingVertex, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(weldedEnds);
+        ArgumentNullException.ThrowIfNull(keepClosingVertex);
         ArgumentNullException.ThrowIfNull(workCounter);
         if (weldedEnds.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(weldedEnds));
+        if (keepClosingVertex.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(keepClosingVertex));
         if (indexMap is not null && indexMap.Length != points.Length) throw new ArgumentOutOfRangeException(nameof(indexMap));
         int total = 0;
         int previousEnd = 0;
@@ -1479,8 +1486,12 @@ internal ref struct SvgOrthogonalGeometryLowering
             }
             if (hasAnchor && write - total > 2 && IsDustJoint(points[total], anchor))
             {
-                write--;
-                if (indexMap is not null && lastOld >= 0) indexMap[lastOld] = WeldClosingDrop;
+                if (keepClosingVertex[contour]) points[write - 1] = points[total];
+                else
+                {
+                    write--;
+                    if (indexMap is not null && lastOld >= 0) indexMap[lastOld] = WeldClosingDrop;
+                }
             }
             total = write;
             weldedEnds[contour] = total;
@@ -1516,11 +1527,26 @@ internal ref struct SvgOrthogonalGeometryLowering
             ValidateDeviceRange(retained);
             int[] weldedEnds = new int[ends.Length];
             bool trackWeldSpans = (quadSpans.Length > 0 || cubicSpans.Length > 0) && retained.Length > 0;
+            bool[] keepClosingVertex = new bool[ends.Length];
+            if (trackWeldSpans)
+            {
+                foreach (SvgQuadSpan span in quadSpans)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    if (span.Contour >= 0 && span.Contour < ends.Length && span.EndIndex == ends[span.Contour] - 1) keepClosingVertex[span.Contour] = true;
+                }
+
+                foreach (SvgCubicSpan span in cubicSpans)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    if (span.Contour >= 0 && span.Contour < ends.Length && span.EndIndex == ends[span.Contour] - 1) keepClosingVertex[span.Contour] = true;
+                }
+            }
             int weldedTotal;
             {
                 using RenderBudget.BudgetReservation? weldMapReservation = trackWeldSpans ? budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(retained.Length), SvgMemoryCategory.Geometry) : null;
                 int[]? weldMap = trackWeldSpans ? new int[retained.Length] : null;
-                weldedTotal = WeldDustJoints(retained, ends, weldedEnds, weldMap, _workCounter, _cancellationToken);
+                weldedTotal = WeldDustJoints(retained, ends, weldedEnds, weldMap, keepClosingVertex, _workCounter, _cancellationToken);
                 if (weldedTotal < retained.Length && trackWeldSpans && weldMap is not null)
                 {
                     quadSpans = RemapWeldQuadSpans(quadSpans, weldMap, ends, weldedEnds, _workCounter, _cancellationToken);

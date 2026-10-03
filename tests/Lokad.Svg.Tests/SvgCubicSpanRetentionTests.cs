@@ -91,15 +91,22 @@ public sealed class SvgCubicSpanRetentionTests
         Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[cubic.EndIndex]);
     }
     [Fact]
-    public void Closing_dust_drops_final_span_across_weld_compaction()
+    public void Closing_dust_keeps_final_span_across_weld_compaction()
     {
+        // Row 5 closing-span retention: the dust-divergent closing joint snaps bitwise shut instead of compacting, so the closing span survives with exact verb endpoints (the Ford seg73 span was lost here, walking 60px of curve as chords).
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 C2,-4 6,-4 8,0 L8,8 C6,8 2,8 0.0000000004,0.0000000004 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        SvgCubicSpan span = Assert.Single(geometry.Polygon.CubicSpans);
+        Assert.Equal(2, geometry.Polygon.CubicSpans.Length);
+        SvgCubicSpan span = geometry.Polygon.CubicSpans[0];
         Assert.Equal(new SvgDevicePoint(2, -4), span.FirstControl);
         Assert.Equal(new SvgDevicePoint(6, -4), span.SecondControl);
         Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[span.StartIndex]);
         Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[span.EndIndex]);
+        SvgCubicSpan closing = geometry.Polygon.CubicSpans[1];
+        Assert.Equal(new SvgDevicePoint(6, 8), closing.FirstControl);
+        Assert.Equal(new SvgDevicePoint(2, 8), closing.SecondControl);
+        Assert.Equal(new SvgDevicePoint(8, 8), geometry.Polygon.Points[closing.StartIndex]);
+        Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[closing.EndIndex]);
     }
     [Fact]
     public void Quarter_arc_records_kappa_controls_with_slice_indices()

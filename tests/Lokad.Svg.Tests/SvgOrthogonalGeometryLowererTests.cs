@@ -124,4 +124,31 @@ public sealed class SvgOrthogonalGeometryLowererTests
         Assert.Equal([3], weldedEnds);
         Assert.Equal([0, 1, 2, -2], map);
     }
+
+    [Fact]
+    public void WeldDustJoints_snaps_spanned_closing_dust_shut()
+    {
+        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 8), new(0, 8), new(1e-13, 1e-13)];
+        int[] ends = [5];
+        int[] weldedEnds = new int[1];
+        int[] map = new int[5];
+        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, map, [true], new ParserWorkCounter(100), CancellationToken.None);
+        Assert.Equal(5, total);
+        Assert.Equal([5], weldedEnds);
+        Assert.Equal(new SvgDevicePoint(0, 0), points[4]);
+        Assert.Equal([0, 1, 2, 3, 4], map);
+    }
+
+    [Fact]
+    public void WeldDustJoints_keeps_closing_flags_per_contour()
+    {
+        SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(8, 8), new(0, 8), new(1e-13, 1e-13), new(20, 20), new(28, 20), new(28, 28), new(20 + 1e-13, 20 + 1e-13)];
+        int[] ends = [5, 9];
+        int[] weldedEnds = new int[2];
+        int total = SvgOrthogonalGeometryLowering.WeldDustJoints(points, ends, weldedEnds, null, [false, true], new ParserWorkCounter(100), CancellationToken.None);
+        Assert.Equal(8, total);
+        Assert.Equal([4, 8], weldedEnds);
+        Assert.Equal(new SvgDevicePoint(0, 8), points[3]);
+        Assert.Equal(new SvgDevicePoint(20, 20), points[7]);
+    }
 }
