@@ -2541,6 +2541,86 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-radial-outline-path-16x16",
+      "path": "radial-outline-path-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-03",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "f45b501e4d2a1d22efea7685a0bd34e2132ebac10f1895ea5bc7d4262ab1d3df",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "gradient",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "admittedRendering": {
+        "changedPixelCount": 1,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 9,
+        "minimumMismatchY": 13,
+        "maximumMismatchX": 9,
+        "maximumMismatchY": 13
+      },
+      "oracle": {
+        "referencePng": "references/radial-outline-path-16x16.png",
+        "referenceSha256": "6a6f426836062cadead0e63d0a1dbf35bdceb1a3691648688d2791c788221a37",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-radial-outline-quad-16x16",
+      "path": "radial-outline-quad-16x16.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-03",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "cff0e09a05bfdbbc6fe310cd884d9dcef8f07e36b8e562e3c86ba67443a81c8f",
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "gradient",
+        "calibration"
+      ],
+      "width": 16,
+      "height": 16,
+      "admittedRendering": {
+        "changedPixelCount": 38,
+        "maximumChannelError": 255,
+        "maximumAlphaError": 32,
+        "alphaChangedPixelCount": 24,
+        "minimumMismatchX": 0,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 15,
+        "maximumMismatchY": 12
+      },
+      "oracle": {
+        "referencePng": "references/radial-outline-quad-16x16.png",
+        "referenceSha256": "f29db8c6a2eaee3db0dc9e0e242b9c6b816295fd9bdd24f3cb8bd7a2825b1186",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
