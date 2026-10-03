@@ -26,8 +26,8 @@ Stroke widths flow through the same cascade: presentation attributes, inline sty
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms aggregate into at-most-64 KiB `IDAT` chunks under a budgeted 64 KiB cap with byte-identical output across all four forms, while memory forms accumulate budgeted segments without geometric copies; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and three hundred forty-four stable references |
-| Fixture corpus | Four hundred twenty-five original CC0 probes with verified hashes; the manifest gate renders and compares all three hundred forty-four exact entries exactly and locks all eighty-one unsupported entries to their observed render-or-reject behavior with categorized rejection codes (seventy-six renders, five rejections), and the seventy-six renderable entries carry retained pinned-Chrome references with ratcheted decoded-RGBA mismatch measures |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and three hundred forty-five stable references |
+| Fixture corpus | Four hundred twenty-six original CC0 probes with verified hashes; the manifest gate renders and compares all three hundred forty-five exact entries exactly and locks all eighty-one unsupported entries to their observed render-or-reject behavior with categorized rejection codes (seventy-six renders, five rejections), and the seventy-six renderable entries carry retained pinned-Chrome references with ratcheted decoded-RGBA mismatch measures |
 
 ### Experimental supplied-font text
 

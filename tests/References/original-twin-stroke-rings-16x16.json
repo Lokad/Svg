@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-twin-stroke-rings-16x16",
+  "referencePng": "original-twin-stroke-rings-16x16.png",
+  "referenceSha256": "815b89820f3ab8633b3125fe51b8b688b7ee13ecc2c192e76231bdc84f0cbe2a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "2d2e87aca2b53db36720da3e6ec61cd99b44fffe2c599562e93a363a1cfa0a78",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-03"
+}

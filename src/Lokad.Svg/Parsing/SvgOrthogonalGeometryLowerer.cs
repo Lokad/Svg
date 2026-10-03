@@ -734,7 +734,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgContourBuilder outlines = new(pointCapacity, closed ? 2 : 1);
             if (closed) SvgStrokeOutline.StrokeClosedPolyline(mapped.AsSpan(), deviceWidth, miterLimit, join, outlines, _cancellationToken);
             else SvgStrokeOutline.StrokeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
-            return FinishStrokeFill(outlines, color, hasFill, false, false, frame, budget) with { ElementCount = points.Count + 1 };
+            int[] loopSubpaths = new int[outlines.ContourCount];
+            return FinishStrokeFill(outlines, loopSubpaths, color, hasFill, false, false, frame, budget) with { ElementCount = points.Count + 1 };
         }
         double dashScale = Math.Abs(DashDeviceScale(transform) * (frame?.ScaleX ?? 1));
         return LowerDashedStrokePolyline(mapped, closed, deviceWidth, dashScale, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget) with { ElementCount = points.Count + 1 };
@@ -775,7 +776,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         double scaledOffset = dashOffset * dashScale * dashFactor;
         if (!double.IsFinite(scaledOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
         StrokeDashedContour(mapped.AsSpan(), closed, pattern, scaledOffset, deviceWidth, miterLimit, cap, join, false, outlines, leading, current);
-        return FinishStrokeFill(outlines, color, hasFill, false, true, frame, budget);
+        return FinishStrokeFill(outlines, Array.Empty<int>(), color, hasFill, false, true, frame, budget);
     }
 
     /// <summary>Scales one dash pattern into device units.</summary>
@@ -1089,7 +1090,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             StrokeDashedContour(source.GetContour(contour), closedEnds[contour], pattern, scaledOffset, deviceWidth, miterLimit, cap, join, hasCurves, outlines, leading, current);
         }
 
-        return FinishStrokeFill(outlines, color, hasFill, hasCurves, true, frame, budget);
+        return FinishStrokeFill(outlines, Array.Empty<int>(), color, hasFill, hasCurves, true, frame, budget);
     }
 
     /// <summary>Strokes device-space contours with the caller cap and join styles into one nonzero outline fill.</summary>
@@ -1119,14 +1120,21 @@ internal ref struct SvgOrthogonalGeometryLowering
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
         using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         SvgContourBuilder outlines = new(pointCapacity, contourCapacity);
+        int[] loopSubpaths = new int[contourCapacity];
         for (int contour = 0; contour < source.ContourCount; contour++)
         {
             if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
+            int firstLoop = outlines.ContourCount;
             if (closedEnds[contour]) SvgStrokeOutline.StrokeClosedPolyline(source.GetContour(contour), deviceWidth, miterLimit, join, outlines, _cancellationToken);
             else SvgStrokeOutline.StrokeOpenPolyline(source.GetContour(contour), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
+            for (int loop = firstLoop; loop < outlines.ContourCount; loop++)
+            {
+                loopSubpaths[loop] = contour;
+            }
         }
 
-        return FinishStrokeFill(outlines, color, hasFill, hasCurves, false, frame, budget);
+        Array.Resize(ref loopSubpaths, outlines.ContourCount);
+        return FinishStrokeFill(outlines, loopSubpaths, color, hasFill, hasCurves, false, frame, budget);
     }
 
     private static double DashDeviceScale(SvgAffineTransform transform)
@@ -1193,17 +1201,21 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Retains stroke outline loops as one nonzero fill through shared contour separation.</summary>
-    /// <remarks>Solid straight-source outlines route through shared separation: weld compaction, identical-contour merging and the touch and mixed-contact resolvers run exactly like fills, so overlapping bands merge into union boundaries instead of over-painting shared fringe; crossing subdivision additionally runs on sets carrying ProperCrossing for intra-loop self-crossing splits, while crossing-free sets bypass it since subdivision re-tiles exact abutments by whole quanta and churns multi-loop sets to its cap; coincident splicing stays bypassed for strokes with no measured win resolving there; contained-loop drop runs fill-only since containment inside an outer ring does not imply coverage for stroke bands; the mixed sweep skips coincident sets whose subdivision churn feeds it without resolving; dashed runs keep the legacy tiling since abutting run outlines re-tile boundaries without changing geometry; unresolvable spike retraces keep their legacy loops through the unresolved fallback instead of denying. Winding roles resolve closed outer and inner rings, then role zero lifts to plus one for non-degenerate loops: a zero role on such a loop always means a same-wound painted island (holes resolve to minus one and degenerate loops contribute nothing), so overlapping bands union instead of cancelling each other while ring holes stay holes. Dashed-run union stays queued behind row-6 dash completion with outline-level evidence.</remarks>
-    private SvgParsedGeometry FinishStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, bool flattenedCenterline, bool isDashedStroke, SvgViewportFrame? frame, RenderBudget budget)
+    /// <remarks>Solid straight-source outlines separate per centerline subpath: weld compaction, identical-contour merging and the touch and mixed-contact resolvers run within each subpath exactly like fills, so each ring resolves its own outer and hole loops into its band; crossing subdivision additionally runs on sets carrying ProperCrossing for intra-loop self-crossing splits, while crossing-free sets bypass it since subdivision re-tiles exact abutments by whole quanta and churns multi-loop sets to its cap; coincident splicing stays bypassed for strokes with no measured win resolving there; contained-loop drop runs fill-only since containment inside an outer ring does not imply coverage for stroke bands; the mixed sweep skips coincident sets whose subdivision churn feeds it without resolving; dashed runs keep the legacy tiling since abutting run outlines re-tile boundaries without changing geometry; unresolvable spike retraces keep their legacy loops through the unresolved fallback instead of denying. Sibling-subpath bands then combine through global nonzero winding roles, which is exact wherever coverage is full because each band paints its own interior and no foreign hole cancels it; shared fringe may double where bands overlap instead of merging into union boundaries, and bitwise-identical duplicate loops still merge through the cross-group post-pass with sign agreement. Winding roles resolve closed outer and inner rings per subpath, then role zero lifts to plus one for non-degenerate loops: a zero role on such a loop always means a same-wound painted island (holes resolve to minus one and degenerate loops contribute nothing). Dashed-run union stays queued behind row-6 dash completion with outline-level evidence.</remarks>
+    private SvgParsedGeometry FinishStrokeFill(SvgContourBuilder outlines, int[] loopSubpaths, SvgColor color, bool hasFill, bool flattenedCenterline, bool isDashedStroke, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(outlines);
+        ArgumentNullException.ThrowIfNull(loopSubpaths);
         ArgumentNullException.ThrowIfNull(budget);
         if (flattenedCenterline || isDashedStroke) return FinishStrokeFillLegacy(outlines, color, hasFill, flattenedCenterline, frame, budget);
+        if (loopSubpaths.Length != outlines.ContourCount) throw new InvalidOperationException("Stroke outline subpath flags must match the sampled outlines.");
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = new int[outlines.ContourCount];
+        int[] subpaths = new int[outlines.ContourCount];
         bool fractionalVertices = false;
         for (int contour = 0; contour < outlines.ContourCount; contour++)
         {
+            if (loopSubpaths[contour] < 0) throw new InvalidOperationException("Stroke outline subpath flags must match the sampled outlines.");
             ReadOnlySpan<SvgDevicePoint> slice = outlines.GetContour(contour);
             foreach (SvgDevicePoint vertex in slice)
             {
@@ -1213,17 +1225,155 @@ internal ref struct SvgOrthogonalGeometryLowering
 
             AppendMappedContour(mapped, slice, null, _workCounter, _cancellationToken);
             ends[contour] = mapped.Count;
+            subpaths[contour] = loopSubpaths[contour];
         }
 
         SvgPolygonMapping mapping = fractionalVertices ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.QuarterEdges;
-        SeparatedContours separated = PrepareSeparatedContours(mapped, ends, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), mapping, budget, true);
-        for (int contour = 0; contour < separated.Ends.Length; contour++)
+        int groupTotal = 0;
+        for (int contour = 0; contour < ends.Length; contour++)
         {
             if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
-            int start = contour == 0 ? 0 : separated.Ends[contour - 1];
-            if (separated.Signs[contour] == 0 && separated.Ends[contour] - start >= 3) separated.Signs[contour] = 1;
+            if (subpaths[contour] + 1 > groupTotal) groupTotal = subpaths[contour] + 1;
         }
-        return RetainPolygonFill(separated.Points, separated.Ends, separated.Signs, separated.Spans, separated.CubicSpans, color, hasFill, false, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
+
+        SvgDevicePoint[][] groupPoints = new SvgDevicePoint[groupTotal][];
+        int[][] groupEnds = new int[groupTotal][];
+        int[][] groupSigns = new int[groupTotal][];
+        int[] groupLoopCounts = new int[groupTotal];
+        RenderBudget.BudgetReservation?[] groupReservations = new RenderBudget.BudgetReservation?[groupTotal];
+        SvgPolygonMapping combinedMapping = mapping;
+        ReadOnlySpan<SvgDevicePoint> retainedMapped = mapped.AsSpan();
+        for (int group = 0; group < groupTotal; group++)
+        {
+            if ((group & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
+            int memberCount = 0;
+            for (int contour = 0; contour < ends.Length; contour++)
+            {
+                if (subpaths[contour] == group) memberCount++;
+            }
+
+            if (memberCount == 0) continue;
+            using BudgetedParserList<SvgDevicePoint> groupMapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            int[] endsForGroup = new int[memberCount];
+            int member = 0;
+            for (int contour = 0; contour < ends.Length; contour++)
+            {
+                if (subpaths[contour] != group) continue;
+                int start = contour == 0 ? 0 : ends[contour - 1];
+                for (int index = start; index < ends[contour]; index++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    groupMapped.Add(retainedMapped[index]);
+                }
+
+                endsForGroup[member++] = groupMapped.Count;
+            }
+
+            SeparatedContours separated = PrepareSeparatedContours(groupMapped, endsForGroup, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), mapping, budget, true);
+            for (int contour = 0; contour < separated.Ends.Length; contour++)
+            {
+                if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
+                int start = contour == 0 ? 0 : separated.Ends[contour - 1];
+                if (separated.Signs[contour] == 0 && separated.Ends[contour] - start >= 3) separated.Signs[contour] = 1;
+            }
+
+            if (separated.Mapping != SvgPolygonMapping.QuarterEdges) combinedMapping = separated.Mapping;
+            groupPoints[group] = separated.Points;
+            groupEnds[group] = separated.Ends;
+            groupSigns[group] = separated.Signs;
+            groupLoopCounts[group] = separated.Ends.Length;
+            groupReservations[group] = separated.SceneReservation;
+        }
+
+        int loopTotal = 0;
+        for (int group = 0; group < groupTotal; group++) loopTotal += groupLoopCounts[group];
+        int[] flatGroups = new int[loopTotal];
+        int[] flatLoops = new int[loopTotal];
+        int flat = 0;
+        for (int group = 0; group < groupTotal; group++)
+        {
+            for (int loop = 0; loop < groupLoopCounts[group]; loop++)
+            {
+                flatGroups[flat] = group;
+                flatLoops[flat] = loop;
+                flat++;
+            }
+        }
+
+        ChargePairs(_workCounter, (long)loopTotal * (loopTotal - 1) / 2, _cancellationToken);
+        bool[] keepLoop = new bool[loopTotal];
+        for (int loop = 0; loop < loopTotal; loop++) keepLoop[loop] = true;
+        long comparedPairs = 0;
+        for (int first = 0; first < loopTotal; first++)
+        {
+            if (!keepLoop[first]) continue;
+            int firstGroup = flatGroups[first];
+            int firstLoop = flatLoops[first];
+            int firstStart = firstLoop == 0 ? 0 : groupEnds[firstGroup][firstLoop - 1];
+            int firstCount = groupEnds[firstGroup][firstLoop] - firstStart;
+            if (firstCount < 3) continue;
+            for (int second = first + 1; second < loopTotal; second++)
+            {
+                if ((comparedPairs++ & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
+                if (!keepLoop[second]) continue;
+                int secondGroup = flatGroups[second];
+                int secondLoop = flatLoops[second];
+                int secondStart = secondLoop == 0 ? 0 : groupEnds[secondGroup][secondLoop - 1];
+                if (groupEnds[secondGroup][secondLoop] - secondStart != firstCount) continue;
+                if (groupSigns[firstGroup][firstLoop] != groupSigns[secondGroup][secondLoop]) continue;
+                bool identical = true;
+                for (int vertex = 0; vertex < firstCount; vertex++)
+                {
+                    if (groupPoints[firstGroup][firstStart + vertex] != groupPoints[secondGroup][secondStart + vertex]) { identical = false; break; }
+                }
+
+                if (identical) keepLoop[second] = false;
+            }
+        }
+
+        int keptPoints = 0;
+        int keptEnds = 0;
+        for (int loop = 0; loop < loopTotal; loop++)
+        {
+            if (!keepLoop[loop]) continue;
+            int group = flatGroups[loop];
+            int member = flatLoops[loop];
+            int start = member == 0 ? 0 : groupEnds[group][member - 1];
+            keptEnds++;
+            keptPoints += groupEnds[group][member] - start;
+        }
+
+        foreach (RenderBudget.BudgetReservation? groupReservation in groupReservations)
+        {
+            groupReservation?.Dispose();
+        }
+
+        RenderBudget.BudgetReservation? reservation = ReserveScene(keptPoints, keptEnds, keptEnds, 0, 0, budget);
+        SvgDevicePoint[] retained = new SvgDevicePoint[keptPoints];
+        int[] finalEnds = new int[keptEnds];
+        int[] finalSigns = new int[keptEnds];
+        int target = 0;
+        int targetEnd = 0;
+        for (int loop = 0; loop < loopTotal; loop++)
+        {
+            if (!keepLoop[loop]) continue;
+            int group = flatGroups[loop];
+            int member = flatLoops[loop];
+            int start = member == 0 ? 0 : groupEnds[group][member - 1];
+            int count = groupEnds[group][member] - start;
+            for (int vertex = 0; vertex < count; vertex++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                retained[target++] = groupPoints[group][start + vertex];
+            }
+
+            _workCounter.Consume(_cancellationToken);
+            finalEnds[targetEnd] = target;
+            finalSigns[targetEnd] = groupSigns[group][member];
+            targetEnd++;
+        }
+
+        return RetainPolygonFill(retained, finalEnds, finalSigns, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), color, hasFill, false, combinedMapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
     }
 
     /// <summary>Retains stroke outline loops as one nonzero fill through the legacy merge without structure surgery.</summary>

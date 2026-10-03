@@ -1241,6 +1241,7 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-odd-stroke-closed-16x16.json",
       "referenceSha256": "2f73798604e55925a90da27f3096c62deec7b47d33166662f5601accf2d7c40d"
-    }
+    },
+    {"id":"original-twin-stroke-rings-16x16","path":"original/original-twin-stroke-rings-16x16.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-10-02","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"ca76363745129a30d72c39671180f7a34db69b2cddcc2529995f497a9c8600db","materializedSha256":"ca76363745129a30d72c39671180f7a34db69b2cddcc2529995f497a9c8600db","featureTags":["geometry","stroke","union","calibration"],"width":16,"height":16,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-twin-stroke-rings-16x16.json","referenceSha256":"815b89820f3ab8633b3125fe51b8b688b7ee13ecc2c192e76231bdc84f0cbe2a"}
   ]
 }

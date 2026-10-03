@@ -77,25 +77,35 @@ public sealed class SvgStrokeFillTests
     [Fact]
     public void Contained_stroke_rings_survive_crossing_union()
     {
-        // Row 4 stroke union: a crossing band pulls the set into contour surgery, but containment inside an outer ring still does not imply coverage for stroke bands, so the inner ring survives while its counter stays empty.
+        // Row 4 stroke union: a crossing band pulls each subpath into its own contour surgery, but containment inside an outer ring still does not imply coverage for stroke bands, so the inner ring survives while its counter stays empty. Per-subpath separation also keeps the diagonal loop pristine instead of re-tiling it at computed crossings: a fresh 3/3-stable pinned triple reads 10 changed pixels at max alpha 37 with (8,8) oracle-opaque, and the suite locks our 218 fringe against that slanted-family remainder.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 H15 V15 H1 Z M6,6 H10 V10 H6 Z M1,15 L15,1' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
 
         Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 6, 6));
-        Assert.Equal(new SvgColor(0, 0, 255, 212), Pixel(pixels, 16, 8, 8));
-        Assert.Equal(41980, AlphaSum(pixels));
+        Assert.Equal(new SvgColor(0, 0, 255, 218), Pixel(pixels, 16, 8, 8));
+        Assert.Equal(42114, AlphaSum(pixels));
     }
 
     [Fact]
     public void Overlapping_stroke_rings_union_without_overlap()
     {
-        // Row 4 stroke union: self-touching ring pairs without coincident spans resolve through mixed-contact union; the overlap zone keeps both bands while shared loops merge.
+        // Row 4 stroke union: sibling-subpath bands separate per subpath and combine by winding, so each band survives the other ring's hole; the pinned oracle paints the full overlap zone opaque (research-twin-stroke-rings-16x16 graduates exact).
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 H9 V9 H1 Z M5,5 H13 V13 H5 Z' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
 
         Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 1, 1));
         Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 5, 1));
-        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 5, 6));
-        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 16, 9, 9));
-        Assert.Equal(24480, AlphaSum(pixels));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 5, 6));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 9, 9));
+        Assert.Equal(30600, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Sibling_subpath_strokes_union_like_separate_elements()
+    {
+        // Row 4 stroke union: on integer geometry the single-path twin rings render byte-identical to two separately painted ring elements, locking band-union semantics at the API level.
+        byte[] single = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 H9 V9 H1 Z M5,5 H13 V13 H5 Z' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+        byte[] split = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 H9 V9 H1 Z' fill='none' stroke='blue' stroke-width='2'/><path d='M5,5 H13 V13 H5 Z' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(split, single);
     }
 
     [Fact]
