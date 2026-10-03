@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-gradient-outline-path-16x16",
+  "referencePng": "original-gradient-outline-path-16x16.png",
+  "referenceSha256": "e26053bd9fc67e9bb3b2ec0cb685ce56bff3667ab685a86035ab82f11aac3a35",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "beeafbdc85d07bd98a5fdbfc2a96755f0509bccce330257c25788eccd908de3e",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-03"
+}

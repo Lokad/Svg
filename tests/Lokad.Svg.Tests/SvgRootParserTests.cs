@@ -2722,7 +2722,6 @@ public sealed class SvgRootParserTests
         Assert.Equal(new SvgRectangle(11, 3, 6, 2, default, true, null), root.Geometries[2].Gradient.Fill);
     }
     [Theory]
-    [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' stroke='url(#g)' stroke-width='2'/>")]
     [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#h)'/>")]
     [InlineData("<g fill='url(#g)'><path d='M1,1 H7 V3 H3 V7 H1 Z'/></g>")]
     public void Rejects_unsupported_gradient_path_forms(string body)

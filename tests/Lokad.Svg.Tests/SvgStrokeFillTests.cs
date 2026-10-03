@@ -573,6 +573,65 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Gradient_stroke_composes_over_gradient_fill()
+    {
+        // Row 7 combined paints: a linear-gradient stroke outlines a linear-gradient fill through white-outline repaint, so outer bands read the stroke paint while the interior reads the fill ramp.
+        byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient><linearGradient id=\"s\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#f)\" stroke=\"url(#s)\" stroke-width=\"2\"/></svg>", out int width, out _);
+        byte[] fillOnly = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#f)\" stroke=\"none\"/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 255, 0, 255), Pixel(painted, width, 8, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 255), Pixel(painted, width, 8, 14));
+        Assert.Equal(255, Pixel(painted, width, 1, 8).Alpha);
+        Assert.Equal(255, Pixel(painted, width, 14, 8).Alpha);
+        Assert.True(Pixel(painted, width, 4, 8).Red > 128);
+        Assert.True(Pixel(painted, width, 4, 8).Blue > 0);
+        Assert.True(Pixel(painted, width, 11, 8).Blue > Pixel(painted, width, 11, 8).Red);
+        Assert.True(AlphaSum(painted) > AlphaSum(fillOnly));
+    }
+
+    [Fact]
+    public void Gradient_stroke_outlines_curved_gradient_path()
+    {
+        // Row 7 combined paints: the same white-outline repaint serves curved fills, so the arch renders both paints where the fill-only twin shows fill alone.
+        byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient><linearGradient id=\"s\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></linearGradient></defs><path d=\"M2,12 Q8,2 14,12 Z\" fill=\"url(#f)\" stroke=\"url(#s)\" stroke-width=\"2\"/></svg>", out _, out _);
+        byte[] fillOnly = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><path d=\"M2,12 Q8,2 14,12 Z\" fill=\"url(#f)\" stroke=\"none\"/></svg>", out _, out _);
+
+        Assert.NotEqual(fillOnly, painted);
+        Assert.True(AlphaSum(painted) > AlphaSum(fillOnly));
+    }
+
+    [Fact]
+    public void Gradient_stroke_supports_dashes_and_polylines()
+    {
+        // Row 7 combined paints: dash cutting and point-list lowering ride the shared white outline, so dashed paths and polygons render both paints.
+        byte[] dashed = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient><linearGradient id=\"s\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#f)\" stroke=\"url(#s)\" stroke-width=\"2\" stroke-dasharray=\"3 2\"/></svg>", out _, out _);
+        byte[] poly = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient><linearGradient id=\"s\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></linearGradient></defs><polygon points=\"2,2 14,2 14,14 2,14\" fill=\"url(#f)\" stroke=\"url(#s)\" stroke-width=\"2\"/></svg>", out _, out _);
+        byte[] solid = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><polygon points=\"2,2 14,2 14,14 2,14\" fill=\"url(#f)\" stroke=\"red\" stroke-width=\"2\"/></svg>", out _, out _);
+
+        Assert.True(AlphaSum(dashed) > 0);
+        Assert.NotEqual(solid, poly);
+        Assert.True(AlphaSum(poly) > 0);
+    }
+
+    [Fact]
+    public void Non_linear_paint_strokes_stay_unsupported()
+    {
+        // Row 7 combined paints: only linear-gradient strokes compose over linear-gradient fills so far; radial, pattern, and missing paints keep their honest denial.
+        string radial = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></radialGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#f)\" stroke=\"url(#r)\" stroke-width=\"2\"/></svg>";
+        string pattern = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"4\" fill=\"#00ff00\"/></pattern></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#f)\" stroke=\"url(#p)\" stroke-width=\"2\"/></svg>";
+        string missing = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#f)\" stroke=\"url(#nope)\" stroke-width=\"2\"/></svg>";
+        string radialFill = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"s\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#r)\" stroke=\"url(#s)\" stroke-width=\"2\"/></svg>";
+        string patternFill = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"4\" fill=\"#00ff00\"/></pattern><linearGradient id=\"s\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#p)\" stroke=\"url(#s)\" stroke-width=\"2\"/></svg>";
+
+        foreach (string svg in new[] { radial, pattern, missing, radialFill, patternFill })
+        {
+            SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
+
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        }
+    }
+
+    [Fact]
     public void Fractional_stroke_width_renders_ring()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2.5'/></svg>", out _, out _);
