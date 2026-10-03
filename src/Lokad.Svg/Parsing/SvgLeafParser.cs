@@ -296,8 +296,9 @@ internal static class SvgLeafParser
         bool paintPattern = SvgPatternSyntax.IsPatternFill(style.Fill) && state.Patterns.TryGetValue(SvgPatternSyntax.ParsePatternId(style.Fill), out tile);
         bool paintGradient = SvgGradientSyntax.IsGradientFill(style.Fill) && !paintPattern;
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke) && !paintStrokeLinear && !paintStrokeRadial && !paintStrokePattern && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient strokes on " + elementName + " elements are not implemented.");
-        if (paintGradient && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient-filled " + elementName + "s with strokes are not implemented.");
-        if (paintPattern && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern-filled " + elementName + "s with strokes are not implemented.");
+        // A zero width paints no stroke, so paint-filled ellipses and circles fall through to the fill-only path below.
+        if (paintGradient && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase) && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient-filled " + elementName + "s with strokes are not implemented.");
+        if (paintPattern && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase) && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern-filled " + elementName + "s with strokes are not implemented.");
         SvgComputedStyle fillStyle = paintGradient || paintPattern ? style with { Fill = "#ffffff" } : (paintStrokeLinear || paintStrokeRadial || paintStrokePattern) ? style with { Stroke = "none" } : style;
         SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, elementName is "circle" or "ellipse");
         SvgAffineTransform transform = element.Transform;

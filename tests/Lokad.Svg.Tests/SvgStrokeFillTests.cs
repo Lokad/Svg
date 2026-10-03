@@ -538,6 +538,41 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Zero_solid_strokes_over_paint_fills_paint_fill_only()
+    {
+        // Row 6 zero widths: paint-filled ellipses and circles skip their combination gates at zero width, so the fill renders alone like its stroke-none twin.
+        string gradient = "<defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"blue\"/><stop offset=\"1\" stop-color=\"green\"/></linearGradient></defs>";
+        string pattern = "<defs><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"4\" fill=\"#00ff00\"/></pattern></defs>";
+        byte[] gradientEllipse = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + gradient + "<ellipse cx=\"8\" cy=\"8\" rx=\"6\" ry=\"4\" fill=\"url(#g)\" stroke=\"red\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] gradientEllipseTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + gradient + "<ellipse cx=\"8\" cy=\"8\" rx=\"6\" ry=\"4\" fill=\"url(#g)\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] gradientCircle = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + gradient + "<circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"url(#g)\" stroke=\"red\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] gradientCircleTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + gradient + "<circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"url(#g)\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] patternEllipse = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<ellipse cx=\"8\" cy=\"8\" rx=\"6\" ry=\"4\" fill=\"url(#p)\" stroke=\"red\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] patternEllipseTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<ellipse cx=\"8\" cy=\"8\" rx=\"6\" ry=\"4\" fill=\"url(#p)\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] patternCircle = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"url(#p)\" stroke=\"red\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] patternCircleTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"url(#p)\" stroke=\"none\"/></svg>", out _, out _);
+
+        Assert.Equal(gradientEllipseTwin, gradientEllipse);
+        Assert.Equal(gradientCircleTwin, gradientCircle);
+        Assert.Equal(patternEllipseTwin, patternEllipse);
+        Assert.Equal(patternCircleTwin, patternCircle);
+    }
+
+    [Fact]
+    public void Zero_paint_strokes_over_pattern_fills_paint_fill_only()
+    {
+        // Row 6 zero widths: pattern-filled shapes lose only the paint stroke at zero width, matching fill-only twins through the shared band paths.
+        string pattern = "<defs><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"4\" fill=\"#00ff00\"/></pattern></defs>";
+        byte[] patternRect = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#p)\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] patternRectTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#p)\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] patternPath = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#p)\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] patternPathTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#p)\" stroke=\"none\"/></svg>", out _, out _);
+
+        Assert.Equal(patternRectTwin, patternRect);
+        Assert.Equal(patternPathTwin, patternPath);
+    }
+
+    [Fact]
     public void Fractional_stroke_width_renders_ring()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2.5'/></svg>", out _, out _);
