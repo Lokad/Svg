@@ -522,7 +522,8 @@ internal static class SvgLeafParser
         }
         _ = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
         double width = SvgStrokeStyleSyntax.ParseStrokeWidth(element.Style.Width ?? reader.GetAttribute("stroke-width") ?? "1", "circle");
-        if (width <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive circle stroke widths are implemented.");
+        if (width < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive circle stroke widths are implemented.");
+        if (width == 0) return null;
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(element.Presentation.StrokeColor.Value, element.Presentation.Opacity), width);
     }
 
@@ -539,7 +540,13 @@ internal static class SvgLeafParser
         SvgColor? strokeColor = element.Presentation.StrokeColor;
         if (element.Transform != SvgAffineTransform.Identity || strokeColor is null || (syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
-        if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
+        if (strokeWidth == 0)
+        {
+            using BudgetedParserList<SvgGeometry> none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            return new SvgParsedGeometry(none.Detach(), 0);
+        }
+
+        if (strokeWidth < 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
         SvgStrokeCap linecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
         double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);
         if (linecap == SvgStrokeCap.Square && dashes is null) syntax = syntax.WithSquareCaps(strokeWidth);
@@ -713,7 +720,8 @@ internal static class SvgLeafParser
         if (color is null) { return null; }
         if (transform != SvgAffineTransform.Identity || (hasFill && opacity != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed rectangle strokes, with opacity only when fill-less, are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(widthValue ?? "1");
-        if (strokeWidth <= 0 || strokeWidth > width || strokeWidth > height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rectangle strokes no larger than the rectangle dimensions are implemented.");
+        if (strokeWidth < 0 || strokeWidth > width || strokeWidth > height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rectangle strokes no larger than the rectangle dimensions are implemented.");
+        if (strokeWidth == 0) return null;
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(color.Value, opacity), strokeWidth);
     }
 }

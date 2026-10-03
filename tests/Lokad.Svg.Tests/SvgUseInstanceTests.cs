@@ -293,6 +293,16 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
+    public void Zero_width_use_stroke_override_paints_fill_only()
+    {
+        // Row 6 zero widths: a zero-width stroke override on the use element resolves to no override, so the instance renders its fill exactly like the unstyled definition.
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='red'/></svg>", out _, out _);
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 8,8 0,8' fill='red'/></defs><use href='#p' stroke='blue' stroke-width='0'/></svg>", out _, out _);
+
+        Assert.Equal(direct, instanced);
+    }
+
+    [Fact]
     public void Stroked_definition_instances_both_geometries()
     {
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='red' stroke='blue' stroke-width='2'/></svg>", out _, out _);

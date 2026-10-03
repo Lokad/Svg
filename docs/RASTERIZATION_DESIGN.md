@@ -2124,3 +2124,9 @@ Facts: ellipse reads substituted 113 pixels at mass 928 and max 46 against flatt
 Decision: no product change; the queued combination work is reframed around partial-span tiling soundness and the interior-remap truncation audit, not a broken combiner. Next per the queue as before.
 
 Resolution 2026-10-03: both queued items closed by proof, no code. Interior-remap truncation moves span endpoints at most chain dust (ResolveWeldIndex returns the nearest kept index with every skipped joint a dust compaction; cubic endpoint perturbation is 1-Lipschitz; degenerate inputs stay guarded), far below quantum. Production never emits partial spans (whole-verb recording; translate drops, remaps dust-shift-or-drop, instance maps preserve ranges with byte-identical use twins). The atan2 partial stays out of production scope by construction.
+
+## Zero-width strokes deny where Chrome paints nothing (2026-10-03 slice)
+Question: what Chrome does with stroke-width zero and negative, and where the renderer gates each spelling.
+Method: fresh pinned triples for width 0 (3/3 byte-identical, fully transparent) and width -2 (3060 partial alpha, opaque-free) at 16x16; per-spelling denial survey (path, line, rect, circle, ellipse, polygon, polyline deny with distinct messages); gate mapping across the shared parser, the resolver, band kernels, and the use override.
+Facts: zero is valid and paints nothing, so it maps to the existing no-stroke nulls (resolver, circle, rect) and the empty-runs geometry (line) before any other stroke property handling; negatives stay denied as uninterpretable (their partial-alpha Chrome behavior needs parse-error-fallback work, not a width mapping); zero-width paint-server strokes stay gated behind their untouched gates.
+Decision: product change landed (uniform solid zero-width empty rendering; see PLAN.md). Path zero-width graduates exact; full gate 2829/100/6 green with zero 92-document drift. Next per the queue as before.

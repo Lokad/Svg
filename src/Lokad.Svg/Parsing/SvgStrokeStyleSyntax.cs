@@ -165,14 +165,14 @@ internal static class SvgStrokeStyleSyntax
         if (stroke is not null && SvgLocalUrl.TryParseId(stroke, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern and gradient strokes on " + elementName + " elements are not implemented.");
     }
 
-    /// <summary>Parses a positive finite stroke width for the shared outline kernel, which maps fractional offsets exactly like fractional geometry.</summary>
+    /// <summary>Parses a nonnegative finite stroke width for the shared outline kernel, which maps fractional offsets exactly like fractional geometry. Zero flows to callers as no-stroke; negatives stay denied.</summary>
     internal static double ParseStrokeWidth(string? value, string elementName)
     {
         ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim();
         if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
         else if (token.Length > 0 && (char.IsLetter(token[^1]) || token[^1] == '%')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bare-number and px " + elementName + " stroke widths are implemented.");
-        if (strokeWidth <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive " + elementName + " stroke widths are implemented.");
+        if (strokeWidth < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive " + elementName + " stroke widths are implemented.");
         return strokeWidth;
     }
 
@@ -186,6 +186,7 @@ internal static class SvgStrokeStyleSyntax
         RejectPaintServerStroke(style.Stroke, elementName);
         if (shape.Presentation.StrokeColor is null) return null;
         double width = ParseStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"), elementName);
+        if (width == 0) return null;
         double miterLimit = ParseMiterLimit(style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
         SvgStrokeCap cap = ParseLinecap(style.Linecap);
         SvgStrokeJoin join = ParseLinejoin(style.Linejoin, allowBevelJoin);

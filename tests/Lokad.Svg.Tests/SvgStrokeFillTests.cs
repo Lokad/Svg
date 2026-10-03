@@ -364,11 +364,48 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Non_positive_stroke_width_stays_unsupported()
+    public void Negative_stroke_width_stays_unsupported()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='0'/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
+        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='-1'/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+    }
+
+    [Fact]
+    public void Zero_path_stroke_paints_nothing()
+    {
+        // Row 6 zero widths: a zero width disables the stroke, so the path paints nothing like the pinned oracle (fully transparent 16x16 triple).
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,8 H14' fill='none' stroke='red' stroke-width='0'/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Zero_closed_strokes_paint_nothing()
+    {
+        // Row 6 zero widths: every solid spelling paints nothing at zero width, matching the path oracle by the same empty-stroke rule.
+        byte[] polygon = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='0'/></svg>", out _, out _);
+        byte[] polyline = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,0 8,0 8,8' fill='none' stroke='red' stroke-width='0'/></svg>", out _, out _);
+        byte[] rect = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='1' y='1' width='6' height='6' fill='none' stroke='red' stroke-width='0'/></svg>", out _, out _);
+        byte[] circle = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><circle cx='4' cy='4' r='3' fill='none' stroke='red' stroke-width='0'/></svg>", out _, out _);
+        byte[] ellipse = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><ellipse cx='4' cy='4' rx='3' ry='2' fill='none' stroke='red' stroke-width='0'/></svg>", out _, out _);
+        byte[] line = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='0'/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(polygon));
+        Assert.Equal(0, AlphaSum(polyline));
+        Assert.Equal(0, AlphaSum(rect));
+        Assert.Equal(0, AlphaSum(circle));
+        Assert.Equal(0, AlphaSum(ellipse));
+        Assert.Equal(0, AlphaSum(line));
+    }
+
+    [Fact]
+    public void Zero_width_wins_over_dashes()
+    {
+        // Row 6 zero widths: zero disables the stroke before dash handling, so a dashed zero-width path paints nothing.
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,4 H8' fill='none' stroke='red' stroke-width='0' stroke-dasharray='2 2'/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(pixels));
     }
 
     [Fact]
