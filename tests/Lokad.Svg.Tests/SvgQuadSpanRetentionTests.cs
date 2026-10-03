@@ -59,6 +59,19 @@ public sealed class SvgQuadSpanRetentionTests
         Assert.Single(geometry.Polygon.QuadSpans);
     }
     [Fact]
+    public void Closing_bitwise_span_survives_stripping_translation()
+    {
+        // Row 5 closing-span retention, bitwise branch: a span ending at a stripped closing duplicate keeps the duplicate explicitly, so axis-aligned closed loops substitute their closing curve exactly like dust-divergent ones.
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 Q32,8 56,48 Q32,88 8,48 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(2, geometry.Polygon.QuadSpans.Length);
+        SvgQuadSpan closing = geometry.Polygon.QuadSpans[1];
+        Assert.Equal(new SvgDevicePoint(32, 88), closing.Control);
+        Assert.Equal(new SvgDevicePoint(56, 48), geometry.Polygon.Points[closing.StartIndex]);
+        Assert.Equal(new SvgDevicePoint(8, 48), geometry.Polygon.Points[closing.EndIndex]);
+    }
+
+    [Fact]
     public void Dusty_path_remaps_spans_across_weld_compaction()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 L0.0000000004,0 L8,0 Q12,8 8,12 L0,12 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);

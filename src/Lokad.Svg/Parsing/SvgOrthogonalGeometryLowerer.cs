@@ -506,6 +506,31 @@ internal ref struct SvgOrthogonalGeometryLowering
                 continue;
             }
             ends[kept++] = mapped.Count;
+            if (indexMap is not null && slice.Length > 0 && indexMap[slice.Length - 1] == -1 && slice[slice.Length - 1] == slice[0])
+            {
+                // A span ending at a stripped bitwise closing duplicate keeps the duplicate explicitly so the closing span survives translation with exact verb endpoints; downstream weld keeps bitwise joints and classification drops the redundant close exactly like its implicit twin.
+                bool needsClosingVertex = false;
+                for (int span = spanCursor; span < spanRunEnd && !needsClosingVertex; span++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    if (recorded[span].EndIndex == slice.Length - 1) needsClosingVertex = true;
+                }
+
+                for (int span = cubicSpanCursor; span < cubicSpanRunEnd && !needsClosingVertex; span++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    if (recordedCubics[span].EndIndex == slice.Length - 1) needsClosingVertex = true;
+                }
+
+                if (needsClosingVertex)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    mapped.Add(slice[slice.Length - 1]);
+                    ends[kept - 1] = mapped.Count;
+                    indexMap[slice.Length - 1] = mapped.Count - 1;
+                }
+            }
+
             if (indexMap is not null)
             {
                 TranslateQuadSpans(recorded, spanCursor, spanRunEnd, kept - 1, indexMap, keptSpans);

@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-biquad-closed-16x16",
+  "referencePng": "original-biquad-closed-16x16.png",
+  "referenceSha256": "c331ff5e5be1cef8cc78cdc4de808fa85670faff43e16d321df232b8f36345c3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "7dc4894a49450132b95b5d27ac6f6c3dcaa86f471b04557436bf3e8ec625e017",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-03"
+}
