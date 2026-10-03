@@ -616,13 +616,12 @@ public sealed class SvgStrokeFillTests
     [Fact]
     public void Non_linear_paint_strokes_stay_unsupported()
     {
-        // Row 7 combined paints: linear and radial gradient strokes compose over linear-gradient fills; pattern and missing paints plus non-linear fills keep their honest denial.
-        string pattern = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"4\" fill=\"#00ff00\"/></pattern></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#f)\" stroke=\"url(#p)\" stroke-width=\"2\"/></svg>";
+        // Row 7 combined paints: gradient and pattern strokes compose over linear-gradient fills; missing paints plus non-linear fills keep their honest denial.
         string missing = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"f\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#f)\" stroke=\"url(#nope)\" stroke-width=\"2\"/></svg>";
         string radialFill = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></radialGradient><linearGradient id=\"s\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#r)\" stroke=\"url(#s)\" stroke-width=\"2\"/></svg>";
         string patternFill = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"4\" fill=\"#00ff00\"/></pattern><linearGradient id=\"s\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#00ff00\"/><stop offset=\"1\" stop-color=\"#000000\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#p)\" stroke=\"url(#s)\" stroke-width=\"2\"/></svg>";
 
-        foreach (string svg in new[] { pattern, missing, radialFill, patternFill })
+        foreach (string svg in new[] { missing, radialFill, patternFill })
         {
             SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
 

@@ -1,0 +1,26 @@
+{
+ "fixtureId": "original-pattern-outline-path-16x16",
+ "referencePng": "original-pattern-outline-path-16x16.png",
+ "referenceSha256": "4438c6f3e99e578ca6d0297d1b0b1e51ec582ba3b77231e212b3dc9fdabd52fa",
+ "chromeVersion": "153.0.8010.52",
+ "chromiumRevision": "1681091",
+ "platform": "win64",
+ "captureRecipeRevision": "3",
+ "viewport": {
+  "width": 16,
+  "height": 16,
+  "deviceScaleFactor": 1
+ },
+ "background": "transparent",
+ "freshProcessCaptures": 3,
+ "decodedPixelStability": "identical",
+ "candidateSha256": "1de46d86507efbc015b80713409a2356c9d91e588bb5a4cd7b539cbedd328bc8",
+ "comparison": {
+  "dimensionsMatch": true,
+  "changedPixelCount": 0,
+  "maximumChannelError": 0,
+  "maximumAlphaError": 0,
+  "exact": true
+ },
+ "admittedAt": "2026-10-03"
+}

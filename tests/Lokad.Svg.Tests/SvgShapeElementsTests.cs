@@ -1523,6 +1523,53 @@ public sealed class SvgShapeElementsTests
         Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 8, 7, 7));
     }
 
+    [Fact]
+    public void Pattern_stroke_composes_over_gradient_fill()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='f' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='s' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='2' fill='#00ff00'/></pattern></defs><path d='M2,2 H14 V14 H2 Z' fill='url(#f)' stroke='url(#s)' stroke-width='2'/></svg>", out int width, out int height);
+
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(0, 255, 0, 255), Pixel(pixels, width, 8, 1));
+        Assert.Equal(new SvgColor(116, 0, 138, 255), Pixel(pixels, width, 8, 8));
+        Assert.Equal(new SvgColor(0, 255, 0, 255), Pixel(pixels, width, 2, 8));
+    }
+
+    [Fact]
+    public void Pattern_stroke_outlines_curved_gradient_path()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='f' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='s' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='2' fill='#00ff00'/></pattern></defs><path d='M2,12 Q8,2 14,12 Z' fill='url(#f)' stroke='url(#s)' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 255, 0, 255), Pixel(pixels, 16, 2, 12));
+        Assert.Equal(new SvgColor(0, 255, 0, 255), Pixel(pixels, 16, 14, 12));
+        Assert.Equal(new SvgColor(117, 0, 138, 255), Pixel(pixels, 16, 8, 11));
+    }
+
+    [Fact]
+    public void Pattern_stroke_supports_dashes_and_polylines()
+    {
+        byte[] dashed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='f' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='s' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='2' fill='#00ff00'/></pattern></defs><path d='M2,2 H14 V14 H2 Z' fill='url(#f)' stroke='url(#s)' stroke-width='2' stroke-dasharray='3 2'/></svg>", out _, out _);
+        byte[] poly = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='f' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='s' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='2' fill='#00ff00'/></pattern></defs><polyline points='2,2 14,2 14,14' fill='none' stroke='url(#s)' stroke-width='2'/></svg>", out _, out _);
+
+        Assert.Equal(new SvgColor(0, 255, 0, 255), Pixel(dashed, 16, 8, 1));
+        Assert.Equal(new SvgColor(0, 255, 0, 255), Pixel(poly, 16, 8, 1));
+        Assert.True(AlphaSum(poly) > 0);
+    }
+
+    [Fact]
+    public void Pattern_strokes_over_non_linear_fills_stay_unsupported()
+    {
+        string radialFill = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><radialGradient id='f'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient><pattern id='s' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='2' fill='#00ff00'/></pattern></defs><path d='M2,2 H14 V14 H2 Z' fill='url(#f)' stroke='url(#s)' stroke-width='2'/></svg>";
+        string patternFill = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='f' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='2' fill='#ff0000'/></pattern><pattern id='s' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='2' fill='#00ff00'/></pattern></defs><path d='M2,2 H14 V14 H2 Z' fill='url(#f)' stroke='url(#s)' stroke-width='2'/></svg>";
+
+        foreach (string svg in new[] { radialFill, patternFill })
+        {
+            SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
+
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        }
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
