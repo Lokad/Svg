@@ -2661,6 +2661,76 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-cubic-twin-100x100",
+      "path": "cubic-twin-100x100.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-03",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "516cd1cfd55c243b2cd969ee71a7daed6931b05d65a850b056cfbdd93aee39df",
+      "featureTags": ["geometry", "cubic", "coverage", "multi-contour", "calibration"],
+      "width": 100,
+      "height": 100,
+      "admittedRendering": {
+        "changedPixelCount": 209,
+        "maximumChannelError": 120,
+        "maximumAlphaError": 7,
+        "alphaChangedPixelCount": 56,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 34,
+        "maximumMismatchX": 83,
+        "maximumMismatchY": 65
+      },
+      "oracle": {
+        "referencePng": "references/cubic-twin-100x100.png",
+        "referenceSha256": "bc20b6b5c5fc036288f2f27fd9e1b336229c48d872f8de2a0d79c860640d1542",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-cubic-crescent-100x100",
+      "path": "cubic-crescent-100x100.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-04",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "223f2abb4bf68434c2794f4a753a9e4b66ed159093b2bc8d8c0578ff1012108f",
+      "featureTags": ["geometry", "cubic", "coverage", "single-contour", "calibration"],
+      "width": 100,
+      "height": 100,
+      "admittedRendering": {
+        "changedPixelCount": 154,
+        "maximumChannelError": 120,
+        "maximumAlphaError": 7,
+        "alphaChangedPixelCount": 28,
+        "minimumMismatchX": 20,
+        "minimumMismatchY": 20,
+        "maximumMismatchX": 49,
+        "maximumMismatchY": 79
+      },
+      "oracle": {
+        "referencePng": "references/cubic-crescent-100x100.png",
+        "referenceSha256": "9b54362b9f3e7b182e50ec43baf99f121733ccc2e592a79aa12bbbb1f91a2f09",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
