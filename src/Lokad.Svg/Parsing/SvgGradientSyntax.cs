@@ -735,9 +735,9 @@ internal static class SvgGradientSyntax
             hasFill = presentation.Paint.HasFill && painted;
         }
         SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
-        if (probe is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width gradient strokes no larger than the rectangle dimensions are implemented.");
-        double halfWidth = probe.Value.Width / 2d;
-        int strokeWidth = checked((int)probe.Value.Width);
+        if (probe is null && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width gradient strokes no larger than the rectangle dimensions are implemented.");
+        double halfWidth = probe is null ? 0 : probe.Value.Width / 2d;
+        int strokeWidth = probe is null ? 0 : checked((int)probe.Value.Width);
         SvgRectangle top = new(placement.X - halfWidth, placement.Y - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
         SvgRectangle bottom = new(placement.X - halfWidth, placement.Y + placement.Height - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
         SvgRectangle left = new(placement.X - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
@@ -750,7 +750,7 @@ internal static class SvgGradientSyntax
         SvgRectangle fill = placement with { Color = fillColor, HasFill = fillHasFill };
         if (frame is not null)
         {
-            if (!frame.Value.Clip.Contains(placement.X - halfWidth, placement.Y - halfWidth, placement.X + placement.Width + halfWidth, placement.Y + placement.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
+            if (probe is not null && !frame.Value.Clip.Contains(placement.X - halfWidth, placement.Y - halfWidth, placement.X + placement.Width + halfWidth, placement.Y + placement.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
             SvgRectangle shifted = frame.Value.Shift(placement);
             fill = frame.Value.Clip.ClipRectangle(shifted) with { Color = fillColor, HasFill = fillHasFill };
             box = frame.Value.Shift(box);
@@ -762,6 +762,12 @@ internal static class SvgGradientSyntax
         using BudgetedParserList<SvgGeometry> stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         if (hasLinearFill) stroked.Add(LowerLinearFillGeometry(fillGradient, box, fill, fillHasFill, fillOpacity));
         else if (hasRadialFill) stroked.Add(LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity));
+        if (probe is null)
+        {
+            // Zero width paints no stroke bands; probe nulls only on zero widths here.
+            if (!hasLinearFill && !hasRadialFill) stroked.Add(SvgGeometry.FromRectangle(fill));
+            return new SvgParsedGeometry(stroked.Detach(), 0);
+        }
         SvgRectangle strokeFill = combined ? fill with { HasFill = false } : fill;
         if (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
         {
@@ -828,9 +834,9 @@ internal static class SvgGradientSyntax
             hasFill = presentation.Paint.HasFill && painted;
         }
         SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
-        if (probe is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width gradient strokes no larger than the rectangle dimensions are implemented.");
-        double halfWidth = probe.Value.Width / 2d;
-        int strokeWidth = checked((int)probe.Value.Width);
+        if (probe is null && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width gradient strokes no larger than the rectangle dimensions are implemented.");
+        double halfWidth = probe is null ? 0 : probe.Value.Width / 2d;
+        int strokeWidth = probe is null ? 0 : checked((int)probe.Value.Width);
         SvgRectangle top = new(placement.X - halfWidth, placement.Y - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
         SvgRectangle bottom = new(placement.X - halfWidth, placement.Y + placement.Height - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
         SvgRectangle left = new(placement.X - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
@@ -843,7 +849,7 @@ internal static class SvgGradientSyntax
         SvgRectangle fill = placement with { Color = fillColor, HasFill = fillHasFill };
         if (frame is not null)
         {
-            if (!frame.Value.Clip.Contains(placement.X - halfWidth, placement.Y - halfWidth, placement.X + placement.Width + halfWidth, placement.Y + placement.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
+            if (probe is not null && !frame.Value.Clip.Contains(placement.X - halfWidth, placement.Y - halfWidth, placement.X + placement.Width + halfWidth, placement.Y + placement.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
             SvgRectangle shifted = frame.Value.Shift(placement);
             fill = frame.Value.Clip.ClipRectangle(shifted) with { Color = fillColor, HasFill = fillHasFill };
             box = frame.Value.Shift(box);
@@ -856,6 +862,12 @@ internal static class SvgGradientSyntax
         if (hasLinearFill) stroked.Add(LowerLinearFillGeometry(fillGradient, box, fill, fillHasFill, fillOpacity));
         else if (hasRadialFill) stroked.Add(LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity));
         else if (circle.Radius != 0 || circle.IsEmpty) stroked.Add(SvgGeometry.FromRectangle(fill));
+        if (probe is null)
+        {
+            // Zero width paints no stroke bands; the degenerate-radius solid fill needs its rectangle here.
+            if (!hasLinearFill && !hasRadialFill && circle.Radius == 0 && !circle.IsEmpty) stroked.Add(SvgGeometry.FromRectangle(fill));
+            return new SvgParsedGeometry(stroked.Detach(), 0);
+        }
         SvgRectangle strokeFill = combined ? fill with { HasFill = false } : fill;
         if (circle.Radius == 0 && !circle.IsEmpty)
         {
@@ -874,6 +886,12 @@ internal static class SvgGradientSyntax
 
     internal static SvgParsedGeometry LowerGradientStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
     {
+        // A zero width paints nothing for any paint, so it returns empty before dash, cap, and paint handling like the solid line kernel.
+        if (SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1") == 0)
+        {
+            using BudgetedParserList<SvgGeometry> none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            return new SvgParsedGeometry(none.Detach(), 0);
+        }
         // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
         if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
         SvgAffineTransform transform = context.ResolveTransform(reader);
@@ -973,6 +991,12 @@ internal static class SvgGradientSyntax
     /// <summary>Lowers one radial-gradient-stroked axis-aligned line into a radial-evaluated stroke band.</summary>
     internal static SvgParsedGeometry LowerRadialStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
     {
+        // A zero width paints nothing for any paint, so it returns empty before dash, cap, and paint handling like the solid line kernel.
+        if (SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1") == 0)
+        {
+            using BudgetedParserList<SvgGeometry> none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            return new SvgParsedGeometry(none.Detach(), 0);
+        }
         // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
         if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
         SvgAffineTransform transform = context.ResolveTransform(reader);
@@ -1083,6 +1107,7 @@ internal static class SvgGradientSyntax
     private static SvgStroke? ParseGradientStroke(XmlReader reader, SvgComputedStyle style, SvgPaintableElementContext context, SvgAffineTransform transform, SvgRectangle placement, byte opacity, bool painted)
     {
         if (style.Stroke is null || style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) return null;
+        if (SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"))) return null;
         if (IsGradientStrokeUrl(style.Stroke)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient fills with gradient strokes are not implemented.");
         SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
         if (style.StrokeOpacity is not null) strokeColor = SvgPaintResolver.ApplyOpacity(strokeColor, SvgColorParser.ParseOpacity(style.StrokeOpacity));

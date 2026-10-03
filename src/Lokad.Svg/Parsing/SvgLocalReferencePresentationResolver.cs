@@ -23,6 +23,7 @@ internal static class SvgLocalReferencePresentationResolver
         static SvgUseStrokeOverride? ResolveStrokeOverride(SvgComputedStyle style, SvgInheritedPresentation inheritedPresentation, IReadOnlyDictionary<string, SvgColor> namedColors)
         {
             if (style.Stroke is null) return null;
+            if (SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) return null;
             SvgStrokeStyleSyntax.RejectPaintServerStroke(style.Stroke, "use");
             if (style.StrokeOpacity is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke opacity on use elements is not implemented.");
             if (style.Dasharray is not null && !style.Dasharray.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed strokes on use elements are not implemented.");

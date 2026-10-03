@@ -409,6 +409,135 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
+    public void Zero_gradient_path_stroke_paints_fill_only()
+    {
+        // Row 6 zero widths: a zero width disables paint-server strokes exactly like solid ones, so the fill renders alone like its stroke-none twin.
+        byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"blue\"/><stop offset=\"1\" stop-color=\"green\"/></linearGradient></defs><path d=\"M2,2 H14 V14 H2 Z\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] twin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M2,2 H14 V14 H2 Z\" fill=\"red\" stroke=\"none\"/></svg>", out int width, out _);
+
+        Assert.Equal(twin, painted);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(painted, width, 8, 8));
+    }
+
+    [Fact]
+    public void Zero_paint_strokes_paint_fill_only_across_spellings()
+    {
+        // Row 6 zero widths: every paint-server spelling paints only its fill at zero width, matching stroke-none or solid-zero twins by the shared empty-stroke rule.
+        string defs = "<defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"blue\"/><stop offset=\"1\" stop-color=\"green\"/></linearGradient></defs>";
+        byte[] polygon = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<polygon points=\"2,2 14,2 14,14 2,14\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] polygonTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><polygon points=\"2,2 14,2 14,14 2,14\" fill=\"red\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] polyline = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<polyline points=\"2,2 14,2 14,14\" fill=\"none\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] polylineTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><polyline points=\"2,2 14,2 14,14\" fill=\"none\" stroke=\"red\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] rect = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] rectTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] circle = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] circleTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"red\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] ellipse = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<ellipse cx=\"8\" cy=\"8\" rx=\"6\" ry=\"4\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] ellipseTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><ellipse cx=\"8\" cy=\"8\" rx=\"6\" ry=\"4\" fill=\"red\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] line = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] lineTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"0\"/></svg>", out _, out _);
+
+        Assert.Equal(polygonTwin, polygon);
+        Assert.Equal(polylineTwin, polyline);
+        Assert.Equal(rectTwin, rect);
+        Assert.Equal(circleTwin, circle);
+        Assert.Equal(ellipseTwin, ellipse);
+        Assert.Equal(lineTwin, line);
+    }
+
+    [Fact]
+    public void Zero_radial_and_pattern_strokes_paint_fill_only()
+    {
+        // Row 6 zero widths: radial and pattern strokes share the gradient zero-width path, so each spelling matches its solid-zero or stroke-none twin.
+        string radial = "<defs><radialGradient id=\"r\"><stop offset=\"0\" stop-color=\"blue\"/><stop offset=\"1\" stop-color=\"green\"/></radialGradient></defs>";
+        string pattern = "<defs><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"4\" fill=\"#00ff00\"/></pattern></defs>";
+        byte[] radialPath = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + radial + "<path d=\"M2,2 H14 V14 H2 Z\" fill=\"red\" stroke=\"url(#r)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] patternPath = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<path d=\"M2,2 H14 V14 H2 Z\" fill=\"red\" stroke=\"url(#p)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] solidTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M2,2 H14 V14 H2 Z\" fill=\"red\" stroke=\"red\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] radialLine = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + radial + "<line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"url(#r)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] patternLine = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"url(#p)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] emptyTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] radialRect = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + radial + "<rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" stroke=\"url(#r)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] patternRect = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + pattern + "<rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" stroke=\"url(#p)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] fillTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" stroke=\"none\"/></svg>", out _, out _);
+
+        Assert.Equal(solidTwin, radialPath);
+        Assert.Equal(solidTwin, patternPath);
+        Assert.Equal(emptyTwin, radialLine);
+        Assert.Equal(emptyTwin, patternLine);
+        Assert.Equal(fillTwin, radialRect);
+        Assert.Equal(fillTwin, patternRect);
+    }
+
+    [Fact]
+    public void Zero_paint_width_wins_over_dashes()
+    {
+        // Row 6 zero widths: zero disables paint-server strokes before dash handling on every kernel, so dashed zero-width paints leave nothing behind.
+        byte[] path = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"blue\"/><stop offset=\"1\" stop-color=\"green\"/></linearGradient></defs><path d=\"M0,4 H8\" fill=\"none\" stroke=\"url(#g)\" stroke-width=\"0\" stroke-dasharray=\"2 2\"/></svg>", out _, out _);
+        byte[] line = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"blue\"/><stop offset=\"1\" stop-color=\"green\"/></linearGradient></defs><line x1=\"0\" y1=\"4\" x2=\"8\" y2=\"4\" stroke=\"url(#g)\" stroke-width=\"0\" stroke-dasharray=\"2 2\"/></svg>", out _, out _);
+
+        Assert.Equal(0, AlphaSum(path));
+        Assert.Equal(0, AlphaSum(line));
+    }
+
+    [Fact]
+    public void Zero_gradient_use_stroke_paints_fill_only()
+    {
+        // Row 6 zero widths: a zero-width paint-server stroke override on use resolves to no override, so the instance renders its fill alone.
+        byte[] painted = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"blue\"/><stop offset=\"1\" stop-color=\"green\"/></linearGradient><path id=\"q\" d=\"M2,2 H14 V14 H2 Z\"/></defs><use href=\"#q\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] twin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><path id=\"q\" d=\"M2,2 H14 V14 H2 Z\"/></defs><use href=\"#q\" fill=\"red\" stroke=\"none\"/></svg>", out int width, out _);
+
+        Assert.Equal(twin, painted);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(painted, width, 8, 8));
+    }
+
+    [Fact]
+    public void Zero_width_with_missing_paint_paints_fill_only()
+    {
+        // Row 6 zero widths: an unresolvable paint never evaluates when the width is zero, so path, rect, circle, and line renders match their fill-only twins.
+        byte[] path = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M2,2 H14 V14 H2 Z\" fill=\"red\" stroke=\"url(#nope)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] pathTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M2,2 H14 V14 H2 Z\" fill=\"red\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] rect = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" stroke=\"url(#nope)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] rectTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"red\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] circle = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"red\" stroke=\"url(#nope)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] circleTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"red\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] line = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"url(#nope)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] lineTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><line x1=\"2\" y1=\"8\" x2=\"14\" y2=\"8\" stroke=\"red\" stroke-width=\"0\"/></svg>", out _, out _);
+
+        Assert.Equal(pathTwin, path);
+        Assert.Equal(rectTwin, rect);
+        Assert.Equal(circleTwin, circle);
+        Assert.Equal(lineTwin, line);
+    }
+
+    [Fact]
+    public void Zero_inherited_paint_stroke_paints_fill_only()
+    {
+        // Row 6 zero widths: an inherited paint-server stroke paints nothing at zero width, so the grouped path matches its direct stroke-none twin.
+        byte[] grouped = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"blue\"/><stop offset=\"1\" stop-color=\"green\"/></linearGradient></defs><g stroke=\"url(#g)\"><path d=\"M2,2 H14 V14 H2 Z\" fill=\"red\" stroke-width=\"0\"/></g></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path d=\"M2,2 H14 V14 H2 Z\" fill=\"red\" stroke=\"none\"/></svg>", out _, out _);
+
+        Assert.Equal(direct, grouped);
+    }
+
+    [Fact]
+    public void Zero_combined_and_rounded_paint_strokes_paint_fill_only()
+    {
+        // Row 6 zero widths: rounded rectangles and combined gradient fills also lose only the stroke at zero width, matching their stroke-none twins.
+        string defs = "<defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"blue\"/><stop offset=\"1\" stop-color=\"green\"/></linearGradient></defs>";
+        byte[] rounded = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" rx=\"2\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] roundedTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" rx=\"2\" fill=\"red\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] combinedRect = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#g)\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] combinedRectTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" fill=\"url(#g)\" stroke=\"none\"/></svg>", out _, out _);
+        byte[] combinedPath = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#g)\" stroke=\"url(#g)\" stroke-width=\"0\"/></svg>", out _, out _);
+        byte[] combinedPathTwin = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">" + defs + "<path d=\"M2,2 H14 V14 H2 Z\" fill=\"url(#g)\" stroke=\"none\"/></svg>", out _, out _);
+
+        Assert.Equal(roundedTwin, rounded);
+        Assert.Equal(combinedRectTwin, combinedRect);
+        Assert.Equal(combinedPathTwin, combinedPath);
+    }
+
+    [Fact]
     public void Fractional_stroke_width_renders_ring()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2.5'/></svg>", out _, out _);

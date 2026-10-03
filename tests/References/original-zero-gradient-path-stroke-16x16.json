@@ -1,0 +1,26 @@
+{
+  "fixtureId": "original-zero-gradient-path-stroke-16x16",
+  "referencePng": "original-zero-gradient-path-stroke-16x16.png",
+  "referenceSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "232c2eac760eae604f9dd43352c0b272396b7cfaf220081b54583b6d0cbc2320",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "2026-10-03"
+}

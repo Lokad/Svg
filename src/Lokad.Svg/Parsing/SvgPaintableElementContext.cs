@@ -40,8 +40,8 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
 
     internal SvgResolvedPaintableElement ResolveShape(SvgComputedStyle style, XmlReader reader, bool acceptsStroke)
     {
-        // Container stroke paint flows to shapes without their own; paint servers keep their dedicated rejection.
-        if (style.Stroke is null && InheritedStroke.Stroke is not null) SvgStrokeStyleSyntax.RejectPaintServerStroke(InheritedStroke.Stroke, reader.LocalName);
+        // Container stroke paint flows to shapes without their own; paint servers keep their dedicated rejection, except at zero width where nothing paints.
+        if (style.Stroke is null && InheritedStroke.Stroke is not null && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) SvgStrokeStyleSyntax.RejectPaintServerStroke(InheritedStroke.Stroke, reader.LocalName);
         SvgComputedStyle painted = style.Stroke is null && InheritedStroke.Stroke is not null ? style with { Stroke = InheritedStroke.Stroke } : style;
         return new SvgResolvedPaintableElement(painted, ResolveTransform(reader), ResolvePresentation(painted, acceptsStroke), OutputMagnification);
     }

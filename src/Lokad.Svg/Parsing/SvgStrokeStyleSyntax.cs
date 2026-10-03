@@ -176,6 +176,16 @@ internal static class SvgStrokeStyleSyntax
         return strokeWidth;
     }
 
+    /// <summary>Reports whether a stroke-width spelling denotes an exact zero without throwing.</summary>
+    internal static bool IsZeroStrokeWidth(string? value)
+    {
+        ReadOnlySpan<char> token = (value ?? "1").AsSpan().Trim();
+        if (token.EndsWith("px".AsSpan(), StringComparison.OrdinalIgnoreCase)) token = token[..^2].TrimEnd();
+        else if (token.Length > 0 && (char.IsLetter(token[^1]) || token.EndsWith("%"))) return false;
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double strokeWidth) || !double.IsFinite(strokeWidth) || strokeWidth > int.MaxValue) return false;
+        return strokeWidth == 0;
+    }
+
     /// <summary>Resolves one admitted solid stroke, or nothing when the element carries no stroke paint.</summary>
     internal readonly record struct SvgAdmittedStroke(SvgColor Color, double Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join, double[]? DashPattern, double DashOffset, double? PathLength, bool NonScalingStroke);
 
@@ -183,8 +193,9 @@ internal static class SvgStrokeStyleSyntax
     internal static SvgAdmittedStroke? ResolveAdmittedStroke(XmlReader reader, SvgComputedStyle style, SvgResolvedPaintableElement shape, string elementName, bool allowBevelJoin)
     {
         ArgumentNullException.ThrowIfNull(reader);
-        RejectPaintServerStroke(style.Stroke, elementName);
         if (shape.Presentation.StrokeColor is null) return null;
+        if (IsZeroStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"))) return null;
+        RejectPaintServerStroke(style.Stroke, elementName);
         double width = ParseStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"), elementName);
         if (width == 0) return null;
         double miterLimit = ParseMiterLimit(style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));

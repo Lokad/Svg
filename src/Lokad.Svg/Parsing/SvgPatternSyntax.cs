@@ -158,6 +158,7 @@ internal static class SvgPatternSyntax
         SvgRadialGradient strokeCircle = default;
         bool hasLinearStroke = false;
         bool hasRadialStroke = false;
+        bool zeroPaintStrokeWidth = false;
         int strokeWidth = 0;
         double halfWidth = 0;
         SvgRectangle top = default;
@@ -180,9 +181,10 @@ internal static class SvgPatternSyntax
             }
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
             SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
-            if (probe is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width gradient strokes no larger than the rectangle dimensions are implemented.");
-            halfWidth = probe.Value.Width / 2d;
-            strokeWidth = checked((int)probe.Value.Width);
+            if (probe is null && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width gradient strokes no larger than the rectangle dimensions are implemented.");
+            halfWidth = probe is null ? 0 : probe.Value.Width / 2d;
+            strokeWidth = probe is null ? 0 : checked((int)probe.Value.Width);
+            zeroPaintStrokeWidth = probe is null;
             top = new(placement.X - halfWidth, placement.Y - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
             bottom = new(placement.X - halfWidth, placement.Y + placement.Height - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
             left = new(placement.X - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
@@ -201,7 +203,8 @@ internal static class SvgPatternSyntax
         bool combined = hasLinearStroke || hasRadialStroke;
         using BudgetedParserList<SvgGeometry> lowered = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         lowered.Add(LowerPatternFillGeometry(tile, placement, painted, fillOpacity, combined ? null : (painted ? stroke : null)));
-        if (combined)
+        // A zero width paints no stroke bands, so the pattern fill above reaches the scene alone; probe nulls only on zero widths here.
+        if (combined && !zeroPaintStrokeWidth)
         {
             SvgRectangle area = placement with { HasFill = false };
             bool solidRing = (hasLinearStroke && (strokeGradient.Stops.Length == 1 || (strokeGradient.X1 == strokeGradient.X2 && strokeGradient.Y1 == strokeGradient.Y2 && !strokeGradient.IsEmpty))) || (hasRadialStroke && (strokeCircle.Stops.Length == 1 || (strokeCircle.Radius == 0 && !strokeCircle.IsEmpty)));
@@ -314,9 +317,9 @@ internal static class SvgPatternSyntax
             hasFill = presentation.Paint.HasFill && painted;
         }
         SvgStroke? probe = SvgLeafParser.ParseRectangleStroke(new SvgColor(255, 255, 255, 255), style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, 255, painted);
-        if (probe is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width pattern strokes no larger than the rectangle dimensions are implemented.");
-        double halfWidth = probe.Value.Width / 2d;
-        int strokeWidth = checked((int)probe.Value.Width);
+        if (probe is null && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width pattern strokes no larger than the rectangle dimensions are implemented.");
+        double halfWidth = probe is null ? 0 : probe.Value.Width / 2d;
+        int strokeWidth = probe is null ? 0 : checked((int)probe.Value.Width);
         SvgRectangle top = new(placement.X - halfWidth, placement.Y - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
         SvgRectangle bottom = new(placement.X - halfWidth, placement.Y + placement.Height - halfWidth, placement.Width + strokeWidth, strokeWidth, default, true, null);
         SvgRectangle left = new(placement.X - halfWidth, placement.Y + halfWidth, strokeWidth, placement.Height - strokeWidth, default, true, null);
@@ -329,7 +332,7 @@ internal static class SvgPatternSyntax
         SvgRectangle fill = placement with { Color = fillColor, HasFill = fillHasFill };
         if (frame is not null)
         {
-            if (!frame.Value.Clip.Contains(placement.X - halfWidth, placement.Y - halfWidth, placement.X + placement.Width + halfWidth, placement.Y + placement.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
+            if (probe is not null && !frame.Value.Clip.Contains(placement.X - halfWidth, placement.Y - halfWidth, placement.X + placement.Width + halfWidth, placement.Y + placement.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
             SvgRectangle shifted = frame.Value.Shift(placement);
             fill = frame.Value.Clip.ClipRectangle(shifted) with { Color = fillColor, HasFill = fillHasFill };
             box = frame.Value.Shift(box);
@@ -346,16 +349,26 @@ internal static class SvgPatternSyntax
         else if (hasRadialFill) stroked.Add(SvgGradientSyntax.LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity));
         else if (hasPatternFill) stroked.Add(LowerPatternFillGeometry(fillPatternTile, fill, fillHasFill, fillOpacity, null));
         else stroked.Add(SvgGeometry.FromRectangle(fill));
-        stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, top with { HasFill = paintBands }, opacity, null)));
-        stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bottom with { HasFill = paintBands }, opacity, null)));
-        stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, left with { HasFill = paintBands }, opacity, null)));
-        stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, right with { HasFill = paintBands }, opacity, null)));
+        if (probe is not null)
+        {
+            // A zero width paints no stroke bands, so the pattern fill above reaches the scene alone.
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, top with { HasFill = paintBands }, opacity, null)));
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bottom with { HasFill = paintBands }, opacity, null)));
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, left with { HasFill = paintBands }, opacity, null)));
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, right with { HasFill = paintBands }, opacity, null)));
+        }
         return new SvgParsedGeometry(stroked.Detach(), 0);
     }
 
     /// <summary>Lowers one pattern-stroked axis-aligned line into a pattern-evaluated stroke band.</summary>
     internal static SvgParsedGeometry LowerPatternStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
     {
+        // A zero width paints nothing for any paint, so it returns empty before dash, cap, and paint handling like the solid line kernel.
+        if (SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1") == 0)
+        {
+            using BudgetedParserList<SvgGeometry> none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            return new SvgParsedGeometry(none.Detach(), 0);
+        }
         // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
         if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
         SvgAffineTransform transform = context.ResolveTransform(reader);
