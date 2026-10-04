@@ -60,8 +60,10 @@ identifies opaque solid cubic fills without stroke, dash or gradients, making it
 the focused coverage target; this does not close composition on other inputs.
 Curve/walk state separation now preserves quarter-grid output byte-for-byte
 across the fixture/research/inventory corpus and all nine Ford variants. The
-next experiment tests fractional endpoints with consistent curve/walk state
-within the existing live-cubic eligibility. See PLAN's active work order and
+two measured endpoint variants worsen all nine Ford configurations and are
+reverted. The next bounded slice targets the independently reconfirmed
+full-coverage translucent overlap defect; Ford's opaque coverage remains open.
+See PLAN's active work order and
 [the design record](RASTERIZATION_DESIGN.md) for the retained falsifications.
 
 S17 additionally requires reproducible per-variant identities/diffs, categorized

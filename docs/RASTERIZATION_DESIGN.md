@@ -2560,3 +2560,92 @@ Fractional endpoints remain an experiment: start the renewed segment at the
 walked position, end it at the independent curve position, and compute its slope
 from full fixed-point deltas. This differs from removing continuity entirely,
 which previously broke sorted-edge traversal.
+
+## Endpoint comparisons reject the measured re-anchor replacements (2026-10-04)
+
+Question: whether independent curve endpoints improve the pinned oracle after
+the quarter-grid state-separation checkpoint `70c18287`.
+
+Method: two temporary production variants, each built without warnings and
+restored afterwards. The fractional bridge uses unsnapped live-cubic setup and
+advance Y, full fixed-point slope/inverse division, and renewed segments from
+walked starts to independent curve ends. The quarter bridge changes only the
+ordinary emitted X endpoint to the independent curve X; it retains quarter Y
+and existing arithmetic. Neither changes quadratic, convex or stroke routing.
+Both run all nine banked Ford configurations and the four committed
+cubic/quadratic twin/crescent controls. Complete candidates, renderer/input/oracle
+identities and patches are retained under the ignored
+`artifacts/curve-state-20261004/` directory; references and ratchets stay fixed.
+
+Facts: Ford changed-pixel counts below are transparent / white / black.
+
+| Viewport | Quarter compatibility control | Quarter bridge | Fractional bridge |
+| --- | ---: | ---: | ---: |
+| 250x100 | 592 / 576 / 469 | 1,355 / 1,347 / 1,165 | 5,238 / 5,237 / 5,155 |
+| 500x200 | 1,200 / 1,186 / 945 | 3,053 / 3,047 / 2,725 | 12,102 / 12,105 / 11,768 |
+| 1000x400 | 5,729 / 5,670 / 5,173 | 7,263 / 7,242 / 6,672 | 22,676 / 22,668 / 22,342 |
+
+Transparent alpha error mass at those sizes is 2,842 / 6,761 / 57,568 for the
+control, 6,678 / 19,733 / 79,247 for the quarter bridge, and
+46,260 / 103,904 / 142,763 for the fractional bridge. At 500x200 the fractional
+bridge is predominantly under-covered (4,402 over / 7,673 under), with maximum
+alpha error 91; the quarter bridge reads 1,557 over / 1,473 under, maximum 56.
+Neither creates a reference-opaque/candidate-empty or reference-empty/candidate-
+opaque alpha flip in the tested transparent images. This categorical check does
+not assert that all interior/fringe alpha values are unchanged.
+
+Cubic twin changes 56 / mass 120 to 166 / 698 on the quarter bridge and
+232 / 1,594 on the fractional bridge. Cubic crescent changes 30 / 71 to
+161 / 1,576 and 194 / 2,694 respectively. Both quadratic controls preserve whole
+PNG bytes. The prototype's failure on the focused controls is sufficient to
+reject it before a full-corpus acceptance run; no exactness or broad regression
+claim is made for either rejected prototype.
+
+Decision: retain state separation and its compatibility offset. The two measured
+endpoint replacements fail the oracle-direction requirement despite avoiding
+categorical opaque/empty flips. They do not establish fractional events as the
+only remaining placement mechanism, and do not justify a full parameter reset.
+Future architecture work needs a specific invariant and a discriminator before
+another rewrite. PLAN redirects the next bounded implementation slice to the
+measured full-coverage span defect.
+
+## Intersection-input discrepancy is inert on the focused controls (2026-10-04)
+
+Question: whether the intersection-density heuristic's input cardinality explains
+the standing Ford/twin/crescent residual.
+
+Method: read `SkScan_AAAPath.cpp` with `git show` at the matched release pin
+`f8b66b7597c4cc859d3ed190e9c6872241e6721c`. Its heuristic uses authored
+`path.points().size()`; ours uses flattened `points.Length`. Temporarily disable
+skipping in both preparation branches, preserving endpoints and all coverage
+math, then build and run the nine Ford and four cubic/quadratic configurations.
+
+Facts: all 13 dispositions and complete PNG bytes match the compatibility control.
+This corrects the earlier inference that matching heuristic formulas established
+matching source inputs, but the behavioral comparison excludes this difference
+as the cause on these inputs. The experiment restores the production source;
+its patch, binary and reports remain ignored alongside the endpoint experiments.
+
+Decision: no heuristic change or authored-point metadata plumbing on this evidence.
+
+## Full-coverage overlap independently reconfirmed (2026-10-04)
+
+Question: whether the four-pixel integer-opacity overlap discrepancy is still
+present under the current recipe, rather than an obsolete recipe-1 reference.
+
+Method: three fresh-process recipe-3 captures of the committed
+[integer overlap](../tests/Fixtures/original/integer-alpha-overlap.svg), at its
+intrinsic 2x2 size and transparent background through the pinned Chrome wrapper.
+No input, historical reference or provenance metadata is rewritten.
+
+Facts: all three PNGs reproduce the historical reference SHA-256
+`11a315de7a2661f30c267fa5680ed1c00531633486057738f15b73333b6a0db9`.
+All four reference pixels are `(85,0,170,191)`; the current renderer gives
+`(85,0,170,192)`. The existing fractional-overlap controls remain exact. Captures
+and healthy launch/cleanup reports are retained under
+`artifacts/curve-state-20261004/blend-recapture-r{1,2,3}.png` and adjacent reports.
+
+Decision: this is a current bounded compositing target. Trace the full-span route
+and opacity precision, declare independent full/partial and opaque-background
+holdouts, and implement a shared dispatch repair only if that contract is verified.
+The result does not attribute Ford's opaque coverage errors to compositing.

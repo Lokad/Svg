@@ -1,8 +1,8 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
 Updated 2026-10-04. The reviewed renderer baseline is
-`f633c86bc5df0584edd1c4741c0a2218d49d3a32`; the active implementation checkpoint
-below starts from `5c4af69c` and records its validation separately.
+`f633c86bc5df0584edd1c4741c0a2218d49d3a32`; the implemented state-separation
+checkpoint is `70c18287` and records its validation separately.
 The September 28 baseline and review remain historical evidence in
 [the review](docs/REVIEW_2026_09_28.md) and Git. R01–R41 and S1–S17 retain
 their identities. This revision replaces the accumulated checkpoint log with
@@ -102,7 +102,7 @@ completed stage: the remaining exit evidence below governs completion.
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Not achieved: independent milestone and delivery, S8/S17.** The 92-file inventory and all-variant records are useful evidence, not a release rate. | First exact curved corporate mark and outlined wordmark; then frozen representative cohort, numeric exact-document target, complete declared variants and fresh platform/package/resource/performance evidence. |
 
-### Active work order: curve/walk state at fractional events (2026-10-04)
+### Active work order: retain curve parity; isolate span dispatch (2026-10-04)
 
 **Current mechanism.** Eligible non-convex cubic fills walk live. Their
 forward-difference positions now evolve without walk-position resets; a separate
@@ -134,42 +134,53 @@ behavior-preserving “phase two” threshold rewrite; that work order is retire
 The retained twin demonstrates that all eight live spans help on that input.
 It does not prove that every span class helps Ford or every other geometry.
 
-**Next experiment: fractional endpoints with consistent curve/walk state.**
-Keep curve evolution and its derivatives distinct from the fixed-point position
-used for ordering and coverage. Quarter-grid equivalence is now established.
-Test unsnapped live-cubic endpoints with refreshed edges starting at the walked
-position and ending at the independent curve position, using proportional
-advancement and slope calculations that retain fractional Y differences.
-The existing walk displacement remains the verified compatibility control;
-removing it while also preserving the walked segment start is a new experiment,
-not a repeat of the falsified pure-continuation variant. This is a hypothesis,
-not a promised fix.
+**Architecture comparisons completed and rejected.** A temporary live-cubic
+prototype used unsnapped setup/advance Y, full fixed-point slope/inverse division,
+and segments from walked starts to independent curve ends. Ford at 500x200
+transparent worsened from 1,200 changed pixels / 6,761 alpha error mass to
+12,102 / 103,904. Keeping quarter Y and existing arithmetic while changing only
+the emitted X endpoint to the independent curve position also worsened it to
+3,053 / 19,733. Both worsen all nine Ford variants and both cubic controls;
+quadratic controls remain byte-identical. Neither produces a 255-to-0 or
+0-to-255 alpha flip on those tested images. These failures reject the measured
+variants, not every possible fractional renderer. Both are reverted.
 
-1. **Define the state boundary.** Record which parameter/forward-difference step
-   the curve state represents and which event Y the walked position represents.
-   Derivatives must belong to the same curve state as their position; coverage
-   and ordering consume the walked state. Specify snapshot/restore, insertion,
-   removal and zero-height advancement behavior before altering them.
-2. **Preserve the completed state-separation slice.** Restrict the experiment to the
-   existing live non-convex cubic eligibility and preserve quarter-grid outputs
-   and charged-work semantics. Account for any additional state explicitly.
-   Charge new state, work and growth before allocation;
-   retain cancellation and disposal. Reuse the scanner and preparation boundary.
-   Full reset at a recovered curve parameter is a comparison only if separation
-   fails a named invariant; do not start both as unrelated rewrites.
-3. **Exercise fractional ends only after parity.** Activate proportional stepping
-   with a consistent curve/walk relationship in the same experimental scope.
-   Keep quad, convex and stroke gates until their own evidence supports migration.
-   No fixture-identity routing, per-pixel corrections or relaxed references.
-4. **Revisit downstream dispatch after placement improves.** The width-gated
-   RLE snap experiment improved Ford to 757 mismatches but introduced larger
-   errors in other families; it stays unlanded until threshold controls hold.
-   Full-coverage translucent span dispatch and other composition residuals stay
-   separate shared-renderer tasks. Ford's opaque solid fills provide the focused
-   coverage discriminator; they do not prove all paint/composition paths exact.
+A further source-input discrepancy was tested: the density heuristic counts
+flattened points here but authored path points in the matched Skia source.
+Enabling all intersection checks still leaves all nine Ford variants and four
+cubic/quadratic controls byte-identical. It cannot explain their standing errors;
+no cardinality plumbing or heuristic change lands on this evidence.
+
+**Next bounded implementation slice: full-coverage translucent span dispatch.**
+The committed integer-alpha-overlap reference is independently reconfirmed by
+three fresh recipe-3 pinned-browser captures: all reproduce the historical PNG
+SHA-256 `11a315de7a2661f30c267fa5680ed1c00531633486057738f15b73333b6a0db9`.
+Chrome reads `(85,0,170,191)` while the current candidate reads
+`(85,0,170,192)` on all four pixels. This is a current, small compositing defect,
+not a proposed explanation for Ford's opaque coverage residual.
+
+1. **Keep the validated curve state.** Preserve the quarter-grid compatibility
+   control, replay restoration, charged work, storage bounds and existing gates.
+   State separation is complete; do not repeat the two endpoint variants or use
+   them to justify a wholesale reset. A new curve architecture needs a specific
+   failing invariant and an independent oracle discriminator first.
+2. **Establish the dispatch contract.** Trace the matched span/blitter arithmetic
+   and the original opacity precision into full-coverage and partial-coverage
+   routes. Declare opacity/paint/background holdouts before changing the code;
+   measure opaque destinations as well as transparent overlaps. A single-byte
+   patch fitted to 0.5 opacity does not establish the contract.
+3. **Implement one shared span repair.** Keep geometry, coverage and references
+   fixed. Preserve the existing exact partial-coverage straddles and opaque paths.
+   Graduate the integer overlap only when its existing reference is exact and
+   independent full/partial controls support the routing. Account for any new
+   state before allocation and keep six-output parity and cancellation/cleanup.
+4. **Return to measured curved-logo coverage.** The wordmark exit remains all nine
+   Ford variants exact. The width-gated RLE snap experiment stays rejected on
+   its straddle regressions; do not revive it as a substitute for placement.
+   Shared paint/clip/mask/layer and curve-aware stroke tasks remain in rows 6–7.
 
 **Checkpoint and acceptance.** Review the first buildable integrated slice.
-Declare held-out fractional phases/slopes and transform/size controls before
+Declare held-out opacity/paint/background and transform/size controls before
 tuning. Compare Ford's nine explicit viewport/background configurations against
 their banked pinned triples, plus the retained cubic twin/crescent, counters,
 straight-edge and stroke controls. Record all changed images and candidate
@@ -190,7 +201,7 @@ native-size `inv-050` under Default limits. Ledger reductions are not throughput
 evidence. After two architecture experiments without improvement, record the
 failed invariant/mechanism and the next concrete implementation experiment.
 
-Once this checkpoint holds, complete remaining row-4/row-5 fidelity evidence,
+Once the span slice holds, complete remaining row-4/row-5 fidelity evidence,
 then curve-aware strokes and measured paint/clip/mask/layer blockers (rows 6–7).
 Keep historical falsifications in the design record and return here after
 demonstrated dependencies or regression repairs.
