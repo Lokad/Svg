@@ -35,6 +35,78 @@ public sealed class FordForwardTrajectoryTests
     }
 
     [Fact]
+    public void Twin_rows_attribute_live_against_flat_and_oracle()
+    {
+        string research = Path.Combine(AppContext.BaseDirectory, "Research");
+        byte[] svg = File.ReadAllBytes(Path.Combine(research, "cubic-twin-100x100.svg"));
+        byte[] oracleBytes = File.ReadAllBytes(Path.Combine(research, "references", "cubic-twin-100x100.png"));
+        RgbaImage reference = PngRgbaDecoder.Decode(oracleBytes, 100 * 100);
+        SvgRenderOptions options = SvgRenderOptions.Default;
+        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        (double horizontalScale, double verticalScale) = SvgConverter.TryResolveOutputScales(svg, options, budget, CancellationToken.None);
+        SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
+        int fills = 0;
+        foreach (SvgGeometry geometry in root.Geometries)
+        {
+            if (geometry.Kind != SvgGeometryKind.PolygonFill) continue;
+            fills++;
+            var polygon = geometry.Polygon;
+            Assert.Equal(66, polygon.Points.Length);
+            Assert.Equal(2, polygon.ContourEnds.Length);
+            Assert.False(polygon.IsEvenOdd);
+            Assert.Empty(polygon.QuadSpans);
+            Assert.Equal(8, polygon.CubicSpans.Length);
+            RenderBudget walkBudget = new(10_000_000);
+            ReadOnlySpan<int> votes = polygon.Signs is int[] roles ? roles : Array.Empty<int>();
+            using SvgAnalyticCoverage live = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 100, 0, 100, 100, 100, walkBudget, out long _, out bool liveEligible, CancellationToken.None);
+            using SvgAnalyticCoverage flat = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 0, 100, 0, 100, 100, 100, walkBudget, out long _, out bool flatEligible, CancellationToken.None);
+            Assert.True(liveEligible);
+            Assert.True(flatEligible);
+            long differing = 0;
+            long liveErr = 0;
+            long flatErr = 0;
+            int liveWinRows = 0;
+            int flatWinRows = 0;
+            int firstLiveWin = -1;
+            int firstFlatWin = -1;
+            int firstDiffer = -1;
+            for (int y = 0; y < 100; y++)
+            {
+                live.PrepareRow(y, out long _, CancellationToken.None);
+                flat.PrepareRow(y, out long _, CancellationToken.None);
+                byte[] liveRow = live.Row.ToArray();
+                byte[] flatRow = flat.Row.ToArray();
+                long rowLiveErr = 0;
+                long rowFlatErr = 0;
+                bool differ = false;
+                for (int x = 0; x < 100; x++)
+                {
+                    int oracleA = reference.Pixels[(y * 100 + x) * 4 + 3];
+                    if (liveRow[x] != flatRow[x]) { differ = true; differing++; }
+                    long dl = liveRow[x] > oracleA ? liveRow[x] - oracleA : oracleA - liveRow[x];
+                    long df = flatRow[x] > oracleA ? flatRow[x] - oracleA : oracleA - flatRow[x];
+                    rowLiveErr += dl;
+                    rowFlatErr += df;
+                }
+                liveErr += rowLiveErr;
+                flatErr += rowFlatErr;
+                if (differ && firstDiffer < 0) firstDiffer = y;
+                if (rowLiveErr < rowFlatErr) { liveWinRows++; if (firstLiveWin < 0) firstLiveWin = y; }
+                if (rowFlatErr < rowLiveErr) { flatWinRows++; if (firstFlatWin < 0) firstFlatWin = y; }
+            }
+            Assert.Equal(178, differing);
+            Assert.Equal(114, liveErr);
+            Assert.Equal(822, flatErr);
+            Assert.Equal(29, liveWinRows);
+            Assert.Equal(0, flatWinRows);
+            Assert.Equal(34, firstDiffer);
+            Assert.Equal(34, firstLiveWin);
+            Assert.Equal(-1, firstFlatWin);
+        }
+        Assert.Equal(1, fills);
+    }
+
+    [Fact]
     public void Ford_fills_diverge_live_first_at_row_three()
     {
         byte[] svg = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));
@@ -47,7 +119,7 @@ public sealed class FordForwardTrajectoryTests
         {
             if (geometry.Kind != SvgGeometryKind.PolygonFill) continue;
             var polygon = geometry.Polygon;
-            (int firstRow, long differingBytes, long liveMass, long flatMass, bool liveEligible, bool flatEligible) = WalkLiveVersusFlat(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans);
+            (int firstRow, long differingBytes, long liveMass, long flatMass, bool liveEligible, bool flatEligible) = WalkLiveVersusFlat(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 500, 200);
             fills.Add("points=" + polygon.Points.Length + " quads=" + polygon.QuadSpans.Length + " cubics=" + polygon.CubicSpans.Length + " liveEligible=" + liveEligible + " flatEligible=" + flatEligible + " firstRow=" + firstRow + " differingBytes=" + differingBytes + " liveMass=" + liveMass + " flatMass=" + flatMass);
         }
         Assert.Equal(2, fills.Count);
@@ -111,19 +183,19 @@ public sealed class FordForwardTrajectoryTests
         return (alphaCount, rgbOnlyCount, over, under, firstAlphaRow, firstRgbOnlyRow);
     }
 
-    private static (int FirstRow, long DifferingBytes, long LiveMass, long FlatMass, bool LiveEligible, bool FlatEligible) WalkLiveVersusFlat(SvgDevicePoint[] points, int[] ends, int[]? signs, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans)
+    private static (int FirstRow, long DifferingBytes, long LiveMass, long FlatMass, bool LiveEligible, bool FlatEligible) WalkLiveVersusFlat(SvgDevicePoint[] points, int[] ends, int[]? signs, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int width, int height)
     {
         RenderBudget budget = new(10_000_000);
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
-        using SvgAnalyticCoverage live = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, quadSpans, cubicSpans, 0, 500, 0, 200, 500, 200, budget, out long _, out bool liveEligible, CancellationToken.None);
-        using SvgAnalyticCoverage flat = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 0, 500, 0, 200, 500, 200, budget, out long _, out bool flatEligible, CancellationToken.None);
+        using SvgAnalyticCoverage live = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, quadSpans, cubicSpans, 0, width, 0, height, width, height, budget, out long _, out bool liveEligible, CancellationToken.None);
+        using SvgAnalyticCoverage flat = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 0, width, 0, height, width, height, budget, out long _, out bool flatEligible, CancellationToken.None);
         int firstRow = -1;
         long differingBytes = 0;
         long liveMass = 0;
         long flatMass = 0;
         if (liveEligible && flatEligible)
         {
-            for (int y = 0; y < 200; y++)
+            for (int y = 0; y < height; y++)
             {
                 live.PrepareRow(y, out long _, CancellationToken.None);
                 flat.PrepareRow(y, out long _, CancellationToken.None);
