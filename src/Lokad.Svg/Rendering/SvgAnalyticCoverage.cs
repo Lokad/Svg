@@ -923,7 +923,6 @@ internal ref struct SvgAnalyticCoverage
     private static int AppendQuadLiveEdges(List<AnalyticEdge> kept, double startX, double startY, double controlX, double controlY, double endX, double endY, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        if (kept.Count >= 0) return 0;
         float x0 = (float)startX;
         float y0 = (float)startY;
         float x1 = (float)controlX;
@@ -1298,7 +1297,7 @@ internal ref struct SvgAnalyticCoverage
                         {
                             SvgQuadSpan span = quadSpans[quadAt];
                             quadAt++;
-                            if (span.EndIndex - index >= 2 && AppendQuadSpanEdges(multiKept, points[span.StartIndex].X, points[span.StartIndex].Y, span.Control.X, span.Control.Y, points[span.EndIndex].X, points[span.EndIndex].Y, ref contourEdges, ref setupWork, cancellationToken) > 0)
+                            if (span.EndIndex - index >= 2 && AppendQuadLiveEdges(multiKept, points[span.StartIndex].X, points[span.StartIndex].Y, span.Control.X, span.Control.Y, points[span.EndIndex].X, points[span.EndIndex].Y, ref contourEdges, ref setupWork, cancellationToken) > 0)
                             {
                                 index = span.EndIndex - 1;
                                 continue;
@@ -1976,7 +1975,8 @@ internal ref struct SvgAnalyticCoverage
                 _edges[index].FCDDDx = _edges[index].InitialFCDDDx;
                 _edges[index].FCDDDy = _edges[index].InitialFCDDDy;
                 _edges[index].QSnappedX = _edges[index].InitialQSnappedX;
-                if (!AdvanceCubicLive(_edges[index], ref _strips)) _edges[index].LowerY = _edges[index].UpperY;
+                bool liveAdvanced = _edges[index].InitialCurveCount < 0 ? AdvanceCubicLive(_edges[index], ref _strips) : AdvanceQuadLive(_edges[index], ref _strips);
+                if (!liveAdvanced) _edges[index].LowerY = _edges[index].UpperY;
             }
             else
             {

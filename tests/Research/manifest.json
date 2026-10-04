@@ -2731,6 +2731,41 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-quad-twin-100x100",
+      "path": "quad-twin-100x100.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-04",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "ed8d73cdf2007849dbe1d0bc6653d6c4be560f75bfa687b4279e340d15d467dd",
+      "featureTags": ["geometry", "quadratic", "coverage", "multi-contour", "calibration"],
+      "width": 100,
+      "height": 100,
+      "admittedRendering": {
+        "changedPixelCount": 185,
+        "maximumChannelError": 120,
+        "maximumAlphaError": 7,
+        "alphaChangedPixelCount": 58,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 34,
+        "maximumMismatchX": 83,
+        "maximumMismatchY": 65
+      },
+      "oracle": {
+        "referencePng": "references/quad-twin-100x100.png",
+        "referenceSha256": "18665eba26ce144c0910d0d7ef78167a784868685e7bc1341049f2546b315dae",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
