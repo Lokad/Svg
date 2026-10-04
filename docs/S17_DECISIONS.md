@@ -1,18 +1,18 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-05: reviewed baseline `f633c86b`; current scan-window checkpoint
-follows operation-preserving paint at `c9f0eea2`.
+Updated 2026-10-05: reviewed baseline `f633c86b`; current one-chord cubic checkpoint
+follows operation-preserving paint (`c9f0eea2`) and scan windows (`9e77c0fa`).
 [PLAN.md](../PLAN.md) is the current execution queue. Rows 3–7 still have
 implementation and fidelity exits; the earlier claim that rows 1–7 were complete
 within architectural limits is withdrawn. The first exact curved corporate mark
 and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 
-Current validated evidence: 572 fixture entries = 485 exact + 82 known-difference
-renders + five rejections across 351 base documents and 221 variants; 67 research
+Current validated evidence: 584 fixture entries = 493 exact + 86 known-difference
+renders + five rejections across 355 base documents and 229 variants; 67 research
 probes = 66 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 2,880 core + 105 visual + six FontProbe tests pass. All 25 memory
+Release build and 2,882 core + 105 visual + six FontProbe tests pass. All 25 memory
 scenarios, package inspection and isolated installed-consumer checks pass at the
-scan-window checkpoint. The Default inventory retains 88 renders +
+one-chord cubic checkpoint. The Default inventory retains 88 renders +
 four MalformedInput rejections out of 92. These counts establish neither corporate
 coverage, full independent-variant validation nor Linux delivery.
 
@@ -71,8 +71,19 @@ separation now makes all 18 independent controls exact and graduates five resear
 controls, preserving all 462 prior exact PNGs. All nine Ford PNGs stay unchanged.
 Paths crossing clips retain their earlier route until native clipped-edge
 construction is implemented; unconditional clip-window migration is rejected.
-The next wordmark slice is retained-cubic piece/event fidelity. A bounded shared
-repair may land with independent progress and Ford nonregression; a Ford-repair
+Retained one-chord cubics now enter native stepping instead of straight-line
+fallback. This improves six small/intended Ford variants, preserves all three
+large PNGs and every prior fixture/research PNG, and leaves Ford zero exact of nine.
+Intended-transparent changes from 550 pixels / 5,092 alpha error to 433 / 3,176;
+small-transparent changes from 268 / 1,945 to 222 / 1,457. Twelve independent
+configurations retain eight exact and four known differences, with healthy stable
+capture triples. Nine were declared before implementation; the three paired-material
+holdouts were declared after the first trial and before their independent captures.
+The first Ford tip is a two-chord cubic, so its remaining event error is not
+explained by this admission repair. Eleven Default inventory PNGs change; the ten
+other than separately measured Ford lack matching fidelity evidence.
+The next wordmark slice is the original first tip's cubic setup/advance state.
+A bounded shared repair may land with independent progress and Ford nonregression; a Ford-repair
 claim requires all-nine progress and its exit remains all-nine exact. See PLAN and
 [the design record](RASTERIZATION_DESIGN.md) for evidence and remaining limits.
 

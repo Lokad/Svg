@@ -3251,3 +3251,101 @@ prior native-size replay cost remains open. Local declarations, capture health/
 triples, all candidate PNGs/comparisons, rejected prototypes, negative test and
 delivery results are under ignored `artifacts/scan-window-20261004/`. Portable
 regressions are the committed manifests and standard Release tests.
+
+## Retained one-chord cubic admission (2026-10-05)
+
+At `9e77c0fa`, both retained-cubic substitution paths required at least two
+flattened chords. The retained verb and original control points were present for
+one-chord spans, but the scanner painted their straight approximations. The matched
+release pin `f8b66b7597c4cc859d3ed190e9c6872241e6721c`,
+`src/core/SkEdgeBuilder.cpp`, chops every cubic verb at Y extrema and calls
+`addCubic` for each piece. It has no flattened-chord-count admission test. Earlier
+numerical source audits did not establish parity of this builder boundary.
+
+The shared scanner now admits spans with one or more chords in both paths.
+Non-convex contours keep live edges; convex contours keep their existing
+pre-stepped pieces. Quadratic gates and clipped-edge fallbacks stay separate.
+Every attempted cubic setup, including an empty piece, is charged before result
+inspection. Existing reservations already cover every retained cubic's complete
+live/pre-stepped expansion, so this adds no buffers, capacity or limit changes.
+Cancellation, ownership and during-phase denial retain their existing machinery.
+
+Declare nine configurations before editing production C#: shoulder, stem and neck
+families at base, fractional translation (0.125,0.25) and 2× scale. The shoulder
+has one retained chord at base; stem/neck controls have two. After the first trial,
+declare a separate paired-shoulder holdout with fill `#c34e97`, opacity 0.625 and
+transparent/white/black backgrounds, before its independent native captures.
+Do not call those three holdouts pre-implementation declarations. All 36
+fresh-process captures are byte-identical, healthy and profile-cleaned at the
+unchanged Chrome 153.0.8010.52 win64 recipe-3 pin. The ten CC0 SVG sources use LF,
+and their committed source/capture hashes are verified.
+
+| Configuration | Changed pixels, before → after | Total alpha error, before → after |
+| --- | ---: | ---: |
+| Shoulder base | 8 → 0 | 228 → 0 |
+| Shoulder phase | 48 → 48 | 278 → 50 |
+| Shoulder scaled | 0 → 0 | 0 → 0 |
+| Stem base / phase / scaled | 6/6/4 → 6/6/4 | 31/29/20 → 31/29/20 |
+| Neck base / phase / scaled | 0/0/0 → 0/0/0 | 0/0/0 → 0/0/0 |
+| Paired material, transparent / white / black | 14/14/14 → 0/0/0 | 272/0/0 → 0/0/0 |
+
+Bank all eight exact and four known-difference configurations with original native
+references. No failure is removed or relabelled exact. Two mask/run regressions
+verify retained chord count, native alpha 255 at shoulder pixel (9,8), and released
+accounted memory. Restoring the old gate fails both pixel assertions. Historical
+Ford trajectory/census assertions update to their measured managed values;
+they are diagnostic values, not native reference regeneration.
+
+| Original Ford size | Changed pixels, before → after (transparent / white / black) | Transparent alpha error, before → after |
+| --- | --- | ---: |
+| 250×100 | 268/268/230 → 222/222/185 | 1,945 → 1,457 |
+| 500×200 | 550/548/476 → 433/432/364 | 5,092 → 3,176 |
+| 1000×400 | 5,194/5,249/4,739 → 5,194/5,249/4,739 | 56,482 → 56,482 |
+
+All six small/intended variants improve; all three large complete PNGs are
+unchanged. Transparent maximum alpha errors remain 60/54/80. Over/under-coverage
+pixel counts are 137/85, 262/171 and 2,314/2,880; there are no opaque/hole flips.
+Small/intended lowering retains nine one-chord cubics, seven nonhorizontal;
+large lowering retains only two, both horizontal. This explains the bounded
+admission change's neutral large-size result, not all remaining large-size errors.
+
+The initial hypothesis linked Ford's first mismatch at (495,60) to a short tip,
+but inspecting actual retained spans falsifies that link: this original first
+tip has two chords at intended size and four at large size. Its endpoints and
+controls in intended device coordinates are approximately
+`(495.78492949,61.82425803)`, `(496.32307993,60.88249476)`,
+`(495.78492949,60.20980671)`, `(494.57409100,60.20980671)`.
+The admission repair leaves its first mismatch unchanged. Next trace native setup
+and advance state on this original tip and establish the differing invariant
+before changing the scanner. Global endpoint, float-cast, density, re-anchor and
+intersection trials already have falsifying evidence; do not repeat them.
+General clipped-edge construction remains a separate row-4/S14 dependency.
+
+Compare all 731 prior cases against the same baseline assembly. All 572 fixture
+PNGs, all 67 research results and every render/reject disposition are unchanged.
+Eleven Default inventory PNGs change: `inv-001`, `inv-002`, `inv-004`, `inv-006`,
+`inv-011`, `inv-026`, `inv-065`, `inv-066`, `inv-081`, `inv-082`, `inv-092`.
+That Default sweep lacks matching oracle captures. Ford's declared nine variants
+are measured separately; the other ten changed outputs' fidelity remains
+unmeasured. The final bank executes 743 cases: 584 fixtures = 493 exact + 86 known
+renders + five rejects, across 355 base documents / 229 variants; 67 research =
+66 known renders + one reject; 92 Default inventory = 88 renders + four DTD rejects.
+
+This is a bounded shared repair with independent progress and all-nine Ford
+nonregression. It does not meet the all-nine Ford repair claim or exact-wordmark
+exit. Ford remains zero exact of nine, both independent corporate checkpoints
+remain unachieved, and S17's frozen representative cohort and 80% exact-document
+criterion are unchanged. R34/R35 and S10/S11 retain their remaining exits.
+
+Validation: locked restore, nine-project Release build with zero warnings/errors,
+2,993 tests (2,882 core + 105 visual + six FontProbe), all 25 memory scenarios,
+runtime/symbol package inspection and isolated installed-consumer checks. Matching
+four-input work/peak ledgers and both renderer timing orders are in BENCHMARKS.md;
+accounted peaks are unchanged and Default limits are preserved. Prior native-size
+paint replay cost remains open. Linux, full independent variants and representative
+throughput remain unrefreshed. Ignored evidence is under
+`artifacts/cubic-admission-20261005/`: declarations, captures/health triples,
+retained span dumps, baseline/final comparisons and whole PNGs, negative test,
+banked corpus, resource ledgers, timing and delivery records. Committed manifests
+and standard tests provide the portable regression bank; `external/` remains
+optional and unreferenced.

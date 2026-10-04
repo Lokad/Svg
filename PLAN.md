@@ -5,9 +5,10 @@ Updated 2026-10-05. The reviewed renderer baseline is
 curve/walk state separation (`70c18287`), reject the measured endpoint models
 (`f68cb887`), repair bounded full-canvas solid-paint routing (`647dbd6b`) and bank
 mask/run dispatch controls (`30c6f4a3`). Operation-preserving paint (`c9f0eea2`)
-implements material arithmetic and capture conversion. The current scan-window
-repair separates run-walk clipping from path storage/dispatch for contained raw
-edges; its validation and remaining clipping dependency are recorded below.
+implements material arithmetic and capture conversion. Scan-window separation
+(`9e77c0fa`) preserves path storage/dispatch for contained raw edges. The current
+repair admits retained cubics independently of their flattened chord count;
+its validation and remaining curve/clipping dependencies are recorded below.
 The September 28 baseline and review remain historical evidence in
 [the review](docs/REVIEW_2026_09_28.md) and Git. R01–R41 and S1–S17 retain
 their identities. This revision replaces the accumulated checkpoint log with
@@ -35,12 +36,12 @@ not a prerequisite to improving the shared renderer.
 | Current validated evidence | Assessment |
 | --- | --- |
 | Fresh Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Fresh full tests | **2,991 passed**: 2,880 core, 105 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Fresh memory and delivery checks, at the scan-window checkpoint | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. No runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **572 entries = 485 exact + 82 known-difference renders + five rejections**; 351 base documents / 221 variants. Synthetic coverage is not corporate-logo coverage. |
+| Fresh full tests | **2,993 passed**: 2,882 core, 105 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Fresh memory and delivery checks, at the one-chord cubic checkpoint | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. No runtime package dependencies, native assets or packaged SVG fixtures. |
+| Executed fixture manifest | **584 entries = 493 exact + 86 known-difference renders + five rejections**; 355 base documents / 229 variants. Synthetic coverage is not corporate-logo coverage. |
 | Executed research manifest | **67 probes = 66 known-difference renders + one rejection**. Useful exact controls graduate to fixtures with their provenance. |
 | Fresh independent-file Default-options sweep | **92 files = 88 render + four MalformedInput rejections** (`inv-007`, `inv-012`, `inv-014`, `inv-020`). Renderability does not establish fidelity or all-variant completion. |
-| Latest recorded Ford all-variant evidence | Small 250×100, intended 500×200 and large 1000×400 × transparent/white/black: **zero exact of nine**. Intended-transparent: **550 changed pixels**, max channel error 128, max alpha error 54, 550 alpha mismatches and 5,092 total alpha error. Paint improved all nine; the scan-window repair leaves their complete PNGs unchanged. |
+| Latest recorded Ford all-variant evidence | Small 250×100, intended 500×200 and large 1000×400 × transparent/white/black: **zero exact of nine**. Intended-transparent: **433 changed pixels**, max channel error 128, max alpha error 54, 433 alpha mismatches and 3,176 total alpha error. Paint improved all nine; scan-window separation was neutral. One-chord cubic admission improves all six small/intended variants and preserves all three large PNGs. |
 | Representativeness | 57 of the 92 inventory headings identify flags or flag badges/icons. Corporate marks and outlined wordmarks need a separate frozen cohort; the whole inventory is not a representative corporate denominator. |
 | Not refreshed by the baseline/checkpoint gates | Linux/remote CI, a full browser-reference refresh, full independent inventory variant regeneration, BenchmarkDotNet throughput, private-font metrics and pixels. The bounded overlap captures below are separate evidence. |
 
@@ -70,6 +71,18 @@ covers 713 cases; the updated bank executes **731 = 572 fixtures + 67 research +
 `artifacts/scan-window-20261004/`. Full independent inventory variants and corporate
 coverage remain unmeasured; four changed Default inventory outputs lack matching
 oracle evidence.
+
+The one-chord cubic checkpoint adds ten CC0 sources / 12 configurations with
+36 stable, healthy fresh-process captures: eight exact and four known differences.
+Nine configurations were declared before implementation; the three paired-material
+holdouts were declared after the first trial and before their independent captures.
+All 572 existing fixture PNGs, all 67 research results and every disposition are
+preserved. The updated bank executes **743 = 584 fixtures + 67 research + 92
+Default inventory cases**. Eleven Default inventory PNGs change without matching
+captures in that sweep; Ford has separate all-nine evidence, while the other ten
+outputs' fidelity is unmeasured. Evidence is under ignored
+`artifacts/cubic-admission-20261005/`; this is shared renderer progress, with no new
+independent corporate checkpoint or S17 rate.
 
 Chrome remains **153.0.8010.52 win64, recipe 3**, with the recorded executable
 hash and Chromium revision field 1681091. Historical recipe-1/recipe-2
@@ -102,8 +115,8 @@ affect a counted document, even when our geometry is closer to ideal area.
    The shared operation/material boundary now preserves direct paints and pending
    additive runs, with distinct uniform/shader arithmetic. Paint improves every
    Ford variant. The contained-edge scan-window repair closes the retained curve
-   controls while leaving Ford unchanged; remaining curve-event and clipped-edge
-   construction errors stay active.
+   controls while leaving Ford unchanged. Retaining one-chord cubics now improves
+   six Ford variants; remaining curve-event and clipped-edge errors stay active.
    General composition remains open; its layer residuals stay in rows 3 and 7.
 4. **Preserve the landed repairs and exact controls.** Do not repeat the old
    six-site floor256 replacement, globally disable live cubics, snap the final
@@ -136,13 +149,13 @@ completed stage: the remaining exit evidence below governs completion.
 | 1 | **Complete: bounded semantic repairs.** S12 miter threshold and R41 zero-area objectBoundingBox gradient path strokes are repaired. | Preserve acute-limit branches, degenerate path/use and userSpace controls; no reopened defect. |
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
 | 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. General coverage/alpha and layer composition need independent controls; group-opacity on white still differs. |
-| 4 | **Active with rows 3 and 5: shared scan conversion.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint and contained-edge scan-window separation have landed. | Preserve operation order, material arithmetic and bounded path storage. Paths crossing a clip still need native clipped-edge construction; general fractional events, crossings, counters and overlaps remain open. |
-| 5 | **Open with row 4: retained curves and final device mapping.** Double maps, retained controls, live non-convex cubic stepping and curve/walk state separation have landed with quarter-grid parity. | Preserve transform/instance and large-translation evidence. Paint improves all nine Ford variants; scan-window separation leaves all nine unchanged. Resolve native retained-cubic piece construction/advance boundaries on the original wordmark. Fractional-event, quad/convex/stroke work retains its separate fallback/gates until proved. |
+| 4 | **Active with rows 3 and 5: shared scan conversion.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows and one-chord cubic admission have landed. | Preserve operation order, material arithmetic and bounded path storage. Paths crossing a clip still need native clipped-edge construction; general fractional events, crossings, counters and overlaps remain open. |
+| 5 | **Open with row 4: retained curves and final device mapping.** Double maps, retained controls, live non-convex cubic stepping, curve/walk state separation and one-chord cubic admission have landed. | Preserve transform/instance and large-translation evidence. The latest repair improves six small/intended Ford variants and leaves the three large variants unchanged. Trace the original first tip's native cubic setup/advance state; its two-chord span bypassed the repaired gate. Fractional-event, quad/convex/stroke work retains its separate fallback/gates until proved. |
 | 6 | **Partial: curve-aware stroke completion.** Width/cascade, cap/join/dash, zero-width and straight-source union repairs are retained. | True curve tangents/dash cuts, curved/dashed overlap and seam handling, remaining round/miter/hairline/pathLength/non-scaling cases through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Not achieved: independent milestone and delivery, S8/S17.** The 92-file inventory and all-variant records are useful evidence, not a release rate. | First exact curved corporate mark and outlined wordmark; then a frozen representative cohort meeting the 80% exact-document target overall and per corporate stratum, complete declared variants and fresh platform/package/resource/performance evidence. |
 
-### Active work order: retained-cubic event fidelity and clipped edges (2026-10-04)
+### Active work order: retained-cubic event fidelity and clipped edges (2026-10-05)
 
 **Implemented mechanism.** Small native path bounds select an accumulated mask;
 larger bounds preserve ordered direct single/pair/full-span paints separately from
@@ -172,11 +185,11 @@ The latter guards the axis-aligned route; the polygon grid is a separate input
 identity, not a replacement reference. Native solid/pattern ellipse captures
 also disprove the old same-renderer identity assertion; both failures stay banked.
 
-| Ford size | Changed pixels, before → current (transparent / white / black) | Transparent alpha error, before → current |
+| Ford size | Changed pixels, before paint → window → current (transparent / white / black) | Transparent alpha error, before paint → window → current |
 | --- | --- | --- |
-| 250×100 | 592/576/469 → **268/268/230** | 2,842 → 1,945 |
-| 500×200 | 1,200/1,186/945 → **550/548/476** | 6,761 → 5,092 |
-| 1000×400 | 5,729/5,670/5,173 → **5,194/5,249/4,739** | 57,568 → 56,482 |
+| 250×100 | 592/576/469 → 268/268/230 → **222/222/185** | 2,842 → 1,945 → 1,457 |
+| 500×200 | 1,200/1,186/945 → 550/548/476 → **433/432/364** | 6,761 → 5,092 → 3,176 |
+| 1000×400 | 5,729/5,670/5,173 → 5,194/5,249/4,739 → **5,194/5,249/4,739** | 57,568 → 56,482 → 56,482 |
 
 At the paint checkpoint, the retained cubic twin falls from 56 changed pixels /
 120 alpha error to two / six; the cubic crescent and two quadratic controls also
@@ -209,12 +222,29 @@ error; four improve. Their complete current comparisons and original references
 remain banked, with zero opaque/hole flips in every changed oracle-backed case.
 The design record retains both directions and the rejected unconditional model.
 
-**Next concrete slice.** Work on native retained-cubic piece construction and
-advance boundaries at the original Ford's first differing intervals, preserving
-its source and declared sizes/backgrounds. The landed paint and window repairs
-separate these mechanisms; no demonstrated remaining cubic fault is yet claimed.
-Use a bounded scanner change only after the actual piece/advance invariant is
-established, then verify independent curved controls and all nine Ford variants.
+**Landed cubic admission boundary.** The native builder consumes every retained
+cubic verb independently of how many chords a flattening would produce. Both
+managed substitution paths incorrectly required at least two chords; they now
+retain one-chord cubics too. Every cubic setup attempt, including an empty piece,
+is charged. Existing complete-span reservations cover the extra edges; no buffers
+or limits change. Two focused mask/run cases fail when the old gate is restored.
+The independent shoulder changes from eight pixels / 228 alpha error to exact;
+its fractional phase remains 48 pixels but improves from 278 to 50 alpha error.
+Three paired translucent/background holdouts change from 14 pixels each to exact.
+Stem controls remain known differences at 6/6/4 pixels, and exact neck/scaled
+controls stay exact. The bank retains all eight exact and four failing controls.
+
+Six Ford variants improve without opaque/hole flips; all three large PNGs stay
+unchanged. The small/intended geometry has seven nonhorizontal one-chord cubics,
+while the large geometry has only two horizontal one-chord cubics. The first
+intended-size mismatch at (495,60) belongs to a two-chord tip and is unchanged.
+This establishes a shared cubic fault, not an all-nine Ford repair or wordmark exit.
+
+**Next concrete slice.** Trace native cubic setup and advance state at the original
+Ford's first differing tip, preserving its source and declared sizes/backgrounds.
+The repaired one-chord gate does not explain that interval. Establish the actual
+piece/advance invariant before the next scanner change, then verify independent
+curved controls and all nine Ford variants.
 Do not repeat the falsified global endpoint, float-cast or density changes;
 enabling all intersection checks after paint leaves Ford and the 54 local controls
 byte-identical. Clipped-edge construction is a separate explicit row-4/S14
@@ -223,7 +253,8 @@ dependency, with the rounded rectangle as its return witness.
 A bounded shared repair may land with independent mechanism-level improvement and
 all-nine Ford nonregression. A claim to repair Ford requires improvement on all
 nine. This replaces the previous requirement that any scan-window repair improve
-Ford: the measured window dependency is real but neutral on that wordmark. Neither
+Ford: the measured window dependency is real but neutral on that wordmark; the
+cubic admission repair improves six variants. Neither
 acceptance rule changes the zero-difference wordmark exit or S17 denominator.
 
 The integrated slice must preserve all exact fixtures, output API parity, existing
@@ -256,8 +287,8 @@ step in the design record instead of expanding the calibration census.
 | R30 | Shared contour preparation, ownership and coverage traversal have landed across the four paints. Preserve that boundary while changing curve state; remaining repeated binding/typed-state work follows demonstrated dependencies, not a repository rewrite. |
 | R31 | CI artifact-validator hooks, Windows sandbox setup/health, wrapper deadline/drain and atomic publication are repaired. One opt-in corpus capture/compare/report workflow and representative performance evidence remain; reuse existing tools. |
 | R33 | Original scaled clip-coordinate fault repaired; fractional mapped coverage and exact independent controls exist. Contained raw edges now use a distinct scan window. Paths crossing clips require clipped-edge construction before that migration; wider clip combinations remain open. |
-| R34 | Shared scan conversion, analytic coverage, contact/union, straight-source sibling-stroke separation, operation/material preservation and contained-edge scan windows have landed. Remaining cubic events and native clipped-edge construction stay active. Complex parity/contact cases and curved/dashed stroke unions retain their gates or known differences. Preserve the exact twin-ring repair; rows 4/6. |
-| R35 | Retained controls, device-map threading, live non-convex cubic fills and curve/walk state separation have landed with quarter-grid parity. The mapping discriminator confirms large-translation float precision but rejects the measured casts as a leading Ford repair. Fractional-event fidelity, quad/convex/stroke migration and wider scalable-instance evidence remain bounded follow-ups; row 5. |
+| R34 | Shared scan conversion, analytic coverage, contact/union, straight-source sibling-stroke separation, operation/material preservation, contained-edge scan windows and one-chord cubic admission have landed. Remaining cubic events and native clipped-edge construction stay active. Complex parity/contact cases and curved/dashed stroke unions retain their gates or known differences. Preserve the exact twin-ring repair; rows 4/6. |
+| R35 | Retained controls, device-map threading, live non-convex cubic fills, curve/walk state separation and one-chord cubic admission have landed. The mapping discriminator confirms large-translation float precision but rejects the measured casts as a leading Ford repair. Fractional-event fidelity, quad/convex/stroke migration and wider scalable-instance evidence remain bounded follow-ups; row 5. |
 | R36 | Cascaded cap/join/dash/width values are carried and many spelling twins pass. Finish shared typed state and practical inheritance without reopening repaired attribute/inline cases. |
 | R37 | Fractional/scientific curves, root sizing, relative-moveto repairs, similarity maps and arc-free path-fill skew admission have landed. Preserve the support matrix's remaining arc/stroke/instance and general-transform gates; new admissions require the active target's dependency evidence. |
 | R38 | Maximum scratch allocations substantially reduced; continue actual-size storage, ownership transfer and measured many-curve/wordmark allocation work. |
@@ -291,7 +322,7 @@ step in the design record instead of expanding the calibration census.
 | S7 | Generic local/stdin/HTTP supplied-font host exists; actual-pack and same-font metrics/pixels remain separate work under section 6. |
 | S8 | 92 selected independent exports exist. Freeze and measure variants/cohorts; retain corporate marks separately from flags/symbols and calibration probes. |
 | S9 | Styles/references/viewports and measured inventory admissions are implemented in explicit subsets. Remaining combinations follow independent corporate-cohort evidence and shared semantics. |
-| S10 | Full path-command/affine kernels, retained controls, live non-convex cubics and curve/walk state separation with quarter-grid parity exist. Fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
+| S10 | Full path-command/affine kernels, retained controls, live non-convex cubics, curve/walk state separation and one-chord cubic admission exist. Fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
 | S12 | Caps/joins/dashes/stroke outlines and the bounded row-1 repairs exist. Remaining curved/dashed union, tangent and antialiasing errors belong to row 6 using common coverage. |
 | S13 | Gradient/pattern paint maps and premultiplied composition exist; R41 is closed. Bounded full-canvas paint routing is repaired in row 3; remaining coverage/paint alpha, dither, group composition and paint combinations need exact controls. |

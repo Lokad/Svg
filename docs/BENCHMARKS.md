@@ -461,3 +461,48 @@ The final assembly SHA-256 is
 `0bd0de4d088f84791209134be1753ee6018d40e3411c1cd875274cc1a33d92f0`;
 the baseline assembly is
 `742f5c6b8806907c67033a9d9cd9048dca6f78598ca25bed0db5276802fa69c2`.
+
+## One-chord cubic resource checkpoint (2026-10-05)
+
+Compare `9e77c0fa` with retained one-chord cubic admission on the same Windows x64
+.NET 10.0.12 host and four inputs. Each fresh harness process uses 32 warmups and
+three batches: 100 tiny, ten intended Ford, three dense and three native-size
+conversions. Run before→after, then after→before, sequentially after the validation
+and delivery processes finish. These local observations do not establish
+representative throughput or replace BenchmarkDotNet.
+
+| Input | Before time (ms) | After time (ms) | Before allocated bytes | After allocated bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Tiny triangle | 0.110–0.187 | 0.112–0.160 | 20,288–20,290 | 20,288–20,290 |
+| Ford `inv-002` | 15.476–24.214 | 17.517–26.049 | 814,250–817,404 | 814,194–817,348 |
+| Dense `inv-082` | 348.583–442.337 | 343.496–350.239 | 5,748,712–5,750,394 | 5,748,704–5,749,938 |
+| Native-size `inv-050` | 610.381–624.839 | 586.425–590.313 | 34,036,912–34,039,570 | 34,036,912–34,039,544 |
+
+Tiny/Ford/dense time ranges overlap; native-size times decrease in these local
+pairs. They do not resolve the earlier paint replay slowdown against its own
+pre-paint baseline. That issue remains open before release. Allocation traffic
+also reflects changed PNG sizes; the cubic repair adds no buffers or reservation
+capacity. All four accounted peaks are unchanged.
+
+| Input | Before → after work through raster | Unchanged accounted peak (bytes) |
+| --- | ---: | ---: |
+| Tiny triangle | 218 → 218 | 132,576 |
+| Ford `inv-002` | 1,261,164 → 1,267,660 | 559,396 |
+| Dense `inv-082` | 34,929,573 → 34,929,955 | 3,044,921 |
+| Native-size `inv-050` | 90,740,576 → 90,740,612 | 33,626,765 |
+
+Input hashes and parser work match. Tiny/native-size whole PNGs are unchanged;
+Ford/dense PNGs change. Cubic setup attempts, including empty pieces, are charged
+before their result is inspected; the added retained edges use the existing
+complete-span reservations. All four retain Default admission. The 743-case bank
+preserves all previous fixture/research outputs and every disposition. All 2,993
+tests, 25 memory scenarios and runtime/symbol package plus installed-consumer gates
+pass. Linux and representative performance remain unrefreshed.
+
+Ignored evidence is under `artifacts/cubic-admission-20261005/`: `before-measure`,
+`after-measure`, `after-reverse-measure`, `before-reverse-measure`, `ledger-before.json`
+and `ledger-after.json`. The baseline source matches HEAD `9e77c0fa`, also embedded
+in its assembly informational version; its rebuilt assembly SHA-256 is
+`d31aa1a15b935723bbdf38aa6a68975b7ca1d37c058575c7dda4d1e859371b82`.
+The final candidate assembly SHA-256 is
+`7b99ab2c112b84a5a00a6015c099641eb5b08569821c25494d89debe51125c98`.

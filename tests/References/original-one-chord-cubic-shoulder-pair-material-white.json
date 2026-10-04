@@ -1,0 +1,51 @@
+{
+  "fixtureId": "original-one-chord-cubic-shoulder-pair-material-white",
+  "referencePng": "original-one-chord-cubic-shoulder-pair-material-white.png",
+  "referenceSha256": "f2ef26250a508c48a5568a640e3376da26df79d8cfa804a67cbdcd601120ccf4",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "2d3ec99003293f474bf25e904973f51d72be51666cadb7e56f96f48b1d6475c4",
+  "candidateSha256": "590c8ff94fdfa3f6909bf7b9e195c1da8daf04b12f07d75656300ab2b0c42650",
+  "admittedAt": "2026-10-05",
+  "captureSha256": [
+    "f2ef26250a508c48a5568a640e3376da26df79d8cfa804a67cbdcd601120ccf4",
+    "f2ef26250a508c48a5568a640e3376da26df79d8cfa804a67cbdcd601120ccf4",
+    "f2ef26250a508c48a5568a640e3376da26df79d8cfa804a67cbdcd601120ccf4"
+  ],
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "declaredHoldout": true,
+  "declaredBeforeImplementation": false,
+  "retainedSpanChords": [
+    1,
+    1
+  ],
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 64,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

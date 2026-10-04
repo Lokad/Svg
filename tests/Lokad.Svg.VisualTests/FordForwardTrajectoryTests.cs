@@ -120,8 +120,8 @@ public sealed class FordForwardTrajectoryTests
             fills.Add("points=" + polygon.Points.Length + " quads=" + polygon.QuadSpans.Length + " cubics=" + polygon.CubicSpans.Length + " liveEligible=" + liveEligible + " flatEligible=" + flatEligible + " firstRow=" + firstRow + " differingBytes=" + differingBytes + " liveMass=" + liveMass + " flatMass=" + flatMass);
         }
         Assert.Equal(2, fills.Count);
-        Assert.Equal("points=338 quads=0 cubics=84 liveEligible=True flatEligible=True firstRow=60 differingBytes=1757 liveMass=4335921 flatMass=4338689", fills[0]);
-        Assert.Equal("points=298 quads=0 cubics=60 liveEligible=True flatEligible=True firstRow=3 differingBytes=1918 liveMass=4177859 flatMass=4174662", fills[1]);
+        Assert.Equal("points=338 quads=0 cubics=84 liveEligible=True flatEligible=True firstRow=60 differingBytes=1806 liveMass=4334755 flatMass=4338689", fills[0]);
+        Assert.Equal("points=298 quads=0 cubics=60 liveEligible=True flatEligible=True firstRow=3 differingBytes=1943 liveMass=4177791 flatMass=4174662", fills[1]);
     }
 
     [Fact]
@@ -134,11 +134,11 @@ public sealed class FordForwardTrajectoryTests
         Assert.Equal(500, transparent.Width);
         Assert.Equal(200, transparent.Height);
         (long opaque, long fringe, long clear) = CensusAlpha(transparent);
-        Assert.Equal(31569, opaque);
-        Assert.Equal(3640, fringe);
-        Assert.Equal(64791, clear);
-        Assert.Equal(35215, CountNonBackground(white, 255, 255, 255));
-        Assert.Equal(35203, CountNonBackground(black, 0, 0, 0));
+        Assert.Equal(31565, opaque);
+        Assert.Equal(3639, fringe);
+        Assert.Equal(64796, clear);
+        Assert.Equal(35210, CountNonBackground(white, 255, 255, 255));
+        Assert.Equal(35198, CountNonBackground(black, 0, 0, 0));
     }
 
     private static RgbaImage RenderAt(byte[] svg, SvgColor background)

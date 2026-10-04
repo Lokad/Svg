@@ -1,0 +1,50 @@
+{
+  "fixtureId": "original-one-chord-cubic-neck-phase",
+  "referencePng": "original-one-chord-cubic-neck-phase.png",
+  "referenceSha256": "1e35c7c7aa90fb7f34454302ef61e39872ea335b2988f71bca68a2b84ac62fae",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "bf841447d956b17ec95c548dcc43b9798be1f9fe8644fe903c9a91a641ecc552",
+  "candidateSha256": "b6913285b59077a226fd4f1f5f3ba365ca17e0ee30ff36aa037c0dfbe325bbb6",
+  "admittedAt": "2026-10-05",
+  "captureSha256": [
+    "1e35c7c7aa90fb7f34454302ef61e39872ea335b2988f71bca68a2b84ac62fae",
+    "1e35c7c7aa90fb7f34454302ef61e39872ea335b2988f71bca68a2b84ac62fae",
+    "1e35c7c7aa90fb7f34454302ef61e39872ea335b2988f71bca68a2b84ac62fae"
+  ],
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "declaredHoldout": true,
+  "declaredBeforeImplementation": true,
+  "retainedSpanChords": [
+    2
+  ],
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 64,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

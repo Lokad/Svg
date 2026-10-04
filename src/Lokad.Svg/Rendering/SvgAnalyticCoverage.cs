@@ -709,9 +709,9 @@ internal ref struct SvgAnalyticCoverage
     /// <remarks>Returns false for zero-height pieces (the caller falls back to flattened chords, preserving degenerate-span behavior); live edges never merge verticals since the pinned builder does not combine analytic edges.</remarks>
     private static bool BuildCubicLiveEdge(List<AnalyticEdge> kept, (float X, float Y) p0, (float X, float Y) p1, (float X, float Y) p2, (float X, float Y) p3, ref int contourEdges, ref long setupCost)
     {
+        setupCost += 4;
         CubicSetup setup = ComputeCubicSetup(p0, p1, p2, p3);
         if (setup.IsEmpty) return false;
-        setupCost += 4;
         AnalyticEdge edge = new()
         {
             Winding = setup.Winding,
@@ -809,9 +809,9 @@ internal ref struct SvgAnalyticCoverage
     private static int AppendCubicPiece(List<AnalyticEdge> kept, (float X, float Y) p0, (float X, float Y) p1, (float X, float Y) p2, (float X, float Y) p3, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        setupCost += 4;
         CubicSetup setup = ComputeCubicSetup(p0, p1, p2, p3);
         if (setup.IsEmpty) return 0;
-        setupCost += 4;
         int emitted = StepCubicPiece(kept, setup.FCx, setup.FCy, setup.FCDx, setup.FCDy, setup.FCDDx, setup.FCDDy, setup.FCDDDx, setup.FCDDDy, setup.FCLastX, setup.FCLastY, setup.SnappedY, setup.Shift, setup.DownShift, setup.Winding, ref contourEdges, ref setupCost);
         return emitted;
     }
@@ -1506,7 +1506,8 @@ internal ref struct SvgAnalyticCoverage
                         {
                             SvgCubicSpan cubic = cubicSpans[cubicAt];
                             cubicAt++;
-                            if (cubic.EndIndex - index >= 2 && AppendCubicLiveEdges(multiKept, points[cubic.StartIndex].X, points[cubic.StartIndex].Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, points[cubic.EndIndex].X, points[cubic.EndIndex].Y, ref contourEdges, ref setupWork, cancellationToken) > 0)
+                            // Native cubic admission follows retained verbs, including one-chord flattenings.
+                            if (cubic.EndIndex - index >= 1 && AppendCubicLiveEdges(multiKept, points[cubic.StartIndex].X, points[cubic.StartIndex].Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, points[cubic.EndIndex].X, points[cubic.EndIndex].Y, ref contourEdges, ref setupWork, cancellationToken) > 0)
                             {
                                 index = cubic.EndIndex - 1;
                                 continue;
@@ -1608,7 +1609,8 @@ internal ref struct SvgAnalyticCoverage
                     // Non-convex rings walk intervals like multi-contour sets, so substituted spans go live;
                     // convex rings keep pre-stepped segments for the convex fast path, which cannot advance live state.
                     bool substituted = false;
-                    if (cubic.EndIndex - index >= 2)
+                    // A one-chord approximation still owns genuine cubic controls and native stepping.
+                    if (cubic.EndIndex - index >= 1)
                     {
                         if (!convex && AppendCubicLiveEdges(kept, points[cubic.StartIndex].X, points[cubic.StartIndex].Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, points[cubic.EndIndex].X, points[cubic.EndIndex].Y, ref cubicContourEdges, ref setupWork, cancellationToken) > 0) substituted = true;
                         else if (AppendCubicSpanEdges(kept, points[cubic.StartIndex].X, points[cubic.StartIndex].Y, cubic.FirstControl.X, cubic.FirstControl.Y, cubic.SecondControl.X, cubic.SecondControl.Y, points[cubic.EndIndex].X, points[cubic.EndIndex].Y, ref cubicContourEdges, ref setupWork, cancellationToken) > 0) substituted = true;

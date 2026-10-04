@@ -25,36 +25,42 @@ Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001.
 
 ## Current renderer checkpoint (2026-10-05)
 
-The scan-window checkpoint keeps all 92 Default inventory
+The one-chord cubic checkpoint keeps all 92 Default inventory
 dispositions: 88 renders and four MalformedInput DTD rejections. Ford is zero
 exact of nine. Against its unchanged pinned captures, transparent/white/black
-changed-pixel counts now read 268/268/230 (250×100), 550/548/476 (500×200) and
-5,194/5,249/4,739 (1000×400). Transparent total alpha errors are 1,945/5,092/56,482,
-max alpha errors 60/54/80 and alpha mismatch counts 268/550/5,194. All nine
+changed-pixel counts now read 222/222/185 (250×100), 433/432/364 (500×200) and
+5,194/5,249/4,739 (1000×400). Transparent total alpha errors are 1,457/3,176/56,482,
+max alpha errors 60/54/80 and alpha mismatch counts 222/433/5,194. All nine
 improve at the preceding paint checkpoint; scan-window separation leaves all nine
-complete PNGs unchanged. None has an opaque-to-hole or hole-to-opaque alpha flip. The following
+complete PNGs unchanged. One-chord cubic admission improves six small/intended
+variants and preserves the three large PNGs. None has an opaque-to-hole or
+hole-to-opaque alpha flip. The following
 complete PNG identities supersede earlier Ford candidate checkpoints, while
 their input and oracle identities remain the original banked evidence.
 
 | Variant | Current candidate PNG SHA-256 |
 | --- | --- |
-| 250x100-transparent | `21d5daa4d40885adf5a29102aee298841663caa3f2327416b55f59477f93fdd8` |
-| 250x100-white | `6873f032a66d145292e020de023064b065c602154a4f9237d3180f3249db0860` |
-| 250x100-black | `ebebe08b19dae55a1093b5b9fb2dceed2e6c919a010fcb5ce140d7dff397b7d6` |
-| 500x200-transparent | `f2f71ed2c3bc08ce685b121266cf5723fd04f16d4e17407bce0f77a9f05ec65e` |
-| 500x200-white | `862aa2b31d60da0dcaea77f77eabfedd7e5c6f1758a0224467673ebcc41f6dba` |
-| 500x200-black | `28f6685a740c48603894d9da8c65f46e78a6fa127a8549a7fa2b8f1aabaa3e08` |
+| 250x100-transparent | `032bd1bbc24de1654a936479ebb84390372493293cb18a7de69aee15ece038b9` |
+| 250x100-white | `6ef92717907fd73e284ab1d91793e43230d3322ec9abbc97794d5d92554dd1f8` |
+| 250x100-black | `83d9b40a5887dbe8e110c79b6a2e92e5e646a515a9eb158557a02ff6206587f8` |
+| 500x200-transparent | `149be2ba67d14f3d8ddeef4eaf59608b5fc2e05658613d017cc6a60d5b133768` |
+| 500x200-white | `7151bd142548e661dd9eb67cf51f7292572fcdd2fae1c9e564874d1094578336` |
+| 500x200-black | `cf0d2443c5a1f51984d15326e33585bbb618ae4301558cc44ac5c3d4ad6c52ac` |
 | 1000x400-transparent | `31d3c392db880e4e161cffbca119c5b8a7e8fdc6ed526c99eed72d91f17eb0ee` |
 | 1000x400-white | `3f5d5d9d1e08f2c42c752e061c42079a6e942a876f34d31279c300531736d790` |
 | 1000x400-black | `81299b5a1593f7c34351140c297f68e9deb6fa79863c15b4b5c1de7a5ebc6cd6` |
 
 This Default sweep is not complete independent-variant validation or a corporate
-coverage rate. Current portable banks contain 572 fixtures (485 exact, 82 known
+coverage rate. Current portable banks contain 584 fixtures (493 exact, 86 known
 renders, five rejects) and 67 research probes (66 known renders, one reject).
-The scan-window comparison changes four Default inventory PNGs without matching
-oracle evidence: `inv-009`, `inv-017`, `inv-032`, `inv-094`. Their fidelity remains
-unmeasured. Eighteen new exact window configurations and five graduated research
-controls are calibration evidence, with no new independent corporate checkpoint.
+Relative to `9e77c0fa`, eleven Default inventory PNGs change: `inv-001`, `inv-002`,
+`inv-004`, `inv-006`, `inv-011`, `inv-026`, `inv-065`, `inv-066`, `inv-081`,
+`inv-082`, `inv-092`. That Default sweep has no matching oracle evidence; Ford's
+nine explicitly sized variants are measured separately above. Fidelity of the
+other ten changed outputs remains unmeasured. All 572 prior fixture PNGs and all
+67 research results remain unchanged. Twelve new cubic configurations bank eight
+exact and four known differences; these and the previous window controls are
+calibration evidence, with no new independent corporate checkpoint.
 Earlier batch counts below remain dated history. PLAN.md owns the current queue;
 the design record lists mixed remaining curve/stroke errors and resource gates.
 
