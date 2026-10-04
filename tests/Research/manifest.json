@@ -2766,6 +2766,41 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       }
+    },
+    {
+      "id": "research-quad-crescent-100x100",
+      "path": "quad-crescent-100x100.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-04",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "sourceSha256": "06b66858f3d9e8abfc7fb1a71f3f25e4fb1464c53e4a76f7afd459ffc49eb101",
+      "featureTags": ["geometry", "quadratic", "coverage", "single-contour", "calibration"],
+      "width": 100,
+      "height": 100,
+      "admittedRendering": {
+        "changedPixelCount": 158,
+        "maximumChannelError": 120,
+        "maximumAlphaError": 9,
+        "alphaChangedPixelCount": 42,
+        "minimumMismatchX": 20,
+        "minimumMismatchY": 20,
+        "maximumMismatchX": 49,
+        "maximumMismatchY": 79
+      },
+      "oracle": {
+        "referencePng": "references/quad-crescent-100x100.png",
+        "referenceSha256": "8914a850bfd435eddadc8cdc743da05672e0af8a25eb34570def67a1428e9179",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical"
+      }
     }
   ]
 }
