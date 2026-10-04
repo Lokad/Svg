@@ -1113,6 +1113,17 @@ internal ref struct SvgAnalyticCoverage
         edge.Y = y;
         edge.X += FixedMul(edge.DX, gap);
     }
+    /// <summary>Selects shift-capped or proportional strip stepping for one Y gap, routing fractional gaps proportionally.</summary>
+    /// <remarks>Bit-identical to the inline bit-test cascade on quarter-quantum gaps (including zero, full-pixel, and negative gaps); only positive non-quantum gaps below a full pixel route differently, and those cannot arise while every event Y stays a quarter multiple.</remarks>
+    internal static void SelectStripStep(int gap, out int shift, out int advance)
+    {
+        shift = 0;
+        advance = 0;
+        if (gap > 0 && gap != Fixed1 && (gap & ((Fixed1 >> 2) - 1)) != 0) { advance = gap; return; }
+        if ((gap & (Fixed1 >> 2)) != 0) { shift = 2; return; }
+        if ((gap & (Fixed1 >> 1)) != 0) { shift = 1; return; }
+        if (gap > 0 && gap != Fixed1) { advance = gap; }
+    }
     private static bool CombineVertical(AnalyticEdge edge, AnalyticEdge last)
     {
         if (last.InitialCurveCount != 0) return false;
@@ -1746,12 +1757,9 @@ internal ref struct SvgAnalyticCoverage
             int previousRite = FixedFloorToInt(_leftClip);
             _nextNextY = int.MaxValue;
             _walkY = y;
-            int shift = 0;
-            // Non-quantum gaps cannot arise from snapped-edge events (every event Y is a quarter multiple, so gaps land on quarter, half or full quanta); they advance proportionally instead of taking the shift-capped path, which keeps stepping exact once edge endpoints desnap.
-            int advance = 0;
-            if (((nextY - y) & (Fixed1 >> 2)) != 0) { shift = 2; nextY = y + (Fixed1 >> 2); }
-            else if (((nextY - y) & (Fixed1 >> 1)) != 0) { shift = 1; }
-            else if (nextY > y && nextY - y != Fixed1) { advance = nextY - y; }
+            // Strip gaps from snapped-edge events land on quarter, half or full quanta and take the shift-capped path; fractional gaps (unreachable while every event Y stays a quarter multiple) advance proportionally instead of taking bit-mangled shifts, which keeps stepping exact once edge endpoints desnap.
+            SelectStripStep(nextY - y, out int shift, out int advance);
+            if (shift == 2) nextY = y + (Fixed1 >> 2);
             int fullAlpha = FixedToAlpha(nextY - y);
             while (current is AnalyticEdge cursor && cursor.UpperY <= y)
             {
