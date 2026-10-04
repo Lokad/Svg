@@ -1106,6 +1106,13 @@ internal ref struct SvgAnalyticCoverage
         edge.Y = y;
         edge.X += edge.DX >> shift;
     }
+    /// <summary>Advances one edge to an arbitrary strip end proportionally.</summary>
+    /// <remarks>Bit-identical to shift-capped stepping on quantum gaps (fixed-point multiply by a quarter, half or full quantum floors exactly like the matching right shift), so this only changes behavior for non-quantum gaps, which snapped-edge events cannot produce today; it exists to keep stepping exact once edge endpoints desnap.</remarks>
+    private static void GoYProportional(AnalyticEdge edge, int y, int gap)
+    {
+        edge.Y = y;
+        edge.X += FixedMul(edge.DX, gap);
+    }
     private static bool CombineVertical(AnalyticEdge edge, AnalyticEdge last)
     {
         if (last.InitialCurveCount != 0) return false;
@@ -1740,8 +1747,11 @@ internal ref struct SvgAnalyticCoverage
             _nextNextY = int.MaxValue;
             _walkY = y;
             int shift = 0;
+            // Non-quantum gaps cannot arise from snapped-edge events (every event Y is a quarter multiple, so gaps land on quarter, half or full quanta); they advance proportionally instead of taking the shift-capped path, which keeps stepping exact once edge endpoints desnap.
+            int advance = 0;
             if (((nextY - y) & (Fixed1 >> 2)) != 0) { shift = 2; nextY = y + (Fixed1 >> 2); }
             else if (((nextY - y) & (Fixed1 >> 1)) != 0) { shift = 1; }
+            else if (nextY > y && nextY - y != Fixed1) { advance = nextY - y; }
             int fullAlpha = FixedToAlpha(nextY - y);
             while (current is AnalyticEdge cursor && cursor.UpperY <= y)
             {
@@ -1751,7 +1761,8 @@ internal ref struct SvgAnalyticCoverage
                 if (!inside && wasInside)
                 {
                     int rite = cursor.X;
-                    GoYShift(cursor, nextY, shift);
+                    if (advance != 0) GoYProportional(cursor, nextY, advance);
+                    else GoYShift(cursor, nextY, shift);
                     int nextLeft = Math.Max(_leftClip, leftEdge.X);
                     rite = Math.Min(_rightClip, rite);
                     int nextRite = Math.Min(_rightClip, cursor.X);
@@ -1766,7 +1777,8 @@ internal ref struct SvgAnalyticCoverage
                 else
                 {
                     if (inside && !wasInside) { left = Math.Max(cursor.X, _leftClip); leftDY = cursor.DY; leftEdge = cursor; }
-                    GoYShift(cursor, nextY, shift);
+                    if (advance != 0) GoYProportional(cursor, nextY, advance);
+                    else GoYShift(cursor, nextY, shift);
                 }
                 AnalyticEdge? next = cursor.Next;
                 if (cursor.LowerY <= nextY)
