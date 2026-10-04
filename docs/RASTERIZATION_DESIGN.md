@@ -2515,3 +2515,9 @@ Question: whether any live span hurts fidelity individually, which would be a bo
 Method: extended the retained trajectory diagnostic with per-span hybrid walks on the committed twin (solid opaque single fill): full-flat baseline error mass versus one-live-span hybrids, all against oracle alpha rows; committed assets only, no captures, no temp probes.
 Facts: all 8 hybrids eligible with deltas -117, -112, -47, -69, -101, -114, -54 and -61 summing to -675 against the full-live delta of -708; top-half spans help roughly twice as much as bottom-half spans on symmetric geometry, tracking oracle error concentration rather than walker asymmetry. No span hurts, so no class-gated decline can close the residual; per-span Ford attribution skipped as predictable.
 Decision: diagnostic extended and green; span-class fix family closed, fractional epic stands. Next per the single PLAN next-action.
+
+## Ford asset facts close paint and structure questions (2026-10-04 record)
+Question: what Ford inv-002 actually contains, to stop re-asking paint and structure questions.
+Method: direct read of the committed candidate SVG (no render, no probe).
+Facts: two cubic paths with two moveto subpaths each and implicit closes; effective paint on both is opaque solid #003478 (stylesheet white class overridden by inline fill with fill-opacity 1 on both paths and the group); zero stroke or dash attributes; no gradients; uniform group transform; default nonzero rule. Both fills therefore walk the multi-contour winding path with trivially exact opaque compositing, so the residual is coverage-only by asset construction, corroborating the exonerations.
+Decision: no product change; asset facts banked. Next per the single PLAN next-action.
