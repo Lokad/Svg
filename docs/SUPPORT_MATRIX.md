@@ -5,8 +5,9 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-All four hundred thirty-one current manifest entries are gated (three hundred fifty exact decoded-pixel references; eighty-one classified-unsupported entries with reasons); this
-is not a general pixel-fidelity claim.
+All 432 current manifest entries are gated: 353 exact decoded-pixel references,
+74 known-difference renders and five categorized rejections. These are fixture
+entries, including variants, and do not establish corporate-document coverage.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
@@ -26,8 +27,8 @@ Stroke widths flow through the same cascade: presentation attributes, inline sty
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms aggregate into at-most-64 KiB `IDAT` chunks under a budgeted 64 KiB cap with byte-identical output across all four forms, while memory forms accumulate budgeted segments without geometric copies; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and three hundred forty-seven stable references |
-| Fixture corpus | Four hundred thirty-one original CC0 probes with verified hashes; the manifest gate renders and compares all three hundred fifty exact entries exactly and locks all eighty-one unsupported entries to their observed render-or-reject behavior with categorized rejection codes (seventy-six renders, five rejections), and the seventy-six renderable entries carry retained pinned-Chrome references with ratcheted decoded-RGBA mismatch measures |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 353 exact fixture entries; entry count is not a count of fresh capture triples |
+| Fixture corpus | 432 original CC0 fixture entries with verified hashes across 281 base documents and 151 variants; the manifest gate compares all 353 exact entries exactly and locks all 79 classified-unsupported entries to their observed behavior (74 known-difference renders with retained pinned-Chrome references and ratcheted decoded-RGBA measures, five categorized rejections) |
 
 ### Experimental supplied-font text
 

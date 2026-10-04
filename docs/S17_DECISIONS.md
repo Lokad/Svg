@@ -1,25 +1,68 @@
-# S17 release decisions (user-owned)
+# S17 release criteria and decisions
 
-Drafted 2026-10-04 at master 11fdc143. Implementation work in rows 1-7 is complete within the documented architectural limits (convex fast path cannot advance live state; curved-stroke separation falsified; skew and general-matrix admissions paused). The three decisions below block any most-documents coverage claim. They block no implementation slice meanwhile.
+Updated 2026-10-04 against renderer revision `f633c86b`.
+[PLAN.md](../PLAN.md) is the current execution queue. Rows 3–7 still have
+implementation and fidelity exits; the earlier claim that rows 1–7 were complete
+within architectural limits is withdrawn. The first exact curved corporate mark
+and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 
-Verified floors on this tree: fixture census 432 entries = 353 exact + 79 unsupported across 281 distinct documents (tools/census-report.ps1); research corpus 73 probes; gates 2862 core + 103 visual + 6 font green; inventory sweep 88 render + 4 rejects with zero disposition flips.
+Verified review evidence: 432 fixture entries = 353 exact + 74 known-difference
+renders + five rejections across 281 base documents and 151 variants; 73 research
+probes = 72 known-difference renders + one rejection. Fresh Windows gates pass:
+2,862 core + 105 visual + six FontProbe tests, 25 memory scenarios, package
+inspection and isolated installed-consumer checks. The fresh Default-options
+inventory sweep reports 88 renders + four MalformedInput rejections out of 92.
+These counts establish neither corporate coverage nor Linux delivery.
 
-## Q1 - numeric document target (what most means)
+Two release-policy choices remain open. They block a “most corporate logos”
+claim, not implementation work or the first product checkpoint.
 
-Pick the fraction, the set, and the measurement: all-variant exact over the frozen inventory, exact-entry fraction of the fixture corpus, or tiered targets per stratum (wordmarks, marks, flags). Caution from PLAN section 1: test counts are not image counts, and only completed all-variant evidence (small/intended/large x transparent/white/black, e.g. the inv-029, inv-034, inv-053 class) counts toward a rate; dated 27-of-92-style tallies must not be reused as the rate.
+## Q1 - numeric exact-document target
 
-## Q2 - frozen corporate cohort
+The measurement is fixed: the fraction of documents in the frozen representative
+corporate cohort for which **every declared variant is measured and pixel-exact**
+against its pinned oracle. The numeric target has not yet been selected.
 
-Freeze the 92 files under tests/Fixtures/candidates/ with the R26 selection rules in docs/INVENTORY.md as the corporate cohort, or name the strata to add first. Freezing also fixes the variant recipe and the oracle refresh policy for new captures.
+Rejects, known differences, oracle failures and unmeasured variants remain in
+the frozen denominator and cannot enter the exact numerator. An exact fixture
+entry percentage or a historical single-variant inventory tally cannot replace
+this document measure. Report separate mark/outlined-wordmark strata so one
+does not conceal the other; flags and calibration probes have their own counts.
 
-## Q3 - quirk budget for parked oracle-side families
+## Q2 - representative corporate cohort and variant freeze
 
-Per family: accept the pixels as documented behavior, fund backend-spec work to match Chrome exactly, or adjust the Q1 target around them.
+Use independently selected corporate marks and outlined wordmarks from the
+retained inventory to define the cohort and hold-outs before tuning further
+inputs. The whole 92-file inventory is not the corporate cohort: 57 headings
+identify flags or flag badges/icons, and other entries are symbols/diagrams.
+Keep those useful controls separate. Do not select documents based on a passing
+candidate or remove hard documents after a failure.
 
-- Slanted-band over-coverage (about +23 uniform; our walker reads exact area): DESIGN band-interval and slanted-row entries.
-- Transversal and arc-fringe over-coverage: DESIGN round-join, miter and arc-fringe entries.
-- Twin cap-tip slivers (exact 9.8; ours 4-6; oracle 0): DESIGN twin cap-tip three-way entry.
-- Ford flank straddles (7 over-40 pixels; mean error about 15 ours versus about 28 oracle; zero interior): DESIGN Ford census and over-40 entries.
-- Tessellation phase on radial discs, snap-phase straddle, grouped-gradient compositing, composite dither phase: respective DESIGN entries.
+The freeze records document IDs, source/input hashes, strata, logical viewports,
+output scales, resulting dimensions, backgrounds and oracle refresh policy.
+Every declared small/intended/large × transparent/white/black combination needs
+an explicit recipe. Missing captures and transport-limit failures remain gaps.
+This release freeze is not a prerequisite to the bounded Ford renderer slice.
 
-Reply with the Q1 definition, the Q2 freeze, and per-family Q3 dispositions when ready; renderer work continues meanwhile and only the most-documents coverage claim waits for these answers.
+## Oracle compatibility remains implementation work
+
+There is no quirk budget, pixel tolerance or decision to relabel mismatches exact.
+Slanted-band/arc coverage, asymmetry, cap-tip slivers, tessellation/snap phase,
+full-coverage translucent span dispatch and paint/dither/group-composition
+residuals remain categorized implementation requirements for affected documents.
+Closer agreement with ideal geometry does not establish pinned-browser equality.
+A target below 100 percent can leave documents failing in the denominator; it
+cannot waive their pixel errors or alter their references.
+
+Ford remains zero exact of nine recorded variants. The latest asset record
+identifies opaque solid cubic fills without stroke, dash or gradients, making it
+the focused coverage target; this does not close composition on other inputs.
+The selected next experiment separates curve evolution from walked edge state,
+proves quarter-grid parity, then tests fractional events within the existing
+live-cubic eligibility. See PLAN's active work order and
+[the design record](RASTERIZATION_DESIGN.md) for the retained falsifications.
+
+S17 additionally requires reproducible per-variant identities/diffs, categorized
+residuals, representative latency/allocations and fresh Windows/Linux delivery
+and platform-appropriate oracle evidence. Meeting a numeric rate alone does not
+close those gates.

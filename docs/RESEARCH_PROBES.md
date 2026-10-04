@@ -17,7 +17,9 @@ This records the house method for calibration probes in `tests/Research/`, disti
 ## Manifest entries
 
 - Entries always record `candidateError`; entries that render with residuals additionally pin `admittedRendering` numbers, as circle-6x6 does.
-- Exact renders leave no probe: delete the SVG rather than recording a vacuous entry.
+- Graduate useful exact renders into the exact fixture corpus with the SVG,
+  reference and complete oracle provenance retained. Remove only their research
+  entry after the fixture gate covers them; do not delete the positive control.
 - Compute every hash programmatically from the staged files; never retype hashes. Run the JSON validity check plus the full hash audit before testing.
 - `ResearchProbeTests` re-renders every admitted entry and asserts the recorded numbers exactly, so ratchets fail loudly on drift in either direction.
 
@@ -25,4 +27,3 @@ This records the house method for calibration probes in `tests/Research/`, disti
 
 - Each probe batch gets one design-record entry in `docs/RASTERIZATION_DESIGN.md` in Question, Method, Facts, Decision form with measured numbers, including negative results and withdrawn hypotheses.
 - Inventory batches in `docs/INVENTORY.md` are reserved for inventory dispositions; research-only turns do not append there.
-
