@@ -2,7 +2,7 @@
 
 Drafted 2026-10-04 at master 11fdc143. Implementation work in rows 1-7 is complete within the documented architectural limits (convex fast path cannot advance live state; curved-stroke separation falsified; skew and general-matrix admissions paused). The three decisions below block any most-documents coverage claim. They block no implementation slice meanwhile.
 
-Verified floors on this tree: fixture census 431 entries = 350 exact + 81 unsupported across 280 distinct documents (tools/census-report.ps1); research corpus 72 probes; gates 2849 core + 100 visual + 6 font green; inventory sweep 88 render + 4 rejects with zero disposition flips.
+Verified floors on this tree: fixture census 432 entries = 353 exact + 79 unsupported across 281 distinct documents (tools/census-report.ps1); research corpus 73 probes; gates 2862 core + 103 visual + 6 font green; inventory sweep 88 render + 4 rejects with zero disposition flips.
 
 ## Q1 - numeric document target (what most means)
 
