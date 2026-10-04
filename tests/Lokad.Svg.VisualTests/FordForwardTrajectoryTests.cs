@@ -213,6 +213,68 @@ public sealed class FordForwardTrajectoryTests
         return (firstRow, differingBytes, liveMass, flatMass, liveEligible, flatEligible);
     }
 
+    [Fact]
+    public void Twin_spans_report_individual_live_fidelity()
+    {
+        string research = Path.Combine(AppContext.BaseDirectory, "Research");
+        byte[] svg = File.ReadAllBytes(Path.Combine(research, "cubic-twin-100x100.svg"));
+        byte[] oracleBytes = File.ReadAllBytes(Path.Combine(research, "references", "cubic-twin-100x100.png"));
+        RgbaImage reference = PngRgbaDecoder.Decode(oracleBytes, 100 * 100);
+        SvgRenderOptions options = SvgRenderOptions.Default;
+        RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+        (double horizontalScale, double verticalScale) = SvgConverter.TryResolveOutputScales(svg, options, budget, CancellationToken.None);
+        SvgRoot root = SvgRootParser.Parse(svg, options.Limits, budget, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, horizontalScale, verticalScale, options.Viewport);
+        int fills = 0;
+        foreach (SvgGeometry geometry in root.Geometries)
+        {
+            if (geometry.Kind != SvgGeometryKind.PolygonFill) continue;
+            fills++;
+            var polygon = geometry.Polygon;
+            Assert.Equal(8, polygon.CubicSpans.Length);
+            (byte[] baseline, bool baseEligible) = WalkCoverageRows(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.Mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 100, 100);
+            Assert.True(baseEligible);
+            long baseErr = 0;
+            for (int i = 0; i < baseline.Length; i++)
+            {
+                int oracleA = reference.Pixels[(i / 100 * 100 + (i % 100)) * 4 + 3];
+                baseErr += baseline[i] > oracleA ? baseline[i] - oracleA : oracleA - baseline[i];
+            }
+            Assert.Equal(822, baseErr);
+            List<long> deltas = new();
+            foreach (SvgCubicSpan span in polygon.CubicSpans)
+            {
+                (byte[] hybrid, bool hybridEligible) = WalkCoverageRows(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.Mapping, Array.Empty<SvgQuadSpan>(), new SvgCubicSpan[] { span }, 100, 100);
+                Assert.True(hybridEligible);
+                long hybridErr = 0;
+                for (int i = 0; i < hybrid.Length; i++)
+                {
+                    int oracleA = reference.Pixels[(i / 100 * 100 + (i % 100)) * 4 + 3];
+                    hybridErr += hybrid[i] > oracleA ? hybrid[i] - oracleA : oracleA - hybrid[i];
+                }
+                deltas.Add(hybridErr - baseErr);
+            }
+            Assert.Equal(new long[] { -117, -112, -47, -69, -101, -114, -54, -61 }, deltas);
+        }
+        Assert.Equal(1, fills);
+    }
+
+    private static (byte[] Rows, bool Eligible) WalkCoverageRows(SvgDevicePoint[] points, int[] ends, int[]? signs, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int width, int height)
+    {
+        RenderBudget walkBudget = new(10_000_000);
+        ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
+        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, ends, votes, isEvenOdd, signs, mapping, quadSpans, cubicSpans, 0, width, 0, height, width, height, walkBudget, out long _, out bool eligible, CancellationToken.None);
+        List<byte> rows = new(width * height);
+        if (eligible)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                walker.PrepareRow(y, out long _, CancellationToken.None);
+                rows.AddRange(walker.Row.ToArray());
+            }
+        }
+        return (rows.ToArray(), eligible);
+    }
+
     private static (long Opaque, long Fringe, long Clear) CensusAlpha(RgbaImage image)
     {
         long opaque = 0;
