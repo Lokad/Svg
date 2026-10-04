@@ -15,14 +15,18 @@ inspection and isolated installed-consumer checks. The fresh Default-options
 inventory sweep reports 88 renders + four MalformedInput rejections out of 92.
 These counts establish neither corporate coverage nor Linux delivery.
 
-Two release-policy choices remain open. They block a “most corporate logos”
-claim, not implementation work or the first product checkpoint.
+The numeric release target is selected below. The representative cohort and
+variant freeze remain open; their missing measurements block a “most corporate
+logos” claim, not implementation work or the first product checkpoint.
 
-## Q1 - numeric exact-document target
+## Q1 - numeric exact-document target: selected
 
 The measurement is fixed: the fraction of documents in the frozen representative
 corporate cohort for which **every declared variant is measured and pixel-exact**
-against its pinned oracle. The numeric target has not yet been selected.
+against its pinned oracle. The target is **at least 80% exact documents**, both
+overall and within each corporate-mark/outlined-wordmark stratum. Round each
+required document count upward. This is a release criterion, not a measured
+success rate; the current evidence does not meet it.
 
 Rejects, known differences, oracle failures and unmeasured variants remain in
 the frozen denominator and cannot enter the exact numerator. An exact fixture
@@ -49,7 +53,7 @@ This release freeze is not a prerequisite to the bounded Ford renderer slice.
 
 There is no quirk budget, pixel tolerance or decision to relabel mismatches exact.
 Slanted-band/arc coverage, asymmetry, cap-tip slivers, tessellation/snap phase,
-full-coverage translucent span dispatch and paint/dither/group-composition
+full-canvas solid paint routing and paint/dither/group-composition
 residuals remain categorized implementation requirements for affected documents.
 Closer agreement with ideal geometry does not establish pinned-browser equality.
 A target below 100 percent can leave documents failing in the denominator; it
@@ -62,7 +66,11 @@ Curve/walk state separation now preserves quarter-grid output byte-for-byte
 across the fixture/research/inventory corpus and all nine Ford variants. The
 two measured endpoint variants worsen all nine Ford configurations and are
 reverted. The next bounded slice targets the independently reconfirmed
-full-coverage translucent overlap defect; Ford's opaque coverage remains open.
+full-canvas rectangle overlap defect. Fresh inset-rectangle and equivalent-path
+controls give alpha 192 in both Chrome and the candidate, while full-canvas
+rectangles give Chrome alpha 191 versus candidate 192. A general full-span alpha
+adjustment is therefore rejected. The matched Chromium solid-color analysis
+route is the next hypothesis to verify; Ford's opaque coverage remains open.
 See PLAN's active work order and
 [the design record](RASTERIZATION_DESIGN.md) for the retained falsifications.
 

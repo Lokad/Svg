@@ -2,7 +2,8 @@
 
 Updated 2026-10-04. The reviewed renderer baseline is
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32`; the implemented state-separation
-checkpoint is `70c18287` and records its validation separately.
+checkpoint is `70c18287` and records its validation separately. `f68cb887`
+records the rejected endpoint experiments; it does not change renderer output.
 The September 28 baseline and review remain historical evidence in
 [the review](docs/REVIEW_2026_09_28.md) and Git. R01–R41 and S1–S17 retain
 their identities. This revision replaces the accumulated checkpoint log with
@@ -13,8 +14,11 @@ the current execution queue; detailed experiments stay in
 
 **Objective:** render most ordinary, static, self-contained corporate SVG logos,
 including outlined wordmarks, pixel-exact against the pinned browser oracle.
-“Most” means independently measured document coverage. It never permits pixel
-tolerance. Preserve the pure-managed, dependency-free library contract.
+The S17 target is **at least 80% exact documents**, both overall and within each
+corporate-mark/outlined-wordmark stratum of a frozen representative cohort.
+Every declared variant of a counted document must be pixel-exact; the document
+target never permits pixel tolerance. Preserve the pure-managed,
+dependency-free library contract.
 
 The first product checkpoint remains an independently selected flat curved
 corporate mark and an outlined wordmark with counters, each exact at every
@@ -34,18 +38,25 @@ not a prerequisite to improving the shared renderer.
 | Fresh independent-file Default-options sweep | **92 files = 88 render + four MalformedInput rejections** (`inv-007`, `inv-012`, `inv-014`, `inv-020`). Renderability does not establish fidelity or all-variant completion. |
 | Latest recorded Ford all-variant evidence | Small 250×100, intended 500×200 and large 1000×400 × transparent/white/black: **zero exact of nine**. Intended-transparent: 1,200 changed pixels, max channel error 128, max alpha error 54, 1,128 alpha mismatches. These are the recorded current-renderer measurements, not new browser captures in this review. |
 | Representativeness | 57 of the 92 inventory headings identify flags or flag badges/icons. Corporate marks and outlined wordmarks need a separate frozen cohort; the whole inventory is not a representative corporate denominator. |
-| Not fresh evidence | Linux/remote CI, new browser captures, full independent inventory variant regeneration, BenchmarkDotNet throughput, private-font metrics and pixels. Do not imply those were rerun. |
+| Not refreshed by the baseline/checkpoint gates | Linux/remote CI, a full browser-reference refresh, full independent inventory variant regeneration, BenchmarkDotNet throughput, private-font metrics and pixels. The bounded overlap captures below are separate evidence. |
 
 Fresh review artifacts are under the ignored `artifacts/review-2026-10-04/`
 tree: the memory summary, installed consumer and per-file inventory reports.
 The commands and committed manifests are the portable reproduction sources;
 local artifacts are not required build inputs.
+The subsequent plan reconciliation reran all 2,976 tests with
+`dotnet test Lokad.Svg.slnx -c Release --no-build --no-restore` and re-rendered
+the eight retained paint-routing controls. Restore/build, memory and package
+results above remain the baseline/checkpoint evidence; those gates were not
+repeated for this documentation-only change.
 
 Chrome remains **153.0.8010.52 win64, recipe 3**, with the recorded executable
 hash and Chromium revision field 1681091. Historical recipe-1/recipe-2
 references retain their identities. The matched release-tag Skia pin remains
 **f8b66b7597c4cc859d3ed190e9c6872241e6721c**; the main-revision comparison
-`8b8c3872` does not supersede it (R40). This review reused committed references.
+`8b8c3872` does not supersede it (R40). Baseline/checkpoint comparisons reused
+committed references. The fresh recipe-3 overlap controls in section 3 do not
+constitute a full oracle refresh.
 
 The tests deliberately retain known wrong pixels as well as successes. PNG
 output, admitted syntax, same-renderer twins and matching mismatch tuples are
@@ -62,20 +73,22 @@ affect a counted document, even when our geometry is closer to ideal area.
 2. **Check actual state before edits.** Inspect HEAD, status and live
    coordination. Previous committed work is not a lock. Preserve concurrent
    changes and use an isolated worktree when an experiment overlaps them.
-3. **Work at the shared curve/scanner boundary, rows 4–5.** Straight-edge scan
-   conversion, analytic coverage, retained controls, live non-convex cubics and
-   premultiplied composition have landed. Their existence does not close
-   coverage, curve, stroke or composition fidelity. The next bounded experiment
-   is curve/walk state separation at fractional events, specified below.
+3. **Resolve the full-canvas paint route, row 3, then return to rows 4–5.**
+   Curve/walk state separation has landed with unchanged output. The current
+   overlap discriminator separates full-canvas rectangles from inset rectangles
+   and equivalent paths; it does not justify changing every full-coverage span.
+   Trace and preserve that distinction through shared paint/scene state before
+   implementing the repair specified below. General curve fidelity remains open.
 4. **Preserve the landed repairs and exact controls.** Do not repeat the old
    six-site floor256 replacement, globally disable live cubics, enable RLE
    alpha snapping before threshold accuracy, or desnap endpoints alone.
    Each has retained counterexamples. Further syntax admissions wait unless
    the active target demonstrates a dependency; regression repairs may interrupt.
-5. **Keep release policy separate from implementation.** S17 needs a numeric
-   exact-document target and a representative frozen corporate cohort. These
-   choices block a coverage claim, not renderer work. There is no pixel-tolerance
-   or oracle-quirk budget. The aligned policy record is
+5. **Keep release policy separate from implementation.** S17's exact-document
+   target is 80%, overall and in each corporate stratum. The representative
+   cohort and its explicit variants still need to be frozen and measured; that
+   evidence blocks a coverage claim, not renderer work. There is no
+   pixel-tolerance or oracle-quirk budget. The aligned policy record is
    [S17_DECISIONS.md](docs/S17_DECISIONS.md).
 
 Make small, buildable commits with relevant regression evidence, support
@@ -95,14 +108,14 @@ completed stage: the remaining exit evidence below governs completion.
 | --- | --- | --- |
 | 1 | **Complete: bounded semantic repairs.** S12 miter threshold and R41 zero-area objectBoundingBox gradient path strokes are repaired. | Preserve acute-limit branches, degenerate path/use and userSpace controls; no reopened defect. |
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
-| 3 | **Calibration mechanisms landed; fidelity remains open.** Opaque coverage correction and premultiplied source-over are retained. | Separate coverage, paint alpha, full/partial-coverage span dispatch and final unpremultiplication. Resolve remaining translucent/composition cases with held-out alpha/background controls; no tolerance. |
-| 4 | **Active with row 5: shared scan conversion fidelity.** Spatial membership, analytic rows, contact handling and straight-source sibling-stroke union repairs have landed. | Correct fractional events/coverage through the shared walker, held-out slopes/phases, crossings, counters and overlapping paints/outlines, with bounded work and cleanup. |
-| 5 | **Active with row 4: retained curves and final device mapping.** Double maps, retained quadratic/cubic controls and live non-convex cubic stepping have landed. | Consistent curve versus walked state at fractional events; existing transform/instance equivalence; curved-mark and Ford all-variant progress. Quad live stepping, convex paths and curve-sourced strokes retain their documented fallback/gates until separately proved. |
+| 3 | **Active: full-canvas paint routing; general composition fidelity remains open.** Opaque coverage correction and premultiplied source-over are retained. | Establish the full-canvas rectangle versus inset/path contract, retaining original opacity precision where required. Resolve it with independent alpha/paint/background controls while preserving ordinary full/partial coverage and final unpremultiplication; no tolerance. |
+| 4 | **Open; resumes after row 3: shared scan conversion fidelity.** Spatial membership, analytic rows, contact handling and straight-source sibling-stroke union repairs have landed. | Correct fractional events/coverage through the shared walker, held-out slopes/phases, crossings, counters and overlapping paints/outlines, with bounded work and cleanup. |
+| 5 | **Open with row 4: retained curves and final device mapping.** Double maps, retained controls, live non-convex cubic stepping and curve/walk state separation have landed with quarter-grid parity. | Fractional-event fidelity, existing transform/instance equivalence, curved-mark and Ford all-variant progress. Quad live stepping, convex paths and curve-sourced strokes retain their documented fallback/gates until separately proved. |
 | 6 | **Partial: curve-aware stroke completion.** Width/cascade, cap/join/dash, zero-width and straight-source union repairs are retained. | True curve tangents/dash cuts, curved/dashed overlap and seam handling, remaining round/miter/hairline/pathLength/non-scaling cases through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
-| 8 | **Not achieved: independent milestone and delivery, S8/S17.** The 92-file inventory and all-variant records are useful evidence, not a release rate. | First exact curved corporate mark and outlined wordmark; then frozen representative cohort, numeric exact-document target, complete declared variants and fresh platform/package/resource/performance evidence. |
+| 8 | **Not achieved: independent milestone and delivery, S8/S17.** The 92-file inventory and all-variant records are useful evidence, not a release rate. | First exact curved corporate mark and outlined wordmark; then a frozen representative cohort meeting the 80% exact-document target overall and per corporate stratum, complete declared variants and fresh platform/package/resource/performance evidence. |
 
-### Active work order: retain curve parity; isolate span dispatch (2026-10-04)
+### Active work order: retain curve parity; resolve full-canvas paint routing (2026-10-04)
 
 **Current mechanism.** Eligible non-convex cubic fills walk live. Their
 forward-difference positions now evolve without walk-position resets; a separate
@@ -151,7 +164,7 @@ Enabling all intersection checks still leaves all nine Ford variants and four
 cubic/quadratic controls byte-identical. It cannot explain their standing errors;
 no cardinality plumbing or heuristic change lands on this evidence.
 
-**Next bounded implementation slice: full-coverage translucent span dispatch.**
+**Next bounded implementation slice: full-canvas solid paint routing.**
 The committed integer-alpha-overlap reference is independently reconfirmed by
 three fresh recipe-3 pinned-browser captures: all reproduce the historical PNG
 SHA-256 `11a315de7a2661f30c267fa5680ed1c00531633486057738f15b73333b6a0db9`.
@@ -159,21 +172,43 @@ Chrome reads `(85,0,170,191)` while the current candidate reads
 `(85,0,170,192)` on all four pixels. This is a current, small compositing defect,
 not a proposed explanation for Ford's opaque coverage residual.
 
+The follow-up route controls narrow that attribution. On transparent canvases of
+1x1, 2x2, 4x4 and 32x32, two full-canvas red/blue rectangles at fill-opacity 0.5
+give Chrome alpha 191 and candidate alpha 192. The same overlap inset into a 4x4
+canvas, at its corner without covering the canvas, or expressed as full-canvas
+paths at 2x2 and 4x4 gives alpha 192 in both. All eight configurations have three
+byte-identical fresh-process captures with healthy startup/cleanup reports.
+Ordinary full-coverage pixels in the opacity grids also agree at 192.
+Thus a general full-span adjustment would break independently verified controls.
+
+The matched Chromium solid-color analyzer blends eligible full-canvas rectangle
+paints in floating point and rejects DrawPath. That is a source-supported routing
+hypothesis, not proof of which browser operation executed. Verify its complete
+paint/opacity and capture contract before changing the renderer. The controls,
+hashes, source pin and reproduction recipe are in
+[the design record](docs/RASTERIZATION_DESIGN.md#full-canvas-rectangle-route-discriminator-2026-10-04).
+
 1. **Keep the validated curve state.** Preserve the quarter-grid compatibility
    control, replay restoration, charged work, storage bounds and existing gates.
    State separation is complete; do not repeat the two endpoint variants or use
    them to justify a wholesale reset. A new curve architecture needs a specific
    failing invariant and an independent oracle discriminator first.
-2. **Establish the dispatch contract.** Trace the matched span/blitter arithmetic
-   and the original opacity precision into full-coverage and partial-coverage
-   routes. Declare opacity/paint/background holdouts before changing the code;
-   measure opaque destinations as well as transparent overlaps. A single-byte
-   patch fitted to 0.5 opacity does not establish the contract.
-3. **Implement one shared span repair.** Keep geometry, coverage and references
-   fixed. Preserve the existing exact partial-coverage straddles and opaque paths.
-   Graduate the integer overlap only when its existing reference is exact and
-   independent full/partial controls support the routing. Account for any new
-   state before allocation and keep six-output parity and cancellation/cleanup.
+2. **Establish the scene/paint routing contract.** Compare full-canvas rectangles
+   with inset rectangles and equivalent paths. Retain the original fill-opacity
+   separately from byte alpha when the verified route needs it; do not infer
+   0.5 from byte 128, or equate opacity with an explicitly encoded alpha byte.
+   Calibrate with 0.1/0.25/0.5/0.75; reserve 0.375/0.625/0.9 and mixed-color
+   overlaps as holdouts. Capture the full-canvas controls on transparent, white
+   and black backgrounds before code changes. Trace paint quantization, clipping,
+   transforms, operation limits and layer eligibility at the matched source pin.
+   Changing canvas bounds must select the verified route without pixel fitting.
+3. **Implement one shared routing repair after that discriminator passes.**
+   Preserve the rectangle/path distinction through scene lowering, geometry,
+   coverage and references. Keep ordinary full-coverage and partial-coverage
+   controls exact. Graduate the integer overlap only when its existing reference
+   and independent controls are exact. Account for new state before allocation
+   and keep six-output parity and cancellation/cleanup. A bitmap-uniformity check
+   or alpha decrement fitted to this overlap is not the architecture.
 4. **Return to measured curved-logo coverage.** The wordmark exit remains all nine
    Ford variants exact. The width-gated RLE snap experiment stays rejected on
    its straddle regressions; do not revive it as a substitute for placement.
@@ -189,9 +224,11 @@ or closer ideal area alone is insufficient. Require zero existing exact
 regressions and no new opaque-interior/hole flips. Reaching fewer than 1,200
 Ford mismatches is progress, not the wordmark exit: that remains zero on all nine.
 
-A broad coverage change must execute the complete frozen variant set under
-section 5, not only the 92 Default-options renders. Missing captures, transport
-limits and unmeasured variants remain explicit gaps and cannot shrink a denominator.
+A broad coverage change requires comparison across every declared variant under
+section 5, not only the 92 Default-options renders. The bank is incomplete:
+execute the available variants and list missing captures, transport limits and
+unmeasured variants explicitly. Those gaps prevent a complete-variant validation
+claim and cannot shrink a denominator; they do not block a bounded renderer slice.
 Use the existing harness for full fixture/research comparisons, six-output parity,
 during-phase cancellation, tight memory/work denial and cleanup.
 
@@ -201,7 +238,7 @@ native-size `inv-050` under Default limits. Ledger reductions are not throughput
 evidence. After two architecture experiments without improvement, record the
 failed invariant/mechanism and the next concrete implementation experiment.
 
-Once the span slice holds, complete remaining row-4/row-5 fidelity evidence,
+Once the paint-routing slice holds, complete remaining row-4/row-5 fidelity evidence,
 then curve-aware strokes and measured paint/clip/mask/layer blockers (rows 6–7).
 Keep historical falsifications in the design record and return here after
 demonstrated dependencies or regression repairs.
@@ -218,8 +255,8 @@ demonstrated dependencies or regression repairs.
 | R30 | Shared contour preparation, ownership and coverage traversal have landed across the four paints. Preserve that boundary while changing curve state; remaining repeated binding/typed-state work follows demonstrated dependencies, not a repository rewrite. |
 | R31 | CI artifact-validator hooks, Windows sandbox setup/health, wrapper deadline/drain and atomic publication are repaired. One opt-in corpus capture/compare/report workflow and representative performance evidence remain; reuse existing tools. |
 | R33 | Original scaled clip-coordinate fault repaired; fractional mapped coverage and a retained exact independent control exist. Wider phases/scales/paints and clip combinations remain validation/extension work. |
-| R34 | Shared scan conversion, analytic coverage, contact/union repairs and straight-source sibling-stroke separation have landed. Fractional-event fidelity is active; complex parity/contact cases and curved/dashed stroke unions retain their gates or known differences. Preserve the exact twin-ring repair; rows 4/6. |
-| R35 | Retained quadratic/cubic controls, device-map threading and live non-convex cubic fills have landed. Consistent curve/walk state at fractional events is active; quad/convex/stroke migration and wider scalable-instance evidence remain bounded follow-ups; row 5. |
+| R34 | Shared scan conversion, analytic coverage, contact/union repairs and straight-source sibling-stroke separation have landed. Fractional-event fidelity resumes after row 3; complex parity/contact cases and curved/dashed stroke unions retain their gates or known differences. Preserve the exact twin-ring repair; rows 4/6. |
+| R35 | Retained controls, device-map threading, live non-convex cubic fills and curve/walk state separation have landed with quarter-grid parity. Fractional-event fidelity remains open; quad/convex/stroke migration and wider scalable-instance evidence remain bounded follow-ups; row 5. |
 | R36 | Cascaded cap/join/dash/width values are carried and many spelling twins pass. Finish shared typed state and practical inheritance without reopening repaired attribute/inline cases. |
 | R37 | Fractional/scientific curves, root sizing, relative-moveto repairs, similarity maps and arc-free path-fill skew admission have landed. Preserve the support matrix's remaining arc/stroke/instance and general-transform gates; new admissions require the active target's dependency evidence. |
 | R38 | Maximum scratch allocations substantially reduced; continue actual-size storage, ownership transfer and measured many-curve/wordmark allocation work. |
@@ -253,14 +290,14 @@ demonstrated dependencies or regression repairs.
 | S7 | Generic local/stdin/HTTP supplied-font host exists; actual-pack and same-font metrics/pixels remain separate work under section 6. |
 | S8 | 92 selected independent exports exist. Freeze and measure variants/cohorts; retain corporate marks separately from flags/symbols and calibration probes. |
 | S9 | Styles/references/viewports and measured inventory admissions are implemented in explicit subsets. Remaining combinations follow independent corporate-cohort evidence and shared semantics. |
-| S10 | Full path-command/affine kernels, retained controls and live non-convex cubics exist. Fractional curve/walk consistency, remaining transform/instance gates and fallback migrations need per-input evidence. |
+| S10 | Full path-command/affine kernels, retained controls, live non-convex cubics and curve/walk state separation with quarter-grid parity exist. Fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
 | S12 | Caps/joins/dashes/stroke outlines and the bounded row-1 repairs exist. Remaining curved/dashed union, tangent and antialiasing errors belong to row 6 using common coverage. |
-| S13 | Gradient/pattern paint maps and premultiplied composition exist; R41 is closed. Full/partial-span alpha, dither, group composition and remaining paint combinations need exact controls. |
+| S13 | Gradient/pattern paint maps and premultiplied composition exist; R41 is closed. Full-canvas paint routing is active in row 3; remaining coverage/paint alpha, dither, group composition and paint combinations need exact controls. |
 | S14 | Rectangle clips, limited masks and isolated opacity exist. General clips, mask regions/content and bounded nested composition remain. |
 | S15 | Live-text wordmarks are experimental, not required for outlined wordmarks. Follow section 6 and shared glyph contours, not a separate renderer. |
 | S16 | Uniform embedded PNGs and narrow patterns exist. General raster decoding/resampling, multi-element patterns, markers, filters/blending and additional static CSS only for measured blockers. |
-| S17 | Not achieved. Requires a frozen representative corporate cohort, agreed exact-document target, every declared variant exact for counted documents and fresh delivery evidence. |
+| S17 | Not achieved. Requires a frozen representative corporate cohort meeting at least 80% exact documents overall and per corporate stratum, every declared variant exact for counted documents and fresh delivery evidence. |
 
 ## 5. Product contract, evidence and completion
 
@@ -318,8 +355,10 @@ check cancellation within bounded chunks and release owners on every exit.
   Extend existing memory/benchmark scenarios for curves, many contours, paints,
   clips and layers; do not infer performance from ledger-only observations.
 - Re-render affected inventory inputs after narrow repairs; broad coverage,
-  transform or composition changes require the complete frozen variant set.
-  Record missing/oracle-failure/unmeasured results explicitly. Ordinary unit tests
+  transform or composition changes require comparison across all declared
+  variants. Run available variants and report the incomplete bank explicitly;
+  missing/oracle-failure/unmeasured results cannot disappear from the denominator.
+  Ordinary unit tests
   and library consumers remain offline and independent of browsers/private assets.
 - Package/API changes require the isolated installed consumer; release claims
   require fresh Windows/Linux build/test/package/resource and platform-appropriate
@@ -350,11 +389,14 @@ percentages and the whole 92-file inventory cannot replace corporate-document
 coverage. Ford drives the active wordmark checkpoint; choose the curved-mark
 checkpoint from the retained independent exports before tuning its pixels.
 
-The remaining release-policy choices are the numeric S17 exact-document target
-and the representative frozen corporate cohort/variant recipe. Neither blocks
-rows 1–7. Until they are selected and the evidence meets them, report measured
-results and gaps without a “most logos” claim or ETA. There is no separate quirk
-budget: matching the pinned oracle remains implementation work, and any document
+The S17 target is at least 80% exact documents overall and in each of the
+corporate-mark/outlined-wordmark strata (round required document counts upward).
+The representative corporate cohort and explicit variant recipe remain to be
+frozen; existing renderer outcomes must not determine membership. This evidence
+work does not block rows 1–7. Until the freeze and its measurements meet the
+target, report measured results and gaps without a “most logos” claim or ETA.
+There is no separate quirk budget: matching the pinned oracle remains
+implementation work, and any document
 with a mismatching variant cannot enter the exact numerator. A coverage target
 below 100 percent may leave failed documents in the denominator; it never makes
 their pixels exact. S17 also requires categorized residuals, reproducible oracle
@@ -401,10 +443,7 @@ upstream tests is not a claim that those tests were executed here:
 | OoxPdf behavior inspected | Lokad.Svg alignment and remaining work |
 | --- | --- |
 | Manifest first; font bytes fetched lazily for selected files and checked by length/SHA-256. | Keep `SvgFontPackCatalog` metadata-only and acquire through caller-owned sources during async preparation. Verify the unchanged private manifest with Svg itself before claiming end-to-end compatibility. |
-| Case-insensitive requested/resolved family matching; italic match, closest 400/700 weight, then deterministic family/path/face tie-breaks; ordered configured fallback. | Existing Svg selection follows that order and accepts numeric SVG weights. Independent
-conformance vectors now cover aliases, four real styles, fallback (`b0d4d5d`),
-plus unused collection entries that parse and select without poisoning the catalog while
-snapshots reject selected collection faces before acquisition. OoxPdf's bold request maps to 700; preserve SVG's numeric weight semantics. |
+| Case-insensitive requested/resolved family matching; italic match, closest 400/700 weight, then deterministic family/path/face tie-breaks; ordered configured fallback. | Existing Svg selection follows that order and accepts numeric SVG weights. Independent conformance vectors cover aliases, four real styles, fallback (`b0d4d5d`), plus unused collection entries that parse and select without poisoning the catalog while snapshots reject selected collection faces before acquisition. OoxPdf's bold request maps to 700; preserve SVG's numeric weight semantics. |
 | Shared per-file sources coalesce concurrent downloads, cache successful bytes and use at most three attempts for transient transport failures. Manifest reads cap at 1 MiB; font reads cap at the smaller of the declared size and 64 MiB. | Put transport, bounded caching and retry in an opt-in test host/provider. Test concurrent reuse, cancellation and recovery with synthetic transport responses. Keep Svg's existing 32 MiB aggregate borrowed-program and 256-face caps explicit; the source's per-file cap does not replace them. |
 | Font loading can select collection faces; the inspected loader synchronously waits for bytes, copies them and can return no font for certain failures. | Retain Svg's async acquisition, immutable borrowed bytes and categorized required-font failures. Current face-0 standalone TrueType admission remains explicit; packs may contain unused TTC or other unsupported entries without rejecting the whole catalog. |
 | Private validation keeps manifests, inputs and reports ignored and commits anonymized findings. Download exceptions can contain source URIs. | Apply the private workflow below and redact transport errors before they reach repository reports or shared logs. Do not propagate private source identities through diagnostic `StableId` values. |

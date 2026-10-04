@@ -2649,3 +2649,79 @@ Decision: this is a current bounded compositing target. Trace the full-span rout
 and opacity precision, declare independent full/partial and opaque-background
 holdouts, and implement a shared dispatch repair only if that contract is verified.
 The result does not attribute Ford's opaque coverage errors to compositing.
+
+## Full-canvas rectangle route discriminator (2026-10-04)
+
+Question: does the integer-overlap alpha error belong to ordinary full-coverage
+span arithmetic, or to a browser route selected by the complete scene?
+
+Method: before changing product code, compare red/blue overlaps at fill-opacity
+0.5 as full-canvas rectangles, inset/corner rectangles and equivalent paths.
+Each configuration uses three fresh-process Chrome 153.0.8010.52 win64 recipe-3
+captures through the existing sandboxed wrapper. Every triple is byte-identical;
+every launch reports healthy startup and profile cleanup. Re-render the eight
+inputs with the unchanged `f68cb887` production source. Retain candidate PNGs,
+whole-PNG hashes, decoded comparisons, alpha error mass and directional counts.
+
+| Control | Canvas / overlap geometry | Chrome painted RGBA | Candidate painted RGBA | Changed pixels | Reference PNG SHA-256 |
+| --- | --- | --- | --- | --- | --- |
+| full-1 | 1x1 / full rectangle | 85,0,170,191 | 85,0,170,192 | 1 | `daa6bccdaddc1d7b6842195e0e2a876b656909edd0f45b1e0be5137508e5cb41` |
+| full-2 | 2x2 / full rectangle | 85,0,170,191 | 85,0,170,192 | 4 | `11a315de7a2661f30c267fa5680ed1c00531633486057738f15b73333b6a0db9` |
+| full-4 | 4x4 / full rectangle | 85,0,170,191 | 85,0,170,192 | 16 | `e11decd428c1a7e6f389dc51f4d9bcd286c1fbad547598eeadc8c942efa1bbee` |
+| full-32 | 32x32 / full rectangle | 85,0,170,191 | 85,0,170,192 | 1,024 | `2c5d0843fead68f4469332620ed919d943ab953964d50431a388c0c18a76f0f5` |
+| corner-4 | 4x4 / 2x2 rectangle at 0,0 | 85,0,170,192 | 85,0,170,192 | 0 | `57e8843d04b0f97acdbe3291921171595bdfdc6d06121c01d35c7421af0d461e` |
+| inset-4 | 4x4 / 2x2 rectangle at 1,1 | 85,0,170,192 | 85,0,170,192 | 0 | `477c0bcac2358d4bc19ef40dd14f90e92c0c7779e183756d8027b96c40de9721` |
+| path-full-2 | 2x2 / full path | 85,0,170,192 | 85,0,170,192 | 0 | `242d6331fe60b15ba9fe7034a32a8e9c4f1c6e500b0b8e0f930c4996879af58b` |
+| path-full-4 | 4x4 / full path | 85,0,170,192 | 85,0,170,192 | 0 | `c1bfae8e7c5270c83f8755f0c2b69e793fcb4c9cbe88a7caa4671a85c2546f6c` |
+
+For the four failing controls, maximum channel/alpha error is one; every alpha
+error is candidate-over-reference by one, so error mass equals changed count.
+Neither the canvas size nor full per-pixel coverage alone explains dispatch:
+the equivalent full-canvas paths are exact at alpha 192. Primary-paint full
+pixels also agree throughout rect/path opacity grids on transparent, white and
+black backgrounds. Partial fringes and mixed-color rows have remaining errors;
+the complete grids are not claimed exact. Aggregate changed-pixel counts are
+94/98/90 for rectangle grids and 78/74/78 for path grids on those backgrounds.
+
+The matched Chromium tag provides an independent mechanism candidate:
+[solid_color_analyzer.cc at 153.0.8010.52](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/paint/solid_color_analyzer.cc).
+Its analyzer blends eligible full-canvas rectangle paints in floating point,
+while DrawPath immediately disqualifies the scene. This predicts the observed
+geometry distinction. It does not prove that these browser captures selected
+the analyzer, establish final color quantization, or cover clipping, transforms,
+operation limits, opacity layers or all paints. Those remain discriminators for
+the implementation slice; ordinary Skia blitter arithmetic alone is insufficient.
+The reviewed source file's SHA-256 is
+`3dd3ecadeefaed3197d83f980ea95dc6cf99a30f470b2d930ef6bcff2ad51537`.
+
+Reproduction: construct the inputs below with an SPDX CC0-1.0 comment. For each
+full-N control use an NxN canvas and two rectangles at 0,0 with size NxN.
+For corner/inset use a 4x4 canvas and 2x2 rectangles at the stated origin. For
+path-full-N replace each rectangle with `path d="M0,0HNVNH0Z"`, substituting N.
+Keep paints and order fixed:
+
+```xml
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2">
+  <rect x="0" y="0" width="2" height="2" fill="red" fill-opacity="0.5"/>
+  <rect x="0" y="0" width="2" height="2" fill="blue" fill-opacity="0.5"/>
+</svg>
+```
+
+Capture each input three times with `tools/capture-chrome.ps1`, matching Width,
+Height and transparent Background. Render it with `SvgRenderOptions.Default`
+and compare decoded RGBA with the existing VisualDiff tool. The ignored local
+evidence is under `artifacts/span-dispatch-20261004/boundary/`,
+`boundary-baseline/` and `review-boundary/`; valid opacity grids are in
+`calibration/` with comparisons in `baseline/`. An earlier invalid grid draft
+outside `calibration/` is excluded from this evidence. The eight route controls
+have not yet been added to the committed fixture/research manifests; their
+results do not change the corpus counts.
+
+Decision: reject a general full-span alpha adjustment and narrow PLAN's active
+slice to full-canvas paint routing. Calibrate full-canvas 0.1/0.25/0.5/0.75,
+with 0.375/0.625/0.9 and mixed-color overlaps held out, on transparent/white/black.
+Declare and capture those inputs before production changes; retain the path and
+inset controls. Preserve original opacity precision where the verified route
+requires it, independently of byte alpha. No production or reference change
+lands from this investigation, and Ford's opaque coverage remains open.
