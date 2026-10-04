@@ -1,25 +1,20 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-04: reviewed baseline `f633c86b`, state-separation checkpoint
-starting from `5c4af69c`.
+Updated 2026-10-04: reviewed baseline `f633c86b`; current operation-preserving
+paint checkpoint follows the dispatch-control record at `30c6f4a3`.
 [PLAN.md](../PLAN.md) is the current execution queue. Rows 3–7 still have
 implementation and fidelity exits; the earlier claim that rows 1–7 were complete
 within architectural limits is withdrawn. The first exact curved corporate mark
 and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 
-Current validated evidence: 524 fixture entries = 435 exact + 84 known-difference
-renders + five rejections across 321 base documents and 203 variants; 73 research
-probes = 72 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 2,867 core + 105 visual + six FontProbe tests pass. The latest
-25 memory scenarios, package inspection and isolated installed-consumer checks
-pass at the full-canvas checkpoint; the dispatch investigation changes no
-production code. The Default-options
-inventory sweep reports 88 renders + four MalformedInput rejections out of 92.
-These counts establish neither corporate coverage nor Linux delivery.
-
-The numeric release target is selected below. The representative cohort and
-variant freeze remain open; their missing measurements block a “most corporate
-logos” claim, not implementation work or the first product checkpoint.
+Current validated evidence: 549 fixture entries = 462 exact + 82 known-difference
+renders + five rejections across 338 base documents and 211 variants; 72 research
+probes = 71 known-difference renders + one rejection. Fresh Windows locked restore,
+Release build and 2,877 core + 105 visual + six FontProbe tests pass. All 25 memory
+scenarios, package inspection and isolated installed-consumer checks pass at the
+operation-preserving paint checkpoint. The Default inventory retains 88 renders +
+four MalformedInput rejections out of 92. These counts establish neither corporate
+coverage, full independent-variant validation nor Linux delivery.
 
 ## Q1 - numeric exact-document target: selected
 
@@ -61,29 +56,20 @@ Closer agreement with ideal geometry does not establish pinned-browser equality.
 A target below 100 percent can leave documents failing in the denominator; it
 cannot waive their pixel errors or alter their references.
 
-Ford remains zero exact of nine recorded variants. The latest asset record
-identifies opaque solid cubic fills without stroke, dash or gradients, making it
-the focused coverage target; this does not close composition on other inputs.
-Curve/walk state separation now preserves quarter-grid output byte-for-byte
-across the fixture/research/inventory corpus and all nine Ford variants. The
-two measured endpoint variants worsen all nine Ford configurations and are
-reverted. The full-canvas solid-paint route now makes the unchanged historical
-integer overlap exact and passes 79 of 80 new routing configurations. Inset/path
-and operation-limit controls preserve ordinary byte composition; original
-fill-opacity is retained separately for eligible native rectangle analysis.
-Group opacity on white remains a known failure. Only the integer-overlap PNG
-changes in the previous 597-case corpus; all nine Ford PNGs remain unchanged.
-The authored-to-device discriminator confirms a float-precision difference at
-large translations, but the measured cast models do not explain Ford's standing
-error and are reverted. Native mask/run bounds controls now demonstrate separate
-direct paint and pending additive-run behavior. A reverted alpha-only model
-improves every Ford variant, including intended-transparent 1,200 to 740 changed
-pixels, but retains translucent RGB errors. The active slice implements that
-shared operation/material boundary with bounded storage and independent paint
-controls. The 12 new configurations are banked as two exact and ten known
-differences; current production Ford output is unchanged and remains zero of nine.
-See PLAN's active work order and
-[the design record](RASTERIZATION_DESIGN.md) for the retained falsifications.
+Ford remains zero exact of nine recorded variants. It uses opaque solid cubic
+fills without stroke, dash or gradients. Curve/walk state separation and bounded
+full-canvas paint routing are retained; rejected endpoint and float-cast variants
+remain falsifications in the design record. Operation-preserving mask/run paint,
+material quantization and float capture conversion now improve all nine Ford
+variants: intended-transparent falls from 1,200 to 550 differing pixels and 6,761
+to 5,092 total alpha error. All previous exact fixture PNGs are preserved. The 12
+original dispatch controls are exact; 24 further material configurations retain
+15 exact and nine known differences. Compact full spans preserve native-size
+Default admission without raising limits. Some circle/stroke alpha errors worsen
+and remain recorded failures; group-opacity-white remains inexact. The next
+bounded slice discriminates scan-window/clip behavior while preserving the
+separate native dispatch bounds. See PLAN's active work order and
+[the design record](RASTERIZATION_DESIGN.md) for evidence and remaining limits.
 
 S17 additionally requires reproducible per-variant identities/diffs, categorized
 residuals, representative latency/allocations and fresh Windows/Linux delivery

@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="160"><defs><pattern id="p" patternUnits="userSpaceOnUse" width="4" height="4"><rect width="4" height="4" fill="#c34e97"/></pattern></defs><path d="M12.125,4.375c-3.32,0 -6,2.68 -6,6 c0,3.32 2.68,6 6,6 c-2,0 -3,-3 -3,-6 c0,-3 1,-6 3,-6z M37.125,4.375c-3.32,0 -6,2.68 -6,6 c0,3.32 2.68,6 6,6 c-2,0 -3,-3 -3,-6 c0,-3 1,-6 3,-6z" fill="url(#p)" fill-opacity="1"/></svg>

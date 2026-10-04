@@ -1,0 +1,36 @@
+{
+  "fixtureId": "original-joint-split-100x100",
+  "referencePng": "original-joint-split-100x100.png",
+  "referenceSha256": "901ec30e38ca20ccc4adb43d7aa8a7881e912a70080f8263533aca78b00386d3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 100,
+    "height": 100,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "5a08487ba76e45391d532602e747aa34e6550589a420fe89f2bb839d2fbd8ba1",
+  "candidateSha256": "08e909106dd35a269c2845cb5655855f3c1f3497cf1d260eae2f2f61795169de",
+  "admittedAt": "2026-10-04",
+  "graduatedFrom": "research-joint-split-100x100",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 100,
+    "minimumMismatchY": 100,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  },
+  "candidateInputSha256": "b758c0b1cff16f22cd7971c625d23998865baf5ccca5055b1aed876d24015780",
+  "materialization": "Normalize repository LF line endings and trailing document whitespace; retain original capture input hash, geometry, paint and reference PNG."
+}

@@ -25,7 +25,12 @@ public sealed class SvgQuadSpanWalkerTests
             for (int y = firstRow; y < pastLastRow; y++)
             {
                 walker.PrepareRow(y, out long _, CancellationToken.None);
-                rows.AddRange(walker.Row.ToArray());
+                byte[] pixels = new byte[64 * 4];
+                for (int x = 0; x < 64; x++)
+                {
+                    walker.PaintPixel(x, pixels.AsSpan(x * 4, 4), SvgAnalyticPaint.Solid(new(0, 0, 0, 255)), 1);
+                    rows.Add(pixels[x * 4 + 3]);
+                }
             }
         }
         return rows.ToArray();

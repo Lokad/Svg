@@ -1,0 +1,41 @@
+{
+  "fixtureId": "original-paint-operation-alpha-color-polygon-grid",
+  "referencePng": "original-paint-operation-alpha-color-polygon-grid.png",
+  "referenceSha256": "f24c32b8134969e162ae519609b987cc3ede96358f1b343eb60c7c14c85d2478",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 1024,
+    "height": 12,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "2011457134a00abdb60fa2f29da7f89b8a685023719bfa27ce0ec9359cdc8ff5",
+  "candidateSha256": "e78887b827839b34db0dc08522cca979c3e803383ad7594bcccbf82c7b1384ff",
+  "admittedAt": "2026-10-04",
+  "captureSha256": [
+    "f24c32b8134969e162ae519609b987cc3ede96358f1b343eb60c7c14c85d2478",
+    "f24c32b8134969e162ae519609b987cc3ede96358f1b343eb60c7c14c85d2478",
+    "f24c32b8134969e162ae519609b987cc3ede96358f1b343eb60c7c14c85d2478"
+  ],
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 1024,
+    "minimumMismatchY": 12,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  }
+}

@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-All 524 current manifest entries are gated: 435 exact decoded-pixel references,
-84 known-difference renders and five categorized rejections. These are fixture
+All 549 current manifest entries are gated: 462 exact decoded-pixel references,
+82 known-difference renders and five categorized rejections. These are fixture
 entries, including variants, and do not establish corporate-document coverage.
 
 Analytic coverage reserves complete live-edge objects, list growth and retained
@@ -19,14 +19,16 @@ the pinned browser's bounded float paint-analysis route. Paths, generated bands,
 paint servers, opacity layers and scenes beyond its five-draw limit keep their
 existing raster routes; opaque recipe-3 page backgrounds consume two draws.
 The 80 new routing configurations include 79 exact controls and one retained
-group-opacity-white difference. This does not establish general alpha/layer
-fidelity or progress on Ford's nine inexact variants.
+group-opacity-white difference. That bounded rectangle repair establishes no
+general alpha/layer fidelity; Ford's later paint progress is recorded below.
 
-Twelve native mask/run dispatch controls retain two exact opaque mask cases and
-ten known differences across opaque/translucent paints and backgrounds. The
-scanner still collapses direct paint operations and pending run coverage into a
-single mask. Operation-specific material arithmetic is the next shared repair;
-the improving diagnostic model is reverted and changes no admitted behavior.
+Eligible analytic fills now preserve ordered direct single/pair/span paints
+separately from pending additive runs, with the native bounds-selected mask/run
+route and operation-specific uniform/shader arithmetic. All 12 original dispatch
+controls are exact. A further 24 material configurations bank 15 exact and nine
+known differences. Float capture conversion and compact full-span storage retain
+bounded ownership/work and Default admission. Ford improves in all nine variants
+but remains inexact; circle/stroke residuals include mixed alpha-error changes.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
@@ -46,8 +48,8 @@ Stroke widths flow through the same cascade: presentation attributes, inline sty
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms aggregate into at-most-64 KiB `IDAT` chunks under a budgeted 64 KiB cap with byte-identical output across all four forms, while memory forms accumulate budgeted segments without geometric copies; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 435 exact fixture entries; entry count is not a count of fresh capture triples |
-| Fixture corpus | 524 original CC0 fixture entries with verified hashes across 321 base documents and 203 variants; the manifest gate compares all 435 exact entries exactly and locks all 89 classified-unsupported entries to their observed behavior (84 known-difference renders with retained pinned-Chrome references and ratcheted decoded-RGBA measures, five categorized rejections) |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 462 exact fixture entries; entry count is not a count of fresh capture triples |
+| Fixture corpus | 549 original CC0 fixture entries with verified hashes across 338 base documents and 211 variants; the manifest gate compares all 462 exact entries exactly and locks all 87 classified-unsupported entries to their observed behavior (82 known-difference renders with retained pinned-Chrome references and ratcheted decoded-RGBA measures, five categorized rejections) |
 
 ### Experimental supplied-font text
 

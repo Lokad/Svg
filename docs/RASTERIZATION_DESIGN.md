@@ -3012,3 +3012,138 @@ before/after PNGs/reports are under ignored
 `artifacts/device-precision-20261004/`, including `blitter-controls/`,
 `native-blitter-boundary/`, `dual-alpha-model-*` and `final-*`. The next production
 slice must preserve the operations themselves and pass the gates above.
+
+## Operation-preserving analytic paint checkpoint (2026-10-04)
+
+This checkpoint implements the operation/material boundary selected at `30c6f4a3`.
+The preceding alpha-only prototype stays rejected. Eligible analytic fills choose
+the native mask/run route from integer path bounds: width at most 32 and aligned
+row storage times height at most 1,024 bytes selects the mask. The run route keeps
+direct single, pair and full-span paints separate from pending additive coverage.
+Only pending runs snap alpha below 8 or above 247 at flush. The existing source
+edge setup, quarter events, live cubic state, density heuristic and geometry gates
+remain; no global endpoint or mapping cast change accompanies this repair.
+
+The matched release pin remains `f8b66b7597c4cc859d3ed190e9c6872241e6721c`.
+Read `SkScan_AAAPath.cpp`, `SkBlitter_ARGB32.cpp`, `SkColorData.h`,
+`SkBlitMask_opts.h` and `src/opts/SkRasterPipeline_opts.h` at that explicit pin.
+Uniform material starts with round/255 premultiplication. Mask/direct paints scale
+premultiplied lanes before source-over. Pair paints combine the source/destination
+products before rounding, with separate opaque/translucent coverage scales; the
+opaque-black pair specialization preserves the coverage byte directly. Shader
+samples retain their separate material route through the shared paint consumer.
+Full-alpha real blits require `!noRealBlitter`; wide-fringe direct arrays also
+preserve operation identity. Retaining only two alpha arrays missed those details.
+
+Capture conversion also needed correction. The pinned raster pipeline loads bytes
+as float times `1/255`, multiplies color by reciprocal float alpha, then stores
+with nearest-even RGBA8 rounding. Integer round-half-up differs at ties. Preserving
+that order closes the independent quarter-opacity colors and gradient-fade control.
+It does not change the surface's premultiplied composition contract or establish
+general layer fidelity.
+
+Direct fringe events use typed, ordered per-pixel links. Full spans retain one
+descriptor with pixel indices; an overlapping later full span becomes separately
+ordered point events. Replay merges the first span with fringe events by sequence,
+then paints pending coverage. The first per-pixel full-span implementation lost
+`inv-050` Default work admission and is rejected. Compact descriptors restore that
+admission without changing PNGs or raising limits. Pixel links and mask coverage
+clear in one bounded traversal. Reservations precede allocation, cover old/new
+copy peaks and release on denial/cancellation; recording, indexing, copying and
+overlap replay are charged. The caller's existing pixel charge covers the first
+span's material paint. Scoped during-growth/replay probes preserve the caller token
+and prove cleanup. Ten focused facts cover arithmetic, compact storage, tight
+memory/work denial, old/new event growth peaks and cancellation.
+
+Independent references: 18 declared solid/shader configurations were captured
+before the production model. Six additional material checks retain distinct
+input identities, including the negative rectangle alpha grid and the separate
+polygon grid. All 24 have three byte-identical fresh-process captures with healthy
+startup and profile cleanup, Chrome 153.0.8010.52 win64, recipe 3, revision 1681091,
+executable hash `f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9`.
+The bank adds 16 CC0 sources / 24 configurations: 15 exact and nine known renders.
+The blue triangles and graduated joint-split fixture record explicit LF/trailing
+whitespace materialization with separate original/candidate input hashes; their
+captured references and geometry/paint remain unchanged.
+
+All 12 prior native mask/run controls become exact against unchanged references.
+All 12 new solid quarter/mixed-material × route × background cases are exact.
+Two blue triangles and the 768-path grid (256 byte alpha levels × three colors)
+are exact. The six new linear/radial/pattern controls retain RGB differences with
+exact alpha; run-route counts improve 37/44/34 to 31/38/28, while mask counts stay
+34/39/32. Both ellipse controls retain 239 changed pixels, max alpha 73. Their
+native solid/pattern images differ on 27 pixels, disproving the old own-renderer
+identity assertion. The axis-aligned rectangle alpha/color grid retains 6,944 RGB
+errors with exact alpha. None is relabelled exact or replaced by the polygon grid.
+
+Eleven existing known fixtures graduate: the gradient fade and ten dispatch cases.
+The exact joint-split research control graduates with its original PNG/provenance;
+its old files remain historical, outside the active research manifest. Final
+fixtures: 549 = 462 exact + 82 known renders + five rejects, 338 base / 211 variants.
+Research: 72 = 71 known renders + one reject. The banked sweep executes 713 cases,
+including 92 independent Default inventory files (88 renders / four DTD rejects).
+
+The baseline 689-case comparison changes 106 complete PNGs, including 53 with
+committed oracle evidence. All 435 previously exact PNGs and every disposition
+remain unchanged. Every changed oracle-backed fixture/research image and all nine
+Ford variants retain zero 0-to-255/255-to-0 alpha flips. Whole-image candidate
+hashes and decoded measures are updated in metadata; original references remain.
+The retained cubic twin improves 56/120 to two/six (pixels/alpha error); cubic
+crescent is one/six, quad twin two/eight and quad crescent two/ten. None is exact.
+
+Ford remains zero exact of nine. Transparent/white/black changed counts are
+268/268/230 at 250×100, 550/548/476 at 500×200 and 5,194/5,249/4,739 at 1000×400.
+Transparent alpha error falls 2,842→1,945, 6,761→5,092 and 57,568→56,482;
+maximum alpha errors remain 60/54/80. Directional over/under counts are
+180/88, 353/197 and 2,314/2,880. Lower mismatch counts do not close the wordmark exit.
+
+The result is mixed on remaining curved/stroke failures. These 15 changed cases
+gain alpha error; retain them explicitly alongside improvements:
+
+| Existing case (original-logo prefix omitted) | Changed pixels, before → after | Total alpha error, before → after |
+| --- | ---: | ---: |
+| circle-mark | 84 → 74 | 1191 → 1193 |
+| arc-mark | 57 → 54 | 494 → 506 |
+| gradient-curved-outline-mark | 233 → 229 | 4727 → 4782 |
+| solid-curved-outline-mark | 231 → 225 | 4776 → 4806 |
+| gradient-curved-outline-bbox-mark | 239 → 235 | 4727 → 4782 |
+| rounded-stroke-mark | 188 → 174 | 3077 → 3133 |
+| gradient-rounded-stroke-mark | 185 → 174 | 3089 → 3133 |
+| radial-rounded-stroke-mark | 191 → 177 | 3089 → 3133 |
+| pattern-rounded-stroke-mark | 188 → 174 | 3089 → 3133 |
+| round-join-rounded-stroke-mark | 188 → 178 | 2636 → 2650 |
+| ellipse-gradient-stroke-mark | 246 → 238 | 3407 → 3431 |
+| ellipse-radial-stroke-mark | 253 → 245 | 3407 → 3431 |
+| ellipse-pattern-stroke-mark | 247 → 239 | 3407 → 3431 |
+| bevel-join-rounded-stroke-mark | 185 → 181 | 2658 → 2672 |
+| viewbox-scaled-circle-mark | 373 → 374 | 8644 → 8691 |
+
+Ellipse-stroke maximum alpha also rises 81→82 while mass falls 3,567→3,537;
+round/bevel joins rise 72→73. These are retained geometry/paint compatibility
+errors, with no tolerance or silent oracle update. Group-opacity-white still
+differs on 16 pixels. This checkpoint does not establish monotonic improvement
+on every known image, full independent-variant completion or corporate coverage.
+
+After integration, enabling all intersection checks still leaves all nine Ford
+and 54 local control PNGs identical; that temporary trial is restored. The
+full-window cubic diagnostic now has zero alpha error, while public tight-window
+rendering retains two pixels. Separate native blitter bounds from scan clipping/
+window bounds as the next hypothesis, using independent size/phase/translation
+controls before geometry edits. The diagnostic is not independent proof of a
+clipping defect. Existing endpoint, pure-continuation and float-cast falsifications
+still apply; do not repeat them under a new label.
+
+Validation: locked restore, nine-project Release build with zero warnings/errors,
+2,988 tests (2,877 core + 105 visual + six FontProbe), all 25 child-process memory
+scenarios, runtime/symbol package inspection and isolated installed-consumer gates.
+The ordinary tests cover six-output behavior and during-phase cleanup; Linux,
+full independent inventory variants and representative throughput remain unrefreshed.
+Resource observations are in BENCHMARKS.md. Final replay cleanup keeps all 713
+outputs/dispositions: opaque full coverage copies material directly, unarmed
+probes avoid execution-context reads, and consumers avoid unused collapsed-alpha
+calculations. Native-size replay remains measurably slower than baseline and must
+be addressed before release. Local capture declarations, complete
+before/after candidates and comparisons, rejected full-span model, ledgers,
+measurements and delivery results are under ignored
+`artifacts/paint-operations-20261004/`; the fixture/research manifests and standard
+Release tests/capture scripts are the portable reproduction sources.

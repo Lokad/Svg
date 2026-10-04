@@ -3,10 +3,10 @@ using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Emits pinned-construction coverage rows for straight-edge fills with contact-free contours.</summary>
+/// <summary>Prepares analytic mask coverage and ordered paint operations for eligible contours.</summary>
 /// <remarks>
-/// <para>For one closed ring with nonzero area and finite vertices inside the 16.16 device range, row preparation walks the retained analytic edges with signed winding into spatial intervals, then paints trapezoid coverage through fixed-point alpha operations into one mask row, mirroring the pinned Skia analytic walkers (convex fast path for convex rings, winding intervals otherwise). Masks accumulate with saturation; close edges select assign-vs-add exactly like the pinned blitters. Multi-contour sets walk all kept contours together through winding intervals with per-contour votes skipping masked-out contours; degenerate, non-finite, out-of-range, canvas-exceeding, self-contacting and across-contacting payloads stay ineligible so the existing fan path keeps their behavior bitwise; canvas-exceeding rings need edge clipping before walking, and self-contacting rings keep fan roles, mirroring the pinned clip build.</para>
-/// <para>Ownership: preparation reserves caller-charged scratch storage sized by ScratchByteCount and releases it through Dispose; this type allocates nothing else and holds no budget itself. Cancellation is observed while validating, setting up and sorting edges and while walking every row; Row is only valid until the next PrepareRow call. Instances are single-threaded like the raster loops that own them.</para>
+/// <para>Row preparation walks retained analytic edges into winding intervals and trapezoid coverage. Small path bounds select an accumulated mask; larger bounds retain direct paint events separately from pending additive runs. Only pending runs snap coverage at flush. Convex rings use the existing convex walker; eligible non-convex fills also retain live curve state. Multi-contour sets walk kept contours together with their winding votes. Degenerate, non-finite, out-of-range, canvas-exceeding and contact-gated payloads retain the existing fallback.</para>
+/// <para>Ownership: preparation reserves edge/mask scratch plus the run route's pixel links before allocation. Direct operation buffers grow under the same conversion budget with both old/new arrays live during copying; Dispose releases every reservation. PrepareRow charges recording, growth and replay before growing buffers and observes cancellation during setup, row walking, copying and replay. Row contains only pending coverage; direct paints remain separate. All row state is valid until the next PrepareRow call. Instances and their destination consumers are single-threaded.</para>
 /// </remarks>
 internal ref struct SvgAnalyticCoverage
 {
@@ -178,6 +178,20 @@ internal ref struct SvgAnalyticCoverage
     private readonly int[] _alphas;
     private readonly bool _skipIntersect;
     private readonly RenderBudget.BudgetReservation? _reservation;
+    private readonly RenderBudget? _budget;
+    private readonly bool _useRunBlitter;
+    private readonly SvgDirectPaintLink[] _directLinks;
+    private readonly RenderBudget.BudgetReservation? _directLinkReservation;
+    private SvgDirectPaintOperation[] _directOperations;
+    private RenderBudget.BudgetReservation? _directOperationReservation;
+    private int _directOperationCount;
+    private SvgDirectPaintSpan[] _directSpans;
+    private RenderBudget.BudgetReservation? _directSpanReservation;
+    private int _directSpanCount;
+    private int _paintSequence;
+    private long _rowOperationWork;
+    private long _rowOperationWorkLimit;
+    private CancellationToken _rowCancellationToken;
     private int _nextNextY;
     private int _walkY;
     private long _strips;
@@ -185,7 +199,7 @@ internal ref struct SvgAnalyticCoverage
     internal static long LivePieces;
     internal static long LiveBuilt;
 
-    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, int[] temp, int[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, RenderBudget.BudgetReservation? reservation)
+    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, int[] temp, int[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool useRunBlitter, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
     {
         _edges = edges;
         _head = head;
@@ -202,14 +216,158 @@ internal ref struct SvgAnalyticCoverage
         _leftClip = xStart << 16;
         _rightClip = (xStart + width) << 16;
         _reservation = reservation;
+        _budget = budget;
+        _useRunBlitter = useRunBlitter;
+        _directLinks = [];
+        _directOperations = [];
+        _directSpans = [];
+        if (useRunBlitter)
+        {
+            _directLinkReservation = budget.Reserve(64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(width), SvgMemoryCategory.Surface);
+            try { _directLinks = new SvgDirectPaintLink[width]; }
+            catch { _directLinkReservation.Dispose(); throw; }
+        }
         _nextNextY = int.MaxValue;
         _walkY = 0;
         _strips = 0;
     }
 
-    public void Dispose() => _reservation?.Dispose();
+    public void Dispose()
+    {
+        _directOperationReservation?.Dispose();
+        _directSpanReservation?.Dispose();
+        _directLinkReservation?.Dispose();
+        _reservation?.Dispose();
+    }
 
-    /// <summary>Gets the coverage row written by the latest PrepareRow call, indexed from the preparation x start.</summary>
+    /// <summary>Replays this pixel's direct paints in order, then paints its pending coverage at row flush.</summary>
+    /// <remarks>Indexed relative to the preparation x start. Paint samples belong to the caller; this method borrows one destination pixel, allocates nothing, and observes the row token between events. PrepareRow charges fringe/overlap event work and span indexing; the caller's per-pixel raster charge covers the first full-span paint. Clip coverage is applied to each paint operation, not to their combined alpha.</remarks>
+    internal void PaintPixel(int x, Span<byte> destination, SvgAnalyticPaint paint, double clipCoverage)
+    {
+        if (clipCoverage <= 0) return;
+        if (_useRunBlitter)
+        {
+            int next = _directLinks[x].First;
+            int spanIndex = _directLinks[x].Span;
+            if (spanIndex != 0)
+            {
+                _rowCancellationToken.ThrowIfCancellationRequested();
+                SvgDirectPaintSpan span = _directSpans[spanIndex - 1];
+                while (next != 0 && _directOperations[next - 1].Sequence < span.Sequence)
+                {
+                    ReplayOperation(ref next, _directOperations, _rowCancellationToken, destination, paint, clipCoverage);
+                }
+                SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeReplay, span.Sequence);
+                _rowCancellationToken.ThrowIfCancellationRequested();
+                byte alpha = clipCoverage == 1 ? (byte)255 : (byte)Math.Round(255 * clipCoverage, MidpointRounding.AwayFromZero);
+                paint.Blend(destination, alpha, SvgAnalyticPaintKind.Direct);
+            }
+            while (next != 0) ReplayOperation(ref next, _directOperations, _rowCancellationToken, destination, paint, clipCoverage);
+
+            static void ReplayOperation(ref int next, ReadOnlySpan<SvgDirectPaintOperation> operations, CancellationToken cancellationToken, Span<byte> destination, SvgAnalyticPaint paint, double clipCoverage)
+            {
+                SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeReplay, next - 1);
+                cancellationToken.ThrowIfCancellationRequested();
+                SvgDirectPaintOperation operation = operations[next - 1];
+                byte alpha = clipCoverage == 1 ? operation.Alpha : (byte)Math.Round(operation.Alpha * clipCoverage, MidpointRounding.AwayFromZero);
+                paint.Blend(destination, alpha, operation.Kind);
+                next = operation.Next;
+            }
+        }
+        byte pending = _row[x + 1];
+        if (_useRunBlitter) pending = pending > 247 ? (byte)255 : pending < 8 ? (byte)0 : pending;
+        if (clipCoverage != 1) pending = (byte)Math.Round(pending * clipCoverage, MidpointRounding.AwayFromZero);
+        paint.Blend(destination, pending, _useRunBlitter ? SvgAnalyticPaintKind.Direct : SvgAnalyticPaintKind.Mask);
+    }
+
+    private void RecordDirectPaint(int x, int alpha, SvgAnalyticPaintKind kind)
+    {
+        if (x < 0 || x >= _width || alpha == 0) return;
+        _rowCancellationToken.ThrowIfCancellationRequested();
+        ChargeOperationWork(2); // Record and later replay this event.
+        if (_directOperationCount == _directOperations.Length)
+        {
+            int capacity = _directOperations.Length == 0 ? 16 : _directOperations.Length > int.MaxValue / 2 ? checked(_directOperationCount + 1) : _directOperations.Length * 2;
+            ChargeOperationWork((long)capacity + _directOperationCount);
+            SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeBufferGrowth, _directOperationCount);
+            _rowCancellationToken.ThrowIfCancellationRequested();
+            RenderBudget budget = _budget ?? throw new InvalidOperationException("The analytic row has no storage owner.");
+            RenderBudget.BudgetReservation replacementReservation = budget.Reserve(64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintOperation>(capacity), SvgMemoryCategory.Surface);
+            SvgDirectPaintOperation[] replacement;
+            try
+            {
+                replacement = new SvgDirectPaintOperation[capacity];
+                for (int offset = 0; offset < _directOperationCount; offset += 1024)
+                {
+                    _rowCancellationToken.ThrowIfCancellationRequested();
+                    int count = Math.Min(1024, _directOperationCount - offset);
+                    _directOperations.AsSpan(offset, count).CopyTo(replacement.AsSpan(offset, count));
+                }
+            }
+            catch { replacementReservation.Dispose(); throw; }
+            _directOperationReservation?.Dispose();
+            _directOperationReservation = replacementReservation;
+            _directOperations = replacement;
+        }
+        int index = _directOperationCount++;
+        _directOperations[index] = new(0, _paintSequence++, (byte)alpha, kind);
+        SvgDirectPaintLink link = _directLinks[x];
+        if (link.Last != 0) _directOperations[link.Last - 1] = _directOperations[link.Last - 1] with { Next = index + 1 };
+        _directLinks[x] = new(link.First == 0 ? index + 1 : link.First, index + 1, link.Span);
+    }
+
+    private void RecordDirectSpan(int x, int length)
+    {
+        int start = Math.Max(x, 0);
+        int end = Math.Min(x + length, _width);
+        if (end <= start) return;
+        _rowCancellationToken.ThrowIfCancellationRequested();
+        // Index the first full span directly in each pixel's link. Its material
+        // paint is covered by the caller's per-pixel raster charge. Further
+        // overlapping spans become ordinary events with separately charged replay.
+        ChargeOperationWork((long)end - start + 1);
+        if (_directSpanCount == _directSpans.Length)
+        {
+            int capacity = _directSpans.Length == 0 ? 16 : checked(_directSpans.Length * 2);
+            ChargeOperationWork((long)capacity + _directSpanCount);
+            SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeSpanBufferGrowth, _directSpanCount);
+            _rowCancellationToken.ThrowIfCancellationRequested();
+            RenderBudget budget = _budget ?? throw new InvalidOperationException("The analytic row has no storage owner.");
+            RenderBudget.BudgetReservation replacementReservation = budget.Reserve(64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintSpan>(capacity), SvgMemoryCategory.Surface);
+            SvgDirectPaintSpan[] replacement;
+            try
+            {
+                replacement = new SvgDirectPaintSpan[capacity];
+                for (int offset = 0; offset < _directSpanCount; offset += 1024)
+                {
+                    _rowCancellationToken.ThrowIfCancellationRequested();
+                    int count = Math.Min(1024, _directSpanCount - offset);
+                    _directSpans.AsSpan(offset, count).CopyTo(replacement.AsSpan(offset, count));
+                }
+            }
+            catch { replacementReservation.Dispose(); throw; }
+            _directSpanReservation?.Dispose();
+            _directSpanReservation = replacementReservation;
+            _directSpans = replacement;
+        }
+        int spanIndex = _directSpanCount++;
+        _directSpans[spanIndex] = new(_paintSequence++);
+        for (int index = start; index < end; index++)
+        {
+            if ((index & 1023) == 0) _rowCancellationToken.ThrowIfCancellationRequested();
+            SvgDirectPaintLink link = _directLinks[index];
+            if (link.Span == 0) _directLinks[index] = new(link.First, link.Last, spanIndex + 1);
+            else RecordDirectPaint(index, 255, SvgAnalyticPaintKind.Direct);
+        }
+    }
+
+    private void ChargeOperationWork(long units)
+    {
+        if (units > _rowOperationWorkLimit - _rowOperationWork - _strips) throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic paint operations exceed the configured work limit.");
+        _rowOperationWork += units;
+    }
+
+    /// <summary>Gets pending mask/run coverage, indexed from the preparation x start. Direct paint events must be replayed separately through PaintPixel.</summary>
     internal ReadOnlySpan<byte> Row => new(_row, 1, _width);
     /// <summary>Gets the retained edge count for resource and traversal diagnostics.</summary>
     internal int EdgeCount => _edges.Length;
@@ -1374,7 +1532,9 @@ internal ref struct SvgAnalyticCoverage
                 for (int level = multiEdges.Length; level > 0; level >>= 1) multiLevels++;
                 setupWork += (long)multiEdges.Length * (multiLevels + 3);
                 eligible = true;
-                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, multiScratch);
+                bool useRunBlitter = !(multiWidth <= 32 && ((multiWidth + 3L) & ~3L) * (yEnd - yStart) <= 1024);
+                if (useRunBlitter) setupWork += multiWidth;
+                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, useRunBlitter, budget, multiScratch);
             }
             catch { multiScratch?.Dispose(); throw; }
         }
@@ -1477,7 +1637,9 @@ internal ref struct SvgAnalyticCoverage
             for (int level = edges.Length; level > 0; level >>= 1) levels++;
             setupWork += (long)edges.Length * (levels + 3);
             eligible = true;
-            return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, scratch);
+            bool useRunBlitter = !(width <= 32 && ((width + 3L) & ~3L) * (yEnd - yStart) <= 1024);
+            if (useRunBlitter) setupWork += width;
+            return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, useRunBlitter, budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }
     }
@@ -1503,6 +1665,7 @@ internal ref struct SvgAnalyticCoverage
     private void SetMask(int x, int alpha)
     {
         if (x < 0 || x >= _width) return;
+        if (_useRunBlitter) { RecordDirectPaint(x, alpha, SvgAnalyticPaintKind.Direct); return; }
         _row[x + 1] = (byte)alpha;
     }
     private void ComputeAboveLine(int destination, int l, int r, int inverseDY, int fullAlpha)
@@ -1536,17 +1699,25 @@ internal ref struct SvgAnalyticCoverage
         if (fullAlpha == 255 && !noRealBlitter) SetMask(x, alpha);
         else AddMask(x, PartialAlphaFull(alpha, fullAlpha));
     }
-    /// <summary>Adds one two-pixel fringe pair into the mask row, always accumulating like the pinned mask blitter.</summary>
+    /// <summary>Retains direct pair interpolation on the run route, or accumulates coverage on the mask/forced-additive route.</summary>
     private void BlitTwoAlphas(int x, int first, int second, int fullAlpha, bool noRealBlitter)
     {
-        _ = fullAlpha;
-        _ = noRealBlitter;
+        if (_useRunBlitter && fullAlpha == 255 && !noRealBlitter)
+        {
+            RecordDirectPaint(x, first, SvgAnalyticPaintKind.Pair);
+            RecordDirectPaint(x + 1, second, SvgAnalyticPaintKind.Pair);
+            return;
+        }
         AddMask(x, first);
         AddMask(x + 1, second);
     }
-    private void BlitFullAlpha(int x, int length, int fullAlpha)
+    private void BlitFullAlpha(int x, int length, int fullAlpha, bool noRealBlitter)
     {
-        for (int index = 0; index < length; index++) AddMask(x + index, fullAlpha);
+        if (_useRunBlitter && fullAlpha == 255 && !noRealBlitter) { RecordDirectSpan(x, length); return; }
+        for (int index = 0; index < length; index++)
+        {
+            AddMask(x + index, fullAlpha);
+        }
     }
     private void BlitAaaRow(int upperLeft, int upperRight, int lowerLeft, int lowerRight, int leftDY, int rightDY, int fullAlpha, bool noRealBlitter)
     {
@@ -1595,7 +1766,11 @@ internal ref struct SvgAnalyticCoverage
                 else _alphas[index - left] = 0;
             }
         }
-        for (int index = 0; index < length; index++) AddMask(left + index - _xStart, _alphas[index]);
+        for (int index = 0; index < length; index++)
+        {
+            if (_useRunBlitter && fullAlpha == 255 && !noRealBlitter) RecordDirectPaint(left + index - _xStart, _alphas[index], SvgAnalyticPaintKind.Direct);
+            else AddMask(left + index - _xStart, _alphas[index]);
+        }
     }
     private static int ApproximateIntersection(int firstLeft, int firstRight, int secondLeft, int secondRight)
     {
@@ -1626,7 +1801,7 @@ internal ref struct SvgAnalyticCoverage
                 }
                 else BlitAaaRow(upperLeft, joinLeft, lowerLeft, joinLeft, leftDY, int.MaxValue, fullAlpha, noRealBlitter);
             }
-            if (joinLeft < joinRight) BlitFullAlpha(FixedFloorToInt(joinLeft) - _xStart, FixedFloorToInt(joinRight - joinLeft), fullAlpha);
+            if (joinLeft < joinRight) BlitFullAlpha(FixedFloorToInt(joinLeft) - _xStart, FixedFloorToInt(joinRight - joinLeft), fullAlpha, noRealBlitter);
             if (lowerRight > joinRight)
             {
                 int fringe = FixedCeilToInt(lowerRight - joinRight);
@@ -1916,19 +2091,20 @@ internal ref struct SvgAnalyticCoverage
             if (partialTop > 0 && fullTop - 1 == target)
             {
                 if (partialLeft > 0) AddMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(FixedMul(partialTop, partialLeft)));
-                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, FixedToAlphaTrunc(partialTop));
+                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, FixedToAlphaTrunc(partialTop), false);
                 if (partialRite > 0) AddMask(fullRite - _xStart, FixedToAlphaTrunc(FixedMul(partialTop, partialRite)));
             }
             if (fullBot > fullTop && (fullRite > fullLeft || FixedToAlphaTrunc(partialLeft) > 0 || FixedToAlphaTrunc(partialRite) > 0) && target >= fullTop && target < fullBot)
             {
                 if (partialLeft > 0) SetMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(partialLeft));
-                for (int index = 0; index < fullRite - fullLeft; index++) SetMask(fullLeft + index - _xStart, 255);
+                if (_useRunBlitter) RecordDirectSpan(fullLeft - _xStart, fullRite - fullLeft);
+                else for (int index = 0; index < fullRite - fullLeft; index++) SetMask(fullLeft + index - _xStart, 255);
                 if (partialRite > 0) SetMask(fullRite - _xStart, FixedToAlphaTrunc(partialRite));
             }
             if (partialBot > 0 && fullBot == target)
             {
                 if (partialLeft > 0) AddMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(FixedMul(partialBot, partialLeft)));
-                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, FixedToAlphaTrunc(partialBot));
+                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, FixedToAlphaTrunc(partialBot), false);
                 if (partialRite > 0) AddMask(fullRite - _xStart, FixedToAlphaTrunc(FixedMul(partialBot, partialRite)));
             }
         }
@@ -1989,11 +2165,32 @@ internal ref struct SvgAnalyticCoverage
         rite -= SnapHalf;
         return (left, rite, y);
     }
-    /// <summary>Walks the retained edges from the top and emits the requested row coverage, charging measured work.</summary>
-    /// <remarks>Rows must arrive in ascending order from the preparation x-y window; each call rebuilds links and edge positions from setup, so calls are independent apart from ascending order. The row span holds mask alphas for the window width after the call. Row work covers zeroing, link and position rebuilds, visited strips and a sorting-free walk for the caller ledger.</remarks>
+    /// <summary>Prepares a row with an explicitly unbounded operation-work allowance for internal diagnostics.</summary>
     internal void PrepareRow(int y, out long rowWork, CancellationToken cancellationToken)
+        => PrepareRow(y, long.MaxValue, out rowWork, cancellationToken);
+
+    /// <summary>Restores the retained edges and prepares the requested mask/run row and direct paint events.</summary>
+    /// <remarks>Rows arrive in ascending order within the preparation window. Each call restores curve state and links; allocated event capacity is reused. Returned work covers row clearing, edge restoration, visited strips, event recording/replay and buffer growth/copying. New operation work is checked against maximumRowWork before allocation or recording. The caller checks the complete row charge before painting. Cancellation preserves its token; Dispose owns all buffers, including after denial or cancellation.</remarks>
+    internal void PrepareRow(int y, long maximumRowWork, out long rowWork, CancellationToken cancellationToken)
     {
-        Array.Clear(_row, 0, _row.Length);
+        cancellationToken.ThrowIfCancellationRequested();
+        _rowCancellationToken = cancellationToken;
+        _strips = 0;
+        _rowOperationWork = 0;
+        _rowOperationWorkLimit = maximumRowWork - _width - (long)_edges.Length * 3;
+        _directOperationCount = 0;
+        _directSpanCount = 0;
+        _paintSequence = 0;
+        if (_useRunBlitter)
+        {
+            for (int index = 0; index < _width; index++)
+            {
+                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                _directLinks[index] = default;
+                _row[index + 1] = 0;
+            }
+        }
+        else Array.Clear(_row, 0, _row.Length);
         _strips = 0;
         if (_edges.Length == 0) { rowWork = _width; return; }
         for (int index = 0; index < _edges.Length; index++)
@@ -2036,6 +2233,6 @@ internal ref struct SvgAnalyticCoverage
         if (_convex) WalkConvexRow(y, cancellationToken);
         else WalkEdgesRow(y, cancellationToken);
 
-        rowWork = _width + (long)_edges.Length * 3 + _strips;
+        rowWork = _width + (long)_edges.Length * 3 + _strips + _rowOperationWork;
     }
 }

@@ -21,16 +21,16 @@ public sealed class FordForwardTrajectoryTests
         RgbaImage candidate = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None).ToArray(), 100 * 100);
         PixelComparison comparison = PixelComparer.Compare(reference, candidate);
         Assert.True(comparison.DimensionsMatch);
-        Assert.Equal(56, comparison.ChangedPixelCount);
-        Assert.Equal((byte)128, comparison.MaximumChannelError);
-        Assert.Equal((byte)7, comparison.MaximumAlphaError);
-        Assert.Equal(56, comparison.AlphaChangedPixelCount);
+        Assert.Equal(2, comparison.ChangedPixelCount);
+        Assert.Equal((byte)5, comparison.MaximumChannelError);
+        Assert.Equal((byte)5, comparison.MaximumAlphaError);
+        Assert.Equal(2, comparison.AlphaChangedPixelCount);
         (int alphaCount, int rgbOnlyCount, int over, int under, int firstAlphaRow, int firstRgbOnlyRow) = SplitStages(reference, candidate);
-        Assert.Equal(56, alphaCount);
+        Assert.Equal(2, alphaCount);
         Assert.Equal(0, rgbOnlyCount);
-        Assert.Equal(50, over);
-        Assert.Equal(6, under);
-        Assert.Equal(36, firstAlphaRow);
+        Assert.Equal(0, over);
+        Assert.Equal(2, under);
+        Assert.Equal(49, firstAlphaRow);
         Assert.Equal(-1, firstRgbOnlyRow);
     }
 
@@ -74,8 +74,8 @@ public sealed class FordForwardTrajectoryTests
             {
                 live.PrepareRow(y, out long _, CancellationToken.None);
                 flat.PrepareRow(y, out long _, CancellationToken.None);
-                byte[] liveRow = live.Row.ToArray();
-                byte[] flatRow = flat.Row.ToArray();
+                byte[] liveRow = SamplePaintedAlpha(live, 100, polygon.Color);
+                byte[] flatRow = SamplePaintedAlpha(flat, 100, polygon.Color);
                 long rowLiveErr = 0;
                 long rowFlatErr = 0;
                 bool differ = false;
@@ -94,9 +94,9 @@ public sealed class FordForwardTrajectoryTests
                 if (rowLiveErr < rowFlatErr) { liveWinRows++; if (firstLiveWin < 0) firstLiveWin = y; }
                 if (rowFlatErr < rowLiveErr) { flatWinRows++; if (firstFlatWin < 0) firstFlatWin = y; }
             }
-            Assert.Equal(178, differing);
-            Assert.Equal(114, liveErr);
-            Assert.Equal(822, flatErr);
+            Assert.Equal(172, differing);
+            Assert.Equal(0, liveErr);
+            Assert.Equal(780, flatErr);
             Assert.Equal(29, liveWinRows);
             Assert.Equal(0, flatWinRows);
             Assert.Equal(34, firstDiffer);
@@ -119,12 +119,12 @@ public sealed class FordForwardTrajectoryTests
         {
             if (geometry.Kind != SvgGeometryKind.PolygonFill) continue;
             var polygon = geometry.Polygon;
-            (int firstRow, long differingBytes, long liveMass, long flatMass, bool liveEligible, bool flatEligible) = WalkLiveVersusFlat(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 500, 200);
+            (int firstRow, long differingBytes, long liveMass, long flatMass, bool liveEligible, bool flatEligible) = WalkLiveVersusFlat(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 500, 200, polygon.Color);
             fills.Add("points=" + polygon.Points.Length + " quads=" + polygon.QuadSpans.Length + " cubics=" + polygon.CubicSpans.Length + " liveEligible=" + liveEligible + " flatEligible=" + flatEligible + " firstRow=" + firstRow + " differingBytes=" + differingBytes + " liveMass=" + liveMass + " flatMass=" + flatMass);
         }
         Assert.Equal(2, fills.Count);
-        Assert.Equal("points=338 quads=0 cubics=84 liveEligible=True flatEligible=True firstRow=60 differingBytes=1970 liveMass=4335894 flatMass=4338774", fills[0]);
-        Assert.Equal("points=298 quads=0 cubics=60 liveEligible=True flatEligible=True firstRow=3 differingBytes=2114 liveMass=4177997 flatMass=4174854", fills[1]);
+        Assert.Equal("points=338 quads=0 cubics=84 liveEligible=True flatEligible=True firstRow=60 differingBytes=1757 liveMass=4335921 flatMass=4338689", fills[0]);
+        Assert.Equal("points=298 quads=0 cubics=60 liveEligible=True flatEligible=True firstRow=3 differingBytes=1918 liveMass=4177859 flatMass=4174662", fills[1]);
     }
 
     [Fact]
@@ -137,11 +137,11 @@ public sealed class FordForwardTrajectoryTests
         Assert.Equal(500, transparent.Width);
         Assert.Equal(200, transparent.Height);
         (long opaque, long fringe, long clear) = CensusAlpha(transparent);
-        Assert.Equal(31329, opaque);
-        Assert.Equal(4137, fringe);
-        Assert.Equal(64534, clear);
-        Assert.Equal(35466, CountNonBackground(white, 255, 255, 255));
-        Assert.Equal(35393, CountNonBackground(black, 0, 0, 0));
+        Assert.Equal(31569, opaque);
+        Assert.Equal(3640, fringe);
+        Assert.Equal(64791, clear);
+        Assert.Equal(35215, CountNonBackground(white, 255, 255, 255));
+        Assert.Equal(35203, CountNonBackground(black, 0, 0, 0));
     }
 
     private static RgbaImage RenderAt(byte[] svg, SvgColor background)
@@ -183,7 +183,7 @@ public sealed class FordForwardTrajectoryTests
         return (alphaCount, rgbOnlyCount, over, under, firstAlphaRow, firstRgbOnlyRow);
     }
 
-    private static (int FirstRow, long DifferingBytes, long LiveMass, long FlatMass, bool LiveEligible, bool FlatEligible) WalkLiveVersusFlat(SvgDevicePoint[] points, int[] ends, int[]? signs, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int width, int height)
+    private static (int FirstRow, long DifferingBytes, long LiveMass, long FlatMass, bool LiveEligible, bool FlatEligible) WalkLiveVersusFlat(SvgDevicePoint[] points, int[] ends, int[]? signs, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int width, int height, SvgColor paint)
     {
         RenderBudget budget = new(10_000_000);
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
@@ -199,8 +199,8 @@ public sealed class FordForwardTrajectoryTests
             {
                 live.PrepareRow(y, out long _, CancellationToken.None);
                 flat.PrepareRow(y, out long _, CancellationToken.None);
-                byte[] liveRow = live.Row.ToArray();
-                byte[] flatRow = flat.Row.ToArray();
+                byte[] liveRow = SamplePaintedAlpha(live, width, paint);
+                byte[] flatRow = SamplePaintedAlpha(flat, width, paint);
                 foreach (byte value in liveRow) liveMass += value;
                 foreach (byte value in flatRow) flatMass += value;
                 if (!liveRow.SequenceEqual(flatRow))
@@ -231,7 +231,7 @@ public sealed class FordForwardTrajectoryTests
             fills++;
             var polygon = geometry.Polygon;
             Assert.Equal(8, polygon.CubicSpans.Length);
-            (byte[] baseline, bool baseEligible) = WalkCoverageRows(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.Mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 100, 100);
+            (byte[] baseline, bool baseEligible) = WalkCoverageRows(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.Mapping, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), 100, 100, polygon.Color);
             Assert.True(baseEligible);
             long baseErr = 0;
             for (int i = 0; i < baseline.Length; i++)
@@ -239,11 +239,11 @@ public sealed class FordForwardTrajectoryTests
                 int oracleA = reference.Pixels[(i / 100 * 100 + (i % 100)) * 4 + 3];
                 baseErr += baseline[i] > oracleA ? baseline[i] - oracleA : oracleA - baseline[i];
             }
-            Assert.Equal(822, baseErr);
+            Assert.Equal(780, baseErr);
             List<long> deltas = new();
             foreach (SvgCubicSpan span in polygon.CubicSpans)
             {
-                (byte[] hybrid, bool hybridEligible) = WalkCoverageRows(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.Mapping, Array.Empty<SvgQuadSpan>(), new SvgCubicSpan[] { span }, 100, 100);
+                (byte[] hybrid, bool hybridEligible) = WalkCoverageRows(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.Mapping, Array.Empty<SvgQuadSpan>(), new SvgCubicSpan[] { span }, 100, 100, polygon.Color);
                 Assert.True(hybridEligible);
                 long hybridErr = 0;
                 for (int i = 0; i < hybrid.Length; i++)
@@ -253,12 +253,12 @@ public sealed class FordForwardTrajectoryTests
                 }
                 deltas.Add(hybridErr - baseErr);
             }
-            Assert.Equal(new long[] { -117, -112, -47, -69, -101, -114, -54, -61 }, deltas);
+            Assert.Equal(new long[] { -129, -110, -52, -90, -113, -112, -59, -80 }, deltas);
         }
         Assert.Equal(1, fills);
     }
 
-    private static (byte[] Rows, bool Eligible) WalkCoverageRows(SvgDevicePoint[] points, int[] ends, int[]? signs, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int width, int height)
+    private static (byte[] Rows, bool Eligible) WalkCoverageRows(SvgDevicePoint[] points, int[] ends, int[]? signs, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int width, int height, SvgColor paint)
     {
         RenderBudget walkBudget = new(10_000_000);
         ReadOnlySpan<int> votes = signs is int[] roles ? roles : Array.Empty<int>();
@@ -269,7 +269,7 @@ public sealed class FordForwardTrajectoryTests
             for (int y = 0; y < height; y++)
             {
                 walker.PrepareRow(y, out long _, CancellationToken.None);
-                rows.AddRange(walker.Row.ToArray());
+                rows.AddRange(SamplePaintedAlpha(walker, width, paint));
             }
         }
         return (rows.ToArray(), eligible);
@@ -287,6 +287,19 @@ public sealed class FordForwardTrajectoryTests
             else fringe++;
         }
         return (opaque, fringe, clear);
+    }
+
+    private static byte[] SamplePaintedAlpha(SvgAnalyticCoverage walker, int width, SvgColor color)
+    {
+        byte[] pixels = new byte[width * 4];
+        byte[] alphas = new byte[width];
+        SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(color);
+        for (int x = 0; x < width; x++)
+        {
+            walker.PaintPixel(x, pixels.AsSpan(x * 4, 4), paint, 1);
+            alphas[x] = pixels[x * 4 + 3];
+        }
+        return alphas;
     }
 
     private static long CountNonBackground(RgbaImage image, byte r, byte g, byte b)

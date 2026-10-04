@@ -360,3 +360,53 @@ Harnesses, source/input/output identities, both-order measurements and the final
 ledger are under ignored `artifacts/span-dispatch-20261004/`. The design record
 lists the independent 80-configuration capture family and its remaining layer
 failure; the fixture gate is the portable regression source.
+
+## Operation-preserving analytic paint resource checkpoint (2026-10-04)
+
+Compare the `30c6f4a3` production renderer with the integrated operation-preserving
+paint/float-capture checkpoint on Windows x64 .NET 10.0.12, using the same four
+inputs and owned-memory harness. Each renderer has 32 warmups and three batches:
+100 tiny, ten intended Ford, three dense and three native-size conversions. Run
+both after→before and before→after renderer orders after replay cleanup. The first
+pair overlaps regression validation; the second pair runs sequentially.
+These local measurements do not replace
+BenchmarkDotNet or establish representative corporate throughput.
+
+| Input | Before time (ms) | After time (ms) | Before allocated bytes | After allocated bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Tiny triangle | 0.120–0.404 | 0.119–0.148 | 20,288–20,290 | 20,288–20,290 |
+| Ford `inv-002` | 15.297–19.740 | 16.644–22.719 | 805,650–808,804 | 814,250–817,197 |
+| Dense `inv-082` | 355.770–363.763 | 363.169–520.614 | 5,670,000–5,672,744 | 5,748,738–5,749,776 |
+| Native-size `inv-050` | 457.744–558.929 | 629.405–646.535 | 33,907,056–33,907,824 | 34,036,912–34,039,536 |
+
+Tiny/Ford/dense ranges overlap or vary with renderer order/load. Native-size output
+is consistently slower in these local pairs; that regression is retained as an
+open replay-cost issue, not dismissed as noise. Opaque full-coverage copying,
+avoiding unarmed execution-context probe reads and eliminating unused collapsed
+coverage calculations reduce the initial 795–898 ms candidate to the range above.
+The cleanup preserves all 713 banked outputs and dispositions. It does not remove
+the remaining native-size cost or establish representative throughput. Allocation
+traffic includes bounded event/span buffers and changed encoding, not peak live
+memory. Tiny output is unchanged; Ford/dense/native-size output changes.
+
+The internal ledger records the same input hashes and parser work. Charged work
+through raster includes the new pixel indices, fringe event recording/replay and
+growth/copy costs; encoding is excluded from that work column. Accounted peaks
+include encoding and therefore also reflect changed PNG sizes.
+
+| Input | Before → after work through raster | Before → after accounted peak (bytes) |
+| --- | ---: | ---: |
+| Tiny triangle | 218 → 218 | 132,576 → 132,576 |
+| Ford `inv-002` | 1,255,251 → 1,261,164 | 554,028 → 559,396 |
+| Dense `inv-082` | 34,881,400 → 34,929,573 | 3,036,181 → 3,044,921 |
+| Native-size `inv-050` | 76,736,404 → 90,740,576 | 33,628,107 → 33,626,765 |
+
+All four retain Default admission. Native-size work increases materially and stays
+within the existing total work limit including encoding. The initial model stored
+one full-span event per pixel and exceeded that limit; it is rejected. The landed
+compact model indexes one shared span descriptor per covered run, merges it with
+fringe paints by sequence and charges further overlap separately. Memory reserves
+use actual value sizes and include both arrays during growth/copy. Ten focused
+arithmetic/ownership facts, all 25 memory scenarios and installed-package gates pass.
+Local measurement, ledger, source/input/output identities and both renderer orders
+are retained under ignored `artifacts/paint-operations-20261004/`.

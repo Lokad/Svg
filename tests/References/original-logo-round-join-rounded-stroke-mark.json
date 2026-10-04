@@ -6,17 +6,28 @@
   "chromiumRevision": "1681091",
   "platform": "win64",
   "captureRecipeRevision": "3",
-  "viewport": { "width": 64, "height": 64, "deviceScaleFactor": 1 },
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
   "background": "transparent",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "candidateSha256": "583861f2d31f007df57ea1c98f1603c05ca895051a52014c0dd055a5ca66cfa3",
+  "candidateSha256": "7ec9d1b52a075264d75cbcd802d9077d04f0d2705de7c0bb3a5862d62496c1a5",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 188,
+    "changedPixelCount": 178,
     "maximumChannelError": 255,
-    "maximumAlphaError": 72,
-    "exact": false
+    "maximumAlphaError": 73,
+    "alphaChangedPixelCount": 121,
+    "minimumMismatchX": 4,
+    "minimumMismatchY": 4,
+    "maximumMismatchX": 59,
+    "maximumMismatchY": 59,
+    "exact": false,
+    "alphaErrorMass": 2650
   },
-  "admittedAt": "2026-09-26"
+  "admittedAt": "2026-09-26",
+  "comparisonUpdatedAt": "2026-10-04"
 }

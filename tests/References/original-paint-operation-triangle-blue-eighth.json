@@ -1,0 +1,43 @@
+{
+  "fixtureId": "original-paint-operation-triangle-blue-eighth",
+  "referencePng": "original-paint-operation-triangle-blue-eighth.png",
+  "referenceSha256": "0f34a62cecb18dbfd53b3c9e05c386ce184cc7d94d0525abcd4db5115f80a6f1",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "5da3aab0430098d5a1ee702a5a3dda9ed5ce56560847bec0af900b9cdb717f98",
+  "candidateSha256": "2846efe478e7357e70b8857c9badd86dbe7de4a30509857e874397cf92c55e0a",
+  "admittedAt": "2026-10-04",
+  "captureSha256": [
+    "0f34a62cecb18dbfd53b3c9e05c386ce184cc7d94d0525abcd4db5115f80a6f1",
+    "0f34a62cecb18dbfd53b3c9e05c386ce184cc7d94d0525abcd4db5115f80a6f1",
+    "0f34a62cecb18dbfd53b3c9e05c386ce184cc7d94d0525abcd4db5115f80a6f1"
+  ],
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 64,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "candidateInputSha256": "6a4ebec14aa7ca098632abda8406b5cbe5fc47607a9f3093606e7a9497c73fcd",
+  "materialization": "Normalize repository LF line endings and trailing document whitespace; retain original capture input hash, geometry, paint and reference PNG."
+}

@@ -316,25 +316,22 @@ public static class SvgConverter
 
         static void ApplyCaptureUnpremultiply(byte[] destination, int count, CancellationToken cancellationToken)
         {
-            // Pinned-backend capture behavior. Skia keeps premultiplied colors with SkAlphaMulQ
-            // ((channel * (alpha + 1)) >> 8, src/core/SkColorPriv.h at the release pin) and the
-            // capture un-premultiplies with round-half-up. Straight storage of the paint color
-            // diverges from the oracle on mid-tone fringe by up to 2 levels per channel (18 of 18
-            // channels exact on six Ford over-40 straddle pixels). Black, white and primary paints
-            // round-trip to identity, as do full and empty alphas and every opaque-background
-            // pixel, so only transparent-background fringe moves. Surfaces stay premultiplied
-            // through every layer operation (see BlendPremultipliedOver), so grouped and direct
-            // masked renders keep identical spellings through one shared backend.
+            // Match the pinned raster pipeline's byte-to-float load, reciprocal-alpha
+            // unpremultiplication and nearest-even RGBA8 store in that order. Integer
+            // round-half-up differs at material/coverage ties. Source premultiplication
+            // depends on the paint route; all surfaces remain premultiplied through
+            // composition and use this shared capture conversion once at output.
             for (int pixel = 0; pixel < count; pixel++)
             {
                 if ((pixel & 4095) == 0 && cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
                 int offset = pixel * 4;
                 int alpha = destination[offset + 3];
                 if (alpha <= 0 || alpha >= 255) continue;
-                int half = alpha >> 1;
-                destination[offset] = (byte)((destination[offset] * 255 + half) / alpha);
-                destination[offset + 1] = (byte)((destination[offset + 1] * 255 + half) / alpha);
-                destination[offset + 2] = (byte)((destination[offset + 2] * 255 + half) / alpha);
+                const float byteScale = 1f / 255f;
+                float inverseAlpha = 1f / (alpha * byteScale);
+                destination[offset] = (byte)Math.Clamp((int)MathF.Round(destination[offset] * byteScale * inverseAlpha * 255f), 0, 255);
+                destination[offset + 1] = (byte)Math.Clamp((int)MathF.Round(destination[offset + 1] * byteScale * inverseAlpha * 255f), 0, 255);
+                destination[offset + 2] = (byte)Math.Clamp((int)MathF.Round(destination[offset + 2] * byteScale * inverseAlpha * 255f), 0, 255);
             }
         }
 
@@ -535,6 +532,7 @@ public static class SvgConverter
             if (!polygon.HasFill || polygon.Points.Length < 3) return;
             using MappedPolygon raster = MapPolygon(polygon.Points, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
+            SvgAnalyticPaint analyticPaint = SvgAnalyticPaint.Solid(polygon.Color);
             ReadOnlySpan<int> contourEnds = polygon.ContourEnds;
             ReadOnlySpan<int> nestingSigns = polygon.Signs is int[] signs ? signs : Array.Empty<int>();
             using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, raster.QuadSpans, raster.CubicSpans, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
@@ -554,13 +552,11 @@ public static class SvgConverter
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                ReadOnlySpan<byte> analyticRow = default;
                 if (useAnalytic)
                 {
-                    walker.PrepareRow(y, out long analyticRowWork, cancellationToken);
+                    walker.PrepareRow(y, options.Limits.MaximumWorkUnits - workUnits, out long analyticRowWork, cancellationToken);
                     if (analyticRowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                     workUnits += analyticRowWork;
-                    analyticRow = walker.Row;
                 }
                 else
                 {
@@ -570,22 +566,11 @@ public static class SvgConverter
                 }
                 for (int x = raster.StartX; x < raster.EndX; x++)
                 {
-                    double pixelCoverage;
-                    if (useAnalytic)
-                    {
-                        pixelCoverage = analyticRow[x - raster.PathStartX] / 255.0;
-                        if (raster.Clip is not null) pixelCoverage *= ClipBoxCoverage(raster.Clip.Value, x, y);
-                        if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    }
-                    else if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, x, y, cancellationToken);
-                    else
-                    {
-                        pixelCoverage = 0.0;
-                        if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    }
-                    SvgColor color = WithCoverage(polygon.Color, pixelCoverage);
+                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, x, y, cancellationToken) : 0.0;
                     int offset = (y * outputWidth + x) * 4;
-                    BlendSourceOver(destination.AsSpan(offset, 4), color);
+                    if (useAnalytic) walker.PaintPixel(x - raster.PathStartX, destination.AsSpan(offset, 4), analyticPaint, raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                    else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(polygon.Color, pixelCoverage));
                 }
             }
         }
@@ -627,13 +612,11 @@ public static class SvgConverter
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
-            ReadOnlySpan<byte> analyticRow = default;
             if (useAnalytic)
             {
-                walker.PrepareRow(y, out long analyticRowWork, cancellationToken);
+                walker.PrepareRow(y, options.Limits.MaximumWorkUnits - workUnits, out long analyticRowWork, cancellationToken);
                 if (analyticRowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                 workUnits += analyticRowWork;
-                analyticRow = walker.Row;
             }
             else
             {
@@ -644,19 +627,8 @@ public static class SvgConverter
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
             for (int x = raster.StartX; x < raster.EndX; x++)
             {
-                double pixelCoverage;
-                if (useAnalytic)
-                {
-                    pixelCoverage = analyticRow[x - raster.PathStartX] / 255.0;
-                    if (raster.Clip is not null) pixelCoverage *= ClipBoxCoverage(raster.Clip.Value, x, y);
-                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                }
-                else if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
-                else
-                {
-                    pixelCoverage = 0.0;
-                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                }
+                if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken) : 0.0;
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double position;
                 if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
@@ -693,13 +665,14 @@ public static class SvgConverter
                 {
                     (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, outline.Opacity);
                     int gradientCoverage = CoverageAlpha(255, pixelCoverage) + 1;
-                    BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
+                    if (useAnalytic) walker.PaintPixel(x - raster.PathStartX, destination.AsSpan(offset, 4), new((byte)gradientRed, (byte)gradientGreen, (byte)gradientBlue, gradientMask, false), raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                    else BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
                 }
                 else
                 {
                     SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
-                    SvgColor color = WithCoverage(tileColor, pixelCoverage);
-                    BlendSourceOver(destination.AsSpan(offset, 4), color);
+                    if (useAnalytic) walker.PaintPixel(x - raster.PathStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(tileColor), raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                    else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(tileColor, pixelCoverage));
                 }
             }
             }
@@ -737,13 +710,11 @@ public static class SvgConverter
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
-            ReadOnlySpan<byte> analyticRow = default;
             if (useAnalytic)
             {
-                walker.PrepareRow(y, out long analyticRowWork, cancellationToken);
+                walker.PrepareRow(y, options.Limits.MaximumWorkUnits - workUnits, out long analyticRowWork, cancellationToken);
                 if (analyticRowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                 workUnits += analyticRowWork;
-                analyticRow = walker.Row;
             }
             else
             {
@@ -754,19 +725,8 @@ public static class SvgConverter
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
             for (int x = raster.StartX; x < raster.EndX; x++)
             {
-                double pixelCoverage;
-                if (useAnalytic)
-                {
-                    pixelCoverage = analyticRow[x - raster.PathStartX] / 255.0;
-                    if (raster.Clip is not null) pixelCoverage *= ClipBoxCoverage(raster.Clip.Value, x, y);
-                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                }
-                else if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
-                else
-                {
-                    pixelCoverage = 0.0;
-                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                }
+                if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken) : 0.0;
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double sampleX;
                 double sampleY;
@@ -859,13 +819,14 @@ public static class SvgConverter
                 {
                     (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, outline.Opacity);
                     int gradientCoverage = CoverageAlpha(255, pixelCoverage) + 1;
-                    BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
+                    if (useAnalytic) walker.PaintPixel(x - raster.PathStartX, destination.AsSpan(offset, 4), new((byte)gradientRed, (byte)gradientGreen, (byte)gradientBlue, gradientMask, false), raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                    else BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
                 }
                 else
                 {
                     SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
-                    SvgColor color = WithCoverage(tileColor, pixelCoverage);
-                    BlendSourceOver(destination.AsSpan(offset, 4), color);
+                    if (useAnalytic) walker.PaintPixel(x - raster.PathStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(tileColor), raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                    else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(tileColor, pixelCoverage));
                 }
             }
             }
@@ -902,13 +863,11 @@ public static class SvgConverter
             for (int y = raster.StartY; y < raster.EndY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
-            ReadOnlySpan<byte> analyticRow = default;
             if (useAnalytic)
             {
-                walker.PrepareRow(y, out long analyticRowWork, cancellationToken);
+                walker.PrepareRow(y, options.Limits.MaximumWorkUnits - workUnits, out long analyticRowWork, cancellationToken);
                 if (analyticRowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                 workUnits += analyticRowWork;
-                analyticRow = walker.Row;
             }
             else
             {
@@ -918,19 +877,8 @@ public static class SvgConverter
             }
             for (int x = raster.StartX; x < raster.EndX; x++)
             {
-                double pixelCoverage;
-                if (useAnalytic)
-                {
-                    pixelCoverage = analyticRow[x - raster.PathStartX] / 255.0;
-                    if (raster.Clip is not null) pixelCoverage *= ClipBoxCoverage(raster.Clip.Value, x, y);
-                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                }
-                else if (scan.MightCover(x)) pixelCoverage = PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken);
-                else
-                {
-                    pixelCoverage = 0.0;
-                    if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                }
+                if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken) : 0.0;
                 int tileX = PositiveModulo(x - tile.OriginX, tile.TileWidth);
                 int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
                 int tileOffset = (tileY * tile.TileWidth + tileX) * 4;
@@ -941,7 +889,8 @@ public static class SvgConverter
                 int tileBlue = (blitted[tileOffset + 2] * tileOpacityScale) >> 8;
                 int tileCoverage = CoverageAlpha(255, pixelCoverage) + 1;
                 int offset = (y * outputWidth + x) * 4;
-                BlendPremultipliedOver(destination.AsSpan(offset, 4), (tileRed * tileCoverage) >> 8, (tileGreen * tileCoverage) >> 8, (tileBlue * tileCoverage) >> 8, (tileAlpha * tileCoverage) >> 8);
+                if (useAnalytic) walker.PaintPixel(x - raster.PathStartX, destination.AsSpan(offset, 4), new((byte)tileRed, (byte)tileGreen, (byte)tileBlue, (byte)tileAlpha, false), raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                else BlendPremultipliedOver(destination.AsSpan(offset, 4), (tileRed * tileCoverage) >> 8, (tileGreen * tileCoverage) >> 8, (tileBlue * tileCoverage) >> 8, (tileAlpha * tileCoverage) >> 8);
             }
             }
         }

@@ -16,7 +16,7 @@
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
   "inputSha256": "15c95d5a26fff509e942ccb25d52792231e470e0468e0ca5db8b873772434362",
-  "candidateSha256": "b1b94498eb7fb8e3eaed8c518e89ae9817a0273e6189119e19563b6e162b8708",
+  "candidateSha256": "7591d1d07ffd218d5fa85516328f9fac2229fe6e728b77a5e62132a97a6bb46a",
   "admittedAt": "2026-10-04",
   "sourceBounds": {
     "width": 7,
@@ -25,14 +25,16 @@
   "predictedBlitterRoute": "run",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 24,
-    "maximumChannelError": 128,
-    "maximumAlphaError": 2,
-    "alphaChangedPixelCount": 6,
-    "minimumMismatchX": 6,
-    "minimumMismatchY": 4,
-    "maximumMismatchX": 10,
-    "maximumMismatchY": 132,
-    "exact": false
-  }
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 160,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "comparisonUpdatedAt": "2026-10-04"
 }

@@ -38,9 +38,18 @@ public sealed class SvgCubicSpanWalkerTests
         sequential.PrepareRow(24, out long sequentialWork, CancellationToken.None);
         skipped.PrepareRow(24, out long skippedWork, CancellationToken.None);
 
-        Assert.Equal(skipped.Row.ToArray(), sequential.Row.ToArray());
-        Assert.Equal(skippedWork, sequentialWork);
-        Assert.Contains(sequential.Row.ToArray(), alpha => alpha > 0 && alpha < 255);
+        byte[] sequentialPixels = new byte[64 * 4];
+        byte[] skippedPixels = new byte[64 * 4];
+        SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(new(0, 0, 0, 255));
+        for (int x = 0; x < 64; x++)
+        {
+            sequential.PaintPixel(x, sequentialPixels.AsSpan(x * 4, 4), paint, 1);
+            skipped.PaintPixel(x, skippedPixels.AsSpan(x * 4, 4), paint, 1);
+        }
+        Assert.Equal(skippedPixels, sequentialPixels);
+        // Skipping earlier rows may require growing the operation buffer here.
+        Assert.True(skippedWork >= sequentialWork);
+        Assert.Contains(Enumerable.Range(0, 64).Select(x => sequentialPixels[x * 4 + 3]), alpha => alpha > 0 && alpha < 255);
     }
 
     private static (SvgDevicePoint[] Points, int[] Ends, int[]? Signs, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans) LowerCubicArch(bool evenOdd)
@@ -63,7 +72,12 @@ public sealed class SvgCubicSpanWalkerTests
             for (int y = firstRow; y < pastLastRow; y++)
             {
                 walker.PrepareRow(y, out long _, CancellationToken.None);
-                rows.AddRange(walker.Row.ToArray());
+                byte[] pixels = new byte[64 * 4];
+                for (int x = 0; x < 64; x++)
+                {
+                    walker.PaintPixel(x, pixels.AsSpan(x * 4, 4), SvgAnalyticPaint.Solid(new(0, 0, 0, 255)), 1);
+                    rows.Add(pixels[x * 4 + 3]);
+                }
             }
         }
         return rows.ToArray();

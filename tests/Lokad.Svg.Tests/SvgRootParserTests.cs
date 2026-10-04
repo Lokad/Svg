@@ -823,7 +823,7 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Renders_pattern_ellipse_strokes_identical_to_solid()
+    public void Renders_pattern_ellipse_strokes_through_the_distinct_shader_material_route()
     {
         byte[] painted = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><defs><pattern id=\"p\" width=\"8\" height=\"8\" patternUnits=\"userSpaceOnUse\"><rect width=\"8\" height=\"8\" fill=\"#0000ff\"/></pattern></defs><ellipse cx=\"32\" cy=\"32\" rx=\"20\" ry=\"12\" fill=\"red\" stroke=\"url(#p)\" stroke-width=\"8\"/></svg>");
         byte[] solid = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><ellipse cx=\"32\" cy=\"32\" rx=\"20\" ry=\"12\" fill=\"red\" stroke=\"blue\" stroke-width=\"8\"/></svg>");
@@ -831,7 +831,9 @@ public sealed class SvgRootParserTests
         ReadOnlyMemory<byte> paintedPng = SvgConverter.ConvertToPng(painted, SvgRenderOptions.Default, CancellationToken.None);
         ReadOnlyMemory<byte> solidPng = SvgConverter.ConvertToPng(solid, SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.True(paintedPng.Span.SequenceEqual(solidPng.Span));
+        // Independent recipe-3 captures differ on 27 decoded pixels, including
+        // 18 alpha lanes. Uniform tile samples do not erase shader operation identity.
+        Assert.False(paintedPng.Span.SequenceEqual(solidPng.Span));
     }
 
     [Fact]

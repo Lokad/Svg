@@ -1,0 +1,41 @@
+{
+  "fixtureId": "original-paint-operation-ellipse-pattern",
+  "referencePng": "original-paint-operation-ellipse-pattern.png",
+  "referenceSha256": "d66e85bf856c1afc669442c8c20623aaf29edfa3967639f7dca3aece5ecfe65c",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "4d801a008dfbe953f2c219e46779336ffb21e2af9300fb55035c198686d8f1fb",
+  "candidateSha256": "e8ba70a7f1eb7dd71ae24fb52eefd5a99a686fe1767865d715359250b38ce0df",
+  "admittedAt": "2026-10-04",
+  "captureSha256": [
+    "d66e85bf856c1afc669442c8c20623aaf29edfa3967639f7dca3aece5ecfe65c",
+    "d66e85bf856c1afc669442c8c20623aaf29edfa3967639f7dca3aece5ecfe65c",
+    "d66e85bf856c1afc669442c8c20623aaf29edfa3967639f7dca3aece5ecfe65c"
+  ],
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 239,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 73,
+    "alphaChangedPixelCount": 153,
+    "minimumMismatchX": 8,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": 55,
+    "maximumMismatchY": 47,
+    "exact": false,
+    "alphaErrorMass": 3431
+  }
+}

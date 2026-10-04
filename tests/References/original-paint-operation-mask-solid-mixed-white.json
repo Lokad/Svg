@@ -1,0 +1,41 @@
+{
+  "fixtureId": "original-paint-operation-mask-solid-mixed-white",
+  "referencePng": "original-paint-operation-mask-solid-mixed-white.png",
+  "referenceSha256": "23eec5e6cb9ec37fc7c18dd6c5359c6bf1bbf1c985b058b608eaceb008482948",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 160,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "57eea394f85bbe092a82eed7f20abf8b645e54dd4f4a1e38e2876b2d166dcdd6",
+  "candidateSha256": "fcbc76baaf728e152aa8265bdb8eb21525fcf484aed6dcc9c228af06994e25a8",
+  "admittedAt": "2026-10-04",
+  "captureSha256": [
+    "23eec5e6cb9ec37fc7c18dd6c5359c6bf1bbf1c985b058b608eaceb008482948",
+    "23eec5e6cb9ec37fc7c18dd6c5359c6bf1bbf1c985b058b608eaceb008482948",
+    "23eec5e6cb9ec37fc7c18dd6c5359c6bf1bbf1c985b058b608eaceb008482948"
+  ],
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 160,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  }
+}

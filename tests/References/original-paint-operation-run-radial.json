@@ -1,0 +1,41 @@
+{
+  "fixtureId": "original-paint-operation-run-radial",
+  "referencePng": "original-paint-operation-run-radial.png",
+  "referenceSha256": "cf4f3dc552d48cbf259926821a6467c897dab6e5a8d32a84ecd5fcfb7bcef8d9",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 160,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "eb4b193f80a0880164d016cc4514b695e7802671b6c3a8fca21e381aaf995b56",
+  "candidateSha256": "a1142231452d4f05e8f01aed6342ccff5c17e128cd6d494ac12dfa1b1a1e8507",
+  "admittedAt": "2026-10-04",
+  "captureSha256": [
+    "cf4f3dc552d48cbf259926821a6467c897dab6e5a8d32a84ecd5fcfb7bcef8d9",
+    "cf4f3dc552d48cbf259926821a6467c897dab6e5a8d32a84ecd5fcfb7bcef8d9",
+    "cf4f3dc552d48cbf259926821a6467c897dab6e5a8d32a84ecd5fcfb7bcef8d9"
+  ],
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 38,
+    "maximumChannelError": 12,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 6,
+    "minimumMismatchY": 4,
+    "maximumMismatchX": 37,
+    "maximumMismatchY": 16,
+    "exact": false,
+    "alphaErrorMass": 0
+  }
+}
