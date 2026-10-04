@@ -42,6 +42,9 @@ internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalB
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
 internal readonly struct SvgGeometry
 {
+    /// <summary>Gets source paint only for native solid rectangle draws without an opacity layer. Generated bands, images and paint-server fallbacks remain distinct.</summary>
+    internal SvgSolidPaint? SolidPaint { get; init; }
+
     private readonly SvgGeometryKind _kind;
     private readonly SvgRectangle _rectangle;
     private readonly SvgAxisAlignedLine _axisAlignedLine;

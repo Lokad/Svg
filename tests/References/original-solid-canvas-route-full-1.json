@@ -1,0 +1,33 @@
+{
+  "fixtureId": "original-solid-canvas-route-full-1",
+  "referencePng": "original-solid-canvas-route-full-1.png",
+  "referenceSha256": "daa6bccdaddc1d7b6842195e0e2a876b656909edd0f45b1e0be5137508e5cb41",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 1,
+    "height": 1,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "1434d2712336397d53c2ba989667bf96c4ccb9871bb5d5378cc432a5d0f9394a",
+  "candidateSha256": "c3a95cb11ec594f8e0e447a37d6b4c06a7c187b31c8f751cf6a5ad10d92c2606",
+  "admittedAt": "2026-10-04",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 1,
+    "minimumMismatchY": 1,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}

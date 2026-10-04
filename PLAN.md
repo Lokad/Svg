@@ -4,6 +4,8 @@ Updated 2026-10-04. The reviewed renderer baseline is
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32`; the implemented state-separation
 checkpoint is `70c18287` and records its validation separately. `f68cb887`
 records the rejected endpoint experiments; it does not change renderer output.
+The current full-canvas solid-paint checkpoint adds a bounded routing repair
+and independently captured controls; its validation is recorded below.
 The September 28 baseline and review remain historical evidence in
 [the review](docs/REVIEW_2026_09_28.md) and Git. R01–R41 and S1–S17 retain
 their identities. This revision replaces the accumulated checkpoint log with
@@ -31,9 +33,9 @@ not a prerequisite to improving the shared renderer.
 | Current validated evidence | Assessment |
 | --- | --- |
 | Fresh Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Fresh full tests | **2,976 passed**: 2,865 core, 105 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Fresh full tests | **2,978 passed**: 2,867 core, 105 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Fresh memory and delivery checks | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. No runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **432 entries = 353 exact + 74 known-difference renders + five rejections**; 281 base documents / 151 variants. Synthetic coverage is not corporate-logo coverage. |
+| Executed fixture manifest | **512 entries = 433 exact + 74 known-difference renders + five rejections**; 313 base documents / 199 variants. Synthetic coverage is not corporate-logo coverage. |
 | Executed research manifest | **73 probes = 72 known-difference renders + one rejection**. Useful exact controls graduate to fixtures with their provenance. |
 | Fresh independent-file Default-options sweep | **92 files = 88 render + four MalformedInput rejections** (`inv-007`, `inv-012`, `inv-014`, `inv-020`). Renderability does not establish fidelity or all-variant completion. |
 | Latest recorded Ford all-variant evidence | Small 250×100, intended 500×200 and large 1000×400 × transparent/white/black: **zero exact of nine**. Intended-transparent: 1,200 changed pixels, max channel error 128, max alpha error 54, 1,128 alpha mismatches. These are the recorded current-renderer measurements, not new browser captures in this review. |
@@ -44,11 +46,12 @@ Fresh review artifacts are under the ignored `artifacts/review-2026-10-04/`
 tree: the memory summary, installed consumer and per-file inventory reports.
 The commands and committed manifests are the portable reproduction sources;
 local artifacts are not required build inputs.
-The subsequent plan reconciliation reran all 2,976 tests with
-`dotnet test Lokad.Svg.slnx -c Release --no-build --no-restore` and re-rendered
-the eight retained paint-routing controls. Restore/build, memory and package
-results above remain the baseline/checkpoint evidence; those gates were not
-repeated for this documentation-only change.
+The full-canvas repair reruns the restore/build, test, memory and package gates.
+Its comparisons, capture triples and resource observations are under
+`artifacts/span-dispatch-20261004/`. Eight routing controls and 72 additional
+declared configurations now have committed inputs, references and provenance;
+79 are exact and one retains a known group-opacity difference. The historical
+integer-overlap reference also graduates to exact without replacing its PNG.
 
 Chrome remains **153.0.8010.52 win64, recipe 3**, with the recorded executable
 hash and Chromium revision field 1681091. Historical recipe-1/recipe-2
@@ -73,12 +76,11 @@ affect a counted document, even when our geometry is closer to ideal area.
 2. **Check actual state before edits.** Inspect HEAD, status and live
    coordination. Previous committed work is not a lock. Preserve concurrent
    changes and use an isolated worktree when an experiment overlaps them.
-3. **Resolve the full-canvas paint route, row 3, then return to rows 4–5.**
-   Curve/walk state separation has landed with unchanged output. The current
-   overlap discriminator separates full-canvas rectangles from inset rectangles
-   and equivalent paths; it does not justify changing every full-coverage span.
-   Trace and preserve that distinction through shared paint/scene state before
-   implementing the repair specified below. General curve fidelity remains open.
+3. **Return to shared curve fidelity, rows 4–5.** Curve/walk state separation
+   preserves quarter-grid output. The full-canvas solid-paint repair now preserves
+   native rectangle identity and original fill-opacity through scene/reference
+   lowering, with independent opacity, paint, mapping and routing controls.
+   General composition remains open; its layer residuals stay in rows 3 and 7.
 4. **Preserve the landed repairs and exact controls.** Do not repeat the old
    six-site floor256 replacement, globally disable live cubics, enable RLE
    alpha snapping before threshold accuracy, or desnap endpoints alone.
@@ -108,14 +110,14 @@ completed stage: the remaining exit evidence below governs completion.
 | --- | --- | --- |
 | 1 | **Complete: bounded semantic repairs.** S12 miter threshold and R41 zero-area objectBoundingBox gradient path strokes are repaired. | Preserve acute-limit branches, degenerate path/use and userSpace controls; no reopened defect. |
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
-| 3 | **Active: full-canvas paint routing; general composition fidelity remains open.** Opaque coverage correction and premultiplied source-over are retained. | Establish the full-canvas rectangle versus inset/path contract, retaining original opacity precision where required. Resolve it with independent alpha/paint/background controls while preserving ordinary full/partial coverage and final unpremultiplication; no tolerance. |
-| 4 | **Open; resumes after row 3: shared scan conversion fidelity.** Spatial membership, analytic rows, contact handling and straight-source sibling-stroke union repairs have landed. | Correct fractional events/coverage through the shared walker, held-out slopes/phases, crossings, counters and overlapping paints/outlines, with bounded work and cleanup. |
+| 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. General coverage/alpha and layer composition need independent controls; group-opacity on white still differs. |
+| 4 | **Active with row 5: shared scan conversion fidelity.** Spatial membership, analytic rows, contact handling and straight-source sibling-stroke union repairs have landed. | Correct fractional events/coverage through the shared walker, held-out slopes/phases, crossings, counters and overlapping paints/outlines, with bounded work and cleanup. |
 | 5 | **Open with row 4: retained curves and final device mapping.** Double maps, retained controls, live non-convex cubic stepping and curve/walk state separation have landed with quarter-grid parity. | Fractional-event fidelity, existing transform/instance equivalence, curved-mark and Ford all-variant progress. Quad live stepping, convex paths and curve-sourced strokes retain their documented fallback/gates until separately proved. |
 | 6 | **Partial: curve-aware stroke completion.** Width/cascade, cap/join/dash, zero-width and straight-source union repairs are retained. | True curve tangents/dash cuts, curved/dashed overlap and seam handling, remaining round/miter/hairline/pathLength/non-scaling cases through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Not achieved: independent milestone and delivery, S8/S17.** The 92-file inventory and all-variant records are useful evidence, not a release rate. | First exact curved corporate mark and outlined wordmark; then a frozen representative cohort meeting the 80% exact-document target overall and per corporate stratum, complete declared variants and fresh platform/package/resource/performance evidence. |
 
-### Active work order: retain curve parity; resolve full-canvas paint routing (2026-10-04)
+### Active work order: preserve paint routing; return to curved-logo fidelity (2026-10-04)
 
 **Current mechanism.** Eligible non-convex cubic fills walk live. Their
 forward-difference positions now evolve without walk-position resets; a separate
@@ -164,57 +166,64 @@ Enabling all intersection checks still leaves all nine Ford variants and four
 cubic/quadratic controls byte-identical. It cannot explain their standing errors;
 no cardinality plumbing or heuristic change lands on this evidence.
 
-**Next bounded implementation slice: full-canvas solid paint routing.**
-The committed integer-alpha-overlap reference is independently reconfirmed by
-three fresh recipe-3 pinned-browser captures: all reproduce the historical PNG
-SHA-256 `11a315de7a2661f30c267fa5680ed1c00531633486057738f15b73333b6a0db9`.
-Chrome reads `(85,0,170,191)` while the current candidate reads
-`(85,0,170,192)` on all four pixels. This is a current, small compositing defect,
-not a proposed explanation for Ford's opaque coverage residual.
+**Full-canvas checkpoint (2026-10-04).** The bounded repair is implemented.
+The matched Chromium analyzer predicts native rectangles versus paths, the
+five-draw limit and recovery after a partial rectangle is covered by an opaque
+full rectangle. Recipe 3 paints two opaque page backgrounds, leaving three SVG
+draws in that case. The software capture route composes source float paints,
+quantizes straight RGBA8, then premultiplies with round/255 before the existing
+capture unpremultiplication. Encoded color alpha keeps its byte-derived value;
+element/group opacity layers, paths, generated bands, paint servers and
+over-limit scenes retain their existing routes. Eligibility is established
+from source commands, never bitmap uniformity.
 
-The follow-up route controls narrow that attribution. On transparent canvases of
-1x1, 2x2, 4x4 and 32x32, two full-canvas red/blue rectangles at fill-opacity 0.5
-give Chrome alpha 191 and candidate alpha 192. The same overlap inset into a 4x4
-canvas, at its corner without covering the canvas, or expressed as full-canvas
-paths at 2x2 and 4x4 gives alpha 192 in both. All eight configurations have three
-byte-identical fresh-process captures with healthy startup/cleanup reports.
-Ordinary full-coverage pixels in the opacity grids also agree at 192.
-Thus a general full-span adjustment would break independently verified controls.
+Before production edits, the declared family was captured: seven opacity pairs,
+mixed paints, encoded alpha, layer/inheritance, partial/path recovery and
+operation-limit, mapping/instance/clip controls on transparent/white/black. Each triple is
+byte-identical and has healthy startup/cleanup reports. Held-out 0.375/0.625/0.9
+and mixed paints pass; two further unseen mixed pairs also pass after the
+source-derived quantization correction. With the eight boundary controls,
+**79 of 80 configurations are exact**. The group-opacity-white control retains
+16 differing pixels, maximum channel error one, maximum alpha error zero.
+It remains a known failure; this slice does not close layer composition.
 
-The matched Chromium solid-color analyzer blends eligible full-canvas rectangle
-paints in floating point and rejects DrawPath. That is a source-supported routing
-hypothesis, not proof of which browser operation executed. Verify its complete
-paint/opacity and capture contract before changing the renderer. The controls,
-hashes, source pin and reproduction recipe are in
-[the design record](docs/RASTERIZATION_DESIGN.md#full-canvas-rectangle-route-discriminator-2026-10-04).
+The unchanged historical integer-overlap PNG is now exact at `(85,0,170,191)`.
+Only that image changes in the original 597-case fixture/research/inventory
+comparison; the other 596 dispositions and complete PNGs match. All nine Ford
+PNGs match their previous candidates, so the wordmark remains zero exact of nine.
+The 80 new configurations and their provenance are banked; the current fixture
+counts above include them. Larger geometry/presentation values are charged by
+runtime value size, including the embedded pattern-tile dictionary values.
+During-solid-row cancellation and undersized pattern-table denial have focused
+regressions. Local timing ranges do not establish a stable throughput change.
+Mechanism, source identities and reproduction are in
+[the design record](docs/RASTERIZATION_DESIGN.md#full-canvas-solid-paint-routing-repair-2026-10-04),
+with resource observations in [the benchmark record](docs/BENCHMARKS.md).
 
-1. **Keep the validated curve state.** Preserve the quarter-grid compatibility
-   control, replay restoration, charged work, storage bounds and existing gates.
-   State separation is complete; do not repeat the two endpoint variants or use
-   them to justify a wholesale reset. A new curve architecture needs a specific
-   failing invariant and an independent oracle discriminator first.
-2. **Establish the scene/paint routing contract.** Compare full-canvas rectangles
-   with inset rectangles and equivalent paths. Retain the original fill-opacity
-   separately from byte alpha when the verified route needs it; do not infer
-   0.5 from byte 128, or equate opacity with an explicitly encoded alpha byte.
-   Calibrate with 0.1/0.25/0.5/0.75; reserve 0.375/0.625/0.9 and mixed-color
-   overlaps as holdouts. Capture the full-canvas controls on transparent, white
-   and black backgrounds before code changes. Trace paint quantization, clipping,
-   transforms, operation limits and layer eligibility at the matched source pin.
-   Changing canvas bounds must select the verified route without pixel fitting.
-3. **Implement one shared routing repair after that discriminator passes.**
-   Preserve the rectangle/path distinction through scene lowering, geometry,
-   coverage and references. Keep ordinary full-coverage and partial-coverage
-   controls exact. Graduate the integer overlap only when its existing reference
-   and independent controls are exact. Account for new state before allocation
-   and keep six-output parity and cancellation/cleanup. A bitmap-uniformity check
-   or alpha decrement fitted to this overlap is not the architecture.
-4. **Return to measured curved-logo coverage.** The wordmark exit remains all nine
-   Ford variants exact. The width-gated RLE snap experiment stays rejected on
-   its straddle regressions; do not revive it as a substitute for placement.
-   Shared paint/clip/mask/layer and curve-aware stroke tasks remain in rows 6–7.
+1. **Keep the validated curve and paint state.** Preserve quarter-grid parity,
+   replay restoration, source opacity, native draw identity, charged work and
+   storage bounds. Keep inset/path/encoded-alpha/layer and operation-limit route
+   witnesses. Do not repeat the rejected endpoint or intersection experiments.
+2. **Test authored-to-device mapping precision as the next discriminator.**
+   Inspect Ford's actual maps and the matched path/matrix pipeline, then capture
+   independently declared authored versus device-baked cubic controls at
+   fractional translations/scales. Distinguish parsing, transform order and
+   edge setup; existing float forward differences are already implemented.
+   This is a hypothesis to test, not an established cause or an instruction to
+   cast every coordinate. If it is inert, retain that evidence before choosing
+   another specific failing invariant.
+3. **Land a shared curve repair only after a mechanism is demonstrated.**
+   Require oracle progress on held-out curved controls and all nine Ford
+   configurations, with no lost exact fixture, new opaque-interior/hole flips,
+   unbounded storage or cancellation/ownership regression. Preserve current
+   quad/convex/stroke gates until separately proved.
+4. **Keep the corporate exit and remaining layers explicit.** The wordmark exit
+   remains all nine Ford variants exact. Shared paint/clip/mask/layer and
+   curve-aware stroke tasks remain in rows 3 and 6–7. The group-opacity-white
+   residual is recorded there; another synthetic calibration campaign does not
+   replace measured curved-logo work.
 
-**Checkpoint and acceptance.** Review the first buildable integrated slice.
+**Next curve slice acceptance.** Review the first buildable integrated slice.
 Declare held-out opacity/paint/background and transform/size controls before
 tuning. Compare Ford's nine explicit viewport/background configurations against
 their banked pinned triples, plus the retained cubic twin/crescent, counters,
@@ -238,7 +247,7 @@ native-size `inv-050` under Default limits. Ledger reductions are not throughput
 evidence. After two architecture experiments without improvement, record the
 failed invariant/mechanism and the next concrete implementation experiment.
 
-Once the paint-routing slice holds, complete remaining row-4/row-5 fidelity evidence,
+Continue the remaining row-4/row-5 fidelity evidence,
 then curve-aware strokes and measured paint/clip/mask/layer blockers (rows 6–7).
 Keep historical falsifications in the design record and return here after
 demonstrated dependencies or regression repairs.
@@ -293,7 +302,7 @@ demonstrated dependencies or regression repairs.
 | S10 | Full path-command/affine kernels, retained controls, live non-convex cubics and curve/walk state separation with quarter-grid parity exist. Fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
 | S12 | Caps/joins/dashes/stroke outlines and the bounded row-1 repairs exist. Remaining curved/dashed union, tangent and antialiasing errors belong to row 6 using common coverage. |
-| S13 | Gradient/pattern paint maps and premultiplied composition exist; R41 is closed. Full-canvas paint routing is active in row 3; remaining coverage/paint alpha, dither, group composition and paint combinations need exact controls. |
+| S13 | Gradient/pattern paint maps and premultiplied composition exist; R41 is closed. Bounded full-canvas paint routing is repaired in row 3; remaining coverage/paint alpha, dither, group composition and paint combinations need exact controls. |
 | S14 | Rectangle clips, limited masks and isolated opacity exist. General clips, mask regions/content and bounded nested composition remain. |
 | S15 | Live-text wordmarks are experimental, not required for outlined wordmarks. Follow section 6 and shared glyph contours, not a separate renderer. |
 | S16 | Uniform embedded PNGs and narrow patterns exist. General raster decoding/resampling, multi-element patterns, markers, filters/blending and additional static CSS only for measured blockers. |

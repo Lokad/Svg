@@ -7,8 +7,10 @@ internal sealed class SvgDocumentState : IDisposable
 {
     private const int DefinitionStorageBytes = 256;
     private const int ClipStorageBytes = 128;
-    private const int PatternStorageBytes = 128;
-    // Covers one gradient entry (128, as for patterns) plus one retained clamped stop array sized from its actual element type.
+    // The tile embeds nullable scene geometry. Include its actual value size,
+    // plus conservative bucket/key/entry overhead, before dictionary growth.
+    private static readonly int PatternStorageBytes = checked(64 + (int)ParserCollectionMemory.GetArrayByteCount<SvgPatternTile>(1));
+    // Covers one gradient entry plus one retained clamped stop array sized from its actual element type.
     private static readonly int GradientStorageBytes = checked(128 + (int)ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(SvgGradientSyntax.MaximumGradientStops));
 
     internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)

@@ -8,6 +8,47 @@ using Lokad.Svg.Fonts;
 public sealed class RenderBudgetTests
 {
     [Fact]
+    public void Pattern_table_denies_before_allocating_more_tile_values_than_the_budget_can_hold()
+    {
+        // The first dictionary growth selects seven entries. Even their tile
+        // values alone exceed this budget; buckets, keys and headers cost more.
+        long tileValues = 7L * System.Runtime.CompilerServices.Unsafe.SizeOf<SvgPatternTile>();
+        RenderBudget budget = new(tileValues - 1);
+        using SvgDocumentState state = new(budget, new ParserWorkCounter(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None);
+
+        SvgException denied = Assert.Throws<SvgException>(() => state.Patterns.TryAdd("tile", default));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        Assert.False(state.Patterns.TryGetValue("tile", out _));
+        Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+    public void Cancellation_after_the_first_solid_canvas_row_releases_the_surface_and_preserves_the_token()
+    {
+        RenderBudget budget = new(1_000_000);
+        using CancellationTokenSource cancellation = new();
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='4' height='4' fill='red' fill-opacity='0.5'/><rect width='4' height='4' fill='blue' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, null, new ParserWorkCounter(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None);
+        long preparedBytes = budget.Snapshot().CurrentBytes;
+        int observedRows = 0;
+        using IDisposable observer = SolidCanvasRasterizationProbe.Arm(row =>
+        {
+            observedRows++;
+            Assert.True(budget.Snapshot().CurrentBytes > preparedBytes);
+            if (row == 1) cancellation.Cancel();
+        });
+
+        OperationCanceledException cancelled = Assert.Throws<OperationCanceledException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, cancellation.Token));
+
+        Assert.Equal(cancellation.Token, cancelled.CancellationToken);
+        Assert.Equal(2, observedRows);
+        Assert.Equal(preparedBytes, budget.Snapshot().CurrentBytes);
+        root.Dispose();
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
     public void Analytic_scratch_denies_a_budget_that_cannot_hold_retained_edge_objects()
     {
         // Three 176-byte edges plus two sentinels, rows and reference arrays

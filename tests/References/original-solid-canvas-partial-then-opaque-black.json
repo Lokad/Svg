@@ -1,0 +1,33 @@
+{
+  "fixtureId": "original-solid-canvas-partial-then-opaque-black",
+  "referencePng": "original-solid-canvas-partial-then-opaque-black.png",
+  "referenceSha256": "f1bf152857355622d8d74caac43595e17d049d62eaa87330a554d8a608a69783",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 4,
+    "height": 4,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "fc969b54d06d3bf7863b1f7d6e736af4a4c8297df5af113d06aa312765fb14ba",
+  "candidateSha256": "fba627445dfe2726cad23bd2f9ac4ce80e9367af50c06f8d468477c36a2a9905",
+  "admittedAt": "2026-10-04",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 4,
+    "minimumMismatchY": 4,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}

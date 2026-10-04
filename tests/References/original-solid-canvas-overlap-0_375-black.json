@@ -1,0 +1,33 @@
+{
+  "fixtureId": "original-solid-canvas-overlap-0_375-black",
+  "referencePng": "original-solid-canvas-overlap-0_375-black.png",
+  "referenceSha256": "854602f271f752e9e0b39519663f105cec6e05ea546e76fdda94f72eb2b53ac4",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 4,
+    "height": 4,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "7275974b4cccc0da230e07d3eb1f39474e585018914d22a7a7512c1b4e7c3e24",
+  "candidateSha256": "7dddb3288ee04c13ec4216757f82f1f54f80abedac2bb6b0bf22508d6d4c5f8f",
+  "admittedAt": "2026-10-04",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 4,
+    "minimumMismatchY": 4,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}

@@ -26,7 +26,7 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), presentation.Paint.CurrentColor);
         Assert.True(presentation.Paint.FillUsesCurrentColor);
-        Assert.Equal((byte)128, presentation.Paint.FillOpacity);
+        Assert.Equal(new SvgPaintOpacity(128, 0.5f), presentation.Paint.FillOpacity);
         Assert.False(presentation.IsDisplayed);
         Assert.False(presentation.IsVisible);
         Assert.Equal((byte)128, presentation.Opacity);

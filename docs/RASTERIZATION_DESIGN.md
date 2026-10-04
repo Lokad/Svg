@@ -2725,3 +2725,116 @@ Declare and capture those inputs before production changes; retain the path and
 inset controls. Preserve original opacity precision where the verified route
 requires it, independently of byte alpha. No production or reference change
 lands from this investigation, and Ford's opaque coverage remains open.
+
+## Full-canvas solid-paint routing repair (2026-10-04)
+
+Question: which source paint and scene properties reproduce the full-canvas
+rectangle discriminator without changing ordinary full-coverage spans?
+
+Method: declare inputs before production edits, then capture three fresh
+recipe-3 processes per configuration. The first set has 15 inputs on three
+backgrounds: paired red/blue fill opacities 0.1/0.25/0.375/0.5/0.625/0.75/0.9,
+a mixed-color pair, rgba/hex encoded alpha, element opacity, inherited percentage
+fill-opacity, group opacity and partial-rectangle/path followed by opaque recovery.
+Reserve 0.375/0.625/0.9 and the mixed pair as holdouts. A second nine-input set
+covers three/four/five/six draws, two fresh mixed pairs, viewBox mapping, a local
+instance and a full rectangle clip. Include the eight prior boundary controls.
+Every triple is byte-identical and every wrapper reports healthy launch/cleanup.
+
+Mechanism evidence uses Chromium tag **153.0.8010.52** and matched Skia
+**f8b66b7597c4cc859d3ed190e9c6872241e6721c**, read explicitly with `git show`;
+the optional checkout's main-revision HEAD does not identify the studied source.
+
+- [Blink SVGShapePainter](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/paint/svg_shape_painter.cc)
+  records native rectangle fills as DrawRect and path fills as DrawPath.
+  [SVGObjectPainter](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/paint/svg_object_painter.cc)
+  retains float fill-opacity on solid paints; encoded color alpha starts from
+  its legacy color byte. Paint-server alpha follows a separate quantized route.
+- [SVGImage](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/svg/graphics/svg_image.cc)
+  draws the SVG record inline with clip/concat. DrawPicture itself does not
+  imply an isolated opacity layer.
+- [SolidColorAnalyzer](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/paint/solid_color_analyzer.cc)
+  composes float straight color/alpha on eligible covering rectangle draws.
+  A partial rectangle invalidates the current solid result; a later opaque
+  covering rectangle can recover it. DrawPath and layers disqualify analysis.
+- [TileManager](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/tiles/tile_manager.cc)
+  supplies a maximum of five draw operations. The recipe's HTML and body each
+  paint an opaque background, consuming two operations. The fresh count controls
+  distinguish five from six transparent SVG draws and three from four opaque-
+  background draws. Recording-source total-operation analysis has a different
+  limit; that limit does not predict these captures.
+- [SoftwareRenderer](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/components/viz/service/display/software_renderer.cc)
+  draws the solid-color quad with float paint color/alpha. The capture wrapper
+  disables GPU; the GPU renderer's alpha-floor step is not this route.
+  [SkARGB32_Blitter](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkBlitter_ARGB32.cpp)
+  obtains straight RGBA8 from `paint.getColor()` before `SkPreMultiplyColor`.
+  The latter premultiplies by round/255; capture subsequently unpremultiplies.
+
+These are source-supported predictions corroborated by independent output,
+not instrumentation proving the operation executed inside each browser capture.
+Two intermediate models were rejected before landing: the GPU alpha floor
+fails the 0.25 control; quantizing premultiplied float RGB directly misses the
+first mixed transparent paint by one blue level. The matched software/blitter
+source supplies the corrected order: float composition, straight RGBA8
+quantization, round/255 premultiplication, existing capture unpremultiplication.
+Both further unseen mixed pairs pass that order on all three backgrounds.
+
+Implementation: `SvgPaintOpacity` retains the original float value beside the
+unchanged byte quantization. `SvgGeometry.SolidPaint` marks only native solid
+rectangle draws without an element opacity layer; generated bands/images and
+paint-server fallbacks remain distinct. Eligible direct/symbol references and
+mapping preserve that metadata, while instance opacity disables it. The bounded
+scene analysis consumes source commands, checks mapped canvas containment,
+tracks partial-rectangle recovery and rejects non-rectangle/stroked/layer draws.
+It conservatively gates on retained command count before traversal; invisible
+or clipped-away extra commands may therefore retain the ordinary route. This
+slice does not claim the complete browser optimizer for every admitted scene,
+partially transparent caller background, complex clip or tile decomposition.
+No bitmap-uniformity test or input-specific alpha decrement is used.
+
+Facts: all seven opacity pairs and all mixed-paint holdouts are exact, including
+0.1 transparent `(122,0,133,48)`, 0.5 transparent `(85,0,170,191)` and 0.9
+transparent `(23,0,232,252)`. Inset/corner rectangles and equivalent full paths
+retain `(85,0,170,192)`. Encoded rgba/hex alpha and element-opacity controls
+also retain alpha 192. Partial rectangle followed by opaque recovery selects
+the analyzer; the equivalent initial path does not. Count, mapping, instance
+and full-clip controls all pass.
+
+**79 of 80 configurations are exact.** The group-opacity-white control retains
+16 differing pixels, maximum channel error one and maximum alpha error zero:
+Chrome `(126,126,255,255)`, candidate `(127,127,255,255)`. Group opacity remains
+outside the new analyzer; that unchanged error is banked as a known difference.
+The 32 CC0 input documents and 80 configuration references/provenance are now
+committed. The unchanged historical integer-overlap reference graduates to exact;
+its original recipe-1 identity remains, with recipe-3 reconfirmation recorded.
+Current fixture counts are 512 = 433 exact + 74 known-difference renders + five
+rejections, across 313 base documents and 199 variants. Research counts stay 73.
+
+Acceptance: comparing all original 597 fixture/research/inventory cases changes
+only integer overlap. The other 596 dispositions and complete PNGs match; all
+nine Ford candidates match whole-PNG hashes, leaving zero exact of nine.
+The final expanded corpus comparison executes 677 cases. Windows locked restore,
+zero-warning nine-project Release build, 2,978 tests (2,867 core + 105 visual +
+six FontProbe), 25 memory scenarios and runtime/symbol/installed-consumer package
+gates pass. Six-output and tight-work tests preserve the public contract. The
+new during-solid-row cancellation regression preserves the token and releases
+the raster surface; the new pattern-table denial rejects before dictionary
+growth when even its tile values exceed the budget. Geometry/list reservations
+use actual value size; embedded pattern-tile dictionary storage now does too.
+Source commands and final raster pixels are work-charged before traversal/fill,
+with row and bounded inner-loop cancellation checkpoints.
+
+Reproduction: the banked `solid-canvas-*.svg` inputs, manifest options and
+reference metadata specify every viewport/background, source/executable/PNG
+hash and recipe. Run the standard Release manifest gate for all 80 and the
+historical integer overlap; use `tools/capture-chrome.ps1` for independent
+triples. Local declaration/capture scripts, primary-source snapshots, before/
+after PNGs and ledgers are under ignored `artifacts/span-dispatch-20261004/`.
+Only successfully fetched files under its `chromium-source/` directory support
+this record; failed initial wrong-path fetches are excluded.
+
+Decision: retain the source-derived bounded routing repair and return PLAN's
+active work to rows 4–5. General composition remains open, including the explicit
+group-opacity-white control. Ford's opaque cubic coverage is unchanged; the next
+discriminator compares authored-to-device mapping precision with independently
+captured authored/device-baked controls before another curve implementation.

@@ -1,0 +1,11 @@
+namespace Lokad.Svg.Parsing;
+
+/// <summary>Retains validated source opacity alongside its existing byte quantization.</summary>
+/// <remarks>The byte value belongs to ordinary raster composition; the source value belongs to full-canvas solid-paint analysis. An encoded color alpha byte does not imply a decimal opacity of one half.</remarks>
+internal readonly record struct SvgPaintOpacity(byte Alpha, float Value)
+{
+    internal static SvgPaintOpacity Opaque { get; } = new(255, 1);
+}
+
+/// <summary>Retains one native rectangle's solid color and resolved floating-point fill alpha before layer opacity.</summary>
+internal readonly record struct SvgSolidPaint(SvgColor Color, float Alpha);

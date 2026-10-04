@@ -1,0 +1,33 @@
+{
+  "fixtureId": "original-solid-canvas-count-3",
+  "referencePng": "original-solid-canvas-count-3.png",
+  "referenceSha256": "ec339ae1398ab4c34bf5b5cd63a57da8ed43aac6676c7064a76f02c45b57d378",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 4,
+    "height": 4,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "ff491400a15013f7fb464c29180f602209d0d98561a018174ceebe4287631411",
+  "candidateSha256": "c7a53de47d4091bac253e80c08f5c33c3257cb76985a519372ba30f2200ea1a2",
+  "admittedAt": "2026-10-04",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 4,
+    "minimumMismatchY": 4,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}

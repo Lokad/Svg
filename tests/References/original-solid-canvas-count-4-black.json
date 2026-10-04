@@ -1,0 +1,33 @@
+{
+  "fixtureId": "original-solid-canvas-count-4-black",
+  "referencePng": "original-solid-canvas-count-4-black.png",
+  "referenceSha256": "6a4ff4c92bace5e5458b50414e0b307d531417df017dde12e7f8f280cb81728c",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 4,
+    "height": 4,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "e9231e669dbce34257a98104d0c07f99a017ff137a070b566f4b414916b3b6fe",
+  "candidateSha256": "580933871f75314e1da189d43d89cb666cf0f30f550ef2d13318e10e59b2a9a4",
+  "admittedAt": "2026-10-04",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 4,
+    "minimumMismatchY": 4,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}

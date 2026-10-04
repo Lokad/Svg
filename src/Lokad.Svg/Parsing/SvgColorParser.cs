@@ -8,16 +8,22 @@ internal static class SvgColorParser
     internal static byte ParseOpacity(string? value) => value is null ? (byte)255 : ParseOpacity(value.AsSpan());
 
     internal static byte ParseOpacity(ReadOnlySpan<char> value)
+        => ParsePaintOpacity(value).Alpha;
+
+    internal static SvgPaintOpacity ParsePaintOpacity(string? value)
+        => value is null ? SvgPaintOpacity.Opaque : ParsePaintOpacity(value.AsSpan());
+
+    private static SvgPaintOpacity ParsePaintOpacity(ReadOnlySpan<char> value)
     {
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Opacity values exceed the configured syntax limit.");
         ReadOnlySpan<char> token = value.Trim();
         if (token.EndsWith("%"))
         {
             if (!double.TryParse(token[..^1], NumberStyles.Float, CultureInfo.InvariantCulture, out double percentage) || !double.IsFinite(percentage) || percentage < 0 || percentage > 100) throw new SvgException(SvgErrorCode.MalformedInput, "Opacity percentages must be finite values from zero through one hundred.");
-            return checked((byte)Math.Round(percentage * 255 / 100, MidpointRounding.AwayFromZero));
+            return new SvgPaintOpacity(checked((byte)Math.Round(percentage * 255 / 100, MidpointRounding.AwayFromZero)), (float)(percentage / 100));
         }
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double opacity) || !double.IsFinite(opacity) || opacity < 0 || opacity > 1) throw new SvgException(SvgErrorCode.MalformedInput, "Fill opacity must be a finite value from zero through one.");
-        return checked((byte)Math.Round(opacity * 255, MidpointRounding.AwayFromZero));
+        return new SvgPaintOpacity(checked((byte)Math.Round(opacity * 255, MidpointRounding.AwayFromZero)), (float)opacity);
     }
 
     internal static SvgColor Parse(string value, IReadOnlyDictionary<string, SvgColor> namedColors)

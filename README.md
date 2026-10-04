@@ -21,6 +21,11 @@ syntax must not be inferred solely from the absence of support claims.
 See [PLAN.md](PLAN.md) for the product contract and implementation roadmap, and
 [the support matrix](docs/SUPPORT_MATRIX.md) for the current status.
 
+The pinned-browser full-canvas solid-rectangle route preserves original
+fill-opacity separately from ordinary byte composition. Its independent routing
+controls are banked, while general layer composition and curved corporate-logo
+fidelity remain open; the support matrix records those limits.
+
 ## Development
 
 ```powershell

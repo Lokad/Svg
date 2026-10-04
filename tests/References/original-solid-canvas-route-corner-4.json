@@ -1,0 +1,33 @@
+{
+  "fixtureId": "original-solid-canvas-route-corner-4",
+  "referencePng": "original-solid-canvas-route-corner-4.png",
+  "referenceSha256": "57e8843d04b0f97acdbe3291921171595bdfdc6d06121c01d35c7421af0d461e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 4,
+    "height": 4,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "cf14ba09b19f7dda7921bffcbdb509cca1cc4c607efe7eb289c7aeed3a8fa2e8",
+  "candidateSha256": "6c18f864bdb8897871fcd6e4e2dd30ae01b5f860ef05fe91c67ef50f70e2acee",
+  "admittedAt": "2026-10-04",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 4,
+    "minimumMismatchY": 4,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}

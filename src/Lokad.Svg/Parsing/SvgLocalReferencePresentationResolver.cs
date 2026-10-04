@@ -6,7 +6,10 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Carries one use-element solid stroke override with definition-inherited join mechanics.</summary>
 internal readonly record struct SvgUseStrokeOverride(SvgPaint Paint, double Width, SvgStrokeJoin Join, double? MiterLimit);
 
-internal readonly record struct SvgResolvedLocalReferencePresentation(byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId, SvgUseStrokeOverride? StrokeOverride);
+internal readonly record struct SvgResolvedLocalReferencePresentation(byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId, SvgUseStrokeOverride? StrokeOverride)
+{
+    internal bool AllowsSolidPaintAnalysis { get; init; }
+}
 
 /// <summary>Owns validation and resolution of the supported local-use presentation subset.</summary>
 internal static class SvgLocalReferencePresentationResolver
@@ -18,7 +21,7 @@ internal static class SvgLocalReferencePresentationResolver
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         if (style.Fill is not null && SvgPatternSyntax.IsPatternFill(style.Fill)) return new SvgResolvedLocalReferencePresentation(opacity, isPainted, null, strings.Copy(SvgGradientSyntax.ParsePaintId(style.Fill)), ResolveStrokeOverride(style, inheritedPresentation, namedColors));
         SvgPaint? fillOverride = style.Fill is null ? null : SvgPaintResolver.Resolve(style.Fill, null, null, inheritedPresentation.Paint, namedColors);
-        return new SvgResolvedLocalReferencePresentation(opacity, isPainted, fillOverride, null, ResolveStrokeOverride(style, inheritedPresentation, namedColors));
+        return new SvgResolvedLocalReferencePresentation(opacity, isPainted, fillOverride, null, ResolveStrokeOverride(style, inheritedPresentation, namedColors)) { AllowsSolidPaintAnalysis = SvgColorParser.ParsePaintOpacity(style.Opacity).Value == 1 };
 
         static SvgUseStrokeOverride? ResolveStrokeOverride(SvgComputedStyle style, SvgInheritedPresentation inheritedPresentation, IReadOnlyDictionary<string, SvgColor> namedColors)
         {

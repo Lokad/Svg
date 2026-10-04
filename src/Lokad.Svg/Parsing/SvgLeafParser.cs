@@ -34,7 +34,8 @@ internal static class SvgLeafParser
         if (stroke is not null && SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
         if (stroke is not null && effectiveFrame is not null && effectiveFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         if (effectiveFrame is not null) rectangle = ClipStrokedRectangle(rectangle, stroke, effectiveFrame.Value);
-        return RetainSingleGeometry(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }), state, context);
+        SvgSolidPaint? solidPaint = SvgColorParser.ParsePaintOpacity(element.Style.Opacity).Value == 1 ? SvgPaintResolver.ResolveSolidPaint(element.Presentation.Paint) : null;
+        return RetainSingleGeometry(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }) with { SolidPaint = solidPaint }, state, context);
     }
 
     private static SvgParsedGeometry RetainSingleGeometry(SvgGeometry geometry, SvgDocumentState state, SvgPaintableElementContext context)
@@ -268,7 +269,8 @@ internal static class SvgLeafParser
         SvgRectangle rectangle = localTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
         SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, localTransform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
         if (stroke is not null && SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
-        return new SvgParsedRectangle(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }), element.Style);
+        SvgSolidPaint? solidPaint = SvgColorParser.ParsePaintOpacity(element.Style.Opacity).Value == 1 ? SvgPaintResolver.ResolveSolidPaint(element.Presentation.Paint) : null;
+        return new SvgParsedRectangle(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }) with { SolidPaint = solidPaint }, element.Style);
     }
 
     internal static SvgParsedGeometry ParseCircle(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
@@ -574,7 +576,7 @@ internal static class SvgLeafParser
         {
             SvgAxisAlignedLine line = new(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth);
             SvgGeometry band = frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line);
-            SvgPaint discPaint = new(color, true, 255, color, false);
+            SvgPaint discPaint = new(color, true, SvgPaintOpacity.Opaque, color, false);
             SvgResolvedPaintableElement discElement = element with { Presentation = new SvgResolvedShapePresentation(discPaint, color, null, 255, painted) };
             double radius = strokeWidth / 2d;
             using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -610,7 +612,7 @@ internal static class SvgLeafParser
             box = frame.Value.Shift(box);
         }
         SvgColor white = new(255, 255, 255, 255);
-        SvgPaint discPaint = new(white, fillHasPaint, 255, white, false);
+        SvgPaint discPaint = new(white, fillHasPaint, SvgPaintOpacity.Opaque, white, false);
         SvgResolvedPaintableElement discElement = new(style, transform, new SvgResolvedShapePresentation(discPaint, white, null, 255, painted), context.OutputMagnification);
         double radius = strokeWidth / 2d;
         using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);

@@ -11,12 +11,14 @@
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
   "admittedAt": "2026-09-19",
-  "candidateSha256": "658ae44640792ca0c94a137ef4faabe5cb3e17c2a8194b8fc8c9e898919437d8",
+  "candidateSha256": "2267cea61b051eb72cfc17748b4a1a1f39fa806c19d5cbc0e070e8be1ba42d0a",
+  "exactAt": "2026-10-04",
+  "reconfirmedCaptureRecipeRevision": "3",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 4,
-    "maximumChannelError": 1,
-    "maximumAlphaError": 1,
-    "exact": false
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
   }
 }

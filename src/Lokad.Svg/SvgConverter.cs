@@ -214,8 +214,33 @@ public static class SvgConverter
                     pixels[offset + 3] = options.BackgroundColor.Alpha;
                 }
             }
-            int commandIndex = RenderCommands(0, pixels, false);
-            if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
+            if (TryResolveSolidCanvas(out SvgColor solidColor))
+            {
+                int red = (solidColor.Red * solidColor.Alpha + 127) / 255;
+                int green = (solidColor.Green * solidColor.Alpha + 127) / 255;
+                int blue = (solidColor.Blue * solidColor.Alpha + 127) / 255;
+                if (pixelCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle raster work exceeds the configured limit.");
+                workUnits += pixelCount;
+                for (int y = 0; y < outputHeight; y++)
+                {
+                    SolidCanvasRasterizationProbe.Row(y);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    for (int x = 0; x < outputWidth; x++)
+                    {
+                        if ((x & 4_095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        int offset = (y * outputWidth + x) * 4;
+                        pixels[offset] = (byte)red;
+                        pixels[offset + 1] = (byte)green;
+                        pixels[offset + 2] = (byte)blue;
+                        pixels[offset + 3] = solidColor.Alpha;
+                    }
+                }
+            }
+            else
+            {
+                int commandIndex = RenderCommands(0, pixels, false);
+                if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
+            }
             ApplyCaptureUnpremultiply(pixels, pixelCount, cancellationToken);
             return new RasterizedSurface(outputWidth, outputHeight, pixels, surface, workUnits);
         }
@@ -223,6 +248,70 @@ public static class SvgConverter
         {
             surface.Dispose();
             throw;
+        }
+
+        // The recipe-3 page paints its opaque HTML and body backgrounds separately.
+        // The matched tile analyzer permits five draws, including those backgrounds.
+        // Analyze source draw commands, never inferred uniformity of the raster bitmap.
+        bool TryResolveSolidCanvas(out SvgColor color)
+        {
+            const int maximumDraws = 5;
+            color = default;
+            int drawCount = options.BackgroundColor.Alpha == 255 ? 2 : 0;
+            if (options.BackgroundColor.Alpha is not (0 or 255) || root.Commands.Length == 0 || root.Commands.Length > maximumDraws - drawCount) return false;
+            SvgDrawCommand first = root.Commands[0];
+            if (first.Kind != SvgDrawCommandKind.Geometry || (uint)first.GeometryIndex >= (uint)root.Geometries.Length || root.Geometries[first.GeometryIndex].SolidPaint is null) return false;
+            float red = options.BackgroundColor.Red / 255f;
+            float green = options.BackgroundColor.Green / 255f;
+            float blue = options.BackgroundColor.Blue / 255f;
+            float alpha = options.BackgroundColor.Alpha / 255f;
+            bool isSolid = true;
+            foreach (SvgDrawCommand command in root.Commands)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (workUnits == options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Solid paint analysis exceeds the configured work limit.");
+                workUnits++;
+                if (command.Kind != SvgDrawCommandKind.Geometry || (uint)command.GeometryIndex >= (uint)root.Geometries.Length) return false;
+                SvgGeometry geometry = root.Geometries[command.GeometryIndex];
+                if (geometry.Kind != SvgGeometryKind.Rectangle || geometry.SolidPaint is not SvgSolidPaint paint || geometry.Rectangle.Stroke is not null) return false;
+                SvgRectangle rectangle = geometry.Rectangle;
+                if (!rectangle.HasFill || paint.Alpha == 0 || rectangle.Width == 0 || rectangle.Height == 0) continue;
+                if (++drawCount > maximumDraws) return false;
+                double left = MapEdge(rectangle.X, horizontalScale, horizontalOffset);
+                double top = MapEdge(rectangle.Y, verticalScale, verticalOffset);
+                double right = MapEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
+                double bottom = MapEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
+                if (left > 0 || top > 0 || right < outputWidth || bottom < outputHeight)
+                {
+                    isSolid = false;
+                    continue;
+                }
+                if (!isSolid && paint.Alpha != 1) continue;
+                float sourceRed = paint.Color.Red / 255f;
+                float sourceGreen = paint.Color.Green / 255f;
+                float sourceBlue = paint.Color.Blue / 255f;
+                if (paint.Alpha == 1)
+                {
+                    red = sourceRed; green = sourceGreen; blue = sourceBlue; alpha = 1;
+                }
+                else
+                {
+                    float outAlpha = paint.Alpha + alpha * (1 - paint.Alpha);
+                    float inverse = 1 / outAlpha;
+                    float sourceWeight = paint.Alpha * inverse;
+                    float destinationWeight = alpha * (1 - paint.Alpha) * inverse;
+                    red = sourceRed * sourceWeight + red * destinationWeight;
+                    green = sourceGreen * sourceWeight + green * destinationWeight;
+                    blue = sourceBlue * sourceWeight + blue * destinationWeight;
+                    alpha = outAlpha;
+                }
+                isSolid = true;
+            }
+            if (!isSolid) return false;
+            color = new SvgColor(Quantize(red), Quantize(green), Quantize(blue), Quantize(alpha));
+            return true;
+
+            static byte Quantize(float lane) => (byte)Math.Clamp((int)MathF.Round(lane * 255, MidpointRounding.AwayFromZero), 0, 255);
         }
 
         static void ApplyCaptureUnpremultiply(byte[] destination, int count, CancellationToken cancellationToken)

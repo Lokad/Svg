@@ -7,10 +7,10 @@ implementation and fidelity exits; the earlier claim that rows 1–7 were comple
 within architectural limits is withdrawn. The first exact curved corporate mark
 and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 
-Verified review evidence: 432 fixture entries = 353 exact + 74 known-difference
-renders + five rejections across 281 base documents and 151 variants; 73 research
+Current validated evidence: 512 fixture entries = 433 exact + 74 known-difference
+renders + five rejections across 313 base documents and 199 variants; 73 research
 probes = 72 known-difference renders + one rejection. Fresh Windows gates pass:
-2,865 core + 105 visual + six FontProbe tests, 25 memory scenarios, package
+2,867 core + 105 visual + six FontProbe tests, 25 memory scenarios, package
 inspection and isolated installed-consumer checks. The fresh Default-options
 inventory sweep reports 88 renders + four MalformedInput rejections out of 92.
 These counts establish neither corporate coverage nor Linux delivery.
@@ -53,7 +53,7 @@ This release freeze is not a prerequisite to the bounded Ford renderer slice.
 
 There is no quirk budget, pixel tolerance or decision to relabel mismatches exact.
 Slanted-band/arc coverage, asymmetry, cap-tip slivers, tessellation/snap phase,
-full-canvas solid paint routing and paint/dither/group-composition
+remaining paint routing and paint/dither/group-composition
 residuals remain categorized implementation requirements for affected documents.
 Closer agreement with ideal geometry does not establish pinned-browser equality.
 A target below 100 percent can leave documents failing in the denominator; it
@@ -65,12 +65,15 @@ the focused coverage target; this does not close composition on other inputs.
 Curve/walk state separation now preserves quarter-grid output byte-for-byte
 across the fixture/research/inventory corpus and all nine Ford variants. The
 two measured endpoint variants worsen all nine Ford configurations and are
-reverted. The next bounded slice targets the independently reconfirmed
-full-canvas rectangle overlap defect. Fresh inset-rectangle and equivalent-path
-controls give alpha 192 in both Chrome and the candidate, while full-canvas
-rectangles give Chrome alpha 191 versus candidate 192. A general full-span alpha
-adjustment is therefore rejected. The matched Chromium solid-color analysis
-route is the next hypothesis to verify; Ford's opaque coverage remains open.
+reverted. The full-canvas solid-paint route now makes the unchanged historical
+integer overlap exact and passes 79 of 80 new routing configurations. Inset/path
+and operation-limit controls preserve ordinary byte composition; original
+fill-opacity is retained separately for eligible native rectangle analysis.
+Group opacity on white remains a known failure. Only the integer-overlap PNG
+changes in the previous 597-case corpus; all nine Ford PNGs remain unchanged.
+The active slice returns to shared curve fidelity, beginning with an independent
+authored-to-device mapping precision discriminator. That is an unproved
+hypothesis; Ford's opaque coverage remains open.
 See PLAN's active work order and
 [the design record](RASTERIZATION_DESIGN.md) for the retained falsifications.
 

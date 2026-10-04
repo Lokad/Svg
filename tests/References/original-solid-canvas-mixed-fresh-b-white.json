@@ -1,0 +1,33 @@
+{
+  "fixtureId": "original-solid-canvas-mixed-fresh-b-white",
+  "referencePng": "original-solid-canvas-mixed-fresh-b-white.png",
+  "referenceSha256": "ee48c7981df2510f9c19384425b8def708f975fd8d9b27baa9ab3a3ca6ed6aca",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 4,
+    "height": 4,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "ab11376cad86707f1123cd08c8ec4b3821edc10bb86fc4a013a33a8fc812d61b",
+  "candidateSha256": "40413f777c385811ed0d104916d2dad9866a08f53779fea9fb65a6fd3d409622",
+  "admittedAt": "2026-10-04",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 4,
+    "minimumMismatchY": 4,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}

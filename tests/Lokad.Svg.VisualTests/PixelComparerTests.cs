@@ -359,15 +359,15 @@ public sealed class PixelComparerTests
     }
 
     [Fact]
-    public void Half_opacity_layers_truncate_retained_alpha()
+    public void Full_canvas_rectangles_preserve_source_opacity_until_solid_color_quantization()
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red' fill-opacity='0.5'/><rect width='1' height='1' fill='blue' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
 
         RgbaImage image = PngRgbaDecoder.Decode(png, 1);
 
-        // Pinned backend: opacity truncates (0.5 reads 127), so layered SkPMSrcOver restores (85,0,170,191).
-        // Pinned premultiplied backend: layered SkPMSrcOver alpha ((128 * 128 >> 8) + 128 = 192).
-        Assert.Equal(new byte[] { 85, 0, 170, 192 }, image.Pixels);
+        // Three recipe-3 browser captures at 1x1 and 2x2 establish 191 for this scene.
+        // The separately retained inset/path and encoded-alpha controls establish 192.
+        Assert.Equal(new byte[] { 85, 0, 170, 191 }, image.Pixels);
     }
 
     [Fact]
@@ -376,7 +376,7 @@ public sealed class PixelComparerTests
         SvgRenderOptions options = new(null, 1, new SvgColor(0, 0, 255, 255), SvgRenderLimits.Default);
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='#ff0000' fill-opacity='0.5'/></svg>"u8.ToArray(), options, CancellationToken.None).ToArray();
 
-        Assert.Equal(new byte[] { 128, 0, 127, 255 }, PngRgbaDecoder.Decode(png, 1).Pixels);
+        Assert.Equal(new byte[] { 128, 0, 128, 255 }, PngRgbaDecoder.Decode(png, 1).Pixels);
     }
 
     [Fact]

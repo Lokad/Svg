@@ -1,9 +1,9 @@
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents supported inherited fill state before element opacity is applied.</summary>
-internal readonly record struct SvgPaint(SvgColor FillColor, bool HasFill, byte FillOpacity, SvgColor CurrentColor, bool FillUsesCurrentColor)
+internal readonly record struct SvgPaint(SvgColor FillColor, bool HasFill, SvgPaintOpacity FillOpacity, SvgColor CurrentColor, bool FillUsesCurrentColor)
 {
-    internal static SvgPaint Default { get; } = new(new SvgColor(0, 0, 0, 255), true, 255, new SvgColor(0, 0, 0, 255), false);
+    internal static SvgPaint Default { get; } = new(new SvgColor(0, 0, 0, 255), true, SvgPaintOpacity.Opaque, new SvgColor(0, 0, 0, 255), false);
 }
 
 /// <summary>Resolves the supported inherited paint subset independently of XML traversal.</summary>
@@ -15,14 +15,20 @@ internal static class SvgPaintResolver
         bool hasFill = fill is null ? inheritedPaint.HasFill : !fill.Equals("none", StringComparison.OrdinalIgnoreCase) && !fill.Equals("transparent", StringComparison.OrdinalIgnoreCase);
         bool fillUsesCurrentColor = fill is null ? inheritedPaint.FillUsesCurrentColor : fill.Equals("currentColor", StringComparison.OrdinalIgnoreCase);
         SvgColor fillColor = fill is null ? inheritedPaint.FillColor : fillUsesCurrentColor ? SvgColor.Transparent : hasFill ? SvgColorParser.Parse(fill, namedColors) : SvgColor.Transparent;
-        byte resolvedFillOpacity = fillOpacity is null ? inheritedPaint.FillOpacity : SvgColorParser.ParseOpacity(fillOpacity);
+        SvgPaintOpacity resolvedFillOpacity = fillOpacity is null ? inheritedPaint.FillOpacity : SvgColorParser.ParsePaintOpacity(fillOpacity);
         return new SvgPaint(fillColor, hasFill, resolvedFillOpacity, resolvedCurrentColor, fillUsesCurrentColor);
     }
 
     internal static SvgColor ResolveFillColor(SvgPaint paint, byte opacity)
     {
         SvgColor color = paint.FillUsesCurrentColor ? paint.CurrentColor : paint.FillColor;
-        return ApplyOpacity(ApplyOpacity(color, paint.FillOpacity), opacity);
+        return ApplyOpacity(ApplyOpacity(color, paint.FillOpacity.Alpha), opacity);
+    }
+
+    internal static SvgSolidPaint ResolveSolidPaint(SvgPaint paint)
+    {
+        SvgColor color = paint.FillUsesCurrentColor ? paint.CurrentColor : paint.FillColor;
+        return new SvgSolidPaint(color, (color.Alpha / 255f) * paint.FillOpacity.Value);
     }
 
     internal static SvgColor ResolveStrokeColor(string value, string? currentColor, SvgPaint inheritedPaint, IReadOnlyDictionary<string, SvgColor> namedColors)

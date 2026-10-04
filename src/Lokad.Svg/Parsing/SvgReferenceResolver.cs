@@ -3,7 +3,11 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents a parsed direct local use reference before its target is resolved.</summary>
-internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, SvgAffineTransform Transform, SvgAffineTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId, SvgUseStrokeOverride? StrokeOverride);
+internal readonly record struct SvgUseReference(string Id, double X, double Y, double? Width, double? Height, SvgAffineTransform Transform, SvgAffineTransform InheritedTransform, byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId, SvgUseStrokeOverride? StrokeOverride)
+{
+    /// <summary>Records the absence of an instance opacity layer, using the validated source value rather than its rounded alpha byte.</summary>
+    internal bool AllowsSolidPaintAnalysis { get; init; }
+}
 
 /// <summary>Retains one clip-path reference whose box needs a forward definition or clip-path definition.</summary>
 internal readonly record struct SvgDeferredClip(string ClipId, SvgViewportFrame? Parent, int Depth);
@@ -47,7 +51,7 @@ internal static class SvgReferenceResolver
             switch (sources[index].Kind)
             {
                 case SvgGeometryKind.Rectangle:
-                    applied.Add(ClipStrokedInstance(ApplyRectangle(sources[index].Rectangle, reference), frame));
+                    applied.Add(ClipStrokedInstance(ApplyRectangle(sources[index].Rectangle, reference), frame) with { SolidPaint = reference.AllowsSolidPaintAnalysis ? sources[index].SolidPaint : null });
                     break;
                 case SvgGeometryKind.OrthogonalBand:
                     applied.Add(SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)));
@@ -465,7 +469,7 @@ internal static class SvgReferenceResolver
             viewport = viewport.Intersect(frame.Value.Clip);
         }
         SvgRectangle clipped = viewport.ClipRectangle(transformed);
-        return isBand ? SvgGeometry.FromOrthogonalBand(clipped) : SvgGeometry.FromRectangle(clipped);
+        return isBand ? SvgGeometry.FromOrthogonalBand(clipped) : SvgGeometry.FromRectangle(clipped) with { SolidPaint = reference.AllowsSolidPaintAnalysis ? geometry.SolidPaint : null };
 
 
         static SvgGeometry ApplySymbolPolygon(SvgPolygonFill source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -615,7 +619,7 @@ internal static class SvgReferenceResolver
         SvgPaint fill = reference.FillOverride.Value;
         return definition.Geometries[0].Kind switch
         {
-            SvgGeometryKind.Rectangle => [SvgGeometry.FromRectangle(definition.Geometries[0].Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill })],
+            SvgGeometryKind.Rectangle => [SvgGeometry.FromRectangle(definition.Geometries[0].Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill }) with { SolidPaint = definition.Geometries[0].SolidPaint is null ? null : SvgPaintResolver.ResolveSolidPaint(fill) }],
             SvgGeometryKind.OrthogonalBand => [SvgGeometry.FromOrthogonalBand(definition.Geometries[0].Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill })],
             SvgGeometryKind.PolygonFill => [ApplyInstancePolygonFill(definition.Geometries[0].Polygon, fill, state)],
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible single-geometry definition."),
@@ -1217,7 +1221,7 @@ internal static class SvgReferenceResolver
             case SvgGeometryKind.Rectangle:
                 SvgRectangle rectangle = geometry.Rectangle;
                 if (rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with rectangle-stroke source content are not implemented.");
-                return SvgGeometry.FromRectangle(inverse.Apply(rectangle));
+                return SvgGeometry.FromRectangle(inverse.Apply(rectangle)) with { SolidPaint = geometry.SolidPaint };
             case SvgGeometryKind.OrthogonalBand:
                 return SvgGeometry.FromOrthogonalBand(inverse.Apply(geometry.Rectangle));
             case SvgGeometryKind.AxisAlignedLine:

@@ -9,14 +9,14 @@ public sealed class SvgLocalReferencePresentationResolverTests
     public void Resolves_the_supported_use_instance_presentation_without_changing_inherited_paint()
     {
         IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase) { ["blue"] = new SvgColor(0, 0, 255, 255) };
-        SvgInheritedPresentation inherited = new(new SvgPaint(new SvgColor(1, 2, 3, 255), true, 128, new SvgColor(4, 5, 6, 255), false), true, false, SvgAffineTransform.Identity);
+        SvgInheritedPresentation inherited = new(new SvgPaint(new SvgColor(1, 2, 3, 255), true, new SvgPaintOpacity(128, 128 / 255f), new SvgColor(4, 5, 6, 255), false), true, false, SvgAffineTransform.Identity);
         SvgComputedStyle style = new(null, "blue", null, null, "none", "visible", "0.5", null);
 
         SvgResolvedLocalReferencePresentation presentation = SvgLocalReferencePresentationResolver.Resolve(style, inherited, namedColors, new BudgetedParserStringStore(new RenderBudget(10_000)));
 
         Assert.Equal((byte)128, presentation.Opacity);
         Assert.False(presentation.IsPainted);
-        Assert.Equal(new SvgPaint(new SvgColor(0, 0, 255, 255), true, 128, new SvgColor(4, 5, 6, 255), false), presentation.FillOverride);
+        Assert.Equal(new SvgPaint(new SvgColor(0, 0, 255, 255), true, new SvgPaintOpacity(128, 128 / 255f), new SvgColor(4, 5, 6, 255), false), presentation.FillOverride);
     }
 
     [Fact]

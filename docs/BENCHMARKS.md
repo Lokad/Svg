@@ -308,3 +308,55 @@ All four inputs still render under Default limits. The full comparison preserves
 597 fixture/research/inventory dispositions and PNG bytes, plus all nine Ford
 variants. Local harnesses, source/input/output identities, measurements and ledger
 reports are under the ignored `artifacts/curve-state-20261004/` directory.
+
+## Full-canvas paint routing resource checkpoint (2026-10-04)
+
+Compare the pre-repair `f6a96315` renderer with the integrated full-canvas
+solid-paint repair on the same Windows x64 .NET 10.0.12 inputs and owned-memory
+harness. Each case has 32 warmups and three batches: 100 tiny, ten Ford, three
+dense and three native-size conversions per batch. Ford uses explicit 500x200
+transparent options; the other three use Default. Repeat in reverse renderer
+order after the final code changes. The first pair overlapped other validation;
+the second pair ran sequentially. These local probes do not replace BenchmarkDotNet.
+
+The table spans both orders. The wide ranges and changed machine load prevent
+a stable throughput conclusion: even the baseline native-size input shifts
+from 434–437 ms to 519–552 ms. Allocation traffic records the added retained
+paint/scene metadata, with occasional batch variation; it is not peak live
+memory. Complete output PNGs match before/after for these four inputs.
+
+| Input | Before time (ms) | After time (ms) | Before allocated bytes | After allocated bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Tiny triangle | 0.119–0.157 | 0.124–0.205 | 20,200–20,202 | 20,288–20,290 |
+| Ford `inv-002` | 15.76–21.73 | 16.73–22.03 | 805,354–808,508 | 805,650–808,804 |
+| Dense `inv-082` | 345.85–397.81 | 339.81–427.08 | 5,666,149–5,668,464 | 5,670,000–5,672,661 |
+| Native-size `inv-050` | 434.28–551.97 | 406.47–565.30 | 33,906,658–33,907,218 | 33,907,056–33,907,720 |
+
+The final internal ledger retains the same parsing/preparation/raster work on
+these non-eligible inputs. Accounted peaks include encoding and grow slightly
+because parser/scene arrays reserve runtime value sizes after metadata changes.
+On this x64 runtime, `SvgGeometry` is 200 bytes and the embedding `SvgPatternTile`
+is 232 bytes. The pattern dictionary now reserves the tile's runtime size plus
+conservative entry/key/bucket overhead before growth; its old fixed 128-byte
+per-entry estimate did not cover those values. A focused denial regression
+rejects a first table growth whose tile values alone exceed the budget.
+
+| Input | Unchanged work through raster | Before accounted peak (bytes) | After accounted peak (bytes) |
+| --- | ---: | ---: | ---: |
+| Tiny triangle | 218 | 132,536 | 132,576 |
+| Ford `inv-002` | 1,255,251 | 554,012 | 554,028 |
+| Dense `inv-082` | 34,881,400 | 3,035,885 | 3,036,181 |
+| Native-size `inv-050` | 76,736,404 | 33,628,051 | 33,628,107 |
+
+All four continue to render under Default limits. The new solid analysis charges
+each inspected source command and preflights the final pixel fill; it allocates
+no additional conversion surface. Cancellation checkpoints cover each row and
+bounded inner-loop intervals, with a deterministic during-row ownership test.
+The 25 child-process memory scenarios and package/installed-consumer gates pass.
+The four-input ledger does not claim optimizer performance for eligible scenes,
+representative corporate throughput or Linux parity.
+
+Harnesses, source/input/output identities, both-order measurements and the final
+ledger are under ignored `artifacts/span-dispatch-20261004/`. The design record
+lists the independent 80-configuration capture family and its remaining layer
+failure; the fixture gate is the portable regression source.

@@ -1,0 +1,33 @@
+{
+  "fixtureId": "original-solid-canvas-group-opacity-black",
+  "referencePng": "original-solid-canvas-group-opacity-black.png",
+  "referenceSha256": "b8e35b812beb047019a78d6024e017cdb0b2f8c041fda619a61aec392ea1784e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 4,
+    "height": 4,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "7dc9e867797eb4d51cbd7d06f00e45632b7e4a679dd301113e96be903564faf3",
+  "candidateSha256": "4ff25e94c3dd1ce16a03788a9989f9d187e1ca040f2a2aa164a21a7d082703a8",
+  "admittedAt": "2026-10-04",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 4,
+    "minimumMismatchY": 4,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}
