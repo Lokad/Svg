@@ -22,4 +22,4 @@ Per family: accept the pixels as documented behavior, fund backend-spec work to 
 - Ford flank straddles (7 over-40 pixels; mean error about 15 ours versus about 28 oracle; zero interior): DESIGN Ford census and over-40 entries.
 - Tessellation phase on radial discs, snap-phase straddle, grouped-gradient compositing, composite dither phase: respective DESIGN entries.
 
-Reply with the Q1 definition, the Q2 freeze, and per-family Q3 dispositions; implementation resumes on that answer.
+Reply with the Q1 definition, the Q2 freeze, and per-family Q3 dispositions when ready; renderer work continues meanwhile and only the most-documents coverage claim waits for these answers.
