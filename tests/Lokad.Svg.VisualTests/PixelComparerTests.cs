@@ -184,7 +184,8 @@ public sealed class PixelComparerTests
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'><rect width='1' height='1' fill='#1aF8'/><rect x='1' width='1' height='1' fill='#ff000080'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
 
-        Assert.Equal(new byte[] { 17, 170, 255, 136, 255, 0, 0, 128 }, PngRgbaDecoder.Decode(png, 2).Pixels);
+        // Pinned premultiplied backend: (170 * 137 >> 8) * 255 + 68 over 136 un-premultiplies to 169.
+        Assert.Equal(new byte[] { 17, 169, 255, 136, 255, 0, 0, 128 }, PngRgbaDecoder.Decode(png, 2).Pixels);
     }
 
     [Fact]
@@ -216,7 +217,9 @@ public sealed class PixelComparerTests
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'><rect width='1' height='1' fill='rgb(1, 2, 3)'/><rect x='1' width='1' height='1' fill='rgba(4,5,6,0.5)'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
 
-        Assert.Equal(new byte[] { 1, 2, 3, 255, 4, 5, 6, 128 }, PngRgbaDecoder.Decode(png, 2).Pixels);
+        // Pinned premultiplied backend: (5 * 129 >> 8) * 255 + 64 over 128 un-premultiplies to 4.
+        // Pinned backend: rgba alpha truncates (0.5 reads 127); mid-tone un-premultiplies to 4.
+        Assert.Equal(new byte[] { 1, 2, 3, 255, 4, 4, 6, 128 }, PngRgbaDecoder.Decode(png, 2).Pixels);
     }
 
     [Fact]
@@ -362,7 +365,9 @@ public sealed class PixelComparerTests
 
         RgbaImage image = PngRgbaDecoder.Decode(png, 1);
 
-        Assert.Equal(new byte[] { 85, 0, 170, 191 }, image.Pixels);
+        // Pinned backend: opacity truncates (0.5 reads 127), so layered SkPMSrcOver restores (85,0,170,191).
+        // Pinned premultiplied backend: layered SkPMSrcOver alpha ((128 * 128 >> 8) + 128 = 192).
+        Assert.Equal(new byte[] { 85, 0, 170, 192 }, image.Pixels);
     }
 
     [Fact]

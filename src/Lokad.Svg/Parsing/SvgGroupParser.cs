@@ -28,6 +28,14 @@ internal static class SvgGroupParser
                 deferredMask = state.Strings.Copy(maskId);
                 mask = null;
             }
+            if (mask is not null && resolved.Opacity == 255 && !reader.IsEmptyElement)
+            {
+                // Defined uniform masks on opaque groups take the deferred path so resolution stamps
+                // the value inline like direct leaves instead of isolating through an opacity scope; both
+                // spellings then share one computation through the premultiplied backend.
+                deferredMask = state.Strings.Copy(maskId);
+                mask = null;
+            }
         }
         byte combined = mask is null ? resolved.Opacity : SvgReferenceResolver.MultiplyAlpha(resolved.Opacity, mask.Value);
         bool hasMaskScope = reader.IsEmptyElement ? false : PushMaskScope(reader, state);

@@ -9,7 +9,8 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int GeometryCount, string MaskId, SvgViewportFrame? Parent);
 
 /// <summary>Retains one masked group command range whose mask reference resolves at document end.</summary>
-internal readonly record struct PendingGroupMask(string MaskId, byte Opacity, int FirstCommandIndex, int EndCommandIndex, int Depth, SvgViewportFrame? Parent);
+/// <remarks>DefinedMask records whether the mask value was already defined when the group started; only such backward masks resolve by stamping inline like direct leaves, while forward masks keep isolation scopes.</remarks>
+internal readonly record struct PendingGroupMask(string MaskId, byte Opacity, int FirstCommandIndex, int EndCommandIndex, int Depth, SvgViewportFrame? Parent, bool DefinedMask);
 
 internal static class SvgMaskSyntax
 {
@@ -326,8 +327,12 @@ internal static class SvgMaskSyntax
             byte combined = SvgReferenceResolver.MultiplyAlpha(pending.Opacity, value);
             if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox contentBox)) ValidateGroupMaskCoverage(state, pending, contentBox, workCounter, cancellationToken);
             if (pending.Opacity != 255) RewriteGroupMaskScope(state, pending, combined, maskRegion, -1);
+            else if (pending.DefinedMask && pending.Opacity == 255 && combined != 255 && TryStampUniformGroupMask(state, pending, value, workCounter, cancellationToken))
+            {
+                // Stamped inline like direct leaves; no isolation scope is needed.
+            }
             else if (combined != 255 || maskRegion is not null) InsertGroupMaskScope(state, pending, combined, maskRegion, -1, workCounter, cancellationToken);
-        }
+            }
 
         static void ValidateNoGlyphText(SvgDocumentState state, PendingGroupMask pending, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
@@ -372,6 +377,44 @@ internal static class SvgMaskSyntax
             state.Scene.InsertCommands(pending.FirstCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, combined, maskRegion, maskContentIndex)]);
             SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.FirstCommandIndex, 1, workCounter, cancellationToken);
             SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.EndCommandIndex + 1, 1, workCounter, cancellationToken);
+        }
+
+        static bool TryStampUniformGroupMask(SvgDocumentState state, PendingGroupMask pending, byte value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            // Backward uniform group masks stamp into children exactly like direct leaves (which bake
+            // the same value via ApplyMaskedLeaf) instead of compositing through an isolation scope, so
+            // both spellings stay identical through the shared premultiplied backend. Forward masks keep
+            // isolation scopes, as do spatial content, group opacity and custom regions; nested opacity
+            // scopes still reject through the scope path. Stamp failures leave the scene untouched.
+            ArgumentNullException.ThrowIfNull(state);
+            ArgumentNullException.ThrowIfNull(workCounter);
+            for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
+            {
+                workCounter.Consume(cancellationToken);
+                if (state.Scene.CommandAt(commandIndex).Kind == SvgDrawCommandKind.BeginGroup) return false;
+            }
+            System.Collections.Generic.List<(int GeometryIndex, SvgGeometry Stamped)> staged = new();
+            try
+            {
+                for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
+                {
+                    workCounter.Consume(cancellationToken);
+                    if (state.Scene.CommandAt(commandIndex).Kind != SvgDrawCommandKind.Geometry) continue;
+                    int geometryIndex = state.Scene.CommandAt(commandIndex).GeometryIndex;
+                    staged.Add((geometryIndex, ApplyMask(state.Scene.GeometryAt(geometryIndex), value, SvgClipBox.Unbounded)));
+                }
+            }
+            catch (SvgException)
+            {
+                foreach ((int _, SvgGeometry stamped) in staged) stamped.Dispose();
+                return false;
+            }
+            foreach ((int geometryIndex, SvgGeometry stamped) in staged)
+            {
+                workCounter.Consume(cancellationToken);
+                state.Scene.ReplaceGeometry(geometryIndex, stamped);
+            }
+            return true;
         }
     }
     /// <summary>Resolves a custom group-mask region into root-user space for scope compositing.</summary>

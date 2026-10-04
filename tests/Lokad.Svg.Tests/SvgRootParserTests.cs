@@ -6968,26 +6968,29 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Represents_gray_masked_groups_as_an_isolated_scene_command()
+    public void Stamps_gray_masked_groups_inline_like_masked_leaves()
     {
+        // Uniform group masks stamp into children exactly like direct leaves (which bake the same
+        // value via ApplyMaskedLeaf) so both spellings share one computation through the premultiplied
+        // backend; isolation scopes stay for spatial content, group opacity and custom regions.
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='48' height='48' fill='#808080'/></mask></defs><g mask='url(#fade)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128, null, -1), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1), command));
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1), command));
+        SvgGeometry stamped = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.Rectangle, stamped.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 128), stamped.Rectangle.Color);
     }
     [Fact]
-    public void Represents_gray_masked_groups_with_polygon_children()
+    public void Stamps_gray_masked_polygon_groups_inline_like_masked_leaves()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#fade)'><polygon points='0,0 8,0 0,8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128, null, -1), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1), command));
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1), command));
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 128), geometry.Polygon.Color);
     }
 
     [Fact]
@@ -7017,16 +7020,18 @@ public sealed class SvgRootParserTests
         Assert.Equal(2, root.Geometries.Length);
     }
     [Fact]
-    public void Admits_masked_groups_with_forward_multi_geometry_uses()
+    public void Stamps_backward_uniform_masks_onto_grouped_use_content()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#m)'><use href='#p'/></g><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
+        // Backward uniform group masks stamp into children exactly like direct leaves, so no
+        // isolation scope is emitted; forward masks keep scopes, as do spatial content and opacity.
         Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128, null, -1), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 1, 255, null, -1), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1), command));
+            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 1, 255, null, -1), command));
         Assert.Equal(2, root.Geometries.Length);
+        Assert.All(root.Geometries, geometry => Assert.Equal(SvgGeometryKind.Rectangle, geometry.Kind));
+        Assert.All(root.Geometries, geometry => Assert.Equal(new SvgColor(255, 0, 0, 128), geometry.Rectangle.Color));
     }
 
     [Fact]

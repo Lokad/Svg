@@ -2091,9 +2091,12 @@ public sealed class OpenTypeFontTests
     {
         ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect x='14' y='8' width='12' height='48' fill='#ff0000' fill-opacity='0.5'/><rect x='24' y='24' width='16' height='16' fill='#ffcc00' fill-opacity='0.5'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 136, 0, 191), DecodePixel(png, 24, 24));
-        Assert.Equal(new SvgColor(255, 136, 0, 191), DecodePixel(png, 25, 30));
-        Assert.Equal(new SvgColor(255, 204, 0, 128), DecodePixel(png, 30, 30));
+        // Pinned premultiplied backend (SkAlphaMulQ premultiply, SkPMSrcOver composite,
+        // round-half-up un-premultiply) moves the overlap fringe to (255,135,0,192).
+        Assert.Equal(new SvgColor(255, 135, 0, 192), DecodePixel(png, 24, 24));
+        Assert.Equal(new SvgColor(255, 135, 0, 192), DecodePixel(png, 25, 30));
+        // Single-layer mid-tone over transparent un-premultiplies (102 * 255 + 64) over 128 to 203.
+        Assert.Equal(new SvgColor(255, 203, 0, 128), DecodePixel(png, 30, 30));
         Assert.Equal(new SvgColor(255, 0, 0, 128), DecodePixel(png, 16, 10));
     }
 

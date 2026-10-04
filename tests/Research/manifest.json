@@ -39,42 +39,6 @@
     },
 
     {
-      "id": "research-diagonal-overlap-8x8",
-      "path": "diagonal-overlap-8x8.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-20",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "3ec2bd645143e7ca1edf9334b8f505e96eecfd96def618df7fe6041894a15261",
-      "featureTags": ["geometry", "path", "diagonal-edge", "overlap", "opacity", "source-over", "coverage", "calibration"],
-      "width": 8,
-      "height": 8,
-      "candidateError": "UnsupportedFeature",
-    "admittedRendering": {
-      "changedPixelCount": 12,
-      "maximumChannelError": 3,
-      "maximumAlphaError": 1,
-      "alphaChangedPixelCount": 5,
-      "minimumMismatchX": 1,
-      "minimumMismatchY": 1,
-      "maximumMismatchX": 6,
-      "maximumMismatchY": 5
-    },
-      "oracle": {
-        "referencePng": "references/diagonal-overlap-8x8.png",
-        "referenceSha256": "8f9e97f1c412de27ad9a7664fa17c7ec0ed59dd658d08f58c5cc8a9d8a8b0a8b",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "2",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
       "id": "research-diagonal-overlap-half-grid-8x8",
       "path": "diagonal-overlap-half-grid-8x8.svg",
       "creator": "Lokad.Svg contributors",
@@ -87,14 +51,14 @@
       "height": 8,
       "candidateError": "UnsupportedFeature",
     "admittedRendering": {
-      "changedPixelCount": 13,
-      "maximumChannelError": 6,
+      "changedPixelCount": 5,
+      "maximumChannelError": 5,
       "maximumAlphaError": 2,
-      "alphaChangedPixelCount": 5,
+      "alphaChangedPixelCount": 3,
       "minimumMismatchX": 0,
       "minimumMismatchY": 1,
-      "maximumMismatchX": 6,
-      "maximumMismatchY": 5
+      "maximumMismatchX": 3,
+      "maximumMismatchY": 2
     },
       "oracle": {
         "referencePng": "references/diagonal-overlap-half-grid-8x8.png",
@@ -818,14 +782,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 20,
+        "changedPixelCount": 22,
         "maximumChannelError": 48,
         "maximumAlphaError": 48,
         "alphaChangedPixelCount": 15,
         "minimumMismatchX": 2,
         "minimumMismatchY": 2,
         "maximumMismatchX": 13,
-        "maximumMismatchY": 12
+        "maximumMismatchY": 13
       },
       "oracle": {
         "referencePng": "references/radial-disc-16x16.png",
@@ -1517,8 +1481,8 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 114,
-        "maximumChannelError": 1,
+        "changedPixelCount": 70,
+        "maximumChannelError": 2,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
         "minimumMismatchX": 2,
@@ -1558,8 +1522,8 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 120,
-        "maximumChannelError": 3,
+        "changedPixelCount": 61,
+        "maximumChannelError": 4,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
         "minimumMismatchX": 2,
@@ -1599,8 +1563,8 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 66,
-        "maximumChannelError": 1,
+        "changedPixelCount": 60,
+        "maximumChannelError": 2,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
         "minimumMismatchX": 2,
@@ -2519,7 +2483,7 @@
       "width": 16,
       "height": 16,
       "admittedRendering": {
-        "changedPixelCount": 37,
+        "changedPixelCount": 38,
         "maximumChannelError": 191,
         "maximumAlphaError": 32,
         "alphaChangedPixelCount": 24,
@@ -2639,7 +2603,7 @@
       "width": 16,
       "height": 16,
       "admittedRendering": {
-        "changedPixelCount": 24,
+        "changedPixelCount": 23,
         "maximumChannelError": 255,
         "maximumAlphaError": 29,
         "alphaChangedPixelCount": 8,
@@ -2674,12 +2638,12 @@
       "width": 100,
       "height": 100,
       "admittedRendering": {
-        "changedPixelCount": 209,
-        "maximumChannelError": 120,
+        "changedPixelCount": 56,
+        "maximumChannelError": 128,
         "maximumAlphaError": 7,
         "alphaChangedPixelCount": 56,
         "minimumMismatchX": 16,
-        "minimumMismatchY": 34,
+        "minimumMismatchY": 36,
         "maximumMismatchX": 83,
         "maximumMismatchY": 65
       },
@@ -2709,14 +2673,14 @@
       "width": 100,
       "height": 100,
       "admittedRendering": {
-        "changedPixelCount": 154,
-        "maximumChannelError": 120,
+        "changedPixelCount": 30,
+        "maximumChannelError": 128,
         "maximumAlphaError": 7,
         "alphaChangedPixelCount": 28,
         "minimumMismatchX": 20,
         "minimumMismatchY": 20,
         "maximumMismatchX": 49,
-        "maximumMismatchY": 79
+        "maximumMismatchY": 77
       },
       "oracle": {
         "referencePng": "references/cubic-crescent-100x100.png",
@@ -2744,8 +2708,8 @@
       "width": 100,
       "height": 100,
       "admittedRendering": {
-        "changedPixelCount": 185,
-        "maximumChannelError": 120,
+        "changedPixelCount": 62,
+        "maximumChannelError": 128,
         "maximumAlphaError": 7,
         "alphaChangedPixelCount": 58,
         "minimumMismatchX": 16,
@@ -2779,12 +2743,12 @@
       "width": 100,
       "height": 100,
       "admittedRendering": {
-        "changedPixelCount": 158,
-        "maximumChannelError": 120,
+        "changedPixelCount": 43,
+        "maximumChannelError": 43,
         "maximumAlphaError": 9,
         "alphaChangedPixelCount": 42,
         "minimumMismatchX": 20,
-        "minimumMismatchY": 20,
+        "minimumMismatchY": 22,
         "maximumMismatchX": 49,
         "maximumMismatchY": 79
       },

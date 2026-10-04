@@ -426,7 +426,7 @@ public sealed class RasterizationResearchTests
     [Fact]
     public void Analytic_semiopaque_diagonal_source_over_baseline_is_not_Chrome_exact()
     {
-        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-8x8.png")), 64);
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-diagonal-overlap-8x8.png")), 64);
         PixelComparison comparison = PixelComparer.Compare(reference, RasterizeAnalyticDiagonalOverlap());
 
         Assert.True(comparison.DimensionsMatch);
@@ -444,7 +444,7 @@ public sealed class RasterizationResearchTests
     [Fact]
     public void Source_guided_fixed_edge_semiopaque_source_over_baseline_is_not_Chrome_exact()
     {
-        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-8x8.png")), 64);
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-diagonal-overlap-8x8.png")), 64);
         PixelComparison comparison = PixelComparer.Compare(reference, RasterizeSourceGuidedDiagonalOverlap());
 
         Assert.True(comparison.DimensionsMatch);
@@ -462,7 +462,7 @@ public sealed class RasterizationResearchTests
     [Fact]
     public void Quantized_source_over_diagonal_overlap_baseline_is_not_Chrome_exact()
     {
-        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-8x8.png")), 64);
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-diagonal-overlap-8x8.png")), 64);
         RgbaImage candidate = RasterizeQuantizedSourceOverDiagonalOverlap();
         PixelComparison comparison = PixelComparer.Compare(reference, candidate);
         PixelComparison skiaAlphaMultiply = PixelComparer.Compare(candidate, RasterizeQuantizedSourceOverDiagonalOverlap(true));
@@ -513,7 +513,7 @@ public sealed class RasterizationResearchTests
     [Fact]
     public void Premultiplied_source_over_overlap_research_baselines_are_not_Chrome_exact()
     {
-        RgbaImage originalReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-8x8.png")), 64);
+        RgbaImage originalReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "original-diagonal-overlap-8x8.png")), 64);
         RgbaImage phaseReference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "references", "diagonal-overlap-half-grid-8x8.png")), 64);
         PixelComparison originalRounded = PixelComparer.Compare(originalReference, RasterizePremultipliedSourceOverDiagonalOverlap(RedOverlapTriangle, BlueOverlapTriangle, false, true));
         PixelComparison originalFloored = PixelComparer.Compare(originalReference, RasterizePremultipliedSourceOverDiagonalOverlap(RedOverlapTriangle, BlueOverlapTriangle, false, false));

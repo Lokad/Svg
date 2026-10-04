@@ -216,12 +216,37 @@ public static class SvgConverter
             }
             int commandIndex = RenderCommands(0, pixels, false);
             if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
+            ApplyCaptureUnpremultiply(pixels, pixelCount, cancellationToken);
             return new RasterizedSurface(outputWidth, outputHeight, pixels, surface, workUnits);
         }
         catch
         {
             surface.Dispose();
             throw;
+        }
+
+        static void ApplyCaptureUnpremultiply(byte[] destination, int count, CancellationToken cancellationToken)
+        {
+            // Pinned-backend capture behavior. Skia keeps premultiplied colors with SkAlphaMulQ
+            // ((channel * (alpha + 1)) >> 8, src/core/SkColorPriv.h at the release pin) and the
+            // capture un-premultiplies with round-half-up. Straight storage of the paint color
+            // diverges from the oracle on mid-tone fringe by up to 2 levels per channel (18 of 18
+            // channels exact on six Ford over-40 straddle pixels). Black, white and primary paints
+            // round-trip to identity, as do full and empty alphas and every opaque-background
+            // pixel, so only transparent-background fringe moves. Surfaces stay premultiplied
+            // through every layer operation (see BlendPremultipliedOver), so grouped and direct
+            // masked renders keep identical spellings through one shared backend.
+            for (int pixel = 0; pixel < count; pixel++)
+            {
+                if ((pixel & 4095) == 0 && cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
+                int offset = pixel * 4;
+                int alpha = destination[offset + 3];
+                if (alpha <= 0 || alpha >= 255) continue;
+                int half = alpha >> 1;
+                destination[offset] = (byte)((destination[offset] * 255 + half) / alpha);
+                destination[offset + 1] = (byte)((destination[offset + 1] * 255 + half) / alpha);
+                destination[offset + 2] = (byte)((destination[offset + 2] * 255 + half) / alpha);
+            }
         }
 
         int RenderCommands(int startIndex, byte[] destination, bool stopsAtGroupEnd)
@@ -272,22 +297,24 @@ public static class SvgConverter
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         int offset = pixel * 4;
-                        byte opacity = MultiplyAlpha(groupPixels[offset + 3], command.Opacity);
+                        byte extra = command.Opacity;
                         if (hasMaskContent)
                         {
                             byte contentAlpha = maskSurface[offset + 3];
                             byte maskValue = maskIsAlpha ? contentAlpha : (byte)(contentAlpha * maskLuminance / 255);
-                            opacity = MultiplyAlpha(opacity, maskValue);
+                            extra = MultiplyAlpha(extra, maskValue);
                         }
                         if (command.MaskRegion is not null)
                         {
                             int x = pixel % outputWidth;
                             int y = pixel / outputWidth;
-                            opacity = (byte)(opacity * ClipBoxCoverage((regionLeft, regionTop, regionRight, regionBottom), x, y));
+                            extra = (byte)(extra * ClipBoxCoverage((regionLeft, regionTop, regionRight, regionBottom), x, y));
                         }
-                        if (opacity == 0) continue;
-                        SvgColor source = new(groupPixels[offset], groupPixels[offset + 1], groupPixels[offset + 2], opacity);
-                        BlendSourceOver(destination.AsSpan(offset, 4), source, false);
+                        if (extra == 0 || groupPixels[offset + 3] == 0) continue;
+                        // Round-half-up modulation mirrors the inline stamped-mask alpha chain
+                        // (SvgMaskSyntax stamp sites use MultiplyAlpha), keeping single-geometry group
+                        // and direct spellings identical through one shared backend.
+                        BlendPremultipliedOver(destination.AsSpan(offset, 4), (groupPixels[offset] * extra + 127) / 255, (groupPixels[offset + 1] * extra + 127) / 255, (groupPixels[offset + 2] * extra + 127) / 255, MultiplyAlpha(groupPixels[offset + 3], extra));
                     }
                     continue;
                 }
@@ -469,7 +496,7 @@ public static class SvgConverter
                     }
                     SvgColor color = WithCoverage(polygon.Color, pixelCoverage);
                     int offset = (y * outputWidth + x) * 4;
-                    BlendSourceOver(destination.AsSpan(offset, 4), color, raster.HasFractionalEdge);
+                    BlendSourceOver(destination.AsSpan(offset, 4), color);
                 }
             }
         }
@@ -572,10 +599,19 @@ public static class SvgConverter
                 }
                 position = local;
                 double dither = GradientDither[x & 7, y & 7] / 64d;
-                SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
-                SvgColor color = WithCoverage(tileColor, pixelCoverage);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color, raster.HasFractionalEdge);
+                if (transparentStops)
+                {
+                    (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, outline.Opacity);
+                    int gradientCoverage = CoverageAlpha(255, pixelCoverage) + 1;
+                    BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
+                }
+                else
+                {
+                    SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
+                    SvgColor color = WithCoverage(tileColor, pixelCoverage);
+                    BlendSourceOver(destination.AsSpan(offset, 4), color);
+                }
             }
             }
         }
@@ -729,10 +765,19 @@ public static class SvgConverter
                     if (position > 1) position = 1;
                 }
                 double dither = GradientDither[x & 7, y & 7] / 64d;
-                SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
-                SvgColor color = WithCoverage(tileColor, pixelCoverage);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color, raster.HasFractionalEdge);
+                if (transparentStops)
+                {
+                    (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, outline.Opacity);
+                    int gradientCoverage = CoverageAlpha(255, pixelCoverage) + 1;
+                    BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
+                }
+                else
+                {
+                    SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
+                    SvgColor color = WithCoverage(tileColor, pixelCoverage);
+                    BlendSourceOver(destination.AsSpan(offset, 4), color);
+                }
             }
             }
         }
@@ -800,10 +845,14 @@ public static class SvgConverter
                 int tileX = PositiveModulo(x - tile.OriginX, tile.TileWidth);
                 int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
                 int tileOffset = (tileY * tile.TileWidth + tileX) * 4;
-                SvgColor tileColor = new(blitted[tileOffset], blitted[tileOffset + 1], blitted[tileOffset + 2], MultiplyAlpha(blitted[tileOffset + 3], tile.Opacity));
-                SvgColor color = WithCoverage(tileColor, pixelCoverage);
+                int tileOpacityScale = tile.Opacity + 1;
+                int tileAlpha = (blitted[tileOffset + 3] * tileOpacityScale) >> 8;
+                int tileRed = (blitted[tileOffset] * tileOpacityScale) >> 8;
+                int tileGreen = (blitted[tileOffset + 1] * tileOpacityScale) >> 8;
+                int tileBlue = (blitted[tileOffset + 2] * tileOpacityScale) >> 8;
+                int tileCoverage = CoverageAlpha(255, pixelCoverage) + 1;
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color, raster.HasFractionalEdge);
+                BlendPremultipliedOver(destination.AsSpan(offset, 4), (tileRed * tileCoverage) >> 8, (tileGreen * tileCoverage) >> 8, (tileBlue * tileCoverage) >> 8, (tileAlpha * tileCoverage) >> 8);
             }
             }
         }
@@ -872,7 +921,7 @@ public static class SvgConverter
                 {
                     if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                     int offset = (y * pattern.TileWidth + x) * 4;
-                    BlendSourceOver(tile.AsSpan(offset, 4), box.Color, false);
+                    BlendSourceOver(tile.AsSpan(offset, 4), box.Color);
                 }
             }
         }
@@ -883,7 +932,6 @@ public static class SvgConverter
             double fillBottom = MapRectangleEdge(pattern.Fill.Y + pattern.Fill.Height, verticalScale, verticalOffset);
             double fillLeft = MapRectangleEdge(pattern.Fill.X, horizontalScale, horizontalOffset);
             double fillRight = MapRectangleEdge(pattern.Fill.X + pattern.Fill.Width, horizontalScale, horizontalOffset);
-            bool hasFractionalEdge = fillTop != Math.Truncate(fillTop) || fillBottom != Math.Truncate(fillBottom) || fillLeft != Math.Truncate(fillLeft) || fillRight != Math.Truncate(fillRight);
             int startY = ClampFloor(fillTop, outputHeight);
             int endY = ClampCeiling(fillBottom, outputHeight);
             int startX = ClampFloor(fillLeft, outputWidth);
@@ -901,10 +949,14 @@ public static class SvgConverter
                 int tileX = PositiveModulo(x - pattern.OriginX, pattern.TileWidth);
                 int tileY = PositiveModulo(y - pattern.OriginY, pattern.TileHeight);
                 int tileOffset = (tileY * pattern.TileWidth + tileX) * 4;
-                SvgColor tileColor = new(tile[tileOffset], tile[tileOffset + 1], tile[tileOffset + 2], MultiplyAlpha(tile[tileOffset + 3], pattern.Opacity));
-                SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
+                int patternOpacityScale = pattern.Opacity + 1;
+                int patternAlpha = (tile[tileOffset + 3] * patternOpacityScale) >> 8;
+                int patternRed = (tile[tileOffset] * patternOpacityScale) >> 8;
+                int patternGreen = (tile[tileOffset + 1] * patternOpacityScale) >> 8;
+                int patternBlue = (tile[tileOffset + 2] * patternOpacityScale) >> 8;
+                int patternCoverage = CoverageAlpha(255, horizontalCoverage * verticalCoverage) + 1;
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+                BlendPremultipliedOver(destination.AsSpan(offset, 4), (patternRed * patternCoverage) >> 8, (patternGreen * patternCoverage) >> 8, (patternBlue * patternCoverage) >> 8, (patternAlpha * patternCoverage) >> 8);
             }
             }
         }
@@ -929,7 +981,6 @@ public static class SvgConverter
         }
 
 
-
         void RasterizeGradientFill(SvgGradientGeometry gradient, byte[] destination)
         {
             if (!gradient.Fill.HasFill && gradient.Stroke is null) return;
@@ -947,11 +998,11 @@ public static class SvgConverter
             RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Right, stroke.Opacity, true, destination);
         }
 
-        static SvgColor TransparentTileColor(SvgColor first, SvgColor second, double blend, double dither, byte opacity)
+        static (int Red, int Green, int Blue, byte Mask) TransparentTilePm(SvgColor first, SvgColor second, double blend, double dither, byte opacity)
         {
             double alpha = ((double)first.Alpha + ((double)second.Alpha - first.Alpha) * blend) * opacity / 255;
             byte mask = (byte)Math.Floor(alpha + 0.5);
-            if (mask == 0) return new SvgColor(0, 0, 0, 0);
+            if (mask == 0) return (0, 0, 0, 0);
             // Translucent premultiplication dithers around cell centers ((matrix + 0.5) / 64) while opaque channels
             // dither from cell origins (matrix / 64): the transparent-stop probes reproduce the pinned oracle
             // byte-for-byte only with the centered value, and opaque ramps pin the uncentered one.
@@ -959,9 +1010,13 @@ public static class SvgConverter
             double red = ((double)first.Red + ((double)second.Red - first.Red) * blend) * alpha / 255 + centered;
             double green = ((double)first.Green + ((double)second.Green - first.Green) * blend) * alpha / 255 + centered;
             double blue = ((double)first.Blue + ((double)second.Blue - first.Blue) * blend) * alpha / 255 + centered;
-            byte premultRed = (byte)Math.Floor(red + 1e-9);
-            byte premultGreen = (byte)Math.Floor(green + 1e-9);
-            byte premultBlue = (byte)Math.Floor(blue + 1e-9);
+            return ((int)Math.Floor(red + 1e-9), (int)Math.Floor(green + 1e-9), (int)Math.Floor(blue + 1e-9), mask);
+        }
+
+        static SvgColor TransparentTileColor(SvgColor first, SvgColor second, double blend, double dither, byte opacity)
+        {
+            (int premultRed, int premultGreen, int premultBlue, byte mask) = TransparentTilePm(first, second, blend, dither, opacity);
+            if (mask == 0) return new SvgColor(0, 0, 0, 0);
             double inverse = 255.0 / mask;
             int r = (int)Math.Floor(premultRed * inverse + 0.5);
             if (r > 255) r = 255;
@@ -971,7 +1026,6 @@ public static class SvgConverter
             if (b > 255) b = 255;
             return new SvgColor((byte)r, (byte)g, (byte)b, mask);
         }
-
 
         static SvgColor InterpolateGradientRamp(SvgGradientStop[] stops, SvgColor start, SvgColor end, double offset1, double offset2, double position, bool transparentStops, double dither, byte opacity)
         {
@@ -994,13 +1048,32 @@ public static class SvgConverter
             return new(InterpolateChannel(start.Red, end.Red, position, dither), InterpolateChannel(start.Green, end.Green, position, dither), InterpolateChannel(start.Blue, end.Blue, position, dither), opacity);
         }
 
+        // Mirrors InterpolateGradientRamp segment selection for transparent stops, returning premultiplied
+        // color directly so transparent gradients quantize once through the shared backend instead of
+        // un-premultiplying and re-premultiplying around coverage.
+        static (int Red, int Green, int Blue, byte Mask) InterpolateGradientRampPm(SvgGradientStop[] stops, SvgColor start, SvgColor end, double offset1, double offset2, double position, double dither, byte opacity)
+        {
+            if (stops.Length > 2)
+            {
+                double offsetSpan = offset2 - offset1;
+                double absolute = offset1 + position * offsetSpan;
+                int segment = 0;
+                while (segment < stops.Length - 2 && absolute >= stops[segment + 1].Offset) segment++;
+                SvgGradientStop first = stops[segment];
+                SvgGradientStop second = stops[segment + 1];
+                // A zero-width segment is a hard edge: the later stop wins at the shared offset, matching the pinned oracle.
+                double blend = second.Offset <= first.Offset ? 1 : (absolute - first.Offset) / (second.Offset - first.Offset);
+                return TransparentTilePm(first.Color, second.Color, blend, dither, opacity);
+            }
+            return TransparentTilePm(start, end, position, dither, opacity);
+        }
+
         void RasterizeGradientArea(SvgLinearGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
             double areaTop = MapRectangleEdge(area.Y, verticalScale, verticalOffset);
             double areaBottom = MapRectangleEdge(area.Y + area.Height, verticalScale, verticalOffset);
             double areaLeft = MapRectangleEdge(area.X, horizontalScale, horizontalOffset);
             double areaRight = MapRectangleEdge(area.X + area.Width, horizontalScale, horizontalOffset);
-            bool hasFractionalEdge = areaTop != Math.Truncate(areaTop) || areaBottom != Math.Truncate(areaBottom) || areaLeft != Math.Truncate(areaLeft) || areaRight != Math.Truncate(areaRight);
             int startY = ClampFloor(areaTop, outputHeight);
             int endY = ClampCeiling(areaBottom, outputHeight);
             int startX = ClampFloor(areaLeft, outputWidth);
@@ -1058,10 +1131,19 @@ public static class SvgConverter
                 }
                 position = local;
                 double dither = GradientDither[x & 7, y & 7] / 64d;
-                SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
-                SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+                if (transparentStops)
+                {
+                    (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, opacity);
+                    int gradientCoverage = CoverageAlpha(255, horizontalCoverage * verticalCoverage) + 1;
+                    BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
+                }
+                else
+                {
+                    SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
+                    SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
+                    BlendSourceOver(destination.AsSpan(offset, 4), color);
+                }
             }
             }
 
@@ -1086,7 +1168,6 @@ public static class SvgConverter
             double areaBottom = MapRectangleEdge(area.Y + area.Height, verticalScale, verticalOffset);
             double areaLeft = MapRectangleEdge(area.X, horizontalScale, horizontalOffset);
             double areaRight = MapRectangleEdge(area.X + area.Width, horizontalScale, horizontalOffset);
-            bool hasFractionalEdge = areaTop != Math.Truncate(areaTop) || areaBottom != Math.Truncate(areaBottom) || areaLeft != Math.Truncate(areaLeft) || areaRight != Math.Truncate(areaRight);
             int startY = ClampFloor(areaTop, outputHeight);
             int endY = ClampCeiling(areaBottom, outputHeight);
             int startX = ClampFloor(areaLeft, outputWidth);
@@ -1196,10 +1277,19 @@ public static class SvgConverter
                     if (position > 1) position = 1;
                 }
                 double dither = GradientDither[x & 7, y & 7] / 64d;
-                SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
-                SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+                if (transparentStops)
+                {
+                    (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, opacity);
+                    int gradientCoverage = CoverageAlpha(255, horizontalCoverage * verticalCoverage) + 1;
+                    BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
+                }
+                else
+                {
+                    SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
+                    SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
+                    BlendSourceOver(destination.AsSpan(offset, 4), color);
+                }
             }
             }
         }
@@ -1274,7 +1364,7 @@ public static class SvgConverter
             {
                 byte alpha = SvgGlyphCoverage.GetCoverage(glyph.Contours, sourceLeft + (x - startX) * sourcePixelWidth, sourceTop + (y - startY) * sourcePixelHeight, sourcePixelWidth, sourcePixelHeight, GlyphSamplesPerAxis, cancellationToken);
                 if (alpha == 0) continue;
-                BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(glyph.Color.Red, glyph.Color.Green, glyph.Color.Blue, MultiplyAlpha(glyph.Color.Alpha, alpha)), true);
+                BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(glyph.Color.Red, glyph.Color.Green, glyph.Color.Blue, MultiplyAlpha(glyph.Color.Alpha, alpha)));
             }
 
             void Include(SvgGlyphOutlinePoint point)
@@ -1303,7 +1393,6 @@ public static class SvgConverter
             double rectangleBottom = MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
             double rectangleX = MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset);
             double rectangleRight = MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
-            bool hasFractionalEdge = rectangleY != Math.Truncate(rectangleY) || rectangleBottom != Math.Truncate(rectangleBottom) || rectangleX != Math.Truncate(rectangleX) || rectangleRight != Math.Truncate(rectangleRight);
             int startY = ClampFloor(rectangleY, outputHeight);
             int endY = ClampCeiling(rectangleBottom, outputHeight);
             int startX = ClampFloor(rectangleX, outputWidth);
@@ -1320,7 +1409,7 @@ public static class SvgConverter
                 double horizontalCoverage = Math.Clamp(Math.Min(rectangleRight, x + 1) - Math.Max(rectangleX, x), 0, 1);
                 SvgColor color = WithCoverage(rectangle.Color, horizontalCoverage * verticalCoverage);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color, hasFractionalEdge);
+                BlendSourceOver(destination.AsSpan(offset, 4), color);
             }
             }
         }
@@ -1492,27 +1581,27 @@ public static class SvgConverter
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 
-    private static void BlendSourceOver(Span<byte> destination, SvgColor source, bool roundRetainedDestination)
+    private static void BlendSourceOver(Span<byte> destination, SvgColor source)
     {
         if (source.Alpha == 255) { destination[0] = source.Red; destination[1] = source.Green; destination[2] = source.Blue; destination[3] = 255; return; }
         if (source.Alpha == 0) return;
-        int sourceAlpha = source.Alpha;
-        int destinationAlpha = destination[3];
-        int inverseSourceAlpha = 255 - sourceAlpha;
-        int outputAlpha = sourceAlpha + ((destinationAlpha * inverseSourceAlpha + (roundRetainedDestination ? 127 : 0)) / 255);
-        if (roundRetainedDestination)
-        {
-            destination[0] = ComposeFractionalChannel(destination[0], source.Red, destinationAlpha, sourceAlpha, inverseSourceAlpha, outputAlpha);
-            destination[1] = ComposeFractionalChannel(destination[1], source.Green, destinationAlpha, sourceAlpha, inverseSourceAlpha, outputAlpha);
-            destination[2] = ComposeFractionalChannel(destination[2], source.Blue, destinationAlpha, sourceAlpha, inverseSourceAlpha, outputAlpha);
-        }
-        else
-        {
-            destination[0] = (byte)Math.Min((source.Red * sourceAlpha + ((destination[0] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha, 255);
-            destination[1] = (byte)Math.Min((source.Green * sourceAlpha + ((destination[1] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha, 255);
-            destination[2] = (byte)Math.Min((source.Blue * sourceAlpha + ((destination[2] * destinationAlpha * inverseSourceAlpha + 127) / 255)) / outputAlpha, 255);
-        }
-        destination[3] = (byte)outputAlpha;
+        BlendPremultipliedOver(
+            destination,
+            (source.Red * (source.Alpha + 1)) >> 8,
+            (source.Green * (source.Alpha + 1)) >> 8,
+            (source.Blue * (source.Alpha + 1)) >> 8,
+            source.Alpha);
+    }
+
+    /// <summary>Composites one premultiplied source pixel over the premultiplied destination pixel.</summary>
+    /// <remarks>Surfaces store premultiplied colors with SkAlphaMulQ premultiply and SkPMSrcOver compositing (src/core/SkColorPriv.h at the release pin); the capture un-premultiplies once at the end (see ApplyCaptureUnpremultiply). Straight paints premultiply on entry; layer content already is premultiplied. Color lanes saturate per the pin; the alpha lane provably stays within a byte for valid premultiplied inputs.</remarks>
+    private static void BlendPremultipliedOver(Span<byte> destination, int sourceRed, int sourceGreen, int sourceBlue, int sourceAlpha)
+    {
+        int scale = 256 - sourceAlpha;
+        destination[0] = (byte)Math.Min(((destination[0] * scale) >> 8) + sourceRed, 255);
+        destination[1] = (byte)Math.Min(((destination[1] * scale) >> 8) + sourceGreen, 255);
+        destination[2] = (byte)Math.Min(((destination[2] * scale) >> 8) + sourceBlue, 255);
+        destination[3] = (byte)(((destination[3] * scale) >> 8) + sourceAlpha);
     }
 
     private static SvgColor WithCoverage(SvgColor color, double coverage) => coverage == 1 ? color : new SvgColor(color.Red, color.Green, color.Blue, CoverageAlpha(color.Alpha, coverage));
@@ -1532,13 +1621,6 @@ public static class SvgConverter
     }
 
     private static byte MultiplyAlpha(byte left, byte right) => (byte)((left * right + 127) / 255);
-
-    private static byte ComposeFractionalChannel(byte destination, byte source, int destinationAlpha, int sourceAlpha, int inverseSourceAlpha, int outputAlpha)
-    {
-        int sourceContribution = (source * sourceAlpha + outputAlpha / 2) / outputAlpha;
-        int retainedContribution = (destination * destinationAlpha * inverseSourceAlpha + 255 * outputAlpha - 1) / (255 * outputAlpha);
-        return (byte)Math.Min(sourceContribution + retainedContribution, 255);
-    }
 
     /// <summary>Owns the pixel surface and its budget reservation until encoding or a failed caller releases it.</summary>
     internal readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation, long WorkUnits) : IDisposable
