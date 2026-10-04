@@ -8,6 +8,25 @@ using Lokad.Svg.Fonts;
 public sealed class RenderBudgetTests
 {
     [Fact]
+    public void Analytic_scratch_denies_a_budget_that_cannot_hold_retained_edge_objects()
+    {
+        // Three 176-byte edges plus two sentinels, rows and reference arrays
+        // cannot fit 1,000 bytes. The pre-live-state 80-byte estimate admitted it.
+        RenderBudget budget = new(1_000);
+        SvgException denied = Assert.Throws<SvgException>(() => PrepareTriangle(budget));
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+        Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
+        AssertBudgetReleased(budget);
+
+        static void PrepareTriangle(RenderBudget budget)
+        {
+            SvgDevicePoint[] points = [new(0, 0), new(16, 0), new(0, 16)];
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [3], [], false, null, SvgPolygonMapping.QuarterEdges, 0, 16, 0, 16, 16, 16, budget, out long _, out bool _, CancellationToken.None);
+        }
+    }
+
+    [Fact]
     public void Parser_lists_charge_their_runtime_value_size_for_geometry_and_stylesheet_rules()
     {
         RenderBudget geometryBudget = new(1_000);

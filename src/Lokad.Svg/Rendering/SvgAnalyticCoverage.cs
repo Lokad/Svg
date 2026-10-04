@@ -27,6 +27,10 @@ internal ref struct SvgAnalyticCoverage
         public int ToFixedShift;
         public int FCx;
         public int FCy;
+        // Cubic FCx/FCy and their forward differences evolve together. Only this
+        // displacement follows the walked X when an inline segment is renewed.
+        // Quadratics retain their independently gated snapped-anchor behavior.
+        public int CubicXOffset;
         public int FCDx;
         public int FCDy;
         public int FCDDx;
@@ -207,6 +211,8 @@ internal ref struct SvgAnalyticCoverage
 
     /// <summary>Gets the coverage row written by the latest PrepareRow call, indexed from the preparation x start.</summary>
     internal ReadOnlySpan<byte> Row => new(_row, 1, _width);
+    /// <summary>Gets the retained edge count for resource and traversal diagnostics.</summary>
+    internal int EdgeCount => _edges.Length;
     private static int FixedMul(int left, int right) => (int)(((long)left * right) >> 16);
     private static int FixedRoundToInt(int value) => (value + 0x8000) >> 16;
     private static int FixedFloorToInt(int value) => value >> 16;
@@ -490,14 +496,16 @@ internal ref struct SvgAnalyticCoverage
     }
 
     /// <summary>Advances one live cubic edge to its next emittable segment, mirroring one updateCubic call.</summary>
-    /// <remarks>Consumes forward-difference steps until the first non-degenerate segment refreshes the walked position, then stops with remaining count intact; returns false when the piece is exhausted. The caller re-anchors the curve base to the walked position first (keepContinuous).</remarks>
+    /// <remarks>Consumes forward-difference steps until the first non-degenerate segment refreshes the walked position, then stops with remaining count intact; returns false when the piece is exhausted. Curve positions and derivatives advance without walk-position resets. CubicXOffset separately carries the quarter-grid compatibility displacement; SnappedY is the walked start, not the curve parameter position. The final authored endpoint discards the displacement, as in the pinned construction.</remarks>
     private static bool AdvanceCubicLive(AnalyticEdge edge, ref long work)
     {
         int count = edge.CurveCount;
         int oldx = edge.FCx;
         int oldy = edge.FCy;
+        int oldWalkX = unchecked(oldx + edge.CubicXOffset);
         int newx = oldx;
         int newy = oldy;
+        int newWalkX = oldWalkX;
         bool success = false;
         do
         {
@@ -512,25 +520,29 @@ internal ref struct SvgAnalyticCoverage
                     edge.FCDy += edge.FCDDy >> edge.CurveShift;
                     edge.FCDDy += edge.FCDDDy;
                 }
+                newWalkX = unchecked(newx + edge.CubicXOffset);
             }
             else
             {
                 newx = edge.FCLastX;
                 newy = edge.FCLastY;
+                newWalkX = newx;
             }
             if (newy < oldy) newy = oldy;
             int endy = SnapY(newy);
             if (edge.FCLastY < endy) { endy = edge.FCLastY; count = 0; }
             int diffY = (endy - edge.SnappedY) >> 10;
-            int slope = diffY != 0 ? FDot6Div((newx - oldx) >> 10, diffY) : int.MaxValue;
-            success = RefreshCubicEdge(edge, oldx, edge.SnappedY, newx, endy, slope);
+            int slope = diffY != 0 ? FDot6Div(unchecked(newWalkX - oldWalkX) >> 10, diffY) : int.MaxValue;
+            success = RefreshCubicEdge(edge, oldWalkX, edge.SnappedY, newWalkX, endy, slope);
             oldx = newx;
             oldy = newy;
+            oldWalkX = newWalkX;
             edge.SnappedY = endy;
             work += 2;
         } while (count < 0 && !success);
         edge.FCx = newx;
         edge.FCy = newy;
+        edge.CubicXOffset = unchecked(newWalkX - newx);
         edge.CurveCount = count;
         return success;
     }
@@ -1174,11 +1186,15 @@ internal ref struct SvgAnalyticCoverage
         return true;
     }
 
-    /// <summary>Returns the caller-reserved scratch byte count for one fill with the given point count and row width.</summary>
-    internal static long ScratchByteCount(int pointCount, int rowWidth)
+    /// <summary>Returns scratch storage for flattened edges, a conservative retained-curve expansion and the coverage row.</summary>
+    /// <remarks>Curve expansion is reserved before any edge allocation: live monotonic pieces need at most two edges per quadratic and three per cubic; convex pre-stepped pieces have at most 64 steps each. Flattened edge capacity remains reserved for every declined span.</remarks>
+    internal static long ScratchByteCount(int pointCount, int rowWidth, long maximumCurveEdges)
     {
         long bytes;
-        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 2) + ParserCollectionMemory.GetArrayByteCount<int>(rowWidth + 4) + ParserCollectionMemory.GetArrayByteCount<int>(rowWidth + 4) + 32 + ((long)pointCount + 2) * 80); }
+        // Edges carry 36 integers, two links and an object header (176 bytes on
+        // x64); 32 more bytes cover references during list growth and ToArray.
+        // The old 80-byte envelope predates retained live-curve snapshots.
+        try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<byte>(rowWidth + 2) + ParserCollectionMemory.GetArrayByteCount<int>(rowWidth + 4) + ParserCollectionMemory.GetArrayByteCount<int>(rowWidth + 4) + 32 + ((long)pointCount + maximumCurveEdges + 2) * 208); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic coverage storage exceeds the supported accounting range."); }
         return bytes;
     }
@@ -1270,7 +1286,8 @@ internal ref struct SvgAnalyticCoverage
             if (!transversalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
-            RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth), SvgMemoryCategory.Surface);
+            long multiCurveEdges = (long)quadSpans.Length * 2 + (long)cubicSpans.Length * 3;
+            RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth, multiCurveEdges), SvgMemoryCategory.Surface);
             try
             {
                 List<AnalyticEdge> multiKept = new(points.Length);
@@ -1389,7 +1406,8 @@ internal ref struct SvgAnalyticCoverage
         setupWork += points.Length;
         int width = xEnd - xStart;
         bool skipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
-        RenderBudget.BudgetReservation? scratch = budget.Reserve(ScratchByteCount(points.Length, width), SvgMemoryCategory.Surface);
+        long curveEdges = useCurveSpans ? (long)quadSpans.Length * (convex ? 128 : 2) + (long)cubicSpans.Length * (convex ? 192 : 3) : 0;
+        RenderBudget.BudgetReservation? scratch = budget.Reserve(ScratchByteCount(points.Length, width, curveEdges), SvgMemoryCategory.Surface);
         try
         {
             List<AnalyticEdge> kept = new(points.Length);
@@ -1795,7 +1813,7 @@ internal ref struct SvgAnalyticCoverage
                     {
                         if (cursor.CurveCount < 0)
                         {
-                            cursor.FCx = cursor.X;
+                            cursor.CubicXOffset = unchecked(cursor.X - cursor.FCx);
                             cursor.SnappedY = cursor.Y;
                             if (!AdvanceCubicLive(cursor, ref _strips)) break;
                         }
@@ -1988,6 +2006,7 @@ internal ref struct SvgAnalyticCoverage
                 _edges[index].SnappedY = _edges[index].InitialSnappedY;
                 _edges[index].FCx = _edges[index].InitialFCx;
                 _edges[index].FCy = _edges[index].InitialFCy;
+                _edges[index].CubicXOffset = 0;
                 _edges[index].FCDx = _edges[index].InitialFCDx;
                 _edges[index].FCDy = _edges[index].InitialFCDy;
                 _edges[index].FCDDx = _edges[index].InitialFCDDx;

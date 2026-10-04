@@ -9,6 +9,11 @@ All 432 current manifest entries are gated: 353 exact decoded-pixel references,
 74 known-difference renders and five categorized rejections. These are fixture
 entries, including variants, and do not establish corporate-document coverage.
 
+Analytic coverage reserves complete live-edge objects, list growth and retained
+curve expansion before allocation. Cubic forward-difference positions evolve
+independently of walked X, with a separate displacement preserving the current
+quarter-grid pixels; fractional endpoint fidelity remains implementation work.
+
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
 Stroke widths flow through the same cascade: presentation attributes, inline styles and matching stylesheets on the shape plus group and root inheritance render identically to direct attributes, with negative widths still rejected at lowering (zero widths paint nothing for solid and paint-server strokes while positive fractional widths lower through the shared outline kernel; line/rect-band and paint-server band strokes keep integer discipline). A width with no stroke paint anywhere renders fill only on rectangles and circles. Stroke paint inherits through group and root containers to shapes without their own (explicit none blocks it); paint-server strokes keep their dedicated rejection except at zero width, where nothing paints and the fill renders alone; text with painted strokes stays unsupported before font acquisition. Miter limits flow through the same cascade with sub-one values still rejected at lowering. Stroke opacity multiplies stroke alpha on solid strokes while paint-server strokes stay opaque-only. Path lengths flow through the same cascade with the single lowering-time validation unchanged. Stroke linecaps and joins flow through the same cascade with per-shape lowering enforcement unchanged and invalid values still rejected at parse.

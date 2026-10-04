@@ -263,3 +263,48 @@ this environment. Time varies run to run while allocation stays deterministic.
 | `ConvertDenseDragon` | 253,303.72 us | 3025.75 KB |
 
 The wordmark pair stays near 2 ms because its opaque content covers a small fraction of the canvas; the dragon pays about 660 ns per canvas pixel across dense flattened curves with analytic interval coverage. These are throughput anchors for row-4/row-5 work, not gates.
+
+## Cubic state separation and edge accounting (2026-10-04)
+
+Compared the reviewed renderer `f633c86b` (DLL SHA-256
+`2F88005F62089F8359771EE1E71310CE10963701C1FCF6FF67881378B7D4F792`)
+with the state-separation checkpoint starting at `5c4af69c` (DLL SHA-256
+`A97877188599FB2074F4EA6E74145575C4147FEA46C723E9F89F3A0F20B56BD6`).
+The same public owned-memory harness and input hashes ran on Windows x64,
+.NET 10.0.12. Each case had 32 warmups and three measured batches, followed by
+a second pair of processes in reverse renderer order. Batches used 100 tiny,
+ten Ford, three dense and three native-size conversions. Ford explicitly uses
+500x200 transparent; the other cases use Default options. This is a local probe,
+not a fresh BenchmarkDotNet run.
+
+The table gives the observed range over both orders, per conversion. Timings
+vary substantially: the apparent native-size slowdown in the first pair disappears
+in reverse order, and the old dense renderer varies from 339 to 472 ms. These runs
+do not establish a throughput gain or a stable regression. Managed allocation
+traffic overlaps, consistent with the added integer fitting existing object
+alignment. PNG hashes match for every case.
+
+| Input | Before time (ms) | After time (ms) | Before allocated bytes | After allocated bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Tiny triangle | 0.108–0.129 | 0.108–0.133 | 20,200–20,202 | 20,200–20,202 |
+| Ford `inv-002` | 14.12–17.55 | 15.55–22.59 | 805,354–808,508 | 805,354–808,508 |
+| Dense `inv-082` | 339.07–472.10 | 341.30–352.24 | 5,666,176–5,668,330 | 5,666,096–5,668,160 |
+| Native-size `inv-050` | 430.43–466.60 | 433.06–462.40 | 33,906,632–33,906,957 | 33,906,658–33,906,712 |
+
+Separately, the internal ledger records unchanged charged work through parsing
+and rasterization (encoding work is excluded). Accounted peaks include encoding.
+The higher Ford/dense peaks repair an under-reservation: the edge envelope now
+covers full live-state objects, reference growth and retained-curve expansion
+before allocation. These are accounting changes, not measured allocation growth.
+
+| Input | Unchanged work through raster | Before accounted peak (bytes) | After accounted peak (bytes) |
+| --- | ---: | ---: | ---: |
+| Tiny triangle | 218 | 132,536 | 132,536 |
+| Ford `inv-002` | 1,255,251 | 458,076 | 554,012 |
+| Dense `inv-082` | 34,881,400 | 2,311,021 | 3,035,885 |
+| Native-size `inv-050` | 76,736,404 | 33,628,051 | 33,628,051 |
+
+All four inputs still render under Default limits. The full comparison preserves
+597 fixture/research/inventory dispositions and PNG bytes, plus all nine Ford
+variants. Local harnesses, source/input/output identities, measurements and ledger
+reports are under the ignored `artifacts/curve-state-20261004/` directory.

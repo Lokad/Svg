@@ -5,6 +5,44 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgCubicSpanWalkerTests
 {
+    [Fact]
+    public void Retained_cubic_expansion_reserves_all_kept_edges_before_allocation()
+    {
+        SvgDevicePoint[] points = [new(8, 48), new(32, 8), new(56, 48)];
+        SvgCubicSpan[] spans = [new(0, 0, 2, new(8, 0), new(56, 0))];
+        RenderBudget budget = new(1_000_000);
+        using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [3], [], false, null, SvgPolygonMapping.FlattenedCurves, [], spans, 0, 64, 0, 64, 64, 64, budget, out long _, out bool eligible, CancellationToken.None);
+
+        Assert.True(eligible);
+        Assert.True(walker.EdgeCount > points.Length);
+        // Each kept edge and the two sentinels need at least the live-state
+        // object footprint; the three row buffers need another nine bytes/pixel.
+        Assert.True(budget.Snapshot().CurrentBytes >= (walker.EdgeCount + 2L) * 176 + 64 * 9);
+    }
+
+    [Fact]
+    public void Later_row_restores_live_curve_displacement_independently_of_previous_rows()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,8 C52,4 56,60 8,56 C32,48 32,16 8,8 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        var polygon = geometry.Polygon;
+        Assert.Equal(2, polygon.CubicSpans.Length);
+        RenderBudget budget = new(1_000_000);
+        ReadOnlySpan<int> votes = polygon.Signs is int[] roles ? roles : Array.Empty<int>();
+        using SvgAnalyticCoverage sequential = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, budget, out long _, out bool sequentialEligible, CancellationToken.None);
+        using SvgAnalyticCoverage skipped = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, budget, out long _, out bool skippedEligible, CancellationToken.None);
+        Assert.True(sequentialEligible);
+        Assert.True(skippedEligible);
+
+        sequential.PrepareRow(12, out long _, CancellationToken.None);
+        sequential.PrepareRow(24, out long sequentialWork, CancellationToken.None);
+        skipped.PrepareRow(24, out long skippedWork, CancellationToken.None);
+
+        Assert.Equal(skipped.Row.ToArray(), sequential.Row.ToArray());
+        Assert.Equal(skippedWork, sequentialWork);
+        Assert.Contains(sequential.Row.ToArray(), alpha => alpha > 0 && alpha < 255);
+    }
+
     private static (SvgDevicePoint[] Points, int[] Ends, int[]? Signs, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans) LowerCubicArch(bool evenOdd)
     {
         string rule = evenOdd ? " fill-rule='evenodd'" : string.Empty;

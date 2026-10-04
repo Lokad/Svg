@@ -1,6 +1,7 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-04 against renderer revision `f633c86b`.
+Updated 2026-10-04: reviewed baseline `f633c86b`, state-separation checkpoint
+starting from `5c4af69c`.
 [PLAN.md](../PLAN.md) is the current execution queue. Rows 3–7 still have
 implementation and fidelity exits; the earlier claim that rows 1–7 were complete
 within architectural limits is withdrawn. The first exact curved corporate mark
@@ -9,7 +10,7 @@ and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 Verified review evidence: 432 fixture entries = 353 exact + 74 known-difference
 renders + five rejections across 281 base documents and 151 variants; 73 research
 probes = 72 known-difference renders + one rejection. Fresh Windows gates pass:
-2,862 core + 105 visual + six FontProbe tests, 25 memory scenarios, package
+2,865 core + 105 visual + six FontProbe tests, 25 memory scenarios, package
 inspection and isolated installed-consumer checks. The fresh Default-options
 inventory sweep reports 88 renders + four MalformedInput rejections out of 92.
 These counts establish neither corporate coverage nor Linux delivery.
@@ -57,9 +58,10 @@ cannot waive their pixel errors or alter their references.
 Ford remains zero exact of nine recorded variants. The latest asset record
 identifies opaque solid cubic fills without stroke, dash or gradients, making it
 the focused coverage target; this does not close composition on other inputs.
-The selected next experiment separates curve evolution from walked edge state,
-proves quarter-grid parity, then tests fractional events within the existing
-live-cubic eligibility. See PLAN's active work order and
+Curve/walk state separation now preserves quarter-grid output byte-for-byte
+across the fixture/research/inventory corpus and all nine Ford variants. The
+next experiment tests fractional endpoints with consistent curve/walk state
+within the existing live-cubic eligibility. See PLAN's active work order and
 [the design record](RASTERIZATION_DESIGN.md) for the retained falsifications.
 
 S17 additionally requires reproducible per-variant identities/diffs, categorized

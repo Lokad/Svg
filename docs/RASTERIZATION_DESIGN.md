@@ -58,7 +58,7 @@ Windows-pinned-Chrome references for an
 [8×8 diagonal triangle](../tests/Research/diagonal-triangle-8x8.svg),
 [fractional-coordinate diagonal triangle](../tests/Research/diagonal-triangle-fractional-8x8.svg),
 [half-sixteenth-grid diagonal triangle](../tests/Research/diagonal-triangle-half-grid-8x8.svg),
-[transparent semi-opaque diagonal overlap](../tests/Research/diagonal-overlap-8x8.svg),
+[transparent semi-opaque diagonal overlap](../tests/Fixtures/original/original-diagonal-overlap-8x8.svg),
 [half-sixteenth-grid transparent semi-opaque diagonal overlap](../tests/Research/diagonal-overlap-half-grid-8x8.svg),
 [disjoint semi-opaque layer-opacity](../tests/Research/diagonal-layer-opacity-16x8.svg),
 [half-sixteenth-grid disjoint layer-opacity](../tests/Research/diagonal-layer-opacity-half-grid-16x8.svg),
@@ -170,7 +170,7 @@ isolated explanation, not an inference about production Skia behavior. The next
 probe must overlap semi-opaque diagonal paths on a transparent background; the
 current one-path, opaque family cannot distinguish coverage from source-over.
 
-The original two-path [8×8 diagonal overlap](../tests/Research/diagonal-overlap-8x8.svg)
+The original two-path [8×8 diagonal overlap](../tests/Fixtures/original/original-diagonal-overlap-8x8.svg)
 and its [half-sixteenth-grid phase companion](../tests/Research/diagonal-overlap-half-grid-8x8.svg)
 each have three fresh Windows-pinned captures that are byte- and decoded-pixel-identical.
 On the original phase, continuous analytic coverage plus straight source-over changes
@@ -2521,3 +2521,42 @@ Question: what Ford inv-002 actually contains, to stop re-asking paint and struc
 Method: direct read of the committed candidate SVG (no render, no probe).
 Facts: two cubic paths with two moveto subpaths each and implicit closes; effective paint on both is opaque solid #003478 (stylesheet white class overridden by inline fill with fill-opacity 1 on both paths and the group); zero stroke or dash attributes; no gradients; uniform group transform; default nonzero rule. Both fills therefore walk the multi-contour winding path with trivially exact opaque compositing, so the residual is coverage-only by asset construction, corroborating the exonerations.
 Decision: no product change; asset facts banked. Next per the single PLAN next-action.
+
+## Independent cubic state with quarter-grid parity (2026-10-04 checkpoint)
+
+The live cubic now retains its forward-difference position and derivatives together.
+`CubicXOffset` separately records the displacement from that position to the walked
+edge. Segment renewal updates this offset instead of overwriting `FCx`; the walked
+Y anchor retains the existing `SnappedY` behavior. Quadratic and convex stepping
+keep their existing gates.
+
+For an ordinary step, `sourceNext + (walkOld - sourceOld)` equals
+`walkOld + delta` under the existing unchecked 32-bit arithmetic. Skipped
+zero-height steps retain that displacement. The terminal authored endpoint
+discards it, preserving the original final-step behavior. Row replay restores the
+initial curve state and clears the offset, so requesting an earlier row cannot
+change a later result. This separates the state without claiming that the existing
+snapped Y trajectory is the exact source polynomial.
+
+Preparation also repairs the scratch reservation. Each edge has a 176-byte x64
+object footprint; the 208-byte envelope includes reference storage during list
+growth and final array construction. The old 80-byte envelope predated live curve
+snapshots. Capacity includes the flattened fallback plus at most two monotonic
+pieces per quadratic and three per cubic. Convex pre-stepped pieces reserve up to
+64 segments each, hence 128 and 192 respectively. Reservation precedes allocation.
+
+Three regressions pin replay isolation, denial under insufficient edge storage,
+and expansion beyond the flattened point count. Each was also checked against a
+temporary omission of its corresponding repair and failed as intended. All 2,976
+tests, 25 memory scenarios and package/consumer checks pass. The 432 fixtures,
+73 research probes, 92 inventory documents and nine Ford viewport/background
+variants preserve their dispositions and complete PNG bytes against the reviewed
+baseline. Raster work is unchanged. Accounted peaks increase where the former
+reservation undercounted edges; allocation and timing observations are recorded in
+[BENCHMARKS.md](BENCHMARKS.md). Evidence is under the ignored
+`artifacts/curve-state-20261004/` directory.
+
+Fractional endpoints remain an experiment: start the renewed segment at the
+walked position, end it at the independent curve position, and compute its slope
+from full fixed-point deltas. This differs from removing continuity entirely,
+which previously broke sorted-edge traversal.

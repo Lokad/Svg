@@ -1,6 +1,8 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-04 against `f633c86bc5df0584edd1c4741c0a2218d49d3a32`.
+Updated 2026-10-04. The reviewed renderer baseline is
+`f633c86bc5df0584edd1c4741c0a2218d49d3a32`; the active implementation checkpoint
+below starts from `5c4af69c` and records its validation separately.
 The September 28 baseline and review remain historical evidence in
 [the review](docs/REVIEW_2026_09_28.md) and Git. R01–R41 and S1–S17 retain
 their identities. This revision replaces the accumulated checkpoint log with
@@ -22,10 +24,10 @@ not a prerequisite to improving the shared renderer.
 
 ## 1. Current baseline and its limits
 
-| Evidence at the reviewed revision | Assessment |
+| Current validated evidence | Assessment |
 | --- | --- |
 | Fresh Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Fresh full tests | **2,973 passed**: 2,862 core, 105 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Fresh full tests | **2,976 passed**: 2,865 core, 105 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Fresh memory and delivery checks | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. No runtime package dependencies, native assets or packaged SVG fixtures. |
 | Executed fixture manifest | **432 entries = 353 exact + 74 known-difference renders + five rejections**; 281 base documents / 151 variants. Synthetic coverage is not corporate-logo coverage. |
 | Executed research manifest | **73 probes = 72 known-difference renders + one rejection**. Useful exact controls graduate to fixtures with their provenance. |
@@ -102,12 +104,28 @@ completed stage: the remaining exit evidence below governs completion.
 
 ### Active work order: curve/walk state at fractional events (2026-10-04)
 
-**Current mechanism.** Eligible non-convex cubic fills walk live; the curve
-position is re-anchored to the walked position while forward differences remain.
-This construction matches the pin at quarter-pixel event rates. `SelectStripStep`
-and `GoYProportional` now handle fractional gaps, but those gaps remain unreachable
-while event Y coordinates snap to quarters. The two stepping landings therefore
-establish scaffolding and parity, not a new exactness result.
+**Current mechanism.** Eligible non-convex cubic fills walk live. Their
+forward-difference positions now evolve without walk-position resets; a separate
+`CubicXOffset` preserves the pinned quarter-grid re-anchor effect on emitted edges.
+Row replay clears that displacement before restoring the initial curve state.
+`SelectStripStep` and `GoYProportional` handle fractional gaps, but those gaps remain
+unreachable while event Y coordinates snap to quarters. This is verified state
+separation and stepping scaffolding, not a new exactness result.
+
+**State-separation checkpoint (2026-10-04, starting at `5c4af69c`).** The first
+buildable slice is implemented. Complete PNG comparisons against the baseline
+package show zero changes over 432 fixtures, 73 research probes, 92 Default-options
+inventory files and all nine Ford variants. Three new regressions cover row-state
+restoration, undersized edge-object budgets and retained-curve expansion; each
+fails when its repair is removed. Locked restore, zero-warning Release build,
+2,976 tests, all 25 memory scenarios and isolated package checks pass.
+Analytic scratch now reserves the 176-byte live-edge object footprint plus growth
+references and conservative live/pre-stepped curve expansion before allocation.
+Measured preparation/raster work is unchanged on tiny/Ford/dense/native-stop
+inputs; corrected accounted peaks rise for Ford (458,076 to 554,012 bytes) and
+the dense input (2,311,021 to 3,035,885 bytes), without changing Default admission.
+Full comparisons and ledger artifacts are in `artifacts/curve-state-20261004/`;
+the derivation and observations are in the design and benchmark records.
 
 Unsnapping live ends on its own is falsified: the recorded fractional-safe
 experiment worsens Ford from 1,200 to 12,431 changed pixels. Pure continuation
@@ -116,18 +134,23 @@ behavior-preserving “phase two” threshold rewrite; that work order is retire
 The retained twin demonstrates that all eight live spans help on that input.
 It does not prove that every span class helps Ford or every other geometry.
 
-**Chosen experiment: separate curve state from walked edge state.** Keep the
-source-curve evolution and its derivatives distinct from the fixed-point
-position used for ordering and coverage. First establish the state invariants
-and quarter-grid equivalence; only then exercise fractional event ends in a
-bounded prototype. This is a hypothesis to test, not a promised fix.
+**Next experiment: fractional endpoints with consistent curve/walk state.**
+Keep curve evolution and its derivatives distinct from the fixed-point position
+used for ordering and coverage. Quarter-grid equivalence is now established.
+Test unsnapped live-cubic endpoints with refreshed edges starting at the walked
+position and ending at the independent curve position, using proportional
+advancement and slope calculations that retain fractional Y differences.
+The existing walk displacement remains the verified compatibility control;
+removing it while also preserving the walked segment start is a new experiment,
+not a repeat of the falsified pure-continuation variant. This is a hypothesis,
+not a promised fix.
 
 1. **Define the state boundary.** Record which parameter/forward-difference step
    the curve state represents and which event Y the walked position represents.
    Derivatives must belong to the same curve state as their position; coverage
    and ordering consume the walked state. Specify snapshot/restore, insertion,
    removal and zero-height advancement behavior before altering them.
-2. **Make one buildable state-separation slice.** Restrict the experiment to the
+2. **Preserve the completed state-separation slice.** Restrict the experiment to the
    existing live non-convex cubic eligibility and preserve quarter-grid outputs
    and charged-work semantics. Account for any additional state explicitly.
    Charge new state, work and growth before allocation;
