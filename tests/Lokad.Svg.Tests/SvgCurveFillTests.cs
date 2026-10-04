@@ -277,9 +277,11 @@ public sealed class SvgCurveFillTests
     {
         // R34: flattened collinear cubics cross like their straight twin up to
         // one half-quantum alpha step at the exact-half pixel: the fan rounds
-        // 127.5 up to 128 while the edges walker truncates to 127 (pinned
-        // Chrome reads 130 there, so both stay approximations of the same
-        // half-covered pixel and the twin identity holds everywhere else).
+        // 127.5 up to 128 while the edges walker truncates to 127 (the banked
+        // diagonal-bowtie oracle reads 127/128 at row 3 with symmetric 144s on
+        // the vertex row 4 under the max-16 ratchet; the row-4 sliver, not any
+        // 130 reading, is the open coincident-event question, and the twin
+        // identity holds everywhere else).
         byte[] curved = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z' fill='red'/></svg>", out _, out _);
         byte[] straight = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='red'/></svg>", out _, out _);
 
