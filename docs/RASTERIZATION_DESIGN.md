@@ -2184,3 +2184,9 @@ Question: what family dominates the Ford 3594 tail now that twin tip slivers are
 Method: one temporary VisualTests probe (deleted after) rendering inv-002 at explicit 500x200 transparent against the banked r1 oracle with per-pixel alpha-error bands.
 Facts: alpha bands read sub8 891, 8to20 158, 20to40 72, over40 7 of 1128 alpha-changed pixels; 79 percent sits in the parked sub-8 quirk envelope. The 7 over-40 pixels are all mid-alpha both-sides straddles with mixed signs: (345,103) oracle 123 versus candidate 76, (294,156) oracle 85 versus candidate 128, (248,193) oracle 71 versus candidate 125 at max dA 54. Zero interior misses carry over from the earlier attribution; the remainder is systematic sub-pixel edge phase on curved flanks, not missing paint.
 Decision: no product change; sub-8 mass joins the parked quirk family. Next per the single PLAN next-action.
+
+## Ford device-phase search bottoms at zero shift (2026-10-04 probe)
+Question: whether the Ford mixed-sign flank straddles ((345,103) under 47, (294,156) over 43) come from a systematic sub-pixel device-phase offset in viewport mapping or snap origin.
+Method: one temporary VisualTests probe (deleted after) shifting the viewBox origin by dx in -0.5, -0.25, 0, 0.25, 0.5 against the banked r1 oracle at explicit 500x200.
+Facts: changed-pixel counts read 4856, 4347, 3594, 4356, 4875 with mean error 1.11, 0.57, 0.16, 0.58, 1.12: cleanly U-shaped with the minimum at zero shift. Viewport mapping origin is optimal at sub-pixel level; the straddles are not a global phase error.
+Decision: no product change; device phase exonerated and reverted with the tree clean. Next per the single PLAN next-action.
