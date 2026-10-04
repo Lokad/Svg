@@ -1,11 +1,17 @@
 # Rasterization transition design
 
-The current renderer is intentionally limited to integer-aligned rectangle edges.
-It must not extend that loop with sample-count approximations for paths, circles,
-rotated rectangles, or fractional edges: Chrome-exact RGBA acceptance remains the
-criterion.
+The renderer now has shared contour preparation, analytic coverage, retained
+curves and bounded paint/layer routes. General pinned-browser equality remains
+unproved. [PLAN.md](../PLAN.md) owns the current execution queue; this document
+retains chronological hypotheses, source evidence, rejected models and repairs.
+The latest [dispatch investigation](#native-maskrun-dispatch-and-paint-operations-2026-10-04)
+selects separate direct paint and pending-run operations as the next boundary.
 
-The next geometry subsystem will keep parsed commands separate from raster work:
+## Initial transition requirements (historical)
+
+The initial renderer was limited to integer-aligned rectangle edges. The proposed
+geometry transition kept parsed commands separate from raster work, with exact
+decoded Chrome RGBA as its acceptance criterion:
 
 - Normalize supported shapes and paths into compact contour/edge buffers, charging
   their storage before allocation and bounding commands, contours, subdivisions,
@@ -2838,3 +2844,171 @@ active work to rows 4–5. General composition remains open, including the expli
 group-opacity-white control. Ford's opaque cubic coverage is unchanged; the next
 discriminator compares authored-to-device mapping precision with independently
 captured authored/device-baked controls before another curve implementation.
+
+## Authored-to-device precision discriminator (2026-10-04)
+
+Question: does earlier float quantization explain the standing Ford curve error?
+The release-tag Blink [path string source](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/svg/svg_path_string_source.cc)
+parses numbers into float points; its [path builder](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/svg/svg_path_builder.cc)
+updates relative coordinates and smooth controls through float `gfx::PointF`.
+The matched Skia [matrix point mapper](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkMatrix.cpp)
+uses float point/scale/translation lanes. Our path parser retains double values,
+relative updates and authored affine maps before float edge setup. Ford has two
+multi-contour cubic paths under
+`matrix(1.3453761,0,0,1.3453761,-191.56772,-250.70661)`, with a 500×200 viewBox.
+These source observations suggest a discriminator, not a blanket coordinate cast.
+
+Declare authored, float-baked and double-baked twin-crescent inputs before edits.
+The float-baked model rounds tokens, relative additions and each scale/translation
+step to float. Initial families use a 100,000-unit translation, Ford's affine
+coefficients and a separate fractional relative/scale holdout. Their native
+authored/float/double outputs agree within each configuration. Extend the declared
+translation to one million units: the native authored and float-baked PNGs agree
+(`51e941dd9197058acbfbde45244b3e3bbf2b03ca1b0d53b06053994b0d92a6fc`),
+while the double-baked curve differs on 234 pixels, maximum alpha error 53.
+All 18 configurations have three byte-identical fresh recipe-3 captures and
+healthy launch/cleanup reports. Inputs remain nonempty at the declared viewport.
+
+Four temporary production models isolate token reads, token plus relative-point
+rounding, matrix point evaluation, and their combination. Each builds without
+warnings and compares Ford's nine configurations, four retained curve controls
+and the 18 precision configurations. Transparent Ford measures follow; each cell
+is changed pixels / sum of absolute alpha errors.
+
+| Model | 250×100 | 500×200 | 1000×400 |
+| --- | --- | --- | --- |
+| Baseline | 592 / 2,842 | 1,200 / 6,761 | 5,729 / 57,568 |
+| Token float | 592 / 2,842 | 1,200 / 6,761 | 5,725 / 57,566 |
+| Token + relative float | 592 / 2,842 | 1,203 / 6,766 | 5,722 / 57,609 |
+| Matrix float | 592 / 2,842 | 1,200 / 6,761 | 5,726 / 57,674 |
+| Combined float | 592 / 2,842 | 1,203 / 6,766 | 5,722 / 57,609 |
+
+The million-translation authored candidate improves from 280 pixels / 1,214 alpha
+mass to 62 / 140 in these trials. The fractional relative holdout changes from
+572 / 11,382 to 571 / 11,384 with the combined model. Intended Ford is either
+byte-identical or worse across backgrounds; the small improvements at large size
+do not establish a leading cause or a consistent held-out repair. These measured
+models are not a claim to reproduce every browser map, fused operation or root
+transform. All four are reverted. Keep the real large-translation discrepancy for
+later mapping work; choose another demonstrated invariant for Ford. The 18 local
+precision configurations are investigation evidence, not added manifest entries.
+
+Reproduction: declarations, inputs, stable triples, successful primary-source
+downloads, model patches/assemblies and complete comparisons are under ignored
+`artifacts/device-precision-20261004/`, including `controls/`,
+`extended-controls/` and the four named model report directories. Source downloads
+use the exact Chromium release tag; optional Skia reads use the matched commit
+above without switching its checkout. No source checkout becomes a build input.
+
+## Native mask/run dispatch and paint operations (2026-10-04)
+
+Question: can the current single coverage mask represent the native analytic
+scanner's paint operations? Matched
+[SkScan_AAAPath](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_AAAPath.cpp)
+selects `MaskAdditiveBlitter` when integer path bounds have width at most 32 and
+`Align4(width) × height` at most 1,024 bytes. Canvas width alone is insufficient.
+Otherwise the scanner uses run accumulation (`RunBasedAdditiveBlitter`, or its
+safe form for non-convex paths).
+
+The distinction continues inside each route. A mask's `getRealBlitter(false)`
+returns the mask itself. A run accumulator returns its actual painter: eligible
+full-strip single/pair operations call `blitV` / `blitAntiH2` directly, and full
+spans call `blitH`. Other partial-strip operations remain in pending additive
+runs, whose row flush snaps alpha below eight to zero and above 247 to 255.
+Direct fringe paint bypasses that snap. The matched
+[SkAlphaRuns](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkAlphaRuns.cpp)
+also supplies the pending coverage accumulation invariant. Our scanner currently
+reduces these operations to one `_row` mask.
+
+This corrects the earlier inference from surviving low native alpha: low direct
+fringe pixels can coexist with snapped accumulated runs. The rejected global
+post-row snap changed both and therefore does not falsify the run route. Preserve
+that counterexample; do not reuse its global adjustment as the implementation.
+
+Before edits, declare two identical-geometry crescent contours under one fill.
+The first starts at `(12.125,4.375)` and remains fixed. Moving only the second
+crosses independent width and storage limits:
+
+| Control pair | Mask bounds | Run bounds | Native fixed-contour difference |
+| --- | --- | --- | --- |
+| Width | 32×13, 416 bytes | 33×13, 468 bytes | Three pixels; opaque max alpha error 3, translucent 2 |
+| Storage | 7×128, 1,024 bytes | 7×129, 1,032 bytes | Three pixels; opaque max alpha error 3, translucent 2 |
+
+Each SVG renders on the same 64×160 canvas. The second contour is outside the
+first contour's fixed 20×22 comparison region. Capture opaque `#003478` and
+fill-opacity 0.5 for each bound pair, plus white/black backgrounds for both
+run-width paints: eight CC0 documents and 12 configurations. All 36 recipe-3
+captures are byte-identical within their triples and report healthy startup and
+profile cleanup. The source predicts the observed route-sensitive first-contour
+pixels; this is independent corroboration, not browser operation instrumentation.
+
+Baseline: both opaque mask controls are exact. Both translucent mask controls
+have 20 differing RGB pixels and exact alpha. Opaque run controls have six changed
+pixels on transparent/white and four on black; transparent alpha mass is 12.
+Translucent run controls have 24 changed pixels on transparent/white and 20 on
+black; transparent alpha mass is eight. These inputs and reference PNG/provenance
+are now banked as `blitter-route-*.svg`: two exact and ten known-difference entries.
+Metadata retains source bounds, predicted route, explicit viewport/background,
+input/executable/reference/candidate identities and baseline comparison measures.
+
+A temporary two-alpha model leaves curve setup, stepping and quarter-grid events
+unchanged. It separates direct alpha-over operations from pending additive
+coverage, selects the native bounds predicate, snaps only pending coverage and
+finally collapses the two into one output alpha. The extra row array and merge
+work are charged in the diagnostic. This makes all six opaque dispatch controls
+exact and improves every Ford configuration against the unchanged banked oracle:
+
+| Ford size | Changed pixels, baseline → model (transparent / white / black) | Transparent alpha mass, baseline → model |
+| --- | --- | --- |
+| 250×100 | 592 / 576 / 469 → 337 / 321 / 252 | 2,842 → 2,001 |
+| 500×200 | 1,200 / 1,186 / 945 → 740 / 727 / 548 | 6,761 → 5,251 |
+| 1000×400 | 5,729 / 5,670 / 5,173 → 5,131 / 5,075 / 4,681 | 57,568 → 56,353 |
+
+The retained cubic twin improves from 56 changed pixels / 120 alpha mass to
+42 / 46; the crescent improves from 30 / 71 to 11 / 14. There are no new zero/
+opaque alpha flips in these Ford/control reports. Whole-PNG comparison over the
+previous 677-case corpus finds 86 changes, including 30 original fixture entries;
+all 433 previously exact fixture PNGs remain byte-identical. This comparison does
+not prove that every changed research/inventory candidate improves against Chrome.
+
+The diagnostic is insufficient for production: translucent run controls retain
+18 RGB errors despite exact alpha; translucent mask controls retain their 20.
+Paint operations cannot generally collapse into one coverage value. Matched
+[SkBlitter_ARGB32](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkBlitter_ARGB32.cpp)
+first premultiplies the quantized source paint with round/255, then uses distinct
+direct/run coverage and interpolation operations. The A8 mask route in
+[SkBlitMask_opts](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/opts/SkBlitMask_opts.h)
+uses `Sk4px::approxMulDiv255`; matched
+[SkVx](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkVx.h)
+defines its asymmetric byte scale as `(X*Y+X)/256`, exact at zero/255.
+Those source operations are distinct from quantizing coverage into straight
+paint alpha and calling our existing floor256 source-over once. Preserve opcode,
+order and material arithmetic through the shared painter; do not replace every
+blend with one formula or translate/vendor the reference implementation.
+
+Decision: revert the diagnostic and queue the operation-preserving shared
+scan/paint boundary. Keep direct single/pair/full-span paints separate from pending
+run coverage, implement bounds dispatch and flush behavior, and reserve typed
+operation/run storage before allocation. Validate solid/linear/radial/pattern
+consumers, translucent and background holdouts, row cancellation, work/memory
+denial, cleanup and six-output parity. Existing quad/convex/stroke gates remain.
+Independent controls and all nine Ford variants must show progress; the wordmark
+exit remains all nine exact, with no tolerance or lost existing exact reference.
+
+Restored-baseline acceptance: locked restore, zero-warning Release solution build
+and all 2,978 tests pass, including the expanded manifest. All previous 677 corpus
+dispositions and complete PNGs, plus all nine Ford candidate identities, are
+unchanged. The expanded corpus executes 689 cases: 524 fixtures, 73 research and
+92 Default-options inventory files. Fixtures are now 435 exact + 84 known-difference
+renders + five rejections, across 321 base documents and 203 variants. Research
+counts stay 73. No production change or new corporate exactness claim lands here;
+memory/package evidence remains the full-canvas checkpoint's validation.
+
+Reproduction: use the committed manifest's `original-blitter-route-*` entries
+and metadata with the standard Release visual gate; fresh independent triples
+use `tools/capture-chrome.ps1` at each declared background and 64×160 viewport.
+Local declarations, primary-source reads, two-alpha patch/assembly and complete
+before/after PNGs/reports are under ignored
+`artifacts/device-precision-20261004/`, including `blitter-controls/`,
+`native-blitter-boundary/`, `dual-alpha-model-*` and `final-*`. The next production
+slice must preserve the operations themselves and pass the gates above.

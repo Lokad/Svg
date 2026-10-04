@@ -7,11 +7,13 @@ implementation and fidelity exits; the earlier claim that rows 1–7 were comple
 within architectural limits is withdrawn. The first exact curved corporate mark
 and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 
-Current validated evidence: 512 fixture entries = 433 exact + 74 known-difference
-renders + five rejections across 313 base documents and 199 variants; 73 research
-probes = 72 known-difference renders + one rejection. Fresh Windows gates pass:
-2,867 core + 105 visual + six FontProbe tests, 25 memory scenarios, package
-inspection and isolated installed-consumer checks. The fresh Default-options
+Current validated evidence: 524 fixture entries = 435 exact + 84 known-difference
+renders + five rejections across 321 base documents and 203 variants; 73 research
+probes = 72 known-difference renders + one rejection. Fresh Windows locked restore,
+Release build and 2,867 core + 105 visual + six FontProbe tests pass. The latest
+25 memory scenarios, package inspection and isolated installed-consumer checks
+pass at the full-canvas checkpoint; the dispatch investigation changes no
+production code. The Default-options
 inventory sweep reports 88 renders + four MalformedInput rejections out of 92.
 These counts establish neither corporate coverage nor Linux delivery.
 
@@ -71,9 +73,15 @@ and operation-limit controls preserve ordinary byte composition; original
 fill-opacity is retained separately for eligible native rectangle analysis.
 Group opacity on white remains a known failure. Only the integer-overlap PNG
 changes in the previous 597-case corpus; all nine Ford PNGs remain unchanged.
-The active slice returns to shared curve fidelity, beginning with an independent
-authored-to-device mapping precision discriminator. That is an unproved
-hypothesis; Ford's opaque coverage remains open.
+The authored-to-device discriminator confirms a float-precision difference at
+large translations, but the measured cast models do not explain Ford's standing
+error and are reverted. Native mask/run bounds controls now demonstrate separate
+direct paint and pending additive-run behavior. A reverted alpha-only model
+improves every Ford variant, including intended-transparent 1,200 to 740 changed
+pixels, but retains translucent RGB errors. The active slice implements that
+shared operation/material boundary with bounded storage and independent paint
+controls. The 12 new configurations are banked as two exact and ten known
+differences; current production Ford output is unchanged and remains zero of nine.
 See PLAN's active work order and
 [the design record](RASTERIZATION_DESIGN.md) for the retained falsifications.
 

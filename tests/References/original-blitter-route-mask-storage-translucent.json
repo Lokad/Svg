@@ -1,0 +1,38 @@
+{
+  "fixtureId": "original-blitter-route-mask-storage-translucent",
+  "referencePng": "original-blitter-route-mask-storage-translucent.png",
+  "referenceSha256": "396889fdd0aa93167d67abb4ed966f1e655626a8aae0058a57c3f0af820b58aa",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 160,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "6538fe19bae1ff7afb563908e6758d88a394a907e058c17dd5f5683748848887",
+  "candidateSha256": "e56afb0be91f8efc1265efbfa4af8d674ccbd426ec53058240b9c4ee80d2eb43",
+  "admittedAt": "2026-10-04",
+  "sourceBounds": {
+    "width": 7,
+    "height": 128
+  },
+  "predictedBlitterRoute": "mask",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 20,
+    "maximumChannelError": 128,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 6,
+    "minimumMismatchY": 7,
+    "maximumMismatchX": 9,
+    "maximumMismatchY": 131,
+    "exact": false
+  }
+}

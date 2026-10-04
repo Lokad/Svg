@@ -4,8 +4,10 @@ Updated 2026-10-04. The reviewed renderer baseline is
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32`; the implemented state-separation
 checkpoint is `70c18287` and records its validation separately. `f68cb887`
 records the rejected endpoint experiments; it does not change renderer output.
-The current full-canvas solid-paint checkpoint adds a bounded routing repair
-and independently captured controls; its validation is recorded below.
+`647dbd6b` adds the bounded full-canvas solid-paint routing repair. The current
+mask/run dispatch investigation banks independent controls and selects the next
+implementation boundary; its prototypes are reverted and renderer output is
+unchanged from that checkpoint.
 The September 28 baseline and review remain historical evidence in
 [the review](docs/REVIEW_2026_09_28.md) and Git. R01–R41 and S1–S17 retain
 their identities. This revision replaces the accumulated checkpoint log with
@@ -34,8 +36,8 @@ not a prerequisite to improving the shared renderer.
 | --- | --- |
 | Fresh Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
 | Fresh full tests | **2,978 passed**: 2,867 core, 105 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Fresh memory and delivery checks | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. No runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **512 entries = 433 exact + 74 known-difference renders + five rejections**; 313 base documents / 199 variants. Synthetic coverage is not corporate-logo coverage. |
+| Latest memory and delivery checks, at the full-canvas checkpoint | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. No runtime package dependencies, native assets or packaged SVG fixtures. The dispatch investigation changes no production code. |
+| Executed fixture manifest | **524 entries = 435 exact + 84 known-difference renders + five rejections**; 321 base documents / 203 variants. Synthetic coverage is not corporate-logo coverage. |
 | Executed research manifest | **73 probes = 72 known-difference renders + one rejection**. Useful exact controls graduate to fixtures with their provenance. |
 | Fresh independent-file Default-options sweep | **92 files = 88 render + four MalformedInput rejections** (`inv-007`, `inv-012`, `inv-014`, `inv-020`). Renderability does not establish fidelity or all-variant completion. |
 | Latest recorded Ford all-variant evidence | Small 250×100, intended 500×200 and large 1000×400 × transparent/white/black: **zero exact of nine**. Intended-transparent: 1,200 changed pixels, max channel error 128, max alpha error 54, 1,128 alpha mismatches. These are the recorded current-renderer measurements, not new browser captures in this review. |
@@ -52,6 +54,12 @@ Its comparisons, capture triples and resource observations are under
 declared configurations now have committed inputs, references and provenance;
 79 are exact and one retains a known group-opacity difference. The historical
 integer-overlap reference also graduates to exact without replacing its PNG.
+The subsequent dispatch investigation adds eight CC0 documents / 12 configurations
+with three stable, healthy fresh-process captures each: two exact and ten known
+differences. Its restored-baseline build/tests and whole-PNG comparisons execute
+all 689 fixture/research/Default-inventory cases; all previous 677 outputs and
+dispositions, and all nine Ford candidates, are unchanged. Local evidence is
+under `artifacts/device-precision-20261004/`.
 
 Chrome remains **153.0.8010.52 win64, recipe 3**, with the recorded executable
 hash and Chromium revision field 1681091. Historical recipe-1/recipe-2
@@ -76,14 +84,18 @@ affect a counted document, even when our geometry is closer to ideal area.
 2. **Check actual state before edits.** Inspect HEAD, status and live
    coordination. Previous committed work is not a lock. Preserve concurrent
    changes and use an isolated worktree when an experiment overlaps them.
-3. **Return to shared curve fidelity, rows 4–5.** Curve/walk state separation
+3. **Preserve direct paint and accumulated-run operations, rows 3–5.** Curve/walk state separation
    preserves quarter-grid output. The full-canvas solid-paint repair now preserves
    native rectangle identity and original fill-opacity through scene/reference
    lowering, with independent opacity, paint, mapping and routing controls.
+   Independent width/storage controls now distinguish native mask and run routes.
+   A reverted dispatch model improves every Ford variant but still collapses
+   paint operations into alpha; land the shared operation/material boundary next.
    General composition remains open; its layer residuals stay in rows 3 and 7.
 4. **Preserve the landed repairs and exact controls.** Do not repeat the old
-   six-site floor256 replacement, globally disable live cubics, enable RLE
-   alpha snapping before threshold accuracy, or desnap endpoints alone.
+   six-site floor256 replacement, globally disable live cubics, snap the final
+   coverage mask globally, or desnap endpoints alone. Native run-flush snapping
+   applies only to pending additive runs; direct fringe paints bypass that flush.
    Each has retained counterexamples. Further syntax admissions wait unless
    the active target demonstrates a dependency; regression repairs may interrupt.
 5. **Keep release policy separate from implementation.** S17's exact-document
@@ -111,13 +123,13 @@ completed stage: the remaining exit evidence below governs completion.
 | 1 | **Complete: bounded semantic repairs.** S12 miter threshold and R41 zero-area objectBoundingBox gradient path strokes are repaired. | Preserve acute-limit branches, degenerate path/use and userSpace controls; no reopened defect. |
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
 | 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. General coverage/alpha and layer composition need independent controls; group-opacity on white still differs. |
-| 4 | **Active with row 5: shared scan conversion fidelity.** Spatial membership, analytic rows, contact handling and straight-source sibling-stroke union repairs have landed. | Correct fractional events/coverage through the shared walker, held-out slopes/phases, crossings, counters and overlapping paints/outlines, with bounded work and cleanup. |
-| 5 | **Open with row 4: retained curves and final device mapping.** Double maps, retained controls, live non-convex cubic stepping and curve/walk state separation have landed with quarter-grid parity. | Fractional-event fidelity, existing transform/instance equivalence, curved-mark and Ford all-variant progress. Quad live stepping, convex paths and curve-sourced strokes retain their documented fallback/gates until separately proved. |
+| 4 | **Active with rows 3 and 5: shared scan conversion and paint dispatch.** Spatial membership, analytic rows, contact handling and straight-source sibling-stroke union repairs have landed. | Preserve direct paint operations separately from pending run coverage, select the native bounds route and correct material quantization; then address remaining fractional events, crossings, counters and overlaps with bounded work and cleanup. |
+| 5 | **Open with row 4: retained curves and final device mapping.** Double maps, retained controls, live non-convex cubic stepping and curve/walk state separation have landed with quarter-grid parity. | Preserve transform/instance equivalence and large-translation precision evidence. The measured float-cast trials do not explain Ford's standing error; dispatch is the next shared repair. Fractional-event, quad/convex/stroke work retains its separate fallback/gates until proved. |
 | 6 | **Partial: curve-aware stroke completion.** Width/cascade, cap/join/dash, zero-width and straight-source union repairs are retained. | True curve tangents/dash cuts, curved/dashed overlap and seam handling, remaining round/miter/hairline/pathLength/non-scaling cases through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Not achieved: independent milestone and delivery, S8/S17.** The 92-file inventory and all-variant records are useful evidence, not a release rate. | First exact curved corporate mark and outlined wordmark; then a frozen representative cohort meeting the 80% exact-document target overall and per corporate stratum, complete declared variants and fresh platform/package/resource/performance evidence. |
 
-### Active work order: preserve paint routing; return to curved-logo fidelity (2026-10-04)
+### Active work order: preserve native paint operations and accumulated runs (2026-10-04)
 
 **Current mechanism.** Eligible non-convex cubic fills walk live. Their
 forward-difference positions now evolve without walk-position resets; a separate
@@ -200,19 +212,48 @@ Mechanism, source identities and reproduction are in
 [the design record](docs/RASTERIZATION_DESIGN.md#full-canvas-solid-paint-routing-repair-2026-10-04),
 with resource observations in [the benchmark record](docs/BENCHMARKS.md).
 
+**Mapping discriminator completed.** Blink parses path values and relative point
+updates as floats; the matched matrix point map also uses floats. Independently
+declared authored/float-baked/double-baked curves agree in the first three capture
+families. A million-unit translation discriminates them: authored Chrome output
+matches the float-baked curve and differs from the double-baked curve on 234 pixels.
+Four temporary token/relative/matrix precision models reduce that probe's error,
+but leave intended Ford unchanged or worse and show no consistent holdout progress.
+All are reverted. This is a real precision difference, not the leading Ford cause.
+
+**Dispatch discriminator demonstrated; production repair remains open.** The
+matched analytic scanner selects a mask only for path bounds of width at most 32
+and aligned row storage times height at most 1,024 bytes. Otherwise it mixes direct
+paint operations with pending additive runs. Only the latter snap alpha at flush;
+small direct fringe alpha survives. Our scanner currently collapses both into a
+single mask. Moving only a second contour across either bounds limit changes three
+pixels of the unchanged first contour in native captures, for opaque and translucent
+paints. The 12 banked controls retain both routes and white/black run holdouts.
+
+A reverted two-alpha diagnostic preserves the current curve setup/walk, separates
+direct alpha from pending coverage and snaps only pending runs. It makes all six
+opaque dispatch configurations exact and improves all nine Ford variants:
+transparent changed pixels at small/intended/large fall from 592/1,200/5,729 to
+337/740/5,131, with lower alpha error mass and no new 0-to-255/255-to-0 flips.
+All 433 previously exact fixtures remain byte-identical. The model still collapses
+paint operations: run translucency retains 18 RGB errors and mask translucency
+retains 20. It is evidence for the next boundary, not a landed renderer improvement
+or an exact corporate checkpoint. Full comparisons and source identities are in
+[the dispatch record](docs/RASTERIZATION_DESIGN.md#native-maskrun-dispatch-and-paint-operations-2026-10-04).
+
 1. **Keep the validated curve and paint state.** Preserve quarter-grid parity,
    replay restoration, source opacity, native draw identity, charged work and
    storage bounds. Keep inset/path/encoded-alpha/layer and operation-limit route
    witnesses. Do not repeat the rejected endpoint or intersection experiments.
-2. **Test authored-to-device mapping precision as the next discriminator.**
-   Inspect Ford's actual maps and the matched path/matrix pipeline, then capture
-   independently declared authored versus device-baked cubic controls at
-   fractional translations/scales. Distinguish parsing, transform order and
-   edge setup; existing float forward differences are already implemented.
-   This is a hypothesis to test, not an established cause or an instruction to
-   cast every coordinate. If it is inert, retain that evidence before choosing
-   another specific failing invariant.
-3. **Land a shared curve repair only after a mechanism is demonstrated.**
+2. **Implement an operation-preserving shared scan/paint boundary.** Retain direct
+   single/pair/full-span paints and pending additive coverage separately, with
+   native bounds dispatch and run-flush order. Use typed, budgeted operation/run
+   storage; preserve reserve-before-allocation, charged traversal, row cancellation
+   and cleanup. Apply operation-specific premultiplied color/coverage arithmetic
+   through the existing solid/linear/radial/pattern paint loops. Do not turn the
+   two-alpha diagnostic into production or replace all blends globally. Source
+   paint quantization and mask/direct/run arithmetic are distinct requirements.
+3. **Land the integrated repair only after independent material evidence.**
    Require oracle progress on held-out curved controls and all nine Ford
    configurations, with no lost exact fixture, new opaque-interior/hole flips,
    unbounded storage or cancellation/ownership regression. Preserve current
@@ -223,11 +264,12 @@ with resource observations in [the benchmark record](docs/BENCHMARKS.md).
    residual is recorded there; another synthetic calibration campaign does not
    replace measured curved-logo work.
 
-**Next curve slice acceptance.** Review the first buildable integrated slice.
+**Next scan/paint slice acceptance.** Review the first buildable integrated slice.
 Declare held-out opacity/paint/background and transform/size controls before
 tuning. Compare Ford's nine explicit viewport/background configurations against
 their banked pinned triples, plus the retained cubic twin/crescent, counters,
-straight-edge and stroke controls. Record all changed images and candidate
+straight-edge and stroke controls, and all 12 dispatch configurations including
+translucency/backgrounds. Record all changed images and candidate
 identities, total alpha error and directional/interior changes; a lower count
 or closer ideal area alone is insufficient. Require zero existing exact
 regressions and no new opaque-interior/hole flips. Reaching fewer than 1,200
@@ -264,8 +306,8 @@ demonstrated dependencies or regression repairs.
 | R30 | Shared contour preparation, ownership and coverage traversal have landed across the four paints. Preserve that boundary while changing curve state; remaining repeated binding/typed-state work follows demonstrated dependencies, not a repository rewrite. |
 | R31 | CI artifact-validator hooks, Windows sandbox setup/health, wrapper deadline/drain and atomic publication are repaired. One opt-in corpus capture/compare/report workflow and representative performance evidence remain; reuse existing tools. |
 | R33 | Original scaled clip-coordinate fault repaired; fractional mapped coverage and a retained exact independent control exist. Wider phases/scales/paints and clip combinations remain validation/extension work. |
-| R34 | Shared scan conversion, analytic coverage, contact/union repairs and straight-source sibling-stroke separation have landed. Fractional-event fidelity resumes after row 3; complex parity/contact cases and curved/dashed stroke unions retain their gates or known differences. Preserve the exact twin-ring repair; rows 4/6. |
-| R35 | Retained controls, device-map threading, live non-convex cubic fills and curve/walk state separation have landed with quarter-grid parity. Fractional-event fidelity remains open; quad/convex/stroke migration and wider scalable-instance evidence remain bounded follow-ups; row 5. |
+| R34 | Shared scan conversion, analytic coverage, contact/union repairs and straight-source sibling-stroke separation have landed. Native mask/run dispatch controls demonstrate a missing direct-paint/pending-run boundary; implement it with material arithmetic before further endpoint work. Complex parity/contact cases and curved/dashed stroke unions retain their gates or known differences. Preserve the exact twin-ring repair; rows 4/6. |
+| R35 | Retained controls, device-map threading, live non-convex cubic fills and curve/walk state separation have landed with quarter-grid parity. The mapping discriminator confirms large-translation float precision but rejects the measured casts as a leading Ford repair. Fractional-event fidelity, quad/convex/stroke migration and wider scalable-instance evidence remain bounded follow-ups; row 5. |
 | R36 | Cascaded cap/join/dash/width values are carried and many spelling twins pass. Finish shared typed state and practical inheritance without reopening repaired attribute/inline cases. |
 | R37 | Fractional/scientific curves, root sizing, relative-moveto repairs, similarity maps and arc-free path-fill skew admission have landed. Preserve the support matrix's remaining arc/stroke/instance and general-transform gates; new admissions require the active target's dependency evidence. |
 | R38 | Maximum scratch allocations substantially reduced; continue actual-size storage, ownership transfer and measured many-curve/wordmark allocation work. |
