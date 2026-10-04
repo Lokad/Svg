@@ -1,0 +1,46 @@
+{
+  "fixtureId": "original-scan-window-cubic-crescent-base",
+  "referencePng": "original-scan-window-cubic-crescent-base.png",
+  "referenceSha256": "9b54362b9f3e7b182e50ec43baf99f121733ccc2e592a79aa12bbbb1f91a2f09",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 100,
+    "height": 100,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "3c76dd67849e2f19eb6698fe6f5c3e38e3f6ffffec48982a64aea263e8c7b518",
+  "candidateSha256": "7200c689c64a0520924c39d9cc652f684110ec108bb77a663292c8aa04d9643b",
+  "admittedAt": "2026-10-04",
+  "captureSha256": [
+    "9b54362b9f3e7b182e50ec43baf99f121733ccc2e592a79aa12bbbb1f91a2f09",
+    "9b54362b9f3e7b182e50ec43baf99f121733ccc2e592a79aa12bbbb1f91a2f09",
+    "9b54362b9f3e7b182e50ec43baf99f121733ccc2e592a79aa12bbbb1f91a2f09"
+  ],
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "declaredHoldout": false,
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 100,
+    "minimumMismatchY": 100,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

@@ -14,7 +14,7 @@
   "background": "transparent",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "candidateSha256": "ec0ad2642810c71dff389e46d73fac62d9af54a1dce7b12fcf05f3647a026bcb",
+  "candidateSha256": "5ec90eac2a3bfbffa25667fc04c2725ee8d0ac8fcf82c67e8aeee18537f5bbf0",
   "comparison": {
     "dimensionsMatch": true,
     "changedPixelCount": 268,
@@ -26,7 +26,11 @@
     "maximumMismatchX": 55,
     "maximumMismatchY": 55,
     "exact": false,
-    "alphaErrorMass": 1243
+    "alphaErrorMass": 1246,
+    "overCoveragePixelCount": 13,
+    "underCoveragePixelCount": 141,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
   },
   "admittedAt": "2026-09-26",
   "comparisonUpdatedAt": "2026-10-04"

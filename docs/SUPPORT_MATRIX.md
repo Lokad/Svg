@@ -5,7 +5,7 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-All 549 current manifest entries are gated: 462 exact decoded-pixel references,
+All 572 current manifest entries are gated: 485 exact decoded-pixel references,
 82 known-difference renders and five categorized rejections. These are fixture
 entries, including variants, and do not establish corporate-document coverage.
 
@@ -30,6 +30,13 @@ known differences. Float capture conversion and compact full-span storage retain
 bounded ownership/work and Default admission. Ford improves in all nine variants
 but remains inexact; circle/stroke residuals include mixed alpha-error changes.
 
+Run walking now uses a scan window distinct from path storage/dispatch when the
+complete raw path and retained controls fit inside the clip. The mask route keeps
+its path window. Eighteen independent phase/scale/clip/material configurations are
+exact; five research controls graduate with unchanged references. This leaves all
+nine Ford PNGs unchanged. Paths crossing a clip retain the existing route until
+native clipped-edge construction is implemented; general clipping remains open.
+
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
 Stroke widths flow through the same cascade: presentation attributes, inline styles and matching stylesheets on the shape plus group and root inheritance render identically to direct attributes, with negative widths still rejected at lowering (zero widths paint nothing for solid and paint-server strokes while positive fractional widths lower through the shared outline kernel; line/rect-band and paint-server band strokes keep integer discipline). A width with no stroke paint anywhere renders fill only on rectangles and circles. Stroke paint inherits through group and root containers to shapes without their own (explicit none blocks it); paint-server strokes keep their dedicated rejection except at zero width, where nothing paints and the fill renders alone; text with painted strokes stays unsupported before font acquisition. Miter limits flow through the same cascade with sub-one values still rejected at lowering. Stroke opacity multiplies stroke alpha on solid strokes while paint-server strokes stay opaque-only. Path lengths flow through the same cascade with the single lowering-time validation unchanged. Stroke linecaps and joins flow through the same cascade with per-shape lowering enforcement unchanged and invalid values still rejected at parse.
@@ -48,8 +55,8 @@ Stroke widths flow through the same cascade: presentation attributes, inline sty
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms aggregate into at-most-64 KiB `IDAT` chunks under a budgeted 64 KiB cap with byte-identical output across all four forms, while memory forms accumulate budgeted segments without geometric copies; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 462 exact fixture entries; entry count is not a count of fresh capture triples |
-| Fixture corpus | 549 original CC0 fixture entries with verified hashes across 338 base documents and 211 variants; the manifest gate compares all 462 exact entries exactly and locks all 87 classified-unsupported entries to their observed behavior (82 known-difference renders with retained pinned-Chrome references and ratcheted decoded-RGBA measures, five categorized rejections) |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 485 exact fixture entries; entry count is not a count of fresh capture triples |
+| Fixture corpus | 572 original CC0 fixture entries with verified hashes across 351 base documents and 221 variants; the manifest gate compares all 485 exact entries exactly and locks all 87 classified-unsupported entries to their observed behavior (82 known-difference renders with retained pinned-Chrome references and ratcheted decoded-RGBA measures, five categorized rejections) |
 
 ### Experimental supplied-font text
 

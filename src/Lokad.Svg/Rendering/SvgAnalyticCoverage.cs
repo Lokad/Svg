@@ -199,7 +199,7 @@ internal ref struct SvgAnalyticCoverage
     internal static long LivePieces;
     internal static long LiveBuilt;
 
-    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, int[] temp, int[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool useRunBlitter, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
+    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, int[] temp, int[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool useRunBlitter, SvgAnalyticScanWindow window, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
     {
         _edges = edges;
         _head = head;
@@ -213,8 +213,8 @@ internal ref struct SvgAnalyticCoverage
         _stopY = stopY;
         _isEvenOdd = isEvenOdd;
         _convex = convex;
-        _leftClip = xStart << 16;
-        _rightClip = (xStart + width) << 16;
+        _leftClip = (int)Math.Min((long)(useRunBlitter ? window.Left : xStart) << 16, int.MaxValue);
+        _rightClip = (int)Math.Min((long)(useRunBlitter ? window.Right : xStart + width) << 16, int.MaxValue);
         _reservation = reservation;
         _budget = budget;
         _useRunBlitter = useRunBlitter;
@@ -1371,10 +1371,16 @@ internal ref struct SvgAnalyticCoverage
 
     /// <summary>Prepares one analytic fill, substituting analytic curve segments for retained quadratic and cubic span ranges under single-contour clean-structure gating.</summary>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
+        => Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, new(0, outputWidth), budget, out setupWork, out eligible, cancellationToken);
+
+    /// <summary>Prepares retained analytic edges using a clip window distinct from path storage and native mask/run dispatch bounds.</summary>
+    /// <remarks>The caller supplies a canvas-clamped integer clip window and retains fractional clip coverage at paint time. Run walking uses the clip window; the mask route retains its existing path-bound window. Owned row/edge/event storage remains bounded by the path dimensions and conversion budget, with the existing cancellation and fallback gates.</remarks>
+    internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, SvgAnalyticScanWindow window, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
         ArgumentNullException.ThrowIfNull(quadSpans);
         ArgumentNullException.ThrowIfNull(cubicSpans);
+        if (window.Left < 0 || window.Right > outputWidth || window.Right < window.Left) throw new ArgumentOutOfRangeException(nameof(window));
         SvgPolygonCoverage.ValidateContourEnds(points, ends);
         ReadOnlySpan<int> votes = isEvenOdd ? nestingSigns : (signs is int[] roles ? roles : ReadOnlySpan<int>.Empty);
         if (!isEvenOdd && signs is not null && signs.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(signs));
@@ -1534,7 +1540,7 @@ internal ref struct SvgAnalyticCoverage
                 eligible = true;
                 bool useRunBlitter = !(multiWidth <= 32 && ((multiWidth + 3L) & ~3L) * (yEnd - yStart) <= 1024);
                 if (useRunBlitter) setupWork += multiWidth;
-                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, useRunBlitter, budget, multiScratch);
+                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, useRunBlitter, window, budget, multiScratch);
             }
             catch { multiScratch?.Dispose(); throw; }
         }
@@ -1639,7 +1645,7 @@ internal ref struct SvgAnalyticCoverage
             eligible = true;
             bool useRunBlitter = !(width <= 32 && ((width + 3L) & ~3L) * (yEnd - yStart) <= 1024);
             if (useRunBlitter) setupWork += width;
-            return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, useRunBlitter, budget, scratch);
+            return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, useRunBlitter, window, budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }
     }

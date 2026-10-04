@@ -3147,3 +3147,107 @@ before/after candidates and comparisons, rejected full-span model, ledgers,
 measurements and delivery results are under ignored
 `artifacts/paint-operations-20261004/`; the fixture/research manifests and standard
 Release tests/capture scripts are the portable reproduction sources.
+
+## Contained-edge scan-window checkpoint (2026-10-05)
+
+At `c9f0eea2`, the full-window cubic diagnostic matches native alpha but public
+path-window rendering retains two pixels. This checkpoint resolves that bounded
+mechanism. At release pin `f8b66b7597c4cc859d3ed190e9c6872241e6721c`,
+`src/core/SkScan_AAAPath.cpp` uses the path's integer bounds for mask/run dispatch
+and storage. `aaa_fill_path` starts its horizontal walk bounds from `clipRect`;
+only the mask route tightens them to rounded path bounds. It also calls
+`builder.buildEdges(path, pathContainedInClip ? nullptr : &clipRect)` before the
+walk. Raw-edge walking and clip-built edges are distinct dependencies.
+
+`SvgAnalyticScanWindow` now carries the horizontal integer clip window separately
+from path dimensions. Run walking uses it; the mask route retains its path bounds.
+The same mapped state supplies all four paint consumers. Buffers, mask/run dispatch,
+curve gates, final fractional clip coverage and material operations stay intact.
+Clip containment requires the complete raw path bounds and retained quadratic/
+cubic control points to fit inside the output canvas and mapped clip. Canvas
+control checks run inside the existing charged mapping traversal; explicit-clip
+classification precharges its extra traversal and checks cancellation at bounded
+intervals. Neither adds storage. Paths crossing a clip retain their existing
+path-window/coverage-clip route until clipped-edge construction is implemented.
+Final containment tightening preserves all 731 banked outputs and dispositions.
+Large caller-configured canvases saturate fixed-point clip bounds, avoiding a
+shift overflow while analytic edges retain their existing coordinate-range gate.
+
+Two broader prototypes are rejected. Using the canvas window without considering
+the actual clip makes 17 of 18 new configurations exact but loses the tight-clip
+control. Unconditionally using the actual clip makes all 18 exact but regresses
+three previously exact clipped rounded-rectangle backgrounds. The transparent
+case gains eight errors and 312 total alpha error: a 64×64 rounded rectangle
+(`rx=12`) crosses a clip rectangle at (8,8), size 48×48. Clamping raw walked X
+while retaining original slopes is not native clip-built edge construction.
+The contained-edge repair preserves those complete PNGs. This counterexample is
+the return witness for general clipped-edge work, not evidence that clipping is
+finished.
+
+Before production edits, declare 18 configurations from 16 CC0 sources: cubic and
+quadratic twin/crescent families at base, fractional translation (0.125,0.25), and
+150% scale; cubic-twin tight/outer clips, a wider canvas, and a translucent colored
+material on transparent/white/black. All 54 fresh-process captures are byte-stable,
+healthy and profile-cleaned at the unchanged Chrome 153.0.8010.52 win64 recipe 3
+pin. Every configuration is now exact. Tight and unclipped native captures differ
+at the fringe: alpha 245 versus 250 at (16,49). The regression checks that bound
+separation changes the run fringe without expanding row storage or budget, including
+a 70,000-pixel-wide logical canvas beyond the fixed-point coordinate range. The
+mask window is unchanged. Removing the repair fails the fringe assertion.
+
+Five research controls graduate with their original references: cubic twin two
+pixels/six alpha error → zero, cubic crescent one/six → zero, quadratic twin
+two/eight → zero, quadratic crescent two/ten → zero, and joint-single one/one →
+zero. Historical research assets remain for trajectory diagnostics. Materialized
+fixture SVGs use LF; metadata retains the original capture input hash separately
+from the materialized candidate hash. No reference is replaced.
+
+The 713-case baseline comparison changes 22 whole PNGs: 13 known fixtures, these
+five research controls and four Default inventory cases without matching captures
+(`inv-009`, `inv-017`, `inv-032`, `inv-094`). All 462 previous exact PNGs, all
+render/reject dispositions and all nine Ford complete PNGs are preserved. Every
+changed oracle-backed image has zero opaque/hole flips. Known-fixture changed
+pixel counts stay unchanged, but alpha error moves in both directions:
+
+| Known fixture (original-logo prefix unless noted) | Total alpha error, before → after |
+| --- | ---: |
+| ring-counter-mark | 3,821 → 3,823 |
+| circle-stroke-mark | 2,147 → 2,144 |
+| ellipse-stroke-mark | 3,537 → 3,531 |
+| round-join-rounded-stroke-mark | 2,650 → 2,647 |
+| circle-gradient / radial / pattern-stroke-mark, each | 1,243 → 1,246 |
+| ellipse-gradient / radial / pattern-stroke-mark, each | 3,431 → 3,432 |
+| bevel-join-rounded-stroke-mark | 2,672 → 2,669 |
+| original-paint-operation-ellipse-solid / ellipse-pattern, each | 3,431 → 3,432 |
+
+Nine known fixtures worsen slightly and four improve. Metadata records complete
+candidate identities, changed bounds, maximum errors, directional alpha counts,
+alpha error mass and opaque/hole counts. These remain failures with their original
+references. Four changed inventory outputs have unmeasured fidelity; their
+Default renderability is the only retained claim.
+
+Final banks execute 731 cases: 572 fixtures = 485 exact + 82 known renders + five
+rejects, across 351 base documents / 221 variants; 67 research = 66 known renders
+and one reject; 92 Default inventory = 88 renders + four DTD rejects. All nine Ford
+variants remain inexact and byte-identical to `c9f0eea2`. The scan-window fault is
+real but is not a leading Ford cause. PLAN now permits bounded shared repairs
+with independent mechanism-level progress and all-nine Ford nonregression;
+Ford-repair claims still require all-nine progress and the wordmark exit remains
+all-nine exact. S17's independent representative denominator and 80% exact-document
+criterion are unchanged.
+
+Next wordmark work is native retained-cubic piece construction and advance
+boundaries on the original Ford's first differing intervals, with no new cubic
+fault claimed yet. Do not repeat the falsified global endpoint, float-cast,
+density or intersection trials. Native clipped-edge construction remains a
+separate row-4/S14 dependency witnessed by the rounded rectangle.
+
+Validation: locked restore, nine-project Release build with zero warnings/errors,
+2,991 tests (2,880 core + 105 visual + six FontProbe), all 25 memory scenarios,
+runtime/symbol package inspection and isolated installed-consumer checks. Matching
+before/after resource evidence is recorded in BENCHMARKS.md. Full independent
+inventory variants, Linux and representative throughput remain unrefreshed; the
+prior native-size replay cost remains open. Local declarations, capture health/
+triples, all candidate PNGs/comparisons, rejected prototypes, negative test and
+delivery results are under ignored `artifacts/scan-window-20261004/`. Portable
+regressions are the committed manifests and standard Release tests.

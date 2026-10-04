@@ -410,3 +410,54 @@ use actual value sizes and include both arrays during growth/copy. Ten focused
 arithmetic/ownership facts, all 25 memory scenarios and installed-package gates pass.
 Local measurement, ledger, source/input/output identities and both renderer orders
 are retained under ignored `artifacts/paint-operations-20261004/`.
+
+## Scan-window resource checkpoint (2026-10-05)
+
+Compare `c9f0eea2` with the final contained-edge scan-window repair on the same
+Windows x64 .NET 10.0.12 host and four inputs above. Each fresh harness process
+uses 32 warmups and three batches: 100 tiny, ten intended Ford, three dense and
+three native-size conversions. Baseline measurements precede the final candidate;
+a second final-candidate run precedes the repeated baseline. Final timings run
+without concurrent tests or delivery checks. These are local observations,
+not representative throughput or a replacement for BenchmarkDotNet.
+
+| Input | Before time (ms) | After time (ms) | Before allocated bytes | After allocated bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Tiny triangle | 0.115–0.132 | 0.111–0.133 | 20,288–20,290 | 20,288–20,290 |
+| Ford `inv-002` | 14.953–21.683 | 16.125–19.114 | 814,250–817,404 | 814,250–817,404 |
+| Dense `inv-082` | 338.987–357.055 | 346.947–364.258 | 5,748,712–5,748,800 | 5,748,712–5,750,373 |
+| Native-size `inv-050` | 602.143–621.075 | 576.923–622.127 | 34,036,912–34,038,560 | 34,036,912–34,037,928 |
+
+Timing ranges overlap for all four. Allocation envelopes are recorded as measured;
+the scan window adds no buffers and does not expand path-sized rows. These pairs
+do not remove the native-size replay slowdown demonstrated by the preceding paint
+checkpoint against its own baseline. That cost remains open before release.
+
+Matching input hashes, parser work, whole PNG hashes, work through raster and
+accounted peaks are identical before/after on all four:
+
+| Input | Unchanged work through raster | Unchanged accounted peak (bytes) |
+| --- | ---: | ---: |
+| Tiny triangle | 218 | 132,576 |
+| Ford `inv-002` | 1,261,164 | 559,396 |
+| Dense `inv-082` | 34,929,573 | 3,044,921 |
+| Native-size `inv-050` | 90,740,576 | 33,626,765 |
+
+All four retain Default admission. Canvas containment checks accompany already
+charged point/control mapping; explicit-clip classification precharges its extra
+control traversal and checks cancellation at bounded intervals. Mask/run dispatch
+and storage remain path-sized. Fixed-point window bounds saturate safely when a
+caller configures a canvas wider than the existing analytic coordinate range.
+The expanded regression covers a 70,000-pixel logical canvas without surface
+allocation. All 2,991 tests, 25 memory scenarios and runtime/symbol package plus
+installed-consumer gates pass for the final renderer. No Linux or representative
+performance refresh is claimed.
+
+Local source/input/output identities, capture triples, comparisons, final delivery
+checks and resource records are under ignored `artifacts/scan-window-20261004/`:
+`before-measure`, `final-after-measure`, `final-after-reverse-measure`,
+`final-before-reverse-measure`, `ledger-before.json` and `final-ledger-after.json`.
+The final assembly SHA-256 is
+`0bd0de4d088f84791209134be1753ee6018d40e3411c1cd875274cc1a33d92f0`;
+the baseline assembly is
+`742f5c6b8806907c67033a9d9cd9048dca6f78598ca25bed0db5276802fa69c2`.

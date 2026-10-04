@@ -1,0 +1,41 @@
+{
+  "fixtureId": "original-cubic-crescent-100x100",
+  "referencePng": "original-cubic-crescent-100x100.png",
+  "referenceSha256": "9b54362b9f3e7b182e50ec43baf99f121733ccc2e592a79aa12bbbb1f91a2f09",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "viewport": {
+    "width": 100,
+    "height": 100,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "inputSha256": "223f2abb4bf68434c2794f4a753a9e4b66ed159093b2bc8d8c0578ff1012108f",
+  "candidateInputSha256": "223f2abb4bf68434c2794f4a753a9e4b66ed159093b2bc8d8c0578ff1012108f",
+  "candidateSha256": "7200c689c64a0520924c39d9cc652f684110ec108bb77a663292c8aa04d9643b",
+  "materialization": "Normalize repository LF line endings; retain original capture input hash, geometry, paint and reference PNG.",
+  "admittedAt": "2026-10-04",
+  "graduatedFrom": "research-cubic-crescent-100x100",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 100,
+    "minimumMismatchY": 100,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

@@ -1,18 +1,18 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-04: reviewed baseline `f633c86b`; current operation-preserving
-paint checkpoint follows the dispatch-control record at `30c6f4a3`.
+Updated 2026-10-05: reviewed baseline `f633c86b`; current scan-window checkpoint
+follows operation-preserving paint at `c9f0eea2`.
 [PLAN.md](../PLAN.md) is the current execution queue. Rows 3–7 still have
 implementation and fidelity exits; the earlier claim that rows 1–7 were complete
 within architectural limits is withdrawn. The first exact curved corporate mark
 and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 
-Current validated evidence: 549 fixture entries = 462 exact + 82 known-difference
-renders + five rejections across 338 base documents and 211 variants; 72 research
-probes = 71 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 2,877 core + 105 visual + six FontProbe tests pass. All 25 memory
+Current validated evidence: 572 fixture entries = 485 exact + 82 known-difference
+renders + five rejections across 351 base documents and 221 variants; 67 research
+probes = 66 known-difference renders + one rejection. Fresh Windows locked restore,
+Release build and 2,880 core + 105 visual + six FontProbe tests pass. All 25 memory
 scenarios, package inspection and isolated installed-consumer checks pass at the
-operation-preserving paint checkpoint. The Default inventory retains 88 renders +
+scan-window checkpoint. The Default inventory retains 88 renders +
 four MalformedInput rejections out of 92. These counts establish neither corporate
 coverage, full independent-variant validation nor Linux delivery.
 
@@ -66,9 +66,14 @@ to 5,092 total alpha error. All previous exact fixture PNGs are preserved. The 1
 original dispatch controls are exact; 24 further material configurations retain
 15 exact and nine known differences. Compact full spans preserve native-size
 Default admission without raising limits. Some circle/stroke alpha errors worsen
-and remain recorded failures; group-opacity-white remains inexact. The next
-bounded slice discriminates scan-window/clip behavior while preserving the
-separate native dispatch bounds. See PLAN's active work order and
+and remain recorded failures; group-opacity-white remains inexact. Scan-window
+separation now makes all 18 independent controls exact and graduates five research
+controls, preserving all 462 prior exact PNGs. All nine Ford PNGs stay unchanged.
+Paths crossing clips retain their earlier route until native clipped-edge
+construction is implemented; unconditional clip-window migration is rejected.
+The next wordmark slice is retained-cubic piece/event fidelity. A bounded shared
+repair may land with independent progress and Ford nonregression; a Ford-repair
+claim requires all-nine progress and its exit remains all-nine exact. See PLAN and
 [the design record](RASTERIZATION_DESIGN.md) for evidence and remaining limits.
 
 S17 additionally requires reproducible per-variant identities/diffs, categorized

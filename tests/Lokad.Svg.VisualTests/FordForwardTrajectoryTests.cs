@@ -12,7 +12,7 @@ namespace Lokad.Svg.VisualTests;
 public sealed class FordForwardTrajectoryTests
 {
     [Fact]
-    public void Cubic_twin_first_divergence_is_coverage_before_compositing()
+    public void Cubic_twin_has_exact_painted_coverage_after_window_separation()
     {
         string research = Path.Combine(AppContext.BaseDirectory, "Research");
         byte[] svg = File.ReadAllBytes(Path.Combine(research, "cubic-twin-100x100.svg"));
@@ -21,16 +21,13 @@ public sealed class FordForwardTrajectoryTests
         RgbaImage candidate = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None).ToArray(), 100 * 100);
         PixelComparison comparison = PixelComparer.Compare(reference, candidate);
         Assert.True(comparison.DimensionsMatch);
-        Assert.Equal(2, comparison.ChangedPixelCount);
-        Assert.Equal((byte)5, comparison.MaximumChannelError);
-        Assert.Equal((byte)5, comparison.MaximumAlphaError);
-        Assert.Equal(2, comparison.AlphaChangedPixelCount);
+        Assert.True(comparison.IsExact);
         (int alphaCount, int rgbOnlyCount, int over, int under, int firstAlphaRow, int firstRgbOnlyRow) = SplitStages(reference, candidate);
-        Assert.Equal(2, alphaCount);
+        Assert.Equal(0, alphaCount);
         Assert.Equal(0, rgbOnlyCount);
         Assert.Equal(0, over);
-        Assert.Equal(2, under);
-        Assert.Equal(49, firstAlphaRow);
+        Assert.Equal(0, under);
+        Assert.Equal(-1, firstAlphaRow);
         Assert.Equal(-1, firstRgbOnlyRow);
     }
 
