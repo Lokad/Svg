@@ -2214,3 +2214,9 @@ Question: whether the landed cubic-live, quad-live repair and twin-family probes
 Method: stock gates on the committed tree with no product change: full core, visual and font suites; the 25-scenario pwsh memory battery with a fresh pack; the stock package script with isolated-consumer scenarios.
 Facts: 2849 core plus 100 visual plus 6 font green with zero warnings; all 25 memory scenarios pass; package holds LICENSE, README, net10.0 dll plus xml with zero .svg and zero runtimes with isolated-consumer conversion, rejection, limit, font-pack and catalog scenarios green; the 92-document sweep stands at zero disposition flips from the quad-landing turn with Ford 3594 and inv-001 on record. Research corpus holds 72 probes; fixture exact count holds.
 Decision: no product change; delivery checkpoint recorded with scratch trees deleted. Next per the single PLAN next-action.
+
+## Ford intended-transparent oracle re-verified stable across days (2026-10-04 probe)
+Question: whether the banked Ford oracle triple has drifted since 2026-09-26, which the cohort-freeze decision needs.
+Method: three fresh-process captures of inv-002 at explicit 500x200 transparent with the pinned recipe against the banked r1 bytes.
+Facts: all three fresh captures hash 723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7, byte-identical to each other and to the banked 2026-09-26 triple. Zero drift over eight days on the pinned Chrome 153.0.8010.52 win64 recipe 3 path.
+Decision: no product change; Ford oracle evidence stands for the freeze. Scratch captures deleted with the tree clean. Next per the single PLAN next-action.
