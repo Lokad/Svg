@@ -2208,3 +2208,9 @@ Question: whether single-contour non-convex quad spans walking live (same restor
 Method: original quad crescent (single non-convex ring mirroring the cubic crescent) with A-B byte comparison old versus new plus fresh 3-out-of-3 byte-identical pinned triples and oracle-direction tuples on both trees.
 Facts: candidate bytes move 837 to 842 with the tuple moving 167 at max 120 over 17 with alpha errors 99 to 158 at max 120 over 9 with alpha errors 42; maxima hold 120 with the remainder the shared exterior-wisp family. Admitted research-quad-crescent-100x100 (158 at max 120 over 9 over bbox 20,20-49,79), failing clean on the old tree at 167.
 Decision: no product change (single quads already ride the landed restore dispatch through the live-then-flattened branch); probe admitted with full gates. Queued next per the single PLAN next-action.
+
+## Curve-slice delivery checkpoint complete (2026-10-04 checkpoint)
+Question: whether the landed cubic-live, quad-live repair and twin-family probes hold every delivery leg on the committed tree.
+Method: stock gates on the committed tree with no product change: full core, visual and font suites; the 25-scenario pwsh memory battery with a fresh pack; the stock package script with isolated-consumer scenarios.
+Facts: 2849 core plus 100 visual plus 6 font green with zero warnings; all 25 memory scenarios pass; package holds LICENSE, README, net10.0 dll plus xml with zero .svg and zero runtimes with isolated-consumer conversion, rejection, limit, font-pack and catalog scenarios green; the 92-document sweep stands at zero disposition flips from the quad-landing turn with Ford 3594 and inv-001 on record. Research corpus holds 72 probes; fixture exact count holds.
+Decision: no product change; delivery checkpoint recorded with scratch trees deleted. Next per the single PLAN next-action.
