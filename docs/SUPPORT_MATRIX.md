@@ -47,6 +47,12 @@ Intended-transparent retains 433 differing pixels, so general cubic event fideli
 and the all-nine wordmark exit remain open. Default inventory renderability is
 preserved; ten changed non-Ford outputs lack matched oracle evidence.
 
+Native clipped-edge construction remains unimplemented for escaping path/control
+bounds. Compiled diagnostics demonstrate that this affects Ford even at a tip
+inside the canvas: its native clipper splits at X extrema as well as Y extrema.
+The production renderer still uses its existing raw-edge/coverage-clip fallback;
+the diagnostic matches do not change the current support or exactness counts.
+
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
 Stroke widths flow through the same cascade: presentation attributes, inline styles and matching stylesheets on the shape plus group and root inheritance render identically to direct attributes, with negative widths still rejected at lowering (zero widths paint nothing for solid and paint-server strokes while positive fractional widths lower through the shared outline kernel; line/rect-band and paint-server band strokes keep integer discipline). A width with no stroke paint anywhere renders fill only on rectangles and circles. Stroke paint inherits through group and root containers to shapes without their own (explicit none blocks it); paint-server strokes keep their dedicated rejection except at zero width, where nothing paints and the fill renders alone; text with painted strokes stays unsupported before font acquisition. Miter limits flow through the same cascade with sub-one values still rejected at lowering. Stroke opacity multiplies stroke alpha on solid strokes while paint-server strokes stay opaque-only. Path lengths flow through the same cascade with the single lowering-time validation unchanged. Stroke linecaps and joins flow through the same cascade with per-shape lowering enforcement unchanged and invalid values still rejected at parse.

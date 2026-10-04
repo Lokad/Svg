@@ -3319,7 +3319,9 @@ The admission repair leaves its first mismatch unchanged. Next trace native setu
 and advance state on this original tip and establish the differing invariant
 before changing the scanner. Global endpoint, float-cast, density, re-anchor and
 intersection trials already have falsifying evidence; do not repeat them.
-General clipped-edge construction remains a separate row-4/S14 dependency.
+At this checkpoint, general clipped-edge construction remained a separate
+row-4/S14 dependency. The compiled investigation below establishes its relevance
+to the original Ford tip.
 
 Compare all 731 prior cases against the same baseline assembly. All 572 fixture
 PNGs, all 67 research results and every render/reject disposition are unchanged.
@@ -3349,3 +3351,105 @@ retained span dumps, baseline/final comparisons and whole PNGs, negative test,
 banked corpus, resource ledgers, timing and delivery records. Committed manifests
 and standard tests provide the portable regression bank; `external/` remains
 optional and unreferenced.
+
+## Compiled Ford construction investigation (2026-10-05)
+
+Investigate the original Ford first tip at production checkpoint `429ea226`,
+without changing production code, fixtures, references or declared variants.
+Compile the actual matched-pin functions from
+`f8b66b7597c4cc859d3ed190e9c6872241e6721c`; do not substitute a handwritten
+numerical model for native setup, advance, clipping or walk arithmetic.
+
+The uncut tip's 22 integer edge fields match the actual compiled managed methods
+at every compared setup/advance/walk-state event: nine events at 250×100,
+11 at 500×200 and 20 at 1000×400. Calls include `setCubic`, `goY`,
+`keepContinuous` and `updateCubic`, with the managed curve/walk X offset translated
+into the native field representation. The raw native setup snapshot is retained
+but excluded from parity comparison because managed construction includes the
+initial advance. This rejects an uncut recurrence fault as the cause of this tip's
+first mismatch; it does not establish parity of every curve.
+
+Instrument an ignored copy of the current managed scanner to record prepared
+edges and trapezoid/additive/direct operations at rows 30/60/120. Its complete
+transparent PNGs are byte-identical to the production checkpoint at all three
+sizes. Inject these same prepared edges and dispatch flags into the compiled
+native general walker. Every recorded operation matches for both Ford paths:
+
+| Size / sampled row | First-path matching operations | Second-path matching operations |
+| --- | ---: | ---: |
+| 250×100 / 30 | 42 | 215 |
+| 500×200 / 60 | 79 | 380 |
+| 1000×400 / 120 | 99 | 542 |
+
+An initial CSV parser failed to strip CRLF from the final boolean dispatch field.
+Correct it and rerun all six comparisons with the actual `skipIntersect` flag;
+the table records the corrected runs. These comparisons establish sampled
+operation parity from identical edges, not native pixel painting or whole-image
+parity.
+
+The missing dependency is earlier, at native clipped construction. The first
+path's control bounds reach Y=100.333535775, 200.66707155 and 401.33414310 on
+canvases of height 100, 200 and 400. The native path-containment test therefore
+sends the entire first path through its clipper, including the first tip whose
+own geometry fits inside the canvas. `SkEdgeClipper::clipCubic` chops at Y extrema,
+then X extrema for every resulting piece before monotonic clipping. The managed
+raw builder only chops this cubic at Y extrema. The tip has an X extremum and
+becomes two native pieces instead of one uncut live edge.
+
+At 500×200, replace just the existing tip edge with its two actual native clipped
+pieces and retain all other managed prepared edges. The compiled walk's additive
+contributions at (495,60) change from 29+45+55=129 to 24+47+57=128, matching
+the original browser reference's alpha 128. This isolates the construction
+dependency without attributing the difference to a new walk or paint model.
+
+Also build the retained original cubic/line verbs through the compiled native
+clipper and analytic edge setup before the native walk. The first-path diagnostic
+edge counts change from 104/104/106 to 126/126/128 at small/intended/large sizes.
+The second path's bounds fit the canvas: it stays on uncut native construction,
+its edge counts remain 70/72/72, and its sampled operations match at all three
+sizes. The first-path tip results are:
+
+| Pixel | Production alpha | Original browser alpha | Diagnostic native additive coverage |
+| --- | ---: | ---: | ---: |
+| (247,30), small | 229 | 212 | 212 |
+| (495,60), intended | 129 | 128 | 128 |
+| (989,120), large | 114 | 111 | 111 |
+| (990,120), large | 66 | 53 | 53 |
+| (991,120), large | 0 | 0 | 1 |
+
+The last row deliberately records raw additive coverage: native pending-run flush
+snaps alpha below eight to zero. The diagnostic recorder does not implement full
+native flush, paint or capture conversion, so its raw value must not be treated as
+a rendered PNG. Neither this table nor the sampled second-path agreement explains
+all remaining Ford pixels.
+
+Native functions use GCC 13.2.0, C++20, `-O2 -DNDEBUG -DSK_RELEASE`, with
+`SK_RASTERIZE_EVEN_ROUNDING` undefined. Source closure and executable identities
+are recorded. The diagnostic extracts the original general walk/coverage/list
+functions with one observation call; retained arithmetic and control remain
+unchanged. To link the curve subset, omit unused conic functions, the unused
+`ClipPath` path-iterator wrapper and unrelated rectangle functions. Supply retained
+mapped managed coordinates narrowed to native float; this does not trace the
+browser's parser or prove identical Chromium compiler flags. The verb-building
+driver also does not implement native vertical-line combination. It is a
+construction witness, not a complete native renderer or builder replacement.
+
+The next implementation must carry explicit analytic clip context through shared
+mapped contour preparation, construct native X/Y-monotonic and clipped/projected
+edges with preserved winding and ordering, and preserve vertical-line combination
+where required. Keep path storage/dispatch separate from the walk window. Reserve
+complete piece/growth storage before allocation; charge chopping/root search,
+edge construction and traversal with bounded cancellation. Declare independent
+control-bound/actual-clip, phase/scale and material families before implementation,
+then verify those, the clipped rounded-rectangle return witness, all existing exact
+fixtures and all nine original Ford variants across the four paint consumers.
+
+This checkpoint changes documentation only. Ford remains zero exact of nine;
+production intended-transparent remains 433 changed pixels and 3,176 total alpha
+error. The 584-fixture, 67-research and 92-file Default inventory counts and
+candidate/reference identities are unchanged. No fresh product resource,
+performance, package or platform claim is made. Ignored evidence is under
+`artifacts/cubic-native-tip-20261005/`: `tip-parity.json`, `build-comparison.json`,
+the managed state/verb/operation tapes and unchanged complete PNGs, native source
+identities/extractions, build scripts and the single-tip replacement experiment.
+No native code or optional `external/` dependency enters the product or test graph.

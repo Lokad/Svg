@@ -64,6 +64,13 @@ calibration evidence, with no new independent corporate checkpoint.
 Earlier batch counts below remain dated history. PLAN.md owns the current queue;
 the design record lists mixed remaining curve/stroke errors and resource gates.
 
+Compiled diagnostic investigation on `429ea226` identifies native clipped-edge
+construction as a Ford dependency. First-path control bounds reach Y=100.3335,
+200.6671 and 401.3341 on the three canvases; native clipping splits at X extrema
+as well as Y extrema. This matches the sampled small/intended/large tip alpha
+values, but no production repair or full-image/all-nine improvement is yet claimed.
+The candidate identities and current tuples above remain unchanged.
+
 ## Purpose and non-goals
 
 The inventory steers implementation toward ordinary, static, self-contained corporate

@@ -82,7 +82,13 @@ holdouts were declared after the first trial and before their independent captur
 The first Ford tip is a two-chord cubic, so its remaining event error is not
 explained by this admission repair. Eleven Default inventory PNGs change; the ten
 other than separately measured Ford lack matching fidelity evidence.
-The next wordmark slice is the original first tip's cubic setup/advance state.
+Compiled native diagnostics now show that the uncut first tip's setup/advance
+matches. Its missing dependency is clipped-edge construction: the path's control
+bounds escape the canvas, so native clipping also splits the tip at X extrema.
+That diagnostic construction matches the small/intended/large sampled tip alphas;
+the production renderer and its all-nine results above are unchanged. The next
+wordmark slice is this shared clipped-edge preparation, with bounded resources and
+independent controls, not another recurrence or endpoint adjustment.
 A bounded shared repair may land with independent progress and Ford nonregression; a Ford-repair
 claim requires all-nine progress and its exit remains all-nine exact. See PLAN and
 [the design record](RASTERIZATION_DESIGN.md) for evidence and remaining limits.
