@@ -9,7 +9,8 @@ implements material arithmetic and capture conversion. Scan-window separation
 (`9e77c0fa`) preserves path storage/dispatch for contained raw edges. The current
 repair (`429ea226`) admits retained cubics independently of their flattened chord
 count. Compiled diagnostics identify native clipped construction as the next Ford
-dependency; the production validation and remaining exits are recorded below.
+dependency. Its bounded line/quad/cubic kernel is now verified independently;
+integration into shared contour preparation remains open.
 The September 28 baseline and review remain historical evidence in
 [the review](docs/REVIEW_2026_09_28.md) and Git. R01–R41 and S1–S17 retain
 their identities. This revision replaces the accumulated checkpoint log with
@@ -37,9 +38,9 @@ not a prerequisite to improving the shared renderer.
 | Current validated evidence | Assessment |
 | --- | --- |
 | Fresh Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Fresh full tests | **2,993 passed**: 2,882 core, 105 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Fresh memory and delivery checks, at the one-chord cubic checkpoint | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. No runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **584 entries = 493 exact + 86 known-difference renders + five rejections**; 355 base documents / 229 variants. Synthetic coverage is not corporate-logo coverage. |
+| Fresh full tests | **3,156 passed**: 3,045 core, 105 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Fresh memory and delivery checks, at the clipping-kernel checkpoint | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. The package retains the adapted code's BSD notice. No runtime package dependencies, native assets or packaged SVG fixtures. |
+| Executed fixture manifest | **611 entries = 493 exact + 113 known-difference renders + five rejections**; 360 base documents / 251 variants. Synthetic coverage is not corporate-logo coverage. |
 | Executed research manifest | **67 probes = 66 known-difference renders + one rejection**. Useful exact controls graduate to fixtures with their provenance. |
 | Fresh independent-file Default-options sweep | **92 files = 88 render + four MalformedInput rejections** (`inv-007`, `inv-012`, `inv-014`, `inv-020`). Renderability does not establish fidelity or all-variant completion. |
 | Latest recorded Ford all-variant evidence | Small 250×100, intended 500×200 and large 1000×400 × transparent/white/black: **zero exact of nine**. Intended-transparent: **433 changed pixels**, max channel error 128, max alpha error 54, 433 alpha mismatches and 3,176 total alpha error. Paint improved all nine; scan-window separation was neutral. One-chord cubic admission improves all six small/intended variants and preserves all three large PNGs. |
@@ -84,6 +85,18 @@ captures in that sweep; Ford has separate all-nine evidence, while the other ten
 outputs' fidelity is unmeasured. Evidence is under ignored
 `artifacts/cubic-admission-20261005/`; this is shared renderer progress, with no new
 independent corporate checkpoint or S17 rate.
+
+The clipping-kernel checkpoint verifies 160 independent native inputs
+and all 334 emitted pieces, including raw float bits, order and verb type. It
+banks 19 CC0 SVG sources / 27 declared configurations with 81 stable, healthy
+fresh-process browser captures. All 27 currently render with known differences;
+references retain those failures before integration. All 743 prior results and
+all nine Ford PNGs are unchanged; the updated bank executes **770 = 611 fixtures
++ 67 research + 92 Default inventory cases**. Kernel work/iteration limits and
+cancellation are tested, but the renderer does not yet call it. Ignored evidence
+is under `artifacts/analytic-clip-20261005/`; the native piece data, SVG controls
+and references are portable regressions. Shared preparation, edge storage and
+walk-window integration still need their own resource and fidelity proof.
 
 Chrome remains **153.0.8010.52 win64, recipe 3**, with the recorded executable
 hash and Chromium revision field 1681091. Historical recipe-1/recipe-2
@@ -150,7 +163,7 @@ completed stage: the remaining exit evidence below governs completion.
 | 1 | **Complete: bounded semantic repairs.** S12 miter threshold and R41 zero-area objectBoundingBox gradient path strokes are repaired. | Preserve acute-limit branches, degenerate path/use and userSpace controls; no reopened defect. |
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
 | 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. General coverage/alpha and layer composition need independent controls; group-opacity on white still differs. |
-| 4 | **Active with rows 3 and 5: shared scan conversion.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows and one-chord cubic admission have landed. | Implement native clipped-edge construction when complete path/control bounds escape the clip, including Ford's first path. Native clipping additionally splits cubics at X extrema even where their geometry fits. Preserve operation order and bounded storage; general fractional events, crossings, counters and overlaps remain open. |
+| 4 | **Active with rows 3 and 5: shared scan conversion.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows and one-chord cubic admission have landed. The clipped line/quad/cubic kernel is verified independently. | Integrate clipped-edge construction when complete path/control bounds escape the clip, including Ford's first path. Native clipping additionally splits cubics at X extrema even where their geometry fits. Preserve operation order and bounded storage; general fractional events, crossings, counters and overlaps remain open. |
 | 5 | **Open with row 4: retained curves and final device mapping.** Double maps, retained controls, live non-convex cubic stepping, curve/walk state separation and one-chord cubic admission have landed. | Preserve transform/instance and large-translation evidence. The original uncut tip's setup/advance and its existing-edge scan operations match compiled native code. Native clipped construction explains its first mismatch; integrate that shared preparation boundary before changing recurrence. Fractional-event, quad/convex/stroke work retains its separate fallback/gates until proved. |
 | 6 | **Partial: curve-aware stroke completion.** Width/cascade, cap/join/dash, zero-width and straight-source union repairs are retained. | True curve tangents/dash cuts, curved/dashed overlap and seam handling, remaining round/miter/hairline/pathLength/non-scaling cases through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
@@ -253,15 +266,23 @@ oracle's 212 at (247,30), versus the renderer's 229, and 111/53 at large-size
 (989/990,120), versus 114/66. These are measured construction witnesses, not a
 landed renderer repair or full-image/all-nine evidence.
 
-**Next concrete slice.** Implement native clipped-edge preparation at the shared
+**Kernel foundation verified.** Typed clip bounds, float points and ordered
+line/quad/cubic pieces now preserve native X/Y chopping, root search, projection
+and winding in caller-owned scratch. All 160 compiled-native cases match; disabling
+cubic X chopping fails 38. Work is checked before numerical phases and root-search
+iterations, and cancellation preserves its token. This internal kernel is not yet
+on the renderer's path, so no existing pixels or resource ledgers change.
+
+**Next concrete slice.** Integrate native clipped-edge preparation at the shared
 mapped contour boundary, with an explicit clip context and preserved winding.
 Construct X/Y-monotonic curve pieces and required clipped/projected edges before
 walking; keep path storage/dispatch separate from the walk window. Reserve the
 complete additional piece/growth storage and charge chopping, root finding,
 construction and traversal with bounded cancellation before integration. Preserve
 the current mask/run material operations across all four paint consumers.
-Declare independent control-bounds/actual-clip, phase/scale and material families
-before implementation. Verify those, the existing clipped rounded-rectangle return
+The independent control-bounds/actual-clip, phase/scale and four-material families
+were declared before the kernel and are now banked with unchanged browser references.
+Verify those, the existing clipped rounded-rectangle return
 witness, every exact fixture and all nine original Ford variants. The second Ford
 path stays on native uncut construction; its sampled native verb-built operations
 already match, so this dependency is not a claim to explain every remaining pixel.

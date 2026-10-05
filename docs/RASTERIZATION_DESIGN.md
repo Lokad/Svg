@@ -3453,3 +3453,93 @@ performance, package or platform claim is made. Ignored evidence is under
 the managed state/verb/operation tapes and unchanged complete PNGs, native source
 identities/extractions, build scripts and the single-tip replacement experiment.
 No native code or optional `external/` dependency enters the product or test graph.
+
+## Bounded clipped-verb kernel and frozen controls (2026-10-05)
+
+Implement the managed line/quad/cubic clipping kernel as an internal component of
+`SvgAnalyticCoverage`, before integrating it into shared contour preparation.
+Typed device clip bounds, float points and ordered pieces preserve original
+winding. Cubics chop at Y extrema then X extrema before monotonic clipping;
+quadratics retain their native extrema/underflow handling. Outside X portions
+project to vertical boundary edges, with explicit right-culling policy. Lines
+use native double intersections and clamping. Cubic axis chops retain native
+double polynomial solving, verified-root selection, bounded binary-search
+fallback and double subdivision before final float narrowing; the float closest-T
+fallback and large-coordinate cubic-to-line behavior remain distinct.
+
+The kernel borrows a caller-owned span of 27 pieces and owns no heap buffers.
+Nine possible monotonic cubic pieces times two projection lines and one curve
+prove that bound. Each operation checks cancellation and charges work before
+numerical phases, including rejected/empty pieces. Binary root search retains its
+1,000-iteration cap with per-iteration work/cancellation checks. Instance helpers
+with one caller are static local functions with explicit borrowed state; no
+capturing delegate or closure is allocated. The renderer does not yet call the
+kernel, so its scratch reservation and edge expansion remain integration work.
+
+Declare 159 native inputs before managed implementation: all three original Ford
+tips, 48 deterministically seeded inputs for each line/quad/cubic kind, and twelve
+horizontal/vertical/boundary/large-coordinate cases. Exercise both right-culling
+policies. Compile the actual matched-pin `SkEdgeClipper`/geometry/line/polynomial
+functions with the previous investigation's documented unused-tail exclusions,
+GCC 13.2.0, C++20 and release flags. The native driver records each output's verb
+type, order and raw float bits. All 333 predeclared pieces match the managed kernel,
+including both native tip pieces at every size. The committed
+`tests/Lokad.Svg.Tests/TestData/analytic-clipped-pieces.json` retains inputs,
+expected pieces, native source/executable/output identities and compiler flags.
+Normal tests consume only this data and managed code; no native build or optional
+checkout enters their graph.
+
+After the kernel implementation, add a targeted near-quadratic root witness and
+capture its additional piece independently from the same native executable. The
+analytic solver's quadratic reduction returns a root with excessive residual,
+so this case exercises verified binary-search fallback. Do not call this witness
+pre-implementation evidence. All 160 inputs / 334 pieces match. A denial at 100
+work units verifies that already consumed search work stays reported when an
+iteration throws; a finally transfer repairs the previously incomplete ledger.
+
+One hundred sixty parameter cases cover that independent reference data.
+Three additional cases verify during-construction and binary-search work denial
+and the caller's cancelled token without caller-scratch mutation. Disabling cubic X-extrema
+chopping fails 38 native cases, including the original Ford tips; restore it
+before final validation. These are kernel/piece tests, not SVG exactness claims.
+
+Declare five SVG families at base, fractional phase and 2× scale: escaping control
+bounds with contained geometry, an explicit rectangular cubic clip, its quadratic
+counterpart, canvas-crossing line projection, and canvas-crossing cubic geometry.
+Add twelve control-bounds configurations across solid/linear/radial/pattern paint
+and transparent/white/black backgrounds. All 27 configurations were declared
+before the kernel implementation. Nineteen CC0 SVG sources use LF and retain
+their source hashes. All 81 fresh-process browser captures are stable, healthy
+and profile-cleaned at the unchanged Chrome 153.0.8010.52 win64 recipe-3 pin.
+Bank every configuration with its original native reference and current failure;
+none is exact before integration. The control-bounds base/phase/scaled cases have
+16/14/9 changed pixels and 61/37/88 total alpha error. Keep material errors and
+actual-clip failures in their complete committed comparisons rather than reducing
+the acceptance set to these easier contained-geometry witnesses.
+
+Compare all 743 prior cases and nine Ford variants against the saved baseline
+assembly from `6f9224f4`: every report and complete PNG is unchanged. The updated
+bank executes 770 cases = 611 fixtures (493 exact + 113 known renders + five
+rejects; 360 base documents / 251 variants) + 67 research + 92 Default inventory.
+Ford remains zero exact of nine; intended-transparent stays 433 changed pixels /
+3,176 total alpha error. The corpus increase establishes no corporate denominator
+or new exact-document result.
+
+Locked restore, nine-project Release build and 3,156 tests pass (3,045 core + 105
+visual-project + six FontProbe), with zero warnings/errors/failures/skips. All 25
+memory scenarios, runtime/symbol package inspection and isolated installed-consumer
+checks pass. The package includes the adapted code's BSD notice; the delivery
+validator requires it. Pure-managed runtime dependencies and Default limits are
+unchanged. This kernel checkpoint does not refresh Linux or representative
+throughput or close the earlier native-size paint replay cost.
+
+Next integrate explicit clip context at shared mapped contour preparation, native
+piece construction into reserved edge storage, vertical-line combination and
+separate path-storage/dispatch versus walk-window bounds. Charge both any sizing
+pass and construction, root searches, expansion and traversal before work;
+preserve cancellation, disposal and all four paint consumers. Verify every frozen
+control, the exact clipped rounded-rectangle return witness, all existing exact
+fixtures and all nine original Ford variants. The kernel's local proof does not
+replace those remaining product gates or S17 exits. Ignored capture triples,
+baseline/current/banked corpus reports, native driver, negative control and delivery
+evidence are under `artifacts/analytic-clip-20261005/`.

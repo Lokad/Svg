@@ -1,0 +1,47 @@
+{
+  "fixtureId": "original-analytic-clip-cubic-clip-phase",
+  "referencePng": "original-analytic-clip-cubic-clip-phase.png",
+  "referenceSha256": "d8a72fdfc476f697b29215e54adaf7e0b422ab8808a01ee2c130074edc666c7c",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "a09a93e39a2c507da47ae5a87ef448b2a9ccc14612d65ee93c351160afa2611e",
+  "candidateSha256": "6777927fdae5ea30774e7ef889822aa257f1fd5f90bee5d3cce0c8dac7ba4d6e",
+  "admittedAt": "2026-10-05",
+  "captureSha256": [
+    "d8a72fdfc476f697b29215e54adaf7e0b422ab8808a01ee2c130074edc666c7c",
+    "d8a72fdfc476f697b29215e54adaf7e0b422ab8808a01ee2c130074edc666c7c",
+    "d8a72fdfc476f697b29215e54adaf7e0b422ab8808a01ee2c130074edc666c7c"
+  ],
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "declaredBeforeImplementation": true,
+  "declaredHoldout": true,
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 181,
+    "maximumChannelError": 128,
+    "maximumAlphaError": 64,
+    "alphaChangedPixelCount": 181,
+    "minimumMismatchX": 8,
+    "minimumMismatchY": 10,
+    "maximumMismatchX": 56,
+    "maximumMismatchY": 56,
+    "exact": false,
+    "alphaErrorMass": 4344,
+    "overCoveragePixelCount": 86,
+    "underCoveragePixelCount": 95,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

@@ -22,7 +22,7 @@ Add-Type -AssemblyName System.IO.Compression
 $archive = [IO.Compression.ZipFile]::OpenRead($package.FullName)
 try {
     $entries = @($archive.Entries | ForEach-Object FullName)
-    foreach ($required in @('LICENSE.txt', 'README.md', 'lib/net10.0/Lokad.Svg.dll', 'lib/net10.0/Lokad.Svg.xml'))
+    foreach ($required in @('LICENSE.txt', 'THIRD_PARTY_NOTICES.txt', 'README.md', 'lib/net10.0/Lokad.Svg.dll', 'lib/net10.0/Lokad.Svg.xml'))
     {
         if ($entries -notcontains $required) { throw "Package is missing required entry: $required" }
     }

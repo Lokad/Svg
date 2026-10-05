@@ -8,7 +8,7 @@ namespace Lokad.Svg.Rendering;
 /// <para>Row preparation walks retained analytic edges into winding intervals and trapezoid coverage. Small path bounds select an accumulated mask; larger bounds retain direct paint events separately from pending additive runs. Only pending runs snap coverage at flush. Convex rings use the existing convex walker; eligible non-convex fills also retain live curve state. Multi-contour sets walk kept contours together with their winding votes. Degenerate, non-finite, out-of-range, canvas-exceeding and contact-gated payloads retain the existing fallback.</para>
 /// <para>Ownership: preparation reserves edge/mask scratch plus the run route's pixel links before allocation. Direct operation buffers grow under the same conversion budget with both old/new arrays live during copying; Dispose releases every reservation. PrepareRow charges recording, growth and replay before growing buffers and observes cancellation during setup, row walking, copying and replay. Row contains only pending coverage; direct paints remain separate. All row state is valid until the next PrepareRow call. Instances and their destination consumers are single-threaded.</para>
 /// </remarks>
-internal ref struct SvgAnalyticCoverage
+internal ref partial struct SvgAnalyticCoverage
 {
     private sealed class AnalyticEdge
     {

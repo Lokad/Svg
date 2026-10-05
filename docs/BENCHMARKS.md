@@ -506,3 +506,21 @@ in its assembly informational version; its rebuilt assembly SHA-256 is
 `d31aa1a15b935723bbdf38aa6a68975b7ca1d37c058575c7dda4d1e859371b82`.
 The final candidate assembly SHA-256 is
 `7b99ab2c112b84a5a00a6015c099641eb5b08569821c25494d89debe51125c98`.
+
+## Clipping-kernel resource boundary (2026-10-05)
+
+The bounded clipping kernel is independently verified but not yet called by
+contour preparation. Its caller-owned 27-piece scratch and charged numerical/root
+search phases add no conversion buffers or work on the current rendering path.
+Fresh four-input ledger observations exactly match the one-chord checkpoint:
+work through raster is 218 / 1,267,660 / 34,929,955 / 90,740,612, and accounted
+peaks are 132,576 / 559,396 / 3,044,921 / 33,626,765 bytes, in tiny/Ford/dense/
+native-size order. Input identities, parser work and whole PNGs also match.
+
+These observations do not prove the future integration's additional storage,
+setup or traversal costs. Reserve actual clipped-piece/edge storage and its growth
+peaks, charge any sizing pass and construction, then measure both renderer timing
+orders and allocation traffic before landing integration. No fresh throughput or
+Linux result is claimed here, and the earlier native-size replay slowdown remains
+open. Ignored evidence is `artifacts/analytic-clip-20261005/kernel-ledger.json`;
+all 25 existing memory scenarios and the kernel's work/cancellation tests pass.

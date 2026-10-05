@@ -51,7 +51,7 @@ their input and oracle identities remain the original banked evidence.
 | 1000x400-black | `81299b5a1593f7c34351140c297f68e9deb6fa79863c15b4b5c1de7a5ebc6cd6` |
 
 This Default sweep is not complete independent-variant validation or a corporate
-coverage rate. Current portable banks contain 584 fixtures (493 exact, 86 known
+coverage rate. At the one-chord repair, portable banks contain 584 fixtures (493 exact, 86 known
 renders, five rejects) and 67 research probes (66 known renders, one reject).
 Relative to `9e77c0fa`, eleven Default inventory PNGs change: `inv-001`, `inv-002`,
 `inv-004`, `inv-006`, `inv-011`, `inv-026`, `inv-065`, `inv-066`, `inv-081`,
@@ -70,6 +70,15 @@ construction as a Ford dependency. First-path control bounds reach Y=100.3335,
 as well as Y extrema. This matches the sampled small/intended/large tip alpha
 values, but no production repair or full-image/all-nine improvement is yet claimed.
 The candidate identities and current tuples above remain unchanged.
+
+The following kernel checkpoint preserves all 743 prior corpus results and all
+nine Ford complete PNGs. Its line/quad/cubic pieces match 160 compiled-native cases,
+but shared contour integration remains open. Nineteen CC0 sources / 27 independently
+declared browser configurations are added as known differences, with 81 stable,
+healthy fresh-process captures. The current portable bank is 611 fixtures = 493
+exact + 113 known renders + five rejects, across 360 base documents / 251 variants;
+research remains 67 probes. These controls establish no independent corporate exit
+or change to the measured Ford candidates above.
 
 ## Purpose and non-goals
 

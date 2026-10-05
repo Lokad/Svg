@@ -17,6 +17,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="../../LICENSE.txt" Pack="true" PackagePath="" Link="LICENSE.txt" />
+    <None Include="../../THIRD_PARTY_NOTICES.txt" Pack="true" PackagePath="" Link="THIRD_PARTY_NOTICES.txt" />
     <None Include="../../README.md" Pack="true" PackagePath="" Link="README.md" />
   </ItemGroup>
 </Project>

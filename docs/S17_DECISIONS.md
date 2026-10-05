@@ -1,18 +1,19 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-05: reviewed baseline `f633c86b`; current one-chord cubic checkpoint
+Updated 2026-10-05: reviewed baseline `f633c86b`; current one-chord cubic renderer
 follows operation-preserving paint (`c9f0eea2`) and scan windows (`9e77c0fa`).
+The bounded clipping kernel is verified but not yet integrated into rendering.
 [PLAN.md](../PLAN.md) is the current execution queue. Rows 3–7 still have
 implementation and fidelity exits; the earlier claim that rows 1–7 were complete
 within architectural limits is withdrawn. The first exact curved corporate mark
 and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 
-Current validated evidence: 584 fixture entries = 493 exact + 86 known-difference
-renders + five rejections across 355 base documents and 229 variants; 67 research
+Current validated evidence: 611 fixture entries = 493 exact + 113 known-difference
+renders + five rejections across 360 base documents and 251 variants; 67 research
 probes = 66 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 2,882 core + 105 visual + six FontProbe tests pass. All 25 memory
+Release build and 3,045 core + 105 visual + six FontProbe tests pass. All 25 memory
 scenarios, package inspection and isolated installed-consumer checks pass at the
-one-chord cubic checkpoint. The Default inventory retains 88 renders +
+clipping-kernel checkpoint. The Default inventory retains 88 renders +
 four MalformedInput rejections out of 92. These counts establish neither corporate
 coverage, full independent-variant validation nor Linux delivery.
 
@@ -89,6 +90,11 @@ That diagnostic construction matches the small/intended/large sampled tip alphas
 the production renderer and its all-nine results above are unchanged. The next
 wordmark slice is this shared clipped-edge preparation, with bounded resources and
 independent controls, not another recurrence or endpoint adjustment.
+The line/quad/cubic kernel now matches 160 compiled-native inputs / 334 ordered
+pieces, including all float bits. Its 27 predeclared browser configurations are
+banked as known differences; all prior outputs and Ford variants are unchanged.
+Kernel verification does not close shared preparation, edge-storage or walk-window
+integration, and it establishes no new exact-image or corporate-document count.
 A bounded shared repair may land with independent progress and Ford nonregression; a Ford-repair
 claim requires all-nine progress and its exit remains all-nine exact. See PLAN and
 [the design record](RASTERIZATION_DESIGN.md) for evidence and remaining limits.

@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-All 584 current manifest entries are gated: 493 exact decoded-pixel references,
-86 known-difference renders and five categorized rejections. These are fixture
+All 611 current manifest entries are gated: 493 exact decoded-pixel references,
+113 known-difference renders and five categorized rejections. These are fixture
 entries, including variants, and do not establish corporate-document coverage.
 
 Analytic coverage reserves complete live-edge objects, list growth and retained
@@ -47,11 +47,15 @@ Intended-transparent retains 433 differing pixels, so general cubic event fideli
 and the all-nine wordmark exit remain open. Default inventory renderability is
 preserved; ten changed non-Ford outputs lack matched oracle evidence.
 
-Native clipped-edge construction remains unimplemented for escaping path/control
+Native clipped-edge preparation remains unintegrated for escaping path/control
 bounds. Compiled diagnostics demonstrate that this affects Ford even at a tip
 inside the canvas: its native clipper splits at X extrema as well as Y extrema.
 The production renderer still uses its existing raw-edge/coverage-clip fallback;
 the diagnostic matches do not change the current support or exactness counts.
+The bounded line/quad/cubic clipping kernel independently matches 160 native inputs
+and 334 ordered pieces, with work limits and cancellation. Twenty-seven declared
+browser controls retain their current known differences. Kernel verification does
+not admit new syntax or alter rendering, clipping support or exact-image counts.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
