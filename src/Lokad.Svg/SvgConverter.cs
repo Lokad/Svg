@@ -1734,10 +1734,10 @@ public static class SvgConverter
         try
         {
             using RenderBudget.BudgetReservation workspace = budget.Reserve(SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, options.Limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
-            XmlReaderSettings settings = new() { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null, MaxCharactersInDocument = options.Limits.MaximumInputBytes, IgnoreComments = true, IgnoreProcessingInstructions = true };
+            ParserWorkCounter probe = new(options.Limits.MaximumWorkUnits);
+            XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, options.Limits, budget, probe, cancellationToken);
             using ReadOnlyMemoryStream stream = new(svg);
             using XmlReader reader = XmlReader.Create(stream, settings);
-            ParserWorkCounter probe = new(options.Limits.MaximumWorkUnits);
             while (reader.Read())
             {
                 probe.Consume(cancellationToken);

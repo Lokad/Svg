@@ -1,0 +1,1892 @@
+{
+  "checkpoint": "declaration-only-doctype-2026-10-05",
+  "baselineCommit": "86554a94",
+  "baselineRendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+  "rendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54",
+  "sourceFingerprintSha256": "7800b716dcabebf99eb6033a6c163fb6e808195fcafed48dfa053bd27aaee007",
+  "sourceUtf8LfSha256": {
+    "src/Lokad.Svg/AssemblyInfo.cs": "45cdca8a055356d543bcb5e4182f717e80d402ada26c844680282fb88fdd990c",
+    "src/Lokad.Svg/SvgColor.cs": "befbb1c837b440d30b77f0202bd5f83d465a03c04cea13c01f0799a1cec856c3",
+    "src/Lokad.Svg/SvgConverter.cs": "df590aa99b40b41d7c328f32fd49d60b094d7390dfeec0970d3c7a28611ab5c7",
+    "src/Lokad.Svg/SvgErrorCode.cs": "5de7d7e4eb7ad87071f9a33e25fca74870fac06cf4dd0d11455793e9a4198221",
+    "src/Lokad.Svg/SvgException.cs": "8d86ee328e2ee72dd332d2eaa85457a7259ec6637eb9a58e245c6b6730b5b597",
+    "src/Lokad.Svg/SvgPreparedDocument.cs": "5c0afe7927d8fed25f33b5520f8830a53bddc32ecb64b55dbbb514ee5c4ae150",
+    "src/Lokad.Svg/SvgRenderLimits.cs": "9950dc1167a705642893b6d296764f8afadaaa55eab36a7da4682a3bf2d82ded",
+    "src/Lokad.Svg/SvgRenderOptions.cs": "dc4f60a724d8781a0733c61ada7bd6a8f0d8b6bfd417f3f9220bc96983ef1d80",
+    "src/Lokad.Svg/SvgViewport.cs": "a1fb633bb5d9be5ed1e3dee4626eae73346a850ba9b27b37e174e6b32cab63ea",
+    "src/Lokad.Svg/Encoding/PngEncoder.cs": "9afe664c489326a771a99e4440181ee8858162dd05a2cbb9ac009e26c03d4dce",
+    "src/Lokad.Svg/Encoding/PngImageDecoder.cs": "4b5185512f7ac1ba7d22e815b20f5abcefed1a555886a8ac2794084327d462c0",
+    "src/Lokad.Svg/Fonts/CmapLookupProbe.cs": "6704523aa68ca95251c67da73961807828bfd938eec4b034daa6c5ae6bb1bb17",
+    "src/Lokad.Svg/Fonts/FontIntegrityProbe.cs": "28761dd6dd057effdaf85fee8ad8e9bdd0a712900d3cf5b3893a39685f30ef35",
+    "src/Lokad.Svg/Fonts/FontMetricsProbe.cs": "454463d61a6729b55f650e29711e12c57109d6c5b08a32f0c554d65adeb590ed",
+    "src/Lokad.Svg/Fonts/GlyphDecoderBudgetProbe.cs": "5f07461e4921f1cc144b32704c9bd63c00a4b313eb478881c1d0aa5760343df0",
+    "src/Lokad.Svg/Fonts/GlyphExpansionProbe.cs": "3244a9207862e21efe34b529dcae9c0845672e5dddd7636f332ef483c58f2c97",
+    "src/Lokad.Svg/Fonts/GlyphOutlineProbe.cs": "a4631882a96457dc0018486f1bb0116326d312bb6c20b979f38d40f85f5cd7ae",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.cs": "b35db1c4ad25e10ecc9ebd14b1f7360586f8478a4930a9c5d9cd44a2ba51fd52",
+    "src/Lokad.Svg/Fonts/SvgFontDiagnostic.cs": "d6312db061958dd86d7f7783dbc2e6c2a24fd45c52b1bbbb4e7f057b0b9aee7e",
+    "src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs": "ab6b2d26dd04830fd6436f04669091456288ef5416149b157b74568fca7f383a",
+    "src/Lokad.Svg/Fonts/SvgFontProgramSource.cs": "6dfb2fba97f67760684a569898370545d43ee8a7bbd617507b738c7079c993af",
+    "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "4ad054698025b6adb82876568794dc2e7890c51f61ea1623fd4efc29401a83b9",
+    "src/Lokad.Svg/Fonts/SvgFontSnapshot.cs": "017557d4a2aebdf645df7e978fc01eb9b66db4e8942a725fdddce158f9a1e964",
+    "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs": "7835e9256dbdbe3ba2dd2dce73e67186693bc62c58cf1f9742dd93cf54f9176f",
+    "src/Lokad.Svg/Fonts/SvgGlyphOutline.cs": "530f53a0fd587ff98e98ad92ae3efd50e956084172687b34714263dca8b9e564",
+    "src/Lokad.Svg/Parsing/BudgetedParserCollections.cs": "1887db43cb2ac328d55d204e07235d7b98c6321f9c085431c16a84cac898aafa",
+    "src/Lokad.Svg/Parsing/ReadOnlyMemoryStream.cs": "03e700334f70605a6b7962308e00fa9dabf0a2e5e7473915717b1c288b43b1df",
+    "src/Lokad.Svg/Parsing/SvgClipBox.cs": "0fd5a03109e8300a742a2511bd961eeaaa4603fdecd2b41b0b7ae6baf9c0c941",
+    "src/Lokad.Svg/Parsing/SvgClipPathSyntax.cs": "85d42c3212a28885f2768c0b8a0fb3cfd3f3054ffa150b20bdbc020d3dcb9011",
+    "src/Lokad.Svg/Parsing/SvgClipPolygon.cs": "d0f696ead7e75644d354bf8e1b396c41e2a38a267025c6c63b135c2b3bd42578",
+    "src/Lokad.Svg/Parsing/SvgColorParser.cs": "ea211da9b8c24b3c144ac516c946750b00da90c22f0bba04e1be12513e0c11be",
+    "src/Lokad.Svg/Parsing/SvgComputedStyle.cs": "5750059c1124e8c06127ac2374da4e50cee710045769685b2b2affc1edec9f4e",
+    "src/Lokad.Svg/Parsing/SvgComputedStyleResolver.cs": "9e74b7e260d6d804c54ccb27d216ecefa16e68b581d8d42c99e61ac8997326ea",
+    "src/Lokad.Svg/Parsing/SvgContainerInheritance.cs": "d33f5bbcdcd825d52bababd3fb3a3544ccad98673bad91df95021675ddc957ff",
+    "src/Lokad.Svg/Parsing/SvgContainerPresentationResolver.cs": "2d2f9352f956626f620e990294ebc6ad0879c2d5f043be10d64642faa9ee67ff",
+    "src/Lokad.Svg/Parsing/SvgContourTopology.cs": "49ea6f689a1ceb79b9ad991b80f0d08c01b9cf212f1d7fed7a8f3360e493cc9f",
+    "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs": "bd26bc75da85d2dd1de42e5f78e040eb155c6963f44397a740a4706c2ab5b35f",
+    "src/Lokad.Svg/Parsing/SvgDocumentState.cs": "01b1e2d14048e738373dd9057ccfefdd6c6517dcff2a451852830ab50e8903fa",
+    "src/Lokad.Svg/Parsing/SvgDocumentStyleResolver.cs": "38e34e4793f7e2d557c8e1ab4748405c298ac31350d09f2f0f2428a9b54b3323",
+    "src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs": "d6b534a2c7ecdf03328ada3457a589f1f39f91e49bc7ab28600a21fc6438b891",
+    "src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs": "07ed8f2e3a8de543107bc733711ae2c3253be10a3379c1a1264bb2c5d36b3b6d",
+    "src/Lokad.Svg/Parsing/SvgEllipseSyntax.cs": "7dfffa766a8a3233b955c3c73be0f2783aeda5182472ff320d57a872f2179ebb",
+    "src/Lokad.Svg/Parsing/SvgFloatNumber.cs": "f4c11ce04eaa8ff3395a6000df30597467ab12ac6b0aa1bde00eb3b68bbaae6a",
+    "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs": "bdcb9717f6d949f0812f67eee055d0842a49e628a801c97e82ffea52680bcfb1",
+    "src/Lokad.Svg/Parsing/SvgGradientSyntax.cs": "238cb2633785117d91acfebd346a7ada968135ee899ab490d9e5541d4e1e7724",
+    "src/Lokad.Svg/Parsing/SvgGroupParser.cs": "e1f30cae135734db0b669180703edc5b047f69dd6ccda977fcf8e6d846aadb8a",
+    "src/Lokad.Svg/Parsing/SvgImageSyntax.cs": "3f2e80951242918498b6283af7b9409b69a174535582e05071f7eeeacf8ea24e",
+    "src/Lokad.Svg/Parsing/SvgInheritedPresentation.cs": "21e4e90b5f8e3a55296879fd9cbd56a9ca707d711943668564404fdf28c89fe8",
+    "src/Lokad.Svg/Parsing/SvgInheritedStrokeStyle.cs": "70173fe9ffc0d05c356b2d472eebc2c64e96bc86c116704c78e349a1b8ac47d9",
+    "src/Lokad.Svg/Parsing/SvgInheritedTextStyle.cs": "33384ebc871f4b7453dd673b1692f7512e9e41fd02f4d29aabb07c95b6502920",
+    "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs": "0365c3952bcdd75544cd102bcc40412aae920ea1ded91ea5c560bee6bc9bdb12",
+    "src/Lokad.Svg/Parsing/SvgLeafParser.cs": "4f753eb410a8512a399bc94d356f2a27af2f8e339a8c9da626f48b6ada74be08",
+    "src/Lokad.Svg/Parsing/SvgLineSyntax.cs": "3fce2193b240ce6c03e8ee655412069f2aced0459505fc6a13299e5724779bc1",
+    "src/Lokad.Svg/Parsing/SvgLocalReferenceParser.cs": "f182555441ab5c8b63816e440a1542ea2a2dce138ef7a5776b1dd4722a53855e",
+    "src/Lokad.Svg/Parsing/SvgLocalReferencePresentationResolver.cs": "979ad3f86e0d9092a6a30605dafd47507627e174c7f07b5fc9700fd20f6d8588",
+    "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs": "3a7770e80767901688b99c604567d5fd74479b16353c4da81408565a13fa8367",
+    "src/Lokad.Svg/Parsing/SvgLocalUrl.cs": "8dc382fd6f34eacf66a675deda5efbeccfd689a95a113d7c52c4016c679c6af3",
+    "src/Lokad.Svg/Parsing/SvgMaskContent.cs": "8ff656450640d64b3b6fb14031ccd47d98c8067469f7b1491fba436f1728773f",
+    "src/Lokad.Svg/Parsing/SvgMaskSyntax.cs": "22db46b4e591b60327e2b2d1f7ba8f807675048093dfd0d0c51955d0f72bf580",
+    "src/Lokad.Svg/Parsing/SvgNestedViewportSyntax.cs": "7d3dbcc1a6a9998af5e5cd5b0ba35b31f8d478248107c60b1f286f5b86ae63c4",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryLowerer.cs": "d62c6d55404eaebc942395f8438200d592fc4bfe6037c27b8ef3797fbeddf7fb",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryTokenizer.cs": "56f4dfea65c1a4dd2ad763363988e1b0b543381d5eb47778125de478522d2205",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalShapeParser.cs": "38dadcf9c73ef6cae700e48bb317309d984a7b4874587e4d61b7b027f96bf37e",
+    "src/Lokad.Svg/Parsing/SvgPaintableElementContext.cs": "ae38a7393054a52e12d35737a0e9826b799507b60aa1b7033edf18ccf649fdcb",
+    "src/Lokad.Svg/Parsing/SvgPaintOpacity.cs": "3e13d63ff0039a63be99d34e1287f03d251b616dfb42ff89b514effb535b1a53",
+    "src/Lokad.Svg/Parsing/SvgPaintResolver.cs": "8d336c2e3e921da5931fb34d84ff616c1f779face5d4bab557277c6420a422a3",
+    "src/Lokad.Svg/Parsing/SvgPathDataParser.cs": "e0503d5d058af83d365f3963f736d6cfae8b4656350b5bc5c6cf793b7d33848f",
+    "src/Lokad.Svg/Parsing/SvgPatternSyntax.cs": "030753ee3e6bad4ade1bc573c44a7a38908ef753d92adf2f78dc2dde3c69b0bb",
+    "src/Lokad.Svg/Parsing/SvgPresentationResolver.cs": "72cab0090c58d8e98e6891463d08a922596dd8d3d92a0f80b7b9514ec40028e1",
+    "src/Lokad.Svg/Parsing/SvgRectangleSyntax.cs": "3ea391fd7fb19830e378147c5c93e62426db09d0b4744752703a616cc9864ae7",
+    "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs": "6b0f0114dbbed2754e8ebd24db2ba53c76b5b7d31f8ac3c6d958009883ae2dea",
+    "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs": "ec521aaa806762ee5165c48afb7cc6506e1c83f67042bda3bdfb11c3dceaa819",
+    "src/Lokad.Svg/Parsing/SvgRoot.cs": "2936b62499959d7cdd14d54d5b6da74d24ca59700b4251d3559121ab36939643",
+    "src/Lokad.Svg/Parsing/SvgRootAttributes.cs": "adb17c6a8b1cf9ce4b35eb25b165c41069050444d5e1b9ea679ab7c2d9a3d786",
+    "src/Lokad.Svg/Parsing/SvgRootParser.cs": "9bef40c06c8c233e39d85cc0457c5d99871174513e81f98c6701bdf478b6f16b",
+    "src/Lokad.Svg/Parsing/SvgRootStyleSheetParser.cs": "36e685863c10e670e64c1b4edba727f5d994a5dcdc21d79579a024a91276b8b2",
+    "src/Lokad.Svg/Parsing/SvgRootSyntax.cs": "f6d52cd835dfe4d5f8d0bf42fdcb10b387dc27ac8fee9e897f2f401cbc3d50d3",
+    "src/Lokad.Svg/Parsing/SvgShapePresentationResolver.cs": "8e4b280797a69df9d5fe5b34843d49006044c99a6e34f49e50335adf3c7ca800",
+    "src/Lokad.Svg/Parsing/SvgStrokeStyleSyntax.cs": "deec19af720290d52370be02cff0cbd3beda4205fe27fac193a3305020308674",
+    "src/Lokad.Svg/Parsing/SvgStructuralAdmission.cs": "22856bb2e913521638d62d5c2e409ac9eea3cc26bef8fd336f97079a5918006b",
+    "src/Lokad.Svg/Parsing/SvgStructuralVocabulary.cs": "2834ae97def6651010a20961c0386382723cf81f5b7a05ea572767c6426beefe",
+    "src/Lokad.Svg/Parsing/SvgStyleCascade.cs": "7485bc7676f7269aa6dde7dfb8a7f692dce5bbd569f76d3db079580c763b8a31",
+    "src/Lokad.Svg/Parsing/SvgStyleSheet.cs": "21e40640fcfdb7a221a317040596947de2d2b39dfea9b8a3d5d8178d729058da",
+    "src/Lokad.Svg/Parsing/SvgSyntaxLimits.cs": "62ce6a014702f57316a7b8b02de3a6dc4ebfa2cda7e570bddbc9a32d509d400c",
+    "src/Lokad.Svg/Parsing/SvgTextRunBuilder.cs": "faa31951755f31f5f9c200c225cdc9f88f15ce94dfae5ef529dac0b43bd3ae8b",
+    "src/Lokad.Svg/Parsing/SvgTextSyntax.cs": "b37445d4aef5a3f95b0972d7f040e22ac0b3e065d6f151101de9a6aa36c1bb49",
+    "src/Lokad.Svg/Parsing/SvgViewportFrame.cs": "0a48b2125c74a23a4ddc3d8faebab0a9c256b49602ff30851d29be9b65683c06",
+    "src/Lokad.Svg/Parsing/SvgXmlPrologProbe.cs": "05efb39e97e7307f885f81ba81f4a468128fc74cfbf3931d5bdc056a2a9e5f73",
+    "src/Lokad.Svg/Parsing/SvgXmlReaderPolicy.cs": "46797fb77dee4f293ba585567108414e52fbaf9769eede2fbe53365d87aa9a6d",
+    "src/Lokad.Svg/Rendering/BackgroundInitializationProbe.cs": "65855d3646c9e0fd22a0aa4a822dbe765b1739fd8c083fdd1fb4064e1b236137",
+    "src/Lokad.Svg/Rendering/GlyphCoverageProbe.cs": "68df89e71806393dfc51caa3f0c8565f266ce6f7ff3023b33bf956f26601fae7",
+    "src/Lokad.Svg/Rendering/RenderBudget.cs": "76a32dabc5fc4efa0ce477da545ee0cd99f151980c1eb8aaaeaedaa75210dcda",
+    "src/Lokad.Svg/Rendering/RenderBudgetSnapshot.cs": "fe28a88fe70ae685eb7dbb504b206380c26e0e03e903f40d5b7f465c8f5358dc",
+    "src/Lokad.Svg/Rendering/SolidCanvasRasterizationProbe.cs": "1542165d285d5d501f9409009358999aa048909aabc2c41d35a19d9d462fd57c",
+    "src/Lokad.Svg/Rendering/SvgAffineTransform.cs": "a6a7e8298f7da349f899be072c4c6abfb77c66d810f7528b3c2eb85d6dd1156a",
+    "src/Lokad.Svg/Rendering/SvgAnalyticClipContext.cs": "e3610fadab33dc9860aa3653c2b93d59dfa08e44a913342fc0fb86d44be9ccd5",
+    "src/Lokad.Svg/Rendering/SvgAnalyticContourPreparation.cs": "48d38cc02e130dc4050825d38c5e44a2481f42d96ab32596976d056938c7bf7c",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.ClippedPreparation.cs": "ac97acab88e654a3a152bd4e10bb8e5a473301f9aaeba83a97ce475ca4cb26c0",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.Clipping.cs": "cc8a727bc6922cf0f14304e2cb3c15cb5a0c76286d43a69c688902b698811273",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs": "61a9e37af5f4edf15b18ba6a82bfa392d7eba4f796947071aec2613ce74ade8f",
+    "src/Lokad.Svg/Rendering/SvgAnalyticPaint.cs": "b2edb26a75f0c03c81eff82f3e14ccc8a9b49d30dcab7492c7a5c34a3115c888",
+    "src/Lokad.Svg/Rendering/SvgAnalyticPaintClip.cs": "79211765cd7c6ac85c03b4e0b6069dc753704ca0084916abba54c729d7f34b75",
+    "src/Lokad.Svg/Rendering/SvgAnalyticPaintProbe.cs": "2d6fad2b1fefb2551d0a0d93787d436d798ffc40f40872834ce8dc4b99a76fa0",
+    "src/Lokad.Svg/Rendering/SvgAnalyticScanWindow.cs": "6065f2dadad90e54ae28bb6deb295af00f0dbf644d3979888af5b2a68550b1e2",
+    "src/Lokad.Svg/Rendering/SvgContourBuilder.cs": "8aa28de912aee57514abebd9afe6aad059ed47b65c306eb373ec95e6b22aa6dd",
+    "src/Lokad.Svg/Rendering/SvgContourNesting.cs": "6edc2a1152712247e29ab53637682f6aee6617146b4d513f0bf6c5be413b9174",
+    "src/Lokad.Svg/Rendering/SvgContourStructure.cs": "5ba3ffc0e4212b43e02da14fec117f2cd03d92cd470bf8856bc48ddf8f3cdf07",
+    "src/Lokad.Svg/Rendering/SvgCpuRasterGrid.cs": "0bc9df7041d25d7f3ed3ac630306604ffa7baf12ebc5c2db5207cb506379d6fb",
+    "src/Lokad.Svg/Rendering/SvgCubicSpan.cs": "e991e18ccd82c7ee23ff842c3cf8c111f31f6b00f2ab6adb2ca3451cee864c0c",
+    "src/Lokad.Svg/Rendering/SvgCurveFlatten.cs": "39431403efda0489d0704e96b38f5018583574a7d23e6f591d703812fd361015",
+    "src/Lokad.Svg/Rendering/SvgDeviceTransform.cs": "9b94c869159dfd364e63cc5fa5d73fdd3ee38cd19a149a6552abbe6cd820508d",
+    "src/Lokad.Svg/Rendering/SvgEllipticalArc.cs": "b43f44541a1f54c0b5b29a04aa15c9e7e720c3594dca8553a800ce4d206b9898",
+    "src/Lokad.Svg/Rendering/SvgGlyphCoverage.cs": "dcc9bed94f91fd3517e48ddf251c0cbcfb92f4232d24f1745a4441441e34f0ab",
+    "src/Lokad.Svg/Rendering/SvgMemoryCategory.cs": "0bfcab2c64d0a2db9d6a68d2d3f50c210d73d1de5c0330100a47bcefcfca841d",
+    "src/Lokad.Svg/Rendering/SvgPolygonCoverage.cs": "23346aa09d6955ea04d3aa6db2b3db7d3bd11f938311d6a29fc0048a167918f5",
+    "src/Lokad.Svg/Rendering/SvgPolygonCoverageProbe.cs": "130a9dfaaf3e538a0f18d0825df80eb9b522fc25300fe9075c1c010f1a5b9f17",
+    "src/Lokad.Svg/Rendering/SvgQuadSpan.cs": "887c5161b4773146e71eca39d2e07124849fb11096f9981c906e4d30f7adccd3",
+    "src/Lokad.Svg/Rendering/SvgRawContourConvexity.cs": "f0be532ea26c78e164018056f5b2d37e95895d0184e1cf09697adcec32ba6bb8",
+    "src/Lokad.Svg/Rendering/SvgScanlineCoverage.cs": "5794680257ee46178c51a44e9112cdaa70ba60a68515092e5c0ac3ac497a5eda",
+    "src/Lokad.Svg/Rendering/SvgStrokeOutline.cs": "9103ad547a6f4911ffbaa557e44b014c1d6b2aa7d4a0aa18e06c56d799d63c35"
+  },
+  "declaration": {
+    "baselineCommit": "86554a94",
+    "baselineRendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+    "declaredBeforeProductionEdit": true,
+    "policy": "At most one declaration-only DOCTYPE before the root; no internal subset, entity expansion or external resolution. Preserve input bytes, encoding, structural limits, shared work and cancellation in root parsing, font discovery and scale probing.",
+    "cases": [
+      {
+        "id": "bare",
+        "input": "<!DOCTYPE svg><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "renders exact like original-solid-red"
+      },
+      {
+        "id": "system-single",
+        "input": "<!DOCTYPE svg SYSTEM 'https://example.invalid/svg.dtd'><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "renders exact like original-solid-red"
+      },
+      {
+        "id": "system-double",
+        "input": "<!DOCTYPE svg SYSTEM \"file:///does-not-exist.dtd\"><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "renders exact like original-solid-red"
+      },
+      {
+        "id": "public",
+        "input": "<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'https://example.invalid/svg.dtd'><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "renders exact like original-solid-red"
+      },
+      {
+        "id": "identifier-brackets",
+        "input": "<!DOCTYPE svg SYSTEM 'https://example.invalid/[literal].dtd'><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "renders exact like original-solid-red"
+      },
+      {
+        "id": "multiline",
+        "input": "<!DOCTYPE\nsvg\tSYSTEM\r\n'uri' ><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "renders exact like original-solid-red"
+      },
+      {
+        "id": "empty-subset",
+        "input": "<!DOCTYPE svg []><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "MalformedInput"
+      },
+      {
+        "id": "unused-entity",
+        "input": "<!DOCTYPE svg [<!ENTITY x 'red'>]><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "MalformedInput"
+      },
+      {
+        "id": "external-entity",
+        "input": "<!DOCTYPE svg [<!ENTITY x SYSTEM 'file:///does-not-exist'>]><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "MalformedInput"
+      },
+      {
+        "id": "parameter-entity",
+        "input": "<!DOCTYPE svg [<!ENTITY % x '<!ENTITY y \"red\">'>%x;]><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "MalformedInput"
+      },
+      {
+        "id": "duplicate",
+        "input": "<!DOCTYPE svg><!DOCTYPE svg><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "MalformedInput"
+      },
+      {
+        "id": "invalid-name",
+        "input": "<!DOCTYPE 123><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "MalformedInput"
+      },
+      {
+        "id": "missing-system-id",
+        "input": "<!DOCTYPE svg SYSTEM><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "MalformedInput"
+      },
+      {
+        "id": "unterminated",
+        "input": "<!DOCTYPE svg SYSTEM 'uri><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "MalformedInput"
+      },
+      {
+        "id": "comment-lookalike",
+        "input": "<!-- <!DOCTYPE svg [fake]> --><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "renders exact like original-solid-red"
+      },
+      {
+        "id": "pi-lookalike",
+        "input": "<?note <!DOCTYPE svg [fake]> ?><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg>",
+        "expected": "renders exact like original-solid-red"
+      },
+      {
+        "id": "late-declaration",
+        "input": "<svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='red'/></svg><!DOCTYPE svg>",
+        "expected": "MalformedInput"
+      },
+      {
+        "id": "undeclared-reference",
+        "input": "<!DOCTYPE svg><svg xmlns='http://www.w3.org/2000/svg' width='2' height='2'><rect width='2' height='2' fill='&external;'/></svg>",
+        "expected": "MalformedInput"
+      }
+    ],
+    "encodingVariants": [
+      "UTF-8",
+      "UTF-8 BOM",
+      "UTF-16 LE BOM",
+      "UTF-16 BE BOM",
+      "UTF-16 LE signature",
+      "UTF-16 BE signature",
+      "UTF-32 LE BOM",
+      "UTF-32 BE BOM",
+      "ISO-8859-1"
+    ],
+    "resourceControls": [
+      "tight input/work/reader memory",
+      "during-prolog cancellation",
+      "bounded allocation with long comments and system identifiers",
+      "all owners released on rejection/cancellation"
+    ],
+    "fixedBanks": {
+      "prior": 937,
+      "corporate": 258
+    }
+  },
+  "contract": "One declaration-only DOCTYPE before the root: bare, SYSTEM or PUBLIC. External identifiers are inert; no external resolution, entity expansion, default attributes, internal subsets (even empty) or duplicate declarations. XML readers keep original input bytes and BCL encoding interpretation. Other malformed XML remains MalformedInput. Root parsing, font discovery and output-scale probing share the policy.",
+  "resources": "Fixed 32 KiB additional prolog allowance, released before the main reader is constructed; ordinary reader allowance remains reserved by its caller. Guard traversals charge caller work and check cancellation every 4096 encoded bytes or decoded characters. No DOM or whole-input string; root/discovery borrow their work counter, and the existing output-scale probe uses its separately bounded probe counter.",
+  "controls": {
+    "testClass": "tests/Lokad.Svg.Tests/SvgDoctypeTests.cs",
+    "newCoreCases": 187,
+    "encodingSemanticCases": 162,
+    "encodingVariants": 9,
+    "sixOutputParity": true,
+    "ownedWorkDenial": true,
+    "duringPrologCancellation": true,
+    "inputNodeDepthAttributeLimits": true,
+    "workspaceDenialAndRelease": true,
+    "constantGuardAllocationForLongCommentAndSystemIdentifier": true,
+    "referenceTwin": "tests/References/original-solid-red.png",
+    "referenceSha256": "c5cfbe806f29ca2bcc11c13de9b93f4024cf1a69320139ee6171201126e6f8ec",
+    "pixelClaims": "Positive synthetic controls compare exact PNG bytes with an independently established solid-red control; no newly admitted corporate document is claimed exact.",
+    "corruptUtf32MalformedCategory": true,
+    "realExternalDtdEntitiesAndDefaultsInert": true
+  },
+  "priorBank": {
+    "executed": 937,
+    "unchangedReports": 933,
+    "exactFixturePngsPreserved": 601,
+    "legacyDefaultRenderCount": 92,
+    "dispositionChanges": [
+      {
+        "id": "inv-007",
+        "before": {
+          "Id": "inv-007",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "DD9881FB39562630E4C13C97D8CF78C905F456D5461C77DF8B18C91DD521658C"
+        },
+        "after": {
+          "Id": "inv-007",
+          "Outcome": "renders",
+          "InputSha256": "DD9881FB39562630E4C13C97D8CF78C905F456D5461C77DF8B18C91DD521658C",
+          "PngSha256": "EA05B7615D98E25D8E8A0C7EB1C3F2978A130193BC599FA9281C5D93A42B1229",
+          "PngBytes": 9194,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-012",
+        "before": {
+          "Id": "inv-012",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2"
+        },
+        "after": {
+          "Id": "inv-012",
+          "Outcome": "renders",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2",
+          "PngSha256": "CDEF3F01BB109B3717423DB91166B5A24615F351F3C3C883D536D7137B24A4E0",
+          "PngBytes": 25966,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-014",
+        "before": {
+          "Id": "inv-014",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "C8A10CA8F72B99685EE46C0D79064B15A2F9D456E98CF4A2973D63A996BF1D67"
+        },
+        "after": {
+          "Id": "inv-014",
+          "Outcome": "renders",
+          "InputSha256": "C8A10CA8F72B99685EE46C0D79064B15A2F9D456E98CF4A2973D63A996BF1D67",
+          "PngSha256": "A462BE345ED52D1B2E1AC90814750F5E5DD7674D289FBD05E256D228A5910C39",
+          "PngBytes": 8644,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-020",
+        "before": {
+          "Id": "inv-020",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889"
+        },
+        "after": {
+          "Id": "inv-020",
+          "Outcome": "renders",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889",
+          "PngSha256": "88C7A0210ADB0D16F30070C77FDE8C56537B08A96E217255D9AFFB1C2F886907",
+          "PngBytes": 34659,
+          "Oracle": null
+        }
+      }
+    ]
+  },
+  "corporateBank": {
+    "executed": 258,
+    "unchangedReports": 222,
+    "allPreviouslyRenderedPngsPreserved": true,
+    "allNineFordExactPngsPreserved": true,
+    "renders": 240,
+    "MalformedInput": 0,
+    "UnsupportedFeature": 18,
+    "dispositionChanges": [
+      {
+        "id": "inv-007-small-transparent",
+        "before": {
+          "Id": "inv-007-small-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "30A794FA691B0435DFB3CA44AC86957892122E42E5618A8CF5C9DB5A9EF08EA8"
+        },
+        "after": {
+          "Id": "inv-007-small-transparent",
+          "Outcome": "renders",
+          "InputSha256": "30A794FA691B0435DFB3CA44AC86957892122E42E5618A8CF5C9DB5A9EF08EA8",
+          "PngSha256": "F688B7E511B010B6337B7B4DB46A232BB4A7785456200563B5C7B83471275E79",
+          "PngBytes": 4145,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-007-small-white",
+        "before": {
+          "Id": "inv-007-small-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "30A794FA691B0435DFB3CA44AC86957892122E42E5618A8CF5C9DB5A9EF08EA8"
+        },
+        "after": {
+          "Id": "inv-007-small-white",
+          "Outcome": "renders",
+          "InputSha256": "30A794FA691B0435DFB3CA44AC86957892122E42E5618A8CF5C9DB5A9EF08EA8",
+          "PngSha256": "D39C06C7C8AA8CA28B80B8A6ED778306E6C968E7010E14A12D65FE3F3EC511E1",
+          "PngBytes": 4138,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-007-small-black",
+        "before": {
+          "Id": "inv-007-small-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "30A794FA691B0435DFB3CA44AC86957892122E42E5618A8CF5C9DB5A9EF08EA8"
+        },
+        "after": {
+          "Id": "inv-007-small-black",
+          "Outcome": "renders",
+          "InputSha256": "30A794FA691B0435DFB3CA44AC86957892122E42E5618A8CF5C9DB5A9EF08EA8",
+          "PngSha256": "72839B51BD456619E921A19EEF5BD7EA48F797E724722E05F7703BAC78D6A7C7",
+          "PngBytes": 4377,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-007-intended-transparent",
+        "before": {
+          "Id": "inv-007-intended-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "DD9881FB39562630E4C13C97D8CF78C905F456D5461C77DF8B18C91DD521658C"
+        },
+        "after": {
+          "Id": "inv-007-intended-transparent",
+          "Outcome": "renders",
+          "InputSha256": "DD9881FB39562630E4C13C97D8CF78C905F456D5461C77DF8B18C91DD521658C",
+          "PngSha256": "EA05B7615D98E25D8E8A0C7EB1C3F2978A130193BC599FA9281C5D93A42B1229",
+          "PngBytes": 9194,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-007-intended-white",
+        "before": {
+          "Id": "inv-007-intended-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "DD9881FB39562630E4C13C97D8CF78C905F456D5461C77DF8B18C91DD521658C"
+        },
+        "after": {
+          "Id": "inv-007-intended-white",
+          "Outcome": "renders",
+          "InputSha256": "DD9881FB39562630E4C13C97D8CF78C905F456D5461C77DF8B18C91DD521658C",
+          "PngSha256": "AA996AA16154D03703EE9EA332169E61F3F85400CCFDECFC805A8EAC0C4862D4",
+          "PngBytes": 9292,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-007-intended-black",
+        "before": {
+          "Id": "inv-007-intended-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "DD9881FB39562630E4C13C97D8CF78C905F456D5461C77DF8B18C91DD521658C"
+        },
+        "after": {
+          "Id": "inv-007-intended-black",
+          "Outcome": "renders",
+          "InputSha256": "DD9881FB39562630E4C13C97D8CF78C905F456D5461C77DF8B18C91DD521658C",
+          "PngSha256": "02EF3957C7CDC2E078C216C10B524CB6D2CC0722A18042010B2C60EF93161760",
+          "PngBytes": 9996,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-007-large-transparent",
+        "before": {
+          "Id": "inv-007-large-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "5FFEF1935892AC774F0A56803F103EAC58F1EC83180C65C11B1F128FE848C632"
+        },
+        "after": {
+          "Id": "inv-007-large-transparent",
+          "Outcome": "renders",
+          "InputSha256": "5FFEF1935892AC774F0A56803F103EAC58F1EC83180C65C11B1F128FE848C632",
+          "PngSha256": "6A84D33A79A12BF55795CD27F1DF159F246D0BE6E5305919D0A535E86406247C",
+          "PngBytes": 21084,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-007-large-white",
+        "before": {
+          "Id": "inv-007-large-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "5FFEF1935892AC774F0A56803F103EAC58F1EC83180C65C11B1F128FE848C632"
+        },
+        "after": {
+          "Id": "inv-007-large-white",
+          "Outcome": "renders",
+          "InputSha256": "5FFEF1935892AC774F0A56803F103EAC58F1EC83180C65C11B1F128FE848C632",
+          "PngSha256": "FD8152AED1EBB51C2E8C49B110189E78BA27FCAA62755715BB12DB0DFA5ECCCC",
+          "PngBytes": 21467,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-007-large-black",
+        "before": {
+          "Id": "inv-007-large-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "5FFEF1935892AC774F0A56803F103EAC58F1EC83180C65C11B1F128FE848C632"
+        },
+        "after": {
+          "Id": "inv-007-large-black",
+          "Outcome": "renders",
+          "InputSha256": "5FFEF1935892AC774F0A56803F103EAC58F1EC83180C65C11B1F128FE848C632",
+          "PngSha256": "55FE2E3EE2A4509B3F3972F7EE232A5737797CEFA15C0097D16213402A63C3E3",
+          "PngBytes": 24231,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-012-small-transparent",
+        "before": {
+          "Id": "inv-012-small-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2"
+        },
+        "after": {
+          "Id": "inv-012-small-transparent",
+          "Outcome": "renders",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2",
+          "PngSha256": "691830BF7B6394DCCC820962B0F212BA75B611FE08FA13287EA12A21B5695363",
+          "PngBytes": 11222,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-012-small-white",
+        "before": {
+          "Id": "inv-012-small-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2"
+        },
+        "after": {
+          "Id": "inv-012-small-white",
+          "Outcome": "renders",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2",
+          "PngSha256": "676EC7E7BAE5282BFFA799E8DFED428689C66933A23B327F932BC5C87F0932FA",
+          "PngBytes": 11324,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-012-small-black",
+        "before": {
+          "Id": "inv-012-small-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2"
+        },
+        "after": {
+          "Id": "inv-012-small-black",
+          "Outcome": "renders",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2",
+          "PngSha256": "AC8A61C23281CCB2DC4174D58FBA09B7698162D96B114F9539D3F56D7F2CC307",
+          "PngBytes": 9829,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-012-intended-transparent",
+        "before": {
+          "Id": "inv-012-intended-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2"
+        },
+        "after": {
+          "Id": "inv-012-intended-transparent",
+          "Outcome": "renders",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2",
+          "PngSha256": "0A5AB625FA6AD55A4C541F128F55B0692C08D7A06F48FB5F61911A136C46AD15",
+          "PngBytes": 25821,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-012-intended-white",
+        "before": {
+          "Id": "inv-012-intended-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2"
+        },
+        "after": {
+          "Id": "inv-012-intended-white",
+          "Outcome": "renders",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2",
+          "PngSha256": "E94037CF9D2B6EFBCAAF267C28444671C8A20E10780F910AE3D4D5E92C20A5E8",
+          "PngBytes": 26405,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-012-intended-black",
+        "before": {
+          "Id": "inv-012-intended-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2"
+        },
+        "after": {
+          "Id": "inv-012-intended-black",
+          "Outcome": "renders",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2",
+          "PngSha256": "C171E0519DA7EA58EDF48D406C048378DC369AE3F5FF5DC3E9D87D31662DB589",
+          "PngBytes": 23010,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-012-large-transparent",
+        "before": {
+          "Id": "inv-012-large-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2"
+        },
+        "after": {
+          "Id": "inv-012-large-transparent",
+          "Outcome": "renders",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2",
+          "PngSha256": "75D1211520452CB3A3AF2B1DFC6A118C149EFF2921AA1B62B9D2534C0AEDDFA1",
+          "PngBytes": 59509,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-012-large-white",
+        "before": {
+          "Id": "inv-012-large-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2"
+        },
+        "after": {
+          "Id": "inv-012-large-white",
+          "Outcome": "renders",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2",
+          "PngSha256": "410EC891F0A83D96C0670012562E9C26C484504A1B0ED4BCA976018B47B2AD48",
+          "PngBytes": 61613,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-012-large-black",
+        "before": {
+          "Id": "inv-012-large-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2"
+        },
+        "after": {
+          "Id": "inv-012-large-black",
+          "Outcome": "renders",
+          "InputSha256": "4DFF5554049C7ACD23A96F57ABE7E40D5D6651B52B6A4C21A2E0FB586548D7B2",
+          "PngSha256": "2AA83EFA4917067713B8892BA4F6E9F32DE94B57F5BBF924ED78DC321471B947",
+          "PngBytes": 55323,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-020-small-transparent",
+        "before": {
+          "Id": "inv-020-small-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889"
+        },
+        "after": {
+          "Id": "inv-020-small-transparent",
+          "Outcome": "renders",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889",
+          "PngSha256": "C10FDF2E85622F1352BEE2CDCD138E21DBEF44AD4E7B9C84DDFAF6F909C3EDA3",
+          "PngBytes": 11305,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-020-small-white",
+        "before": {
+          "Id": "inv-020-small-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889"
+        },
+        "after": {
+          "Id": "inv-020-small-white",
+          "Outcome": "renders",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889",
+          "PngSha256": "4AF5B9D3AB8ADECEAF014A65A22436889154F2E1A43ACCB8573D3B11061EB843",
+          "PngBytes": 12332,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-020-small-black",
+        "before": {
+          "Id": "inv-020-small-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889"
+        },
+        "after": {
+          "Id": "inv-020-small-black",
+          "Outcome": "renders",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889",
+          "PngSha256": "0D3432B18FC2E4AB460BBB1404152DC9B445B596F98A92513513F4F83D1ABD08",
+          "PngBytes": 6975,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-020-intended-transparent",
+        "before": {
+          "Id": "inv-020-intended-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889"
+        },
+        "after": {
+          "Id": "inv-020-intended-transparent",
+          "Outcome": "renders",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889",
+          "PngSha256": "F17F6A096D167E5A94BA2AE3C492C4AFC7813F487C6D317F4CDFD2333B2BCD44",
+          "PngBytes": 35129,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-020-intended-white",
+        "before": {
+          "Id": "inv-020-intended-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889"
+        },
+        "after": {
+          "Id": "inv-020-intended-white",
+          "Outcome": "renders",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889",
+          "PngSha256": "9065349B9A7A3234F727228B10E40F1E61CD789D03D2D0E39C919AA67791F631",
+          "PngBytes": 37640,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-020-intended-black",
+        "before": {
+          "Id": "inv-020-intended-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889"
+        },
+        "after": {
+          "Id": "inv-020-intended-black",
+          "Outcome": "renders",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889",
+          "PngSha256": "93445A8E4B036C9FA04CABB493D14A1DE53C7C46915DDB17856716462ECB5063",
+          "PngBytes": 25412,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-020-large-transparent",
+        "before": {
+          "Id": "inv-020-large-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889"
+        },
+        "after": {
+          "Id": "inv-020-large-transparent",
+          "Outcome": "renders",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889",
+          "PngSha256": "DE60AE4CF84AD3AB3A2251AB566188EE743BF1DCCE45317715ED4BA19937E1FD",
+          "PngBytes": 115746,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-020-large-white",
+        "before": {
+          "Id": "inv-020-large-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889"
+        },
+        "after": {
+          "Id": "inv-020-large-white",
+          "Outcome": "renders",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889",
+          "PngSha256": "04E5270A2C58C2FE28EB5DCA44B332A7DB5A6AFF01BD60FAE3DFADDE18745B85",
+          "PngBytes": 120869,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-020-large-black",
+        "before": {
+          "Id": "inv-020-large-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889"
+        },
+        "after": {
+          "Id": "inv-020-large-black",
+          "Outcome": "renders",
+          "InputSha256": "1A167A1DC279A88A60D2386B959613BCDE05A8B487B064668D1585EF880E6889",
+          "PngSha256": "CB447B6D791048D0FD7AE7BA43E5C59BA4E8F46FE420187740AEAC41212B222D",
+          "PngBytes": 97232,
+          "Oracle": null
+        }
+      },
+      {
+        "id": "inv-098-small-transparent",
+        "before": {
+          "Id": "inv-098-small-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        },
+        "after": {
+          "Id": "inv-098-small-transparent",
+          "Outcome": "UnsupportedFeature",
+          "Message": "Inline style property 'marker' is not implemented.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        }
+      },
+      {
+        "id": "inv-098-small-white",
+        "before": {
+          "Id": "inv-098-small-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        },
+        "after": {
+          "Id": "inv-098-small-white",
+          "Outcome": "UnsupportedFeature",
+          "Message": "Inline style property 'marker' is not implemented.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        }
+      },
+      {
+        "id": "inv-098-small-black",
+        "before": {
+          "Id": "inv-098-small-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        },
+        "after": {
+          "Id": "inv-098-small-black",
+          "Outcome": "UnsupportedFeature",
+          "Message": "Inline style property 'marker' is not implemented.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        }
+      },
+      {
+        "id": "inv-098-intended-transparent",
+        "before": {
+          "Id": "inv-098-intended-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        },
+        "after": {
+          "Id": "inv-098-intended-transparent",
+          "Outcome": "UnsupportedFeature",
+          "Message": "Inline style property 'marker' is not implemented.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        }
+      },
+      {
+        "id": "inv-098-intended-white",
+        "before": {
+          "Id": "inv-098-intended-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        },
+        "after": {
+          "Id": "inv-098-intended-white",
+          "Outcome": "UnsupportedFeature",
+          "Message": "Inline style property 'marker' is not implemented.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        }
+      },
+      {
+        "id": "inv-098-intended-black",
+        "before": {
+          "Id": "inv-098-intended-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        },
+        "after": {
+          "Id": "inv-098-intended-black",
+          "Outcome": "UnsupportedFeature",
+          "Message": "Inline style property 'marker' is not implemented.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        }
+      },
+      {
+        "id": "inv-098-large-transparent",
+        "before": {
+          "Id": "inv-098-large-transparent",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        },
+        "after": {
+          "Id": "inv-098-large-transparent",
+          "Outcome": "UnsupportedFeature",
+          "Message": "Inline style property 'marker' is not implemented.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        }
+      },
+      {
+        "id": "inv-098-large-white",
+        "before": {
+          "Id": "inv-098-large-white",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        },
+        "after": {
+          "Id": "inv-098-large-white",
+          "Outcome": "UnsupportedFeature",
+          "Message": "Inline style property 'marker' is not implemented.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        }
+      },
+      {
+        "id": "inv-098-large-black",
+        "before": {
+          "Id": "inv-098-large-black",
+          "Outcome": "MalformedInput",
+          "Message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        },
+        "after": {
+          "Id": "inv-098-large-black",
+          "Outcome": "UnsupportedFeature",
+          "Message": "Inline style property 'marker' is not implemented.",
+          "InputSha256": "79F8E117E374CEE7AD3D4B5678B02990C23038CAAC53A72F6FB052D5AD15EB69"
+        }
+      }
+    ],
+    "fidelityMeasured": 18,
+    "verifiedExactDocuments": 1,
+    "unmeasured": 225,
+    "transportGaps": 15,
+    "remainingTargetGate": "Inline style property 'marker' is not implemented."
+  },
+  "fixtureBank": {
+    "entries": 785,
+    "exact": 601,
+    "knownDifferences": 157,
+    "rejections": 27,
+    "baseDocuments": 443,
+    "variants": 342
+  },
+  "validationState": "Validated bounded declaration-only admission: locked restore/normal Release, all 3445 tests, all 25 memory scenarios, runtime/symbol package and installed consumer, 937/258 bank reproduction, final-source admission suppression and matching resource/timing observations pass their stated scopes.",
+  "supplementalControls": {
+    "addedDuringFinalReview": true,
+    "cases": [
+      "corrupt UTF-32LE prolog",
+      "corrupt UTF-32BE prolog",
+      "existing external DTD with entity and default attribute"
+    ],
+    "scope": "Encoding error categorization and inert DTD contract, with no corporate geometry or oracle change."
+  },
+  "negativeAdmissionSuppression": {
+    "scope": "Final production source copied into an isolated build; only the selected main-reader DtdProcessing setting is replaced by Prohibit. Prolog validation, boundary policy and accounting still execute.",
+    "originalSourceFingerprintSha256": "7800b716dcabebf99eb6033a6c163fb6e808195fcafed48dfa053bd27aaee007",
+    "isolatedRendererSha256": "0916a21f5738f7cd1be10a6126967095686b1f2636953686ec2752266eed9463",
+    "priorBankCompleteReportsRestored": 937,
+    "corporateCompleteReportsRestored": 258,
+    "originalBaselineRendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac"
+  },
+  "validation": {
+    "sourceFrozenDuringFinalGates": true,
+    "normalReleaseBuildHead": "86554a94",
+    "lockedRestorePassed": true,
+    "solutionProjects": 9,
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "tests": [
+      {
+        "file": "artifacts/doctype-20261005/tests/core-final.trx",
+        "sha256": "2ebd9c41dbc0c0be12e0163a60c25a185f5134043a99dc4fa438e02e687b0c68",
+        "passed": 3296,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "artifacts/doctype-20261005/tests/visual-final.trx",
+        "sha256": "544fda710946cffeaed96be5248782f94078f1225732858e92d2644dfd1a4027",
+        "passed": 143,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "file": "artifacts/doctype-20261005/tests/font-probe-final.trx",
+        "sha256": "0f3b5e6455306b92d3b447b2f65113cf111b0e651b37acc5623a7026fb7d1000",
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      }
+    ],
+    "totalPassed": 3445,
+    "memory": {
+      "file": "artifacts/doctype-20261005/memory-final/5d2c2f138e6f4c0486c0e19fb9f5852d-summary.json",
+      "sha256": "597c80ff8083f5df1601499d6245ecaa1b66ab350e6fbb78a51f2c0eff80bec6",
+      "rendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54",
+      "scenariosPassed": 25
+    },
+    "package": {
+      "packages": [
+        {
+          "file": "artifacts/doctype-20261005/packages-final/Lokad.Svg.0.1.0-preview.1.nupkg",
+          "sha256": "a92c86eff4592073d4d71502c9be821ade5eac555e0befcda2dfdd193dda14a4"
+        },
+        {
+          "file": "artifacts/doctype-20261005/packages-final/Lokad.Svg.0.1.0-preview.1.snupkg",
+          "sha256": "a83e34f765f771a1cefb920986ca54b98d707bf8846e8e8a7a4b1fe9a5090435"
+        }
+      ],
+      "installedConsumer": "artifacts/doctype-20261005/package-validation-final/package-consumer-26cec767d12c4e098bd804221abfc393/bin/Release/net10.0",
+      "rendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54",
+      "runtimeAndSymbolInspectionPassed": true,
+      "installedConsumerPassed": true,
+      "currentReadmeAndNoticesByteIdentical": true,
+      "runtimeDependencies": 0,
+      "nativeAssets": 0,
+      "packagedSvgFixtures": 0
+    },
+    "finalBanks": {
+      "prior937AllReportsReproduced": true,
+      "corporate258AllReportsReproduced": true,
+      "rendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54"
+    }
+  },
+  "resourceLedgers": {
+    "baseline": {
+      "RendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+      "Runtime": ".NET 10.0.12",
+      "Reports": [
+        {
+          "Id": "tiny",
+          "InputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+          "ParserWork": 33,
+          "WorkThroughRaster": 219,
+          "AccountedPeakBytes": 132608,
+          "PngSha256": "3ddb99a0773a807f4a39ed460e5cd2ae467e795c0fded02073e4a49232d9920a"
+        },
+        {
+          "Id": "ford",
+          "InputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+          "ParserWork": 4655,
+          "WorkThroughRaster": 1301211,
+          "AccountedPeakBytes": 534450,
+          "PngSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69"
+        },
+        {
+          "Id": "dense",
+          "InputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+          "ParserWork": 245770,
+          "WorkThroughRaster": 32761735,
+          "AccountedPeakBytes": 2494116,
+          "PngSha256": "65bb5370d2940c9d81e8258b662626ff1839d8a8951452439df0a38933a749c9"
+        },
+        {
+          "Id": "native-stop",
+          "InputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+          "ParserWork": 1723,
+          "WorkThroughRaster": 73300833,
+          "AccountedPeakBytes": 33629711,
+          "PngSha256": "2b3a9aaddaf75edd1154888ecdf717c1209db84560781b8b28dbe57b5aa6403b"
+        },
+        {
+          "Id": "youtube-intended",
+          "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+          "ParserWork": 357,
+          "WorkThroughRaster": 928430,
+          "AccountedPeakBytes": 942621,
+          "PngSha256": "36c545aae1851cc0d2113dbc04ff2da5121d886e3b16bcc9075e89b4e389b6b0"
+        },
+        {
+          "Id": "youtube-large",
+          "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+          "ParserWork": 463,
+          "WorkThroughRaster": 3026899,
+          "AccountedPeakBytes": 3732615,
+          "PngSha256": "90f8c8e25e17b4237ffd940601ef3be994c4ae9555b8f92787d90cbae7740467"
+        }
+      ]
+    },
+    "candidate": {
+      "RendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54",
+      "Runtime": ".NET 10.0.12",
+      "Reports": [
+        {
+          "Id": "tiny",
+          "InputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+          "ParserWork": 34,
+          "WorkThroughRaster": 220,
+          "AccountedPeakBytes": 163840,
+          "PngSha256": "3ddb99a0773a807f4a39ed460e5cd2ae467e795c0fded02073e4a49232d9920a"
+        },
+        {
+          "Id": "ford",
+          "InputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+          "ParserWork": 4657,
+          "WorkThroughRaster": 1301213,
+          "AccountedPeakBytes": 534450,
+          "PngSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69"
+        },
+        {
+          "Id": "dense",
+          "InputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+          "ParserWork": 245770,
+          "WorkThroughRaster": 32761735,
+          "AccountedPeakBytes": 2494116,
+          "PngSha256": "65bb5370d2940c9d81e8258b662626ff1839d8a8951452439df0a38933a749c9"
+        },
+        {
+          "Id": "native-stop",
+          "InputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+          "ParserWork": 1725,
+          "WorkThroughRaster": 73300835,
+          "AccountedPeakBytes": 33629711,
+          "PngSha256": "2b3a9aaddaf75edd1154888ecdf717c1209db84560781b8b28dbe57b5aa6403b"
+        },
+        {
+          "Id": "youtube-intended",
+          "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+          "ParserWork": 357,
+          "WorkThroughRaster": 928430,
+          "AccountedPeakBytes": 942621,
+          "PngSha256": "36c545aae1851cc0d2113dbc04ff2da5121d886e3b16bcc9075e89b4e389b6b0"
+        },
+        {
+          "Id": "youtube-large",
+          "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+          "ParserWork": 463,
+          "WorkThroughRaster": 3026899,
+          "AccountedPeakBytes": 3732615,
+          "PngSha256": "90f8c8e25e17b4237ffd940601ef3be994c4ae9555b8f92787d90cbae7740467"
+        }
+      ]
+    },
+    "scope": "One same-input final ledger per renderer after SVG validation jobs completed. All six output PNG identities agree. Root/parser work includes new prolog scans; existing separately bounded output-scale probe work is outside this ledger. Accounted peak is renderer-owned storage, distinct from GC traffic or OS working set."
+  },
+  "matchedObservations": {
+    "scope": "All SVG validation jobs terminal before measurements. Four sequential fresh processes, both renderer orders, same six inputs/options, 32 warmups and three batches per case. Per-batch medians below are host observations, with no representative throughput or causal speedup claim. GC bytes are allocation traffic, separate from renderer-accounted peak.",
+    "orders": [
+      {
+        "order": "baseline-first",
+        "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.127065,
+            "allocatedBytes": 20368
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 22.73294,
+            "allocatedBytes": 816794
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 292.9295333333333,
+            "allocatedBytes": 7186381
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 506.66513333333336,
+            "allocatedBytes": 36856176
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 11.58502,
+            "allocatedBytes": 1041244
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 36.38516666666667,
+            "allocatedBytes": 3948413
+          }
+        ]
+      },
+      {
+        "order": "candidate-second",
+        "rendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.138685,
+            "allocatedBytes": 27104
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 19.31786,
+            "allocatedBytes": 857010
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 387.7491,
+            "allocatedBytes": 7186408
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 477.33186666666666,
+            "allocatedBytes": 36878997
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 12.744589999999999,
+            "allocatedBytes": 1041448
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 37.370733333333334,
+            "allocatedBytes": 3948432
+          }
+        ]
+      },
+      {
+        "order": "candidate-first",
+        "rendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.13369999999999999,
+            "allocatedBytes": 27104
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 23.44654,
+            "allocatedBytes": 854074
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 295.3365333333333,
+            "allocatedBytes": 7186408
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 582.3930666666666,
+            "allocatedBytes": 36878600
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 13.95636,
+            "allocatedBytes": 1041448
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 48.71673333333334,
+            "allocatedBytes": 3948709
+          }
+        ]
+      },
+      {
+        "order": "baseline-second",
+        "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.173382,
+            "allocatedBytes": 20368
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 25.467670000000002,
+            "allocatedBytes": 816794
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 280.8668666666667,
+            "allocatedBytes": 7186328
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 592.653,
+            "allocatedBytes": 36856698
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 13.016839999999998,
+            "allocatedBytes": 1041122
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 52.46353333333334,
+            "allocatedBytes": 3948717
+          }
+        ]
+      }
+    ],
+    "rawFiles": [
+      {
+        "file": "artifacts/doctype-20261005/measure-baseline-first.json",
+        "data": {
+          "RendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+          "Runtime": ".NET 10.0.12",
+          "Reports": [
+            {
+              "Id": "tiny",
+              "InputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+              "RunsPerBatch": 100,
+              "Batches": [
+                {
+                  "Milliseconds": 0.127065,
+                  "AllocatedBytes": 20368,
+                  "PngBytes": 125
+                },
+                {
+                  "Milliseconds": 0.135327,
+                  "AllocatedBytes": 20370,
+                  "PngBytes": 125
+                },
+                {
+                  "Milliseconds": 0.121256,
+                  "AllocatedBytes": 20368,
+                  "PngBytes": 125
+                }
+              ]
+            },
+            {
+              "Id": "ford",
+              "InputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+              "RunsPerBatch": 10,
+              "Batches": [
+                {
+                  "Milliseconds": 32.761810000000004,
+                  "AllocatedBytes": 817053,
+                  "PngBytes": 13181
+                },
+                {
+                  "Milliseconds": 22.73294,
+                  "AllocatedBytes": 816738,
+                  "PngBytes": 13181
+                },
+                {
+                  "Milliseconds": 16.29451,
+                  "AllocatedBytes": 816794,
+                  "PngBytes": 13181
+                }
+              ]
+            },
+            {
+              "Id": "dense",
+              "InputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 318.2368333333333,
+                  "AllocatedBytes": 7186354,
+                  "PngBytes": 83640
+                },
+                {
+                  "Milliseconds": 292.01576666666665,
+                  "AllocatedBytes": 7186408,
+                  "PngBytes": 83640
+                },
+                {
+                  "Milliseconds": 292.9295333333333,
+                  "AllocatedBytes": 7186381,
+                  "PngBytes": 83640
+                }
+              ]
+            },
+            {
+              "Id": "native-stop",
+              "InputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 543.3975333333334,
+                  "AllocatedBytes": 36856056,
+                  "PngBytes": 218790
+                },
+                {
+                  "Milliseconds": 506.66513333333336,
+                  "AllocatedBytes": 36856176,
+                  "PngBytes": 218790
+                },
+                {
+                  "Milliseconds": 499.01890000000003,
+                  "AllocatedBytes": 36856597,
+                  "PngBytes": 218790
+                }
+              ]
+            },
+            {
+              "Id": "youtube-intended",
+              "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+              "RunsPerBatch": 10,
+              "Batches": [
+                {
+                  "Milliseconds": 11.256879999999999,
+                  "AllocatedBytes": 1041440,
+                  "PngBytes": 12227
+                },
+                {
+                  "Milliseconds": 11.58502,
+                  "AllocatedBytes": 1041244,
+                  "PngBytes": 12227
+                },
+                {
+                  "Milliseconds": 11.62286,
+                  "AllocatedBytes": 1040933,
+                  "PngBytes": 12227
+                }
+              ]
+            },
+            {
+              "Id": "youtube-large",
+              "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 37.7766,
+                  "AllocatedBytes": 3948514,
+                  "PngBytes": 34008
+                },
+                {
+                  "Milliseconds": 36.38516666666667,
+                  "AllocatedBytes": 3948413,
+                  "PngBytes": 34008
+                },
+                {
+                  "Milliseconds": 36.082,
+                  "AllocatedBytes": 3947080,
+                  "PngBytes": 34008
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "file": "artifacts/doctype-20261005/measure-candidate-second.json",
+        "data": {
+          "RendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54",
+          "Runtime": ".NET 10.0.12",
+          "Reports": [
+            {
+              "Id": "tiny",
+              "InputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+              "RunsPerBatch": 100,
+              "Batches": [
+                {
+                  "Milliseconds": 0.15266400000000002,
+                  "AllocatedBytes": 27104,
+                  "PngBytes": 125
+                },
+                {
+                  "Milliseconds": 0.138685,
+                  "AllocatedBytes": 27106,
+                  "PngBytes": 125
+                },
+                {
+                  "Milliseconds": 0.130565,
+                  "AllocatedBytes": 27104,
+                  "PngBytes": 125
+                }
+              ]
+            },
+            {
+              "Id": "ford",
+              "InputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+              "RunsPerBatch": 10,
+              "Batches": [
+                {
+                  "Milliseconds": 22.54453,
+                  "AllocatedBytes": 857036,
+                  "PngBytes": 13181
+                },
+                {
+                  "Milliseconds": 19.31786,
+                  "AllocatedBytes": 857010,
+                  "PngBytes": 13181
+                },
+                {
+                  "Milliseconds": 18.48352,
+                  "AllocatedBytes": 854934,
+                  "PngBytes": 13181
+                }
+              ]
+            },
+            {
+              "Id": "dense",
+              "InputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 380.95756666666665,
+                  "AllocatedBytes": 7186381,
+                  "PngBytes": 83640
+                },
+                {
+                  "Milliseconds": 387.7491,
+                  "AllocatedBytes": 7186408,
+                  "PngBytes": 83640
+                },
+                {
+                  "Milliseconds": 395.8050666666666,
+                  "AllocatedBytes": 7186408,
+                  "PngBytes": 83640
+                }
+              ]
+            },
+            {
+              "Id": "native-stop",
+              "InputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 473.2081666666666,
+                  "AllocatedBytes": 36878997,
+                  "PngBytes": 218790
+                },
+                {
+                  "Milliseconds": 477.33186666666666,
+                  "AllocatedBytes": 36877965,
+                  "PngBytes": 218790
+                },
+                {
+                  "Milliseconds": 478.0450666666666,
+                  "AllocatedBytes": 36879874,
+                  "PngBytes": 218790
+                }
+              ]
+            },
+            {
+              "Id": "youtube-intended",
+              "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+              "RunsPerBatch": 10,
+              "Batches": [
+                {
+                  "Milliseconds": 12.5679,
+                  "AllocatedBytes": 1041280,
+                  "PngBytes": 12227
+                },
+                {
+                  "Milliseconds": 13.187190000000001,
+                  "AllocatedBytes": 1041448,
+                  "PngBytes": 12227
+                },
+                {
+                  "Milliseconds": 12.744589999999999,
+                  "AllocatedBytes": 1041474,
+                  "PngBytes": 12227
+                }
+              ]
+            },
+            {
+              "Id": "youtube-large",
+              "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 37.370733333333334,
+                  "AllocatedBytes": 3948413,
+                  "PngBytes": 34008
+                },
+                {
+                  "Milliseconds": 37.4034,
+                  "AllocatedBytes": 3948578,
+                  "PngBytes": 34008
+                },
+                {
+                  "Milliseconds": 36.7635,
+                  "AllocatedBytes": 3948432,
+                  "PngBytes": 34008
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "file": "artifacts/doctype-20261005/measure-candidate-first.json",
+        "data": {
+          "RendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54",
+          "Runtime": ".NET 10.0.12",
+          "Reports": [
+            {
+              "Id": "tiny",
+              "InputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+              "RunsPerBatch": 100,
+              "Batches": [
+                {
+                  "Milliseconds": 0.13850099999999999,
+                  "AllocatedBytes": 27104,
+                  "PngBytes": 125
+                },
+                {
+                  "Milliseconds": 0.13369999999999999,
+                  "AllocatedBytes": 27106,
+                  "PngBytes": 125
+                },
+                {
+                  "Milliseconds": 0.129375,
+                  "AllocatedBytes": 27104,
+                  "PngBytes": 125
+                }
+              ]
+            },
+            {
+              "Id": "ford",
+              "InputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+              "RunsPerBatch": 10,
+              "Batches": [
+                {
+                  "Milliseconds": 32.73025,
+                  "AllocatedBytes": 854221,
+                  "PngBytes": 13181
+                },
+                {
+                  "Milliseconds": 23.44654,
+                  "AllocatedBytes": 853954,
+                  "PngBytes": 13181
+                },
+                {
+                  "Milliseconds": 17.21813,
+                  "AllocatedBytes": 854074,
+                  "PngBytes": 13181
+                }
+              ]
+            },
+            {
+              "Id": "dense",
+              "InputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 331.3481,
+                  "AllocatedBytes": 7186408,
+                  "PngBytes": 83640
+                },
+                {
+                  "Milliseconds": 295.3365333333333,
+                  "AllocatedBytes": 7186408,
+                  "PngBytes": 83640
+                },
+                {
+                  "Milliseconds": 285.20303333333334,
+                  "AllocatedBytes": 7186408,
+                  "PngBytes": 83640
+                }
+              ]
+            },
+            {
+              "Id": "native-stop",
+              "InputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 648.4586333333333,
+                  "AllocatedBytes": 36877322,
+                  "PngBytes": 218790
+                },
+                {
+                  "Milliseconds": 582.3930666666666,
+                  "AllocatedBytes": 36880205,
+                  "PngBytes": 218790
+                },
+                {
+                  "Milliseconds": 489.27846666666665,
+                  "AllocatedBytes": 36878600,
+                  "PngBytes": 218790
+                }
+              ]
+            },
+            {
+              "Id": "youtube-intended",
+              "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+              "RunsPerBatch": 10,
+              "Batches": [
+                {
+                  "Milliseconds": 12.204519999999999,
+                  "AllocatedBytes": 1041448,
+                  "PngBytes": 12227
+                },
+                {
+                  "Milliseconds": 14.651329999999998,
+                  "AllocatedBytes": 1041448,
+                  "PngBytes": 12227
+                },
+                {
+                  "Milliseconds": 13.95636,
+                  "AllocatedBytes": 1041490,
+                  "PngBytes": 12227
+                }
+              ]
+            },
+            {
+              "Id": "youtube-large",
+              "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 39.48,
+                  "AllocatedBytes": 3948709,
+                  "PngBytes": 34008
+                },
+                {
+                  "Milliseconds": 52.6244,
+                  "AllocatedBytes": 3948754,
+                  "PngBytes": 34008
+                },
+                {
+                  "Milliseconds": 48.71673333333334,
+                  "AllocatedBytes": 3948528,
+                  "PngBytes": 34008
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "file": "artifacts/doctype-20261005/measure-baseline-second.json",
+        "data": {
+          "RendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+          "Runtime": ".NET 10.0.12",
+          "Reports": [
+            {
+              "Id": "tiny",
+              "InputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+              "RunsPerBatch": 100,
+              "Batches": [
+                {
+                  "Milliseconds": 0.19639500000000001,
+                  "AllocatedBytes": 20368,
+                  "PngBytes": 125
+                },
+                {
+                  "Milliseconds": 0.172507,
+                  "AllocatedBytes": 20370,
+                  "PngBytes": 125
+                },
+                {
+                  "Milliseconds": 0.173382,
+                  "AllocatedBytes": 20368,
+                  "PngBytes": 125
+                }
+              ]
+            },
+            {
+              "Id": "ford",
+              "InputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+              "RunsPerBatch": 10,
+              "Batches": [
+                {
+                  "Milliseconds": 26.81074,
+                  "AllocatedBytes": 817053,
+                  "PngBytes": 13181
+                },
+                {
+                  "Milliseconds": 24.81628,
+                  "AllocatedBytes": 816730,
+                  "PngBytes": 13181
+                },
+                {
+                  "Milliseconds": 25.467670000000002,
+                  "AllocatedBytes": 816794,
+                  "PngBytes": 13181
+                }
+              ]
+            },
+            {
+              "Id": "dense",
+              "InputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 282.8736,
+                  "AllocatedBytes": 7186328,
+                  "PngBytes": 83640
+                },
+                {
+                  "Milliseconds": 280.8668666666667,
+                  "AllocatedBytes": 7186328,
+                  "PngBytes": 83640
+                },
+                {
+                  "Milliseconds": 279.0194333333333,
+                  "AllocatedBytes": 7186328,
+                  "PngBytes": 83640
+                }
+              ]
+            },
+            {
+              "Id": "native-stop",
+              "InputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 508.21863333333334,
+                  "AllocatedBytes": 36856698,
+                  "PngBytes": 218790
+                },
+                {
+                  "Milliseconds": 595.1624666666667,
+                  "AllocatedBytes": 36856490,
+                  "PngBytes": 218790
+                },
+                {
+                  "Milliseconds": 592.653,
+                  "AllocatedBytes": 36857741,
+                  "PngBytes": 218790
+                }
+              ]
+            },
+            {
+              "Id": "youtube-intended",
+              "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+              "RunsPerBatch": 10,
+              "Batches": [
+                {
+                  "Milliseconds": 14.872040000000002,
+                  "AllocatedBytes": 1041402,
+                  "PngBytes": 12227
+                },
+                {
+                  "Milliseconds": 13.016839999999998,
+                  "AllocatedBytes": 1040725,
+                  "PngBytes": 12227
+                },
+                {
+                  "Milliseconds": 12.59039,
+                  "AllocatedBytes": 1041122,
+                  "PngBytes": 12227
+                }
+              ]
+            },
+            {
+              "Id": "youtube-large",
+              "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+              "RunsPerBatch": 3,
+              "Batches": [
+                {
+                  "Milliseconds": 52.46353333333334,
+                  "AllocatedBytes": 3948717,
+                  "PngBytes": 34008
+                },
+                {
+                  "Milliseconds": 52.544999999999995,
+                  "AllocatedBytes": 3947000,
+                  "PngBytes": 34008
+                },
+                {
+                  "Milliseconds": 43.96966666666666,
+                  "AllocatedBytes": 3950064,
+                  "PngBytes": 34008
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,5 +1,16 @@
 # API contract
 
+SVG XML admits at most one declaration-only DOCTYPE before the root, including
+bare, SYSTEM and PUBLIC declarations. External identifiers are inert: the renderer
+does not load a DTD, expand declared entities or apply DTD defaults. Internal
+subsets, including empty `[]`, duplicate declarations and malformed XML produce
+`MalformedInput`. Predefined XML entities retain their ordinary XML behavior.
+Root parsing, font discovery and output-scale probing share this policy without
+rewriting input bytes or changing XML encoding interpretation. Prolog validation
+reserves an additional fixed 32 KiB workspace, releases it before ordinary parsing,
+and charges bounded traversal work with cancellation checkpoints. Input, node,
+depth and per-element attribute limits continue to apply.
+
 Every `SvgConverter` conversion API requires explicit `SvgRenderOptions` and `CancellationToken`.
 The owned-memory result is independently owned and valid indefinitely. The
 corresponding synchronous and asynchronous overloads also write into caller-owned

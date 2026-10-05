@@ -88,9 +88,9 @@ public sealed class CorporateCohortReferenceTests
             }
             if (allExact) exactDocuments.Add(Required(document, "id"));
         }
-        Assert.Equal(213, renders);
-        Assert.Equal(36, malformed);
-        Assert.Equal(9, unsupported);
+        Assert.Equal(240, renders);
+        Assert.Equal(0, malformed);
+        Assert.Equal(18, unsupported);
         Assert.Equal(18, measured);
         Assert.Equal(9, exact);
         Assert.Equal(9, known);

@@ -880,3 +880,58 @@ memory scenarios and runtime/symbol package plus installed-consumer checks pass.
 Final package/consumer/probe/memory/timing identities match the candidate above.
 The prior measurement set before the documentation metadata rebuild remains
 separately archived; its C# source fingerprint and all image outputs are unchanged.
+
+
+## Declaration-only DOCTYPE observations (2026-10-05)
+
+These are matching local observations of the declaration-only input policy,
+separate from BenchmarkDotNet throughput and the retained AA observations above.
+Baseline renderer is `3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac`;
+final renderer is `fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54`,
+built normally at HEAD `86554a94`. The
+[portable checkpoint](../tests/References/declaration-only-doctype.json) retains
+source identity, full ledgers, all raw batches and both process orders.
+
+All SVG validation jobs had terminated before observation. Four fresh processes
+ran sequentially: baseline first / candidate second, then candidate first /
+baseline second. Each case has 32 warmups and three batches (100 tiny, ten Ford or
+intended YouTube, three dense/native-stop/large YouTube conversions per batch).
+Inputs, options and output PNG identities are matched. Each timing cell below is
+the median milliseconds per conversion; managed bytes use the same four-column
+process order and are allocation traffic, separate from accounted live storage.
+
+| Input | Baseline first | Candidate second | Candidate first | Baseline second | Managed bytes in the same order |
+| --- | ---: | ---: | ---: | ---: | --- |
+| tiny | 0.12707 | 0.13869 | 0.13370 | 0.17338 | 20,368 / 27,104 / 27,104 / 20,368 |
+| ford | 22.73294 | 19.31786 | 23.44654 | 25.46767 | 816,794 / 857,010 / 854,074 / 816,794 |
+| dense | 292.92953 | 387.74910 | 295.33653 | 280.86687 | 7,186,381 / 7,186,408 / 7,186,408 / 7,186,328 |
+| native-stop | 506.66513 | 477.33187 | 582.39307 | 592.65300 | 36,856,176 / 36,878,997 / 36,878,600 / 36,856,698 |
+| youtube-intended | 11.58502 | 12.74459 | 13.95636 | 13.01684 | 1,041,244 / 1,041,448 / 1,041,448 / 1,041,122 |
+| youtube-large | 36.38517 | 37.37073 | 48.71673 | 52.46353 | 3,948,413 / 3,948,432 / 3,948,709 / 3,948,717 |
+
+Tiny and large YouTube timing directions change with process order. Dense and
+intended YouTube are slower in both ordering pairs despite no prolog or raster
+change. Ford and native-stop are faster in both pairs despite the added prolog
+allocation. These shared-host
+observations establish no causal speedup or representative regression threshold.
+The prolog allocation cost remains visible in the affected inputs and is retained
+rather than selecting a favorable ordering.
+
+| Input | Root parser work, baseline → candidate | Work through raster | Accounted peak bytes |
+| --- | ---: | ---: | ---: |
+| tiny | 33 → 34 | 219 → 220 | 132,608 → 163,840 |
+| ford | 4,655 → 4,657 | 1,301,211 → 1,301,213 | 534,450 → 534,450 |
+| dense | 245,770 → 245,770 | 32,761,735 → 32,761,735 | 2,494,116 → 2,494,116 |
+| native-stop | 1,723 → 1,725 | 73,300,833 → 73,300,835 | 33,629,711 → 33,629,711 |
+| youtube-intended | 357 → 357 | 928,430 → 928,430 | 942,621 → 942,621 |
+| youtube-large | 463 → 463 | 3,026,899 → 3,026,899 | 3,732,615 → 3,732,615 |
+
+The fixed additional prolog workspace is 32 KiB and is released before the main
+reader is constructed. It raises the tiny accounted peak; geometry/raster peaks
+dominate the other sampled inputs. Root parsing adds one or two work units for
+the short comments/XML declarations in these examples; the existing separately
+bounded output-scale probe also charges its prolog traversal and is outside this
+ledger. The no-prolog dense and YouTube examples preserve work and peaks. Long
+prologs charge proportional chunk traversal rather than this fixed short-input
+cost. Resource/cancellation tests retain denial and cleanup evidence. Broader
+throughput, platforms and release completion remain open.

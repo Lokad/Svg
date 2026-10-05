@@ -10,6 +10,16 @@ gated: 601 exact decoded-pixel references, 157 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
+Declaration-only DOCTYPE admission applies to bare, SYSTEM and PUBLIC declarations
+before the root. External identifiers are inert; internal subsets (even empty),
+duplicates and malformed syntax remain `MalformedInput`. No DTD resources,
+declared entities or defaults are loaded. Original byte encodings and structural
+limits are preserved across root parsing, font discovery and scale probing.
+The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
+27 cases to rendering and nine Target cases to the existing unsupported `marker`
+style gate. All previous PNGs are unchanged. Fidelity remains measured for only
+eighteen corporate cases.
+
 Single clean retained contours now distinguish raw control-polygon convexity
 from sampled-ring convexity. Float sign/turn/reversal classification is charged
 once and cached across raster contexts, preserving genuine convex routes and

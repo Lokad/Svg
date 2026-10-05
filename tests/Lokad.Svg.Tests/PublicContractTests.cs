@@ -898,9 +898,9 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Prohibited_doctype_is_reported_as_malformed_public_input()
+    public void Internal_doctype_subset_is_reported_as_malformed_public_input()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<!DOCTYPE svg><svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<!DOCTYPE svg []><svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
         Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
     }
 

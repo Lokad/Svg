@@ -2,7 +2,7 @@
   "cohortId": "corporate-2026-10-05-v1",
   "measurementDate": "2026-10-05",
   "freezeHead": "649233b2ba315b63fdd43a7cca4b7147de4f24e2",
-  "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+  "rendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54",
   "oraclePin": {
     "version": "153.0.8010.52",
     "chromiumRevision": "1681091",
@@ -15,9 +15,9 @@
   },
   "scope": "All 258 renderer cases executed. Eighteen fidelity comparisons: original Ford nine plus fresh stable healthy YouTube nine. Every remaining source/variant, reject, known difference and oracle gap stays declared. Only 1/27 documents is currently verified exact; this partial measurement is not a market/release coverage claim.",
   "rendererCounts": {
-    "renders": 213,
-    "MalformedInput": 36,
-    "UnsupportedFeature": 9
+    "renders": 240,
+    "MalformedInput": 0,
+    "UnsupportedFeature": 18
   },
   "oracleCounts": {
     "unmeasured": 225,
@@ -1761,93 +1761,120 @@
     },
     {
       "id": "inv-007-small-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "f688b7e511b010b6337b7b4db46a232bb4a7785456200563b5c7b83471275e79",
+      "width": 250,
+      "height": 71,
+      "referenceSha256": null
     },
     {
       "id": "inv-007-small-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "d39c06c7c8aa8ca28b80b8a6ed778306e6c968e7010e14a12d65fe3f3ec511e1",
+      "width": 250,
+      "height": 71,
+      "referenceSha256": null
     },
     {
       "id": "inv-007-small-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "72839b51bd456619e921a19eef5bd7ea48f797e724722e05f7703bac78d6a7c7",
+      "width": 250,
+      "height": 71,
+      "referenceSha256": null
     },
     {
       "id": "inv-007-intended-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "ea05b7615d98e25d8e8a0c7eb1c3f2978a130193bc599fa9281c5d93a42b1229",
+      "width": 500,
+      "height": 143,
+      "referenceSha256": null
     },
     {
       "id": "inv-007-intended-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "aa996aa16154d03703ee9ea332169e61f3f85400ccfdecfc805a8eac0c4862d4",
+      "width": 500,
+      "height": 143,
+      "referenceSha256": null
     },
     {
       "id": "inv-007-intended-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "02ef3957c7cdc2e078c216c10b524cb6d2cc0722a18042010b2c60ef93161760",
+      "width": 500,
+      "height": 143,
+      "referenceSha256": null
     },
     {
       "id": "inv-007-large-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "6a84d33a79a12bf55795cd27f1df159f246d0be6e5305919d0a535e86406247c",
+      "width": 1000,
+      "height": 286,
+      "referenceSha256": null
     },
     {
       "id": "inv-007-large-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "fd8152aed1ebb51c2e8c49b110189e78ba27fcaa62755715bb12db0dfa5ecccc",
+      "width": 1000,
+      "height": 286,
+      "referenceSha256": null
     },
     {
       "id": "inv-007-large-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "55fe2e3ee2a4509b3f3972f7ee232a5737797cefa15c0097d16213402a63c3e3",
+      "width": 1000,
+      "height": 286,
+      "referenceSha256": null
     },
     {
       "id": "inv-008-small-transparent",
@@ -2397,93 +2424,120 @@
     },
     {
       "id": "inv-012-small-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "691830bf7b6394dccc820962b0f212ba75b611fe08fa13287ea12a21b5695363",
+      "width": 198,
+      "height": 201,
+      "referenceSha256": null
     },
     {
       "id": "inv-012-small-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "676ec7e7bae5282bffa799e8dfed428689c66933a23b327f932bc5c87f0932fa",
+      "width": 198,
+      "height": 201,
+      "referenceSha256": null
     },
     {
       "id": "inv-012-small-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "ac8a61c23281ccb2dc4174d58fba09b7698162d96b114f9539d3f56d7f2cc307",
+      "width": 198,
+      "height": 201,
+      "referenceSha256": null
     },
     {
       "id": "inv-012-intended-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "0a5ab625fa6ad55a4c541f128f55b0692c08d7a06f48fb5f61911a136c46ad15",
+      "width": 396,
+      "height": 403,
+      "referenceSha256": null
     },
     {
       "id": "inv-012-intended-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "e94037cf9d2b6efbcaaf267c28444671c8a20e10780f910ae3d4d5e92c20a5e8",
+      "width": 396,
+      "height": 403,
+      "referenceSha256": null
     },
     {
       "id": "inv-012-intended-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "c171e0519da7ea58edf48d406c048378dc369ae3f5ff5dc3e9d87d31662db589",
+      "width": 396,
+      "height": 403,
+      "referenceSha256": null
     },
     {
       "id": "inv-012-large-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "75d1211520452cb3a3af2b1dfc6a118c149eff2921aa1b62b9d2534c0aeddfa1",
+      "width": 792,
+      "height": 806,
+      "referenceSha256": null
     },
     {
       "id": "inv-012-large-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "410ec891f0a83d96c0670012562e9c26c484504a1b0ed4bca976018b47b2ad48",
+      "width": 792,
+      "height": 806,
+      "referenceSha256": null
     },
     {
       "id": "inv-012-large-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "2aa83efa4917067713b8892ba4f6e9f32de94b57f5bbf924ed78dc321471b947",
+      "width": 792,
+      "height": 806,
+      "referenceSha256": null
     },
     {
       "id": "inv-019-small-transparent",
@@ -2604,93 +2658,120 @@
     },
     {
       "id": "inv-020-small-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "c10fdf2e85622f1352bee2cdcd138e21dbef44ad4e7b9c84ddfaf6f909c3eda3",
+      "width": 546,
+      "height": 547,
+      "referenceSha256": null
     },
     {
       "id": "inv-020-small-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "4af5b9d3ab8adeceaf014a65a22436889154f2e1a43accb8573d3b11061eb843",
+      "width": 546,
+      "height": 547,
+      "referenceSha256": null
     },
     {
       "id": "inv-020-small-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "0d3432b18fc2e4ab460bbb1404152dc9b445b596f98a92513513f4f83d1abd08",
+      "width": 546,
+      "height": 547,
+      "referenceSha256": null
     },
     {
       "id": "inv-020-intended-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "f17f6a096d167e5a94ba2ae3c492c4afc7813f487c6d317f4cdfd2333b2bcd44",
+      "width": 1093,
+      "height": 1094,
+      "referenceSha256": null
     },
     {
       "id": "inv-020-intended-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "9065349b9a7a3234f727228b10e40f1e61cd789d03d2d0e39c919aa67791f631",
+      "width": 1093,
+      "height": 1094,
+      "referenceSha256": null
     },
     {
       "id": "inv-020-intended-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "unmeasured"
+      "oracleState": "unmeasured",
+      "candidateSha256": "93445a8e4b036c9fa04cabb493d14a1de53c7c46915ddb17856716462ecb5063",
+      "width": 1093,
+      "height": 1094,
+      "referenceSha256": null
     },
     {
       "id": "inv-020-large-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "oracleState": "transport-limit-gap",
+      "candidateSha256": "de60ae4cf84ad3ab3a2251ab566188ee743bf1dcce45317715ed4ba19937e1fd",
+      "width": 2186,
+      "height": 2188,
+      "referenceSha256": null
     },
     {
       "id": "inv-020-large-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "oracleState": "transport-limit-gap",
+      "candidateSha256": "04e5270a2c58c2fe28eb5dca44b332a7db5a6aff01bd60fae3dfadde18745b85",
+      "width": 2186,
+      "height": 2188,
+      "referenceSha256": null
     },
     {
       "id": "inv-020-large-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
       "comparison": null,
       "referencePng": null,
       "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "oracleState": "transport-limit-gap",
+      "candidateSha256": "cb447b6d791048d0fd7ae7ba43e5c59ba4e8f46fe420187740aeac41212b222d",
+      "width": 2186,
+      "height": 2188,
+      "referenceSha256": null
     },
     {
       "id": "inv-026-small-transparent",
@@ -4845,8 +4926,8 @@
     },
     {
       "id": "inv-098-small-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
       "referencePng": null,
@@ -4855,8 +4936,8 @@
     },
     {
       "id": "inv-098-small-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
       "referencePng": null,
@@ -4865,8 +4946,8 @@
     },
     {
       "id": "inv-098-small-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
       "referencePng": null,
@@ -4875,8 +4956,8 @@
     },
     {
       "id": "inv-098-intended-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
       "referencePng": null,
@@ -4885,8 +4966,8 @@
     },
     {
       "id": "inv-098-intended-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
       "referencePng": null,
@@ -4895,8 +4976,8 @@
     },
     {
       "id": "inv-098-intended-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
       "referencePng": null,
@@ -4905,8 +4986,8 @@
     },
     {
       "id": "inv-098-large-transparent",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
       "referencePng": null,
@@ -4915,8 +4996,8 @@
     },
     {
       "id": "inv-098-large-white",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
       "referencePng": null,
@@ -4925,8 +5006,8 @@
     },
     {
       "id": "inv-098-large-black",
-      "renderOutcome": "MalformedInput",
-      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
       "referencePng": null,
@@ -5375,9 +5456,9 @@
       "oracleState": "unmeasured"
     }
   ],
-  "rendererSourceBaselineCommit": "7aefe975",
-  "rendererSourceState": "Precommit working tree with shared antialiased rectangle paint-clip dispatch; C# source fingerprint normalizes UTF-8 bytes to LF. Full checkpoint validation is recorded separately.",
-  "rendererSourceFingerprintSha256": "66572be8224c25d34b24559064fbd7bbf673da224abac0d8eb6c958cf9839266",
-  "measurementCheckpoint": "antialiased-paint-clip-dispatch-2026-10-05",
-  "rendererAssemblyBuildHead": "1ca912fd"
+  "rendererSourceBaselineCommit": "86554a94",
+  "rendererSourceState": "Precommit shared declaration-only DOCTYPE admission across root parsing, font discovery and output-scale probing; no external resolution, entity expansion or internal subsets. Source fingerprint normalizes C# UTF-8 bytes to LF.",
+  "rendererSourceFingerprintSha256": "7800b716dcabebf99eb6033a6c163fb6e808195fcafed48dfa053bd27aaee007",
+  "measurementCheckpoint": "declaration-only-doctype-2026-10-05",
+  "rendererAssemblyBuildHead": "86554a94"
 }

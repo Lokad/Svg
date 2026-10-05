@@ -7,9 +7,10 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Current assessment (2026-10-05): the AA-clip checkpoint's Default-options sweep
-renders 88 of the 92 legacy-bank files and rejects four as MalformedInput (`inv-007`, `inv-012`,
-`inv-014`, `inv-020`). Renderability is separate from fidelity. The historical
+Current assessment (2026-10-05): declaration-only DOCTYPE admission makes all
+92 legacy-bank files render. The four prior rejections (`inv-007`, `inv-012`,
+`inv-014`, `inv-020`) advance with their original bytes; every previously rendered
+PNG is unchanged. Renderability is separate from fidelity. The historical
 27-of-92 exact tally below describes its narrower captured variants; it does not
 establish completion of every declared size/background or current corporate-logo
 coverage. Fifty-seven inventory headings identify flags or flag badges/icons,
@@ -128,20 +129,22 @@ unmeasured variant cannot shrink a document denominator.
 ## Corporate measurement and selected curved mark (2026-10-05)
 
 The [current measurement record](../tests/References/inventory/corporate-cohort-current.json)
-executes every frozen case: **213 renders + 36 MalformedInput + nine
-UnsupportedFeature = 258**. Four original DTD-bearing documents each reject at
-all nine cases: Zeppelin, SG Rotation Leipzig, Artsy and the newly held-out Target.
-Coca-Cola retains all nine touching-contour UnsupportedFeature outcomes. Its
-source was selected before pixel results; neither new failure is filtered out.
+executes every frozen case: **240 renders + eighteen UnsupportedFeature = 258**.
+Declaration-only DOCTYPEs advance Zeppelin, SG Rotation Leipzig and Artsy to
+rendering in all nine variants. The newly held-out Target advances to the existing
+unsupported `marker` style gate in all nine. Coca-Cola retains all nine
+touching-contour UnsupportedFeature outcomes. Every prior PNG and original input
+is unchanged; neither failure is filtered out.
 
 Fidelity has **18 measured cases = nine exact Ford + nine YouTube differences**.
 The remaining **225 unmeasured + fifteen transport-limit gaps** retain their
 denominators. Every large gap was run through the actual pinned capture helper
 and rejected before browser launch with no PNG bytes. Currently verified exact
 documents are **1/27**, marks **0/13**, wordmarks **1/14**. This is partial cohort
-measurement, not a market or release rate. Three mark DTD rejects alone leave
-at most 10/13 under the current parser policy, below the required 11; a deliberate
-bounded syntax admission must preserve source files and security/resource contracts.
+measurement, not a market or release rate. The previous 10/13 mark renderability
+ceiling is removed by the shared bounded syntax admission. Source files,
+structural/resource limits and categorized rejection contracts are preserved;
+no newly admitted document is counted exact without all its reference variants.
 
 YouTube's nine references each have three fresh healthy, cleaned, byte-identical
 captures. Geometry and the original LF-canonical input remain unchanged. Candidate

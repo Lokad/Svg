@@ -21,6 +21,11 @@ syntax must not be inferred solely from the absence of support claims.
 See [PLAN.md](PLAN.md) for the product contract and implementation roadmap, and
 [the support matrix](docs/SUPPORT_MATRIX.md) for the current status.
 
+Declaration-only DOCTYPEs are admitted with inert external identifiers. Internal
+subsets and duplicate declarations remain malformed; DTD resources, entities and
+default attributes are never loaded. Root parsing, font discovery and output-scale
+probing use the same bounded policy.
+
 The pinned-browser full-canvas solid-rectangle route preserves original
 fill-opacity separately from ordinary byte composition. Its independent routing
 controls are banked, while general layer composition and curved corporate-logo

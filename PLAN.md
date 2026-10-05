@@ -1,19 +1,20 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-05. **Current validated renderer checkpoint: shared antialiased
-rectangle paint-clip dispatch and geometric boundary provenance.** It closes
-nine independent calibration differences, preserves twelve exact controls,
-improves all nine YouTube variants and preserves **all nine exact Ford PNGs**. The
-outlined-wordmark checkpoint is established.
+Updated 2026-10-05. **Current validated renderer checkpoint: declaration-only DOCTYPE
+admission across root parsing, font discovery and output-scale probing.** It
+advances 27 corporate variants to rendering and nine Target variants to the
+existing unsupported `marker` style gate. All previously rendered PNGs, including
+**all nine exact Ford PNGs**, are unchanged. The retained AA-clip checkpoint
+improves all nine YouTube variants; the outlined-wordmark checkpoint is established.
 **The flat curved mark is selected: YouTube (`inv-027`). The first corporate
 cohort is frozen: 27 documents / 258 explicit variants, including eight fresh
 evaluation holdouts. All 258 renderer cases are executed; fidelity is measured
 for 18 cases. Shared antialiased clip dispatch improves YouTube's
 transparent alpha error to 30/37/26, but all nine variants still differ. Its
-full tests, memory scenarios, expanded image-bank comparison, package/consumer
-checks and matching timing/resource measurements pass their bounded gates.
-Next admit declaration-only DOCTYPE syntax, then pursue independent clip-byte
-and triangle paint residuals.
+pixel and delivery evidence remains recorded separately. The DOCTYPE checkpoint
+passes 3,445 tests, all 25 memory scenarios, full-bank comparisons and
+package/consumer checks. Matching observations retain its prolog cost. Next pursue
+independent clip-byte and triangle paint residuals.
 Complete the fixed reference matrix as a separate evidence queue.**
 The curved-mark checkpoint, general browser fidelity and S17 remain open.
 
@@ -53,29 +54,52 @@ nor the calibration fixtures establish a release rate.
 
 ## 1. Current validated checkpoint and its limits
 
-Shared AA dispatch follows the committed raw-control repair `dfcac0ef` and the
-independent caller discriminator `44619535`. The
-[current portable checkpoint](tests/References/antialiased-paint-clip-dispatch.json)
-records the normalized source fingerprint, final precommit assembly and matching
-validation gates. Its normal Release build uses documentation HEAD `1ca912fd`;
-the source fingerprint is unchanged from the earlier draft assembly, and every
-937-bank/258-corporate output is reproduced. Historical checkpoints and isolated
-prototypes below retain their dated scopes; their counts do not replace this table.
+Declaration-only admission follows the validated AA-clip commit `86554a94`. The
+[current portable checkpoint](tests/References/declaration-only-doctype.json)
+records the normalized source fingerprint, precommit assembly, independent
+semantic/resource controls and matching validation gates. Its normal Release
+build uses HEAD `86554a94`. The 937-case comparison changes only four legacy
+DOCTYPE dispositions; the corporate comparison changes only the 36 declaration
+rejections. Historical checkpoints and isolated prototypes below retain their
+dated scopes; their counts do not replace this table.
 
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Recorded Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Recorded full tests, including corporate selection/measurement | **3,257 passed**: 3,109 core, 142 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Recorded full tests, including corporate selection/measurement | **3,445 passed**: 3,296 core, 143 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Recorded memory and delivery checks | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. The package retains the complete Skia/Chromium BSD notices, including the added 2010 AA-dispatch and prior 2025 classifier notices. No runtime package dependencies, native assets or packaged SVG fixtures. |
 | Executed fixture manifest | **785 entries = 601 exact + 157 known-difference renders + 27 rejections**; 443 base documents / 342 variants. Synthetic coverage is not corporate-logo coverage. |
 | Executed research manifest | **60 probes = 59 known-difference renders + one rejection**. Useful exact controls graduate to fixtures with their provenance. |
-| Legacy independent-file Default-options sweep | **92 files = 88 render + four MalformedInput rejections** (`inv-007`, `inv-012`, `inv-014`, `inv-020`). The candidate directory now has **100 files**; the eight new holdouts are covered by the explicit corporate matrix, not this historical Default-options sweep. Renderability does not establish fidelity or all-variant completion. |
+| Legacy independent-file Default-options sweep | **92 files = 92 render**. The four prior DOCTYPE rejections (`inv-007`, `inv-012`, `inv-014`, `inv-020`) now render; every prior PNG is unchanged. The candidate directory now has **100 files**; the eight new holdouts are covered by the explicit corporate matrix, not this historical Default-options sweep. Renderability does not establish fidelity or all-variant completion. |
 | Validated Ford all-variant evidence | **All nine exact**: 250×100, 500×200 and 1000×400 × transparent/white/black. Large variants improve 10/10/7 → 0/0/0 changed pixels; transparent alpha error 16 → 0. The six prior exact PNGs retain complete identity. All original references and current candidate identities remain portable regressions. This establishes the outlined-wordmark checkpoint, not a corporate-cohort rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, independent of fresh candidate success: every one of the 19 retained brand/organization exports plus eight predeclared new holdouts. Primary strata: 13 marks / 14 wordmarks. Every original source and historical reference is preserved; materializations change only root sizing. Fifteen large cases are verified rejected by the actual oracle transport limit and remain in the denominator. The legacy 92-file Default bank and calibration bank are separate. |
-| Recorded corporate measurement | **258 cases = 213 renders + 36 MalformedInput + nine UnsupportedFeature**. Fidelity: **18 measured = nine original Ford exact + nine fresh YouTube differences**; **225 unmeasured + fifteen verified transport gaps**. Currently verified exact documents: **1/27**, marks **0/13**, wordmarks **1/14**. This is partial cohort evidence, not a market/release rate. |
+| Recorded corporate measurement | **258 cases = 240 renders + eighteen UnsupportedFeature**. Zeppelin, SG Rotation Leipzig and Artsy render in all nine cases; Target advances to the unsupported `marker` style gate. Coca-Cola retains its touching-contour rejection. Fidelity: **18 measured = nine original Ford exact + nine fresh YouTube differences**; **225 unmeasured + fifteen verified transport gaps**. Currently verified exact documents: **1/27**, marks **0/13**, wordmarks **1/14**. This is partial cohort evidence, not a market/release rate. |
 | Not refreshed by the baseline/checkpoint gates | Linux/remote CI, a full browser-reference refresh, full independent inventory variant regeneration, BenchmarkDotNet throughput, private-font metrics and pixels. The bounded overlap captures below are separate evidence. |
 
-### Validated AA-clip checkpoint (2026-10-05)
+### Declaration-only DOCTYPE checkpoint (2026-10-05)
+
+The shared prolog guard rejects internal subsets and duplicates before the main
+reader skips an admitted declaration. It retains original byte input and BCL XML
+encoding interpretation, checks cancellation/work in bounded chunks, and reserves
+an additional fixed 32 KiB workspace only when a prolog is present. That workspace
+is released before main parsing; existing conservative reader allowances remain.
+Root parsing and discovery borrow their caller's work counter; output-scale
+probing retains its existing separately bounded probe counter. There is no DOM,
+whole-input string, external resolution, DTD defaulting or declared-entity expansion.
+
+The [portable record](tests/References/declaration-only-doctype.json) retains the
+predeclared 18 semantic cases across nine encodings, resource controls, all four
+legacy disposition changes and all 36 corporate advances. All **601 exact fixture
+PNGs**, every previous known-difference PNG and every original source/reference
+are unchanged. Three corporate documents become renderable; Target remains
+unsupported at a subsequent style gate. No newly admitted corporate variant has
+an exactness claim. Full declaration-checkpoint validation is recorded separately
+from the retained AA proof below. Matching six-input ledgers preserve every PNG;
+prolog-bearing inputs add one or two parser work units. The tiny case peak grows
+132,608 → 163,840 bytes; the other five measured peaks are unchanged. Timings retain
+both process orders and do not establish representative throughput.
+
+### Retained validated AA-clip checkpoint (2026-10-05)
 
 The shared dispatch separates the paint clip from construction clipping
 and cached geometry. AA paint contexts force additive run storage and forward
@@ -284,7 +308,7 @@ affect a counted document, even when our geometry is closer to ideal area.
    Each has retained counterexamples. Further syntax admissions wait unless
    the active target or the frozen cohort's acceptance threshold demonstrates a
    dependency. The measured declaration-only DOCTYPE blocker is such a dependency,
-   next after the validated AA-clip checkpoint; regression repairs may interrupt.
+   now admitted after the validated AA-clip checkpoint; regression repairs may interrupt.
 5. **Keep release policy separate from implementation.** S17's exact-document
    target is 80%, overall and in each corporate stratum. The
    first cohort and its explicit variants are frozen; 18 of 258 fidelity cases
@@ -341,20 +365,20 @@ The original (179,14) caller witness is resolved; the nine YouTube references st
 have known differences. Preserve geometric boundary provenance, cached geometry,
 all exact controls and Ford. Full native AA-mask/cache history remains unproved.
 
-1. **Resolve the measured DOCTYPE dependency through a shared admission.** Four
-   documents currently reject their preserved external DOCTYPE declarations:
-   Zeppelin, SG Rotation Leipzig, Artsy and Target. The latter three are marks,
-   leaving at most 10/13 marks under the current parser policy; reaching 11/13
-   therefore requires admitting at least one currently rejected mark. Plan a
-   general declaration-only admission with no external resolution or entity
-   expansion, while rejecting internal subsets and preserving all input/work/depth
-   limits. Keep root parsing and font discovery consistent. Use independent
-   synthetic acceptance/rejection and resource controls, update contracts and
-   expected dispositions deliberately, and preserve original assets. This is a
-   cohort dependency, not Target-specific tuning. Other measured blockers,
-   including Coca-Cola's nine touching-contour UnsupportedFeature outcomes,
-   order subsequent shared work. Holdouts receive no document-specific tuning.
-   All failures/gaps keep their denominators.
+1. **Preserve the landed shared declaration-only DOCTYPE policy.** Bare, SYSTEM
+   and PUBLIC declarations before the root are inert: no external resolution,
+   declared-entity expansion or DTD defaults. Internal subsets (even empty),
+   duplicates and malformed syntax remain `MalformedInput`. Root parsing, font
+   discovery and output-scale probing preserve input bytes/encodings and shared
+   resource contracts. The 187 new core controls cover nine encodings, six
+   outputs, structural limits, work/memory denial and during-prolog cancellation.
+   Four legacy Default cases now render. Zeppelin, SG Rotation Leipzig and Artsy
+   render in every frozen variant; Target reaches the existing unsupported
+   `marker` style gate. Their fidelity is still unmeasured. The previous 10/13
+   mark renderability ceiling is removed without document-specific tuning.
+   Other measured blockers, including Coca-Cola's nine touching-contour and
+   Target's nine style outcomes, order subsequent shared work. Holdouts receive
+   no document-specific tuning. All failures/gaps keep their denominators.
 2. **Continue the selected curved mark through independent residual witnesses.**
    Separate clip-mask byte multiplication at canvas
    boundaries from opaque triangle paint. The first large model triangle
@@ -372,7 +396,7 @@ bounded transport without shrinking variants or changing renderer limits;
 retain bounded messages/storage, cancellation and cleanup. Interleave this
 evidence work with bounded renderer slices while retaining one implementation
 owner. The complete matrix is not a prerequisite for the AA-clip or measured
-DOCTYPE repair, but its missing results block S8 completion and an S17 claim.
+DOCTYPE checkpoint, but its missing results block S8 completion and an S17 claim.
 
 A bounded shared repair may land with independent mechanism-level improvement
 and nonregression across all nine Ford variants. Preserve all **601 currently
@@ -717,7 +741,7 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 | S6 | Disposable single-use preparation exists; preserve resource leases and six-output behavior. |
 | S7 | Generic local/stdin/HTTP supplied-font host exists; actual-pack and same-font metrics/pixels remain separate work under section 6. |
 | S8 | Partial: first corporate cohort frozen, 27 documents / 258 variants including eight fresh holdouts. All renderer cases executed; eighteen fidelity comparisons available, 225 unmeasured and fifteen verified capture-limit gaps. Complete the pinned reference matrix and reproducible per-variant reporting; S17 additionally requires the exact-document threshold. The historical 92-file bank stays separate. |
-| S9 | Styles/references/viewports and measured inventory admissions are implemented in explicit subsets. Remaining combinations follow independent corporate-cohort evidence and shared semantics. |
+| S9 | Styles/references/viewports, declaration-only DOCTYPEs and measured inventory admissions are implemented in explicit subsets. Remaining combinations follow independent corporate-cohort evidence and shared semantics. |
 | S10 | Full path-command/affine kernels, retained controls, live non-convex cubics, curve/walk state separation and one-chord cubic admission exist. Raw-control classification is integrated; fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
 | S12 | Caps/joins/dashes/stroke outlines and the bounded row-1 repairs exist. Remaining curved/dashed union, tangent and antialiasing errors belong to row 6 using common coverage. |
@@ -828,9 +852,9 @@ outcomes did not filter membership: all 19 retained brand/organization exports
 and eight predeclared fresh holdouts remain. The 22/27 rounded overall minimum
 and the 11/13 mark plus 12/14 wordmark minima all apply: **23 exact documents is
 the effective minimum** for this cohort. All 258 cases, including fifteen
-transport-limit gaps and four currently rejected DOCTYPE sources (three marks,
-one wordmark), retain their denominator. Combined identities already have a
-declared primary stratum. Public-domain source selection and the organizational
+transport-limit gaps and eighteen UnsupportedFeature cases (Coca-Cola's touching
+contours and Target's `marker` style), retain their denominator. Combined identities
+already have a declared primary stratum. Public-domain source selection and the organizational
 mix limit representativeness; future cohorts must be selected before measurement
 as well.
 Report the measured rate with this cohort's scope and selection limits even after

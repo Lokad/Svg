@@ -4517,3 +4517,70 @@ then pursue independently demonstrated clip-byte multiplication and triangle
 paint residuals. General AA masks/cache intersections, curve/convex/stroke/layer
 fidelity, complete corporate references and transport, representative performance,
 Linux and S17 remain open. This checkpoint does not establish the curved-mark exit.
+
+
+## Declaration-only DOCTYPE checkpoint (2026-10-05)
+
+The frozen corporate matrix exposed four original PUBLIC DOCTYPE declarations:
+Zeppelin, SG Rotation Leipzig, Artsy and Target, all without internal subsets.
+Three are corporate marks, so the former reject-all-DTD policy left at most 10/13
+marks renderable against an 11/13 exact-document requirement. The change is a
+shared XML admission, with no document or geometry exception. The
+[portable checkpoint](../tests/References/declaration-only-doctype.json) retains
+its predeclared semantic cases, encodings, original identities and disposition
+comparisons. All original sources and reference PNGs remain unchanged.
+
+A local .NET runtime probe showed why merely selecting `DtdProcessing.Ignore`
+was insufficient: it skips empty internal subsets and accepts successive DOCTYPE
+nodes. The prolog guard therefore rejects every internal subset and duplicate
+before the main reader skips an admitted bare, SYSTEM or PUBLIC declaration.
+Quoted external identifiers may contain brackets; comment/PI lookalikes do not
+count as declarations. The BCL still validates remaining XML grammar and rejects
+undeclared entity references. External resources, declared entities and DTD
+attribute defaults are inert. A real file containing an entity and default
+attribute verifies that neither contributes to the document. Predefined XML
+entities retain their existing behavior.
+
+Root parsing, font discovery and output-scale probing share the policy. The guard
+uses borrowed bytes, BOM/signature detection and the BCL's interpretation of an
+actual XML declaration to preserve encoding aliases and supported providers. It
+streams decoded prolog characters without a DOM, whole-input string or input
+rewrite. A fixed 32 KiB reservation covers its additional reader storage and is
+released before main parsing; the caller retains its ordinary conservative XML
+workspace. Encoded and decoded scans charge work and check cancellation at
+4,096-unit checkpoints. Root/discovery carry their caller's counter; the existing
+scale probe remains separately bounded. Corrupt UTF-32 retains `MalformedInput`.
+
+The 187 new core cases include 18 independent semantic cases across nine byte
+encodings, BOM/default-encoding controls, meaningful font discovery, six-output
+PNG parity, input/node/depth/attribute limits, work/storage denial, cancellation
+inside an allocated prolog pass, and bounded guard allocations for long comments
+and system identifiers. One visual regression verifies original bytes and all
+four newly rendered legacy Default PNG identities. The positive synthetic pixel
+controls use the independently established solid-red reference; no newly admitted
+corporate document is claimed exact.
+
+All 937 prior-bank cases execute: 933 reports are unchanged, with only `inv-007`,
+`inv-012`, `inv-014` and `inv-020` advancing from MalformedInput to rendering. Every
+601 exact fixture PNG and every prior known-difference PNG is unchanged. The
+legacy Default sweep now renders all 92 files. In the separate 258-case corporate
+matrix, 222 reports are unchanged; Zeppelin, SG Rotation Leipzig and Artsy render
+in all nine cases, while Target advances to its unsupported `marker` style gate.
+Current corporate disposition is 240 renders and eighteen UnsupportedFeature
+cases, including Coca-Cola's retained touching-contour gate. Fidelity remains
+18 measured cases: nine exact Ford and nine YouTube differences; 225 unmeasured
+and fifteen transport gaps remain. Suppressing admission in an isolated build of
+the final source restores every complete baseline report in both banks.
+
+Normal locked restore and the nine-project Release build pass with zero warnings
+or errors. The final renderer is
+`fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54`, built at
+HEAD `86554a94`; normalized C# source fingerprint is
+`7800b716dcabebf99eb6033a6c163fb6e808195fcafed48dfa053bd27aaee007`.
+All 3,445 tests pass (3,296 core, 143 visual and six FontProbe), as do all 25 memory
+scenarios and runtime/symbol package plus isolated installed-consumer checks.
+Matching observations retain the guard's work, allocation and workspace cost in
+[the benchmark record](BENCHMARKS.md). Full raw records remain under ignored
+`artifacts/doctype-20261005/`; the portable checkpoint retains their identities
+and summaries. No wider browser-fidelity, representative-performance, Linux or
+S17 completion follows from this syntax admission.
