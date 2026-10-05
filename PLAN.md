@@ -37,7 +37,9 @@ corporate-mark checkpoint still needs every declared YouTube variant exact. The
 [cohort manifest](tests/References/inventory/corporate-cohort-v1.json) freezes
 membership and options before fresh candidate comparison. Its 13 corporate marks
 and 14 outlined wordmarks require at least 11 and 12 exact documents respectively,
-as well as at least 22 overall. Retained exports have historical measurements;
+so satisfying both strata requires **at least 23/27 exact documents**. The rounded
+overall 80% minimum is 22/27 and remains a separate check; it cannot waive either
+stratum's minimum. Retained exports have historical measurements;
 only the eight new exports are fresh holdouts. This first public-domain cohort
 has source/organizational-selection limits recorded in the
 [inventory](docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05). Neither the freeze
@@ -45,21 +47,22 @@ nor the calibration fixtures establish a release rate.
 
 ## 1. Current baseline and its limits
 
-The renderer remains at the retained-path-point density checkpoint. The table
-also records the newer corporate selection/measurement and full tests. Historical
-checkpoint counts and isolated prototypes retain their dated scopes.
+Production renderer sources remain at the retained-path-point density checkpoint
+`0b4563c8`. The table records that checkpoint's delivery/resource checks and the
+newer corporate selection/measurement and full tests at `60f98bfe`.
+Historical checkpoint counts and isolated prototypes retain their dated scopes.
 
 | Current validated evidence | Assessment |
 | --- | --- |
-| Fresh Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Fresh full tests, including corporate selection/measurement | **3,235 passed**: 3,090 core, 139 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Fresh memory and delivery checks, at the path-point density checkpoint | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. The package retains the adapted Skia/Chromium BSD notices. No runtime package dependencies, native assets or packaged SVG fixtures. |
+| Recorded Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
+| Recorded full tests, including corporate selection/measurement | **3,235 passed**: 3,090 core, 139 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Recorded memory and delivery checks, at the path-point density checkpoint | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. The package retains the adapted Skia/Chromium BSD notices. No runtime package dependencies, native assets or packaged SVG fixtures. |
 | Executed fixture manifest | **720 entries = 567 exact + 135 known-difference renders + 18 rejections**; 420 base documents / 300 variants. Synthetic coverage is not corporate-logo coverage. |
 | Executed research manifest | **60 probes = 59 known-difference renders + one rejection**. Useful exact controls graduate to fixtures with their provenance. |
-| Fresh independent-file Default-options sweep | **92 files = 88 render + four MalformedInput rejections** (`inv-007`, `inv-012`, `inv-014`, `inv-020`). Renderability does not establish fidelity or all-variant completion. |
+| Legacy independent-file Default-options sweep | **92 files = 88 render + four MalformedInput rejections** (`inv-007`, `inv-012`, `inv-014`, `inv-020`). The candidate directory now has **100 files**; the eight new holdouts are covered by the explicit corporate matrix, not this historical Default-options sweep. Renderability does not establish fidelity or all-variant completion. |
 | Validated Ford all-variant evidence | **All nine exact**: 250×100, 500×200 and 1000×400 × transparent/white/black. Large variants improve 10/10/7 → 0/0/0 changed pixels; transparent alpha error 16 → 0. The six prior exact PNGs retain complete identity. All original references and current candidate identities remain portable regressions. This establishes the outlined-wordmark checkpoint, not a corporate-cohort rate. |
-| Corporate cohort freeze | **27 documents / 258 variants**, independent of fresh candidate success: every one of the 19 retained brand/organization exports plus eight predeclared new holdouts. Primary strata: 13 marks / 14 wordmarks. Every original source and historical reference is preserved; materializations change only root sizing. Fifteen large cases are verified rejected by the actual oracle transport limit and remain in the denominator. The whole 92-file inventory and calibration bank are separate. |
-| Fresh corporate measurement | **258 cases = 213 renders + 36 MalformedInput + nine UnsupportedFeature**. Fidelity: **18 measured = nine original Ford exact + nine fresh YouTube differences**; **225 unmeasured + fifteen verified transport gaps**. Currently verified exact documents: **1/27**, marks **0/13**, wordmarks **1/14**. This is partial cohort evidence, not a market/release rate. |
+| Corporate cohort freeze | **27 documents / 258 variants**, independent of fresh candidate success: every one of the 19 retained brand/organization exports plus eight predeclared new holdouts. Primary strata: 13 marks / 14 wordmarks. Every original source and historical reference is preserved; materializations change only root sizing. Fifteen large cases are verified rejected by the actual oracle transport limit and remain in the denominator. The legacy 92-file Default bank and calibration bank are separate. |
+| Recorded corporate measurement | **258 cases = 213 renders + 36 MalformedInput + nine UnsupportedFeature**. Fidelity: **18 measured = nine original Ford exact + nine fresh YouTube differences**; **225 unmeasured + fifteen verified transport gaps**. Currently verified exact documents: **1/27**, marks **0/13**, wordmarks **1/14**. This is partial cohort evidence, not a market/release rate. |
 | Not refreshed by the baseline/checkpoint gates | Linux/remote CI, a full browser-reference refresh, full independent inventory variant regeneration, BenchmarkDotNet throughput, private-font metrics and pixels. The bounded overlap captures below are separate evidence. |
 
 ### Validated path-point density checkpoint
@@ -205,10 +208,13 @@ affect a counted document, even when our geometry is closer to ideal area.
    coverage mask globally, or desnap endpoints alone. Native run-flush snapping
    applies only to pending additive runs; direct fringe paints bypass that flush.
    Each has retained counterexamples. Further syntax admissions wait unless
-   the active target demonstrates a dependency; regression repairs may interrupt.
+   the active target or the frozen cohort's acceptance threshold demonstrates a
+   dependency. The measured declaration-only DOCTYPE blocker is such a dependency,
+   queued below after the raw-path repair; regression repairs may interrupt.
 5. **Keep release policy separate from implementation.** S17's exact-document
    target is 80%, overall and in each corporate stratum. The
-   first cohort and its explicit variants are frozen and still need measurement;
+   first cohort and its explicit variants are frozen; 18 of 258 fidelity cases
+   are measured and the remaining 240 need references or capture-gap resolution;
    that evidence blocks a coverage claim, not renderer work. There is no
    pixel-tolerance or oracle-quirk budget. The aligned policy record is
    [S17_DECISIONS.md](docs/S17_DECISIONS.md).
@@ -237,22 +243,23 @@ completed stage: the remaining exit evidence below governs completion.
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Partial: outlined-wordmark checkpoint achieved; first corporate cohort frozen; curved mark and S8/S17 remain open.** Ford is exact in all nine declared variants. YouTube is the selected curved mark. The fixed 27-document / 258-variant matrix includes eight fresh holdouts and all capture gaps. | Measure every frozen variant, establish the curved-mark checkpoint and meet the 80% exact-document target overall and per corporate stratum, with fresh platform/package/resource/performance evidence. |
 
-### Active work order: raw-path classification and remaining cohort references (2026-10-05)
+### Active work order: raw-path repair, cohort references and bounded syntax (2026-10-05)
 
 The Ford wordmark exit is closed: all nine original variants have zero differences
 and the shared regression/resource/delivery gates pass. Preserve those full-image
 results and the independently recorded numeric, mapping, clipping, operation and
 density witnesses. This bounded repair does not complete rows 3–7.
 
-1. **Selection/freeze established before fresh candidate comparison.** YouTube
-   `inv-027` is the flat curved mark: 286×200, 572×400 and 1144×800 on all three
-   backgrounds. The [fixed manifest](tests/References/inventory/corporate-cohort-v1.json)
-   retains all 19 existing brand/organization exports and eight new holdouts;
-   [selection](tests/References/inventory/corporate-cohort-selection.json) and
-   [upstream evidence](tests/References/inventory/corporate-cohort-sources.json)
-   retain identities, licensing, roles and the policy. Tests protect membership,
-   all declared variants and unchanged geometry outside root sizing.
-2. **Measured discriminator: preserve compatible raw-path classification.** All
+**Selection/freeze is complete.** YouTube `inv-027` is the flat curved mark:
+286×200, 572×400 and 1144×800 on all three backgrounds. The
+[fixed manifest](tests/References/inventory/corporate-cohort-v1.json) retains all
+19 existing brand/organization exports and eight new holdouts;
+[selection](tests/References/inventory/corporate-cohort-selection.json) and
+[upstream evidence](tests/References/inventory/corporate-cohort-sources.json)
+retain identities, licensing, roles and the policy. Tests protect membership,
+all declared variants and unchanged geometry outside root sizing.
+
+1. **Next renderer slice: compatible raw-path classification.** All
    nine YouTube variants have stable healthy reference triples and known
    differences. Its actual traced large PNG is byte-identical to the frozen
    reference. The [browser path record](tests/References/inventory/inv-027-native-route.json)
@@ -264,22 +271,35 @@ density witnesses. This bounded repair does not complete rows 3–7.
    edge/paint events. Do not land a blanket route override. Charge/cache any new
    classification and validate independent raw-curve, convex and non-convex
    controls before integration; preserve original inputs, references and Ford.
-3. Complete the frozen reference matrix. All 258 renderer cases are executed;
+2. **Complete the frozen reference matrix and bounded capture transport.**
+   All 258 renderer cases are executed;
    eighteen fidelity comparisons are available, 225 cases remain unmeasured and
    fifteen large cases are verified rejected by the actual capture tool before
-   launch. Extend that bounded transport rather than shrinking variants or the
-   renderer limit. Three mark documents currently reject because of preserved
-   DTDs (SG Rotation Leipzig, Artsy and Target), leaving at most 10/13 marks under
-   the current parser policy; reaching 11/13 requires a deliberate, tested syntax
-   admission, with original assets and security/resource contracts retained.
-   Coca-Cola retains nine touching-contour UnsupportedFeature outcomes. Holdouts
-   receive no document-specific tuning. All failures/gaps keep their denominators.
+   launch. Extend that bounded transport without shrinking variants or changing
+   renderer limits; retain bounded messages/storage, cancellation and cleanup.
+   Missing references do not block the independently justified raw-path slice,
+   but they block completion of the fidelity matrix and an S17 claim.
+3. **Resolve the measured DOCTYPE dependency through a shared admission.** Four
+   documents currently reject their preserved external DOCTYPE declarations:
+   Zeppelin, SG Rotation Leipzig, Artsy and Target. The latter three are marks,
+   leaving at most 10/13 marks under the current parser policy; reaching 11/13
+   therefore requires admitting at least one currently rejected mark. Plan a
+   general declaration-only admission with no external resolution or entity
+   expansion, while rejecting internal subsets and preserving all input/work/depth
+   limits. Keep root parsing and font discovery consistent. Use independent
+   synthetic acceptance/rejection and resource controls, update contracts and
+   expected dispositions deliberately, and preserve original assets. This is a
+   cohort dependency, not Target-specific tuning. Other measured blockers,
+   including Coca-Cola's nine touching-contour UnsupportedFeature outcomes,
+   order subsequent shared work. Holdouts receive no document-specific tuning.
+   All failures/gaps keep their denominators.
 
 A bounded shared repair may land with independent mechanism-level improvement
 and nonregression across all nine Ford variants. Preserve all 567 exact fixture
 PNGs and required categorized rejections. Intentional syntax graduations need
 explicit contract/tests/provenance updates. Compare the complete 872-case bank
-and all 258 frozen corporate cases, and run affected ownership/work/cancellation,
+and all 258 frozen corporate cases; report the two regression scopes separately.
+Run affected ownership/work/cancellation,
 six-output and delivery checks plus matching measurements. Missing oracle results
 must stay explicit. General tile-local/affine mapping, fractional events,
 quad/convex/stroke and layer fidelity retain independent gates.
@@ -554,15 +574,16 @@ admission and categorized failures, cancellation/ownership behavior and Default
 resource limits. Record complete candidate/reference identities, total and
 directional alpha errors and opaque/hole changes for every affected banked image.
 Run full fixture/research and available inventory variants, with missing captures
-and unmeasured variants listed explicitly. The current 92-file Default sweep is
+and unmeasured variants listed explicitly. The legacy 92-file Default sweep is
 not full independent-variant validation; those gaps cannot shrink a denominator.
 Measure matching before/after tiny/Ford/dense/native-size time, managed allocation,
 charged work and peaks; local timings do not replace representative throughput.
 
-The wordmark exit is established: all nine Ford variants are exact. S17 still
-needs the frozen representative corporate cohort and delivery evidence described
-above. Measure the selected curved mark and frozen cohort before further
-per-document tuning; their measured blockers order the remaining shared work.
+The wordmark exit is established: all nine Ford variants are exact. The selected
+curved mark already has nine measured failures and an implementation discriminator;
+repair that shared boundary next. S17 still needs completed fidelity measurement
+of the frozen cohort and the delivery evidence described above. Its measured
+blockers order later shared work; the eight holdouts remain evaluation inputs.
 
 ## 4. Findings and stage ledger
 
@@ -570,7 +591,7 @@ per-document tuning; their measured blockers order the remaining shared work.
 
 | ID | Current disposition and remaining closure |
 | --- | --- |
-| R26 | The first corporate cohort is frozen: 27 documents / 258 variants including eight fresh holdouts. Measure every case and reconcile capture gaps; historical exact labels and the separate 92-file Default bank are not S17 rates. Preserve failures and original assets. |
+| R26 | The first corporate cohort is frozen: 27 documents / 258 variants including eight fresh holdouts. All renderer cases are executed; complete the remaining 240 oracle cases, including fifteen capture gaps. Historical exact labels and the legacy 92-file Default bank are not S17 rates. Preserve failures and original assets. |
 | R27 | Every fixture is executed. Still retain complete decoded candidate identity/diff, validate historical/current oracle identity, distinguish render/reject from fidelity, and graduate positive research controls instead of deleting them. |
 | R28 | Original pattern/root-map repair and inverse gradient maps retained. Paint/alpha one-step residuals remain S11/S13. |
 | R30 | Shared contour preparation, ownership and coverage traversal have landed across the four paints. Preserve that boundary while changing curve state; remaining repeated binding/typed-state work follows demonstrated dependencies, not a repository rewrite. |
@@ -609,7 +630,7 @@ per-document tuning; their measured blockers order the remaining shared work.
 | S1–S5 | Core foundations and original repairs exist; preserve API, parser, memory/work and output contracts throughout. |
 | S6 | Disposable single-use preparation exists; preserve resource leases and six-output behavior. |
 | S7 | Generic local/stdin/HTTP supplied-font host exists; actual-pack and same-font metrics/pixels remain separate work under section 6. |
-| S8 | First corporate cohort frozen: 27 documents / 258 variants including eight fresh holdouts. All renderer cases executed; eighteen fidelity comparisons available, 225 unmeasured and fifteen verified capture-limit gaps. The historical 92-file bank stays separate. |
+| S8 | Partial: first corporate cohort frozen, 27 documents / 258 variants including eight fresh holdouts. All renderer cases executed; eighteen fidelity comparisons available, 225 unmeasured and fifteen verified capture-limit gaps. Complete the pinned reference matrix and reproducible per-variant reporting; S17 additionally requires the exact-document threshold. The historical 92-file bank stays separate. |
 | S9 | Styles/references/viewports and measured inventory admissions are implemented in explicit subsets. Remaining combinations follow independent corporate-cohort evidence and shared semantics. |
 | S10 | Full path-command/affine kernels, retained controls, live non-convex cubics, curve/walk state separation and one-chord cubic admission exist. Fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
@@ -618,7 +639,7 @@ per-document tuning; their measured blockers order the remaining shared work.
 | S14 | Rectangle clips, contained-edge scan windows, limited masks and isolated opacity exist. Bounded CPU raster contexts separate bitmap construction bounds from owned interiors. Clipped construction is integrated when path/control bounds escape the bitmap, canvas or explicit clip, including curves whose geometry fits. Preserve X/Y pieces, projected winding, whole-path dispatch, bitmap-bounded storage, exclusive interiors and fractional paint coverage. General clipped event fidelity, clips, mask regions/content and bounded nested composition remain open. |
 | S15 | Live-text wordmarks are experimental, not required for outlined wordmarks. Follow section 6 and shared glyph contours, not a separate renderer. |
 | S16 | Uniform embedded PNGs and narrow patterns exist. General raster decoding/resampling, multi-element patterns, markers, filters/blending and additional static CSS only for measured blockers. |
-| S17 | Not achieved. Requires a frozen representative corporate cohort meeting at least 80% exact documents overall and per corporate stratum, every declared variant exact for counted documents and fresh delivery evidence. |
+| S17 | Not achieved. The first cohort is frozen; it needs at least 11/13 exact marks and 12/14 exact wordmarks (at least 23/27 total), every declared variant exact for counted documents, and fresh delivery/resource/performance evidence. Report its selection limits; broader representativeness remains unproved. |
 
 ## 5. Product contract, evidence and completion
 
@@ -705,11 +726,11 @@ to drop a declared large variant or change the renderer's pixel limit.
 Report render/reject separately from exact/known-difference/oracle-failure and
 unmeasured. A document counts only when **all declared variants** are measured
 and exact. Preserve historical narrower successes without counting their unmeasured
-sizes. Freeze a representative corporate-mark/outlined-wordmark cohort and hold-outs
-from independently selected exports; retain flags, diagrams and other symbols as
-separate useful strata. Keep every frozen document in its denominator, including
+sizes. Preserve the completed corporate-mark/outlined-wordmark selection and
+holdout freeze; retain flags, diagrams and other symbols as separate useful
+strata. Keep every frozen document in its denominator, including
 rejects, known differences, oracle failures and unmeasured variants. Fixture-entry
-percentages and the whole 92-file inventory cannot replace corporate-document
+percentages and the legacy 92-file Default bank cannot replace corporate-document
 coverage. Ford establishes the outlined-wordmark checkpoint; YouTube is the
 selected curved-mark target and must retain all nine declared cases.
 
@@ -718,13 +739,17 @@ corporate-mark/outlined-wordmark strata (round required document counts upward).
 The first corporate cohort and explicit variant recipe are frozen in the
 [manifest](tests/References/inventory/corporate-cohort-v1.json). Existing renderer
 outcomes did not filter membership: all 19 retained brand/organization exports
-and eight predeclared fresh holdouts remain. All 258 cases, including fifteen
-transport-limit gaps and three historically rejected DTD sources, retain their
-denominator. Combined identities receive a declared primary stratum before
-fresh comparison. The public-domain source bias and organizational mix limit
-representativeness; future cohorts must be selected before measurement as well.
-Until the measurements meet the target, report measured results and gaps
-without a “most logos” claim or ETA.
+and eight predeclared fresh holdouts remain. The 22/27 rounded overall minimum
+and the 11/13 mark plus 12/14 wordmark minima all apply: **23 exact documents is
+the effective minimum** for this cohort. All 258 cases, including fifteen
+transport-limit gaps and four currently rejected DOCTYPE sources (three marks,
+one wordmark), retain their denominator. Combined identities already have a
+declared primary stratum. Public-domain source selection and the organizational
+mix limit representativeness; future cohorts must be selected before measurement
+as well.
+Report the measured rate with this cohort's scope and selection limits even after
+it meets the target. The target alone does not justify a “most logos” market
+claim; broader representativeness and the remaining release gates need evidence.
 There is no separate quirk budget: matching the pinned oracle remains
 implementation work, and any document
 with a mismatching variant cannot enter the exact numerator. A coverage target
