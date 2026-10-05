@@ -1,17 +1,19 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-05. **Compatible raw-control convexity is integrated.** It makes
+Updated 2026-10-05. **Last fully validated renderer checkpoint: compatible
+raw-control convexity (`dfcac0ef`).** It makes
 twelve predeclared calibration cases and one prior known fixture exact, improves
 all nine YouTube variants and preserves **all nine exact Ford PNGs**. The
 outlined-wordmark checkpoint is established.
 **The flat curved mark is selected: YouTube (`inv-027`). The first corporate
 cohort is frozen: 27 documents / 258 explicit variants, including eight fresh
 evaluation holdouts. All 258 renderer cases are executed; fidelity is measured
-for 18 cases. YouTube still has nine known differences, with transparent alpha
-error reduced to 356/787/1,634. The next shared dependency is antialiased clip
-dispatch: a measured context-local model reduces alpha error to 30/37/26 but is
-not integrated. Prove that clip contract while completing the fixed reference
-matrix and gaps.**
+for 18 cases. At the validated checkpoint, YouTube still has nine known
+differences, with transparent alpha error 356/787/1,634. Antialiased clip dispatch
+is being implemented in the working tree; its preliminary results are separate
+from that checkpoint. Finish its bounded validation, then admit declaration-only
+DOCTYPE syntax. Complete the fixed reference matrix as a separate evidence
+queue.**
 The curved-mark checkpoint, general browser fidelity and S17 remain open.
 
 The reviewed renderer baseline
@@ -48,15 +50,17 @@ has source/organizational-selection limits recorded in the
 [inventory](docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05). Neither the freeze
 nor the calibration fixtures establish a release rate.
 
-## 1. Current baseline and its limits
+## 1. Last validated baseline and its limits
 
-Production renderer sources now include the raw-control classification repair
-on the reviewed `665ae500` baseline. The [portable checkpoint](tests/References/raw-control-convexity.json)
+The committed raw-control classification repair is `dfcac0ef`, built on the
+reviewed `665ae500` baseline. The subsequent `44619535` adds the AA-clip
+discriminator without changing the renderer. The [portable checkpoint](tests/References/raw-control-convexity.json)
 records the normalized source fingerprint and measured precommit assembly.
-The table records this checkpoint's fresh validation and fixed corporate scope.
-Historical checkpoint counts and isolated prototypes retain their dated scopes.
+The table records that checkpoint's validation and fixed corporate scope; it does
+not validate subsequent working-tree edits. Historical checkpoints and isolated
+prototypes retain their dated scopes.
 
-| Current validated evidence | Assessment |
+| Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Recorded Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
 | Recorded full tests, including corporate selection/measurement | **3,244 passed**: 3,099 core, 139 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
@@ -68,6 +72,28 @@ Historical checkpoint counts and isolated prototypes retain their dated scopes.
 | Corporate cohort freeze | **27 documents / 258 variants**, independent of fresh candidate success: every one of the 19 retained brand/organization exports plus eight predeclared new holdouts. Primary strata: 13 marks / 14 wordmarks. Every original source and historical reference is preserved; materializations change only root sizing. Fifteen large cases are verified rejected by the actual oracle transport limit and remain in the denominator. The legacy 92-file Default bank and calibration bank are separate. |
 | Recorded corporate measurement | **258 cases = 213 renders + 36 MalformedInput + nine UnsupportedFeature**. Fidelity: **18 measured = nine original Ford exact + nine fresh YouTube differences**; **225 unmeasured + fifteen verified transport gaps**. Currently verified exact documents: **1/27**, marks **0/13**, wordmarks **1/14**. This is partial cohort evidence, not a market/release rate. |
 | Not refreshed by the baseline/checkpoint gates | Linux/remote CI, a full browser-reference refresh, full independent inventory variant regeneration, BenchmarkDotNet throughput, private-font metrics and pixels. The bounded overlap captures below are separate evidence. |
+
+### AA-clip implementation in progress (2026-10-05)
+
+The uncommitted shared dispatch implementation has preliminary comparisons on
+the existing **896-case bank** and **258 corporate cases**. All 580 exact fixture
+PNGs and all nine Ford PNGs retain complete identity; every categorized
+render/reject outcome is preserved. Three bank PNGs and fifteen corporate PNGs
+change. Some changed corporate cases have no reference, so preservation of
+admission is their only measured result.
+
+YouTube transparent differences are **30/177/312 pixels**, with alpha error
+**30/37/26** and maximum alpha error one. All nine variants remain inexact;
+the measured exact-document numerator remains **1/27**. These results differ
+from the earlier isolated fractional-border model, which retained 56 small-size
+changed pixels. They must not replace the committed measurement record yet.
+
+Nine predeclared independent sources / 27 configurations have 81 successful,
+healthy, cleaned browser captures, stable in triples. Their before/after
+comparisons, portable banking, native clip-classification proof and affected
+ownership/work/cancellation/output tests remain to be completed. Full build/test,
+memory, package/consumer and matching timing gates are also pending for this
+implementation. Local evidence is under `artifacts/aa-clip-dispatch-20261005/`.
 
 ### Validated raw-control convexity checkpoint
 
@@ -243,7 +269,7 @@ affect a counted document, even when our geometry is closer to ideal area.
    Each has retained counterexamples. Further syntax admissions wait unless
    the active target or the frozen cohort's acceptance threshold demonstrates a
    dependency. The measured declaration-only DOCTYPE blocker is such a dependency,
-   queued below the current mapped-event work; regression repairs may interrupt.
+   queued after the bounded AA-clip checkpoint; regression repairs may interrupt.
 5. **Keep release policy separate from implementation.** S17's exact-document
    target is 80%, overall and in each corporate stratum. The
    first cohort and its explicit variants are frozen; 18 of 258 fidelity cases
@@ -276,7 +302,7 @@ completed stage: the remaining exit evidence below governs completion.
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Partial: outlined-wordmark checkpoint achieved; first corporate cohort frozen; curved mark and S8/S17 remain open.** Ford is exact in all nine declared variants. YouTube is the selected curved mark. The fixed 27-document / 258-variant matrix includes eight fresh holdouts and all capture gaps. | Measure every frozen variant, establish the curved-mark checkpoint and meet the 80% exact-document target overall and per corporate stratum, with fresh platform/package/resource/performance evidence. |
 
-### Active work order: mapped curve events, cohort references and bounded syntax (2026-10-05)
+### Active work order: AA-clip dispatch and bounded syntax (2026-10-05)
 
 The Ford wordmark exit is closed: all nine original variants have zero differences
 and the shared regression/resource/delivery gates pass. Preserve those full-image
@@ -292,15 +318,16 @@ density witnesses. This bounded repair does not complete rows 3–7.
 retain identities, licensing, roles and the policy. Tests protect membership,
 all declared variants and unchanged geometry outside root sizing.
 
-1. **Raw-control classification landed; implement compatible AA-clip dispatch.** All
+1. **Finish and validate compatible AA-clip dispatch.** Raw-control classification
+   is committed; the shared AA-clip implementation is in progress. All
    nine YouTube variants have stable healthy reference triples and known
    differences. Its actual traced large PNG is byte-identical to the frozen
    reference. The [browser path record](tests/References/inventory/inv-027-native-route.json)
    reports body convex=false and triangle convex=true; the historical managed
    sampled body selected convex=true with retained cubics. The compatible raw
    classifier now selects the interval/live route and realizes the isolated
-   model's 356/787/1,634 transparent alpha error on original inputs. All 75 native
-   vectors and genuine-convex controls are preserved; disabling retention remains
+   model's 356/787/1,634 transparent alpha error at the validated checkpoint.
+   All 75 native vectors and genuine-convex controls are preserved; disabling retention remains
    a rejected model. The [AA-clip discriminator](tests/References/inventory/inv-027-antialiased-clip-discriminator.json)
    now establishes the native edge/paint event at **(179,14), alpha 0 versus 3**.
    All 41 authored float points match; outer float mapping alone changes no
@@ -312,20 +339,12 @@ all declared variants and unchanged geometry outside root sizing.
    Prove a shared AA-clip context contract independently of construction clipping
    and path containment, including native nearly-integral/BW conversion, tiny
    mask-to-run cases, materials/opacity, six outputs and work/ownership/cancellation.
-   Then separate clip-mask byte multiplication at canvas boundaries from opaque
-   triangle paint, whose first large model residual is **(457,258), gray 176 versus
-   175**. These are unintegrated diagnostic results, not new exactness or fresh
-   delivery/resource/performance gates. Preserve the charged cache, original
-   references, convex controls, all exact controls and Ford.
-2. **Complete the frozen reference matrix and bounded capture transport.**
-   All 258 renderer cases are executed;
-   eighteen fidelity comparisons are available, 225 cases remain unmeasured and
-   fifteen large cases are verified rejected by the actual capture tool before
-   launch. Extend that bounded transport without shrinking variants or changing
-   renderer limits; retain bounded messages/storage, cancellation and cleanup.
-   Missing references do not block the independently justified raw-path slice,
-   but they block completion of the fidelity matrix and an S17 claim.
-3. **Resolve the measured DOCTYPE dependency through a shared admission.** Four
+   Complete the current implementation's independent controls, portable records
+   and fresh delivery/resource/performance gates before calling it landed.
+   Preserve the charged cache, original references, convex controls, all exact
+   controls and Ford. A validated shared improvement may land while YouTube still
+   differs; the curved-mark exit remains all nine variants exact.
+2. **Resolve the measured DOCTYPE dependency through a shared admission.** Four
    documents currently reject their preserved external DOCTYPE declarations:
    Zeppelin, SG Rotation Leipzig, Artsy and Target. The latter three are marks,
    leaving at most 10/13 marks under the current parser policy; reaching 11/13
@@ -339,6 +358,24 @@ all declared variants and unchanged geometry outside root sizing.
    including Coca-Cola's nine touching-contour UnsupportedFeature outcomes,
    order subsequent shared work. Holdouts receive no document-specific tuning.
    All failures/gaps keep their denominators.
+3. **Continue the selected curved mark through independent residual witnesses.**
+   After the AA-clip checkpoint, separate clip-mask byte multiplication at canvas
+   boundaries from opaque triangle paint. The first large model triangle
+   residual is **(457,258), gray 176 versus 175**. Require a demonstrated shared
+   cause before changing arithmetic; do not infer exactness from a one-byte
+   maximum or treat all residuals as mapping faults. Preserve every original
+   reference and report improvements and regressions separately. General affine,
+   quad/convex/stroke and layer work follows its own evidence.
+
+**Separate evidence queue: frozen references and capture transport.** All 258
+renderer cases are executed; eighteen fidelity comparisons are available,
+225 cases remain unmeasured and fifteen large cases are verified rejected by
+the actual capture tool before launch. Complete references and extend that
+bounded transport without shrinking variants or changing renderer limits;
+retain bounded messages/storage, cancellation and cleanup. Interleave this
+evidence work with bounded renderer slices while retaining one implementation
+owner. The complete matrix is not a prerequisite for the AA-clip or measured
+DOCTYPE repair, but its missing results block S8 completion and an S17 claim.
 
 A bounded shared repair may land with independent mechanism-level improvement
 and nonregression across all nine Ford variants. Preserve all 580 exact fixture
@@ -350,8 +387,9 @@ six-output and delivery checks plus matching measurements. Missing oracle result
 must stay explicit. General tile-local/affine mapping, fractional events,
 quad/convex/stroke and layer fidelity retain independent gates.
 
-Fresh locked restore and the nine-project Release solution build pass with zero
-warnings/errors. Full tests pass **3,244 = 3,099 core + 139 visual + six FontProbe**.
+At the committed raw-control checkpoint, locked restore and the nine-project
+Release solution build passed with zero warnings/errors. Full tests passed
+**3,244 = 3,099 core + 139 visual + six FontProbe**.
 The visual project protects all 258 outcomes, eighteen available references, the
 immutable selection/geometry and the native discriminator. Raw-control dispatch
 is integrated with nine new core tests and the expanded 896-case bank; all 25
@@ -629,7 +667,8 @@ charged work and peaks; local timings do not replace representative throughput.
 
 The wordmark exit is established: all nine Ford variants are exact. The selected
 curved mark has nine improved failures after shared raw classification;
-resolve its remaining mapped events next. S17 still needs completed fidelity measurement
+finish the AA-clip checkpoint before the bounded syntax and residual work above.
+S17 still needs completed fidelity measurement
 of the frozen cohort and the delivery evidence described above. Its measured
 blockers order later shared work; the eight holdouts remain evaluation inputs.
 
@@ -644,7 +683,7 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 | R28 | Original pattern/root-map repair and inverse gradient maps retained. Paint/alpha one-step residuals remain S11/S13. |
 | R30 | Shared contour preparation, ownership and coverage traversal have landed across the four paints. Preserve that boundary while changing curve state; remaining repeated binding/typed-state work follows demonstrated dependencies, not a repository rewrite. |
 | R31 | CI artifact-validator hooks, Windows sandbox setup/health, wrapper deadline/drain and atomic publication are repaired. One opt-in corpus capture/compare/report workflow and representative performance evidence remain; reuse existing tools. |
-| R33 | Original scaled clip-coordinate fault repaired; fractional mapped coverage and exact independent controls exist. Contained raw edges use a distinct scan window. Escaping control bounds trigger native clipped construction, even when the tip fits: this is demonstrated on Ford. That boundary is now integrated; preserve its exact controls while preserving exact Ford output and resolving general clip/event combinations. |
+| R33 | Original scaled clip-coordinate fault repaired; fractional mapped coverage and exact independent controls exist. Contained raw edges use a distinct scan window. Escaping control bounds trigger native clipped construction, even when the tip fits: this is demonstrated on Ford. Construction clipping is integrated; the separate AA paint-clip dispatch contract is still being validated. Preserve exact controls and Ford while resolving general clip/event combinations. |
 | R34 | Shared scan conversion, analytic coverage, contact/union, straight-source sibling-stroke separation, operation/material preservation, contained-edge scan windows and one-chord cubic admission have landed. Clipped construction followed by path-point density now makes all nine Ford variants exact; uncut tip recurrence and sampled existing-edge operations match compiled native code. Complex parity/contact cases and curved/dashed stroke unions retain their gates or known differences. Preserve the exact twin-ring repair; rows 4/6. |
 | R35 | Retained controls, device-map threading, live non-convex cubic fills, curve/walk state separation and one-chord cubic admission have landed. Axis-aligned float mapping closes (375,269) and preserves independent large translations. Shared numeric reading and relative/smooth arithmetic have also landed: they match all 436 recorded authored points and the actual large CTM and close (269,187) on the original input. Earlier injected/mapping discriminators retain their historical limitations. The independently demonstrated lower-row path-point density decision has landed with row 4 and closes all ten residuals. General tile-local/affine/instance mapping, fractional events and quad/convex/stroke migration remain bounded follow-ups; row 5. |
 | R36 | Cascaded cap/join/dash/width values are carried and many spelling twins pass. Finish shared typed state and practical inheritance without reopening repaired attribute/inline cases. |
@@ -684,7 +723,7 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
 | S12 | Caps/joins/dashes/stroke outlines and the bounded row-1 repairs exist. Remaining curved/dashed union, tangent and antialiasing errors belong to row 6 using common coverage. |
 | S13 | Gradient/pattern paint maps and premultiplied composition exist; R41 is closed. Bounded full-canvas paint routing is repaired in row 3; remaining coverage/paint alpha, dither, group composition and paint combinations need exact controls. |
-| S14 | Rectangle clips, contained-edge scan windows, limited masks and isolated opacity exist. Bounded CPU raster contexts separate bitmap construction bounds from owned interiors. Clipped construction is integrated when path/control bounds escape the bitmap, canvas or explicit clip, including curves whose geometry fits. Preserve X/Y pieces, projected winding, whole-path dispatch, bitmap-bounded storage, exclusive interiors and fractional paint coverage. General clipped event fidelity, clips, mask regions/content and bounded nested composition remain open. |
+| S14 | Rectangle clips, contained-edge scan windows, limited masks and isolated opacity exist. Bounded CPU raster contexts separate bitmap construction bounds from owned interiors. Clipped construction is integrated when path/control bounds escape the bitmap, canvas or explicit clip, including curves whose geometry fits. AA paint-clip dispatch is a distinct in-progress contract and can affect contained paths. Preserve X/Y pieces, projected winding, whole-path dispatch, bitmap-bounded storage, exclusive interiors and fractional paint coverage. General clipped event fidelity, clips, mask regions/content and bounded nested composition remain open. |
 | S15 | Live-text wordmarks are experimental, not required for outlined wordmarks. Follow section 6 and shared glyph contours, not a separate renderer. |
 | S16 | Uniform embedded PNGs and narrow patterns exist. General raster decoding/resampling, multi-element patterns, markers, filters/blending and additional static CSS only for measured blockers. |
 | S17 | Not achieved. The first cohort is frozen; it needs at least 11/13 exact marks and 12/14 exact wordmarks (at least 23/27 total), every declared variant exact for counted documents, and fresh delivery/resource/performance evidence. Report its selection limits; broader representativeness remains unproved. |
