@@ -1,20 +1,22 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-05. The reviewed renderer baseline is
-`f633c86bc5df0584edd1c4741c0a2218d49d3a32`. Subsequent checkpoints preserve
-curve/walk state separation (`70c18287`), reject the measured endpoint models
-(`f68cb887`), repair bounded full-canvas solid-paint routing (`647dbd6b`) and bank
-mask/run dispatch controls (`30c6f4a3`). Operation-preserving paint (`c9f0eea2`)
-implements material arithmetic and capture conversion. Scan-window separation
-(`9e77c0fa`) preserves path storage/dispatch for contained raw edges. The current
-repair (`429ea226`) admits retained cubics independently of their flattened chord
-count. Compiled diagnostics identify native clipped construction as the next Ford
-dependency. Its bounded line/quad/cubic kernel is now verified independently;
-integration into shared contour preparation remains open.
+Updated 2026-10-05. The latest validated library checkpoint is **`57c6a7e3`**:
+the bounded line/quad/cubic clipping kernel and its independent controls are
+committed, but rendering does not yet call the kernel. The latest change to
+rendered pixels remains **`429ea226`**, which admits retained cubics independently
+of flattened chord count. It follows operation-preserving paint (`c9f0eea2`) and
+contained-edge scan-window separation (`9e77c0fa`). **Next: integrate clipped-edge
+construction into shared contour preparation.** Ford remains zero exact of nine;
+the first corporate checkpoints and S17 remain open.
+
+The reviewed renderer baseline
+`f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
+rejected endpoint models, full-canvas paint routing and mask/run controls remain
+preserved checkpoints; their evidence is in the records linked below.
 The September 28 baseline and review remain historical evidence in
 [the review](docs/REVIEW_2026_09_28.md) and Git. R01–R41 and S1–S17 retain
-their identities. This revision replaces the accumulated checkpoint log with
-the current execution queue; detailed experiments stay in
+their identities. This plan owns the current execution queue and exit criteria;
+checkpoint summaries below retain their dates, while detailed experiments stay in
 [the rasterization record](docs/RASTERIZATION_DESIGN.md), document evidence in
 [the inventory](docs/INVENTORY.md), and timings in
 [the benchmark record](docs/BENCHMARKS.md).
@@ -169,7 +171,7 @@ completed stage: the remaining exit evidence below governs completion.
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Not achieved: independent milestone and delivery, S8/S17.** The 92-file inventory and all-variant records are useful evidence, not a release rate. | First exact curved corporate mark and outlined wordmark; then a frozen representative cohort meeting the 80% exact-document target overall and per corporate stratum, complete declared variants and fresh platform/package/resource/performance evidence. |
 
-### Active work order: retained-cubic event fidelity and clipped edges (2026-10-05)
+### Active work order: integrate clipped-edge construction (2026-10-05)
 
 **Implemented mechanism.** Small native path bounds select an accumulated mask;
 larger bounds preserve ordered direct single/pair/full-span paints separately from
@@ -268,8 +270,10 @@ landed renderer repair or full-image/all-nine evidence.
 
 **Kernel foundation verified.** Typed clip bounds, float points and ordered
 line/quad/cubic pieces now preserve native X/Y chopping, root search, projection
-and winding in caller-owned scratch. All 160 compiled-native cases match; disabling
-cubic X chopping fails 38. Work is checked before numerical phases and root-search
+and winding in caller-owned scratch. All 160 compiled-native cases match: 159
+inputs were declared before implementation, and one targeted root-search witness
+was added and independently captured afterward. Disabling cubic X chopping fails
+38 of the original 159 cases. Work is checked before numerical phases and root-search
 iterations, and cancellation preserves its token. This internal kernel is not yet
 on the renderer's path, so no existing pixels or resource ledgers change.
 
@@ -368,16 +372,19 @@ step in the design record instead of expanding the calibration census.
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
 | S12 | Caps/joins/dashes/stroke outlines and the bounded row-1 repairs exist. Remaining curved/dashed union, tangent and antialiasing errors belong to row 6 using common coverage. |
 | S13 | Gradient/pattern paint maps and premultiplied composition exist; R41 is closed. Bounded full-canvas paint routing is repaired in row 3; remaining coverage/paint alpha, dither, group composition and paint combinations need exact controls. |
-| S14 | Rectangle clips, contained-edge scan windows, limited masks and isolated opacity exist. Native clipped-edge construction for paths crossing a clip, general clips, mask regions/content and bounded nested composition remain. |
+| S14 | Rectangle clips, contained-edge scan windows, limited masks and isolated opacity exist. The clipping kernel is independently verified; renderer integration when path/control bounds escape the canvas or explicit clip remains open, including curves whose geometry fits. General clips, mask regions/content and bounded nested composition remain. |
 | S15 | Live-text wordmarks are experimental, not required for outlined wordmarks. Follow section 6 and shared glyph contours, not a separate renderer. |
 | S16 | Uniform embedded PNGs and narrow patterns exist. General raster decoding/resampling, multi-element patterns, markers, filters/blending and additional static CSS only for measured blockers. |
 | S17 | Not achieved. Requires a frozen representative corporate cohort meeting at least 80% exact documents overall and per corporate stratum, every declared variant exact for counted documents and fresh delivery evidence. |
 
 ## 5. Product contract, evidence and completion
 
-Keep one MIT pure-managed C# net10.0 library for Windows/Linux: no third-party
-runtime packages, native assets/PInvoke, System.Drawing, installed-font engine,
-browser rendering service or other Lokad runtime dependency. Rendering consumes
+Keep one pure-managed C# net10.0 library for Windows/Linux. Retain the project's
+MIT license and the adapted clipping code's BSD license/notices in
+[THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt). Bounded managed source
+adaptations follow section 7. Preserve zero third-party runtime packages, native
+assets/PInvoke, System.Drawing, installed-font engines, browser rendering services
+or other Lokad runtime dependencies. Rendering consumes
 explicit options/resources; it does not discover filesystem/network resources.
 Scripts/events, animation, mutable DOM, foreignObject HTML and arbitrary external
 documents stay out of scope. Live fonts and effects must not delay outlined logos.
@@ -645,10 +652,17 @@ oracle results are not canonical Linux evidence. Work toward 200 targeted cases 
 ## 7. Optional reference sources
 
 The local reference review in the earlier draft remains useful design guidance.
-Keep `external/` optional, ignored and unreferenced: no submodule, build/test input,
-runtime load, CI download, vendored/translated implementation or hidden Rust/C++/
-Node dependency. Do not modify another worker's reference checkout to test its
-absence. Ordinary build/test/package/consumer workflows need no sibling checkout.
+Keep `external/` optional, ignored and unreferenced by builds, tests, packages and
+runtime: no submodule, CI download or hidden Rust/C++/Node dependency. Do not modify
+another worker's reference checkout to test its absence. Ordinary
+build/test/package/consumer workflows need no sibling checkout.
+
+Permit bounded C# adaptations of numerical algorithms needed by a demonstrated
+renderer dependency, as with the clipping kernel at `57c6a7e3`. Record the exact
+source revision/files, retain copyright and license notices in source and packages,
+and verify independent vectors plus the shared ownership/work/cancellation
+contracts. Adaptations must remain self-contained managed code with portable
+regressions. Whole-renderer vendoring or translation remains outside the plan.
 
 | Inspected source / revision | Bounded use |
 | --- | --- |
@@ -656,7 +670,7 @@ absence. Ordinary build/test/package/consumer workflows need no sibling checkout
 | tiny-skia `5d4754777746eef0828be166896eaf482c49f8f2` | Edge/span organization, compact paths, stroke/dash expansion and storage reuse. Its fourfold supersampling is not Chrome-exact analytic AA. |
 | resvg-test-suite `d8e064337faf01bc5a9579187a56dbdbe3eacc72` | Semantic counterexample index. It overlaps heavily with resvg's bundled suite; neither is a separate real-logo cohort or our PNG oracle. |
 | NanoSVG `239e102ec2c691f2902e20ace2ed36ee4a35cfe6` | Secondary small-parser/scanline comparison only; five-subsample output is not the exactness target. |
-| Matched Skia `f8b66b7597c4cc859d3ed190e9c6872241e6721c` | Release-tag `SkScan_AAAPath`, blitter/draw routing, stroker and curve conversion for a specific S11/S12 hypothesis. Prior source reads and experiment provenance are in the design record; this review did not rerun an external-source audit. |
+| Matched Skia `f8b66b7597c4cc859d3ed190e9c6872241e6721c` | Release-tag scan, paint routing, stroker and curve construction for demonstrated S11/S12/S14 dependencies. The bounded clipping/solver adaptation retains this pin and BSD notices; compiled-native vectors and experiment provenance are in the design record. |
 
 The recorded Skia comparison `8b8c3872fbc03f025855db96ce683f34ec98a815`
 is a main revision, not the browser release pin. Use explicit matched
@@ -676,7 +690,8 @@ checkout and are study references only):
 - **Rows 5–6:** resvg `crates/usvg/src/tree/mod.rs::Path` retains path data, paint
   and transform/bounds separately; tiny-skia `path/src/stroker.rs::PathStroker`
   processes line/quadratic/cubic verbs and curve normals. Apply those boundaries
-  within the existing C# ownership model rather than translating implementations.
+  within the existing C# ownership model; bounded numerical adaptations follow
+  the policy above.
 - **Row 7:** resvg `crates/resvg/src/render.rs::render_group` isolates bounded
   layers and tracks their origin; sibling `clip.rs` and `mask.rs` reuse traversal
   for effect content. Their composition pixels still need our pinned oracle.
@@ -689,9 +704,10 @@ Upstream success criteria and defaults are not ours: resvg tests allow channel
 tolerance and can regenerate references from themselves; the test-suite Chrome
 helper disables the sandbox; upstream resolvers may read host files or keep a
 malformed path prefix. Keep our pinned captures, explicit providers, categorized
-failures, strict comparison and bounds. Keep upstream notices with optional
-checkouts; bundled fonts/assets have separate licenses. Source access authorizes
-study, not product vendoring or publication of private assets.
+failures, strict comparison and bounds. Retain upstream notices with optional
+checkouts and the required notices for adapted product code; bundled fonts/assets
+have separate licenses. Source access does not authorize whole-renderer vendoring
+or publication of private assets.
 
 Use the existing [oracle tooling](docs/ORACLE.md),
 [research record](docs/RASTERIZATION_DESIGN.md),
