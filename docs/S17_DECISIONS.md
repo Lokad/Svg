@@ -12,7 +12,7 @@ and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 Current validated evidence: 613 fixture entries = 495 exact + 113 known-difference
 renders + five rejections across 362 base documents and 251 variants; 67 research
 probes = 66 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 3,054 core + 114 visual + six FontProbe tests pass. All 25 memory
+Release build and 3,054 core + 115 visual + six FontProbe tests pass. All 25 memory
 scenarios, package inspection and isolated installed-consumer checks pass at the
 clipped-preparation checkpoint. The Default inventory retains 88 renders +
 four MalformedInput rejections out of 92. These counts establish neither corporate
@@ -85,8 +85,11 @@ Default inventory PNGs have no matching capture in that sweep. No reference was
 regenerated from the candidate. Kernel, contour and output tests, memory/package
 checks and local resource/timing ledgers prove this bounded slice's validation;
 they do not close general coverage, quad/convex/stroke/layer fidelity, representative
-throughput or Linux delivery. The next wordmark slice compares prepared state and
-events at the first remaining large-size mismatch before changing recurrence.
+throughput or Linux delivery. A later traced investigation attributes the first
+large-size mismatch to the CPU raster tile construction clip: the existing shared
+clipper matches the original row-6 tile interior when given the observed context.
+The next wordmark slice integrates bounded raster contexts before changing
+recurrence; the three large complete PNGs are still the same retained failures.
 See [PLAN](../PLAN.md) and [the design record](RASTERIZATION_DESIGN.md).
 
 S17 additionally requires reproducible per-variant identities/diffs, categorized

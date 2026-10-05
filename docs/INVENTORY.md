@@ -42,6 +42,16 @@ options, source/license provenance and complete current comparisons are portable
 in [the Ford bank](../tests/References/inventory/inv-002-variants.json) and exercised
 by ordinary tests. The original third-party SVG stays in `candidates/`.
 
+The subsequent CPU raster investigation changes none of these identities. One
+fresh traced transparent capture at each size reproduces its original PNG;
+small/intended use one bitmap tile, while large uses eight. Supplying the observed
+large construction clip to the existing renderer matches the original row-6 tile
+interior and closes the first alpha witness at (295,6), 55 → 54. The public
+converter has not integrated those contexts, so all three large failures remain.
+[Portable clip evidence](../tests/References/inventory/inv-002-native-clip-context.json)
+and an ordinary regression preserve the finding; PLAN names the implementation
+and resource/fidelity proof still required.
+
 | Variant | Current candidate PNG SHA-256 |
 | --- | --- |
 | 250x100-transparent | `cd677106b94bc25589abded976835552f88b70450d89ac94e4cbe9a568137937` |

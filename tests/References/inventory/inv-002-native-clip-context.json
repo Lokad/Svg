@@ -1,0 +1,294 @@
+{
+  "documentId": "inv-002",
+  "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "traceDate": "2026-10-05",
+  "traceObservation": "One fresh traced capture per transparent size. Each complete screenshot is byte-identical to the previously frozen three-capture reference. Tracing changes no capture arguments or image inputs.",
+  "nativePin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "nativeObservation": "Actual compiled native clipper, analytic edge setup and general walker consume retained managed device verbs narrowed to float. The row witness has no direct paints; saturating additive alpha and native pending-run snapping suffice for its alpha comparison. This does not establish whole-image native parity or native parsing/mapping.",
+  "variants": [
+    {
+      "id": "inv-002-250x100-transparent",
+      "width": 250,
+      "height": 100,
+      "referenceSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+      "tracedScreenshotSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+      "traceSha256": "60f952c54fd28d00afa5d572df4e9324801bfdb9b068f01416b7fb26150b5691",
+      "tiles": [
+        {
+          "content_rect": [
+            0,
+            0,
+            256,
+            128
+          ],
+          "contents_scale": 1,
+          "raster_transform": {
+            "scale": [
+              1,
+              1
+            ],
+            "translation": [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "traceStartupHealth": "healthy",
+      "traceProfileCleaned": true
+    },
+    {
+      "id": "inv-002-500x200-transparent",
+      "width": 500,
+      "height": 200,
+      "referenceSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+      "tracedScreenshotSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+      "traceSha256": "ac3d1a03ba6ea856007943114af3194281f5bff82d4b4c869ad694a16a582fa3",
+      "tiles": [
+        {
+          "content_rect": [
+            0,
+            0,
+            512,
+            256
+          ],
+          "contents_scale": 1,
+          "raster_transform": {
+            "scale": [
+              1,
+              1
+            ],
+            "translation": [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "traceStartupHealth": "healthy",
+      "traceProfileCleaned": true
+    },
+    {
+      "id": "inv-002-1000x400-transparent",
+      "width": 1000,
+      "height": 400,
+      "referenceSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+      "tracedScreenshotSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+      "traceSha256": "7e60c24b19528ed9704e1bb0469e46a4244090663630bfe9e64b16200c70f2f5",
+      "tiles": [
+        {
+          "content_rect": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "contents_scale": 1,
+          "raster_transform": {
+            "scale": [
+              1,
+              1
+            ],
+            "translation": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "content_rect": [
+            254,
+            0,
+            256,
+            256
+          ],
+          "contents_scale": 1,
+          "raster_transform": {
+            "scale": [
+              1,
+              1
+            ],
+            "translation": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "content_rect": [
+            0,
+            254,
+            256,
+            256
+          ],
+          "contents_scale": 1,
+          "raster_transform": {
+            "scale": [
+              1,
+              1
+            ],
+            "translation": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "content_rect": [
+            508,
+            0,
+            256,
+            256
+          ],
+          "contents_scale": 1,
+          "raster_transform": {
+            "scale": [
+              1,
+              1
+            ],
+            "translation": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "content_rect": [
+            254,
+            254,
+            256,
+            256
+          ],
+          "contents_scale": 1,
+          "raster_transform": {
+            "scale": [
+              1,
+              1
+            ],
+            "translation": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "content_rect": [
+            762,
+            0,
+            256,
+            256
+          ],
+          "contents_scale": 1,
+          "raster_transform": {
+            "scale": [
+              1,
+              1
+            ],
+            "translation": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "content_rect": [
+            508,
+            254,
+            256,
+            256
+          ],
+          "contents_scale": 1,
+          "raster_transform": {
+            "scale": [
+              1,
+              1
+            ],
+            "translation": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "content_rect": [
+            762,
+            254,
+            256,
+            256
+          ],
+          "contents_scale": 1,
+          "raster_transform": {
+            "scale": [
+              1,
+              1
+            ],
+            "translation": [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "traceStartupHealth": "healthy",
+      "traceProfileCleaned": true
+    }
+  ],
+  "firstLargeWitness": {
+    "shapeIndex": 1,
+    "row": 6,
+    "x": 295,
+    "wholeCanvasAlpha": 55,
+    "observedTileAlpha": 54,
+    "referenceAlpha": 54,
+    "constructionClip": {
+      "left": 254,
+      "top": 0,
+      "right": 510,
+      "bottom": 256
+    },
+    "comparedInterior": {
+      "left": 255,
+      "rightExclusive": 509
+    },
+    "alphaChangedPixelCount": 0,
+    "wholeCanvasOperationCount": 34,
+    "sameEdgesNativeOperationsMatch": true,
+    "wholeCanvasNativeVerbOperationsMatch": true,
+    "wholeCanvasTrapezoid": [
+      18639828,
+      19217920,
+      18059220,
+      20175360,
+      1850,
+      1121,
+      64
+    ],
+    "observedTileTrapezoid": [
+      18639828,
+      19217920,
+      18059220,
+      20112896,
+      1850,
+      1199,
+      64
+    ]
+  },
+  "rendererSourceCommit": "3072e1f2",
+  "sourceVariantMetadata": "inv-002-variants.json",
+  "nativeDriverLimits": "The diagnostic driver omits native projected-vertical combination and full color painting, and receives managed-authored device coordinates narrowed to float. Its full-canvas comparisons inherit the recorded dispatch flags; they do not establish Chrome parsing, mapping or whole-image dispatch parity.",
+  "chromiumSources": [
+    "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/layers/tile_size_calculator.cc",
+    "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/base/tiling_data.cc",
+    "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/raster/raster_source.cc"
+  ],
+  "chromiumSourceSha256": {
+    "cc/layers/tile_size_calculator.cc": "bc2251dc8cc3e1e03e454618ed60d91102ca2b3593217c2c91bb78ed01482f9e",
+    "cc/base/tiling_data.cc": "e23aac4e5bb91d94c5c5bd993593504f3e82a5757a633189ebed176510fae43e",
+    "cc/raster/raster_source.cc": "89aa568d1900c193a287b02c9ab0b057624273b9ba254243db64de115bf7d858"
+  }
+}

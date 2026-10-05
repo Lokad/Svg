@@ -3643,9 +3643,105 @@ negative control, post-implementation declarations/capture triples, resource
 ledgers, timing batches and delivery checks. Committed inputs, original references,
 metadata and tests remain portable and do not consume optional native checkouts.
 
-Next compare prepared state and operations at the earliest remaining large-size
-Ford mismatch with pinned native verb construction/walking. The earlier trace's
+At the clipped-preparation checkpoint, the next question was prepared state and
+operations at the earliest remaining large-size Ford mismatch against pinned
+native construction/walking. The investigation below answers that first question. The earlier trace's
 identical-edge/sampled-row parity does not establish every native-built edge or
 paint. Attribute the first divergence before changing construction, advancement,
 interval handoff or paint; preserve all six exact variants and the retained large
 failures. Do not repeat global endpoint, float-cast or density replacements.
+
+## Ford CPU raster clip investigation (2026-10-05)
+
+Investigate production checkpoint `3072e1f2` without changing production code,
+original SVGs, declared variants or reference PNGs. The earliest large mismatch
+is (295,6) in the second path, before the previously sampled first tip at row 120.
+Minimum mismatch X=8 is a whole-image bounding-box value, not that first pixel.
+
+An ignored source snapshot records prepared state and trapezoid/additive/direct
+operations. Its complete 1000×400 transparent PNG is byte-identical to production:
+`9787467e268618242e3a590e7a57b30e3ae3fcfff6e2a2b5cb486a925104bfa8`.
+The initial observer assumed every shape visited row 6; only the second path does.
+Give each prepared shape a stable ID before comparing its matching retained verbs.
+This correction changes no observed renderer pixels. Prepared edge count is 72;
+run dispatch and intersection checking are recorded explicitly.
+
+Feed the state and then the retained managed device verbs narrowed to float into
+the actual compiled matched-pin clipper, analytic edge setup and general walker.
+All 34 row-6 operations match in both full-canvas comparisons. Extending the native
+walk from row 7 to the path's complete height leaves those operations unchanged.
+Forcing the whole second path through the full-canvas clipper changes its edge
+count but leaves the first-row operations and alpha 55 unchanged. None of those
+models reproduces the original alpha 54. They falsify a recurrence change as the
+next action; they do not establish Chrome authoring, mapping or dispatch parity.
+
+Trace one new recipe-3 transparent capture at each Ford size using the pinned
+Chrome executable, unchanged input, capture parameters and sandboxed process.
+All three launches report healthy startup and profile cleanup. Each entire PNG
+is byte-identical to its original three-capture reference. Thus the trace measures
+the original browser behavior without replacing any reference or establishing a
+new capture-triple count. Identify the SVG renderer by its matching display-list
+bounds before reading its layer-tree tile snapshots.
+
+| Variant | Observed CPU bitmap rectangles |
+| --- | --- |
+| 250×100 | One at (0,0), size 256×128. |
+| 500×200 | One at (0,0), size 512×256. |
+| 1000×400 | Eight 256×256 bitmaps, X=0/254/508/762 × Y=0/254, contents scale 1 and identity raster transform. |
+
+The release-tag [CPU tile calculator](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/layers/tile_size_calculator.cc)
+uses CPU default and maximum-untiled settings, with small-dimension expansion,
+64-pixel rounding and final alignment/clamps. [Border geometry](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/base/tiling_data.cc)
+subtracts two border texels from the stride and separates bordered bitmap bounds
+from owned tile interiors. [Raster playback](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/raster/raster_source.cc)
+translates into each bitmap and clips before replaying the display list. These
+sources explain the captured contexts; they do not make the settings universal
+across GPU, platform or capture recipes.
+
+Use the observed second bitmap's construction clip (254,0)–(510,256) with the
+native retained-verb construction. At row 6, its first trapezoid changes only the
+right edge's lower X and inverse slope in the compared vector:
+
+| Context | Lower-right X | Right inverse slope | Raw alpha at (295,6) |
+| --- | ---: | ---: | ---: |
+| Whole canvas | 20,175,360 | 1,121 | 55 |
+| Observed bitmap clip | 20,112,896 | 1,199 | 54 |
+
+All 254 pixels of the owned row-6 interior X=255..508 match the original alpha
+when the native additive values receive native pending-run snapping. At (305,6),
+raw coverage is seven and snaps to zero; whole-canvas construction produces 11.
+This row has no direct paints, so this comparison needs no substitute color
+blitter. The driver omits native projected-vertical combination, full color paint
+and original browser parsing/mapping; do not generalize its edge counts or this
+single row to whole-image parity. Tile-local device mapping and the actual density
+predicate remain separate proof obligations for the implementation.
+
+The ordinary explicit-context regression uses the existing shared managed
+preparation and paint methods. It verifies whole-canvas alpha 55, then exact
+original alpha across that complete owned row interior under the observed clip,
+with every reservation released. Removing construction clipping fails at expected
+54 versus actual 55. Portable tile summaries, original capture identities, native
+witness fields and source fingerprints are in
+[the clip-context evidence](../tests/References/inventory/inv-002-native-clip-context.json).
+Original Ford PNGs and source/trademark provenance remain in their existing bank.
+
+Fresh nine-project Release build has zero warnings/errors; all 3,175 tests pass
+(3,054 core, 115 visual, six FontProbe). This is test/documentation progress only:
+no production pixels, corpus counts, resource limits or package contracts change.
+Memory/package validation remains the earlier clipped-preparation checkpoint;
+there is no new performance, full native-image or Linux claim.
+
+Next implement bounded shared CPU raster contexts, keeping path storage/dispatch,
+bordered construction bounds and owned output interiors distinct. Declare
+independent threshold, border/phase, material and layer controls first. Preserve
+all six exact Ford variants, every exact fixture, all original large failures,
+output parity, source order and categorized admissions. Prove repeated work,
+reservation peaks, cancellation and disposal under unchanged Default limits;
+measure whole-image evidence before claiming a Ford repair. Do not substitute a
+hardcoded Ford clip or merely crop prepared whole-canvas coverage.
+
+Ignored evidence under `artifacts/large-ford-edges-20261005/` includes source
+snapshot identities, unchanged candidate PNG, corrected tapes, native drivers and
+comparisons, complete Chrome traces/screenshots, release-tag source files and the
+negative-control log. Ordinary tests remain offline and do not reference native
+checkouts or browser binaries. PLAN owns the current execution queue.

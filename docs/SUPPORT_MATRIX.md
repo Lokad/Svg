@@ -63,6 +63,14 @@ One predeclared clip configuration and the subsequent fractional clipped-stroke
 witness are exact; the star-stroke witness remains a known difference. Twenty-six
 clip configurations retain failures, including the quadratic phase's increased
 alpha error. The updated bank retains both directions and every rejection.
+
+A traced follow-up records one CPU bitmap tile for small/intended Ford and eight
+for large Ford. The observed large construction clip closes the first alpha
+mismatch in an explicit-context test across the complete row-6 tile interior.
+Public conversion still prepares against the canvas/explicit SVG clip; integrating
+bounded raster contexts remains work in PLAN. This evidence changes no candidate
+PNG, exact count or all-variant claim.
+
 General curve/event, convex/quad/stroke, clip/mask and layer fidelity remains open.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
