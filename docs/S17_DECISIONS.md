@@ -13,8 +13,9 @@ Release build and 3,090 core + 126 visual + six FontProbe tests pass. All 25 mem
 scenarios, runtime/symbol package inspection and installed-consumer checks pass.
 The Default inventory retains 88 renders + four MalformedInput rejections out of
 92. These counts establish neither corporate coverage, full independent-variant
-validation nor Linux delivery. Select the curved mark and freeze the cohort and
-variant recipe before further per-document tuning.
+validation nor Linux delivery. YouTube is now selected as the curved mark, and
+the first corporate cohort and variant recipe are frozen before fresh comparison;
+measurement and transport-limit gaps remain open.
 
 ## Q1 - numeric exact-document target: selected
 
@@ -42,9 +43,24 @@ candidate or remove hard documents after a failure.
 
 The freeze records document IDs, source/input hashes, strata, logical viewports,
 output scales, resulting dimensions, backgrounds and oracle refresh policy.
-Every declared small/intended/large × transparent/white/black combination needs
-an explicit recipe. Missing captures and transport-limit failures remain gaps.
-This release freeze is not a prerequisite to the bounded Ford renderer slice.
+The [2026-10-05 manifest](../tests/References/inventory/corporate-cohort-v1.json)
+now freezes 27 documents / 258 explicit recipes: every one of the 19 retained
+brand/organization exports plus eight predeclared fresh evaluation holdouts.
+Primary strata contain 13 marks and 14 outlined wordmarks, requiring at least
+11 and 12 exact documents respectively, alongside the overall 22-document
+minimum. All cases of a document must pass. Fifteen large cases exceed the
+current oracle transport cap; they remain declared gaps. The retained exports
+were measured historically, so they are development inputs rather than unseen
+holdouts. The new eight receive no document-specific tuning.
+
+Only root dimensions, existing root-style sizing and an explicit added viewBox
+for scaled viewBox-less variants may be materialized. Both renderer and browser
+consume those viewBox-added variants; original source files and historical
+references stay unchanged. Tests verify unchanged bytes outside the root start
+tag and preserve all non-sizing root attributes. Fixed viewports and hashes
+prevent a successful candidate from redefining its reference. See the
+[inventory record](INVENTORY.md#frozen-corporate-cohort-2026-10-05) for the primary
+classification, original source/license evidence and representativeness limits.
 
 ## Oracle compatibility remains implementation work
 

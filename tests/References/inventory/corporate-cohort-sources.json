@@ -1,0 +1,247 @@
+[
+  {
+    "id": "inv-095",
+    "name": "Nike",
+    "stratum": "corporate-mark",
+    "role": "holdout",
+    "sourceFile": "File:Logo NIKE.svg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Logo_NIKE.svg",
+    "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "upstreamTimestamp": "2022-09-08T23:49:18Z",
+    "upstreamBytes": 966,
+    "upstreamSha1": "982fdbac5992317801e80e5b23c606ce7313122e",
+    "upstreamSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+    "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+    "normalization": "Only line endings normalized to LF under repository SVG policy; original upstream bytes separately hashed.",
+    "licenseShortName": "Public domain",
+    "licenseMetadata": {
+      "ImageDescription": "<bdi lang=\"en\">The logo of <bdi lang=\"\"><a href=\"https://en.wikipedia.org/wiki/en:Nike,_Inc.\" class=\"extiw\" title=\"w:en:Nike, Inc.\"><span title=\"American athletic equipment company\">Nike</span></a> – American athletic equipment company</bdi></bdi>",
+      "Credit": "SVG based on the \"swoosh\" logo <a rel=\"nofollow\" class=\"external autonumber\" href=\"http://www.estudiologos.com/blog/nike-diseno-tecnologia-y-moda/\">[1]</a>",
+      "Artist": "<a href=\"https://en.wikipedia.org/wiki/en:Carolyn_Davidson_(graphic_designer)\" class=\"extiw\" title=\"w:en:Carolyn Davidson (graphic designer)\"><span title=\"American artist\">Carolyn Davidson</span></a>, Nike",
+      "LicenseShortName": "Public domain",
+      "UsageTerms": "Public domain",
+      "Copyrighted": "False",
+      "Restrictions": "trademarked"
+    },
+    "rootAttributes": {
+      "width": "1000",
+      "height": "356.39",
+      "viewBox": "135.5 361.38 1000 356.39"
+    },
+    "retrievalDate": "2026-10-05"
+  },
+  {
+    "id": "inv-096",
+    "name": "Toyota",
+    "stratum": "corporate-mark",
+    "role": "holdout",
+    "sourceFile": "File:Toyota Symbol.svg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Toyota_Symbol.svg",
+    "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Toyota_Symbol.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "upstreamTimestamp": "2024-11-10T03:08:42Z",
+    "upstreamBytes": 891,
+    "upstreamSha1": "83e3953f26519bec12d32e2ac37692952e7d2beb",
+    "upstreamSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+    "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+    "normalization": "Only line endings normalized to LF under repository SVG policy; original upstream bytes separately hashed.",
+    "licenseShortName": "Public domain",
+    "licenseMetadata": {
+      "ImageDescription": "This is a symbol for <a href=\"//commons.wikimedia.org/wiki/Toyota\" title=\"Toyota\">Toyota</a> used since 1989.",
+      "Credit": "Logopedia",
+      "Artist": "<a href=\"//commons.wikimedia.org/wiki/Toyota\" title=\"Toyota\">Toyota</a>",
+      "LicenseShortName": "Public domain",
+      "UsageTerms": "Public domain",
+      "Copyrighted": "False",
+      "Restrictions": "trademarked"
+    },
+    "rootAttributes": {
+      "width": "950",
+      "height": "612.5",
+      "viewBox": "0 0 251.4 162.1"
+    },
+    "retrievalDate": "2026-10-05"
+  },
+  {
+    "id": "inv-097",
+    "name": "Pepsi",
+    "stratum": "corporate-mark",
+    "role": "holdout",
+    "sourceFile": "File:Pepsi 2023.svg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Pepsi_2023.svg",
+    "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/6/68/Pepsi_2023.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "upstreamTimestamp": "2024-03-25T13:48:18Z",
+    "upstreamBytes": 1987,
+    "upstreamSha1": "ec835cdf4d205c9d65cfc2e8d4e6a7997d51e160",
+    "upstreamSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+    "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+    "normalization": "Only line endings normalized to LF under repository SVG policy; original upstream bytes separately hashed.",
+    "licenseShortName": "Public domain",
+    "licenseMetadata": {
+      "ImageDescription": "This is a logo for <a href=\"https://en.wikipedia.org/wiki/Pepsi\" class=\"extiw\" title=\"w:Pepsi\">Pepsi</a> used since 2023.",
+      "Credit": "<a rel=\"nofollow\" class=\"external text\" href=\"https://logos.fandom.com/wiki/File:Pepsi_2023.svg\">Logopedia</a>",
+      "Artist": "™/®PepsiCo, Inc.",
+      "LicenseShortName": "Public domain",
+      "UsageTerms": "Public domain",
+      "Copyrighted": "False",
+      "Restrictions": "trademarked"
+    },
+    "rootAttributes": {
+      "width": "799.61",
+      "height": "799.59",
+      "viewBox": "0 0 211.56 211.56"
+    },
+    "retrievalDate": "2026-10-05"
+  },
+  {
+    "id": "inv-098",
+    "name": "Target",
+    "stratum": "corporate-mark",
+    "role": "holdout",
+    "sourceFile": "File:Target Corporation logo.svg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Target_Corporation_logo.svg",
+    "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/0/04/Target_Corporation_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "upstreamTimestamp": "2015-05-25T15:26:45Z",
+    "upstreamBytes": 2816,
+    "upstreamSha1": "164fc4591a7a01e94ce410159ff0e1c31bba6634",
+    "upstreamSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+    "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+    "normalization": "Only line endings normalized to LF under repository SVG policy; original upstream bytes separately hashed.",
+    "licenseShortName": "Public domain",
+    "licenseMetadata": {
+      "ImageDescription": "This is a logo for Target used since 2004.",
+      "Credit": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+      "Artist": "Target Corporation",
+      "LicenseShortName": "Public domain",
+      "UsageTerms": "Public domain",
+      "Copyrighted": "False",
+      "Restrictions": "trademarked"
+    },
+    "rootAttributes": {
+      "width": "768",
+      "height": "768",
+      "viewBox": "-3.825 -3.825 135.15 135.15"
+    },
+    "retrievalDate": "2026-10-05"
+  },
+  {
+    "id": "inv-099",
+    "name": "IBM",
+    "stratum": "outlined-wordmark",
+    "role": "holdout",
+    "sourceFile": "File:IBM logo.svg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:IBM_logo.svg",
+    "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "upstreamTimestamp": "2026-05-03T01:32:47Z",
+    "upstreamBytes": 3735,
+    "upstreamSha1": "9496017d7ec3206e8b4c36925b7ef3721fb3bc65",
+    "upstreamSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+    "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+    "normalization": "Only line endings normalized to LF under repository SVG policy; original upstream bytes separately hashed.",
+    "licenseShortName": "Public domain",
+    "licenseMetadata": {
+      "ImageDescription": "The eight-striped wordmark of <a href=\"https://en.wikipedia.org/wiki/IBM\" class=\"extiw\" title=\"w:IBM\">IBM</a>, the letters \"IBM\" in <a href=\"https://en.wikipedia.org/wiki/City_(typeface)\" class=\"extiw\" title=\"en:City (typeface)\">City Medium</a> typeface. Introduced in 1967. Trademarked by International Business Machines Corporation.",
+      "Credit": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.ibm.com/design/language/ibm-logos/8-bar/\">IBM Design Language – 8-Bar</a>",
+      "Artist": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Paul_Rand\" class=\"extiw\" title=\"w:en:Paul Rand\"><span title=\"American graphic designer (1914–1996)\">Paul Rand</span></a></bdi>",
+      "LicenseShortName": "Public domain",
+      "UsageTerms": "Public domain",
+      "Copyrighted": "False",
+      "Restrictions": "trademarked"
+    },
+    "rootAttributes": {
+      "width": "1075px",
+      "height": "401.15px",
+      "viewBox": "0 0 1075 401.15"
+    },
+    "retrievalDate": "2026-10-05"
+  },
+  {
+    "id": "inv-100",
+    "name": "IKEA",
+    "stratum": "outlined-wordmark",
+    "role": "holdout",
+    "sourceFile": "File:Ikea logo.svg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Ikea_logo.svg",
+    "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Ikea_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "upstreamTimestamp": "2026-04-25T21:16:35Z",
+    "upstreamBytes": 2297,
+    "upstreamSha1": "673857587466b71d397e128669011e553f43dadf",
+    "upstreamSha256": "d96e17feff64d1c5f61b2c2ca80e666110b6b6e2ccd3b317696905cc24ec6ae9",
+    "inputSha256": "d96e17feff64d1c5f61b2c2ca80e666110b6b6e2ccd3b317696905cc24ec6ae9",
+    "normalization": "Only line endings normalized to LF under repository SVG policy; original upstream bytes separately hashed.",
+    "licenseShortName": "Public domain",
+    "licenseMetadata": {
+      "ImageDescription": "Logo of <a href=\"https://en.wikipedia.org/wiki/Ikea\" class=\"extiw\" title=\"w:Ikea\">Ikea</a>.",
+      "Credit": "Own work using: <a rel=\"nofollow\" class=\"external free\" href=\"https://www.ikea.com/us/en/static/ikea-logo.f7d9229f806b59ec64cb.svg\">https://www.ikea.com/us/en/static/ikea-logo.f7d9229f806b59ec64cb.svg</a>",
+      "Artist": "IKEA International Group",
+      "LicenseShortName": "Public domain",
+      "UsageTerms": "Public domain",
+      "Copyrighted": "False",
+      "Restrictions": "trademarked"
+    },
+    "rootAttributes": {
+      "width": "100",
+      "height": "40"
+    },
+    "retrievalDate": "2026-10-05"
+  },
+  {
+    "id": "inv-101",
+    "name": "Google",
+    "stratum": "outlined-wordmark",
+    "role": "holdout",
+    "sourceFile": "File:Google 2015 logo.svg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Google_2015_logo.svg",
+    "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "upstreamTimestamp": "2016-02-13T08:16:40Z",
+    "upstreamBytes": 1906,
+    "upstreamSha1": "66938eaaa4ff7c21ee6b7c3c5fefbc004ee6d7c9",
+    "upstreamSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+    "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+    "normalization": "Only line endings normalized to LF under repository SVG policy; original upstream bytes separately hashed.",
+    "licenseShortName": "Public domain",
+    "licenseMetadata": {
+      "ImageDescription": "<a href=\"https://en.wikipedia.org/wiki/Google\" class=\"extiw\" title=\"w:Google\">Google</a> logo since September 1, 2015. The letters of \"Google\" are each purely colored (from left to right) with blue, red, yellow, blue, green, and red in <a href=\"https://en.wikipedia.org/wiki/Product_Sans\" class=\"extiw\" title=\"w:Product Sans\">Product Sans</a> font. The <b>e</b> is slightly angled.",
+      "Credit": "<a rel=\"nofollow\" class=\"external free\" href=\"https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg\">https://gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg</a>",
+      "Artist": "Google LLC",
+      "LicenseShortName": "Public domain",
+      "UsageTerms": "Public domain",
+      "Copyrighted": "False",
+      "Restrictions": "trademarked"
+    },
+    "rootAttributes": {
+      "viewBox": "0 0 272 92",
+      "width": "272",
+      "height": "92"
+    },
+    "retrievalDate": "2026-10-05"
+  },
+  {
+    "id": "inv-102",
+    "name": "Coca-Cola",
+    "stratum": "outlined-wordmark",
+    "role": "holdout",
+    "sourceFile": "File:Coca-Cola logo.svg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Coca-Cola_logo.svg",
+    "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Coca-Cola_logo.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "upstreamTimestamp": "2025-06-12T12:38:59Z",
+    "upstreamBytes": 5169,
+    "upstreamSha1": "707d5c16150e909926768ff43c852d632abdc3ab",
+    "upstreamSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+    "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+    "normalization": "Only line endings normalized to LF under repository SVG policy; original upstream bytes separately hashed.",
+    "licenseShortName": "Public domain",
+    "licenseMetadata": {
+      "ImageDescription": "Wordmark of <a href=\"//commons.wikimedia.org/wiki/Coca-Cola\" title=\"Coca-Cola\">Coca-Cola</a>, trademarked by <a href=\"https://en.wikipedia.org/wiki/The_Coca-Cola_Company\" class=\"extiw\" title=\"w:The Coca-Cola Company\">The Coca-Cola Company</a>, but because the logo is simply \"Coca-Cola\", there is no proof as to who originally wrote it. Master Penman <a href=\"https://en.wikipedia.org/wiki/Louis_Madarasz\" class=\"extiw\" title=\"w:Louis Madarasz\">Louis Madarasz</a> (1859-1910) was said to have told one of his students that the work was his own. When the work was created, Madarasz had a mail order business, could have illustrated the logo, and the writing style is similar to his. In the book \"An Elegant Hand\" by William E Henning, it states that <a href=\"https://en.wikipedia.org/wiki/Frank_Mason_Robinson\" class=\"extiw\" title=\"w:Frank Mason Robinson\">Frank Mason Robinson</a>, who was the bookkeeper of the firm, originated the name Coca-Cola and specified that it be written in <a href=\"https://en.wikipedia.org/wiki/Spencerian_Script\" class=\"extiw\" title=\"w:Spencerian Script\">Spencerian Script</a>. In a 1914 court case, Robinson testified that he was \"practically the originator\" and that \"some engraver here by the name of Frank Ridge was brought into it\". Thus the logo itself has no currently copyrightable authorship and its exact creator is unknown. In any case, the trademarked Coca-Cola logo was published numerous times in the United States (its country of origin) before 1923, and so is now ineligible for copyright.",
+      "Credit": "<a rel=\"nofollow\" class=\"external free\" href=\"https://www.coca-cola.com\">https://www.coca-cola.com</a>",
+      "Artist": "The Coca-Cola Company",
+      "LicenseShortName": "Public domain",
+      "UsageTerms": "Public domain",
+      "Copyrighted": "False",
+      "Restrictions": "trademarked"
+    },
+    "rootAttributes": {
+      "viewBox": "0 0 615.08 192.94"
+    },
+    "retrievalDate": "2026-10-05"
+  }
+]

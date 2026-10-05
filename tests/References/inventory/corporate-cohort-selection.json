@@ -1,0 +1,342 @@
+{
+  "declarationDate": "2026-10-05",
+  "baselineHead": "0b4563c8",
+  "declaredBeforeNewCandidateComparisons": true,
+  "curvedMarkTarget": "inv-027",
+  "targetSelectionReason": "Independently retained flat curved commercial mark with a nested SVG viewport and fractional path data; selected before pixel inspection in this cohort slice.",
+  "selectionPolicy": "Retain every brand/organization logo among the 92 existing independent exports. Separate flags, public symbols, icon/diagram calibrations and retired duplicate IDs. Add eight named independent evaluation exports selected by brand/structural diversity before source retrieval or candidate measurement.",
+  "retainedDocuments": [
+    {
+      "id": "inv-001",
+      "sourcePath": "tests/Fixtures/candidates/inv-001.svg",
+      "inputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:SimpleLogin logo.svg. Retrieval 2026-09-26.",
+        "license": "PD-logo (simplelogin.io/press via Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "flat mark, linear gradient (2 stops)."
+      },
+      "rootAttributes": {
+        "width": "58.894",
+        "height": "57.681",
+        "viewBox": "0 0 58.894 57.681"
+      }
+    },
+    {
+      "id": "inv-002",
+      "sourcePath": "tests/Fixtures/candidates/inv-002.svg",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Ford simple text logo.svg. Retrieval 2026-09-26.",
+        "license": "PD-textlogo (ford.es via Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "text-as-paths outlined wordmark."
+      },
+      "rootAttributes": {
+        "viewBox": "0 0 500 200",
+        "width": "100%",
+        "height": "100%"
+      }
+    },
+    {
+      "id": "inv-003",
+      "sourcePath": "tests/Fixtures/candidates/inv-003.svg",
+      "inputSha256": "a0b8cfefbf49be3b5d2e25f06f7592ef6249fa5d225a9843fdd37ff5c7450f1f",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Simple DirectMedia Layer, Logo.svg. Retrieval 2026-09-26.",
+        "license": "PD-textlogo (vectorised by uploader via Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "flat mark, radial gradient."
+      },
+      "rootAttributes": {
+        "width": "737.8",
+        "height": "371"
+      }
+    },
+    {
+      "id": "inv-004",
+      "sourcePath": "tests/Fixtures/candidates/inv-004.svg",
+      "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:UAAR logo 2012.svg. Retrieval 2026-09-26.",
+        "license": "PD-TextLogo (vectorialized from PNG via Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "path mark."
+      },
+      "rootAttributes": {
+        "width": "594.87946",
+        "height": "739.14392",
+        "viewBox": "0 0 594.87943 739.14391"
+      }
+    },
+    {
+      "id": "inv-005",
+      "sourcePath": "tests/Fixtures/candidates/inv-005.svg",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:SimpleX.chat logo.svg. Retrieval 2026-09-26.",
+        "license": "PD-text-logo (github simplex-chat via Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "clipped composition."
+      },
+      "rootAttributes": {
+        "width": "815",
+        "height": "233",
+        "viewBox": "0 0 815 233"
+      }
+    },
+    {
+      "id": "inv-006",
+      "sourcePath": "tests/Fixtures/candidates/inv-006.svg",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Omega logo.svg. Retrieval 2026-09-26.",
+        "license": "PD (Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "physical mm units, flat mark, defs container."
+      },
+      "rootAttributes": {
+        "width": "56.916664mm",
+        "height": "22.167889mm",
+        "viewBox": "0 0 56.916664 22.167889"
+      }
+    },
+    {
+      "id": "inv-007",
+      "sourcePath": "tests/Fixtures/candidates/inv-007.svg",
+      "inputSha256": "90009e03c20b43565a4d2e4903a9f07402fe07d37e3ec0f66184e4286d6e6ac5",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Zeppelin logo.svg. Retrieval 2026-09-26.",
+        "license": "PD (Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "transforms without viewBox."
+      },
+      "rootAttributes": {
+        "width": "500",
+        "height": "143"
+      }
+    },
+    {
+      "id": "inv-008",
+      "sourcePath": "tests/Fixtures/candidates/inv-008.svg",
+      "inputSha256": "bbb81e14eab6c57ec3876c4a7e116fd38351f94b94a0a5bde954186a878b2de3",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Eisenbahn und Häfen logo.svg. Retrieval 2026-09-26.",
+        "license": "PD (Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "stroked axis-aligned polyline."
+      },
+      "rootAttributes": {
+        "width": "72",
+        "height": "72"
+      }
+    },
+    {
+      "id": "inv-009",
+      "sourcePath": "tests/Fixtures/candidates/inv-009.svg",
+      "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Rede Manchete.svg. Retrieval 2026-09-26.",
+        "license": "PD (Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "strokes, round caps, degenerate zero-length segments."
+      },
+      "rootAttributes": {
+        "width": "500",
+        "height": "500"
+      }
+    },
+    {
+      "id": "inv-010",
+      "sourcePath": "tests/Fixtures/candidates/inv-010.svg",
+      "inputSha256": "6be57e308a793eeead287b1601d31c95a1862de7fa9834625bc7c0a222d199a7",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:ROC HCVS logo.svg. Retrieval 2026-09-26.",
+        "license": "PD (Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "dashed stroke."
+      },
+      "rootAttributes": {
+        "width": "200",
+        "height": "200"
+      }
+    },
+    {
+      "id": "inv-011",
+      "sourcePath": "tests/Fixtures/candidates/inv-011.svg",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Logo of Indonesian Red Cross.svg. Retrieval 2026-09-26.",
+        "license": "PD (Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "viewBox-only viewport (no width/height), fractional coordinates."
+      },
+      "rootAttributes": {
+        "viewBox": "0 0 512 500"
+      }
+    },
+    {
+      "id": "inv-012",
+      "sourcePath": "tests/Fixtures/candidates/inv-012.svg",
+      "inputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:SG Rotation Leipzig.svg. Retrieval 2026-09-26.",
+        "license": "PD (Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "many-contour wordmark, ellipse primitive, px units (unrenderable: DOCTYPE present)."
+      },
+      "rootAttributes": {
+        "width": "395.681px",
+        "height": "402.978px",
+        "viewBox": "0 0 395.681 402.978"
+      }
+    },
+    {
+      "id": "inv-019",
+      "sourcePath": "tests/Fixtures/candidates/inv-019.svg",
+      "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Tokyo Tsukurou.svg. Retrieval 2026-09-26.",
+        "license": "PD (Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "use-element instancing with transforms, circle primitives, sodipodi metadata."
+      },
+      "rootAttributes": {
+        "viewBox": "0 0 400 400",
+        "height": "400",
+        "width": "400"
+      }
+    },
+    {
+      "id": "inv-020",
+      "sourcePath": "tests/Fixtures/candidates/inv-020.svg",
+      "inputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Artsy-logo-mask.svg. Retrieval 2026-09-26.",
+        "license": "PD (Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "Illustrator export profile, nonzero viewBox origin, version/enable-background/xml:space attributes (unrenderable: DOCTYPE present; no mask element despite title)."
+      },
+      "rootAttributes": {
+        "width": "1092.28px",
+        "height": "1093.651px",
+        "viewBox": "698.22 220.136 1092.28 1093.651"
+      }
+    },
+    {
+      "id": "inv-026",
+      "sourcePath": "tests/Fixtures/candidates/inv-026.svg",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Logo of the Party of Changes (Russia).svg. Retrieval 2026-09-26.",
+        "license": "PD (Commons).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "deeply nested wordmark, mm units, fractional coordinates."
+      },
+      "rootAttributes": {
+        "viewBox": "0 0 542.38336 148.05098",
+        "height": "148.05098mm",
+        "width": "542.38336mm"
+      }
+    },
+    {
+      "id": "inv-027",
+      "sourcePath": "tests/Fixtures/candidates/inv-027.svg",
+      "inputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:YouTube grey icon (2017).svg. Retrieval 2026-09-26.",
+        "license": "PD-shape (Commons; depicted mark may carry trademark considerations).",
+        "retrievalDate": "2026-09-26.",
+        "archetypes": "nested svg viewport, style-sized dimensions, fractional curves."
+      },
+      "rootAttributes": {
+        "viewBox": "0 0 28.57  20",
+        "style": "pointer-events: none; display: block; width: 100%; height: 100%;"
+      }
+    },
+    {
+      "id": "inv-040",
+      "sourcePath": "tests/Fixtures/candidates/inv-040.svg",
+      "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Liputan 6 logo 2019.svg. Retrieval 2026-09-27. Upstream verification 2026-09-27 via Commons API: size 2620 and SHA-1 8888b4400ca119a75e451d1ab41e0b9a4114e03d match local bytes; LicenseShortName=Public domain (Restrictions=trademarked).",
+        "license": "PD-textlogo (Commons; depicted mark is trademarked).",
+        "retrievalDate": "2026-09-27.",
+        "archetypes": "outlined wordmark, paths-only letterforms, evenodd counters, gradient fill, fractional coordinates, single-quote syntax."
+      },
+      "rootAttributes": {
+        "width": "166",
+        "height": "22",
+        "viewBox": "0 0 166 22"
+      }
+    },
+    {
+      "id": "inv-066",
+      "sourcePath": "tests/Fixtures/candidates/inv-066.svg",
+      "inputSha256": "3d231022940ebd788637e6ac532128b65304676d2404cf88101a7e0f4190634d",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:NASA Worm logo.svg. Retrieval 2026-09-27. Upstream verification 2026-09-27 via Commons API: size 2056 and SHA-1 a61b8bd68e3ae435c998f95d0651bdd434b974f4 match local bytes; LicenseShortName=Public domain.",
+        "license": "PD (Commons, US federal work; depicted insignia may carry non-copyright use restrictions).",
+        "retrievalDate": "2026-09-27.",
+        "archetypes": "outlined wordmark, fractional curves, counters, fractional dimensions, solid fills."
+      },
+      "rootAttributes": {
+        "width": "508.204",
+        "height": "141.732"
+      }
+    },
+    {
+      "id": "inv-092",
+      "sourcePath": "tests/Fixtures/candidates/inv-092.svg",
+      "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+      "sourceMetadata": {
+        "source": "Wikimedia Commons, File:Blur-logo.svg. Retrieval 2026-09-27. Upstream verification 2026-09-27 via Commons API: size 4021 and SHA-1 c59bd600dca3ede660db304685abcadc768bccfc match local bytes; LicenseShortName=Public domain.",
+        "license": "PD (Commons, logo; depicted marks may carry trademark considerations).",
+        "retrievalDate": "2026-09-27.",
+        "archetypes": "fractional closed-cubic wordmark, root-style fill-rule and clip-rule, decimal pt dimensions, editor namespaces."
+      },
+      "rootAttributes": {
+        "viewBox": "0 0 600 322",
+        "width": "600.0pt",
+        "height": "322.0pt"
+      }
+    }
+  ],
+  "newHoldoutBrands": [
+    {
+      "brand": "Nike",
+      "stratum": "corporate-mark"
+    },
+    {
+      "brand": "Toyota",
+      "stratum": "corporate-mark"
+    },
+    {
+      "brand": "Pepsi",
+      "stratum": "corporate-mark"
+    },
+    {
+      "brand": "Target",
+      "stratum": "corporate-mark"
+    },
+    {
+      "brand": "IBM",
+      "stratum": "outlined-wordmark"
+    },
+    {
+      "brand": "IKEA",
+      "stratum": "outlined-wordmark"
+    },
+    {
+      "brand": "Google",
+      "stratum": "outlined-wordmark"
+    },
+    {
+      "brand": "Coca-Cola",
+      "stratum": "outlined-wordmark"
+    }
+  ],
+  "holdoutPolicy": "New exports are evaluation holdouts; do not use them for document-specific tuning. Shared repairs can be driven by the selected mark and retained development documents. All holdout variants are reported; failures cannot be dropped.",
+  "sourcePolicy": "Use unmodified independently published SVG exports and verify public-domain Commons metadata and upstream identity before public admission. No candidate pixels or unsupported-feature filtering determine file choice. Prefer a flat named logo/wordmark over a combined symbol-and-name export solely to preserve the predeclared stratum.",
+  "plannedVariants": "Small/intended/large, transparent/white/black, scale 1. Preserve explicit historical declared viewport obligations when freezing; add practical logical viewports chosen from source aspect ratios before candidate measurement."
+}
