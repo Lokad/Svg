@@ -9,6 +9,21 @@ namespace Lokad.Svg.VisualTests;
 public sealed class FordVariantTests
 {
     [Fact]
+    public void Axis_aligned_path_mapping_closes_the_lower_tile_row_269_witness()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));
+        SvgRenderOptions options = new(new SvgViewport(1000, 400), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        RgbaImage output = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None), 400_000);
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "inventory", "inv-002-1000x400-transparent.png")), 400_000);
+        int offset = (269 * 1000 + 375) * 4;
+        // The actual captured path through the pinned native mapper/builder/walk
+        // produces coverage 107. Identical old prepared edges yield 106 with
+        // either intersection-density mode; recurrence changes are unnecessary.
+        Assert.Equal(new byte[] { 0, 50, 119, 107 }, reference.Pixels.AsSpan(offset, 4).ToArray());
+        Assert.Equal(reference.Pixels.AsSpan(offset, 4).ToArray(), output.Pixels.AsSpan(offset, 4).ToArray());
+    }
+
+    [Fact]
     public void Horizontal_tile_clip_forwards_the_remaining_row_thirty_pair_as_a_run()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));

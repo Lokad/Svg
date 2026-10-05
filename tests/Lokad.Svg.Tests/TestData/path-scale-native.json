@@ -1,0 +1,33 @@
+{
+  "sourceRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sourceFile": "src/core/SkMatrix.cpp",
+  "sourceSha256": "5ed211a7bf3c0ce5f808857bbd9cc305bc64f478a326cf53441138530d3f9826",
+  "kernel": "SkMatrix::Scale_pts",
+  "kernelSha256": "ef722fe29f64aea7fdecb2687b314554799760c52d526dfade9870c5cecacd72",
+  "vectorHeader": "src/core/SkVx.h",
+  "vectorHeaderSha256": "b2592338b480262e46f76fce7c5717e65d66fc7f24cdf67742fc9f29f3f8b62f",
+  "dataSha256": "c5e4973d442987f1add944114098cf1c2c5578364c9a7dd379273b9d80217e6b",
+  "inputSha256": "c3c6d8660031545d07f60e0c5a6b5645a31c46fbcf206664eff6482ed6d8af86",
+  "vectors": 180,
+  "matrixGroups": 4,
+  "pointCounts": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "compiler": "Strawberry MinGW g++",
+  "flags": [
+    "-std=c++20",
+    "-O2",
+    "-DNDEBUG",
+    "-DSK_RELEASE",
+    "-ffp-contract=off"
+  ],
+  "adapter": "Only matrix type/getter accessors are substituted; exact native Scale_pts and pinned SkVx float vectors are compiled. Inputs narrow authored doubles to native floats. Separate multiply/add output bits are recorded. This proves that bounded mapper, not browser composition or backend dispatch."
+}

@@ -13,7 +13,7 @@
   "captureDate": "2026-10-02",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "rendererSha256": "17054299c24fe27c9d185481eceaedfd218596fc65fbd45ef105a4755494fade",
+  "rendererSha256": "f35355e301642740495cf891f6bba3dbc8fcf09729404d4b0c1d0958b1560431",
   "variants": [
     {
       "id": "inv-002-250x100-transparent",
@@ -295,23 +295,23 @@
         true,
         true
       ],
-      "candidateSha256": "773ea4c9cf9b3d14b3ce0536cb48fe00e0f47dd4d62f1d11069f2f87d9bd96c8",
+      "candidateSha256": "d82f6ba4176240d902345af2d320f997a8a8a9c6cab08fad62461dd4de43ada9",
       "comparison": {
         "dimensionsMatch": true,
-        "changedPixelCount": 174,
+        "changedPixelCount": 137,
         "maximumChannelError": 128,
-        "meanAbsoluteError": 0.003661875,
-        "rootMeanSquareError": 0.47292375178246226,
+        "meanAbsoluteError": 0.003494375,
+        "rootMeanSquareError": 0.4715672009374698,
         "maximumAlphaError": 68,
-        "alphaChangedPixelCount": 174,
+        "alphaChangedPixelCount": 137,
         "minimumMismatchX": 8,
-        "minimumMismatchY": 269,
+        "minimumMismatchY": 187,
         "maximumMismatchX": 891,
         "maximumMismatchY": 393,
         "exact": false,
-        "alphaErrorMass": 2835,
-        "overCoveragePixelCount": 160,
-        "underCoveragePixelCount": 14,
+        "alphaErrorMass": 2734,
+        "overCoveragePixelCount": 126,
+        "underCoveragePixelCount": 11,
         "opaqueLostPixelCount": 0,
         "opaqueAddedPixelCount": 0
       }
@@ -338,17 +338,17 @@
         true,
         true
       ],
-      "candidateSha256": "359fb6cbf71d0796d4d5b1d81cdb234ad45d246c45b948ea1c6a7e0f41c099cc",
+      "candidateSha256": "118b1a6bbde5ed59c8eaabc8cb43c9f38bfb8a88667ec88acc3ac4e6a4e33295",
       "comparison": {
         "dimensionsMatch": true,
-        "changedPixelCount": 174,
+        "changedPixelCount": 137,
         "maximumChannelError": 68,
-        "meanAbsoluteError": 0.00411375,
-        "rootMeanSquareError": 0.3580310740703941,
+        "meanAbsoluteError": 0.00397,
+        "rootMeanSquareError": 0.35749650347940465,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
         "minimumMismatchX": 8,
-        "minimumMismatchY": 269,
+        "minimumMismatchY": 187,
         "maximumMismatchX": 891,
         "maximumMismatchY": 393,
         "exact": false,
@@ -381,17 +381,17 @@
         true,
         true
       ],
-      "candidateSha256": "769e94994ffd9508776b33e24d7d9dc0024d19363baa623ea7d97c509e4958d3",
+      "candidateSha256": "33d6044ed858f07b750de1f766b162cd2720deaead56b0b95485a97983e32f75",
       "comparison": {
         "dimensionsMatch": true,
-        "changedPixelCount": 159,
+        "changedPixelCount": 123,
         "maximumChannelError": 32,
-        "meanAbsoluteError": 0.001201875,
-        "rootMeanSquareError": 0.1324504624378488,
+        "meanAbsoluteError": 0.00115625,
+        "rootMeanSquareError": 0.13219776851369314,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
         "minimumMismatchX": 8,
-        "minimumMismatchY": 273,
+        "minimumMismatchY": 278,
         "maximumMismatchX": 891,
         "maximumMismatchY": 393,
         "exact": false,
@@ -403,5 +403,5 @@
       }
     }
   ],
-  "rendererCheckpoint": "Bounded CPU raster context, 2026-10-05"
+  "rendererCheckpoint": "Axis-aligned path device mapping, 2026-10-05"
 }

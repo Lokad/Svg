@@ -1,0 +1,104 @@
+{
+  "DeclaredBeforeProductionEdit": true,
+  "DeclaredAfterInitialMappingTrials": true,
+  "DeclarationScope": "Fresh material/reflection validation of the narrowed axis-aligned path-map repair; original million/relative families were declared and captured on 2026-10-04.",
+  "BaselineHead": "77ab776c",
+  "Cases": [
+    {
+      "Id": "device-map-million-authored-transparent",
+      "Source": "device-map-million-authored.svg",
+      "Background": "transparent",
+      "Width": 128,
+      "Height": 128,
+      "InputSha256": "24ee38902b92932d855b99dca97052d90fe953f77391243c203e5267deb6ecba"
+    },
+    {
+      "Id": "device-map-million-authored-white",
+      "Source": "device-map-million-authored.svg",
+      "Background": "white",
+      "Width": 128,
+      "Height": 128,
+      "InputSha256": "24ee38902b92932d855b99dca97052d90fe953f77391243c203e5267deb6ecba"
+    },
+    {
+      "Id": "device-map-million-authored-black",
+      "Source": "device-map-million-authored.svg",
+      "Background": "black",
+      "Width": 128,
+      "Height": 128,
+      "InputSha256": "24ee38902b92932d855b99dca97052d90fe953f77391243c203e5267deb6ecba"
+    },
+    {
+      "Id": "device-map-million-float-baked-transparent",
+      "Source": "device-map-million-float-baked.svg",
+      "Background": "transparent",
+      "Width": 128,
+      "Height": 128,
+      "InputSha256": "e328ae72e9a1fabd39ea59d260195881a58afca45aec03455c0160b935832aba"
+    },
+    {
+      "Id": "device-map-million-float-baked-white",
+      "Source": "device-map-million-float-baked.svg",
+      "Background": "white",
+      "Width": 128,
+      "Height": 128,
+      "InputSha256": "e328ae72e9a1fabd39ea59d260195881a58afca45aec03455c0160b935832aba"
+    },
+    {
+      "Id": "device-map-million-float-baked-black",
+      "Source": "device-map-million-float-baked.svg",
+      "Background": "black",
+      "Width": 128,
+      "Height": 128,
+      "InputSha256": "e328ae72e9a1fabd39ea59d260195881a58afca45aec03455c0160b935832aba"
+    },
+    {
+      "Id": "device-map-million-mirrored-transparent",
+      "Source": "device-map-million-mirrored.svg",
+      "Background": "transparent",
+      "Width": 128,
+      "Height": 128,
+      "InputSha256": "388611ab0da58bfd18a5c0e33d6ab2b08c18d3f75185da228c6088ef2076a421"
+    },
+    {
+      "Id": "device-map-million-mirrored-white",
+      "Source": "device-map-million-mirrored.svg",
+      "Background": "white",
+      "Width": 128,
+      "Height": 128,
+      "InputSha256": "388611ab0da58bfd18a5c0e33d6ab2b08c18d3f75185da228c6088ef2076a421"
+    },
+    {
+      "Id": "device-map-million-mirrored-black",
+      "Source": "device-map-million-mirrored.svg",
+      "Background": "black",
+      "Width": 128,
+      "Height": 128,
+      "InputSha256": "388611ab0da58bfd18a5c0e33d6ab2b08c18d3f75185da228c6088ef2076a421"
+    },
+    {
+      "Id": "device-map-relative-holdout-transparent",
+      "Source": "device-map-relative-holdout.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "bf00e203b07fd56232f1625860909ee4b078defabf8ff9fc61323f85092876cd"
+    },
+    {
+      "Id": "device-map-relative-holdout-white",
+      "Source": "device-map-relative-holdout.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "bf00e203b07fd56232f1625860909ee4b078defabf8ff9fc61323f85092876cd"
+    },
+    {
+      "Id": "device-map-relative-holdout-black",
+      "Source": "device-map-relative-holdout.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "bf00e203b07fd56232f1625860909ee4b078defabf8ff9fc61323f85092876cd"
+    }
+  ]
+}

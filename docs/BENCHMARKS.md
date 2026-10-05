@@ -642,3 +642,42 @@ the earlier replay cost, Linux and private-font performance remain open.
 
 Complete batches, assembly/input/PNG identities and matching before/after work/
 peak ledgers are under ignored `artifacts/clip-pair-route-20261005/`.
+
+## Axis-aligned path mapping checkpoint (2026-10-05)
+
+Compare the frozen `77ab776c` renderer with the bounded axis-aligned path map on
+the same Windows x64 .NET 10.0.12 environment. Both orders run sequentially in
+fresh processes after capture/build/test/package jobs finish. Each input uses
+32 warmups and three batches of 100 tiny, ten Ford, three dense and three native-stop
+conversions. These medians are local per-conversion milliseconds / managed bytes,
+not representative BenchmarkDotNet throughput or a universal speed claim.
+
+| Input | Baseline first ms / bytes | Candidate second ms / bytes | Candidate first ms / bytes | Baseline second ms / bytes |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.12646 / 20,288 | 0.13001 / 20,288 | 0.12484 / 20,288 | 0.12751 / 20,288 |
+| ford | 16.77478 / 816,602 | 21.13423 / 816,628 | 16.83520 / 816,602 | 16.77998 / 819,730 |
+| dense | 293.53320 / 7,232,781 | 312.62850 / 7,212,672 | 312.74030 / 7,212,672 | 288.72277 / 7,232,781 |
+| native-stop | 442.82107 / 36,856,013 | 464.88880 / 36,855,272 | 427.22590 / 36,857,045 | 569.23880 / 36,856,762 |
+
+| Input | Charged work through raster, baseline → candidate | Accounted peak bytes, baseline → candidate |
+| --- | ---: | ---: |
+| tiny | 219 → 219 | 132,576 → 132,576 |
+| ford | 1,299,168 → 1,299,452 | 534,434 → 534,434 |
+| dense | 30,826,660 → 32,695,333 | 2,493,732 → 2,493,276 |
+| native-stop | 73,302,593 → 73,300,601 | 33,629,669 → 33,629,691 |
+
+The mapper adds no buffers or separate traversal. Numerical changes can alter
+flattening and near-duplicate/contact cleanup, whose actual taken work remains
+charged. Ford parser work grows 2,904→3,188; dense parser work grows
+238,421→244,679, and total dense work grows about six percent. Dense accounted
+peak falls 456 bytes; native-stop grows 22 bytes. Total allocation traffic and
+peak live accounted storage remain distinct measures. Default limits/admissions,
+25 memory scenarios and package/installed-consumer checks pass.
+
+Tiny and exact 500×200 Ford PNGs retain identity; dense/native-stop outputs change
+without matching captures in the Default sweep. Timing establishes no fidelity
+claim for them. Full before/after batch, renderer/input/PNG identities, work/peak
+ledgers and delivery evidence are under ignored `artifacts/lower-tile-count-20261005/`.
+The final memory runner and runtime package contain the exact final renderer DLL
+and complete Skia/Chromium notices. Representative throughput, earlier native-size
+replay costs, Linux and private-font performance remain open.

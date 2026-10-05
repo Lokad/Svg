@@ -1,3 +1,5 @@
+// Axis-aligned path mapping follows Skia SkMatrix.cpp at the revision
+// recorded in THIRD_PARTY_NOTICES.txt. Copyright 2006 The Android Open Source Project.
 using System.Globalization;
 
 using Lokad.Svg.Rendering;
@@ -9,7 +11,8 @@ namespace Lokad.Svg.Parsing;
 /// <para>Supports absolute and relative M, L, H, V, C, S, Q, T, A and Z with repeated parameters,
 /// implicit lineto pairs after moveto, reflected smooth controls, strict single-character arc flags,
 /// compact signed decimals and exponents, and sign-abutted numbers. Coordinates are finite doubles mapped
-/// through the caller transform at parse time; curves flatten eagerly with the caller policy. Overflowing
+/// through the caller transform at parse time; axis-aligned device maps use float lanes while general
+/// affine maps retain doubles. Authored numbers and relative updates stay double; curves flatten eagerly with the caller policy. Overflowing
 /// relative offsets or mapped results fail with <see cref="SvgErrorCode.LimitExceeded"/>.</para>
 /// <para>Error taxonomy: grammar and shape violations (missing moveto, truncated parameters, stray values,
 /// unexpected letters, non-numeric coordinates) fail as <see cref="SvgErrorCode.MalformedInput"/>.
@@ -92,7 +95,7 @@ internal static class SvgPathDataParser
                     subpathStartX = currentX;
                     subpathStartY = currentY;
                     hasSubpathStart = true;
-                    builder.BeginContour(transform.Apply(currentX, currentY));
+                    builder.BeginContour(MapPathPoint(transform, currentX, currentY));
                     open = true;
                     hasPreviousCubic = false;
                     hasPreviousQuadratic = false;
@@ -101,7 +104,7 @@ internal static class SvgPathDataParser
                         (double lineX, double lineY) = reader.ReadPoint();
                         currentX = absolute ? lineX : RequireFinite(currentX + lineX);
                         currentY = absolute ? lineY : RequireFinite(currentY + lineY);
-                        builder.AddLine(transform.Apply(currentX, currentY));
+                        builder.AddLine(MapPathPoint(transform, currentX, currentY));
                     }
 
                     break;
@@ -117,7 +120,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data line commands need a current point from a moveto command.");
-                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        builder.BeginContour(MapPathPoint(transform, currentX, currentY));
                         open = true;
                     }
                     hasPreviousCubic = false;
@@ -142,7 +145,7 @@ internal static class SvgPathDataParser
                             currentY = absolute ? y : RequireFinite(currentY + y);
                         }
 
-                        builder.AddLine(transform.Apply(currentX, currentY));
+                        builder.AddLine(MapPathPoint(transform, currentX, currentY));
                     }
                     while (reader.PeekNumberStart());
                     break;
@@ -167,7 +170,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
-                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        builder.BeginContour(MapPathPoint(transform, currentX, currentY));
                         open = true;
                     }
                     bool absolute = command == 'C';
@@ -182,7 +185,7 @@ internal static class SvgPathDataParser
                         double control2Y = absolute ? secondY : RequireFinite(currentY + secondY);
                         double endX = absolute ? x : RequireFinite(currentX + x);
                         double endY = absolute ? y : RequireFinite(currentY + y);
-                        builder.AddCubic(transform.Apply(control1X, control1Y), transform.Apply(control2X, control2Y), transform.Apply(endX, endY), flattenPolicy, cancellationToken);
+                        builder.AddCubic(MapPathPoint(transform, control1X, control1Y), MapPathPoint(transform, control2X, control2Y), MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
                         previousCubicX = control2X;
                         previousCubicY = control2Y;
                         hasPreviousCubic = true;
@@ -200,7 +203,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
-                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        builder.BeginContour(MapPathPoint(transform, currentX, currentY));
                         open = true;
                     }
                     bool absolute = command == 'S';
@@ -214,7 +217,7 @@ internal static class SvgPathDataParser
                         double control2Y = absolute ? secondY : RequireFinite(currentY + secondY);
                         double endX = absolute ? x : RequireFinite(currentX + x);
                         double endY = absolute ? y : RequireFinite(currentY + y);
-                        builder.AddCubic(transform.Apply(control1X, control1Y), transform.Apply(control2X, control2Y), transform.Apply(endX, endY), flattenPolicy, cancellationToken);
+                        builder.AddCubic(MapPathPoint(transform, control1X, control1Y), MapPathPoint(transform, control2X, control2Y), MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
                         previousCubicX = control2X;
                         previousCubicY = control2Y;
                         hasPreviousCubic = true;
@@ -232,7 +235,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
-                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        builder.BeginContour(MapPathPoint(transform, currentX, currentY));
                         open = true;
                     }
                     bool absolute = command == 'Q';
@@ -244,7 +247,7 @@ internal static class SvgPathDataParser
                         double controlY = absolute ? firstY : RequireFinite(currentY + firstY);
                         double endX = absolute ? x : RequireFinite(currentX + x);
                         double endY = absolute ? y : RequireFinite(currentY + y);
-                        builder.AddQuadratic(transform.Apply(controlX, controlY), transform.Apply(endX, endY), flattenPolicy, cancellationToken);
+                        builder.AddQuadratic(MapPathPoint(transform, controlX, controlY), MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
                         previousQuadraticX = controlX;
                         previousQuadraticY = controlY;
                         hasPreviousQuadratic = true;
@@ -262,7 +265,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
-                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        builder.BeginContour(MapPathPoint(transform, currentX, currentY));
                         open = true;
                     }
                     bool absolute = command == 'T';
@@ -273,7 +276,7 @@ internal static class SvgPathDataParser
                         (double x, double y) = reader.ReadPoint();
                         double endX = absolute ? x : RequireFinite(currentX + x);
                         double endY = absolute ? y : RequireFinite(currentY + y);
-                        builder.AddQuadratic(transform.Apply(controlX, controlY), transform.Apply(endX, endY), flattenPolicy, cancellationToken);
+                        builder.AddQuadratic(MapPathPoint(transform, controlX, controlY), MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
                         previousQuadraticX = controlX;
                         previousQuadraticY = controlY;
                         hasPreviousQuadratic = true;
@@ -291,7 +294,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
-                        builder.BeginContour(transform.Apply(currentX, currentY));
+                        builder.BeginContour(MapPathPoint(transform, currentX, currentY));
                         open = true;
                     }
                     bool absolute = command == 'A';
@@ -305,7 +308,7 @@ internal static class SvgPathDataParser
                         (double x, double y) = reader.ReadPoint();
                         double endX = absolute ? x : RequireFinite(currentX + x);
                         double endY = absolute ? y : RequireFinite(currentY + y);
-                        builder.AddArc(radiusX, radiusY, rotation, largeArc, sweep, transform.Apply(endX, endY), flattenPolicy, cancellationToken);
+                        builder.AddArc(radiusX, radiusY, rotation, largeArc, sweep, MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
                         hasPreviousCubic = false;
                         hasPreviousQuadratic = false;
                         currentX = endX;
@@ -325,6 +328,18 @@ internal static class SvgPathDataParser
         }
 
         if (open) SealContour(false);
+
+        // Retain authored doubles and relative/smooth arithmetic. Only the
+        // demonstrated axis-aligned device map uses native float lanes; general
+        // affine composition remains on its separately gated double route.
+        static SvgDevicePoint MapPathPoint(SvgAffineTransform deviceMap, double x, double y)
+        {
+            if (!deviceMap.IsAxisAligned) return deviceMap.Apply(x, y);
+            float mappedX = (float)deviceMap.A * (float)x + (float)deviceMap.E;
+            float mappedY = (float)deviceMap.D * (float)y + (float)deviceMap.F;
+            if (!float.IsFinite(mappedX) || !float.IsFinite(mappedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
+            return new SvgDevicePoint(mappedX, mappedY);
+        }
 
         void SealContour(bool explicitlyClosed)
         {

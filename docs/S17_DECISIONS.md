@@ -1,20 +1,20 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-05: horizontal clip paint routing follows bounded CPU raster
-contexts and shared clipped-edge preparation. Six small/intended Ford variants
-remain exact; large variants improve to 174/174/159 differing pixels but remain
-known differences.
+Updated 2026-10-05: axis-aligned path device mapping follows horizontal clip paint
+routing, bounded CPU raster contexts and shared clipped preparation. Six
+small/intended Ford variants remain exact; large variants improve to 137/137/123
+differing pixels but remain known differences.
 [PLAN.md](../PLAN.md) is the current execution queue. Rows 3–7 still have
 implementation and fidelity exits; the earlier claim that rows 1–7 were complete
 within architectural limits is withdrawn. The first exact curved corporate mark
 and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 
-Current validated evidence: 648 fixture entries = 522 exact + 120 known-difference
-renders + six rejections across 392 base documents and 256 variants; 66 research
+Current validated evidence: 660 fixture entries = 534 exact + 120 known-difference
+renders + six rejections across 396 base documents and 264 variants; 66 research
 probes = 65 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 3,073 core + 119 visual + six FontProbe tests pass. All 25 memory
+Release build and 3,075 core + 121 visual + six FontProbe tests pass. All 25 memory
 scenarios, package inspection and isolated installed-consumer checks pass at the
-horizontal clip-routing checkpoint. The Default inventory retains 88 renders +
+axis-aligned path-mapping checkpoint. The Default inventory retains 88 renders +
 four MalformedInput rejections out of 92. These counts establish neither corporate
 coverage, full independent-variant validation nor Linux delivery.
 
@@ -60,9 +60,9 @@ cannot waive their pixel errors or alter their references.
 
 Ford is now exact in all six small/intended variants: 250×100 and 500×200 on
 transparent/white/black. Shared clip-built construction followed by bounded CPU
-raster contexts and horizontal clip paint routing improve the three large
-1000×400 variants to 174/174/159
-differing pixels. Large-transparent retains 2,835 total alpha error, max
+raster contexts, horizontal clip routing and axis-aligned path mapping improve the
+three large 1000×400 variants to 137/137/123
+differing pixels. Large-transparent retains 2,734 total alpha error, max
 channel/alpha error 128/68 and no opaque/hole flips.
 The wordmark exit remains **all nine exact**, so the document cannot enter an
 exact-document numerator. Original references, capture provenance and every current
@@ -70,7 +70,7 @@ candidate identity are portable under `tests/References/inventory/`; nine ordina
 tests preserve exact successes and the three retained failures.
 
 The following clipped-preparation results are historical checkpoints; the current
-CPU-context baseline is summarized above and at the end of this record.
+path-mapping baseline is summarized above and at the end of this record.
 
 The 160 compiled-native inputs / 334 pieces remain the clipping-kernel evidence.
 Shared preparation now counts clipped verbs in a charged stack-only pass, reserves
@@ -110,14 +110,27 @@ Horizontal clip wrappers now preserve native pair forwarding as ordinary runs.
 The 18 predeclared controls have 54 healthy stable captures: fifteen solid
 configurations are exact, while three shaders retain differences. Seven fixture
 failures and one original research probe graduate without replacing references.
-The current bank executes 806 cases (648 fixtures, 66 research, 92 Default cases).
+At the horizontal-wrapper checkpoint the bank executes 806 cases (648 fixtures, 66 research, 92 Default cases).
 All previous exact PNGs/dispositions hold. Twenty-six changed Default outputs
 lack matching captures in that sweep; two quadratic clip controls gain three
 alpha-error units each and remain failures. Ford still has six exact of nine,
-with 2,835 transparent alpha error and zero opaque/hole flips. The next event is
-(375,269): compare native authored point count and lower-tile intersection dispatch
-before changing recurrence. The 3,198 tests, 25 memory and package/consumer checks
+with 2,835 transparent alpha error and zero opaque/hole flips. The next event at that checkpoint is
+(375,269); the subsequent mapping investigation below closes it. The 3,198 tests, 25 memory and package/consumer checks
 pass; this does not close the wordmark, cohort, Linux or performance gates.
+
+Axis-aligned path mapping now follows 180 independent native float vectors. It
+closes (375,269); toggling intersection dispatch on identical prepared edges does
+not change that event. All 648 previous fixture PNGs, 66 research results, 522 exact
+PNG identities and Default dispositions hold. Twelve fresh mapping controls have
+36 healthy stable captures and are exact, producing an 818-case bank (660 fixtures,
+66 research, 92 Default cases). Eleven changed Default PNGs lack matching captures;
+their fidelity remains unmeasured. Six Ford variants remain exact; large variants
+are 137/137/123 differences, with 2,734 transparent alpha error and no opaque/hole
+flips. Relative-coordinate rounding still has intended-size counterexamples.
+The next event is (269,187), requiring captured authoring/device-map evidence.
+All 3,202 tests, 25 memory and package/installed-consumer checks pass. Dense charged
+work grows about six percent; local matching timings and peaks are retained.
+This establishes no complete mapping, wordmark, cohort, Linux or performance exit.
 
 S17 additionally requires reproducible per-variant identities/diffs, categorized
 residuals, representative latency/allocations and fresh Windows/Linux delivery

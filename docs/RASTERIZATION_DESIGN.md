@@ -3931,3 +3931,83 @@ the current skip-intersection heuristic consumes the latter. Compare the actual
 lower-tile setup/dispatch/walk before treating that state difference as a pixel
 cause. Native authoring/map parity, all-nine Ford, the corporate cohort, Linux,
 representative performance and S17 remain open.
+
+## Axis-aligned path device mapping and row-269 attribution (2026-10-05)
+
+At `77ab776c`, Ford retains six exact variants and large differences 174/174/159,
+with transparent alpha error 2,835. The first mismatch is (375,269), reference
+(0,50,119,107), candidate (0,51,120,106); all transparent errors are below Y=254.
+Snapshot the current product, add observation-only row hooks in ignored source,
+and verify its complete transparent PNG identity against the unmodified renderer.
+The five intersected row-269 contexts emit 1,088 operations. Reconstruct their
+identical 22-field prepared edges in the pinned native walker; both skip-intersection
+settings reproduce every operation after normalizing the already proved horizontal
+wrapper pair forwarding. Thus the native 254/182 versus flattened 480/421 point
+counts are a state difference, not this pixel's cause. No density change lands.
+
+Map the actual recorded browser path coordinates through the exact pinned
+`SkMatrix::Scale_pts` with native `SkVx`, then the bounded compiled clipped
+cubic/line builder and native walk. Fill zero emits direct coverage 107 at the
+witness in both global and tile-local origins; the second path does not paint it.
+The builder adapter omits projected vertical combination and pending-run flushing;
+it is a direct-event discriminator, not complete browser paint/backend replay.
+Supplied old prepared edges yield 106 under either intersection mode. Separate
+native mapping data bank 180 output-bit vectors across four axis-aligned maps and
+point counts one through nine, exercising odd/even/two-point lanes and loops.
+Source/kernel/header identities and explicit adapters/compiler flags are retained.
+
+The earlier float experiments remain historical counterexamples, predating shared
+clipping, CPU contexts and horizontal paint repair. Re-run their bounded models
+only after this new native event evidence. Token-only rounding changes no Ford
+pixels. Token-plus-relative and combined models preserve the three small PNGs,
+but intended backgrounds regress by 3/3/2 pixels and transparent alpha error five;
+large differences become 126/126/114 with transparent alpha error 2,711. These
+models stay out. Matrix-only mapping preserves six exact PNGs and improves large
+variants; the production repair narrows it further to axis-aligned path maps.
+General affine mapping, authored tokens and relative/smooth calculations retain
+doubles. A static local helper maps each existing point/control, adding no heap
+buffers, ownership, API parameters or separate traversal. Nonfinite float maps
+fail with categorized LimitExceeded. Existing point/flatten/lowering work still
+charges actual taken traversal; altered near-duplicate geometry can increase it.
+SkMatrix's BSD source attribution is added to the complete packaged notices.
+
+Declare four CC0 sources / twelve transparent-white-black configurations after the
+initial mapping trials and before production edits; keep that timing explicit.
+Million-unit absolute and mirrored families test cancellation in mapping; the
+float-baked twin and fractional-relative holdout preserve existing exact pixels.
+All 36 fresh-process captures are byte-stable, healthy and profile-cleaned at the
+unchanged Chrome 153.0.8010.52 win64 recipe-3 pin. All twelve configurations are
+exact. Original million/relative declarations from 2026-10-04 remain historical.
+
+The full 806-case comparison preserves all 648 previous fixture PNGs, all 66
+research results, all 522 exact PNGs and every disposition. Eleven Default inventory
+PNGs change without matching captures (`inv-001,002,003,004,026,050,057,063,064,065,082`);
+their fidelity remains unmeasured. Updated bank: 818 cases, comprising 660 fixtures
+(534 exact, 120 known differences, six rejects; 396 base documents / 264 variants),
+66 research (65 known renders / one reject) and 92 Default inputs (88 render / four
+MalformedInput rejects). No prior reference is replaced or failure relabelled exact.
+
+Ford's six exact complete PNGs retain identity. Large differences improve
+174/174/159→137/137/123; transparent alpha error 2,835→2,734, with 126 over / eleven
+under pixels, max channel/alpha error 128/68 and no opaque/hole flips. The original
+(375,269) pixel is exact. The first remaining event is (269,187), with the same
+107-versus-106 alpha tuple. That upper-tile pixel was previously exact; aggregate
+improvement does not imply per-pixel improvement within the still failing variants.
+Next compare captured authoring/device mapping at that retained verb. Do not extend
+relative rounding until its intended-size regressions are explained. Complete
+authoring/map, tile-local geometry, intersection and whole-image parity remain open.
+
+Restoring the exact old double helper fails both the native-vector test and original
+Ford pixel test; production source restores byte-for-byte afterward. One historical
+flatten-only Ford diagnostic total changes 4,174,662→4,174,661 while its live total
+and original intended PNG stay unchanged. Update that measured diagnostic, keeping
+the oracle. Fresh locked restore, nine-project Release build (zero warnings/errors),
+3,202 tests (3,075 core, 121 visual, six FontProbe), 25 memory scenarios and final
+runtime/symbol package plus installed-consumer checks pass. The memory runner and
+runtime package contain the same exact final renderer DLL, including the complete
+Skia/Chromium notices. Matching resource/timing data are in [BENCHMARKS](BENCHMARKS.md).
+Full local inputs, source snapshots, compiled-native outputs, rejected models,
+capture triples, comparisons and negative control are under ignored
+`artifacts/lower-tile-count-20261005/`; native vectors, all exact controls and Ford
+references are portable ordinary regressions. All-nine Ford, the independent curved
+corporate mark, representative cohort, Linux, throughput and S17 remain open.
