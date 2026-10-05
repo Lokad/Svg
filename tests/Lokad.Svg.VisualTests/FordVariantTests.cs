@@ -9,6 +9,27 @@ namespace Lokad.Svg.VisualTests;
 public sealed class FordVariantTests
 {
     [Fact]
+    public void Horizontal_tile_clip_forwards_the_remaining_row_thirty_pair_as_a_run()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "inventory", "inv-002-recorded-native-paths.json")));
+        Assert.Equal(native.RootElement.GetProperty("inputSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
+        int[] pointCounts = native.RootElement.GetProperty("commandLog").EnumerateArray()
+            .Where(command => command.GetProperty("method").GetString() == "drawPath")
+            .Select(command => command.GetProperty("params").GetProperty("path").GetProperty("pathPoints").EnumerateArray().Sum(verb => verb.GetProperty("points").GetArrayLength())).ToArray();
+        Assert.Equal(new[] { 254, 182 }, pointCounts);
+        SvgRenderOptions options = new(new SvgViewport(1000, 400), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        RgbaImage output = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None), 400_000);
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "inventory", "inv-002-1000x400-transparent.png")), 400_000);
+        int offset = (30 * 1000 + 740) * 4;
+        // The pinned native walk emits pair coverage 91. A horizontal clip
+        // wrapper forwards it as a run: stored PM (0,18,43,91), versus the
+        // unwrapped pair's (0,18,42,90), then the pinned capture conversion.
+        Assert.Equal(new byte[] { 0, 50, 120, 91 }, reference.Pixels.AsSpan(offset, 4).ToArray());
+        Assert.Equal(reference.Pixels.AsSpan(offset, 4).ToArray(), output.Pixels.AsSpan(offset, 4).ToArray());
+    }
+
+    [Fact]
     public void Observed_native_tile_clip_closes_the_first_large_Ford_alpha_divergence()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));

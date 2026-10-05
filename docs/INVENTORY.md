@@ -14,9 +14,9 @@ retained files and rejects four as MalformedInput (`inv-007`, `inv-012`,
 establish completion of every declared size/background or current corporate-logo
 coverage. Fifty-seven inventory headings identify flags or flag badges/icons,
 so this whole inventory is not the representative corporate denominator.
-Ford is exact in six of nine recorded variants; CPU raster contexts reduce the
-three large differences to 929/1,245/560 pixels, with transparent alpha error
-3,573. All three remain known differences. The latest Default sweep changes 29
+Ford is exact in six of nine recorded variants; horizontal clip paint routing
+reduces the three large differences to 174/174/159 pixels, with transparent alpha
+error 2,835. All three remain known differences. The latest Default sweep changes 26
 outputs without matching captures in that sweep; their fidelity is unmeasured. S17's selected target is at
 least 80% exact documents overall and per corporate-mark/outlined-wordmark
 stratum; the representative cohort and explicit variant freeze remain open.

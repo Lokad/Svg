@@ -17,6 +17,9 @@ internal ref struct SvgAnalyticContourPreparation
     internal readonly SvgAnalyticClipBounds PathBounds;
     internal readonly int OutputWidth;
     internal readonly int OutputHeight;
+    /// <summary>Complete horizontal raw path bounds for clip-wrapper selection, distinct from clamped storage.</summary>
+    internal double LeftWithControls;
+    internal double RightWithControls;
     internal bool BasicChecked;
     internal bool PointValuesEligible;
     internal bool PointsFitCanvas;

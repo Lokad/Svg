@@ -1,0 +1,84 @@
+{
+  "sourceRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "dataSha256": "4546dda95a0445db3093abf3d4ad5973193c683485bf9ba756d011a91e975fd6",
+  "sourceFiles": {
+    "src/core/SkBlitter.h": "5fc3ed0d16355d58908ae6731d91f3c13e254d95c952fcdb03082184c11743ea",
+    "src/core/SkBlitter.cpp": "2c33087c5e10fdf6dd4f6ac0864d5727d4021209e0e262a8624bae9a88939e93",
+    "src/core/SkScan_Path.cpp": "3bae4771c03b7a79e5383ae40bd90ac353a6e5332f0faaaa533f50d250c7f304",
+    "src/core/SkColorData.h": "bfea4affa48971d7b13660fb1b12fa65651a8c0361fb96b75a42dffc31e3ea1d",
+    "src/core/SkColorPriv.h": "cbe432f3c5d6b50e49537bf720fa5b9968a51281f274269f236651bb67ef67c2",
+    "src/core/SkAlphaRuns.h": "7bd91fb991abb7d4836095463796b918162e290b421bc62655043dd996356679"
+  },
+  "method": "Compiled matched native SkScanClipper selection, base pair forwarding, rectangular run clipping and opaque interpolation/source-over kernels; minimal rectangular-region/destination adapters. This is bounded algorithm evidence, not a full native renderer or a claim to the browser device backend.",
+  "cases": [
+    {
+      "id": 0,
+      "bounds": [
+        6,
+        0,
+        745,
+        388
+      ],
+      "meaning": "Ford second path across the observed (508,0)-(764,256) bitmap; pair forwarded as a run."
+    },
+    {
+      "id": 1,
+      "bounds": [
+        509,
+        -10,
+        745,
+        388
+      ],
+      "meaning": "Vertical clipping only; specialized pair preserved."
+    },
+    {
+      "id": 2,
+      "bounds": [
+        509,
+        0,
+        745,
+        256
+      ],
+      "meaning": "Contained path; specialized pair preserved."
+    },
+    {
+      "id": 3,
+      "bounds": [
+        508,
+        0,
+        764,
+        256
+      ],
+      "meaning": "Exact horizontal boundary; specialized pair preserved."
+    }
+  ],
+  "witness": {
+    "x": 740,
+    "y": 30,
+    "coverage": 91,
+    "sourceRGBA": [
+      0,
+      52,
+      120,
+      255
+    ],
+    "unwrappedPremultipliedRGBA": [
+      0,
+      18,
+      42,
+      90
+    ],
+    "wrappedPremultipliedRGBA": [
+      0,
+      18,
+      43,
+      91
+    ],
+    "referenceStraightRGBA": [
+      0,
+      50,
+      120,
+      91
+    ]
+  }
+}

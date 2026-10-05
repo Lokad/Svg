@@ -1,0 +1,153 @@
+{
+  "DeclaredBeforeImplementation": true,
+  "RendererCheckpoint": "bf0ceb1c",
+  "SourceCount": 13,
+  "Cases": [
+    {
+      "Id": "clip-pair-contained-transparent",
+      "Source": "clip-pair-contained.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "b538e869cda4267d863b01763441a941f2f4d107a0512338b2e8236b44661077"
+    },
+    {
+      "Id": "clip-pair-horizontal-left-transparent",
+      "Source": "clip-pair-horizontal-left.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "48f302c10fe10b773199bd8e0e1f259ba242ec99573d04aa1653fff3acdf9b94"
+    },
+    {
+      "Id": "clip-pair-horizontal-left-white",
+      "Source": "clip-pair-horizontal-left.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "white",
+      "InputSha256": "48f302c10fe10b773199bd8e0e1f259ba242ec99573d04aa1653fff3acdf9b94"
+    },
+    {
+      "Id": "clip-pair-horizontal-left-black",
+      "Source": "clip-pair-horizontal-left.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "black",
+      "InputSha256": "48f302c10fe10b773199bd8e0e1f259ba242ec99573d04aa1653fff3acdf9b94"
+    },
+    {
+      "Id": "clip-pair-horizontal-right-transparent",
+      "Source": "clip-pair-horizontal-right.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "4623feb09a00b45a7ae500e72931a0b08302a8a164188acee8eccf0ce0d9e31d"
+    },
+    {
+      "Id": "clip-pair-horizontal-right-white",
+      "Source": "clip-pair-horizontal-right.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "white",
+      "InputSha256": "4623feb09a00b45a7ae500e72931a0b08302a8a164188acee8eccf0ce0d9e31d"
+    },
+    {
+      "Id": "clip-pair-horizontal-right-black",
+      "Source": "clip-pair-horizontal-right.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "black",
+      "InputSha256": "4623feb09a00b45a7ae500e72931a0b08302a8a164188acee8eccf0ce0d9e31d"
+    },
+    {
+      "Id": "clip-pair-vertical-transparent",
+      "Source": "clip-pair-vertical.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "e9bcd0681447c8c9e7682c161aba377b1853d5a21ba02961ddcb622f21d9ace9"
+    },
+    {
+      "Id": "clip-pair-horizontal-control-transparent",
+      "Source": "clip-pair-horizontal-control.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "7027e16d595d157b9d1064aee051fd36c85563956f12b5ed9757c4b8eec18873"
+    },
+    {
+      "Id": "clip-pair-vertical-control-transparent",
+      "Source": "clip-pair-vertical-control.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "d75bdb2752f459155250306b941f9c55b6a972d0a166904255ed9ba90f4842f9"
+    },
+    {
+      "Id": "clip-pair-explicit-transparent",
+      "Source": "clip-pair-explicit.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "56520ce99aa6842e210abf92c99795a21905cd287c616122ae5dee6c22ffbe8b"
+    },
+    {
+      "Id": "clip-pair-translucent-transparent",
+      "Source": "clip-pair-translucent.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "2a6a85547eee0d9d6a6c00f5c726b758de5c01b25dbd3b7493d8a7032b7e4ee1"
+    },
+    {
+      "Id": "clip-pair-translucent-white",
+      "Source": "clip-pair-translucent.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "white",
+      "InputSha256": "2a6a85547eee0d9d6a6c00f5c726b758de5c01b25dbd3b7493d8a7032b7e4ee1"
+    },
+    {
+      "Id": "clip-pair-black-transparent",
+      "Source": "clip-pair-black.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "297d37a94ff3ab1cc3c047beb0af87dbcad11cc5fe7f220ed8daec52d1b5a2ae"
+    },
+    {
+      "Id": "clip-pair-tiled-transparent",
+      "Source": "clip-pair-tiled.svg",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "563352772daa3ce7b0e08f793d6b01710652673d3c9a3a6759a72cb175beada0"
+    },
+    {
+      "Id": "clip-pair-linear-transparent",
+      "Source": "clip-pair-linear.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "2e29a917eda57bb914d2f83999175d8e0fcde8cd80ba8ccd94fc4b759af0d859"
+    },
+    {
+      "Id": "clip-pair-radial-transparent",
+      "Source": "clip-pair-radial.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "fb99ede13efb20ef7d4789ad21ed6a5891e7bfcaea45ca353bc46655ab2ca182"
+    },
+    {
+      "Id": "clip-pair-pattern-transparent",
+      "Source": "clip-pair-pattern.svg",
+      "Width": 200,
+      "Height": 120,
+      "Background": "transparent",
+      "InputSha256": "24dcadb0f09483c946bce959932de907eb29de687bfa552dff51bf7df012917c"
+    }
+  ],
+  "NativeHypothesis": "Only horizontal raw path-bound clipping installs SkRectClipBlitter; inherited blitAntiH2 forwards as blitAntiH, preserving operation order while changing pair arithmetic. Vertical-only clipping and contained paths preserve specialized pair paint.",
+  "Independent": true
+}

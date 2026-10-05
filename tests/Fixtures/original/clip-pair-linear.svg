@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="120"><defs><clipPath id="c"><rect x="32" y="0" width="128" height="120"/></clipPath><linearGradient id="p"><stop stop-color="#003478"/><stop offset="1" stop-color="#c34e97"/></linearGradient></defs><g clip-path="url(#c)"><path d="M12,24 C50,3 120,58 180,26 L180,98 C128,112 112,72 92,86 L84,55 L76,86 C54,72 34,110 12,98 Z" fill="url(#p)" /></g></svg>

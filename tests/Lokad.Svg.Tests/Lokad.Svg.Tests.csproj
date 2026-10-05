@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <None Update="TestData/analytic-clipped-pieces.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/analytic-clip-pair-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/analytic-clip-pair-native.json" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />

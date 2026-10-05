@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At renderer checkpoint `9a87b8fd`, all 629 current manifest entries are gated:
-499 exact decoded-pixel references, 124 known-difference renders and six
+At the horizontal clip-routing checkpoint, all 648 current manifest entries are
+gated: 522 exact decoded-pixel references, 120 known-difference renders and six
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -72,14 +72,24 @@ for large Ford. Bounded CPU raster contexts now carry bordered construction clip
 and exclusively owned interiors through all four paints. Whole-path mask/run
 dispatch stays separate from bitmap-bounded row storage, and the converter closes
 the original row-6 alpha witness. The six exact Ford PNGs retain their identities;
-large transparent/white/black variants improve to 929/1,245/560 changed pixels,
+at that checkpoint large transparent/white/black variants improved to
+929/1,245/560 changed pixels,
 with transparent total alpha error 3,573. The all-nine wordmark exit remains open.
 Sixteen context controls retain four exact results, eleven known differences and
 one UnsupportedFeature rejection. Twenty-nine changed Default inventory outputs
 lack matching captures in that sweep; their fidelity is unmeasured. Actual native
 authoring, tile-local mapping and full-image paint parity remain work in PLAN.
 
-General curve/event, convex/quad/stroke, clip/mask and layer fidelity remains open.
+Horizontal clip wrappers now forward direct fringe pairs as ordered ordinary
+runs. Complete path bounds include retained controls; vertical-only clipping and
+contained paths preserve specialized pairs. All fifteen solid configurations of
+the 18 predeclared controls are exact, while three shaders retain differences.
+Seven fixture failures and one research probe graduate with unchanged references.
+The six exact Ford PNGs are preserved; large differences fall to 174/174/159 and
+transparent alpha error to 2,835. Two quadratic clip controls gain three alpha-error
+units each; 26 changed Default inventory outputs lack matching captures in that
+sweep. Those failures and evidence gaps remain explicit. General curve/event,
+convex/quad/stroke, clip/mask and layer fidelity remains open.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
@@ -99,8 +109,8 @@ Stroke widths flow through the same cascade: presentation attributes, inline sty
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms aggregate into at-most-64 KiB `IDAT` chunks under a budgeted 64 KiB cap with byte-identical output across all four forms, while memory forms accumulate budgeted segments without geometric copies; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 499 exact fixture entries; entry count is not a count of fresh capture triples |
-| Fixture corpus | 629 original CC0 fixture entries with verified hashes across 378 base documents and 251 variants; the manifest compares all 499 exact entries exactly and locks all 130 classified-unsupported entries to their observed behavior (124 known-difference renders with retained pinned-Chrome references and complete current comparisons, six categorized rejections). The independent Ford matrix is separate: six exact and three known differences, with original references and source provenance. |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 522 exact fixture entries; entry count is not a count of fresh capture triples |
+| Fixture corpus | 648 original CC0 fixture entries with verified hashes across 392 base documents and 256 variants; the manifest compares all 522 exact entries exactly and locks all 126 classified-unsupported entries to their observed behavior (120 known-difference renders with retained pinned-Chrome references and complete current comparisons, six categorized rejections). The independent Ford matrix is separate: six exact and three known differences, with original references and source provenance. |
 
 ### Experimental supplied-font text
 

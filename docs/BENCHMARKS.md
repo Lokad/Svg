@@ -605,3 +605,40 @@ there are no runtime dependencies or native assets. Representative BenchmarkDotN
 throughput, earlier native-size replay costs, Linux and private-font performance
 remain open. Complete batches, PNG/input/assembly identities, ledgers and delivery
 results are under ignored `artifacts/cpu-raster-context-20261005/`.
+
+## Horizontal clip paint checkpoint (2026-10-05)
+
+Compare the frozen `bf0ceb1c` renderer with horizontal clip-wrapper forwarding on
+the same .NET 10 Windows x64 environment, sequentially in both orders after
+capture/build/test/package jobs finish. Each fresh process uses 32 warmups per
+input and three measured batches of 100 tiny, ten Ford, three dense and three
+native-stop conversions. Values are median per-conversion milliseconds and
+managed allocated bytes; these short local observations establish no
+representative throughput or universal speedup.
+
+| Input | Baseline first ms / bytes | Candidate second ms / bytes | Candidate first ms / bytes | Baseline second ms / bytes |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.12467 / 20,288 | 0.12596 / 20,288 | 0.12479 / 20,288 | 0.12734 / 20,288 |
+| ford | 19.58759 / 819,417 | 16.21926 / 818,897 | 16.21402 / 816,602 | 17.95603 / 819,730 |
+| dense | 286.51157 / 7,232,664 | 285.54783 / 7,232,728 | 290.50693 / 7,232,728 | 288.45673 / 7,232,664 |
+| native-stop | 438.65007 / 36,856,661 | 443.58433 / 36,856,384 | 449.52250 / 36,857,496 | 441.62403 / 36,856,725 |
+
+| Input | Charged work through raster, baseline → candidate | Accounted peak bytes, baseline → candidate |
+| --- | ---: | ---: |
+| tiny | 219 → 219 | 132,576 → 132,576 |
+| ford | 1,298,880 → 1,299,168 | 534,434 → 534,434 |
+| dense | 30,826,616 → 30,826,660 | 2,493,732 → 2,493,732 |
+| native-stop | 73,302,547 → 73,302,593 | 33,630,409 → 33,629,669 |
+
+The complete horizontal control-bound traversal is charged once per preparation;
+the cache and route flag add no heap buffers. Changed material/event bytes and PNG
+output can change measured allocation traffic. Tiny and exact 500×200 Ford PNGs
+retain identities. Dense/native-stop outputs change without matching captures in
+the Default sweep; neither timing nor admission establishes their fidelity.
+The native-stop peak falls 740 bytes; work and cumulative allocations remain
+distinct measures. All Default limits/admissions, 25 memory scenarios and final
+package/installed-consumer gates pass. Representative BenchmarkDotNet throughput,
+the earlier replay cost, Linux and private-font performance remain open.
+
+Complete batches, assembly/input/PNG identities and matching before/after work/
+peak ledgers are under ignored `artifacts/clip-pair-route-20261005/`.

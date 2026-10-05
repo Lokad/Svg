@@ -3842,3 +3842,92 @@ density or color arithmetic. Generic CPU context integration is established;
 whole native-image parity, the all-nine wordmark exit, corporate cohort, Linux
 and representative performance remain open. Ignored evidence is under
 `artifacts/cpu-raster-context-20261005/`; ordinary tests remain offline.
+
+## Horizontal clip wrappers preserve run paint arithmetic (2026-10-05)
+
+The CPU-context checkpoint's first remaining large Ford pixel was (740,30):
+reference straight RGBA (0,50,120,91), candidate (0,51,119,90). A fresh renderer
+snapshot reproduced the complete candidate PNG while recording setup/walk events.
+The managed walker and compiled matched native walker both emitted pair coverage
+91 there. That initially supplied the native walker with managed geometry, so it
+could not distinguish authoring/mapping from paint.
+
+The original byte-identical traced Ford capture contains a 4,137-byte SVG renderer
+picture. Pinned Chrome's `LayerTree.snapshotCommandLog` decodes the actual authored
+float coordinates, paint and CTM. Both paints are opaque `#FF003478`, antialiased,
+without recorded shaders or dither. The recorded scale/translation is
+2.69075202941895 / (-383.135437011719,-501.413208007813). The two paths contain
+254/182 authored points, versus managed 480/421 flattened points. Their original
+commands and provenance are now portable under
+`tests/References/inventory/inv-002-recorded-native-paths.json`.
+
+Diagnostic float mapping of those captured coordinates, globally and relative
+to the observed bitmap origin (508,0), still produces native pair coverage 91.
+Separate and fused multiply/add trials agree at this event. The bounded native
+verb driver omits projected vertical combination and emits an extra empty
+projected trapezoid; this investigation establishes the sampled event, not full
+native construction or device-backend parity. It provides no basis for changing
+curve recurrence or universally replacing opaque pair arithmetic.
+
+The earliest demonstrated fault is downstream clip routing. At matched Skia
+`f8b66b7597c4cc859d3ed190e9c6872241e6721c`, `SkScan_AntiPath.cpp` supplies the
+whole raw path bounds to `SkScanClipper`. `SkScan_Path.cpp` installs
+`SkRectClipBlitter` only when the rectangular clip crosses a horizontal path
+bound; vertical-only clipping preserves the underlying blitter. The wrapper
+does not override `blitAntiH2`: `SkBlitter.h` forwards pairs as two ordinary runs.
+Their opaque source scaling is coverage+1, yielding premultiplied (0,18,43,91),
+while the unwrapped pair's coverage+(coverage>>7) yields (0,18,42,90). The existing
+capture conversion then produces the original (0,50,120,91). Native opaque-black
+and shader specializations remain separate; the previously exact unwrapped
+opaque-pair counterexample stays exact.
+
+The repair caches complete horizontal vertex/control bounds in the borrowed
+preparation once. The initial work allowance includes each retained control;
+classification checks cancellation in bounded chunks before context construction.
+Each clipped walker retains the horizontal wrapper route and records its pair
+events as ordinary direct paints. Event order, pending-run flush, geometric
+clipping, whole-path dispatch and owned interiors remain intact. No buffers or
+limits are added. The two new core tests bank 3,072 compiled native
+selection/material vectors (four path-bound cases × three backgrounds × all byte
+coverages) and prove denial before control classification. Minimal native region/
+destination adapters are declared; this is bounded algorithm evidence. Source
+revision/file fingerprints and the additional BSD source notices are retained.
+
+Thirteen original CC0 sources / 18 configurations were declared before
+implementation. All 54 captures are healthy, profiles cleaned and byte-stable in
+triples. Fifteen solid controls are exact: contained, horizontal left/right,
+vertical, control-only bounds, explicit clip, translucent/background, black and
+tiled cases. Three shader configurations retain their original differences
+(332/910/156 pixels, with exact alpha). Two new visual facts retain all control
+identities and the public Ford row-30 witness. Suppressing horizontal wrapper
+routing fails both native vectors and that witness; source bytes are restored.
+
+The complete 788-case pre-bank comparison preserves all 499 exact PNGs and every
+disposition. Forty-eight PNGs change: 22 oracle-backed fixture/research outputs
+and 26 Default inventory outputs without matching captures in that sweep. Seven
+known fixtures graduate, plus the original skewed-quad research probe with its
+PNG/provenance; historical research assets remain. Quadratic clip phase/scaled
+alpha error worsens 4,242→4,245 / 652→655. Both failures and their complete
+candidate identities remain banked. No affected oracle-backed output gains an
+opaque/hole flip. The updated bank executes 806 cases: 648 fixtures (522 exact,
+120 known differences, six rejections), 66 research (65 renders, one rejection)
+and 92 Default cases. Fixtures comprise 392 base documents and 256 variants.
+
+All nine original Ford references remain. Six exact PNGs retain identity; large
+transparent/white/black differences fall 929/1,245/560→174/174/159. Transparent
+alpha error falls 3,573→2,835, with 160 over-covered / 14 under-covered pixels,
+max channel/alpha error 128/68 and zero opaque/hole flips. Fresh locked restore,
+nine-project Release build, all 3,198 tests (3,073 core, 119 visual, six FontProbe),
+25 memory scenarios, runtime/symbol package inspection and isolated installed
+consumer checks pass. The final runtime package contains the exact final DLL
+and both complete Skia/Chromium notices. Matching resource and timing evidence is
+in [BENCHMARKS](BENCHMARKS.md); full ignored comparisons, capture triples, source
+snapshots and the negative control are under `artifacts/clip-pair-route-20261005/`.
+
+The first remaining event is now (375,269), reference (0,50,119,107), candidate
+(0,51,120,106). Every large-transparent residual lies below the Y=254 tile-row
+boundary. Native authored point counts and managed flattened counts differ, and
+the current skip-intersection heuristic consumes the latter. Compare the actual
+lower-tile setup/dispatch/walk before treating that state difference as a pixel
+cause. Native authoring/map parity, all-nine Ford, the corporate cohort, Linux,
+representative performance and S17 remain open.

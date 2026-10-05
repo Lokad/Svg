@@ -84,12 +84,30 @@ public sealed class SvgCpuRasterContextTests
             Assert.True(eligible);
         }
         int points = polygon.Points.Length;
-        Assert.Equal(points + polygon.ContourEnds.Length + (long)points * (points - 1) / 2 + points, firstSetup - secondSetup);
+        Assert.Equal(points + polygon.ContourEnds.Length + polygon.QuadSpans.Length + 2L * polygon.CubicSpans.Length + (long)points * (points - 1) / 2 + points, firstSetup - secondSetup);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         // A narrow storage interval still uses the whole path's run dispatch.
         using SvgAnalyticCoverage narrow = SvgAnalyticCoverage.Prepare(ref preparation, 254, 270, 24, 278, new(254, 270), new(new(254, 0, 270, 256)), 1_000_000, budget, out long _, out bool narrowEligible, CancellationToken.None);
         Assert.True(narrowEligible);
         Assert.True(preparation.UsesRunBlitter);
+    }
+
+    [Fact]
+    public void Complete_control_bounds_are_charged_before_classification_or_allocation()
+    {
+        using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(Input), SvgRenderLimits.Default, CancellationToken.None);
+        var polygon = Assert.Single(root.Geometries).Polygon;
+        SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, null, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(24, 24, 612, 278), 640, 320);
+        RenderBudget budget = new(1_000_000);
+        long oldPointAllowance = polygon.Points.Length + polygon.ContourEnds.Length;
+        try
+        {
+            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 254, 510, 24, 278, new(254, 510), new(new(254, 0, 510, 256)), oldPointAllowance, budget, out long _, out bool _, CancellationToken.None);
+            Assert.Fail("The old point-only allowance cannot cover retained control classification.");
+        }
+        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
+        Assert.False(preparation.BasicChecked);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
