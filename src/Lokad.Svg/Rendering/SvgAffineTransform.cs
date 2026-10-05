@@ -172,9 +172,12 @@ internal readonly record struct SvgAffineTransform(double A, double B, double C,
         double y = D * box.Y + F;
         double width = A * box.Width;
         double height = D * box.Height;
+        SvgClipAntialiasing edges = box.Antialiasing;
+        if (A < 0) edges = (edges & ~(SvgClipAntialiasing.Left | SvgClipAntialiasing.Right)) | ((edges & SvgClipAntialiasing.Left) != 0 ? SvgClipAntialiasing.Right : 0) | ((edges & SvgClipAntialiasing.Right) != 0 ? SvgClipAntialiasing.Left : 0);
+        if (D < 0) edges = (edges & ~(SvgClipAntialiasing.Top | SvgClipAntialiasing.Bottom)) | ((edges & SvgClipAntialiasing.Top) != 0 ? SvgClipAntialiasing.Bottom : 0) | ((edges & SvgClipAntialiasing.Bottom) != 0 ? SvgClipAntialiasing.Top : 0);
         if (width < 0) { x += width; width = -width; }
         if (height < 0) { y += height; height = -height; }
-        return new(x, y, width, height);
+        return new(x, y, width, height) { Antialiasing = edges };
     }
 
     /// <summary>Applies this axis-aligned transform to an integer orthogonal band while preserving its checked coordinate range.</summary>

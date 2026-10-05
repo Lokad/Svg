@@ -26,6 +26,12 @@ fill-opacity separately from ordinary byte composition. Its independent routing
 controls are banked, while general layer composition and curved corporate-logo
 fidelity remain open; the support matrix records those limits.
 
+Antialiased rectangle paint clips now have independent native/browser regressions
+and preserve the distinction between geometric clip edges and mask allocation
+bounds. Ford is exact in all nine declared variants; YouTube improves but remains
+inexact in all nine. The frozen corporate matrix still has eighteen measured
+variants out of 258, so these checkpoints do not establish general logo coverage.
+
 ## Development
 
 ```powershell

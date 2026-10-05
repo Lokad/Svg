@@ -508,9 +508,9 @@ internal static class SvgReferenceResolver
             else
             {
                 SvgClipBox content = source.Clip.Value;
-                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY);
+                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
                 SvgClipBox placed = instance.Transform.Apply(shifted);
-                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height);
+                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
                 clip = placed.Intersect(viewport);
             }
             SvgColor color = new(source.Color.Red, source.Color.Green, source.Color.Blue, MultiplyAlpha(source.Color.Alpha, instance.Opacity));
@@ -734,9 +734,9 @@ internal static class SvgReferenceResolver
             else
             {
                 SvgClipBox content = source.Clip.Value;
-                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY);
+                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
                 SvgClipBox placed = instance.Transform.Apply(shifted);
-                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height);
+                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
                 clip = placed.Intersect(viewport);
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
@@ -833,9 +833,9 @@ internal static class SvgReferenceResolver
             else
             {
                 SvgClipBox content = source.Clip.Value;
-                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY);
+                SvgClipBox shifted = new(content.X * scaleX + offsetX + instance.X, content.Y * scaleY + offsetY + instance.Y, content.Width * scaleX, content.Height * scaleY) { Antialiasing = content.Antialiasing };
                 SvgClipBox placed = instance.Transform.Apply(shifted);
-                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height);
+                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
                 clip = placed.Intersect(viewport);
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
@@ -889,9 +889,9 @@ internal static class SvgReferenceResolver
             else
             {
                 SvgClipBox shiftedSource = source.Clip.Value;
-                SvgClipBox shifted = new(shiftedSource.X * scaleX + offsetX + instance.X, shiftedSource.Y * scaleY + offsetY + instance.Y, shiftedSource.Width * scaleX, shiftedSource.Height * scaleY);
+                SvgClipBox shifted = new(shiftedSource.X * scaleX + offsetX + instance.X, shiftedSource.Y * scaleY + offsetY + instance.Y, shiftedSource.Width * scaleX, shiftedSource.Height * scaleY) { Antialiasing = shiftedSource.Antialiasing };
                 SvgClipBox placed = instance.Transform.Apply(shifted);
-                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height);
+                if (viewportFrame is not null) placed = new SvgClipBox(placed.X + viewportFrame.Value.OffsetX, placed.Y + viewportFrame.Value.OffsetY, placed.Width, placed.Height) { Antialiasing = placed.Antialiasing };
                 clip = placed.Intersect(viewport);
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);

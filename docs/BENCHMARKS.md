@@ -819,3 +819,64 @@ runtime package. Local input/DLL/PNG identities, all timing batches, six resourc
 ledgers, 896-case final bank, 258-case corporate comparison, rollback and delivery
 evidence remain under ignored `artifacts/raw-convexity-20261005/`. The curved-mark,
 representative performance, Linux and S17 exits remain open.
+
+## Antialiased rectangle paint-clip checkpoint (2026-10-05)
+
+Compare the validated raw-control DLL at documentation baseline `7aefe975`
+(`69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006`)
+with the shared AA paint-context/provenance implementation
+(`3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac`)
+on Windows x64 .NET 10.0.12. The four measurements run sequentially in fresh
+processes, baseline/candidate and candidate/baseline, after SVG capture/build/test/
+bank jobs finish. Each input receives 32 warmups and three batches: 100 tiny, ten
+intended Ford/YouTube, three dense/native-stop/large-YouTube conversions. Other
+work on this shared host is not excluded. These are local median milliseconds /
+managed allocated bytes per conversion, not representative throughput.
+
+| Input | Baseline first ms / bytes | Candidate second ms / bytes | Candidate first ms / bytes | Baseline second ms / bytes |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.12715 / 20,288 | 0.12739 / 20,368 | 0.12805 / 20,368 | 0.17126 / 20,288 |
+| ford | 17.63041 / 816,628 | 17.74300 / 818,591 | 18.18288 / 819,842 | 30.36778 / 816,682 |
+| dense | 269.92783 / 7,184,808 | 276.93377 / 7,186,408 | 276.57890 / 7,186,328 | 440.56593 / 7,184,781 |
+| native-stop | 451.32967 / 36,856,296 | 450.31773 / 36,855,701 | 696.20210 / 36,856,544 | 524.88460 / 36,857,464 |
+| youtube-intended | 11.34257 / 1,041,988 | 11.27744 / 1,041,472 | 23.26621 / 1,041,172 | 11.82132 / 1,043,400 |
+| youtube-large | 33.86247 / 3,951,250 | 35.37043 / 3,948,413 | 65.98493 / 3,948,674 | 35.97143 / 3,952,626 |
+
+| Input | Charged work through raster, baseline → candidate | Accounted peak bytes, baseline → candidate |
+| --- | ---: | ---: |
+| tiny | 219 → 219 | 132,576 → 132,608 |
+| ford | 1,301,211 → 1,301,211 | 534,434 → 534,450 |
+| dense | 32,761,735 → 32,761,735 | 2,493,820 → 2,494,116 |
+| native-stop | 73,300,833 → 73,300,833 | 33,629,655 → 33,629,711 |
+| youtube-intended | 1,009,278 → 928,430 | 943,153 → 942,621 |
+| youtube-large | 3,249,021 → 3,026,899 | 3,733,811 → 3,732,615 |
+
+Four boundary visits are charged per context with a mapped clip. Rectangle
+classification allocates nothing and is not cached with geometry. AA consumers
+reserve the existing run-link owner even for small paths; denied remaining work
+is checked before storage, and tight memory/work/cancellation tests release owners.
+Per-boundary provenance grows the clip value from 32 to 40 bytes. Value-array/list
+charges use the actual element size; clip dictionaries retain their conservative
+128-byte entry charge. The measured unchanged-input peaks rise by 32/16/296/56
+bytes for tiny/Ford/dense/native-stop; their work, parser counts and complete PNGs
+are unchanged. Small managed allocation increases remain visible in the table.
+
+YouTube's additive route reduces charged work by 80,848/222,122 units at intended/
+large sizes and peak storage by 532/1,196 bytes. Parser work is unchanged. Its PNGs
+improve against the original references but remain inexact. Large YouTube medians rise in both final ordering pairs. Intended YouTube
+changes timing direction; tiny/Ford/dense/native-stop also vary with order and
+host load. The slower runs remain evidence, and these observations establish
+neither a speedup nor stable regression size. Representative latency, throughput
+and previous live-curve replay costs remain release work.
+
+Full timing batches, input/observer/renderer identities, six resource ledgers and
+final gate records are retained under ignored `artifacts/aa-clip-dispatch-20261005/`.
+The portable [checkpoint](../tests/References/antialiased-paint-clip-dispatch.json)
+records the shared dispatch proof and its limits. The curved-mark, general
+clip/layer fidelity, Linux and S17 exits remain open.
+
+Fresh locked restore/normal nine-project Release build, all 3,257 tests, all 25
+memory scenarios and runtime/symbol package plus installed-consumer checks pass.
+Final package/consumer/probe/memory/timing identities match the candidate above.
+The prior measurement set before the documentation metadata rebuild remains
+separately archived; its C# source fingerprint and all image outputs are unchanged.

@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Current assessment (2026-10-05): the density-checkpoint Default-options sweep
+Current assessment (2026-10-05): the AA-clip checkpoint's Default-options sweep
 renders 88 of the 92 legacy-bank files and rejects four as MalformedInput (`inv-007`, `inv-012`,
 `inv-014`, `inv-020`). Renderability is separate from fidelity. The historical
 27-of-92 exact tally below describes its narrower captured variants; it does not
@@ -17,8 +17,10 @@ so this whole inventory is not the representative corporate denominator.
 Ford is now exact in all nine original small/intended/large × transparent/white/
 black variants. Retained-path-point density closes the last 10/10/7 differences
 and preserves the six prior exact PNGs. This establishes the outlined-wordmark
-checkpoint. The latest 92-file Default sweep changes four PNGs without matching
-oracles in that sweep; their fidelity remains unmeasured. Ford's separately
+checkpoint. The AA repair changes only YouTube's Default PNG in the legacy sweep;
+its nine frozen corporate variants have separate reference evidence and remain
+inexact. The earlier density sweep's four changed PNGs retain their historical
+scope below. Ford's separately
 captured variant matrix does not turn the Default sweep into a fidelity rate.
 The curved corporate-mark checkpoint and representative corporate rate remain
 open. S17 still requires at least 80% exact documents overall and in each corporate
@@ -148,12 +150,12 @@ compose correctly; fringe errors remain. No opaque/hole flips occur.
 
 | Logical viewport | Transparent changed pixels / alpha error mass | White changed pixels | Black changed pixels |
 | --- | --- | --- | --- |
-| 286×200 | 307 / 356 | 203 | 176 |
-| 572×400 | 673 / 787 | 435 | 464 |
-| 1144×800 | 1,410 / 1,634 | 918 | 940 |
+| 286×200 | 30 / 30 | 8 | 22 |
+| 572×400 | 177 / 37 | 163 | 154 |
+| 1144×800 | 312 / 26 | 296 | 302 |
 
-Transparent maximum alpha error is now 7/8/8 across the sizes. All nine remain
-known differences after the shared raw-control classifier, with no opaque/hole
+Transparent maximum alpha error is now one at every size. All nine remain
+known differences after shared raw classification and AA dispatch, with no opaque/hole
 flips. The original 706/1,558/3,203 transparent pixel counts and
 7,026/14,622/28,474 alpha errors remain in the historical browser/model record.
 References are portable under `tests/References/inventory/inv-027-{size}-{background}.png`.
@@ -179,7 +181,45 @@ build and locked restore at that historical selection/measurement checkpoint.
 Production then remained at the all-Ford-exact density checkpoint; that slice did not refresh Linux,
 performance, memory/package evidence or close the curved-mark/S17 exits.
 
-## Current raw-control renderer checkpoint (2026-10-05)
+## Current antialiased paint-clip renderer checkpoint (2026-10-05)
+
+The [shared checkpoint](../tests/References/antialiased-paint-clip-dispatch.json)
+separates paint clips from construction bounds and cached geometry. Per-side
+provenance distinguishes geometric clip edges from mask allocation regions and
+preserves the original white-mask equality regression. The 188 compiled-native
+predicate/setup vectors match; their limits exclude complete native AA masks,
+successive clip-alpha intersections and all cache histories. Fifteen original
+CC0 sources / 41 configurations retain 123 successful healthy stable captures:
+twenty-one exact, eleven known differences and nine existing rejections.
+Twenty-seven configurations were declared before production edits; fourteen were
+declared after implementation and before capture. Calibration is separate from
+independent corporate coverage.
+
+All 896 prior dispositions and all 580 exact fixture PNG identities are preserved.
+Two prior PNGs change: the clipped-phase known fixture improves from 164 pixels /
+298 alpha error to two / two; Default YouTube has no matching reference in that
+sweep. The expanded bank executes **937 = 785 fixtures + 60 research + 92 legacy
+Default cases**. Fixtures contain 601 exact, 157 known differences and 27 rejections.
+
+All 258 corporate dispositions and all nine exact Ford PNG identities are
+preserved. Fifteen corporate PNGs change: nine measured YouTube improvements and
+six SimpleX variants without references. No fidelity conclusion is assigned to
+those six. All eight evaluation holdouts preserve their outputs/dispositions.
+No corporate document newly enters the exact numerator; the matrix above remains
+eighteen measured cases, 225 unmeasured and fifteen transport gaps.
+
+The final-source dispatch-suppression control restores all 41 control and 258
+corporate baseline PNGs/dispositions. Locked restore, nine-project Release build,
+**3,257 tests = 3,109 core + 142 visual + six FontProbe**, all 25 memory scenarios
+and runtime/symbol package plus installed-consumer checks pass. Matching local
+timing/resource observations are in
+[BENCHMARKS](BENCHMARKS.md#antialiased-rectangle-paint-clip-checkpoint-2026-10-05);
+large YouTube is slower in both final ordering pairs despite lower charged work.
+Shared declaration-only DOCTYPE admission is next, followed by independent
+clip-byte/triangle residuals. Complete references and bounded capture transport,
+general fidelity, representative performance, Linux and S17 remain open.
+
+## Historical raw-control renderer checkpoint (2026-10-05)
 
 The [shared repair](../tests/References/raw-control-convexity.json) matches all 75
 compiled-native vectors and distinguishes retained raw controls from sampled
@@ -187,7 +227,7 @@ convexity. Work is reserved before the allocation-free pass and cached across
 contexts. All nine Ford PNGs and every prior exact fixture PNG are unchanged.
 Twenty-four predeclared controls retain twelve exact and twelve known differences;
 one original fractional shoulder graduates against its original reference.
-The current bank executes 896 cases: 744 fixtures, 60 research and 92 legacy
+That checkpoint's bank executes 896 cases: 744 fixtures, 60 research and 92 legacy
 Default inputs. All 258 corporate dispositions remain; 39 PNGs change, including
 nine oracle-backed YouTube improvements and thirty cases without references.
 No holdout output changes and no corporate document newly enters the exact
@@ -199,8 +239,9 @@ plus installed-consumer checks pass. Matching timings and ledgers are in
 [BENCHMARKS](BENCHMARKS.md#raw-control-point-convexity-checkpoint-2026-10-05):
 YouTube is slower in both local ordering pairs, while charged work/allocation
 fall. Representative performance, Linux, complete cohort fidelity and S17 remain
-open. Next native comparison targets the original large residual (179,14),
-alpha 0 versus 3. Ignored evidence is under `artifacts/raw-convexity-20261005/`.
+open. Its next native comparison targeted the original large residual (179,14),
+alpha 0 versus 3, subsequently resolved by the AA caller checkpoint above.
+Ignored evidence is under `artifacts/raw-convexity-20261005/`.
 
 ## Historical path-point density renderer checkpoint (2026-10-05)
 

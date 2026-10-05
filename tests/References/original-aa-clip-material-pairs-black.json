@@ -1,0 +1,40 @@
+{
+  "fixtureId": "original-aa-clip-material-pairs-black",
+  "referencePng": "original-aa-clip-material-pairs-black.png",
+  "referenceSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 768,
+    "height": 96,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "ee5c9992aa5e7ff27de1f734c851e9d5d8664c6950a543f158517222d58a7636",
+  "materializedSha256": "ee5c9992aa5e7ff27de1f734c851e9d5d8664c6950a543f158517222d58a7636",
+  "captureSha256": [
+    "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+    "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+    "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": false,
+  "declaredBeforeCaptures": true,
+  "candidateOutcome": "UnsupportedFeature",
+  "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+  "rejectionMessage": "Pattern fills in scaled viewports are not implemented."
+}

@@ -1,20 +1,22 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-05: raw-control convexity improves every YouTube variant and
+Updated 2026-10-05: shared antialiased paint-clip dispatch improves every YouTube variant and
 preserves all nine exact Ford PNGs. The outlined-wordmark checkpoint is established;
 the flat curved
 corporate mark and S17 remain unachieved. [PLAN.md](../PLAN.md) owns the current
 queue. Rows 3–7 retain general implementation/fidelity exits; one exact wordmark
 does not complete those stages.
 
-Current validated evidence: 744 fixture entries = 580 exact + 146 known-difference
-renders + 18 rejections across 428 base documents and 316 variants; 60 research
+Current checkpoint evidence: 785 fixture entries = 601 exact + 157 known-difference
+renders + 27 rejections across 443 base documents and 342 variants; 60 research
 probes = 59 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 3,099 core + 139 visual + six FontProbe tests pass (3,244 total,
+Release build and 3,109 core + 142 visual + six FontProbe tests pass (3,257 total,
 including the newer corporate bank). All 25 memory scenarios, runtime/symbol
-package inspection and installed-consumer checks pass at the raw-control
-checkpoint, including the classifier's 2025 Skia notice. The shared classification
-repair changes production dispatch without changing input/reference identities.
+package inspection and installed-consumer checks pass at the AA-clip checkpoint,
+including the new 2010 Skia notice. The shared dispatch retains geometric clip
+boundary provenance separately from mask allocation regions. Original inputs and
+references stay unchanged. Native predicate/setup vectors and independent browser
+controls prove this bounded contract, not general AA mask/cache/clip-stack parity.
 The Default inventory retains 88 renders + four MalformedInput rejections out of
 92. These counts establish neither corporate coverage, full independent-variant
 validation nor Linux delivery. YouTube is now selected as the curved mark, and
@@ -22,9 +24,12 @@ the first corporate cohort and variant recipe are frozen before fresh comparison
 all 258 renderer cases are executed, with eighteen fidelity comparisons and
 240 cases lacking references (225 unmeasured / fifteen verified transport gaps).
 Ford is the only currently verified exact document; YouTube has nine known
-differences. Its native raw-path classification discriminator is now integrated;
-remaining mapped events order the
-next slice. Curved-mark, coverage and platform/delivery exits remain open.
+differences, with transparent alpha error 30/37/26 and maximum alpha error one.
+Its native raw-path classification and AA caller discriminators are integrated.
+Next admit declaration-only DOCTYPE syntax through shared root/font-discovery
+policy, then separate clip-byte multiplication and triangle paint witnesses.
+Complete frozen references alongside this work. Curved-mark, general fidelity,
+representative performance, Linux and S17 exits remain open.
 
 ## Q1 - numeric exact-document target: selected
 

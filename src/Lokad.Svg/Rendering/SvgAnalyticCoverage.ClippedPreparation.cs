@@ -14,8 +14,8 @@ internal ref partial struct SvgAnalyticCoverage
 
 
     /// <summary>Counts and constructs clipped verbs without retaining an intermediate piece tape.</summary>
-    /// <remarks>Both passes charge clipping, validation and traversal. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Horizontal clip-wrapper routing is retained separately from curve clipping; vertical-only clips preserve specialized pairs. Convex fills preserve their separately gated pre-stepped walker. Reservations transfer to the returned instance or release on every exception.</remarks>
-    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool useRunBlitter, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
+    /// <remarks>Both passes charge clipping, validation and traversal. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Horizontal and AA paint-wrapper routing are retained separately from curve clipping; vertical-only binary clips preserve specialized pairs. Convex fills preserve their separately gated pre-stepped walker. Reservations transfer to the returned instance or release on every exception.</remarks>
+    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
     {
         eligible = false;
         int width = xEnd - xStart;
@@ -137,7 +137,7 @@ internal ref partial struct SvgAnalyticCoverage
             int[] alphas = new int[width + 4];
             eligible = true;
             bool skipIntersect = nativePointCount > (long)(Math.Min(yEnd, clip.Bottom) - Math.Max(yStart, clip.Top)) * 2;
-            return new(edges, head, tail, row, temp, alphas, xStart, width, Math.Min(yEnd, clip.Bottom), skipIntersect, isEvenOdd, convex, useRunBlitter, usesHorizontalClip, new(clip.Left, clip.Right), budget, scratch);
+            return new(edges, head, tail, row, temp, alphas, xStart, width, Math.Min(yEnd, clip.Bottom), skipIntersect, isEvenOdd, convex, useRunBlitter, usesHorizontalClip, paintClip, new(clip.Left, clip.Right), budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }
 

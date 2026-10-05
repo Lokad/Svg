@@ -1,0 +1,78 @@
+{
+  "fixtureId": "original-aa-clip-contained-cubic-black",
+  "referencePng": "original-aa-clip-contained-cubic-black.png",
+  "referenceSha256": "8ff707732004f9c79b0409ec179014d910a135cd6d68fe5a5aeefa0c4aa281ca",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 96,
+    "height": 80,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "83c4d5f714d1da159f96c17dfa8dc420b5c2f3dbfc27e64a6c6395b9a5c62089",
+  "materializedSha256": "83c4d5f714d1da159f96c17dfa8dc420b5c2f3dbfc27e64a6c6395b9a5c62089",
+  "captureSha256": [
+    "8ff707732004f9c79b0409ec179014d910a135cd6d68fe5a5aeefa0c4aa281ca",
+    "8ff707732004f9c79b0409ec179014d910a135cd6d68fe5a5aeefa0c4aa281ca",
+    "8ff707732004f9c79b0409ec179014d910a135cd6d68fe5a5aeefa0c4aa281ca"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true,
+  "candidateOutcome": "renders",
+  "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+  "candidateSha256": "4a34ccf3016edfbdb02f2dda49e57d0861009bd90ce6cbf47cc61e482dd5d808",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 96,
+    "minimumMismatchY": 80,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  },
+  "beforeAntialiasedClipDispatchComparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 40,
+    "maximumChannelError": 3,
+    "meanAbsoluteError": 0.0026692708333333334,
+    "rootMeanSquareError": 0.06353312784157045,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 4,
+    "minimumMismatchY": 5,
+    "maximumMismatchX": 56,
+    "maximumMismatchY": 52,
+    "exact": false,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

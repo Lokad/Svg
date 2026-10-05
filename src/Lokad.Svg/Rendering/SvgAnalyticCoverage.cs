@@ -183,6 +183,7 @@ internal ref partial struct SvgAnalyticCoverage
     private readonly RenderBudget? _budget;
     private readonly bool _useRunBlitter;
     private readonly bool _usesHorizontalClip;
+    private readonly bool _forceRle;
     private readonly SvgDirectPaintLink[] _directLinks;
     private readonly RenderBudget.BudgetReservation? _directLinkReservation;
     private SvgDirectPaintOperation[] _directOperations;
@@ -202,10 +203,10 @@ internal ref partial struct SvgAnalyticCoverage
     internal static long LivePieces;
     internal static long LiveBuilt;
 
-    /// <summary>The native rectangular clip wrapper forwards fringe pairs as ordinary runs.</summary>
-    internal readonly SvgAnalyticPaintKind PairPaintKind => _usesHorizontalClip ? SvgAnalyticPaintKind.Direct : SvgAnalyticPaintKind.Pair;
+    /// <summary>Native horizontal rectangle and AA clip wrappers forward fringe pairs as ordinary runs.</summary>
+    internal readonly SvgAnalyticPaintKind PairPaintKind => _usesHorizontalClip || _forceRle ? SvgAnalyticPaintKind.Direct : SvgAnalyticPaintKind.Pair;
 
-    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, int[] temp, int[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool useRunBlitter, bool usesHorizontalClip, SvgAnalyticScanWindow window, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
+    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, int[] temp, int[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool useRunBlitter, bool usesHorizontalClip, SvgAnalyticPaintClip paintClip, SvgAnalyticScanWindow window, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
     {
         _edges = edges;
         _head = head;
@@ -225,6 +226,7 @@ internal ref partial struct SvgAnalyticCoverage
         _budget = budget;
         _useRunBlitter = useRunBlitter;
         _usesHorizontalClip = usesHorizontalClip;
+        _forceRle = paintClip == SvgAnalyticPaintClip.Antialiased;
         _directLinks = [];
         _directOperations = [];
         _directSpans = [];
@@ -1393,12 +1395,12 @@ internal ref partial struct SvgAnalyticCoverage
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, long maximumSetupWork, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
     {
         SvgAnalyticContourPreparation preparation = new(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, new(xStart, yStart, xEnd, yEnd), outputWidth, outputHeight);
-        return Prepare(ref preparation, xStart, xEnd, yStart, yEnd, window, constructionClip, maximumSetupWork, budget, out setupWork, out eligible, cancellationToken);
+        return Prepare(ref preparation, xStart, xEnd, yStart, yEnd, window, constructionClip, SvgAnalyticPaintClip.Binary, maximumSetupWork, budget, out setupWork, out eligible, cancellationToken);
     }
 
     /// <summary>Builds one raster context from borrowed geometry, charging clip-independent classification once.</summary>
-    /// <remarks>The preparation and geometry remain immutable except for cached classifications in this single-threaded scope. Each returned walker independently owns its reserved edges, rows and events; it retains no borrowed spans or reference to the cache. Cancellation and remaining work apply before classification and construction.</remarks>
-    internal static SvgAnalyticCoverage Prepare(scoped ref SvgAnalyticContourPreparation preparation, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, long maximumSetupWork, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
+    /// <remarks>The preparation and geometry remain immutable except for cached classifications in this single-threaded scope. Construction clipping and paint-clip dispatch are independent: an AA paint consumer forces run storage even for contained or small paths, and forwards specialized fringe pairs as ordinary runs. This context-local choice is not cached with geometry. Each returned walker independently owns its reserved edges, rows and events; it retains no borrowed spans or reference to the cache. Cancellation and remaining work apply before classification and construction.</remarks>
+    internal static SvgAnalyticCoverage Prepare(scoped ref SvgAnalyticContourPreparation preparation, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, SvgAnalyticPaintClip paintClip, long maximumSetupWork, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
     {
         ReadOnlySpan<SvgDevicePoint> points = preparation.Points;
         ReadOnlySpan<int> ends = preparation.Ends;
@@ -1411,6 +1413,7 @@ internal ref partial struct SvgAnalyticCoverage
         int outputWidth = preparation.OutputWidth;
         int outputHeight = preparation.OutputHeight;
         ArgumentNullException.ThrowIfNull(budget);
+        if (paintClip is not (SvgAnalyticPaintClip.Binary or SvgAnalyticPaintClip.Antialiased)) throw new ArgumentOutOfRangeException(nameof(paintClip));
         if (window.Left < 0 || window.Right > outputWidth || window.Right < window.Left) throw new ArgumentOutOfRangeException(nameof(window));
         if (maximumSetupWork < 0) throw new ArgumentOutOfRangeException(nameof(maximumSetupWork));
         if (constructionClip is {} context && (context.Bounds.Left < 0 || context.Bounds.Top < 0 || context.Bounds.Right > outputWidth || context.Bounds.Bottom > outputHeight || context.Bounds.Right < context.Bounds.Left || context.Bounds.Bottom < context.Bounds.Top)) throw new ArgumentOutOfRangeException(nameof(constructionClip));
@@ -1519,7 +1522,7 @@ internal ref partial struct SvgAnalyticCoverage
             bool evenOddCrossings = isEvenOdd && setStructure == SvgContourFlags.ProperCrossing;
             if (!evenOddCrossings && !transversalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
             long multiPointCount = GetNativePointCount(ref preparation, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, maximumSetupWork, ref setupWork, cancellationToken);
-            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, preparation.UsesRunBlitter, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = multiPointCount > (long)(yEnd - yStart) * 2;
             long multiCurveEdges = (long)quadSpans.Length * 2 + (long)cubicSpans.Length * 3;
@@ -1611,9 +1614,10 @@ internal ref partial struct SvgAnalyticCoverage
                 for (int level = multiEdges.Length; level > 0; level >>= 1) multiLevels++;
                 setupWork += (long)multiEdges.Length * (multiLevels + 3);
                 eligible = true;
-                bool useRunBlitter = preparation.UsesRunBlitter;
+                bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
                 if (useRunBlitter) setupWork += multiWidth;
-                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, useRunBlitter, false, window, budget, multiScratch);
+                CheckClippedSetupWork(setupWork, maximumSetupWork, cancellationToken);
+                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, useRunBlitter, false, paintClip, window, budget, multiScratch);
             }
             catch { multiScratch?.Dispose(); throw; }
         }
@@ -1662,7 +1666,7 @@ internal ref partial struct SvgAnalyticCoverage
         bool desnapBox = preparation.DesnapBox;
         bool useCurveSpans = preparation.UseCurveSpans;
         long singlePointCount = GetNativePointCount(ref preparation, useCurveSpans, maximumSetupWork, ref setupWork, cancellationToken);
-        if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, useCurveSpans, convex, preparation.UsesRunBlitter, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+        if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, useCurveSpans, convex, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
         int width = xEnd - xStart;
         bool skipIntersect = singlePointCount > (long)(yEnd - yStart) * 2;
         long curveEdges = useCurveSpans ? (long)quadSpans.Length * (convex ? 128 : 2) + (long)cubicSpans.Length * (convex ? 192 : 3) : 0;
@@ -1737,9 +1741,10 @@ internal ref partial struct SvgAnalyticCoverage
             for (int level = edges.Length; level > 0; level >>= 1) levels++;
             setupWork += (long)edges.Length * (levels + 3);
             eligible = true;
-            bool useRunBlitter = preparation.UsesRunBlitter;
+            bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
             if (useRunBlitter) setupWork += width;
-            return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, useRunBlitter, false, window, budget, scratch);
+            CheckClippedSetupWork(setupWork, maximumSetupWork, cancellationToken);
+            return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, useRunBlitter, false, paintClip, window, budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }
     }
@@ -2108,7 +2113,7 @@ internal ref partial struct SvgAnalyticCoverage
                     int nextRite = Math.Min(_rightClip, cursor.X);
                     if ((y >> 16) == target)
                     {
-                        bool close = fullAlpha == 255 && (EdgesTooCloseRite(previousRite, left, leftEdge.X) || EdgesTooClose(cursor, cursor.Next, nextY));
+                        bool close = _forceRle || fullAlpha == 255 && (EdgesTooCloseRite(previousRite, left, leftEdge.X) || EdgesTooClose(cursor, cursor.Next, nextY));
                         BlitTrapezoidRow(left, rite, nextLeft, nextRite, leftDY, cursor.DY, fullAlpha, close);
                     }
                     previousRite = FixedCeilToInt(Math.Max(rite, cursor.X));
@@ -2160,7 +2165,7 @@ internal ref partial struct SvgAnalyticCoverage
             }
             if (inside && (y >> 16) == target)
             {
-                bool close = fullAlpha == 255 && EdgesTooClose(leftEdge.Prev, leftEdge, nextY);
+                bool close = _forceRle || fullAlpha == 255 && EdgesTooClose(leftEdge.Prev, leftEdge, nextY);
                 BlitTrapezoidRow(left, _rightClip, Math.Max(_leftClip, leftEdge.X), _rightClip, leftDY, 0, fullAlpha, close);
             }
             y = nextY;

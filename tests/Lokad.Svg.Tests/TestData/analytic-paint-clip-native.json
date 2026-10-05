@@ -1,0 +1,5282 @@
+{
+  "nativePin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sourceSha256": {
+    "src/core/SkRasterClip.cpp": "bd6c18720d3882d836570d3536ad50527ee67b8a30b7aea3555a9bcc28015bee",
+    "src/core/SkAnalyticEdge.cpp": "27420132d6c3560e32118f9dc0fc3e5cce4fd421f3da7695634e23dd38f5d963",
+    "src/core/SkAnalyticEdge.h": "a8b235eb27e5ed0693037d830e75d403ca7894c8642cb9372f8a4e54475c24ca",
+    "src/core/SkAAClip.cpp": "14d4c4b5747c97946189bab62220d27c69434c090e8d267f743cd46522b3c8c7",
+    "src/core/SkAAClip.h": "a607ebb9ea223df8b05e2cba0a8af57a8f2505592807234fb19abcc481f69044",
+    "src/core/SkScan_AntiPath.cpp": "ba27eb861053331060e26fe6eed943143d88f9e46c16010fd3f883a8e55fa8f5",
+    "src/core/SkBlitter.h": "5fc3ed0d16355d58908ae6731d91f3c13e254d95c952fcdb03082184c11743ea"
+  },
+  "extractedPredicateSha256": "1d0c131775e1fe6188b84d80a58905aaa88b2c8240e7f80da7eb90d11398de1f",
+  "adapterSha256": "27af24f45c13b55e823f4cdc27ae5d8f5dfbd161fbc777d64b9064ba26711f55",
+  "compiler": "g++ -std=c++20 -O2 -ffp-contract=off -DNDEBUG -DSK_RELEASE",
+  "contract": "Original nearly_integral and SkAnalyticEdge::setLine compiled unchanged. Adapter applies the all-four BW shortcut and determines whether native snapped rectangle boundaries leave a fractional edge within an integer bitmap. This is numerical classification evidence; it does not execute full SkRasterClip/SkAAClip mask construction, successive clip intersections, clipping cache transitions or rendering. Independent browser controls additionally adjudicate opaque-tile and AA dispatch behavior.",
+  "vectors": [
+    {
+      "id": "contained-fractional",
+      "rectangle": [
+        0.375,
+        0.625,
+        80.375,
+        64.625
+      ],
+      "bitmap": [
+        0,
+        0,
+        96,
+        80
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        24576,
+        49152,
+        5267456,
+        4243456
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "integer",
+      "rectangle": [
+        2,
+        2,
+        82,
+        66
+      ],
+      "bitmap": [
+        0,
+        0,
+        96,
+        80
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        131072,
+        131072,
+        5373952,
+        4325376
+      ],
+      "expectedAntialiased": false
+    },
+    {
+      "id": "near-integer",
+      "rectangle": [
+        2.0625,
+        2.0625,
+        81.9375,
+        65.9375
+      ],
+      "bitmap": [
+        0,
+        0,
+        96,
+        80
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        135168,
+        131072,
+        5369856,
+        4325376
+      ],
+      "expectedAntialiased": false
+    },
+    {
+      "id": "opaque-first-tile",
+      "rectangle": [
+        0.001953125,
+        0,
+        630.625,
+        64
+      ],
+      "bitmap": [
+        0,
+        0,
+        512,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        0,
+        0,
+        41328640,
+        4194304
+      ],
+      "expectedAntialiased": false
+    },
+    {
+      "id": "aa-last-tile",
+      "rectangle": [
+        0.001953125,
+        0,
+        630.625,
+        64
+      ],
+      "bitmap": [
+        508,
+        0,
+        640,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        0,
+        0,
+        41328640,
+        4194304
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "all-boundaries-outside",
+      "rectangle": [
+        -0.375,
+        -0.625,
+        700.375,
+        700.625
+      ],
+      "bitmap": [
+        254,
+        254,
+        510,
+        510
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        -24576,
+        -32768,
+        45899776,
+        45924352
+      ],
+      "expectedAntialiased": false
+    },
+    {
+      "id": "side-0-phase-0",
+      "rectangle": [
+        3.874,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        253696,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-0-coupled",
+      "rectangle": [
+        3.874,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        253696,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-1",
+      "rectangle": [
+        3.875,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        253952,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-1-coupled",
+      "rectangle": [
+        3.875,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        253952,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-2",
+      "rectangle": [
+        3.8751,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        253952,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-2-coupled",
+      "rectangle": [
+        3.8751,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        253952,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-3",
+      "rectangle": [
+        3.99609375,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        261888,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-3-coupled",
+      "rectangle": [
+        3.99609375,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        261888,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-4",
+      "rectangle": [
+        3.998046875,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        261888,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-4-coupled",
+      "rectangle": [
+        3.998046875,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        261888,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-5",
+      "rectangle": [
+        4.0,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-5-coupled",
+      "rectangle": [
+        4.0,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-6",
+      "rectangle": [
+        4.001953125,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-6-coupled",
+      "rectangle": [
+        4.001953125,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-7",
+      "rectangle": [
+        4.00390625,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262400,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-7-coupled",
+      "rectangle": [
+        4.00390625,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262400,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-8",
+      "rectangle": [
+        4.1249,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        270080,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-8-coupled",
+      "rectangle": [
+        4.1249,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        270080,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-9",
+      "rectangle": [
+        4.125,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        270336,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-9-coupled",
+      "rectangle": [
+        4.125,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        270336,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-10",
+      "rectangle": [
+        4.126,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        270336,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-10-coupled",
+      "rectangle": [
+        4.126,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        270336,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-11",
+      "rectangle": [
+        4.249,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        278272,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-11-coupled",
+      "rectangle": [
+        4.249,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        278272,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-12",
+      "rectangle": [
+        4.25,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        278528,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-12-coupled",
+      "rectangle": [
+        4.25,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        278528,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-13",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-13-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-14",
+      "rectangle": [
+        4.5,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        294912,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-14-coupled",
+      "rectangle": [
+        4.5,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        294912,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-15",
+      "rectangle": [
+        4.625,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        303104,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-15-coupled",
+      "rectangle": [
+        4.625,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        303104,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-16",
+      "rectangle": [
+        4.75,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        311296,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-16-coupled",
+      "rectangle": [
+        4.75,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        311296,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-17",
+      "rectangle": [
+        4.8749,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        319232,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-17-coupled",
+      "rectangle": [
+        4.8749,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        319232,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-18",
+      "rectangle": [
+        4.875,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        319488,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-18-coupled",
+      "rectangle": [
+        4.875,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        319488,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-19",
+      "rectangle": [
+        4.876,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        319488,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-19-coupled",
+      "rectangle": [
+        4.876,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        319488,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-20",
+      "rectangle": [
+        4.99609375,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        327424,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-20-coupled",
+      "rectangle": [
+        4.99609375,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        327424,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-21",
+      "rectangle": [
+        4.998046875,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        327424,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-0-phase-21-coupled",
+      "rectangle": [
+        4.998046875,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        327424,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-0",
+      "rectangle": [
+        4.0,
+        3.874,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        245760,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-0-coupled",
+      "rectangle": [
+        4.0,
+        3.874,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        245760,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-1",
+      "rectangle": [
+        4.0,
+        3.875,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-1-coupled",
+      "rectangle": [
+        4.0,
+        3.875,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-2",
+      "rectangle": [
+        4.0,
+        3.8751,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-2-coupled",
+      "rectangle": [
+        4.0,
+        3.8751,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-3",
+      "rectangle": [
+        4.0,
+        3.99609375,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-3-coupled",
+      "rectangle": [
+        4.0,
+        3.99609375,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-4",
+      "rectangle": [
+        4.0,
+        3.998046875,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-4-coupled",
+      "rectangle": [
+        4.0,
+        3.998046875,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-5",
+      "rectangle": [
+        4.0,
+        4.0,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-5-coupled",
+      "rectangle": [
+        4.0,
+        4.0,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-6",
+      "rectangle": [
+        4.0,
+        4.001953125,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-6-coupled",
+      "rectangle": [
+        4.0,
+        4.001953125,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-7",
+      "rectangle": [
+        4.0,
+        4.00390625,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-7-coupled",
+      "rectangle": [
+        4.0,
+        4.00390625,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-8",
+      "rectangle": [
+        4.0,
+        4.1249,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-8-coupled",
+      "rectangle": [
+        4.0,
+        4.1249,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        262144,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-9",
+      "rectangle": [
+        4.0,
+        4.125,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        278528,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-9-coupled",
+      "rectangle": [
+        4.0,
+        4.125,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        278528,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-10",
+      "rectangle": [
+        4.0,
+        4.126,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        278528,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-10-coupled",
+      "rectangle": [
+        4.0,
+        4.126,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        278528,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-11",
+      "rectangle": [
+        4.0,
+        4.249,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        278528,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-11-coupled",
+      "rectangle": [
+        4.0,
+        4.249,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        278528,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-12",
+      "rectangle": [
+        4.0,
+        4.25,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        278528,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-12-coupled",
+      "rectangle": [
+        4.0,
+        4.25,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        278528,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-13",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-13-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-14",
+      "rectangle": [
+        4.0,
+        4.5,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-14-coupled",
+      "rectangle": [
+        4.0,
+        4.5,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-15",
+      "rectangle": [
+        4.0,
+        4.625,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        311296,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-15-coupled",
+      "rectangle": [
+        4.0,
+        4.625,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        311296,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-16",
+      "rectangle": [
+        4.0,
+        4.75,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        311296,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-16-coupled",
+      "rectangle": [
+        4.0,
+        4.75,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        311296,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-17",
+      "rectangle": [
+        4.0,
+        4.8749,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        311296,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-17-coupled",
+      "rectangle": [
+        4.0,
+        4.8749,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        311296,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-18",
+      "rectangle": [
+        4.0,
+        4.875,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        327680,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-18-coupled",
+      "rectangle": [
+        4.0,
+        4.875,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        327680,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-19",
+      "rectangle": [
+        4.0,
+        4.876,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        327680,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-19-coupled",
+      "rectangle": [
+        4.0,
+        4.876,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        327680,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-20",
+      "rectangle": [
+        4.0,
+        4.99609375,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        327680,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-20-coupled",
+      "rectangle": [
+        4.0,
+        4.99609375,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        327680,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-21",
+      "rectangle": [
+        4.0,
+        4.998046875,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        327680,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-1-phase-21-coupled",
+      "rectangle": [
+        4.0,
+        4.998046875,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        327680,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-0",
+      "rectangle": [
+        4.375,
+        4.0,
+        43.874,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2875136,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-0-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        43.874,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2875136,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-1",
+      "rectangle": [
+        4.375,
+        4.0,
+        43.875,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2875392,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-1-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        43.875,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2875392,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-2",
+      "rectangle": [
+        4.375,
+        4.0,
+        43.8751,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2875392,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-2-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        43.8751,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2875392,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-3",
+      "rectangle": [
+        4.375,
+        4.0,
+        43.99609375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2883328,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-3-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        43.99609375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2883328,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-4",
+      "rectangle": [
+        4.375,
+        4.0,
+        43.998046875,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2883328,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-4-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        43.998046875,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2883328,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-5",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.0,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-5-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.0,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-6",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.001953125,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-6-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.001953125,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-7",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.00390625,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2883840,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-7-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.00390625,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2883840,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-8",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.1249,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2891520,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-8-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.1249,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2891520,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-9",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.125,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2891776,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-9-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.125,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2891776,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-10",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.126,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2891776,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-10-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.126,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2891776,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-11",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.249,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2899712,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-11-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.249,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2899712,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-12",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.25,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2899968,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-12-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.25,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2899968,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-13",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-13-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2908160,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-14",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.5,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2916352,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-14-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.5,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2916352,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-15",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.625,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2924544,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-15-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.625,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2924544,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-16",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.75,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2932736,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-16-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.75,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2932736,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-17",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.8749,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2940672,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-17-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.8749,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2940672,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-18",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.875,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2940928,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-18-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.875,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2940928,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-19",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.876,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2940928,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-19-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.876,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2940928,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-20",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.99609375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2948864,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-20-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.99609375,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2948864,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-21",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.998046875,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2948864,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-2-phase-21-coupled",
+      "rectangle": [
+        4.375,
+        4.0,
+        44.998046875,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        286720,
+        262144,
+        2948864,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-0",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        43.874
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2867200
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-0-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        43.874
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2867200
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-1",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        43.875
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-1-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        43.875
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-2",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        43.8751
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-2-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        43.8751
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-3",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        43.99609375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-3-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        43.99609375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-4",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        43.998046875
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-4-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        43.998046875
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-5",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-5-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.0
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-6",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.001953125
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-6-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.001953125
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-7",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.00390625
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-7-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.00390625
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-8",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.1249
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-8-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.1249
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2883584
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-9",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.125
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2899968
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-9-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.125
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2899968
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-10",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.126
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2899968
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-10-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.126
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2899968
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-11",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.249
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2899968
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-11-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.249
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2899968
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-12",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.25
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2899968
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-12-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.25
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2899968
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-13",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-13-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-14",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.5
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-14-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.5
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2916352
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-15",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.625
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2932736
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-15-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.625
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2932736
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-16",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.75
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2932736
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-16-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.75
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2932736
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-17",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.8749
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2932736
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-17-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.8749
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2932736
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-18",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.875
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2949120
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-18-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.875
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2949120
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-19",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.876
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2949120
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-19-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.876
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2949120
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-20",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.99609375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2949120
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-20-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.99609375
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2949120
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-21",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.998046875
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2949120
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "side-3-phase-21-coupled",
+      "rectangle": [
+        4.0,
+        4.375,
+        44.0,
+        44.998046875
+      ],
+      "bitmap": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        262144,
+        294912,
+        2883584,
+        2949120
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "float-threshold-182",
+      "rectangle": [
+        4.124999999,
+        2,
+        480,
+        60
+      ],
+      "bitmap": [
+        0,
+        0,
+        512,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        270336,
+        131072,
+        31457280,
+        3932160
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "float-threshold-183",
+      "rectangle": [
+        4.125000001,
+        2,
+        480,
+        60
+      ],
+      "bitmap": [
+        0,
+        0,
+        512,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        270336,
+        131072,
+        31457280,
+        3932160
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "float-threshold-184",
+      "rectangle": [
+        4.874999999,
+        2,
+        480,
+        60
+      ],
+      "bitmap": [
+        0,
+        0,
+        512,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        319488,
+        131072,
+        31457280,
+        3932160
+      ],
+      "expectedAntialiased": false
+    },
+    {
+      "id": "float-threshold-185",
+      "rectangle": [
+        4.875000001,
+        2,
+        480,
+        60
+      ],
+      "bitmap": [
+        0,
+        0,
+        512,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        319488,
+        131072,
+        31457280,
+        3932160
+      ],
+      "expectedAntialiased": false
+    },
+    {
+      "id": "float-threshold-186",
+      "rectangle": [
+        254.1249999,
+        2,
+        480,
+        60
+      ],
+      "bitmap": [
+        0,
+        0,
+        512,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        false,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        16654336,
+        131072,
+        31457280,
+        3932160
+      ],
+      "expectedAntialiased": true
+    },
+    {
+      "id": "float-threshold-187",
+      "rectangle": [
+        254.8750001,
+        2,
+        480,
+        60
+      ],
+      "bitmap": [
+        0,
+        0,
+        512,
+        64
+      ],
+      "nativeNearlyIntegral": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "nativeFixedBoundaries": [
+        16703488,
+        131072,
+        31457280,
+        3932160
+      ],
+      "expectedAntialiased": false
+    }
+  ]
+}

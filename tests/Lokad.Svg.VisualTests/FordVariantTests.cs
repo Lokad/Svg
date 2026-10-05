@@ -101,7 +101,7 @@ public sealed class FordVariantTests
             SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(0, 0, 1000, 400), 1000, 400);
             RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
             {
-                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 1000, 0, 400, new(0, 1000), new(new(0, 0, 1000, 400)), options.Limits.MaximumWorkUnits, budget, out long _, out bool eligible, CancellationToken.None);
+                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 1000, 0, 400, new(0, 1000), new(new(0, 0, 1000, 400)), SvgAnalyticPaintClip.Binary, options.Limits.MaximumWorkUnits, budget, out long _, out bool eligible, CancellationToken.None);
                 Assert.True(eligible);
                 Assert.Equal((long)rawPoints, preparation.NativePointCount);
             }

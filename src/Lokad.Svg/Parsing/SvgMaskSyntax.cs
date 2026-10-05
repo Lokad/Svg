@@ -542,6 +542,10 @@ internal static class SvgMaskSyntax
 
     internal static SvgGeometry ApplyMask(SvgGeometry geometry, byte value, SvgClipBox region)
     {
+        // A mask region bounds its surface; it is not a geometric AA clip on
+        // the source fill. Keep existing geometric boundary provenance when
+        // intersecting this region with an already clipped polygon.
+        region = region with { Antialiasing = SvgClipAntialiasing.None };
         return geometry.Kind switch
         {
             SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(StampRectangle(ClipStrokedRectangle(geometry.Rectangle, region), value)),

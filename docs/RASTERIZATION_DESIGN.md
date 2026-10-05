@@ -4417,3 +4417,103 @@ bank and the separate 258-case corporate matrix, then run fresh resource,
 package/consumer and matching performance gates before integration. Full nested
 clip intersection, general mapping, the remaining curved-mark pixels, reference
 transport/matrix completion, DOCTYPE admission, Linux and S17 remain open.
+
+## Antialiased rectangle paint-clip checkpoint (2026-10-05)
+
+The shared paint-context contract follows the independently demonstrated AA caller
+at (179,14), preserving mapped geometry, construction clipping, original inputs
+and references. The all-four-coordinate float nearly-integral shortcut and
+analytic boundary snapping classify a rectangle within each finite bitmap.
+Surviving fractional geometric boundaries select AA; opaque/outlying rectangles
+retain binary dispatch. Classification allocates nothing, with four boundary
+visits charged by each context caller. It stays separate from cached raw
+convexity/path-count decisions.
+
+AA contexts force existing run-link storage even for tiny paths, initialize the
+general walk's no-real-blitter route, and forward fringe pairs through ordinary
+paint operations. Solid/linear/radial/pattern consumers pass the typed paint clip
+explicitly. A contained path can change dispatch even when its edge construction
+needs no clipping. This implements the demonstrated caller dependency; it does
+not construct the native AA mask or reproduce every clip-stack/cache transition.
+
+The original pinned nearly_integral predicate and SkAnalyticEdge::setLine are
+compiled unchanged with a small standalone adapter: 188 threshold, float-narrowing,
+snapping and bitmap-boundary vectors match. The exact pin remains
+f8b66b7597c4cc859d3ed190e9c6872241e6721c. Source/adapter/compiler identities and
+portable vectors are retained in the [native data](../tests/Lokad.Svg.Tests/TestData/analytic-paint-clip-native.json).
+The adapter derives surviving fractional rectangle boundaries from original edge
+setup; it does not execute complete SkRasterClip/SkAAClip construction, successive
+alpha intersections or all cache histories. The adaptation retains the 2010 Google
+notice and complete BSD text in the runtime package.
+
+An early draft treated fractional mask surface allocation bounds as AA paint
+edges and broke White_masks_leave_rounded_rectangles_unchanged. Two independently
+captured mask/unmasked twins retain six healthy stable captures, all byte-identical
+to the original browser reference. The equality assertion is preserved. Clip
+boxes now retain typed per-side geometric provenance: intersections preserve the
+selected origin (both at ties); reflected axes swap side flags; reference scaling
+and placement preserve them. Mask regions have no AA paint edges. Managed tests
+exercise mixed intersections/reflections and context-local storage/cache behavior.
+This resolves the observed regression without claiming general mask/clip-stack
+parity.
+
+Fifteen CC0 sources / 41 configurations retain 123 successful healthy, cleaned,
+byte-identical captures in triples. Twenty-seven configurations were declared
+before production edits; fourteen supplemental configurations were declared after
+implementation and before their captures. Nine configurations gain exactness,
+twelve preserve exact output, eleven remain known differences and nine retain
+existing UnsupportedFeature rejections. Root-level shader/material controls
+exercise admitted paints; nested definition and scaled-pattern controls preserve
+their actual support failures and browser references. Failed capture-attempt
+diagnostics remain saved; successful triples do not imply every attempt passed.
+
+The material grid contains independent solid/translucent/gradient/pattern convex
+fringes on a gray background. Eight recorded witnesses match the original browser
+pixels; the first contained white fringe at (27,17) changes gray 146 to 147 as
+required. The whole grid remains inexact, improving 2,072 to 1,808 changed pixels
+on each background. The small quadratic also remains inexact. Full-white-mask
+and unmasked outputs preserve identity and their curve differences. No reference
+is regenerated from the candidate.
+
+All 896 prior bank cases preserve dispositions and all 580 prior exact fixture
+PNGs retain complete identity. Two PNGs change: original-cpu-raster-clipped-phase
+improves from 164 pixels / 298 alpha error to two / two; the legacy Default
+YouTube output lacks its matching reference in that sweep. The repaired mask
+control is unchanged. The expanded bank executes 937 = 785 fixtures + 60 research +
+92 legacy Default cases. Fixtures contain 601 exact + 157 known differences +
+27 rejections, across 443 base documents / 342 variants. Calibration counts are
+separate from corporate documents.
+
+All 258 frozen corporate dispositions and all nine exact Ford identities are
+preserved. Fifteen PNGs change: nine measured YouTube improvements and six
+SimpleX variants without references; no fidelity improvement is claimed for the
+latter. All eight evaluation holdouts preserve their outputs/dispositions.
+YouTube transparent differences are 30/177/312 pixels, alpha error 30/37/26,
+maximum alpha error one and no opaque/hole flips. White differences are 8/163/296;
+black differences 22/154/302. Every variant remains inexact. Original references
+stay immutable; the first cohort remains eighteen measured cases, 225 unmeasured
+and fifteen transport gaps, with only Ford verified exact.
+
+The final-source isolated negative replaces only mapped paint-clip selection with
+Binary while retaining boundary provenance. All 41 control and 258 corporate
+baseline PNGs/dispositions are restored exactly. Ten core tests cover the native
+vectors, provenance, cached context dispatch, reserve-before-storage work/memory
+denial, token-preserving during-replay cancellation and four paints × six outputs.
+Three visual regressions protect captures/candidate identities, independent
+fringe witnesses and mask/browser twins. The original mask equality test remains
+unchanged. Shared cache/geometry state is not contaminated by the paint context.
+
+The [portable checkpoint](../tests/References/antialiased-paint-clip-dispatch.json)
+records normalized sources and the validated precommit DLL separately from
+Git/assembly metadata. Full gates and complete image identities remain under
+ignored `artifacts/aa-clip-dispatch-20261005/`; matching six-input timings and
+resource ledgers are in [BENCHMARKS](BENCHMARKS.md#antialiased-rectangle-paint-clip-checkpoint-2026-10-05).
+Per-side clip metadata increases some unchanged-input storage; AA run dispatch
+reduces YouTube's charged work. Timing directions depend on process order and
+remain local observations.
+
+Next admit declaration-only DOCTYPE syntax through shared root/discovery policy,
+then pursue independently demonstrated clip-byte multiplication and triangle
+paint residuals. General AA masks/cache intersections, curve/convex/stroke/layer
+fidelity, complete corporate references and transport, representative performance,
+Linux and S17 remain open. This checkpoint does not establish the curved-mark exit.

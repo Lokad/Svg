@@ -1,8 +1,14 @@
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Represents one nested viewport clip box with its XML depth while streaming.</summary>
+[Flags]
+internal enum SvgClipAntialiasing : byte { None = 0, Left = 1, Top = 2, Right = 4, Bottom = 8, All = Left | Top | Right | Bottom }
+
+/// <summary>Retains rectangle bounds and which boundaries belong to a geometric AA clip.</summary>
 internal readonly record struct SvgClipBox(double X, double Y, double Width, double Height)
 {
+    /// <summary>Mask allocation regions retain their bounds but contribute no AA paint boundary.</summary>
+    internal SvgClipAntialiasing Antialiasing { get; init; } = SvgClipAntialiasing.All;
+
     internal double Right => X + Width;
 
     internal double Bottom => Y + Height;
@@ -17,7 +23,16 @@ internal readonly record struct SvgClipBox(double X, double Y, double Width, dou
         double top = Math.Max(Y, other.Y);
         double right = Math.Min(Right, other.Right);
         double bottom = Math.Min(Bottom, other.Bottom);
-        return new SvgClipBox(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top));
+        SvgClipAntialiasing edges = SvgClipAntialiasing.None;
+        if (X >= other.X) edges |= Antialiasing & SvgClipAntialiasing.Left;
+        if (other.X >= X) edges |= other.Antialiasing & SvgClipAntialiasing.Left;
+        if (Y >= other.Y) edges |= Antialiasing & SvgClipAntialiasing.Top;
+        if (other.Y >= Y) edges |= other.Antialiasing & SvgClipAntialiasing.Top;
+        if (Right <= other.Right) edges |= Antialiasing & SvgClipAntialiasing.Right;
+        if (other.Right <= Right) edges |= other.Antialiasing & SvgClipAntialiasing.Right;
+        if (Bottom <= other.Bottom) edges |= Antialiasing & SvgClipAntialiasing.Bottom;
+        if (other.Bottom <= Bottom) edges |= other.Antialiasing & SvgClipAntialiasing.Bottom;
+        return new SvgClipBox(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top)) { Antialiasing = edges };
     }
 
     /// <summary>Clips one fill box to this viewport, preserving its paint.</summary>

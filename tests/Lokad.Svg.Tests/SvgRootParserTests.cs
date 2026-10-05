@@ -6510,7 +6510,7 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
         Assert.Equal(new SvgColor(255, 0, 0, 128), geometry.Polygon.Color);
         Assert.True(geometry.Polygon.Clip.HasValue);
-        Assert.Equal(new SvgClipBox(16, 16, 32, 32), geometry.Polygon.Clip.Value);
+        Assert.Equal(new SvgClipBox(16, 16, 32, 32) { Antialiasing = SvgClipAntialiasing.None }, geometry.Polygon.Clip.Value);
     }
 
     [Fact]
@@ -6912,7 +6912,7 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
         Assert.Equal(new SvgColor(255, 0, 0, 128), geometry.Polygon.Color);
         Assert.True(geometry.Polygon.Clip.HasValue);
-        Assert.Equal(new SvgClipBox(2, 2, 4, 4), geometry.Polygon.Clip.Value);
+        Assert.Equal(new SvgClipBox(2, 2, 4, 4) { Antialiasing = SvgClipAntialiasing.None }, geometry.Polygon.Clip.Value);
     }
 
     [Fact]

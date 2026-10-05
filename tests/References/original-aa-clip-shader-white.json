@@ -1,0 +1,40 @@
+{
+  "fixtureId": "original-aa-clip-shader-white",
+  "referencePng": "original-aa-clip-shader-white.png",
+  "referenceSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 96,
+    "height": 80,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "0891fbc388cdac822d85f47a654f1f1ec8a40d112c0bea0f872ee38e9948bfce",
+  "materializedSha256": "0891fbc388cdac822d85f47a654f1f1ec8a40d112c0bea0f872ee38e9948bfce",
+  "captureSha256": [
+    "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+    "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+    "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true,
+  "candidateOutcome": "UnsupportedFeature",
+  "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+  "rejectionMessage": "Only defined local gradient references are implemented."
+}

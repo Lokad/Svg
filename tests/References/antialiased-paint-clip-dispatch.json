@@ -1,0 +1,2999 @@
+{
+  "checkpoint": "antialiased-paint-clip-dispatch-2026-10-05",
+  "baselineCommit": "7aefe975",
+  "baselineRendererSha256": "69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006",
+  "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+  "sourceFingerprintSha256": "66572be8224c25d34b24559064fbd7bbf673da224abac0d8eb6c958cf9839266",
+  "sourceUtf8LfSha256": {
+    "src/Lokad.Svg/AssemblyInfo.cs": "45cdca8a055356d543bcb5e4182f717e80d402ada26c844680282fb88fdd990c",
+    "src/Lokad.Svg/SvgColor.cs": "befbb1c837b440d30b77f0202bd5f83d465a03c04cea13c01f0799a1cec856c3",
+    "src/Lokad.Svg/SvgConverter.cs": "1f0758edc843a204067973c8fe37a9ed660bf2e145ea874ddc2b766afc8c15b9",
+    "src/Lokad.Svg/SvgErrorCode.cs": "5de7d7e4eb7ad87071f9a33e25fca74870fac06cf4dd0d11455793e9a4198221",
+    "src/Lokad.Svg/SvgException.cs": "8d86ee328e2ee72dd332d2eaa85457a7259ec6637eb9a58e245c6b6730b5b597",
+    "src/Lokad.Svg/SvgPreparedDocument.cs": "5c0afe7927d8fed25f33b5520f8830a53bddc32ecb64b55dbbb514ee5c4ae150",
+    "src/Lokad.Svg/SvgRenderLimits.cs": "9950dc1167a705642893b6d296764f8afadaaa55eab36a7da4682a3bf2d82ded",
+    "src/Lokad.Svg/SvgRenderOptions.cs": "dc4f60a724d8781a0733c61ada7bd6a8f0d8b6bfd417f3f9220bc96983ef1d80",
+    "src/Lokad.Svg/SvgViewport.cs": "a1fb633bb5d9be5ed1e3dee4626eae73346a850ba9b27b37e174e6b32cab63ea",
+    "src/Lokad.Svg/Encoding/PngEncoder.cs": "9afe664c489326a771a99e4440181ee8858162dd05a2cbb9ac009e26c03d4dce",
+    "src/Lokad.Svg/Encoding/PngImageDecoder.cs": "4b5185512f7ac1ba7d22e815b20f5abcefed1a555886a8ac2794084327d462c0",
+    "src/Lokad.Svg/Fonts/CmapLookupProbe.cs": "6704523aa68ca95251c67da73961807828bfd938eec4b034daa6c5ae6bb1bb17",
+    "src/Lokad.Svg/Fonts/FontIntegrityProbe.cs": "28761dd6dd057effdaf85fee8ad8e9bdd0a712900d3cf5b3893a39685f30ef35",
+    "src/Lokad.Svg/Fonts/FontMetricsProbe.cs": "454463d61a6729b55f650e29711e12c57109d6c5b08a32f0c554d65adeb590ed",
+    "src/Lokad.Svg/Fonts/GlyphDecoderBudgetProbe.cs": "5f07461e4921f1cc144b32704c9bd63c00a4b313eb478881c1d0aa5760343df0",
+    "src/Lokad.Svg/Fonts/GlyphExpansionProbe.cs": "3244a9207862e21efe34b529dcae9c0845672e5dddd7636f332ef483c58f2c97",
+    "src/Lokad.Svg/Fonts/GlyphOutlineProbe.cs": "a4631882a96457dc0018486f1bb0116326d312bb6c20b979f38d40f85f5cd7ae",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.cs": "b35db1c4ad25e10ecc9ebd14b1f7360586f8478a4930a9c5d9cd44a2ba51fd52",
+    "src/Lokad.Svg/Fonts/SvgFontDiagnostic.cs": "d6312db061958dd86d7f7783dbc2e6c2a24fd45c52b1bbbb4e7f057b0b9aee7e",
+    "src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs": "ab6b2d26dd04830fd6436f04669091456288ef5416149b157b74568fca7f383a",
+    "src/Lokad.Svg/Fonts/SvgFontProgramSource.cs": "6dfb2fba97f67760684a569898370545d43ee8a7bbd617507b738c7079c993af",
+    "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "a653913e1b2f145b5bc9c588760eeb32ed77ca9793f01437a485f68240a9f71f",
+    "src/Lokad.Svg/Fonts/SvgFontSnapshot.cs": "017557d4a2aebdf645df7e978fc01eb9b66db4e8942a725fdddce158f9a1e964",
+    "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs": "7835e9256dbdbe3ba2dd2dce73e67186693bc62c58cf1f9742dd93cf54f9176f",
+    "src/Lokad.Svg/Fonts/SvgGlyphOutline.cs": "530f53a0fd587ff98e98ad92ae3efd50e956084172687b34714263dca8b9e564",
+    "src/Lokad.Svg/Parsing/BudgetedParserCollections.cs": "1887db43cb2ac328d55d204e07235d7b98c6321f9c085431c16a84cac898aafa",
+    "src/Lokad.Svg/Parsing/ReadOnlyMemoryStream.cs": "03e700334f70605a6b7962308e00fa9dabf0a2e5e7473915717b1c288b43b1df",
+    "src/Lokad.Svg/Parsing/SvgClipBox.cs": "0fd5a03109e8300a742a2511bd961eeaaa4603fdecd2b41b0b7ae6baf9c0c941",
+    "src/Lokad.Svg/Parsing/SvgClipPathSyntax.cs": "85d42c3212a28885f2768c0b8a0fb3cfd3f3054ffa150b20bdbc020d3dcb9011",
+    "src/Lokad.Svg/Parsing/SvgClipPolygon.cs": "d0f696ead7e75644d354bf8e1b396c41e2a38a267025c6c63b135c2b3bd42578",
+    "src/Lokad.Svg/Parsing/SvgColorParser.cs": "ea211da9b8c24b3c144ac516c946750b00da90c22f0bba04e1be12513e0c11be",
+    "src/Lokad.Svg/Parsing/SvgComputedStyle.cs": "5750059c1124e8c06127ac2374da4e50cee710045769685b2b2affc1edec9f4e",
+    "src/Lokad.Svg/Parsing/SvgComputedStyleResolver.cs": "9e74b7e260d6d804c54ccb27d216ecefa16e68b581d8d42c99e61ac8997326ea",
+    "src/Lokad.Svg/Parsing/SvgContainerInheritance.cs": "d33f5bbcdcd825d52bababd3fb3a3544ccad98673bad91df95021675ddc957ff",
+    "src/Lokad.Svg/Parsing/SvgContainerPresentationResolver.cs": "2d2f9352f956626f620e990294ebc6ad0879c2d5f043be10d64642faa9ee67ff",
+    "src/Lokad.Svg/Parsing/SvgContourTopology.cs": "49ea6f689a1ceb79b9ad991b80f0d08c01b9cf212f1d7fed7a8f3360e493cc9f",
+    "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs": "bd26bc75da85d2dd1de42e5f78e040eb155c6963f44397a740a4706c2ab5b35f",
+    "src/Lokad.Svg/Parsing/SvgDocumentState.cs": "01b1e2d14048e738373dd9057ccfefdd6c6517dcff2a451852830ab50e8903fa",
+    "src/Lokad.Svg/Parsing/SvgDocumentStyleResolver.cs": "38e34e4793f7e2d557c8e1ab4748405c298ac31350d09f2f0f2428a9b54b3323",
+    "src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs": "d6b534a2c7ecdf03328ada3457a589f1f39f91e49bc7ab28600a21fc6438b891",
+    "src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs": "07ed8f2e3a8de543107bc733711ae2c3253be10a3379c1a1264bb2c5d36b3b6d",
+    "src/Lokad.Svg/Parsing/SvgEllipseSyntax.cs": "7dfffa766a8a3233b955c3c73be0f2783aeda5182472ff320d57a872f2179ebb",
+    "src/Lokad.Svg/Parsing/SvgFloatNumber.cs": "f4c11ce04eaa8ff3395a6000df30597467ab12ac6b0aa1bde00eb3b68bbaae6a",
+    "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs": "bdcb9717f6d949f0812f67eee055d0842a49e628a801c97e82ffea52680bcfb1",
+    "src/Lokad.Svg/Parsing/SvgGradientSyntax.cs": "238cb2633785117d91acfebd346a7ada968135ee899ab490d9e5541d4e1e7724",
+    "src/Lokad.Svg/Parsing/SvgGroupParser.cs": "e1f30cae135734db0b669180703edc5b047f69dd6ccda977fcf8e6d846aadb8a",
+    "src/Lokad.Svg/Parsing/SvgImageSyntax.cs": "3f2e80951242918498b6283af7b9409b69a174535582e05071f7eeeacf8ea24e",
+    "src/Lokad.Svg/Parsing/SvgInheritedPresentation.cs": "21e4e90b5f8e3a55296879fd9cbd56a9ca707d711943668564404fdf28c89fe8",
+    "src/Lokad.Svg/Parsing/SvgInheritedStrokeStyle.cs": "70173fe9ffc0d05c356b2d472eebc2c64e96bc86c116704c78e349a1b8ac47d9",
+    "src/Lokad.Svg/Parsing/SvgInheritedTextStyle.cs": "33384ebc871f4b7453dd673b1692f7512e9e41fd02f4d29aabb07c95b6502920",
+    "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs": "0365c3952bcdd75544cd102bcc40412aae920ea1ded91ea5c560bee6bc9bdb12",
+    "src/Lokad.Svg/Parsing/SvgLeafParser.cs": "4f753eb410a8512a399bc94d356f2a27af2f8e339a8c9da626f48b6ada74be08",
+    "src/Lokad.Svg/Parsing/SvgLineSyntax.cs": "3fce2193b240ce6c03e8ee655412069f2aced0459505fc6a13299e5724779bc1",
+    "src/Lokad.Svg/Parsing/SvgLocalReferenceParser.cs": "f182555441ab5c8b63816e440a1542ea2a2dce138ef7a5776b1dd4722a53855e",
+    "src/Lokad.Svg/Parsing/SvgLocalReferencePresentationResolver.cs": "979ad3f86e0d9092a6a30605dafd47507627e174c7f07b5fc9700fd20f6d8588",
+    "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs": "3a7770e80767901688b99c604567d5fd74479b16353c4da81408565a13fa8367",
+    "src/Lokad.Svg/Parsing/SvgLocalUrl.cs": "8dc382fd6f34eacf66a675deda5efbeccfd689a95a113d7c52c4016c679c6af3",
+    "src/Lokad.Svg/Parsing/SvgMaskContent.cs": "8ff656450640d64b3b6fb14031ccd47d98c8067469f7b1491fba436f1728773f",
+    "src/Lokad.Svg/Parsing/SvgMaskSyntax.cs": "22db46b4e591b60327e2b2d1f7ba8f807675048093dfd0d0c51955d0f72bf580",
+    "src/Lokad.Svg/Parsing/SvgNestedViewportSyntax.cs": "7d3dbcc1a6a9998af5e5cd5b0ba35b31f8d478248107c60b1f286f5b86ae63c4",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryLowerer.cs": "d62c6d55404eaebc942395f8438200d592fc4bfe6037c27b8ef3797fbeddf7fb",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryTokenizer.cs": "56f4dfea65c1a4dd2ad763363988e1b0b543381d5eb47778125de478522d2205",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalShapeParser.cs": "38dadcf9c73ef6cae700e48bb317309d984a7b4874587e4d61b7b027f96bf37e",
+    "src/Lokad.Svg/Parsing/SvgPaintableElementContext.cs": "ae38a7393054a52e12d35737a0e9826b799507b60aa1b7033edf18ccf649fdcb",
+    "src/Lokad.Svg/Parsing/SvgPaintOpacity.cs": "3e13d63ff0039a63be99d34e1287f03d251b616dfb42ff89b514effb535b1a53",
+    "src/Lokad.Svg/Parsing/SvgPaintResolver.cs": "8d336c2e3e921da5931fb34d84ff616c1f779face5d4bab557277c6420a422a3",
+    "src/Lokad.Svg/Parsing/SvgPathDataParser.cs": "e0503d5d058af83d365f3963f736d6cfae8b4656350b5bc5c6cf793b7d33848f",
+    "src/Lokad.Svg/Parsing/SvgPatternSyntax.cs": "030753ee3e6bad4ade1bc573c44a7a38908ef753d92adf2f78dc2dde3c69b0bb",
+    "src/Lokad.Svg/Parsing/SvgPresentationResolver.cs": "72cab0090c58d8e98e6891463d08a922596dd8d3d92a0f80b7b9514ec40028e1",
+    "src/Lokad.Svg/Parsing/SvgRectangleSyntax.cs": "3ea391fd7fb19830e378147c5c93e62426db09d0b4744752703a616cc9864ae7",
+    "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs": "6b0f0114dbbed2754e8ebd24db2ba53c76b5b7d31f8ac3c6d958009883ae2dea",
+    "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs": "ec521aaa806762ee5165c48afb7cc6506e1c83f67042bda3bdfb11c3dceaa819",
+    "src/Lokad.Svg/Parsing/SvgRoot.cs": "2936b62499959d7cdd14d54d5b6da74d24ca59700b4251d3559121ab36939643",
+    "src/Lokad.Svg/Parsing/SvgRootAttributes.cs": "adb17c6a8b1cf9ce4b35eb25b165c41069050444d5e1b9ea679ab7c2d9a3d786",
+    "src/Lokad.Svg/Parsing/SvgRootParser.cs": "cded81211b4d377597bbba0752a9a235719abd7ba08ab31099aafe6bbfda1df4",
+    "src/Lokad.Svg/Parsing/SvgRootStyleSheetParser.cs": "36e685863c10e670e64c1b4edba727f5d994a5dcdc21d79579a024a91276b8b2",
+    "src/Lokad.Svg/Parsing/SvgRootSyntax.cs": "f6d52cd835dfe4d5f8d0bf42fdcb10b387dc27ac8fee9e897f2f401cbc3d50d3",
+    "src/Lokad.Svg/Parsing/SvgShapePresentationResolver.cs": "8e4b280797a69df9d5fe5b34843d49006044c99a6e34f49e50335adf3c7ca800",
+    "src/Lokad.Svg/Parsing/SvgStrokeStyleSyntax.cs": "deec19af720290d52370be02cff0cbd3beda4205fe27fac193a3305020308674",
+    "src/Lokad.Svg/Parsing/SvgStructuralAdmission.cs": "22856bb2e913521638d62d5c2e409ac9eea3cc26bef8fd336f97079a5918006b",
+    "src/Lokad.Svg/Parsing/SvgStructuralVocabulary.cs": "2834ae97def6651010a20961c0386382723cf81f5b7a05ea572767c6426beefe",
+    "src/Lokad.Svg/Parsing/SvgStyleCascade.cs": "7485bc7676f7269aa6dde7dfb8a7f692dce5bbd569f76d3db079580c763b8a31",
+    "src/Lokad.Svg/Parsing/SvgStyleSheet.cs": "21e40640fcfdb7a221a317040596947de2d2b39dfea9b8a3d5d8178d729058da",
+    "src/Lokad.Svg/Parsing/SvgSyntaxLimits.cs": "62ce6a014702f57316a7b8b02de3a6dc4ebfa2cda7e570bddbc9a32d509d400c",
+    "src/Lokad.Svg/Parsing/SvgTextRunBuilder.cs": "faa31951755f31f5f9c200c225cdc9f88f15ce94dfae5ef529dac0b43bd3ae8b",
+    "src/Lokad.Svg/Parsing/SvgTextSyntax.cs": "b37445d4aef5a3f95b0972d7f040e22ac0b3e065d6f151101de9a6aa36c1bb49",
+    "src/Lokad.Svg/Parsing/SvgViewportFrame.cs": "0a48b2125c74a23a4ddc3d8faebab0a9c256b49602ff30851d29be9b65683c06",
+    "src/Lokad.Svg/Rendering/BackgroundInitializationProbe.cs": "65855d3646c9e0fd22a0aa4a822dbe765b1739fd8c083fdd1fb4064e1b236137",
+    "src/Lokad.Svg/Rendering/GlyphCoverageProbe.cs": "68df89e71806393dfc51caa3f0c8565f266ce6f7ff3023b33bf956f26601fae7",
+    "src/Lokad.Svg/Rendering/RenderBudget.cs": "76a32dabc5fc4efa0ce477da545ee0cd99f151980c1eb8aaaeaedaa75210dcda",
+    "src/Lokad.Svg/Rendering/RenderBudgetSnapshot.cs": "fe28a88fe70ae685eb7dbb504b206380c26e0e03e903f40d5b7f465c8f5358dc",
+    "src/Lokad.Svg/Rendering/SolidCanvasRasterizationProbe.cs": "1542165d285d5d501f9409009358999aa048909aabc2c41d35a19d9d462fd57c",
+    "src/Lokad.Svg/Rendering/SvgAffineTransform.cs": "a6a7e8298f7da349f899be072c4c6abfb77c66d810f7528b3c2eb85d6dd1156a",
+    "src/Lokad.Svg/Rendering/SvgAnalyticClipContext.cs": "e3610fadab33dc9860aa3653c2b93d59dfa08e44a913342fc0fb86d44be9ccd5",
+    "src/Lokad.Svg/Rendering/SvgAnalyticContourPreparation.cs": "48d38cc02e130dc4050825d38c5e44a2481f42d96ab32596976d056938c7bf7c",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.ClippedPreparation.cs": "ac97acab88e654a3a152bd4e10bb8e5a473301f9aaeba83a97ce475ca4cb26c0",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.Clipping.cs": "cc8a727bc6922cf0f14304e2cb3c15cb5a0c76286d43a69c688902b698811273",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs": "61a9e37af5f4edf15b18ba6a82bfa392d7eba4f796947071aec2613ce74ade8f",
+    "src/Lokad.Svg/Rendering/SvgAnalyticPaint.cs": "b2edb26a75f0c03c81eff82f3e14ccc8a9b49d30dcab7492c7a5c34a3115c888",
+    "src/Lokad.Svg/Rendering/SvgAnalyticPaintClip.cs": "79211765cd7c6ac85c03b4e0b6069dc753704ca0084916abba54c729d7f34b75",
+    "src/Lokad.Svg/Rendering/SvgAnalyticPaintProbe.cs": "2d6fad2b1fefb2551d0a0d93787d436d798ffc40f40872834ce8dc4b99a76fa0",
+    "src/Lokad.Svg/Rendering/SvgAnalyticScanWindow.cs": "6065f2dadad90e54ae28bb6deb295af00f0dbf644d3979888af5b2a68550b1e2",
+    "src/Lokad.Svg/Rendering/SvgContourBuilder.cs": "8aa28de912aee57514abebd9afe6aad059ed47b65c306eb373ec95e6b22aa6dd",
+    "src/Lokad.Svg/Rendering/SvgContourNesting.cs": "6edc2a1152712247e29ab53637682f6aee6617146b4d513f0bf6c5be413b9174",
+    "src/Lokad.Svg/Rendering/SvgContourStructure.cs": "5ba3ffc0e4212b43e02da14fec117f2cd03d92cd470bf8856bc48ddf8f3cdf07",
+    "src/Lokad.Svg/Rendering/SvgCpuRasterGrid.cs": "0bc9df7041d25d7f3ed3ac630306604ffa7baf12ebc5c2db5207cb506379d6fb",
+    "src/Lokad.Svg/Rendering/SvgCubicSpan.cs": "e991e18ccd82c7ee23ff842c3cf8c111f31f6b00f2ab6adb2ca3451cee864c0c",
+    "src/Lokad.Svg/Rendering/SvgCurveFlatten.cs": "39431403efda0489d0704e96b38f5018583574a7d23e6f591d703812fd361015",
+    "src/Lokad.Svg/Rendering/SvgDeviceTransform.cs": "9b94c869159dfd364e63cc5fa5d73fdd3ee38cd19a149a6552abbe6cd820508d",
+    "src/Lokad.Svg/Rendering/SvgEllipticalArc.cs": "b43f44541a1f54c0b5b29a04aa15c9e7e720c3594dca8553a800ce4d206b9898",
+    "src/Lokad.Svg/Rendering/SvgGlyphCoverage.cs": "dcc9bed94f91fd3517e48ddf251c0cbcfb92f4232d24f1745a4441441e34f0ab",
+    "src/Lokad.Svg/Rendering/SvgMemoryCategory.cs": "0bfcab2c64d0a2db9d6a68d2d3f50c210d73d1de5c0330100a47bcefcfca841d",
+    "src/Lokad.Svg/Rendering/SvgPolygonCoverage.cs": "23346aa09d6955ea04d3aa6db2b3db7d3bd11f938311d6a29fc0048a167918f5",
+    "src/Lokad.Svg/Rendering/SvgPolygonCoverageProbe.cs": "130a9dfaaf3e538a0f18d0825df80eb9b522fc25300fe9075c1c010f1a5b9f17",
+    "src/Lokad.Svg/Rendering/SvgQuadSpan.cs": "887c5161b4773146e71eca39d2e07124849fb11096f9981c906e4d30f7adccd3",
+    "src/Lokad.Svg/Rendering/SvgRawContourConvexity.cs": "f0be532ea26c78e164018056f5b2d37e95895d0184e1cf09697adcec32ba6bb8",
+    "src/Lokad.Svg/Rendering/SvgScanlineCoverage.cs": "5794680257ee46178c51a44e9112cdaa70ba60a68515092e5c0ac3ac497a5eda",
+    "src/Lokad.Svg/Rendering/SvgStrokeOutline.cs": "9103ad547a6f4911ffbaa557e44b014c1d6b2aa7d4a0aa18e06c56d799d63c35"
+  },
+  "nativePin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "nativeVectors": "tests/Lokad.Svg.Tests/TestData/analytic-paint-clip-native.json",
+  "nativeVectorCount": 188,
+  "classificationContract": "Borrowed immutable rectangle, four charged context-local boundaries, native float nearly-integral shortcut and analytic X/Y snapping. Initially opaque bitmap contexts remain binary. Mask surface regions contribute no AA paint boundary; per-boundary provenance survives intersections and reflection/placement. AA contexts independently force run storage/additive dispatch and forward fringe pairs as ordinary runs without changing construction clips or cached path classifications.",
+  "limits": "The native vectors compile the original predicate and edge setup; they do not execute complete AA mask construction, successive clip-alpha intersections or all cache transitions. Clip byte multiplication, broader clipping/layers and complete browser parity remain open.",
+  "controls": [
+    {
+      "id": "original-aa-clip-contained-cubic-transparent",
+      "inputSha256": "83c4d5f714d1da159f96c17dfa8dc420b5c2f3dbfc27e64a6c6395b9a5c62089",
+      "referenceSha256": "c649125c6bd98eee6a4a9c77ac786747e92f33ef623bb4b0811ab77e570bfb27",
+      "captures": [
+        {
+          "pngSha256": "c649125c6bd98eee6a4a9c77ac786747e92f33ef623bb4b0811ab77e570bfb27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c649125c6bd98eee6a4a9c77ac786747e92f33ef623bb4b0811ab77e570bfb27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c649125c6bd98eee6a4a9c77ac786747e92f33ef623bb4b0811ab77e570bfb27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 51,
+        "maximumChannelError": 128,
+        "meanAbsoluteError": 0.028157552083333332,
+        "rootMeanSquareError": 1.2694707517636368,
+        "maximumAlphaError": 5,
+        "alphaChangedPixelCount": 51,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 52,
+        "exact": false,
+        "alphaErrorMass": 75,
+        "overCoveragePixelCount": 33,
+        "underCoveragePixelCount": 18,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "ebae7b384f82e73fa1fdf3b20e5acfcc4cc084a95c08d6aadaca22293ae386d8"
+    },
+    {
+      "id": "original-aa-clip-contained-cubic-white",
+      "inputSha256": "83c4d5f714d1da159f96c17dfa8dc420b5c2f3dbfc27e64a6c6395b9a5c62089",
+      "referenceSha256": "f960dae1b11e7fea43fc94503630c763aba9b9bf1a95ec3121cfa33d1d32764b",
+      "captures": [
+        {
+          "pngSha256": "f960dae1b11e7fea43fc94503630c763aba9b9bf1a95ec3121cfa33d1d32764b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f960dae1b11e7fea43fc94503630c763aba9b9bf1a95ec3121cfa33d1d32764b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f960dae1b11e7fea43fc94503630c763aba9b9bf1a95ec3121cfa33d1d32764b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 47,
+        "maximumChannelError": 4,
+        "meanAbsoluteError": 0.004427083333333333,
+        "rootMeanSquareError": 0.08912187348419766,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 52,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "e9c7248bb94581d66fbb1a93e6410722bbf4f2ef717eecb401d1013248145b77"
+    },
+    {
+      "id": "original-aa-clip-contained-cubic-black",
+      "inputSha256": "83c4d5f714d1da159f96c17dfa8dc420b5c2f3dbfc27e64a6c6395b9a5c62089",
+      "referenceSha256": "8ff707732004f9c79b0409ec179014d910a135cd6d68fe5a5aeefa0c4aa281ca",
+      "captures": [
+        {
+          "pngSha256": "8ff707732004f9c79b0409ec179014d910a135cd6d68fe5a5aeefa0c4aa281ca",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8ff707732004f9c79b0409ec179014d910a135cd6d68fe5a5aeefa0c4aa281ca",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8ff707732004f9c79b0409ec179014d910a135cd6d68fe5a5aeefa0c4aa281ca",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 40,
+        "maximumChannelError": 3,
+        "meanAbsoluteError": 0.0026692708333333334,
+        "rootMeanSquareError": 0.06353312784157045,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 52,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "4a34ccf3016edfbdb02f2dda49e57d0861009bd90ce6cbf47cc61e482dd5d808"
+    },
+    {
+      "id": "original-aa-clip-integer-cubic-transparent",
+      "inputSha256": "d369ea7961fd1de7e5739c4ac1dc0e029986971a2b495a9ac771d5e47f18bf59",
+      "referenceSha256": "326831601f48b9cfbcfd88fdd56008cce97ac59b62859848e1b68444dbf97240",
+      "captures": [
+        {
+          "pngSha256": "326831601f48b9cfbcfd88fdd56008cce97ac59b62859848e1b68444dbf97240",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "326831601f48b9cfbcfd88fdd56008cce97ac59b62859848e1b68444dbf97240",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "326831601f48b9cfbcfd88fdd56008cce97ac59b62859848e1b68444dbf97240",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "06aa59da278622954910ff11d119c1d4016ca9e1ad90795d6d6b38b5f44bf694"
+    },
+    {
+      "id": "original-aa-clip-integer-cubic-white",
+      "inputSha256": "d369ea7961fd1de7e5739c4ac1dc0e029986971a2b495a9ac771d5e47f18bf59",
+      "referenceSha256": "804cd8b69482ee4c86dfa782668b1bd8c2808bf172b9312b6d6c318456b7e5fd",
+      "captures": [
+        {
+          "pngSha256": "804cd8b69482ee4c86dfa782668b1bd8c2808bf172b9312b6d6c318456b7e5fd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "804cd8b69482ee4c86dfa782668b1bd8c2808bf172b9312b6d6c318456b7e5fd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "804cd8b69482ee4c86dfa782668b1bd8c2808bf172b9312b6d6c318456b7e5fd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "25872328785d0c96a8a55c04bc572126691a5879c15f87659f5b66ab1fba90e2"
+    },
+    {
+      "id": "original-aa-clip-integer-cubic-black",
+      "inputSha256": "d369ea7961fd1de7e5739c4ac1dc0e029986971a2b495a9ac771d5e47f18bf59",
+      "referenceSha256": "49286b3535f777de02befa864e1bf0b8b013570a358d1293ce8cba9a35d93025",
+      "captures": [
+        {
+          "pngSha256": "49286b3535f777de02befa864e1bf0b8b013570a358d1293ce8cba9a35d93025",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "49286b3535f777de02befa864e1bf0b8b013570a358d1293ce8cba9a35d93025",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "49286b3535f777de02befa864e1bf0b8b013570a358d1293ce8cba9a35d93025",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "51a96cb30aafe61ecedb35a3669313872fa5d1b20bc1303851703534c9d187a7"
+    },
+    {
+      "id": "original-aa-clip-near-integer-transparent",
+      "inputSha256": "0965f7daf6c640ce883d76fe4e2214ab613c6710215f33b3ebe2cc28044b20be",
+      "referenceSha256": "ba2bba558c616f89175711e898ba2824f3029ab6a363e01de234bea43d507ab6",
+      "captures": [
+        {
+          "pngSha256": "ba2bba558c616f89175711e898ba2824f3029ab6a363e01de234bea43d507ab6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ba2bba558c616f89175711e898ba2824f3029ab6a363e01de234bea43d507ab6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ba2bba558c616f89175711e898ba2824f3029ab6a363e01de234bea43d507ab6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "5184d47018836b33f783d40107c476cf185f68eef8e6776ed9352c5c4db02c23"
+    },
+    {
+      "id": "original-aa-clip-near-integer-white",
+      "inputSha256": "0965f7daf6c640ce883d76fe4e2214ab613c6710215f33b3ebe2cc28044b20be",
+      "referenceSha256": "3a80ce9b6830fee1673cfd592c0536e8c033a325fcf4ce35d65fa6adfd4e2bd4",
+      "captures": [
+        {
+          "pngSha256": "3a80ce9b6830fee1673cfd592c0536e8c033a325fcf4ce35d65fa6adfd4e2bd4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3a80ce9b6830fee1673cfd592c0536e8c033a325fcf4ce35d65fa6adfd4e2bd4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3a80ce9b6830fee1673cfd592c0536e8c033a325fcf4ce35d65fa6adfd4e2bd4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "494dc2f2f79f3a4cb2d09db690d72fb30818ca0eb99e147306bb2863633f702e"
+    },
+    {
+      "id": "original-aa-clip-near-integer-black",
+      "inputSha256": "0965f7daf6c640ce883d76fe4e2214ab613c6710215f33b3ebe2cc28044b20be",
+      "referenceSha256": "2ce1adbcf9cc7a876f307318f6ccf2d0b2c770f3cb5f871645a7d12b3130a090",
+      "captures": [
+        {
+          "pngSha256": "2ce1adbcf9cc7a876f307318f6ccf2d0b2c770f3cb5f871645a7d12b3130a090",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2ce1adbcf9cc7a876f307318f6ccf2d0b2c770f3cb5f871645a7d12b3130a090",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2ce1adbcf9cc7a876f307318f6ccf2d0b2c770f3cb5f871645a7d12b3130a090",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "94991921b0f0f407fc26ed53037df7fcf6e1e43b2e40fff3d2bcb2e2e3389c45"
+    },
+    {
+      "id": "original-aa-clip-opaque-context-transparent",
+      "inputSha256": "74a58b8dcbf112566f2a0f15fb3bafb6dca8d60ea7f2e42ff91a5066592609c4",
+      "referenceSha256": "89ee4ff7f9b7ddec364e03eb5ea9d35147b23175b93856f309a8170f13fdb9b9",
+      "captures": [
+        {
+          "pngSha256": "89ee4ff7f9b7ddec364e03eb5ea9d35147b23175b93856f309a8170f13fdb9b9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "89ee4ff7f9b7ddec364e03eb5ea9d35147b23175b93856f309a8170f13fdb9b9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "89ee4ff7f9b7ddec364e03eb5ea9d35147b23175b93856f309a8170f13fdb9b9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 640,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 640,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "d90349860ccec9afad6e1c6a104f6d62f8d2f53fd58a6f0b279548df0f4d52f3"
+    },
+    {
+      "id": "original-aa-clip-opaque-context-white",
+      "inputSha256": "74a58b8dcbf112566f2a0f15fb3bafb6dca8d60ea7f2e42ff91a5066592609c4",
+      "referenceSha256": "a601fa7d8df556250b93496d6af25011f5ce7019947e4abb145771779c58c650",
+      "captures": [
+        {
+          "pngSha256": "a601fa7d8df556250b93496d6af25011f5ce7019947e4abb145771779c58c650",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a601fa7d8df556250b93496d6af25011f5ce7019947e4abb145771779c58c650",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a601fa7d8df556250b93496d6af25011f5ce7019947e4abb145771779c58c650",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 640,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 640,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "1b1b9bc43143dd5cd288864d340887ec068c1e408e948346968897553a4392d7"
+    },
+    {
+      "id": "original-aa-clip-opaque-context-black",
+      "inputSha256": "74a58b8dcbf112566f2a0f15fb3bafb6dca8d60ea7f2e42ff91a5066592609c4",
+      "referenceSha256": "1fa1a7456a17e34002511f4684b94257b2271752545bbcf04db88871f4f387fa",
+      "captures": [
+        {
+          "pngSha256": "1fa1a7456a17e34002511f4684b94257b2271752545bbcf04db88871f4f387fa",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1fa1a7456a17e34002511f4684b94257b2271752545bbcf04db88871f4f387fa",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1fa1a7456a17e34002511f4684b94257b2271752545bbcf04db88871f4f387fa",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 640,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 640,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "7233719e702c2320547d1f5438960544358e6bb83294684cd3280cba13199408"
+    },
+    {
+      "id": "original-aa-clip-small-quad-transparent",
+      "inputSha256": "52499306bcfcbe95700f506d0acef5c44a195f082b6e4d78efcd440e9d48c551",
+      "referenceSha256": "754e0818adadecde380b920292a12f064ac74e1e640c5157ef836347ce936f38",
+      "captures": [
+        {
+          "pngSha256": "754e0818adadecde380b920292a12f064ac74e1e640c5157ef836347ce936f38",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "754e0818adadecde380b920292a12f064ac74e1e640c5157ef836347ce936f38",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "754e0818adadecde380b920292a12f064ac74e1e640c5157ef836347ce936f38",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 66,
+        "maximumChannelError": 128,
+        "meanAbsoluteError": 0.0896484375,
+        "rootMeanSquareError": 2.5249793728530405,
+        "maximumAlphaError": 66,
+        "alphaChangedPixelCount": 66,
+        "minimumMismatchX": 3,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 21,
+        "maximumMismatchY": 21,
+        "exact": false,
+        "alphaErrorMass": 976,
+        "overCoveragePixelCount": 39,
+        "underCoveragePixelCount": 27,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 48,
+        "maximumChannelError": 112,
+        "meanAbsoluteError": 0.053873697916666664,
+        "rootMeanSquareError": 1.6312280490221676,
+        "maximumAlphaError": 66,
+        "alphaChangedPixelCount": 48,
+        "minimumMismatchX": 3,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 21,
+        "maximumMismatchY": 21,
+        "exact": false,
+        "alphaErrorMass": 953,
+        "overCoveragePixelCount": 21,
+        "underCoveragePixelCount": 27,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "ad15141f3cdf0c7061041efa957d0119d32c06e4731bf066133bbe762b6b2f12"
+    },
+    {
+      "id": "original-aa-clip-small-quad-white",
+      "inputSha256": "52499306bcfcbe95700f506d0acef5c44a195f082b6e4d78efcd440e9d48c551",
+      "referenceSha256": "7493ff6b6055e097e0cd0400bf3fcf7a706929511ea9a9a787ff37b9d6030872",
+      "captures": [
+        {
+          "pngSha256": "7493ff6b6055e097e0cd0400bf3fcf7a706929511ea9a9a787ff37b9d6030872",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7493ff6b6055e097e0cd0400bf3fcf7a706929511ea9a9a787ff37b9d6030872",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7493ff6b6055e097e0cd0400bf3fcf7a706929511ea9a9a787ff37b9d6030872",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 66,
+        "maximumChannelError": 48,
+        "meanAbsoluteError": 0.0623046875,
+        "rootMeanSquareError": 1.1803237108946003,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 3,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 21,
+        "maximumMismatchY": 21,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 47,
+        "maximumChannelError": 48,
+        "meanAbsoluteError": 0.06048177083333333,
+        "rootMeanSquareError": 1.1829958438923893,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 3,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 21,
+        "maximumMismatchY": 21,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "f5ff10f031e525f7466ea29f16d6aca462a2088e06bbd6f683c136fe56d694bc"
+    },
+    {
+      "id": "original-aa-clip-small-quad-black",
+      "inputSha256": "52499306bcfcbe95700f506d0acef5c44a195f082b6e4d78efcd440e9d48c551",
+      "referenceSha256": "8580e6e2b32a3d12ffe2424689fc690d3d9c254b8408b80177c16a5d9bdd2e75",
+      "captures": [
+        {
+          "pngSha256": "8580e6e2b32a3d12ffe2424689fc690d3d9c254b8408b80177c16a5d9bdd2e75",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8580e6e2b32a3d12ffe2424689fc690d3d9c254b8408b80177c16a5d9bdd2e75",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8580e6e2b32a3d12ffe2424689fc690d3d9c254b8408b80177c16a5d9bdd2e75",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 62,
+        "maximumChannelError": 28,
+        "meanAbsoluteError": 0.0330078125,
+        "rootMeanSquareError": 0.6395188621143242,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 3,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 21,
+        "maximumMismatchY": 21,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 46,
+        "maximumChannelError": 28,
+        "meanAbsoluteError": 0.03258463541666667,
+        "rootMeanSquareError": 0.6426416429472961,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 21,
+        "maximumMismatchY": 21,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "365c44eb7494922432b42719b5f08d776551301e2720c44058575daf3ad59e2b"
+    },
+    {
+      "id": "original-aa-clip-shader-transparent",
+      "inputSha256": "0891fbc388cdac822d85f47a654f1f1ec8a40d112c0bea0f872ee38e9948bfce",
+      "referenceSha256": "ff7371fa0b48680051e22e30d8a59826394c8a45446089d2e57d2fe86a5e3eb1",
+      "captures": [
+        {
+          "pngSha256": "ff7371fa0b48680051e22e30d8a59826394c8a45446089d2e57d2fe86a5e3eb1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ff7371fa0b48680051e22e30d8a59826394c8a45446089d2e57d2fe86a5e3eb1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ff7371fa0b48680051e22e30d8a59826394c8a45446089d2e57d2fe86a5e3eb1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "UnsupportedFeature",
+      "before": null,
+      "after": null,
+      "candidateSha256": null
+    },
+    {
+      "id": "original-aa-clip-shader-white",
+      "inputSha256": "0891fbc388cdac822d85f47a654f1f1ec8a40d112c0bea0f872ee38e9948bfce",
+      "referenceSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+      "captures": [
+        {
+          "pngSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "UnsupportedFeature",
+      "before": null,
+      "after": null,
+      "candidateSha256": null
+    },
+    {
+      "id": "original-aa-clip-shader-black",
+      "inputSha256": "0891fbc388cdac822d85f47a654f1f1ec8a40d112c0bea0f872ee38e9948bfce",
+      "referenceSha256": "8cf43d8540836e00c2028fcd8764b07c9dfbce3b373eaf80d780e176d73e3c5c",
+      "captures": [
+        {
+          "pngSha256": "8cf43d8540836e00c2028fcd8764b07c9dfbce3b373eaf80d780e176d73e3c5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8cf43d8540836e00c2028fcd8764b07c9dfbce3b373eaf80d780e176d73e3c5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8cf43d8540836e00c2028fcd8764b07c9dfbce3b373eaf80d780e176d73e3c5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "UnsupportedFeature",
+      "before": null,
+      "after": null,
+      "candidateSha256": null
+    },
+    {
+      "id": "original-aa-clip-opacity-transparent",
+      "inputSha256": "b118b0b15dcb72485efeb84871d4521a198d189127408366c6e087e01c656940",
+      "referenceSha256": "42f0e4d7eab245881f20e6f3a52c70e3a73abe9b2cd937dacc5fae20ecea10b8",
+      "captures": [
+        {
+          "pngSha256": "42f0e4d7eab245881f20e6f3a52c70e3a73abe9b2cd937dacc5fae20ecea10b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "42f0e4d7eab245881f20e6f3a52c70e3a73abe9b2cd937dacc5fae20ecea10b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "42f0e4d7eab245881f20e6f3a52c70e3a73abe9b2cd937dacc5fae20ecea10b8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 34,
+        "maximumChannelError": 85,
+        "meanAbsoluteError": 0.024251302083333332,
+        "rootMeanSquareError": 1.21150356393065,
+        "maximumAlphaError": 4,
+        "alphaChangedPixelCount": 27,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 52,
+        "exact": false,
+        "alphaErrorMass": 44,
+        "overCoveragePixelCount": 20,
+        "underCoveragePixelCount": 7,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "5834d3061c5f9dd2360c32c334205ab63aeeeda42406349ca5b5f97f5d0d80da"
+    },
+    {
+      "id": "original-aa-clip-opacity-white",
+      "inputSha256": "b118b0b15dcb72485efeb84871d4521a198d189127408366c6e087e01c656940",
+      "referenceSha256": "97761736f904c3b4d79df7b41e32ffff4aa6b2938c6a1d3d39b1e4cdb578bd7d",
+      "captures": [
+        {
+          "pngSha256": "97761736f904c3b4d79df7b41e32ffff4aa6b2938c6a1d3d39b1e4cdb578bd7d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "97761736f904c3b4d79df7b41e32ffff4aa6b2938c6a1d3d39b1e4cdb578bd7d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "97761736f904c3b4d79df7b41e32ffff4aa6b2938c6a1d3d39b1e4cdb578bd7d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 46,
+        "maximumChannelError": 3,
+        "meanAbsoluteError": 0.0037109375,
+        "rootMeanSquareError": 0.06940971353732367,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 52,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "1117116617ba5fb7495fc844066f7d4556d2810e2053754a30386735f660a4f6"
+    },
+    {
+      "id": "original-aa-clip-opacity-black",
+      "inputSha256": "b118b0b15dcb72485efeb84871d4521a198d189127408366c6e087e01c656940",
+      "referenceSha256": "52683b7fc7cb49147f5f34688856c51b800b78ea5d54fbbf1d64e2fb1a362153",
+      "captures": [
+        {
+          "pngSha256": "52683b7fc7cb49147f5f34688856c51b800b78ea5d54fbbf1d64e2fb1a362153",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "52683b7fc7cb49147f5f34688856c51b800b78ea5d54fbbf1d64e2fb1a362153",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "52683b7fc7cb49147f5f34688856c51b800b78ea5d54fbbf1d64e2fb1a362153",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 28,
+        "maximumChannelError": 2,
+        "meanAbsoluteError": 0.00185546875,
+        "rootMeanSquareError": 0.048074919830059695,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 52,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "d4069432642c996ea8b210da460c51efea1e6b811efafc603b541948d0bdc1e6"
+    },
+    {
+      "id": "original-aa-clip-crossing-cubic-transparent",
+      "inputSha256": "ff5970c0e85f042bf25fccf2534ea9a152747bf4f07ea3ee2b71b674251532ae",
+      "referenceSha256": "28b3d0370ed843533442800669945277e233af58e0e3be9026a20a75386825e4",
+      "captures": [
+        {
+          "pngSha256": "28b3d0370ed843533442800669945277e233af58e0e3be9026a20a75386825e4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "28b3d0370ed843533442800669945277e233af58e0e3be9026a20a75386825e4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "28b3d0370ed843533442800669945277e233af58e0e3be9026a20a75386825e4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 7,
+        "maximumChannelError": 128,
+        "meanAbsoluteError": 0.026041666666666668,
+        "rootMeanSquareError": 1.6225341868509273,
+        "maximumAlphaError": 7,
+        "alphaChangedPixelCount": 7,
+        "minimumMismatchX": 63,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 80,
+        "maximumMismatchY": 52,
+        "exact": false,
+        "alphaErrorMass": 24,
+        "overCoveragePixelCount": 3,
+        "underCoveragePixelCount": 4,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "dec3f23be66cefd72d940cd4b77fae54c17241606ec6ddd5fd761d4d7e8664ee"
+    },
+    {
+      "id": "original-aa-clip-crossing-cubic-white",
+      "inputSha256": "ff5970c0e85f042bf25fccf2534ea9a152747bf4f07ea3ee2b71b674251532ae",
+      "referenceSha256": "560ad002b2895082b0bb364626c9ac885f526addf46838c04720733e9e9d8e49",
+      "captures": [
+        {
+          "pngSha256": "560ad002b2895082b0bb364626c9ac885f526addf46838c04720733e9e9d8e49",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "560ad002b2895082b0bb364626c9ac885f526addf46838c04720733e9e9d8e49",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "560ad002b2895082b0bb364626c9ac885f526addf46838c04720733e9e9d8e49",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 5,
+        "maximumChannelError": 5,
+        "meanAbsoluteError": 0.0013346354166666667,
+        "rootMeanSquareError": 0.06530178341107283,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 63,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 80,
+        "maximumMismatchY": 52,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "88452bf8704a92589e8dc27b171544dede5a62d29d4846287153ad4104de7426"
+    },
+    {
+      "id": "original-aa-clip-crossing-cubic-black",
+      "inputSha256": "ff5970c0e85f042bf25fccf2534ea9a152747bf4f07ea3ee2b71b674251532ae",
+      "referenceSha256": "c1bd46f9e8ddb2f2eec6a678b3a310ddfa02b734966a439272e84f1ce698a9b7",
+      "captures": [
+        {
+          "pngSha256": "c1bd46f9e8ddb2f2eec6a678b3a310ddfa02b734966a439272e84f1ce698a9b7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c1bd46f9e8ddb2f2eec6a678b3a310ddfa02b734966a439272e84f1ce698a9b7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c1bd46f9e8ddb2f2eec6a678b3a310ddfa02b734966a439272e84f1ce698a9b7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 7,
+        "maximumChannelError": 3,
+        "meanAbsoluteError": 0.0010091145833333334,
+        "rootMeanSquareError": 0.04307515235028194,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 63,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 80,
+        "maximumMismatchY": 52,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "a2a82e7d1db70c3f7f1d8948f05c4c105b3bbd33827fd8b81d4ad24fa7e9d1c0"
+    },
+    {
+      "id": "original-aa-clip-convex-pair-transparent",
+      "inputSha256": "a4ccb8dad366579b08a3b1a34bf486255dee7485be1c91eb0263e73bb1df14f1",
+      "referenceSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+      "captures": [
+        {
+          "pngSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "73448769dba9e371a100f9345c167bdac9d0787c439bb4914f8df4283973a8be"
+    },
+    {
+      "id": "original-aa-clip-convex-pair-white",
+      "inputSha256": "a4ccb8dad366579b08a3b1a34bf486255dee7485be1c91eb0263e73bb1df14f1",
+      "referenceSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+      "captures": [
+        {
+          "pngSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "73448769dba9e371a100f9345c167bdac9d0787c439bb4914f8df4283973a8be"
+    },
+    {
+      "id": "original-aa-clip-convex-pair-black",
+      "inputSha256": "a4ccb8dad366579b08a3b1a34bf486255dee7485be1c91eb0263e73bb1df14f1",
+      "referenceSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+      "captures": [
+        {
+          "pngSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9e0a18449d6203ef06685f17152a243c6b026600a4420823bb24c6ea30f19f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": true,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 96,
+        "minimumMismatchY": 80,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "73448769dba9e371a100f9345c167bdac9d0787c439bb4914f8df4283973a8be"
+    },
+    {
+      "id": "original-aa-clip-admitted-shader-transparent",
+      "inputSha256": "fc27d55f09a576ea6a4a19d8d0c80e8b16e59012ce9277a0661a896b1f4e9786",
+      "referenceSha256": "ff7371fa0b48680051e22e30d8a59826394c8a45446089d2e57d2fe86a5e3eb1",
+      "captures": [
+        {
+          "pngSha256": "ff7371fa0b48680051e22e30d8a59826394c8a45446089d2e57d2fe86a5e3eb1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ff7371fa0b48680051e22e30d8a59826394c8a45446089d2e57d2fe86a5e3eb1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ff7371fa0b48680051e22e30d8a59826394c8a45446089d2e57d2fe86a5e3eb1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "UnsupportedFeature",
+      "before": null,
+      "after": null,
+      "candidateSha256": null
+    },
+    {
+      "id": "original-aa-clip-admitted-shader-white",
+      "inputSha256": "fc27d55f09a576ea6a4a19d8d0c80e8b16e59012ce9277a0661a896b1f4e9786",
+      "referenceSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+      "captures": [
+        {
+          "pngSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "UnsupportedFeature",
+      "before": null,
+      "after": null,
+      "candidateSha256": null
+    },
+    {
+      "id": "original-aa-clip-admitted-shader-black",
+      "inputSha256": "fc27d55f09a576ea6a4a19d8d0c80e8b16e59012ce9277a0661a896b1f4e9786",
+      "referenceSha256": "8cf43d8540836e00c2028fcd8764b07c9dfbce3b373eaf80d780e176d73e3c5c",
+      "captures": [
+        {
+          "pngSha256": "8cf43d8540836e00c2028fcd8764b07c9dfbce3b373eaf80d780e176d73e3c5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8cf43d8540836e00c2028fcd8764b07c9dfbce3b373eaf80d780e176d73e3c5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8cf43d8540836e00c2028fcd8764b07c9dfbce3b373eaf80d780e176d73e3c5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "UnsupportedFeature",
+      "before": null,
+      "after": null,
+      "candidateSha256": null
+    },
+    {
+      "id": "original-aa-clip-material-pairs-transparent",
+      "inputSha256": "ee5c9992aa5e7ff27de1f734c851e9d5d8664c6950a543f158517222d58a7636",
+      "referenceSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+      "captures": [
+        {
+          "pngSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "UnsupportedFeature",
+      "before": null,
+      "after": null,
+      "candidateSha256": null
+    },
+    {
+      "id": "original-aa-clip-material-pairs-white",
+      "inputSha256": "ee5c9992aa5e7ff27de1f734c851e9d5d8664c6950a543f158517222d58a7636",
+      "referenceSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+      "captures": [
+        {
+          "pngSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "UnsupportedFeature",
+      "before": null,
+      "after": null,
+      "candidateSha256": null
+    },
+    {
+      "id": "original-aa-clip-material-pairs-black",
+      "inputSha256": "ee5c9992aa5e7ff27de1f734c851e9d5d8664c6950a543f158517222d58a7636",
+      "referenceSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+      "captures": [
+        {
+          "pngSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "98637b0d089d82ad7c6e5e6436af78cf3c9531961a9142c9d0ca6505e1e62e0c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "UnsupportedFeature",
+      "before": null,
+      "after": null,
+      "candidateSha256": null
+    },
+    {
+      "id": "original-aa-clip-root-shader-transparent",
+      "inputSha256": "82a4de5858b2fdca2d68f9420c798fc1f074db5fd25386b6d2be45832a3361e7",
+      "referenceSha256": "56bdbf70d1620ced7840db5df4ca2ee6360d2ba60638fee7baf834ba8082dd98",
+      "captures": [
+        {
+          "pngSha256": "56bdbf70d1620ced7840db5df4ca2ee6360d2ba60638fee7baf834ba8082dd98",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "56bdbf70d1620ced7840db5df4ca2ee6360d2ba60638fee7baf834ba8082dd98",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "56bdbf70d1620ced7840db5df4ca2ee6360d2ba60638fee7baf834ba8082dd98",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 350,
+        "maximumChannelError": 255,
+        "meanAbsoluteError": 0.1087890625,
+        "rootMeanSquareError": 4.351424575163096,
+        "maximumAlphaError": 7,
+        "alphaChangedPixelCount": 30,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 27,
+        "maximumMismatchY": 27,
+        "exact": false,
+        "alphaErrorMass": 64,
+        "overCoveragePixelCount": 23,
+        "underCoveragePixelCount": 7,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 337,
+        "maximumChannelError": 23,
+        "meanAbsoluteError": 0.019010416666666665,
+        "rootMeanSquareError": 0.20775962673243328,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 27,
+        "maximumMismatchY": 27,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "3cb902ba47363db6fb83421fc215b2a32caeff52e0f744d54372a5ec75dfc101"
+    },
+    {
+      "id": "original-aa-clip-root-shader-white",
+      "inputSha256": "82a4de5858b2fdca2d68f9420c798fc1f074db5fd25386b6d2be45832a3361e7",
+      "referenceSha256": "2a8ff0309c454648e9d6bc5f77948a4a328453b5038f31ad6e5dfd0f52354daa",
+      "captures": [
+        {
+          "pngSha256": "2a8ff0309c454648e9d6bc5f77948a4a328453b5038f31ad6e5dfd0f52354daa",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2a8ff0309c454648e9d6bc5f77948a4a328453b5038f31ad6e5dfd0f52354daa",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2a8ff0309c454648e9d6bc5f77948a4a328453b5038f31ad6e5dfd0f52354daa",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 350,
+        "maximumChannelError": 4,
+        "meanAbsoluteError": 0.018359375,
+        "rootMeanSquareError": 0.14635323991402902,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 27,
+        "maximumMismatchY": 27,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 337,
+        "maximumChannelError": 2,
+        "meanAbsoluteError": 0.016178385416666666,
+        "rootMeanSquareError": 0.1274499493265232,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 27,
+        "maximumMismatchY": 27,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "5a8344a0479a62bb0cdc99c9f3ebec844c71b0087e192d0f449db7faf102aa2b"
+    },
+    {
+      "id": "original-aa-clip-root-shader-black",
+      "inputSha256": "82a4de5858b2fdca2d68f9420c798fc1f074db5fd25386b6d2be45832a3361e7",
+      "referenceSha256": "a17f4f6756224eefa4cb626f5dfc7c60f2aea6328ca65a01e0657da67d5be14c",
+      "captures": [
+        {
+          "pngSha256": "a17f4f6756224eefa4cb626f5dfc7c60f2aea6328ca65a01e0657da67d5be14c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a17f4f6756224eefa4cb626f5dfc7c60f2aea6328ca65a01e0657da67d5be14c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a17f4f6756224eefa4cb626f5dfc7c60f2aea6328ca65a01e0657da67d5be14c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 349,
+        "maximumChannelError": 6,
+        "meanAbsoluteError": 0.0189453125,
+        "rootMeanSquareError": 0.16015942578152143,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 27,
+        "maximumMismatchY": 27,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 337,
+        "maximumChannelError": 2,
+        "meanAbsoluteError": 0.016178385416666666,
+        "rootMeanSquareError": 0.1274499493265232,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 2,
+        "minimumMismatchY": 1,
+        "maximumMismatchX": 27,
+        "maximumMismatchY": 27,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "28f553848fba16b5898f817597229b62833a7acefb35bbd4c6d155f5679dcbac"
+    },
+    {
+      "id": "original-aa-clip-root-material-pairs-transparent",
+      "inputSha256": "669ab6e65941c6eec46ffc8e6a222bf0ff206b38a05b0313478d2a401cb13ae9",
+      "referenceSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+      "captures": [
+        {
+          "pngSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 2072,
+        "maximumChannelError": 1,
+        "meanAbsoluteError": 0.009280734592013888,
+        "rootMeanSquareError": 0.0963365693390308,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 5,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 763,
+        "maximumMismatchY": 70,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 1808,
+        "maximumChannelError": 1,
+        "meanAbsoluteError": 0.007493760850694444,
+        "rootMeanSquareError": 0.08656651113851387,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 386,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 763,
+        "maximumMismatchY": 70,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "7eb2178e40f42321c2d84df149cedb871f6fd55a2d0eb90e45b020e80b83287a"
+    },
+    {
+      "id": "original-aa-clip-root-material-pairs-white",
+      "inputSha256": "669ab6e65941c6eec46ffc8e6a222bf0ff206b38a05b0313478d2a401cb13ae9",
+      "referenceSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+      "captures": [
+        {
+          "pngSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 2072,
+        "maximumChannelError": 1,
+        "meanAbsoluteError": 0.009280734592013888,
+        "rootMeanSquareError": 0.0963365693390308,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 5,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 763,
+        "maximumMismatchY": 70,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 1808,
+        "maximumChannelError": 1,
+        "meanAbsoluteError": 0.007493760850694444,
+        "rootMeanSquareError": 0.08656651113851387,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 386,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 763,
+        "maximumMismatchY": 70,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "7eb2178e40f42321c2d84df149cedb871f6fd55a2d0eb90e45b020e80b83287a"
+    },
+    {
+      "id": "original-aa-clip-root-material-pairs-black",
+      "inputSha256": "669ab6e65941c6eec46ffc8e6a222bf0ff206b38a05b0313478d2a401cb13ae9",
+      "referenceSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+      "captures": [
+        {
+          "pngSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c59aa7904a696dcb83cd75cf317979cf7dcdea8d7d824385c398d83134e4a88f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 2072,
+        "maximumChannelError": 1,
+        "meanAbsoluteError": 0.009280734592013888,
+        "rootMeanSquareError": 0.0963365693390308,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 5,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 763,
+        "maximumMismatchY": 70,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 1808,
+        "maximumChannelError": 1,
+        "meanAbsoluteError": 0.007493760850694444,
+        "rootMeanSquareError": 0.08656651113851387,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 386,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 763,
+        "maximumMismatchY": 70,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "7eb2178e40f42321c2d84df149cedb871f6fd55a2d0eb90e45b020e80b83287a"
+    },
+    {
+      "id": "original-aa-clip-mask-region-masked-transparent",
+      "inputSha256": "960e1a6f37e73f290ac0f068361577b1338dab4c74c93ac257a38af29ddd8036",
+      "referenceSha256": "13a6114dec1cebbb14cce033bf0029440deaa925c57b60ce64be2f4b4f245c45",
+      "captures": [
+        {
+          "pngSha256": "13a6114dec1cebbb14cce033bf0029440deaa925c57b60ce64be2f4b4f245c45",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "13a6114dec1cebbb14cce033bf0029440deaa925c57b60ce64be2f4b4f245c45",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "13a6114dec1cebbb14cce033bf0029440deaa925c57b60ce64be2f4b4f245c45",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 74,
+        "maximumChannelError": 255,
+        "meanAbsoluteError": 0.0740966796875,
+        "rootMeanSquareError": 2.9585350576763494,
+        "maximumAlphaError": 44,
+        "alphaChangedPixelCount": 74,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 8,
+        "maximumMismatchX": 55,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 704,
+        "overCoveragePixelCount": 34,
+        "underCoveragePixelCount": 40,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 74,
+        "maximumChannelError": 255,
+        "meanAbsoluteError": 0.0740966796875,
+        "rootMeanSquareError": 2.9585350576763494,
+        "maximumAlphaError": 44,
+        "alphaChangedPixelCount": 74,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 8,
+        "maximumMismatchX": 55,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 704,
+        "overCoveragePixelCount": 34,
+        "underCoveragePixelCount": 40,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "c01e82ea8489aa58eda03aadfcc4742ba94d9cf45d8c3ad305512da8c2876694"
+    },
+    {
+      "id": "original-aa-clip-mask-region-unmasked-transparent",
+      "inputSha256": "47dc914a6a28cc1f231d77dc949a202a4c1b9c5ee68820a9382743f8b2480ccc",
+      "referenceSha256": "13a6114dec1cebbb14cce033bf0029440deaa925c57b60ce64be2f4b4f245c45",
+      "captures": [
+        {
+          "pngSha256": "13a6114dec1cebbb14cce033bf0029440deaa925c57b60ce64be2f4b4f245c45",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "13a6114dec1cebbb14cce033bf0029440deaa925c57b60ce64be2f4b4f245c45",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "13a6114dec1cebbb14cce033bf0029440deaa925c57b60ce64be2f4b4f245c45",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "declaredBeforeProductionEdit": false,
+      "outcome": "renders",
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 74,
+        "maximumChannelError": 255,
+        "meanAbsoluteError": 0.0740966796875,
+        "rootMeanSquareError": 2.9585350576763494,
+        "maximumAlphaError": 44,
+        "alphaChangedPixelCount": 74,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 8,
+        "maximumMismatchX": 55,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 704,
+        "overCoveragePixelCount": 34,
+        "underCoveragePixelCount": 40,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 74,
+        "maximumChannelError": 255,
+        "meanAbsoluteError": 0.0740966796875,
+        "rootMeanSquareError": 2.9585350576763494,
+        "maximumAlphaError": 44,
+        "alphaChangedPixelCount": 74,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 8,
+        "maximumMismatchX": 55,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 704,
+        "overCoveragePixelCount": 34,
+        "underCoveragePixelCount": 40,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "c01e82ea8489aa58eda03aadfcc4742ba94d9cf45d8c3ad305512da8c2876694"
+    }
+  ],
+  "pairWitnesses": [
+    {
+      "id": "original-aa-clip-root-material-pairs-transparent",
+      "x": 27,
+      "y": 17,
+      "reference": [
+        147,
+        147,
+        147,
+        255
+      ],
+      "before": [
+        146,
+        146,
+        146,
+        255
+      ],
+      "after": [
+        147,
+        147,
+        147,
+        255
+      ]
+    },
+    {
+      "id": "original-aa-clip-root-material-pairs-transparent",
+      "x": 59,
+      "y": 17,
+      "reference": [
+        147,
+        147,
+        147,
+        255
+      ],
+      "before": [
+        146,
+        146,
+        146,
+        255
+      ],
+      "after": [
+        147,
+        147,
+        147,
+        255
+      ]
+    },
+    {
+      "id": "original-aa-clip-root-material-pairs-transparent",
+      "x": 91,
+      "y": 17,
+      "reference": [
+        147,
+        147,
+        147,
+        255
+      ],
+      "before": [
+        146,
+        146,
+        146,
+        255
+      ],
+      "after": [
+        147,
+        147,
+        147,
+        255
+      ]
+    },
+    {
+      "id": "original-aa-clip-root-material-pairs-transparent",
+      "x": 123,
+      "y": 17,
+      "reference": [
+        147,
+        147,
+        147,
+        255
+      ],
+      "before": [
+        146,
+        146,
+        146,
+        255
+      ],
+      "after": [
+        147,
+        147,
+        147,
+        255
+      ]
+    },
+    {
+      "id": "original-aa-clip-root-material-pairs-transparent",
+      "x": 155,
+      "y": 17,
+      "reference": [
+        109,
+        116,
+        127,
+        255
+      ],
+      "before": [
+        109,
+        116,
+        126,
+        255
+      ],
+      "after": [
+        109,
+        116,
+        127,
+        255
+      ]
+    },
+    {
+      "id": "original-aa-clip-root-material-pairs-transparent",
+      "x": 187,
+      "y": 17,
+      "reference": [
+        109,
+        116,
+        127,
+        255
+      ],
+      "before": [
+        109,
+        116,
+        126,
+        255
+      ],
+      "after": [
+        109,
+        116,
+        127,
+        255
+      ]
+    },
+    {
+      "id": "original-aa-clip-root-material-pairs-transparent",
+      "x": 219,
+      "y": 17,
+      "reference": [
+        109,
+        116,
+        127,
+        255
+      ],
+      "before": [
+        109,
+        116,
+        126,
+        255
+      ],
+      "after": [
+        109,
+        116,
+        127,
+        255
+      ]
+    },
+    {
+      "id": "original-aa-clip-root-material-pairs-transparent",
+      "x": 251,
+      "y": 17,
+      "reference": [
+        109,
+        116,
+        127,
+        255
+      ],
+      "before": [
+        109,
+        116,
+        126,
+        255
+      ],
+      "after": [
+        109,
+        116,
+        127,
+        255
+      ]
+    }
+  ],
+  "priorBank": {
+    "executed": 896,
+    "exactFixturePngsPreserved": 580,
+    "changedPngs": [
+      "original-cpu-raster-clipped-phase",
+      "inv-027"
+    ],
+    "dispositionsPreserved": true
+  },
+  "corporateBank": {
+    "executed": 258,
+    "changedPngs": [
+      "inv-005-small-transparent",
+      "inv-005-small-white",
+      "inv-005-small-black",
+      "inv-005-historical-300x293-transparent",
+      "inv-005-historical-300x293-white",
+      "inv-005-historical-300x293-black",
+      "inv-027-small-transparent",
+      "inv-027-small-white",
+      "inv-027-small-black",
+      "inv-027-intended-transparent",
+      "inv-027-intended-white",
+      "inv-027-intended-black",
+      "inv-027-large-transparent",
+      "inv-027-large-white",
+      "inv-027-large-black"
+    ],
+    "allNineFordExactPngsPreserved": true,
+    "measuredFidelityCases": 18,
+    "verifiedExactDocuments": 1,
+    "unmeasured": 225,
+    "transportGaps": 15
+  },
+  "fixtureBank": {
+    "entries": 785,
+    "exact": 601,
+    "knownDifferences": 157,
+    "rejections": 27,
+    "baseDocuments": 443,
+    "variants": 342
+  },
+  "validationState": "validated precommit checkpoint",
+  "buildMetadata": {
+    "buildHead": "1ca912fd",
+    "sourceFingerprintUnchanged": true,
+    "previousRendererSha256": "f8245b69d25536842eea091f0f20f5f58e4095ba1547eef67695d63f65978a9d",
+    "allPrevious937And258PngsAndDispositionsPreserved": true,
+    "state": "Source-frozen precommit checkpoint; normal Release build, assembly revision metadata refreshed after PLAN-only commit."
+  },
+  "validation": {
+    "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+    "lockedRestore": true,
+    "releaseSolutionBuild": {
+      "projects": 9,
+      "warnings": 0,
+      "errors": 0,
+      "normalBuild": true,
+      "assemblyBuildHead": "1ca912fd"
+    },
+    "tests": {
+      "core": {
+        "passed": 3109,
+        "failed": 0,
+        "skipped": 0,
+        "resultSha256": "3bcbc29010ea5b65039c09ebca3da3a127e20fca3bd6471a7b03f5cd2abdb877"
+      },
+      "visual": {
+        "passed": 142,
+        "failed": 0,
+        "skipped": 0,
+        "resultSha256": "c6ba9e012c137615ae1c7842f1be88ef843b4ec83f5ff622446b2540ddb3cf81"
+      },
+      "fontProbe": {
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "resultSha256": "b27aabb1754e10b4d37e4aeecc14425715b56da7c13f596b898bb24831887485"
+      }
+    },
+    "totalPassedTests": 3257,
+    "memory": {
+      "scenarios": 25,
+      "summarySha256": "338b170318452ab06b50cbb894e2f50d67bd2a85bb2f6cfb0f4d6aabaa993eb9",
+      "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac"
+    },
+    "package": {
+      "runtimeSha256": "db06af8a9778dd97fa55b7d2dff23339552797da7cbb9a003119017d7cf9cdc0",
+      "symbolSha256": "5a1a6a849ed8d2d5d04d3e5bc8e93416f3ecb32e8e3222a277fbdee8d3f8188d",
+      "installedConsumerRendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+      "noticesSha256": "35dc3c9fdd1be8724ff0e25bdab7fa849e5b1fcd134f550b858a26dea610ed74",
+      "inspectionAndConsumerChecksPassed": true,
+      "runtimeDependencies": 0,
+      "nativeAssets": 0
+    },
+    "negativeControl": {
+      "productionRendererSha256": "f8245b69d25536842eea091f0f20f5f58e4095ba1547eef67695d63f65978a9d",
+      "suppression": "Final production source snapshot with only GetPaintClip returning Binary; final boundary provenance retained.",
+      "controls": {
+        "cases": 41,
+        "allBaselinePngsAndDispositionsRestored": true,
+        "summarySha256": "1c46c665ac037be3de2e4ee93ec5b7bda2e34058ae4329b915ecbad3f7ca4301"
+      },
+      "negativeRendererSha256": "8fd41d6c9c4be9c817367e6c44aee232df5210c6f0c49c603d8fa15b4071dcff",
+      "corporate": {
+        "cases": 258,
+        "allBaselinePngsAndDispositionsRestored": true,
+        "summarySha256": "e716af13725d43969092fad2895e0e7470108719fdc3cbe1d6132bdd556178fd"
+      },
+      "productionSourceFingerprintSha256": "66572be8224c25d34b24559064fbd7bbf673da224abac0d8eb6c958cf9839266",
+      "sameFinalProductionSourcesVerified": true
+    },
+    "fullComparisons": {
+      "rebuilt-expanded-bank": {
+        "executed": 937,
+        "summarySha256": "5f92778757b5e4f952e8cb1cd2974a5bb894a160899a7242df437b4327b566fe"
+      },
+      "rebuilt-corporate": {
+        "executed": 258,
+        "summarySha256": "45d4d42237a92cc85dda2046e03218ed7b456feb557620661bd33de28e2c2c06"
+      },
+      "rebuilt-controls": {
+        "executed": 41,
+        "summarySha256": "0aa1677ced7a853700b68658b933b876b708635f1718add2c1b54e796c4ea3fa"
+      }
+    },
+    "matchedTiming": [
+      {
+        "order": "baseline-first",
+        "rendererSha256": "69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.127149,
+            "allocatedBytes": 20288
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 17.63041,
+            "allocatedBytes": 816628
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 269.92783333333335,
+            "allocatedBytes": 7184808
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 451.3296666666667,
+            "allocatedBytes": 36856296
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 11.34257,
+            "allocatedBytes": 1041988
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 33.86246666666667,
+            "allocatedBytes": 3951250
+          }
+        ]
+      },
+      {
+        "order": "candidate-second",
+        "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.127391,
+            "allocatedBytes": 20368
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 17.743000000000002,
+            "allocatedBytes": 818591
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 276.93376666666666,
+            "allocatedBytes": 7186408
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 450.3177333333333,
+            "allocatedBytes": 36855701
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 11.27744,
+            "allocatedBytes": 1041472
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 35.37043333333333,
+            "allocatedBytes": 3948413
+          }
+        ]
+      },
+      {
+        "order": "candidate-first",
+        "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.128053,
+            "allocatedBytes": 20368
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 18.18288,
+            "allocatedBytes": 819842
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 276.57890000000003,
+            "allocatedBytes": 7186328
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 696.2021,
+            "allocatedBytes": 36856544
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 23.26621,
+            "allocatedBytes": 1041172
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 65.98493333333333,
+            "allocatedBytes": 3948674
+          }
+        ]
+      },
+      {
+        "order": "baseline-second",
+        "rendererSha256": "69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.171256,
+            "allocatedBytes": 20288
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 30.36778,
+            "allocatedBytes": 816682
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 440.5659333333333,
+            "allocatedBytes": 7184781
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 524.8846,
+            "allocatedBytes": 36857464
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 11.82132,
+            "allocatedBytes": 1043400
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 35.97143333333333,
+            "allocatedBytes": 3952626
+          }
+        ]
+      }
+    ],
+    "resourceLedgers": [
+      {
+        "id": "tiny",
+        "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+        "baseline": {
+          "Id": "tiny",
+          "InputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+          "ParserWork": 33,
+          "WorkThroughRaster": 219,
+          "AccountedPeakBytes": 132576,
+          "PngSha256": "3ddb99a0773a807f4a39ed460e5cd2ae467e795c0fded02073e4a49232d9920a"
+        },
+        "current": {
+          "Id": "tiny",
+          "InputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+          "ParserWork": 33,
+          "WorkThroughRaster": 219,
+          "AccountedPeakBytes": 132608,
+          "PngSha256": "3ddb99a0773a807f4a39ed460e5cd2ae467e795c0fded02073e4a49232d9920a"
+        }
+      },
+      {
+        "id": "ford",
+        "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "baseline": {
+          "Id": "ford",
+          "InputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+          "ParserWork": 4655,
+          "WorkThroughRaster": 1301211,
+          "AccountedPeakBytes": 534434,
+          "PngSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69"
+        },
+        "current": {
+          "Id": "ford",
+          "InputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+          "ParserWork": 4655,
+          "WorkThroughRaster": 1301211,
+          "AccountedPeakBytes": 534450,
+          "PngSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69"
+        }
+      },
+      {
+        "id": "dense",
+        "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+        "baseline": {
+          "Id": "dense",
+          "InputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+          "ParserWork": 245770,
+          "WorkThroughRaster": 32761735,
+          "AccountedPeakBytes": 2493820,
+          "PngSha256": "65bb5370d2940c9d81e8258b662626ff1839d8a8951452439df0a38933a749c9"
+        },
+        "current": {
+          "Id": "dense",
+          "InputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+          "ParserWork": 245770,
+          "WorkThroughRaster": 32761735,
+          "AccountedPeakBytes": 2494116,
+          "PngSha256": "65bb5370d2940c9d81e8258b662626ff1839d8a8951452439df0a38933a749c9"
+        }
+      },
+      {
+        "id": "native-stop",
+        "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+        "baseline": {
+          "Id": "native-stop",
+          "InputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+          "ParserWork": 1723,
+          "WorkThroughRaster": 73300833,
+          "AccountedPeakBytes": 33629655,
+          "PngSha256": "2b3a9aaddaf75edd1154888ecdf717c1209db84560781b8b28dbe57b5aa6403b"
+        },
+        "current": {
+          "Id": "native-stop",
+          "InputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+          "ParserWork": 1723,
+          "WorkThroughRaster": 73300833,
+          "AccountedPeakBytes": 33629711,
+          "PngSha256": "2b3a9aaddaf75edd1154888ecdf717c1209db84560781b8b28dbe57b5aa6403b"
+        }
+      },
+      {
+        "id": "youtube-intended",
+        "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "baseline": {
+          "Id": "youtube-intended",
+          "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+          "ParserWork": 357,
+          "WorkThroughRaster": 1009278,
+          "AccountedPeakBytes": 943153,
+          "PngSha256": "4d48356ec24e90bdbbb8a39d5eebba2d5b5882c003af3febf940548112a38863"
+        },
+        "current": {
+          "Id": "youtube-intended",
+          "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+          "ParserWork": 357,
+          "WorkThroughRaster": 928430,
+          "AccountedPeakBytes": 942621,
+          "PngSha256": "36c545aae1851cc0d2113dbc04ff2da5121d886e3b16bcc9075e89b4e389b6b0"
+        }
+      },
+      {
+        "id": "youtube-large",
+        "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "baseline": {
+          "Id": "youtube-large",
+          "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+          "ParserWork": 463,
+          "WorkThroughRaster": 3249021,
+          "AccountedPeakBytes": 3733811,
+          "PngSha256": "0de04e1dd2ba74d50b63080b2832b0cbb5b8bbed48cdb93ca0f5410b4650a474"
+        },
+        "current": {
+          "Id": "youtube-large",
+          "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+          "ParserWork": 463,
+          "WorkThroughRaster": 3026899,
+          "AccountedPeakBytes": 3732615,
+          "PngSha256": "90f8c8e25e17b4237ffd940601ef3be994c4ae9555b8f92787d90cbae7740467"
+        }
+      }
+    ],
+    "remainingLimits": "Curved-mark all-nine exactness, full AA masks/cache/clip intersections, complete corporate reference matrix and transport, representative performance, Linux and S17 remain open."
+  }
+}
