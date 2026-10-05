@@ -9,13 +9,19 @@ does not complete those stages.
 Current validated evidence: 720 fixture entries = 567 exact + 135 known-difference
 renders + 18 rejections across 420 base documents and 300 variants; 60 research
 probes = 59 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 3,090 core + 126 visual + six FontProbe tests pass. All 25 memory
-scenarios, runtime/symbol package inspection and installed-consumer checks pass.
+Release build and 3,090 core + 139 visual + six FontProbe tests pass (3,235 total,
+including the newer corporate bank). All 25 memory scenarios, runtime/symbol
+package inspection and installed-consumer checks pass at the renderer density
+checkpoint; the selection/measurement slice does not change production sources.
 The Default inventory retains 88 renders + four MalformedInput rejections out of
 92. These counts establish neither corporate coverage, full independent-variant
 validation nor Linux delivery. YouTube is now selected as the curved mark, and
 the first corporate cohort and variant recipe are frozen before fresh comparison;
-measurement and transport-limit gaps remain open.
+all 258 renderer cases are executed, with eighteen fidelity comparisons and
+240 cases lacking references (225 unmeasured / fifteen verified transport gaps).
+Ford is the only currently verified exact document; YouTube has nine known
+differences. Its native raw-path classification discriminator orders the next
+shared renderer slice. Curved-mark, coverage and platform/delivery exits remain open.
 
 ## Q1 - numeric exact-document target: selected
 

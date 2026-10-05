@@ -4210,3 +4210,45 @@ are under `artifacts/lower-residuals-20261005/`; committed controls and native/F
 records are portable. This establishes the outlined-wordmark checkpoint, not
 general affine/instance, event, quad/convex/stroke or layer parity, the curved-mark
 checkpoint, a corporate exact-document rate, representative throughput or Linux.
+
+## YouTube raw-path classification discriminator (2026-10-05)
+
+The first corporate cohort is frozen before fresh comparison: 27 independent
+brand/organization sources / 258 cases, including eight fresh evaluation holdouts.
+Its selection, root-only materializations and partial measurement are in the
+[inventory](INVENTORY.md#corporate-measurement-and-selected-curved-mark-2026-10-05).
+YouTube (`inv-027`) was selected from the retained exports by shape/provenance,
+before this measurement. All nine original-input candidate variants remain
+known differences against stable healthy capture triples; no reference is replaced.
+
+Actual native observation: a fresh traced 1144×800 transparent PNG is completely
+byte-identical to its original triple. The 877-byte SVG display-item picture
+is decoded through the pinned Chrome `LayerTree.snapshotCommandLog`. It reports
+the curved body's raw path **convex=false**, with twelve cubics and 37 raw points;
+the straight triangle reports **convex=true**. The recorded CTM is scale 40,
+X translation 0.600006103515625, Y translation 0. The managed observer-only copy
+reproduces every baseline PNG but calls the body convex=true from its
+84/97/149 flattened points, retains all twelve cubics, and selects pre-stepped
+convex walking. The [portable record](../tests/References/inventory/inv-027-native-route.json)
+retains authored float coordinates, the picture/input/PNG hashes and both models.
+
+Two isolated models were declared before execution on all nine frozen cases:
+
+| Model | Small / intended / large transparent changed pixels | Transparent alpha error mass |
+| --- | --- | --- |
+| Original observer-only baseline | 706 / 1,558 / 3,203 | 7,026 / 14,622 / 28,474 |
+| Interval walker with live retained curves | 307 / 673 / 1,410 | 356 / 787 / 1,634 |
+| Retention off, existing convex classification | 859 / 1,958 / 3,943 | 11,624 / 31,962 / 63,257 |
+
+Interval/live improves every background at every size, lowering transparent alpha
+error roughly 94–95 percent. Flattening is worse everywhere. Neither is exact;
+no production edit or new admission follows from this experiment alone. The
+recorded raw convex flag is an effective-dispatch discriminator, not proof of
+complete native device geometry/walker/paint parity. A global convex override is
+not the implementation: reproduce compatible classification from retained raw
+verbs, establish the native decision's provenance, retain genuine convex paths
+and charge/cache its work under existing ownership/cancellation rules. Then
+separate the remaining mapped edge/paint events with native witnesses, independent
+controls, the complete fixture/research/Ford bank and all frozen corporate cases.
+The fresh corporate holdouts receive no document-specific tuning. Full ignored
+observer/model/capture evidence is under `artifacts/corporate-cohort-20261005/`.

@@ -1,0 +1,3133 @@
+{
+  "documentId": "inv-027",
+  "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+  "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
+  "oraclePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "captureDate": "2026-10-05",
+  "tracedPngSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
+  "traceSha256": "1b9a8a6702957d55b7b14bb0c713cdb61d53c00beeef5ddfca834348f21e7934",
+  "pictureSha256": "d7841ca89deb71a9c05727f6bc314e36fb28a827446f48e4b4fbaee90485d825",
+  "pictureBytes": 877,
+  "traceStartupHealth": "healthy",
+  "traceProfileCleaned": true,
+  "observation": "Actual traced screenshot is byte-identical to the original frozen three-capture large-transparent cohort reference. An 877-byte cc::DisplayItemList snapshot with layer_rect [0,0,1144,800] is decoded by pinned Chrome LayerTree.snapshotCommandLog. Native raw body convex=false, triangle convex=true. Managed observer-only baseline selects convex=true/retained=true for the body: 84/97/149 flattened points by size, twelve retained cubic spans. Raw native body owns 37 points. Two isolated dispatch/retention models were declared before their runs; no production code changed.",
+  "limitations": "The browser picture exposes authored float points, CTM and raw convex flag. It does not prove managed mapping equality, native device-walker parity, a correct general classification algorithm or a release-safe route switch. Blanket interval-live improves all variants but none becomes exact; flattened retention-off is worse. No corporate holdout tuning or new calibration census.",
+  "commandLog": [
+    {
+      "method": "save"
+    },
+    {
+      "method": "clipRect",
+      "params": {
+        "rect": {
+          "left": 0,
+          "top": 0,
+          "right": 1144,
+          "bottom": 800
+        },
+        "SkRegion::Op": "kIntersect_Op",
+        "softClipEdgeStyle": false
+      }
+    },
+    {
+      "method": "save"
+    },
+    {
+      "method": "clipRect",
+      "params": {
+        "rect": {
+          "left": 0,
+          "top": 0,
+          "right": 1144,
+          "bottom": 800
+        },
+        "SkRegion::Op": "kIntersect_Op",
+        "softClipEdgeStyle": true
+      }
+    },
+    {
+      "method": "save"
+    },
+    {
+      "method": "clipRect",
+      "params": {
+        "rect": {
+          "left": 0,
+          "top": 0,
+          "right": 1144,
+          "bottom": 800
+        },
+        "SkRegion::Op": "kIntersect_Op",
+        "softClipEdgeStyle": false
+      }
+    },
+    {
+      "method": "concat44",
+      "params": {
+        "matrix44": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "method": "save"
+    },
+    {
+      "method": "clipRect",
+      "params": {
+        "rect": {
+          "left": 0,
+          "top": 0,
+          "right": 1144,
+          "bottom": 800
+        },
+        "SkRegion::Op": "kIntersect_Op",
+        "softClipEdgeStyle": true
+      }
+    },
+    {
+      "method": "save"
+    },
+    {
+      "method": "concat44",
+      "params": {
+        "matrix44": [
+          40,
+          0,
+          0,
+          0,
+          0,
+          40,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0.600006103515625,
+          0,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "method": "clipRect",
+      "params": {
+        "rect": {
+          "left": 0,
+          "top": 0,
+          "right": 28.5699996948242,
+          "bottom": 20
+        },
+        "SkRegion::Op": "kIntersect_Op",
+        "softClipEdgeStyle": true
+      }
+    },
+    {
+      "method": "drawPath",
+      "params": {
+        "path": {
+          "fillType": "Winding",
+          "convex": false,
+          "isRect": false,
+          "pathPoints": [
+            {
+              "verb": "Move",
+              "points": [
+                {
+                  "x": 27.9727001190186,
+                  "y": 3.12323999404907
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 27.6434993743897,
+                  "y": 1.89322996139526
+                },
+                {
+                  "x": 26.6767997741699,
+                  "y": 0.926622986793518
+                },
+                {
+                  "x": 25.4468002319336,
+                  "y": 0.597366094589233
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 23.2196998596191,
+                  "y": 2.24288015715501e-07
+                },
+                {
+                  "x": 14.2849998474121,
+                  "y": 0
+                },
+                {
+                  "x": 14.2849998474121,
+                  "y": 0
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 14.2849998474121,
+                  "y": 0
+                },
+                {
+                  "x": 5.35041999816895,
+                  "y": 2.24288015715501e-07
+                },
+                {
+                  "x": 3.12322998046875,
+                  "y": 0.597366094589233
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 1.89322996139526,
+                  "y": 0.926622986793518
+                },
+                {
+                  "x": 0.926622986793518,
+                  "y": 1.89322996139526
+                },
+                {
+                  "x": 0.597366094589233,
+                  "y": 3.12323999404907
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 2.24288015715501e-07,
+                  "y": 5.35041999816895
+                },
+                {
+                  "x": 0,
+                  "y": 10
+                },
+                {
+                  "x": 0,
+                  "y": 10
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 0,
+                  "y": 10
+                },
+                {
+                  "x": 2.24288015715501e-07,
+                  "y": 14.6496000289917
+                },
+                {
+                  "x": 0.597366094589233,
+                  "y": 16.8768005371094
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 0.926622986793518,
+                  "y": 18.1068000793457
+                },
+                {
+                  "x": 1.89322996139526,
+                  "y": 19.0734004974365
+                },
+                {
+                  "x": 3.12322998046875,
+                  "y": 19.4025993347168
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 5.35041999816895,
+                  "y": 20
+                },
+                {
+                  "x": 14.2849998474121,
+                  "y": 20
+                },
+                {
+                  "x": 14.2849998474121,
+                  "y": 20
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 14.2849998474121,
+                  "y": 20
+                },
+                {
+                  "x": 23.2196998596191,
+                  "y": 20
+                },
+                {
+                  "x": 25.4468002319336,
+                  "y": 19.4025993347168
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 26.6767997741699,
+                  "y": 19.0734004974365
+                },
+                {
+                  "x": 27.6434993743897,
+                  "y": 18.1068000793457
+                },
+                {
+                  "x": 27.9727001190186,
+                  "y": 16.8768005371094
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 28.5701007843018,
+                  "y": 14.6496000289917
+                },
+                {
+                  "x": 28.5701007843018,
+                  "y": 10
+                },
+                {
+                  "x": 28.5701007843018,
+                  "y": 10
+                }
+              ]
+            },
+            {
+              "verb": "Cubic",
+              "points": [
+                {
+                  "x": 28.5701007843018,
+                  "y": 10
+                },
+                {
+                  "x": 28.567699432373,
+                  "y": 5.35041999816895
+                },
+                {
+                  "x": 27.9727001190186,
+                  "y": 3.12323999404907
+                }
+              ]
+            },
+            {
+              "verb": "Close",
+              "points": []
+            }
+          ],
+          "bounds": {
+            "left": 0,
+            "top": 0,
+            "right": 28.5701007843018,
+            "bottom": 20
+          }
+        },
+        "paint": {
+          "color": "#FF808080",
+          "strokeWidth": 0,
+          "strokeMiter": 4,
+          "flags": "AntiAlias",
+          "strokeCap": "Butt",
+          "strokeJoin": "Miter",
+          "styleName": "Fill"
+        }
+      }
+    },
+    {
+      "method": "drawPath",
+      "params": {
+        "path": {
+          "fillType": "Winding",
+          "convex": true,
+          "isRect": false,
+          "pathPoints": [
+            {
+              "verb": "Move",
+              "points": [
+                {
+                  "x": 11.4252996444702,
+                  "y": 14.285400390625
+                }
+              ]
+            },
+            {
+              "verb": "Line",
+              "points": [
+                {
+                  "x": 18.8477001190186,
+                  "y": 10.0003995895386
+                }
+              ]
+            },
+            {
+              "verb": "Line",
+              "points": [
+                {
+                  "x": 11.4252996444702,
+                  "y": 5.71533012390137
+                }
+              ]
+            },
+            {
+              "verb": "Line",
+              "points": [
+                {
+                  "x": 11.4252996444702,
+                  "y": 14.285400390625
+                }
+              ]
+            },
+            {
+              "verb": "Close",
+              "points": []
+            }
+          ],
+          "bounds": {
+            "left": 11.4252996444702,
+            "top": 5.71533012390137,
+            "right": 18.8477001190186,
+            "bottom": 14.285400390625
+          }
+        },
+        "paint": {
+          "color": "#FFFFFFFF",
+          "strokeWidth": 0,
+          "strokeMiter": 4,
+          "flags": "AntiAlias",
+          "strokeCap": "Butt",
+          "strokeJoin": "Miter",
+          "styleName": "Fill"
+        }
+      }
+    },
+    {
+      "method": "restore"
+    },
+    {
+      "method": "restore"
+    },
+    {
+      "method": "restore"
+    },
+    {
+      "method": "restore"
+    },
+    {
+      "method": "restore"
+    }
+  ],
+  "diagnosticDeclaration": {
+    "baselineHead": "649233b2ba315b63fdd43a7cca4b7147de4f24e2",
+    "declaredBeforePrototypes": true,
+    "actualBrowserObservation": {
+      "bodyConvex": false,
+      "triangleConvex": true,
+      "bodyRawPoints": 37
+    },
+    "cases": "All nine previously frozen YouTube variants, original inputs and healthy stable references unchanged.",
+    "models": [
+      "observer-only baseline",
+      "interval walker / live curves instead of flattened-ring convex route for retained curves",
+      "disable retained spans while preserving existing convex classification"
+    ],
+    "limitations": "Isolated copies only; no production edit, no new admission, no claim of release or general backend parity. Convex flag from actual pinned browser path record; mapping/walk causes still require discrimination."
+  },
+  "isolatedModels": [
+    {
+      "model": "baseline",
+      "isolatedRendererSha256": "e2e53839124ecb93534f0df3160f83ddc569dabe9d7d192de562d6fb75818089",
+      "cases": [
+        {
+          "id": "inv-027-small-transparent",
+          "candidateSha256": "003e0508644bce9bf7a6fd814a323436cad4446242f8dcfd1019b014f5413136",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 706,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.13346590909090908,
+              "RootMeanSquareError": 3.93984209953023,
+              "MaximumAlphaError": 64,
+              "AlphaChangedPixelCount": 680,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 285,
+              "MaximumMismatchY": 199,
+              "IsExact": false
+            },
+            "alphaMass": 7026,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 92,
+                "y": 0,
+                "reference": "gICAGA==",
+                "candidate": "hYWFFw=="
+              },
+              {
+                "x": 94,
+                "y": 0,
+                "reference": "goKCMw==",
+                "candidate": "gICAMg=="
+              },
+              {
+                "x": 100,
+                "y": 0,
+                "reference": "gICAgg==",
+                "candidate": "gICAgA=="
+              },
+              {
+                "x": 109,
+                "y": 0,
+                "reference": "gICAhA==",
+                "candidate": "gICAgg=="
+              },
+              {
+                "x": 113,
+                "y": 0,
+                "reference": "gICAvw==",
+                "candidate": "gICAvg=="
+              },
+              {
+                "x": 114,
+                "y": 0,
+                "reference": "gICA9w==",
+                "candidate": "gICAwA=="
+              },
+              {
+                "x": 125,
+                "y": 0,
+                "reference": "gICAxQ==",
+                "candidate": "gICAxA=="
+              },
+              {
+                "x": 186,
+                "y": 0,
+                "reference": "f39/dg==",
+                "candidate": "gYGBdw=="
+              },
+              {
+                "x": 188,
+                "y": 0,
+                "reference": "gYGBWw==",
+                "candidate": "gICAXA=="
+              },
+              {
+                "x": 189,
+                "y": 0,
+                "reference": "gYGBTQ==",
+                "candidate": "gICATg=="
+              },
+              {
+                "x": 69,
+                "y": 1,
+                "reference": "gICAIg==",
+                "candidate": "g4ODIQ=="
+              },
+              {
+                "x": 70,
+                "y": 1,
+                "reference": "gICAMA==",
+                "candidate": "goKCLw=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-small-white",
+          "candidateSha256": "885ec53f8740330a32465febdcc46bcad6b5db9c8ae4e605c738be8bc193fec9",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 639,
+              "MaximumChannelError": 32,
+              "MeanAbsoluteError": 0.04659965034965035,
+              "RootMeanSquareError": 0.7392232740864216,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 285,
+              "MaximumMismatchY": 199,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 92,
+                "y": 0,
+                "reference": "8/Pz/w==",
+                "candidate": "9PT0/w=="
+              },
+              {
+                "x": 100,
+                "y": 0,
+                "reference": "vr6+/w==",
+                "candidate": "v7+//w=="
+              },
+              {
+                "x": 109,
+                "y": 0,
+                "reference": "vb29/w==",
+                "candidate": "vr6+/w=="
+              },
+              {
+                "x": 114,
+                "y": 0,
+                "reference": "hISE/w==",
+                "candidate": "n5+f/w=="
+              },
+              {
+                "x": 188,
+                "y": 0,
+                "reference": "0tLS/w==",
+                "candidate": "0dHR/w=="
+              },
+              {
+                "x": 189,
+                "y": 0,
+                "reference": "2dnZ/w==",
+                "candidate": "2NjY/w=="
+              },
+              {
+                "x": 69,
+                "y": 1,
+                "reference": "7u7u/w==",
+                "candidate": "7+/v/w=="
+              },
+              {
+                "x": 70,
+                "y": 1,
+                "reference": "5+fn/w==",
+                "candidate": "6Ojo/w=="
+              },
+              {
+                "x": 74,
+                "y": 1,
+                "reference": "zMzM/w==",
+                "candidate": "zc3N/w=="
+              },
+              {
+                "x": 75,
+                "y": 1,
+                "reference": "xcXF/w==",
+                "candidate": "xsbG/w=="
+              },
+              {
+                "x": 79,
+                "y": 1,
+                "reference": "qqqq/w==",
+                "candidate": "q6ur/w=="
+              },
+              {
+                "x": 209,
+                "y": 1,
+                "reference": "wMDA/w==",
+                "candidate": "v7+//w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-small-black",
+          "candidateSha256": "291cc8502b77e10fb5abc204361150514f7361262f75848ccadd545fbe3e685c",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 621,
+              "MaximumChannelError": 32,
+              "MeanAbsoluteError": 0.04645541958041958,
+              "RootMeanSquareError": 0.7408621654881212,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 285,
+              "MaximumMismatchY": 199,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 94,
+                "y": 0,
+                "reference": "Ghoa/w==",
+                "candidate": "GRkZ/w=="
+              },
+              {
+                "x": 100,
+                "y": 0,
+                "reference": "QUFB/w==",
+                "candidate": "QEBA/w=="
+              },
+              {
+                "x": 109,
+                "y": 0,
+                "reference": "QkJC/w==",
+                "candidate": "QUFB/w=="
+              },
+              {
+                "x": 113,
+                "y": 0,
+                "reference": "YGBg/w==",
+                "candidate": "X19f/w=="
+              },
+              {
+                "x": 114,
+                "y": 0,
+                "reference": "fHx8/w==",
+                "candidate": "YGBg/w=="
+              },
+              {
+                "x": 125,
+                "y": 0,
+                "reference": "Y2Nj/w==",
+                "candidate": "YmJi/w=="
+              },
+              {
+                "x": 186,
+                "y": 0,
+                "reference": "Ozs7/w==",
+                "candidate": "PDw8/w=="
+              },
+              {
+                "x": 72,
+                "y": 1,
+                "reference": "JiYm/w==",
+                "candidate": "JSUl/w=="
+              },
+              {
+                "x": 73,
+                "y": 1,
+                "reference": "LS0t/w==",
+                "candidate": "LCws/w=="
+              },
+              {
+                "x": 77,
+                "y": 1,
+                "reference": "SEhI/w==",
+                "candidate": "R0dH/w=="
+              },
+              {
+                "x": 80,
+                "y": 1,
+                "reference": "XFxc/w==",
+                "candidate": "W1tb/w=="
+              },
+              {
+                "x": 84,
+                "y": 1,
+                "reference": "d3d3/w==",
+                "candidate": "dnZ2/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-intended-transparent",
+          "candidateSha256": "012bbd28888ba49912662dd9f9f130260e0e50d02d27542091df57ac445c0078",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 1558,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.0655791083916084,
+              "RootMeanSquareError": 2.7410048371869973,
+              "MaximumAlphaError": 64,
+              "AlphaChangedPixelCount": 1418,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 571,
+              "MaximumMismatchY": 399,
+              "IsExact": false
+            },
+            "alphaMass": 14622,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 218,
+                "y": 0,
+                "reference": "g4ODJQ==",
+                "candidate": "gICAJA=="
+              },
+              {
+                "x": 221,
+                "y": 0,
+                "reference": "gYGBQQ==",
+                "candidate": "gICAQA=="
+              },
+              {
+                "x": 230,
+                "y": 0,
+                "reference": "gICAXg==",
+                "candidate": "gYGBXQ=="
+              },
+              {
+                "x": 247,
+                "y": 0,
+                "reference": "gICAmA==",
+                "candidate": "gICAmQ=="
+              },
+              {
+                "x": 331,
+                "y": 0,
+                "reference": "gICAqg==",
+                "candidate": "gICAqw=="
+              },
+              {
+                "x": 358,
+                "y": 0,
+                "reference": "gICAHA==",
+                "candidate": "hISEHQ=="
+              },
+              {
+                "x": 184,
+                "y": 1,
+                "reference": "g4ODJw==",
+                "candidate": "gICAJg=="
+              },
+              {
+                "x": 185,
+                "y": 1,
+                "reference": "gICAMA==",
+                "candidate": "goKCLw=="
+              },
+              {
+                "x": 186,
+                "y": 1,
+                "reference": "goKCOQ==",
+                "candidate": "gICAOA=="
+              },
+              {
+                "x": 188,
+                "y": 1,
+                "reference": "gYGBSw==",
+                "candidate": "gICASg=="
+              },
+              {
+                "x": 189,
+                "y": 1,
+                "reference": "gICAVA==",
+                "candidate": "gYGBUw=="
+              },
+              {
+                "x": 195,
+                "y": 1,
+                "reference": "gICAiw==",
+                "candidate": "gICAig=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-intended-white",
+          "candidateSha256": "482f3418e86d85d65e4e287beefce68ef06da0d988f1297ea08dafba49e61168",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 1395,
+              "MaximumChannelError": 32,
+              "MeanAbsoluteError": 0.024253715034965036,
+              "RootMeanSquareError": 0.5236277019789158,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 571,
+              "MaximumMismatchY": 399,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 230,
+                "y": 0,
+                "reference": "0NDQ/w==",
+                "candidate": "0dHR/w=="
+              },
+              {
+                "x": 185,
+                "y": 1,
+                "reference": "5+fn/w==",
+                "candidate": "6Ojo/w=="
+              },
+              {
+                "x": 189,
+                "y": 1,
+                "reference": "1dXV/w==",
+                "candidate": "1tbW/w=="
+              },
+              {
+                "x": 196,
+                "y": 1,
+                "reference": "tbW1/w==",
+                "candidate": "tra2/w=="
+              },
+              {
+                "x": 199,
+                "y": 1,
+                "reference": "p6en/w==",
+                "candidate": "qKio/w=="
+              },
+              {
+                "x": 202,
+                "y": 1,
+                "reference": "mZmZ/w==",
+                "candidate": "mpqa/w=="
+              },
+              {
+                "x": 205,
+                "y": 1,
+                "reference": "i4uL/w==",
+                "candidate": "jIyM/w=="
+              },
+              {
+                "x": 375,
+                "y": 1,
+                "reference": "ra2t/w==",
+                "candidate": "rKys/w=="
+              },
+              {
+                "x": 385,
+                "y": 1,
+                "reference": "z8/P/w==",
+                "candidate": "zs7O/w=="
+              },
+              {
+                "x": 154,
+                "y": 2,
+                "reference": "8/Pz/w==",
+                "candidate": "9PT0/w=="
+              },
+              {
+                "x": 156,
+                "y": 2,
+                "reference": "6urq/w==",
+                "candidate": "6+vr/w=="
+              },
+              {
+                "x": 158,
+                "y": 2,
+                "reference": "4eHh/w==",
+                "candidate": "4uLi/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-intended-black",
+          "candidateSha256": "068c4820a55a8b3516e399874d2db2c072b625c89e286007638f0d394d696b4d",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 1412,
+              "MaximumChannelError": 32,
+              "MeanAbsoluteError": 0.024594624125874126,
+              "RootMeanSquareError": 0.5263687203095181,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 571,
+              "MaximumMismatchY": 399,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 218,
+                "y": 0,
+                "reference": "ExMT/w==",
+                "candidate": "EhIS/w=="
+              },
+              {
+                "x": 221,
+                "y": 0,
+                "reference": "ISEh/w==",
+                "candidate": "ICAg/w=="
+              },
+              {
+                "x": 247,
+                "y": 0,
+                "reference": "TExM/w==",
+                "candidate": "TU1N/w=="
+              },
+              {
+                "x": 331,
+                "y": 0,
+                "reference": "VVVV/w==",
+                "candidate": "VlZW/w=="
+              },
+              {
+                "x": 358,
+                "y": 0,
+                "reference": "Dg4O/w==",
+                "candidate": "Dw8P/w=="
+              },
+              {
+                "x": 184,
+                "y": 1,
+                "reference": "FBQU/w==",
+                "candidate": "ExMT/w=="
+              },
+              {
+                "x": 186,
+                "y": 1,
+                "reference": "HR0d/w==",
+                "candidate": "HBwc/w=="
+              },
+              {
+                "x": 188,
+                "y": 1,
+                "reference": "JiYm/w==",
+                "candidate": "JSUl/w=="
+              },
+              {
+                "x": 195,
+                "y": 1,
+                "reference": "RkZG/w==",
+                "candidate": "RUVF/w=="
+              },
+              {
+                "x": 200,
+                "y": 1,
+                "reference": "XV1d/w==",
+                "candidate": "XFxc/w=="
+              },
+              {
+                "x": 381,
+                "y": 1,
+                "reference": "Pj4+/w==",
+                "candidate": "Pz8//w=="
+              },
+              {
+                "x": 389,
+                "y": 1,
+                "reference": "IyMj/w==",
+                "candidate": "JCQk/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-large-transparent",
+          "candidateSha256": "69ae90ccaeff14480bd4ece28235c03d82a05b2c71693d99a97f55ac0edc9032",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 3203,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.03293979458041958,
+              "RootMeanSquareError": 1.8945198964676744,
+              "MaximumAlphaError": 64,
+              "AlphaChangedPixelCount": 2917,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 1143,
+              "MaximumMismatchY": 799,
+              "IsExact": false
+            },
+            "alphaMass": 28474,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 497,
+                "y": 0,
+                "reference": "gYGBQQ==",
+                "candidate": "gICAQA=="
+              },
+              {
+                "x": 515,
+                "y": 0,
+                "reference": "gICAww==",
+                "candidate": "gICAwA=="
+              },
+              {
+                "x": 519,
+                "y": 0,
+                "reference": "gICAxw==",
+                "candidate": "gICAwA=="
+              },
+              {
+                "x": 520,
+                "y": 0,
+                "reference": "gICA0w==",
+                "candidate": "gICAwA=="
+              },
+              {
+                "x": 521,
+                "y": 0,
+                "reference": "gICA3w==",
+                "candidate": "gICAwA=="
+              },
+              {
+                "x": 522,
+                "y": 0,
+                "reference": "f39/7A==",
+                "candidate": "gICAwA=="
+              },
+              {
+                "x": 523,
+                "y": 0,
+                "reference": "gICA/w==",
+                "candidate": "gICAwA=="
+              },
+              {
+                "x": 540,
+                "y": 0,
+                "reference": "gICAxg==",
+                "candidate": "gICAxA=="
+              },
+              {
+                "x": 605,
+                "y": 0,
+                "reference": "gICAxw==",
+                "candidate": "gICAxA=="
+              },
+              {
+                "x": 629,
+                "y": 0,
+                "reference": "gICAgw==",
+                "candidate": "gICAhA=="
+              },
+              {
+                "x": 666,
+                "y": 0,
+                "reference": "goKCPw==",
+                "candidate": "gICAQA=="
+              },
+              {
+                "x": 667,
+                "y": 0,
+                "reference": "gICAOA==",
+                "candidate": "goKCOQ=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-large-white",
+          "candidateSha256": "d1faa5a66b857e6bb7aabbb8f00de3421071002a3952063d1c480e0c6d4a32e1",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 2932,
+              "MaximumChannelError": 32,
+              "MeanAbsoluteError": 0.011830201048951048,
+              "RootMeanSquareError": 0.34905670211830386,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 1143,
+              "MaximumMismatchY": 799,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 515,
+                "y": 0,
+                "reference": "np6e/w==",
+                "candidate": "n5+f/w=="
+              },
+              {
+                "x": 519,
+                "y": 0,
+                "reference": "nJyc/w==",
+                "candidate": "n5+f/w=="
+              },
+              {
+                "x": 520,
+                "y": 0,
+                "reference": "lpaW/w==",
+                "candidate": "n5+f/w=="
+              },
+              {
+                "x": 521,
+                "y": 0,
+                "reference": "kJCQ/w==",
+                "candidate": "n5+f/w=="
+              },
+              {
+                "x": 522,
+                "y": 0,
+                "reference": "iYmJ/w==",
+                "candidate": "n5+f/w=="
+              },
+              {
+                "x": 523,
+                "y": 0,
+                "reference": "gICA/w==",
+                "candidate": "n5+f/w=="
+              },
+              {
+                "x": 540,
+                "y": 0,
+                "reference": "nJyc/w==",
+                "candidate": "nZ2d/w=="
+              },
+              {
+                "x": 605,
+                "y": 0,
+                "reference": "nJyc/w==",
+                "candidate": "nZ2d/w=="
+              },
+              {
+                "x": 629,
+                "y": 0,
+                "reference": "vr6+/w==",
+                "candidate": "vb29/w=="
+              },
+              {
+                "x": 666,
+                "y": 0,
+                "reference": "4ODg/w==",
+                "candidate": "39/f/w=="
+              },
+              {
+                "x": 442,
+                "y": 1,
+                "reference": "0dHR/w==",
+                "candidate": "0tLS/w=="
+              },
+              {
+                "x": 450,
+                "y": 1,
+                "reference": "sLCw/w==",
+                "candidate": "sbGx/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-large-black",
+          "candidateSha256": "cfe8f751a99551b33ab30869980c9945aa4aaeba49433908ea3256015f33424d",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 2980,
+              "MaximumChannelError": 32,
+              "MeanAbsoluteError": 0.011982626748251748,
+              "RootMeanSquareError": 0.350282416028868,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 1143,
+              "MaximumMismatchY": 799,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 497,
+                "y": 0,
+                "reference": "ISEh/w==",
+                "candidate": "ICAg/w=="
+              },
+              {
+                "x": 515,
+                "y": 0,
+                "reference": "YmJi/w==",
+                "candidate": "YGBg/w=="
+              },
+              {
+                "x": 519,
+                "y": 0,
+                "reference": "ZGRk/w==",
+                "candidate": "YGBg/w=="
+              },
+              {
+                "x": 520,
+                "y": 0,
+                "reference": "ampq/w==",
+                "candidate": "YGBg/w=="
+              },
+              {
+                "x": 521,
+                "y": 0,
+                "reference": "cHBw/w==",
+                "candidate": "YGBg/w=="
+              },
+              {
+                "x": 522,
+                "y": 0,
+                "reference": "dnZ2/w==",
+                "candidate": "YGBg/w=="
+              },
+              {
+                "x": 523,
+                "y": 0,
+                "reference": "gICA/w==",
+                "candidate": "YGBg/w=="
+              },
+              {
+                "x": 540,
+                "y": 0,
+                "reference": "Y2Nj/w==",
+                "candidate": "YmJi/w=="
+              },
+              {
+                "x": 605,
+                "y": 0,
+                "reference": "ZGRk/w==",
+                "candidate": "YmJi/w=="
+              },
+              {
+                "x": 667,
+                "y": 0,
+                "reference": "HBwc/w==",
+                "candidate": "HR0d/w=="
+              },
+              {
+                "x": 668,
+                "y": 0,
+                "reference": "GBgY/w==",
+                "candidate": "GRkZ/w=="
+              },
+              {
+                "x": 446,
+                "y": 1,
+                "reference": "Pz8//w==",
+                "candidate": "Pj4+/w=="
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "model": "interval-live",
+      "isolatedRendererSha256": "e0455f3106b19c579a710749fce3f4e12d13380fe72626358818f42f64297925",
+      "cases": [
+        {
+          "id": "inv-027-small-transparent",
+          "candidateSha256": "15a51d91cee70f0fe667535d066ca37250e5941683ebf02610e8083968d75488",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 307,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.05134178321678322,
+              "RootMeanSquareError": 2.8487230300781965,
+              "MaximumAlphaError": 7,
+              "AlphaChangedPixelCount": 281,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 6,
+              "MaximumMismatchX": 285,
+              "MaximumMismatchY": 193,
+              "IsExact": false
+            },
+            "alphaMass": 356,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 31,
+                "y": 6,
+                "reference": "gICA/w==",
+                "candidate": "gICA+Q=="
+              },
+              {
+                "x": 254,
+                "y": 6,
+                "reference": "gICA/w==",
+                "candidate": "gICA+Q=="
+              },
+              {
+                "x": 23,
+                "y": 8,
+                "reference": "AAAAAA==",
+                "candidate": "qqqqAw=="
+              },
+              {
+                "x": 262,
+                "y": 8,
+                "reference": "AAAAAA==",
+                "candidate": "gICAAg=="
+              },
+              {
+                "x": 20,
+                "y": 10,
+                "reference": "gICADg==",
+                "candidate": "iYmJDQ=="
+              },
+              {
+                "x": 19,
+                "y": 11,
+                "reference": "gICAOg==",
+                "candidate": "goKCOQ=="
+              },
+              {
+                "x": 266,
+                "y": 11,
+                "reference": "goKCMw==",
+                "candidate": "gICAMg=="
+              },
+              {
+                "x": 16,
+                "y": 13,
+                "reference": "AAAAAA==",
+                "candidate": "gICAAg=="
+              },
+              {
+                "x": 269,
+                "y": 13,
+                "reference": "AAAAAA==",
+                "candidate": "////AQ=="
+              },
+              {
+                "x": 15,
+                "y": 14,
+                "reference": "gICADA==",
+                "candidate": "i4uLCw=="
+              },
+              {
+                "x": 270,
+                "y": 14,
+                "reference": "gICACA==",
+                "candidate": "kpKSBw=="
+              },
+              {
+                "x": 13,
+                "y": 16,
+                "reference": "AAAAAA==",
+                "candidate": "gICAAg=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-small-white",
+          "candidateSha256": "6b5c72fb908723b56944e01655a2a26dad13c10ddc26e2775e08677908794de5",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 203,
+              "MaximumChannelError": 4,
+              "MeanAbsoluteError": 0.0030157342657342657,
+              "RootMeanSquareError": 0.06292686397549309,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 6,
+              "MaximumMismatchX": 285,
+              "MaximumMismatchY": 193,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 31,
+                "y": 6,
+                "reference": "gICA/w==",
+                "candidate": "g4OD/w=="
+              },
+              {
+                "x": 254,
+                "y": 6,
+                "reference": "gICA/w==",
+                "candidate": "g4OD/w=="
+              },
+              {
+                "x": 23,
+                "y": 8,
+                "reference": "/////w==",
+                "candidate": "/v7+/w=="
+              },
+              {
+                "x": 262,
+                "y": 8,
+                "reference": "/////w==",
+                "candidate": "/v7+/w=="
+              },
+              {
+                "x": 21,
+                "y": 10,
+                "reference": "qamp/w==",
+                "candidate": "qKio/w=="
+              },
+              {
+                "x": 266,
+                "y": 11,
+                "reference": "5ubm/w==",
+                "candidate": "5eXl/w=="
+              },
+              {
+                "x": 16,
+                "y": 13,
+                "reference": "/////w==",
+                "candidate": "/f39/w=="
+              },
+              {
+                "x": 17,
+                "y": 13,
+                "reference": "r6+v/w==",
+                "candidate": "rq6u/w=="
+              },
+              {
+                "x": 269,
+                "y": 14,
+                "reference": "pqam/w==",
+                "candidate": "paWl/w=="
+              },
+              {
+                "x": 13,
+                "y": 16,
+                "reference": "/////w==",
+                "candidate": "/f39/w=="
+              },
+              {
+                "x": 14,
+                "y": 16,
+                "reference": "oqKi/w==",
+                "candidate": "oaGh/w=="
+              },
+              {
+                "x": 272,
+                "y": 16,
+                "reference": "/////w==",
+                "candidate": "/v7+/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-small-black",
+          "candidateSha256": "b5dc64c2b675850a9347480afb43737e3a2267ffd71eaea2807024cd0e57b350",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 176,
+              "MaximumChannelError": 4,
+              "MeanAbsoluteError": 0.0026354895104895104,
+              "RootMeanSquareError": 0.05982930264130992,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 6,
+              "MaximumMismatchX": 285,
+              "MaximumMismatchY": 193,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 31,
+                "y": 6,
+                "reference": "gICA/w==",
+                "candidate": "fX19/w=="
+              },
+              {
+                "x": 254,
+                "y": 6,
+                "reference": "gICA/w==",
+                "candidate": "fX19/w=="
+              },
+              {
+                "x": 23,
+                "y": 8,
+                "reference": "AAAA/w==",
+                "candidate": "AgIC/w=="
+              },
+              {
+                "x": 262,
+                "y": 8,
+                "reference": "AAAA/w==",
+                "candidate": "AQEB/w=="
+              },
+              {
+                "x": 266,
+                "y": 11,
+                "reference": "Ghoa/w==",
+                "candidate": "GRkZ/w=="
+              },
+              {
+                "x": 16,
+                "y": 13,
+                "reference": "AAAA/w==",
+                "candidate": "AQEB/w=="
+              },
+              {
+                "x": 269,
+                "y": 13,
+                "reference": "AAAA/w==",
+                "candidate": "AQEB/w=="
+              },
+              {
+                "x": 13,
+                "y": 16,
+                "reference": "AAAA/w==",
+                "candidate": "AQEB/w=="
+              },
+              {
+                "x": 272,
+                "y": 17,
+                "reference": "RUVF/w==",
+                "candidate": "RkZG/w=="
+              },
+              {
+                "x": 12,
+                "y": 19,
+                "reference": "gICA/w==",
+                "candidate": "f39//w=="
+              },
+              {
+                "x": 273,
+                "y": 19,
+                "reference": "gICA/w==",
+                "candidate": "fX19/w=="
+              },
+              {
+                "x": 10,
+                "y": 20,
+                "reference": "BgYG/w==",
+                "candidate": "BQUF/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-intended-transparent",
+          "candidateSha256": "4d48356ec24e90bdbbb8a39d5eebba2d5b5882c003af3febf940548112a38863",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 673,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.03186953671328671,
+              "RootMeanSquareError": 2.2048705918767832,
+              "MaximumAlphaError": 8,
+              "AlphaChangedPixelCount": 533,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 12,
+              "MaximumMismatchX": 571,
+              "MaximumMismatchY": 385,
+              "IsExact": false
+            },
+            "alphaMass": 787,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 59,
+                "y": 12,
+                "reference": "AAAAAA==",
+                "candidate": "gICAAg=="
+              },
+              {
+                "x": 512,
+                "y": 12,
+                "reference": "AAAAAA==",
+                "candidate": "gICAAg=="
+              },
+              {
+                "x": 53,
+                "y": 14,
+                "reference": "AAAAAA==",
+                "candidate": "////AQ=="
+              },
+              {
+                "x": 518,
+                "y": 14,
+                "reference": "AAAAAA==",
+                "candidate": "////AQ=="
+              },
+              {
+                "x": 51,
+                "y": 15,
+                "reference": "AAAAAA==",
+                "candidate": "gICABg=="
+              },
+              {
+                "x": 520,
+                "y": 15,
+                "reference": "AAAAAA==",
+                "candidate": "mZmZBQ=="
+              },
+              {
+                "x": 47,
+                "y": 17,
+                "reference": "AAAAAA==",
+                "candidate": "gICABg=="
+              },
+              {
+                "x": 524,
+                "y": 17,
+                "reference": "AAAAAA==",
+                "candidate": "gICABA=="
+              },
+              {
+                "x": 45,
+                "y": 18,
+                "reference": "AAAAAA==",
+                "candidate": "////AQ=="
+              },
+              {
+                "x": 44,
+                "y": 20,
+                "reference": "gICA/w==",
+                "candidate": "gICA/Q=="
+              },
+              {
+                "x": 527,
+                "y": 20,
+                "reference": "gICA/w==",
+                "candidate": "gICA+g=="
+              },
+              {
+                "x": 529,
+                "y": 20,
+                "reference": "AAAAAA==",
+                "candidate": "kpKSBw=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-intended-white",
+          "candidateSha256": "b52ca0b0b510ad4b5fd44a386aff2d89ace7ec3cb66f4d346754ee7340869f66",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 435,
+              "MaximumChannelError": 4,
+              "MeanAbsoluteError": 0.001638986013986014,
+              "RootMeanSquareError": 0.046794073499593025,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 12,
+              "MaximumMismatchX": 571,
+              "MaximumMismatchY": 385,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 59,
+                "y": 12,
+                "reference": "/////w==",
+                "candidate": "/v7+/w=="
+              },
+              {
+                "x": 512,
+                "y": 12,
+                "reference": "/////w==",
+                "candidate": "/v7+/w=="
+              },
+              {
+                "x": 51,
+                "y": 15,
+                "reference": "/////w==",
+                "candidate": "/Pz8/w=="
+              },
+              {
+                "x": 520,
+                "y": 15,
+                "reference": "/////w==",
+                "candidate": "/f39/w=="
+              },
+              {
+                "x": 47,
+                "y": 17,
+                "reference": "/////w==",
+                "candidate": "/Pz8/w=="
+              },
+              {
+                "x": 524,
+                "y": 17,
+                "reference": "/////w==",
+                "candidate": "/f39/w=="
+              },
+              {
+                "x": 44,
+                "y": 20,
+                "reference": "gICA/w==",
+                "candidate": "gYGB/w=="
+              },
+              {
+                "x": 527,
+                "y": 20,
+                "reference": "gICA/w==",
+                "candidate": "goKC/w=="
+              },
+              {
+                "x": 529,
+                "y": 20,
+                "reference": "/////w==",
+                "candidate": "/Pz8/w=="
+              },
+              {
+                "x": 39,
+                "y": 22,
+                "reference": "/////w==",
+                "candidate": "/Pz8/w=="
+              },
+              {
+                "x": 530,
+                "y": 22,
+                "reference": "gICA/w==",
+                "candidate": "gYGB/w=="
+              },
+              {
+                "x": 532,
+                "y": 22,
+                "reference": "/////w==",
+                "candidate": "/v7+/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-intended-black",
+          "candidateSha256": "88756a7cd1550305878007d0ad8036441df3551392504235523c949229a7885b",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 464,
+              "MaximumChannelError": 4,
+              "MeanAbsoluteError": 0.0018586101398601399,
+              "RootMeanSquareError": 0.05361698861864091,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 12,
+              "MaximumMismatchX": 571,
+              "MaximumMismatchY": 385,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 59,
+                "y": 12,
+                "reference": "AAAA/w==",
+                "candidate": "AQEB/w=="
+              },
+              {
+                "x": 512,
+                "y": 12,
+                "reference": "AAAA/w==",
+                "candidate": "AQEB/w=="
+              },
+              {
+                "x": 53,
+                "y": 14,
+                "reference": "AAAA/w==",
+                "candidate": "AQEB/w=="
+              },
+              {
+                "x": 518,
+                "y": 14,
+                "reference": "AAAA/w==",
+                "candidate": "AQEB/w=="
+              },
+              {
+                "x": 51,
+                "y": 15,
+                "reference": "AAAA/w==",
+                "candidate": "AwMD/w=="
+              },
+              {
+                "x": 520,
+                "y": 15,
+                "reference": "AAAA/w==",
+                "candidate": "AwMD/w=="
+              },
+              {
+                "x": 47,
+                "y": 17,
+                "reference": "AAAA/w==",
+                "candidate": "AwMD/w=="
+              },
+              {
+                "x": 524,
+                "y": 17,
+                "reference": "AAAA/w==",
+                "candidate": "AgIC/w=="
+              },
+              {
+                "x": 45,
+                "y": 18,
+                "reference": "AAAA/w==",
+                "candidate": "AQEB/w=="
+              },
+              {
+                "x": 44,
+                "y": 20,
+                "reference": "gICA/w==",
+                "candidate": "f39//w=="
+              },
+              {
+                "x": 527,
+                "y": 20,
+                "reference": "gICA/w==",
+                "candidate": "fX19/w=="
+              },
+              {
+                "x": 529,
+                "y": 20,
+                "reference": "AAAA/w==",
+                "candidate": "BAQE/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-large-transparent",
+          "candidateSha256": "0de04e1dd2ba74d50b63080b2832b0cbb5b8bbed48cdb93ca0f5410b4650a474",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 1410,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.015445531031468531,
+              "RootMeanSquareError": 1.5444648835958814,
+              "MaximumAlphaError": 8,
+              "AlphaChangedPixelCount": 1124,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 14,
+              "MaximumMismatchX": 1143,
+              "MaximumMismatchY": 785,
+              "IsExact": false
+            },
+            "alphaMass": 1634,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 179,
+                "y": 14,
+                "reference": "AAAAAA==",
+                "candidate": "qqqqAw=="
+              },
+              {
+                "x": 163,
+                "y": 16,
+                "reference": "AAAAAA==",
+                "candidate": "kpKSBw=="
+              },
+              {
+                "x": 163,
+                "y": 17,
+                "reference": "gICA/w==",
+                "candidate": "gICA/Q=="
+              },
+              {
+                "x": 143,
+                "y": 19,
+                "reference": "AAAAAA==",
+                "candidate": "qqqqAw=="
+              },
+              {
+                "x": 125,
+                "y": 23,
+                "reference": "AAAAAA==",
+                "candidate": "kpKSBw=="
+              },
+              {
+                "x": 122,
+                "y": 25,
+                "reference": "gICA/w==",
+                "candidate": "gICA/g=="
+              },
+              {
+                "x": 1021,
+                "y": 25,
+                "reference": "gICA/w==",
+                "candidate": "gICA/g=="
+              },
+              {
+                "x": 107,
+                "y": 29,
+                "reference": "AAAAAA==",
+                "candidate": "kpKSBw=="
+              },
+              {
+                "x": 110,
+                "y": 29,
+                "reference": "gICA/w==",
+                "candidate": "gICA+w=="
+              },
+              {
+                "x": 1033,
+                "y": 29,
+                "reference": "gICA/w==",
+                "candidate": "gICA+g=="
+              },
+              {
+                "x": 1036,
+                "y": 29,
+                "reference": "AAAAAA==",
+                "candidate": "gICABg=="
+              },
+              {
+                "x": 103,
+                "y": 32,
+                "reference": "gICA/w==",
+                "candidate": "gICA+g=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-large-white",
+          "candidateSha256": "5e85fde6a41abd52e1fecd8f4834a60274e5fdb9f64c65c609b34ea28a4d2eb2",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 918,
+              "MaximumChannelError": 4,
+              "MeanAbsoluteError": 0.0008719405594405594,
+              "RootMeanSquareError": 0.0346135634719076,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 14,
+              "MaximumMismatchX": 1143,
+              "MaximumMismatchY": 785,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 179,
+                "y": 14,
+                "reference": "/////w==",
+                "candidate": "/v7+/w=="
+              },
+              {
+                "x": 163,
+                "y": 16,
+                "reference": "/////w==",
+                "candidate": "/Pz8/w=="
+              },
+              {
+                "x": 163,
+                "y": 17,
+                "reference": "gICA/w==",
+                "candidate": "gYGB/w=="
+              },
+              {
+                "x": 143,
+                "y": 19,
+                "reference": "/////w==",
+                "candidate": "/v7+/w=="
+              },
+              {
+                "x": 125,
+                "y": 23,
+                "reference": "/////w==",
+                "candidate": "/Pz8/w=="
+              },
+              {
+                "x": 107,
+                "y": 29,
+                "reference": "/////w==",
+                "candidate": "/Pz8/w=="
+              },
+              {
+                "x": 110,
+                "y": 29,
+                "reference": "gICA/w==",
+                "candidate": "goKC/w=="
+              },
+              {
+                "x": 1033,
+                "y": 29,
+                "reference": "gICA/w==",
+                "candidate": "goKC/w=="
+              },
+              {
+                "x": 1036,
+                "y": 29,
+                "reference": "/////w==",
+                "candidate": "/Pz8/w=="
+              },
+              {
+                "x": 103,
+                "y": 32,
+                "reference": "gICA/w==",
+                "candidate": "goKC/w=="
+              },
+              {
+                "x": 1040,
+                "y": 32,
+                "reference": "gICA/w==",
+                "candidate": "g4OD/w=="
+              },
+              {
+                "x": 1042,
+                "y": 33,
+                "reference": "gICA/w==",
+                "candidate": "gYGB/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-large-black",
+          "candidateSha256": "6a502b10993384ccaf9baf5b366200d00f9ead11047c92bdf66a8474496c357c",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 940,
+              "MaximumChannelError": 4,
+              "MeanAbsoluteError": 0.0009456949300699301,
+              "RootMeanSquareError": 0.03857718627244995,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 14,
+              "MaximumMismatchX": 1143,
+              "MaximumMismatchY": 785,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 179,
+                "y": 14,
+                "reference": "AAAA/w==",
+                "candidate": "AgIC/w=="
+              },
+              {
+                "x": 163,
+                "y": 16,
+                "reference": "AAAA/w==",
+                "candidate": "BAQE/w=="
+              },
+              {
+                "x": 163,
+                "y": 17,
+                "reference": "gICA/w==",
+                "candidate": "f39//w=="
+              },
+              {
+                "x": 143,
+                "y": 19,
+                "reference": "AAAA/w==",
+                "candidate": "AgIC/w=="
+              },
+              {
+                "x": 125,
+                "y": 23,
+                "reference": "AAAA/w==",
+                "candidate": "BAQE/w=="
+              },
+              {
+                "x": 122,
+                "y": 25,
+                "reference": "gICA/w==",
+                "candidate": "f39//w=="
+              },
+              {
+                "x": 1021,
+                "y": 25,
+                "reference": "gICA/w==",
+                "candidate": "f39//w=="
+              },
+              {
+                "x": 107,
+                "y": 29,
+                "reference": "AAAA/w==",
+                "candidate": "BAQE/w=="
+              },
+              {
+                "x": 110,
+                "y": 29,
+                "reference": "gICA/w==",
+                "candidate": "fn5+/w=="
+              },
+              {
+                "x": 1033,
+                "y": 29,
+                "reference": "gICA/w==",
+                "candidate": "fX19/w=="
+              },
+              {
+                "x": 1036,
+                "y": 29,
+                "reference": "AAAA/w==",
+                "candidate": "AwMD/w=="
+              },
+              {
+                "x": 103,
+                "y": 32,
+                "reference": "gICA/w==",
+                "candidate": "fX19/w=="
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "model": "flattened",
+      "isolatedRendererSha256": "d71dacea3847f25f7d5867abed53dc43e9af2d93256d7b7e9a61fd733eb2131e",
+      "cases": [
+        {
+          "id": "inv-027-small-transparent",
+          "candidateSha256": "1dd2b5c9fefb77b232225d7d43f8e98865439e62d14fda4b7d2530550e1d2c98",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 859,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.17186625874125874,
+              "RootMeanSquareError": 4.278582925823321,
+              "MaximumAlphaError": 80,
+              "AlphaChangedPixelCount": 833,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 285,
+              "MaximumMismatchY": 199,
+              "IsExact": false
+            },
+            "alphaMass": 11624,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 90,
+                "y": 0,
+                "reference": "AAAAAA==",
+                "candidate": "gICADg=="
+              },
+              {
+                "x": 91,
+                "y": 0,
+                "reference": "gICACg==",
+                "candidate": "gICAGA=="
+              },
+              {
+                "x": 92,
+                "y": 0,
+                "reference": "gICAGA==",
+                "candidate": "gICAIg=="
+              },
+              {
+                "x": 93,
+                "y": 0,
+                "reference": "g4ODJQ==",
+                "candidate": "gICALA=="
+              },
+              {
+                "x": 94,
+                "y": 0,
+                "reference": "goKCMw==",
+                "candidate": "gICANg=="
+              },
+              {
+                "x": 96,
+                "y": 0,
+                "reference": "gICATg==",
+                "candidate": "gYGBRQ=="
+              },
+              {
+                "x": 97,
+                "y": 0,
+                "reference": "gICAXA==",
+                "candidate": "gYGBSw=="
+              },
+              {
+                "x": 98,
+                "y": 0,
+                "reference": "gYGBaQ==",
+                "candidate": "gYGBUQ=="
+              },
+              {
+                "x": 99,
+                "y": 0,
+                "reference": "gYGBdw==",
+                "candidate": "gYGBVw=="
+              },
+              {
+                "x": 100,
+                "y": 0,
+                "reference": "gICAgg==",
+                "candidate": "gICAXA=="
+              },
+              {
+                "x": 101,
+                "y": 0,
+                "reference": "gICAgA==",
+                "candidate": "gICAYg=="
+              },
+              {
+                "x": 102,
+                "y": 0,
+                "reference": "gICAgA==",
+                "candidate": "gICAaA=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-small-white",
+          "candidateSha256": "e0651d9dd7f145fa1bfda97faa9f03384a8c87c43d0b313168ee97e5a3926fa0",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 826,
+              "MaximumChannelError": 40,
+              "MeanAbsoluteError": 0.07615384615384616,
+              "RootMeanSquareError": 0.976108836932881,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 285,
+              "MaximumMismatchY": 199,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 90,
+                "y": 0,
+                "reference": "/////w==",
+                "candidate": "+Pj4/w=="
+              },
+              {
+                "x": 91,
+                "y": 0,
+                "reference": "+vr6/w==",
+                "candidate": "8/Pz/w=="
+              },
+              {
+                "x": 92,
+                "y": 0,
+                "reference": "8/Pz/w==",
+                "candidate": "7u7u/w=="
+              },
+              {
+                "x": 93,
+                "y": 0,
+                "reference": "7e3t/w==",
+                "candidate": "6enp/w=="
+              },
+              {
+                "x": 94,
+                "y": 0,
+                "reference": "5ubm/w==",
+                "candidate": "5OTk/w=="
+              },
+              {
+                "x": 96,
+                "y": 0,
+                "reference": "2NjY/w==",
+                "candidate": "3d3d/w=="
+              },
+              {
+                "x": 97,
+                "y": 0,
+                "reference": "0dHR/w==",
+                "candidate": "2tra/w=="
+              },
+              {
+                "x": 98,
+                "y": 0,
+                "reference": "y8vL/w==",
+                "candidate": "19fX/w=="
+              },
+              {
+                "x": 99,
+                "y": 0,
+                "reference": "xMTE/w==",
+                "candidate": "1NTU/w=="
+              },
+              {
+                "x": 100,
+                "y": 0,
+                "reference": "vr6+/w==",
+                "candidate": "0dHR/w=="
+              },
+              {
+                "x": 101,
+                "y": 0,
+                "reference": "v7+//w==",
+                "candidate": "zs7O/w=="
+              },
+              {
+                "x": 102,
+                "y": 0,
+                "reference": "v7+//w==",
+                "candidate": "y8vL/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-small-black",
+          "candidateSha256": "474b2c4395a4c2e61d0af974c239d767a5fa235ad55607b3ee27bbead53ba2fb",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 832,
+              "MaximumChannelError": 40,
+              "MeanAbsoluteError": 0.0772027972027972,
+              "RootMeanSquareError": 0.988283636136178,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 285,
+              "MaximumMismatchY": 199,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 90,
+                "y": 0,
+                "reference": "AAAA/w==",
+                "candidate": "BwcH/w=="
+              },
+              {
+                "x": 91,
+                "y": 0,
+                "reference": "BQUF/w==",
+                "candidate": "DAwM/w=="
+              },
+              {
+                "x": 92,
+                "y": 0,
+                "reference": "DAwM/w==",
+                "candidate": "ERER/w=="
+              },
+              {
+                "x": 93,
+                "y": 0,
+                "reference": "ExMT/w==",
+                "candidate": "FhYW/w=="
+              },
+              {
+                "x": 94,
+                "y": 0,
+                "reference": "Ghoa/w==",
+                "candidate": "Gxsb/w=="
+              },
+              {
+                "x": 96,
+                "y": 0,
+                "reference": "Jycn/w==",
+                "candidate": "IyMj/w=="
+              },
+              {
+                "x": 97,
+                "y": 0,
+                "reference": "Li4u/w==",
+                "candidate": "JiYm/w=="
+              },
+              {
+                "x": 98,
+                "y": 0,
+                "reference": "NTU1/w==",
+                "candidate": "KSkp/w=="
+              },
+              {
+                "x": 99,
+                "y": 0,
+                "reference": "PDw8/w==",
+                "candidate": "LCws/w=="
+              },
+              {
+                "x": 100,
+                "y": 0,
+                "reference": "QUFB/w==",
+                "candidate": "Li4u/w=="
+              },
+              {
+                "x": 101,
+                "y": 0,
+                "reference": "QEBA/w==",
+                "candidate": "MTEx/w=="
+              },
+              {
+                "x": 102,
+                "y": 0,
+                "reference": "QEBA/w==",
+                "candidate": "NDQ0/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-intended-transparent",
+          "candidateSha256": "3dd1326e126e4e91cb317941c10d7e67c277cf2fcbb991ade4af3857d912a116",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 1958,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.11026770104895105,
+              "RootMeanSquareError": 3.551488010561325,
+              "MaximumAlphaError": 72,
+              "AlphaChangedPixelCount": 1818,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 571,
+              "MaximumMismatchY": 399,
+              "IsExact": false
+            },
+            "alphaMass": 31962,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 216,
+                "y": 0,
+                "reference": "h4eHEQ==",
+                "candidate": "gICACA=="
+              },
+              {
+                "x": 217,
+                "y": 0,
+                "reference": "hISEGw==",
+                "candidate": "iYmJDQ=="
+              },
+              {
+                "x": 218,
+                "y": 0,
+                "reference": "g4ODJQ==",
+                "candidate": "hoaGEw=="
+              },
+              {
+                "x": 219,
+                "y": 0,
+                "reference": "gICALg==",
+                "candidate": "gICAGA=="
+              },
+              {
+                "x": 220,
+                "y": 0,
+                "reference": "gICAOA==",
+                "candidate": "hISEHQ=="
+              },
+              {
+                "x": 221,
+                "y": 0,
+                "reference": "gYGBQQ==",
+                "candidate": "g4ODIw=="
+              },
+              {
+                "x": 222,
+                "y": 0,
+                "reference": "gICAQA==",
+                "candidate": "gICAKA=="
+              },
+              {
+                "x": 223,
+                "y": 0,
+                "reference": "gICAQA==",
+                "candidate": "goKCLQ=="
+              },
+              {
+                "x": 224,
+                "y": 0,
+                "reference": "gICAQA==",
+                "candidate": "goKCMw=="
+              },
+              {
+                "x": 225,
+                "y": 0,
+                "reference": "gICAQA==",
+                "candidate": "gICAOA=="
+              },
+              {
+                "x": 226,
+                "y": 0,
+                "reference": "gICAQA==",
+                "candidate": "goKCPQ=="
+              },
+              {
+                "x": 228,
+                "y": 0,
+                "reference": "gYGBSQ==",
+                "candidate": "gYGBRw=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-intended-white",
+          "candidateSha256": "6ba2541bae0da9a2f5a3fc8f5211c113ee8a47d9e7170c716bb47f09f4e06105",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 1902,
+              "MaximumChannelError": 36,
+              "MeanAbsoluteError": 0.052519667832167834,
+              "RootMeanSquareError": 0.8632237006377068,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 571,
+              "MaximumMismatchY": 399,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 216,
+                "y": 0,
+                "reference": "9/f3/w==",
+                "candidate": "+/v7/w=="
+              },
+              {
+                "x": 217,
+                "y": 0,
+                "reference": "8vLy/w==",
+                "candidate": "+fn5/w=="
+              },
+              {
+                "x": 218,
+                "y": 0,
+                "reference": "7e3t/w==",
+                "candidate": "9vb2/w=="
+              },
+              {
+                "x": 219,
+                "y": 0,
+                "reference": "6Ojo/w==",
+                "candidate": "8/Pz/w=="
+              },
+              {
+                "x": 220,
+                "y": 0,
+                "reference": "4+Pj/w==",
+                "candidate": "8fHx/w=="
+              },
+              {
+                "x": 221,
+                "y": 0,
+                "reference": "39/f/w==",
+                "candidate": "7u7u/w=="
+              },
+              {
+                "x": 222,
+                "y": 0,
+                "reference": "39/f/w==",
+                "candidate": "6+vr/w=="
+              },
+              {
+                "x": 223,
+                "y": 0,
+                "reference": "39/f/w==",
+                "candidate": "6enp/w=="
+              },
+              {
+                "x": 224,
+                "y": 0,
+                "reference": "39/f/w==",
+                "candidate": "5ubm/w=="
+              },
+              {
+                "x": 225,
+                "y": 0,
+                "reference": "39/f/w==",
+                "candidate": "4+Pj/w=="
+              },
+              {
+                "x": 226,
+                "y": 0,
+                "reference": "39/f/w==",
+                "candidate": "4eHh/w=="
+              },
+              {
+                "x": 228,
+                "y": 0,
+                "reference": "29vb/w==",
+                "candidate": "3Nzc/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-intended-black",
+          "candidateSha256": "9132819fedf67817d6a2b46ae319a81802d2bf37dc7d7814ed01d51874ac06b9",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 1928,
+              "MaximumChannelError": 36,
+              "MeanAbsoluteError": 0.05316870629370629,
+              "RootMeanSquareError": 0.871406206211418,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 571,
+              "MaximumMismatchY": 399,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 216,
+                "y": 0,
+                "reference": "CQkJ/w==",
+                "candidate": "BAQE/w=="
+              },
+              {
+                "x": 217,
+                "y": 0,
+                "reference": "Dg4O/w==",
+                "candidate": "BwcH/w=="
+              },
+              {
+                "x": 218,
+                "y": 0,
+                "reference": "ExMT/w==",
+                "candidate": "CgoK/w=="
+              },
+              {
+                "x": 219,
+                "y": 0,
+                "reference": "FxcX/w==",
+                "candidate": "DAwM/w=="
+              },
+              {
+                "x": 220,
+                "y": 0,
+                "reference": "HBwc/w==",
+                "candidate": "Dw8P/w=="
+              },
+              {
+                "x": 221,
+                "y": 0,
+                "reference": "ISEh/w==",
+                "candidate": "EhIS/w=="
+              },
+              {
+                "x": 222,
+                "y": 0,
+                "reference": "ICAg/w==",
+                "candidate": "FBQU/w=="
+              },
+              {
+                "x": 223,
+                "y": 0,
+                "reference": "ICAg/w==",
+                "candidate": "FxcX/w=="
+              },
+              {
+                "x": 224,
+                "y": 0,
+                "reference": "ICAg/w==",
+                "candidate": "Ghoa/w=="
+              },
+              {
+                "x": 225,
+                "y": 0,
+                "reference": "ICAg/w==",
+                "candidate": "HBwc/w=="
+              },
+              {
+                "x": 226,
+                "y": 0,
+                "reference": "ICAg/w==",
+                "candidate": "Hx8f/w=="
+              },
+              {
+                "x": 228,
+                "y": 0,
+                "reference": "JSUl/w==",
+                "candidate": "JCQk/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-large-transparent",
+          "candidateSha256": "a908308b2d3dd3ddba018a941802ac47e9d681b26e0aaff06603ae21037ae111",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 3943,
+              "MaximumChannelError": 255,
+              "MeanAbsoluteError": 0.05116313374125874,
+              "RootMeanSquareError": 2.2462355600946142,
+              "MaximumAlphaError": 96,
+              "AlphaChangedPixelCount": 3657,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 1143,
+              "MaximumMismatchY": 799,
+              "IsExact": false
+            },
+            "alphaMass": 63257,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 471,
+                "y": 0,
+                "reference": "jo6OCQ==",
+                "candidate": "AAAAAA=="
+              },
+              {
+                "x": 472,
+                "y": 0,
+                "reference": "iYmJDQ==",
+                "candidate": "AAAAAA=="
+              },
+              {
+                "x": 473,
+                "y": 0,
+                "reference": "gICAEg==",
+                "candidate": "AAAAAA=="
+              },
+              {
+                "x": 474,
+                "y": 0,
+                "reference": "gICAFg==",
+                "candidate": "AAAAAA=="
+              },
+              {
+                "x": 475,
+                "y": 0,
+                "reference": "hISEGw==",
+                "candidate": "gICACg=="
+              },
+              {
+                "x": 476,
+                "y": 0,
+                "reference": "hISEHw==",
+                "candidate": "iYmJDQ=="
+              },
+              {
+                "x": 477,
+                "y": 0,
+                "reference": "gICAJA==",
+                "candidate": "h4eHEQ=="
+              },
+              {
+                "x": 478,
+                "y": 0,
+                "reference": "gICAKA==",
+                "candidate": "gICAFA=="
+              },
+              {
+                "x": 479,
+                "y": 0,
+                "reference": "goKCLQ==",
+                "candidate": "gICAGA=="
+              },
+              {
+                "x": 480,
+                "y": 0,
+                "reference": "goKCMQ==",
+                "candidate": "hISEGw=="
+              },
+              {
+                "x": 481,
+                "y": 0,
+                "reference": "gICANg==",
+                "candidate": "f39/Hg=="
+              },
+              {
+                "x": 482,
+                "y": 0,
+                "reference": "gICAOg==",
+                "candidate": "gICAIg=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-large-white",
+          "candidateSha256": "0dfcfd87d1b8b52737d87811303fdf34571b9af9c5be50f47ca60000aea764d6",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 3847,
+              "MaximumChannelError": 48,
+              "MeanAbsoluteError": 0.025953343531468533,
+              "RootMeanSquareError": 0.6017892900761442,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 1143,
+              "MaximumMismatchY": 799,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 471,
+                "y": 0,
+                "reference": "+/v7/w==",
+                "candidate": "/////w=="
+              },
+              {
+                "x": 472,
+                "y": 0,
+                "reference": "+fn5/w==",
+                "candidate": "/////w=="
+              },
+              {
+                "x": 473,
+                "y": 0,
+                "reference": "9vb2/w==",
+                "candidate": "/////w=="
+              },
+              {
+                "x": 474,
+                "y": 0,
+                "reference": "9PT0/w==",
+                "candidate": "/////w=="
+              },
+              {
+                "x": 475,
+                "y": 0,
+                "reference": "8vLy/w==",
+                "candidate": "+vr6/w=="
+              },
+              {
+                "x": 476,
+                "y": 0,
+                "reference": "8PDw/w==",
+                "candidate": "+fn5/w=="
+              },
+              {
+                "x": 477,
+                "y": 0,
+                "reference": "7e3t/w==",
+                "candidate": "9/f3/w=="
+              },
+              {
+                "x": 478,
+                "y": 0,
+                "reference": "6+vr/w==",
+                "candidate": "9fX1/w=="
+              },
+              {
+                "x": 479,
+                "y": 0,
+                "reference": "6enp/w==",
+                "candidate": "8/Pz/w=="
+              },
+              {
+                "x": 480,
+                "y": 0,
+                "reference": "5+fn/w==",
+                "candidate": "8vLy/w=="
+              },
+              {
+                "x": 481,
+                "y": 0,
+                "reference": "5OTk/w==",
+                "candidate": "8PDw/w=="
+              },
+              {
+                "x": 482,
+                "y": 0,
+                "reference": "4uLi/w==",
+                "candidate": "7u7u/w=="
+              }
+            ]
+          }
+        },
+        {
+          "id": "inv-027-large-black",
+          "candidateSha256": "adfa02c2e54968ab84ea586b253f80a4bf888ebc8f76e42c901bf05c30693c9f",
+          "comparison": {
+            "diff": {
+              "DimensionsMatch": true,
+              "ChangedPixelCount": 3877,
+              "MaximumChannelError": 48,
+              "MeanAbsoluteError": 0.02636390952797203,
+              "RootMeanSquareError": 0.6093196922184403,
+              "MaximumAlphaError": 0,
+              "AlphaChangedPixelCount": 0,
+              "MinimumMismatchX": 0,
+              "MinimumMismatchY": 0,
+              "MaximumMismatchX": 1143,
+              "MaximumMismatchY": 799,
+              "IsExact": false
+            },
+            "alphaMass": 0,
+            "opaqueLost": 0,
+            "opaqueAdded": 0,
+            "witnesses": [
+              {
+                "x": 471,
+                "y": 0,
+                "reference": "BQUF/w==",
+                "candidate": "AAAA/w=="
+              },
+              {
+                "x": 472,
+                "y": 0,
+                "reference": "BwcH/w==",
+                "candidate": "AAAA/w=="
+              },
+              {
+                "x": 473,
+                "y": 0,
+                "reference": "CQkJ/w==",
+                "candidate": "AAAA/w=="
+              },
+              {
+                "x": 474,
+                "y": 0,
+                "reference": "CwsL/w==",
+                "candidate": "AAAA/w=="
+              },
+              {
+                "x": 475,
+                "y": 0,
+                "reference": "Dg4O/w==",
+                "candidate": "BQUF/w=="
+              },
+              {
+                "x": 476,
+                "y": 0,
+                "reference": "EBAQ/w==",
+                "candidate": "BwcH/w=="
+              },
+              {
+                "x": 477,
+                "y": 0,
+                "reference": "EhIS/w==",
+                "candidate": "CQkJ/w=="
+              },
+              {
+                "x": 478,
+                "y": 0,
+                "reference": "FBQU/w==",
+                "candidate": "CgoK/w=="
+              },
+              {
+                "x": 479,
+                "y": 0,
+                "reference": "FxcX/w==",
+                "candidate": "DAwM/w=="
+              },
+              {
+                "x": 480,
+                "y": 0,
+                "reference": "GRkZ/w==",
+                "candidate": "Dg4O/w=="
+              },
+              {
+                "x": 481,
+                "y": 0,
+                "reference": "Gxsb/w==",
+                "candidate": "Dw8P/w=="
+              },
+              {
+                "x": 482,
+                "y": 0,
+                "reference": "HR0d/w==",
+                "candidate": "ERER/w=="
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

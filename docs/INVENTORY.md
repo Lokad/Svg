@@ -7,8 +7,8 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Current assessment (2026-10-05): the Default-options sweep renders 88 of the 92
-retained files and rejects four as MalformedInput (`inv-007`, `inv-012`,
+Current assessment (2026-10-05): the density-checkpoint Default-options sweep
+renders 88 of the 92 legacy-bank files and rejects four as MalformedInput (`inv-007`, `inv-012`,
 `inv-014`, `inv-020`). Renderability is separate from fidelity. The historical
 27-of-92 exact tally below describes its narrower captured variants; it does not
 establish completion of every declared size/background or current corporate-logo
@@ -122,6 +122,59 @@ files are candidates, not contributor CC0 originals or fixture-manifest entries.
 New captures require three sequential fresh, healthy, cleaned browser processes
 with byte-identical PNGs under the existing recipe-3 pin. Capture failure or an
 unmeasured variant cannot shrink a document denominator.
+
+## Corporate measurement and selected curved mark (2026-10-05)
+
+The [current measurement record](../tests/References/inventory/corporate-cohort-current.json)
+executes every frozen case: **213 renders + 36 MalformedInput + nine
+UnsupportedFeature = 258**. Four original DTD-bearing documents each reject at
+all nine cases: Zeppelin, SG Rotation Leipzig, Artsy and the newly held-out Target.
+Coca-Cola retains all nine touching-contour UnsupportedFeature outcomes. Its
+source was selected before pixel results; neither new failure is filtered out.
+
+Fidelity has **18 measured cases = nine exact Ford + nine YouTube differences**.
+The remaining **225 unmeasured + fifteen transport-limit gaps** retain their
+denominators. Every large gap was run through the actual pinned capture helper
+and rejected before browser launch with no PNG bytes. Currently verified exact
+documents are **1/27**, marks **0/13**, wordmarks **1/14**. This is partial cohort
+measurement, not a market or release rate. Three mark DTD rejects alone leave
+at most 10/13 under the current parser policy, below the required 11; a deliberate
+bounded syntax admission must preserve source files and security/resource contracts.
+
+YouTube's nine references each have three fresh healthy, cleaned, byte-identical
+captures. Geometry and the original LF-canonical input remain unchanged. Candidate
+compositions were viewed against the oracle: rounded grey body and white triangle
+compose correctly; fringe errors remain. No opaque/hole flips occur.
+
+| Logical viewport | Transparent changed pixels / alpha error mass | White changed pixels | Black changed pixels |
+| --- | --- | --- | --- |
+| 286×200 | 706 / 7,026 | 639 | 621 |
+| 572×400 | 1,558 / 14,622 | 1,395 | 1,412 |
+| 1144×800 | 3,203 / 28,474 | 2,932 | 2,980 |
+
+Transparent maximum alpha error is 64 at every size; opaque backgrounds have
+exact alpha and maximum channel error 32. All nine remain known differences.
+References are portable under `tests/References/inventory/inv-027-{size}-{background}.png`.
+
+The [actual browser path record](../tests/References/inventory/inv-027-native-route.json)
+comes from a traced large screenshot with complete byte identity to the original
+triple. The decoded SVG picture reports body convex=false, triangle convex=true
+and 37 raw body points in twelve cubic verbs. The managed observer-only baseline
+reproduces every original PNG but selects convex=true on 84/97/149 flattened
+body points. Two models were declared before isolated-copy execution. Switching
+retained convex curves to the interval/live walker lowers transparent alpha error
+to **356/787/1,634** and improves every variant, while disabling retained spans
+worsens all nine. Neither model is exact; neither changes production or an input.
+This supports investigating compatible raw-path classification and the remaining
+mapped edge/paint events. It does not justify globally disabling convex dispatch.
+The [design record](RASTERIZATION_DESIGN.md#youtube-raw-path-classification-discriminator-2026-10-05)
+retains the mechanism and limits. Full evidence is ignored under
+`artifacts/corporate-cohort-20261005/`; offline tests execute all 258 dispositions,
+eighteen references and the discriminator. Fresh full validation passes **3,235
+tests = 3,090 core + 139 visual + six FontProbe**, with a clean nine-project Release
+build and locked restore. Production renderer sources remain at the all-Ford-exact
+density checkpoint; the corporate selection/measurement does not refresh Linux,
+performance, memory/package evidence or close the curved-mark/S17 exits.
 
 ## Current renderer checkpoint (2026-10-05)
 

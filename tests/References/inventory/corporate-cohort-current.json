@@ -1,0 +1,5211 @@
+{
+  "cohortId": "corporate-2026-10-05-v1",
+  "measurementDate": "2026-10-05",
+  "freezeHead": "649233b2ba315b63fdd43a7cca4b7147de4f24e2",
+  "rendererSourceCommit": "0b4563c8",
+  "rendererSha256": "c6a611b96aea237f243bc1a4b4a647983dcb42b48aee7f304bc676012e59cf99",
+  "oraclePin": {
+    "version": "153.0.8010.52",
+    "chromiumRevision": "1681091",
+    "platform": "win64",
+    "archiveUrl": "https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.52/win64/chrome-win64.zip",
+    "archiveSha256": "df4854428c509fcf2f790ac448bca3f994151bcff22008236fa7c4587294fbe1",
+    "executableRelativePath": "chrome-win64/chrome.exe",
+    "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+    "captureRecipeRevision": "3"
+  },
+  "scope": "All 258 renderer cases executed. Eighteen fidelity comparisons: original Ford nine plus fresh stable healthy YouTube nine. Every remaining source/variant, reject, known difference and oracle gap stays declared. Only 1/27 documents is currently verified exact; this partial measurement is not a market/release coverage claim.",
+  "rendererCounts": {
+    "renders": 213,
+    "MalformedInput": 36,
+    "UnsupportedFeature": 9
+  },
+  "oracleCounts": {
+    "unmeasured": 225,
+    "measured": 18,
+    "transport-limit-gap": 15
+  },
+  "fidelityCounts": {
+    "exact": 9,
+    "known-difference": 9,
+    "withoutReference": 240
+  },
+  "oracleTransportFailures": {
+    "captureToolSha256": "2b6390104d73c844f251d87b999d872cae0728f107cc3736ab623fb29a303c5f",
+    "failures": [
+      {
+        "id": "inv-020-large-transparent",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-020-large-white",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-020-large-black",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-026-large-transparent",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-026-large-white",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-026-large-black",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-096-large-transparent",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-096-large-white",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-096-large-black",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-097-large-transparent",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-097-large-white",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-097-large-black",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-098-large-transparent",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-098-large-white",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      },
+      {
+        "id": "inv-098-large-black",
+        "exitCode": 1,
+        "pngBytes": 0,
+        "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
+        "browserLaunched": false
+      }
+    ]
+  },
+  "verifiedExactDocuments": [
+    "inv-002"
+  ],
+  "documents": [
+    {
+      "id": "inv-001",
+      "stratum": "corporate-mark",
+      "role": "development",
+      "variantIds": [
+        "inv-001-small-transparent",
+        "inv-001-small-white",
+        "inv-001-small-black",
+        "inv-001-intended-transparent",
+        "inv-001-intended-white",
+        "inv-001-intended-black",
+        "inv-001-large-transparent",
+        "inv-001-large-white",
+        "inv-001-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-002",
+      "stratum": "outlined-wordmark",
+      "role": "development",
+      "variantIds": [
+        "inv-002-small-transparent",
+        "inv-002-small-white",
+        "inv-002-small-black",
+        "inv-002-intended-transparent",
+        "inv-002-intended-white",
+        "inv-002-intended-black",
+        "inv-002-large-transparent",
+        "inv-002-large-white",
+        "inv-002-large-black"
+      ],
+      "verifiedExact": true
+    },
+    {
+      "id": "inv-003",
+      "stratum": "outlined-wordmark",
+      "role": "development",
+      "variantIds": [
+        "inv-003-small-transparent",
+        "inv-003-small-white",
+        "inv-003-small-black",
+        "inv-003-intended-transparent",
+        "inv-003-intended-white",
+        "inv-003-intended-black",
+        "inv-003-large-transparent",
+        "inv-003-large-white",
+        "inv-003-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-004",
+      "stratum": "outlined-wordmark",
+      "role": "development",
+      "variantIds": [
+        "inv-004-small-transparent",
+        "inv-004-small-white",
+        "inv-004-small-black",
+        "inv-004-intended-transparent",
+        "inv-004-intended-white",
+        "inv-004-intended-black",
+        "inv-004-large-transparent",
+        "inv-004-large-white",
+        "inv-004-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-005",
+      "stratum": "outlined-wordmark",
+      "role": "development",
+      "variantIds": [
+        "inv-005-small-transparent",
+        "inv-005-small-white",
+        "inv-005-small-black",
+        "inv-005-intended-transparent",
+        "inv-005-intended-white",
+        "inv-005-intended-black",
+        "inv-005-large-transparent",
+        "inv-005-large-white",
+        "inv-005-large-black",
+        "inv-005-historical-300x293-transparent",
+        "inv-005-historical-300x293-white",
+        "inv-005-historical-300x293-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-006",
+      "stratum": "outlined-wordmark",
+      "role": "development",
+      "variantIds": [
+        "inv-006-small-transparent",
+        "inv-006-small-white",
+        "inv-006-small-black",
+        "inv-006-intended-transparent",
+        "inv-006-intended-white",
+        "inv-006-intended-black",
+        "inv-006-large-transparent",
+        "inv-006-large-white",
+        "inv-006-large-black",
+        "inv-006-historical-57x23-transparent",
+        "inv-006-historical-57x23-white",
+        "inv-006-historical-57x23-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-007",
+      "stratum": "outlined-wordmark",
+      "role": "development",
+      "variantIds": [
+        "inv-007-small-transparent",
+        "inv-007-small-white",
+        "inv-007-small-black",
+        "inv-007-intended-transparent",
+        "inv-007-intended-white",
+        "inv-007-intended-black",
+        "inv-007-large-transparent",
+        "inv-007-large-white",
+        "inv-007-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-008",
+      "stratum": "corporate-mark",
+      "role": "development",
+      "variantIds": [
+        "inv-008-small-transparent",
+        "inv-008-small-white",
+        "inv-008-small-black",
+        "inv-008-intended-transparent",
+        "inv-008-intended-white",
+        "inv-008-intended-black",
+        "inv-008-large-transparent",
+        "inv-008-large-white",
+        "inv-008-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-009",
+      "stratum": "corporate-mark",
+      "role": "development",
+      "variantIds": [
+        "inv-009-small-transparent",
+        "inv-009-small-white",
+        "inv-009-small-black",
+        "inv-009-intended-transparent",
+        "inv-009-intended-white",
+        "inv-009-intended-black",
+        "inv-009-large-transparent",
+        "inv-009-large-white",
+        "inv-009-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-010",
+      "stratum": "corporate-mark",
+      "role": "development",
+      "variantIds": [
+        "inv-010-small-transparent",
+        "inv-010-small-white",
+        "inv-010-small-black",
+        "inv-010-intended-transparent",
+        "inv-010-intended-white",
+        "inv-010-intended-black",
+        "inv-010-large-transparent",
+        "inv-010-large-white",
+        "inv-010-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-011",
+      "stratum": "corporate-mark",
+      "role": "development",
+      "variantIds": [
+        "inv-011-small-transparent",
+        "inv-011-small-white",
+        "inv-011-small-black",
+        "inv-011-intended-transparent",
+        "inv-011-intended-white",
+        "inv-011-intended-black",
+        "inv-011-large-transparent",
+        "inv-011-large-white",
+        "inv-011-large-black",
+        "inv-011-historical-300x150-transparent",
+        "inv-011-historical-300x150-white",
+        "inv-011-historical-300x150-black",
+        "inv-011-historical-300x293-transparent",
+        "inv-011-historical-300x293-white",
+        "inv-011-historical-300x293-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-012",
+      "stratum": "corporate-mark",
+      "role": "development",
+      "variantIds": [
+        "inv-012-small-transparent",
+        "inv-012-small-white",
+        "inv-012-small-black",
+        "inv-012-intended-transparent",
+        "inv-012-intended-white",
+        "inv-012-intended-black",
+        "inv-012-large-transparent",
+        "inv-012-large-white",
+        "inv-012-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-019",
+      "stratum": "corporate-mark",
+      "role": "development",
+      "variantIds": [
+        "inv-019-small-transparent",
+        "inv-019-small-white",
+        "inv-019-small-black",
+        "inv-019-intended-transparent",
+        "inv-019-intended-white",
+        "inv-019-intended-black",
+        "inv-019-large-transparent",
+        "inv-019-large-white",
+        "inv-019-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-020",
+      "stratum": "corporate-mark",
+      "role": "development",
+      "variantIds": [
+        "inv-020-small-transparent",
+        "inv-020-small-white",
+        "inv-020-small-black",
+        "inv-020-intended-transparent",
+        "inv-020-intended-white",
+        "inv-020-intended-black",
+        "inv-020-large-transparent",
+        "inv-020-large-white",
+        "inv-020-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-026",
+      "stratum": "outlined-wordmark",
+      "role": "development",
+      "variantIds": [
+        "inv-026-small-transparent",
+        "inv-026-small-white",
+        "inv-026-small-black",
+        "inv-026-intended-transparent",
+        "inv-026-intended-white",
+        "inv-026-intended-black",
+        "inv-026-large-transparent",
+        "inv-026-large-white",
+        "inv-026-large-black",
+        "inv-026-historical-543x149-transparent",
+        "inv-026-historical-543x149-white",
+        "inv-026-historical-543x149-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-027",
+      "stratum": "corporate-mark",
+      "role": "development",
+      "variantIds": [
+        "inv-027-small-transparent",
+        "inv-027-small-white",
+        "inv-027-small-black",
+        "inv-027-intended-transparent",
+        "inv-027-intended-white",
+        "inv-027-intended-black",
+        "inv-027-large-transparent",
+        "inv-027-large-white",
+        "inv-027-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-040",
+      "stratum": "outlined-wordmark",
+      "role": "development",
+      "variantIds": [
+        "inv-040-small-transparent",
+        "inv-040-small-white",
+        "inv-040-small-black",
+        "inv-040-intended-transparent",
+        "inv-040-intended-white",
+        "inv-040-intended-black",
+        "inv-040-large-transparent",
+        "inv-040-large-white",
+        "inv-040-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-066",
+      "stratum": "outlined-wordmark",
+      "role": "development",
+      "variantIds": [
+        "inv-066-small-transparent",
+        "inv-066-small-white",
+        "inv-066-small-black",
+        "inv-066-intended-transparent",
+        "inv-066-intended-white",
+        "inv-066-intended-black",
+        "inv-066-large-transparent",
+        "inv-066-large-white",
+        "inv-066-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-092",
+      "stratum": "outlined-wordmark",
+      "role": "development",
+      "variantIds": [
+        "inv-092-small-transparent",
+        "inv-092-small-white",
+        "inv-092-small-black",
+        "inv-092-intended-transparent",
+        "inv-092-intended-white",
+        "inv-092-intended-black",
+        "inv-092-large-transparent",
+        "inv-092-large-white",
+        "inv-092-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-095",
+      "stratum": "corporate-mark",
+      "role": "holdout",
+      "variantIds": [
+        "inv-095-small-transparent",
+        "inv-095-small-white",
+        "inv-095-small-black",
+        "inv-095-intended-transparent",
+        "inv-095-intended-white",
+        "inv-095-intended-black",
+        "inv-095-large-transparent",
+        "inv-095-large-white",
+        "inv-095-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-096",
+      "stratum": "corporate-mark",
+      "role": "holdout",
+      "variantIds": [
+        "inv-096-small-transparent",
+        "inv-096-small-white",
+        "inv-096-small-black",
+        "inv-096-intended-transparent",
+        "inv-096-intended-white",
+        "inv-096-intended-black",
+        "inv-096-large-transparent",
+        "inv-096-large-white",
+        "inv-096-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-097",
+      "stratum": "corporate-mark",
+      "role": "holdout",
+      "variantIds": [
+        "inv-097-small-transparent",
+        "inv-097-small-white",
+        "inv-097-small-black",
+        "inv-097-intended-transparent",
+        "inv-097-intended-white",
+        "inv-097-intended-black",
+        "inv-097-large-transparent",
+        "inv-097-large-white",
+        "inv-097-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-098",
+      "stratum": "corporate-mark",
+      "role": "holdout",
+      "variantIds": [
+        "inv-098-small-transparent",
+        "inv-098-small-white",
+        "inv-098-small-black",
+        "inv-098-intended-transparent",
+        "inv-098-intended-white",
+        "inv-098-intended-black",
+        "inv-098-large-transparent",
+        "inv-098-large-white",
+        "inv-098-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-099",
+      "stratum": "outlined-wordmark",
+      "role": "holdout",
+      "variantIds": [
+        "inv-099-small-transparent",
+        "inv-099-small-white",
+        "inv-099-small-black",
+        "inv-099-intended-transparent",
+        "inv-099-intended-white",
+        "inv-099-intended-black",
+        "inv-099-large-transparent",
+        "inv-099-large-white",
+        "inv-099-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-100",
+      "stratum": "outlined-wordmark",
+      "role": "holdout",
+      "variantIds": [
+        "inv-100-small-transparent",
+        "inv-100-small-white",
+        "inv-100-small-black",
+        "inv-100-intended-transparent",
+        "inv-100-intended-white",
+        "inv-100-intended-black",
+        "inv-100-large-transparent",
+        "inv-100-large-white",
+        "inv-100-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-101",
+      "stratum": "outlined-wordmark",
+      "role": "holdout",
+      "variantIds": [
+        "inv-101-small-transparent",
+        "inv-101-small-white",
+        "inv-101-small-black",
+        "inv-101-intended-transparent",
+        "inv-101-intended-white",
+        "inv-101-intended-black",
+        "inv-101-large-transparent",
+        "inv-101-large-white",
+        "inv-101-large-black"
+      ],
+      "verifiedExact": false
+    },
+    {
+      "id": "inv-102",
+      "stratum": "outlined-wordmark",
+      "role": "holdout",
+      "variantIds": [
+        "inv-102-small-transparent",
+        "inv-102-small-white",
+        "inv-102-small-black",
+        "inv-102-intended-transparent",
+        "inv-102-intended-white",
+        "inv-102-intended-black",
+        "inv-102-large-transparent",
+        "inv-102-large-white",
+        "inv-102-large-black"
+      ],
+      "verifiedExact": false
+    }
+  ],
+  "results": [
+    {
+      "id": "inv-001-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
+      "candidateSha256": "86c5e1bb2532ea09851989a8b9101d3800ecbd44fbf214e3b5df9612e2421613",
+      "width": 29,
+      "height": 29,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-001-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
+      "candidateSha256": "d88ed7eabf707240cce0316ad1f547380bef1d1d6717c5ae8f814893c8f32c22",
+      "width": 29,
+      "height": 29,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-001-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
+      "candidateSha256": "e5a679f4594e86ccb28b60ba2ad4dffa6a24f75656ce9e5eb7c37737dbb9d40d",
+      "width": 29,
+      "height": 29,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-001-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
+      "candidateSha256": "1e60c5baf5c5b9e431bbc47a2226d4e7cf6c1dcf6a906b4a81e647c8b62fdcca",
+      "width": 59,
+      "height": 58,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-001-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
+      "candidateSha256": "2ba960f840e231224b6dcebc3a6d5927fe904a187780efa894391bb6301a2771",
+      "width": 59,
+      "height": 58,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-001-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
+      "candidateSha256": "ad9bf2b9184987a332d912b2e30b726965944f1309e4803949292e7c06456908",
+      "width": 59,
+      "height": 58,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-001-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
+      "candidateSha256": "e5e396d0dbfc5d17cab9304a3b0f658ed256c1b1bba4b86d083766653952147a",
+      "width": 118,
+      "height": 116,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-001-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
+      "candidateSha256": "6928b93d7239a9428096e25196d5ee50df0f4e0a5be4250a9695617bfb3383e4",
+      "width": 118,
+      "height": 116,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-001-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
+      "candidateSha256": "80ab78c30ae2903d2776e7b5186758ee81ba428cba81c01e247cca88b4e31f16",
+      "width": 118,
+      "height": 116,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-002-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "candidateSha256": "cd677106b94bc25589abded976835552f88b70450d89ac94e4cbe9a568137937",
+      "width": 250,
+      "height": 100,
+      "referenceSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 250,
+          "MinimumMismatchY": 100,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": []
+      },
+      "referencePng": "inv-002-250x100-transparent.png",
+      "captureProvenance": {
+        "date": "2026-10-02",
+        "oracleInputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "preservedOriginalFordCapture": true,
+        "captures": [
+          {
+            "pngSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-002-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "candidateSha256": "a81bec90bc3a183134cdaa21eeb1e0d4031e11f292c157920d6a02b78be78493",
+      "width": 250,
+      "height": 100,
+      "referenceSha256": "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 250,
+          "MinimumMismatchY": 100,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": []
+      },
+      "referencePng": "inv-002-250x100-white.png",
+      "captureProvenance": {
+        "date": "2026-10-02",
+        "oracleInputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "preservedOriginalFordCapture": true,
+        "captures": [
+          {
+            "pngSha256": "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-002-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "candidateSha256": "c5e9db9836b16c738a70805f9038708ab3368e0d28f009e38ba12c2bd68d6859",
+      "width": 250,
+      "height": 100,
+      "referenceSha256": "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 250,
+          "MinimumMismatchY": 100,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": []
+      },
+      "referencePng": "inv-002-250x100-black.png",
+      "captureProvenance": {
+        "date": "2026-10-02",
+        "oracleInputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "preservedOriginalFordCapture": true,
+        "captures": [
+          {
+            "pngSha256": "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-002-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "candidateSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69",
+      "width": 500,
+      "height": 200,
+      "referenceSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 500,
+          "MinimumMismatchY": 200,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": []
+      },
+      "referencePng": "inv-002-500x200-transparent.png",
+      "captureProvenance": {
+        "date": "2026-10-02",
+        "oracleInputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "preservedOriginalFordCapture": true,
+        "captures": [
+          {
+            "pngSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-002-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "candidateSha256": "aefac6daa9ce7dea9edddaad2ee97d91808c19871cf0e0c004736e915a119b37",
+      "width": 500,
+      "height": 200,
+      "referenceSha256": "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 500,
+          "MinimumMismatchY": 200,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": []
+      },
+      "referencePng": "inv-002-500x200-white.png",
+      "captureProvenance": {
+        "date": "2026-10-02",
+        "oracleInputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "preservedOriginalFordCapture": true,
+        "captures": [
+          {
+            "pngSha256": "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-002-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "candidateSha256": "a3b40ee0200c1c7bf64127fe67af0c7978349089c7129adeab03ceacdf0cc6c2",
+      "width": 500,
+      "height": 200,
+      "referenceSha256": "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 500,
+          "MinimumMismatchY": 200,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": []
+      },
+      "referencePng": "inv-002-500x200-black.png",
+      "captureProvenance": {
+        "date": "2026-10-02",
+        "oracleInputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "preservedOriginalFordCapture": true,
+        "captures": [
+          {
+            "pngSha256": "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-002-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "candidateSha256": "7b05b1ea36301247e60e91e0ad0b6109db68bc3dcc8199075f4fdcc12e809c1a",
+      "width": 1000,
+      "height": 400,
+      "referenceSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 1000,
+          "MinimumMismatchY": 400,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": []
+      },
+      "referencePng": "inv-002-1000x400-transparent.png",
+      "captureProvenance": {
+        "date": "2026-10-02",
+        "oracleInputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "preservedOriginalFordCapture": true,
+        "captures": [
+          {
+            "pngSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-002-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "candidateSha256": "fa8b8df70fdbc2ce99bc3d85de603a4a9afe926efc38f968553f5f896882e930",
+      "width": 1000,
+      "height": 400,
+      "referenceSha256": "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 1000,
+          "MinimumMismatchY": 400,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": []
+      },
+      "referencePng": "inv-002-1000x400-white.png",
+      "captureProvenance": {
+        "date": "2026-10-02",
+        "oracleInputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "preservedOriginalFordCapture": true,
+        "captures": [
+          {
+            "pngSha256": "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-002-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "candidateSha256": "4467fb6ee0ca86219e0d658fe2090e648475c302da5b7726b47bfa4c64cb24a0",
+      "width": 1000,
+      "height": 400,
+      "referenceSha256": "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 1000,
+          "MinimumMismatchY": 400,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": []
+      },
+      "referencePng": "inv-002-1000x400-black.png",
+      "captureProvenance": {
+        "date": "2026-10-02",
+        "oracleInputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "preservedOriginalFordCapture": true,
+        "captures": [
+          {
+            "pngSha256": "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-003-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "4dd998626f18219b0fa6493f085a3e9a3e79f01a8c760c257a9722279136c5b6",
+      "candidateSha256": "1ec0e8f38d1a6afc67d0e3eaa1fb77264d556c953b4901aec6fbfda122e8438d",
+      "width": 369,
+      "height": 185,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-003-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "4dd998626f18219b0fa6493f085a3e9a3e79f01a8c760c257a9722279136c5b6",
+      "candidateSha256": "26be6d30dfaef6e3b245fac35ea7594d2533bcfa8e503081c983147412fb4847",
+      "width": 369,
+      "height": 185,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-003-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "4dd998626f18219b0fa6493f085a3e9a3e79f01a8c760c257a9722279136c5b6",
+      "candidateSha256": "a5786bbdfe1b768715ae14ba4e908f2d9e0b7e34d5b73596b26d503c0a813e50",
+      "width": 369,
+      "height": 185,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-003-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "a0b8cfefbf49be3b5d2e25f06f7592ef6249fa5d225a9843fdd37ff5c7450f1f",
+      "candidateSha256": "35b7592ad963e900e8e1c9b9116d683d4443a7ba0f3a96a6ea7eab1d2a4f288f",
+      "width": 738,
+      "height": 371,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-003-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "a0b8cfefbf49be3b5d2e25f06f7592ef6249fa5d225a9843fdd37ff5c7450f1f",
+      "candidateSha256": "93cbbad70d5e786acf81ce207a6dc4f40860ed6197281cd569ce25d8dec2972f",
+      "width": 738,
+      "height": 371,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-003-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "a0b8cfefbf49be3b5d2e25f06f7592ef6249fa5d225a9843fdd37ff5c7450f1f",
+      "candidateSha256": "f62dc13b58cf0527f3cc21354c38a004b05383cf57f965861673d01ca0583529",
+      "width": 738,
+      "height": 371,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-003-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "5093b622ce83ea8a9c753035108868b75a90af90b3aed3f997a28873775a2347",
+      "candidateSha256": "5b2749efa3f7295f95df96ad81646e31e618afd1e49e5854cea51c5dd2518135",
+      "width": 1476,
+      "height": 742,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-003-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "5093b622ce83ea8a9c753035108868b75a90af90b3aed3f997a28873775a2347",
+      "candidateSha256": "91cec8cafc6705215e8e59947b70ff4b9a9520a215885dee367e2ce1d5c23a79",
+      "width": 1476,
+      "height": 742,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-003-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "5093b622ce83ea8a9c753035108868b75a90af90b3aed3f997a28873775a2347",
+      "candidateSha256": "750befd4d3849de98d0b484fd716525b3db1dae75254f47dc2a214a4a8ac138a",
+      "width": 1476,
+      "height": 742,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-004-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+      "candidateSha256": "e6f74086c1c139f9d190f885a09fc342f8e1e7cb7b9669be2638151f05073ab8",
+      "width": 297,
+      "height": 370,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-004-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+      "candidateSha256": "3ae513b6f2da4bebd1f82d89b826c1db38399333630c394d61ab435630fb4e50",
+      "width": 297,
+      "height": 370,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-004-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+      "candidateSha256": "6829d80065e3f18c284fd516418873b56f9ddcd4824de5c70d510d8b2dd6459a",
+      "width": 297,
+      "height": 370,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-004-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+      "candidateSha256": "f601d66637abf9610abc1e8f1bb9cf4fb267312b7448aa61ebf10b12ed1abdea",
+      "width": 595,
+      "height": 740,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-004-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+      "candidateSha256": "68d3566a918e55cda1cddda258cde4330426cacdfca9b34a3b63a7e856ef880a",
+      "width": 595,
+      "height": 740,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-004-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+      "candidateSha256": "c9656a8a5770400013b0a8fba2037f3c64e89a147a74a1ce18b5b6db27374f54",
+      "width": 595,
+      "height": 740,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-004-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+      "candidateSha256": "59953c1a1e4c60347bf865a137475ce2b8ec45568c5195cfcbd38bf2059a445c",
+      "width": 1190,
+      "height": 1480,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-004-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+      "candidateSha256": "3bf61bb3a719c892798c1681ca04b23b1afffd004cd87133ab1f4c43744f8e8b",
+      "width": 1190,
+      "height": 1480,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-004-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "bd196823376965820189695ee07a6ec6bcb792564653ef1d66bad5b2142dc5f5",
+      "candidateSha256": "c3af598578439a467fd778a67fd92d99a1f139e5b8299c4af831a1a130e399ef",
+      "width": 1190,
+      "height": 1480,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "d0cd2c70dc29a0eb7fa0b6ce3234353514a709b008f79d42e91491f744b83740",
+      "width": 407,
+      "height": 116,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "0885db6b3d99e24cab1d200c1b371fb40109fc4823bc05d3110a87a21c224ce4",
+      "width": 407,
+      "height": 116,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "84176c35242872fae5ba3a5f18c00b2fb33b27cb8b720a9b1580a8d837979051",
+      "width": 407,
+      "height": 116,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "089e99048b1bc33f52181f8f6a33b3387b5ace325525d9d604b3dfe6ac70a3bb",
+      "width": 815,
+      "height": 233,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "68e4e058c54a1f91347ab305d0ee9bbdfa3f0fd80b4e4138c362bea69ccec878",
+      "width": 815,
+      "height": 233,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "7025ad046c9decc261f952351d96b4ec72b635a0bf1211582cebfe6d125b2136",
+      "width": 815,
+      "height": 233,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "b15c70d6b6d3a4ed7078cd0ee5e7968af7643a7646abb6a151e4da3327a23b3a",
+      "width": 1630,
+      "height": 466,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "967e927dc34c5ea72497451cca7d5bd6ecdf2c6782299ee5ebd07ddfe607c3a9",
+      "width": 1630,
+      "height": 466,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "28edb6649e83d31228bd49aef5ba2eef077a255c49dcf9f6aa179b2352367883",
+      "width": 1630,
+      "height": 466,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-historical-300x293-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "4391f19e0da72bd3f56547af5c3176e0c64c1548498bc19949cf9dea8825063e",
+      "width": 300,
+      "height": 293,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-historical-300x293-white",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "ad6ab1afb7bf13120500825881715911c8f0cb6af10092365069cee09f23e3e0",
+      "width": 300,
+      "height": 293,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-005-historical-300x293-black",
+      "renderOutcome": "renders",
+      "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
+      "candidateSha256": "4db64cf98096d83d2ac17fc36f01f1c7875ae7ee2d053ed4f6fdb428b1f1be3b",
+      "width": 300,
+      "height": 293,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "c73ff11547baf639b586b769f5d76c78da90e4f0383bb3e06fa3d24c6ad546b4",
+      "width": 108,
+      "height": 42,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "fa781da1342c8fec1ff0ad0c18d93823f5d91d1f33301f6629b9062798c10647",
+      "width": 108,
+      "height": 42,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "3199170e1242d8bc923ec508352a4f33a349e8df5259b98ff1a0b1948f22e69f",
+      "width": 108,
+      "height": 42,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "82bf3afac7a175c5d392e1408460305eb112d7a1da33eaf88c25d3c5f98ac8f5",
+      "width": 216,
+      "height": 84,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "3efa8fb30e9a5134d5f5a36b32df025bc5a54c6fa5860064dd437584d50d3645",
+      "width": 216,
+      "height": 84,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "49f51c741296003fb459720e93e5ee0a33ef36b63becd425ed07dd94b45260d5",
+      "width": 216,
+      "height": 84,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "58d4b37bd4c025c71f1be833df2afe6865b1494032cb3b0f376f506ddf2d551f",
+      "width": 432,
+      "height": 168,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "da128f7b9e1f550d04de5e34f3a955f7b6050f82e93fb224faaef66a5370d003",
+      "width": 432,
+      "height": 168,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "991e7ebe98b1acd36d2adf0a13dea396ddd6b61e743d75be7c9cf6bf09b4a5e7",
+      "width": 432,
+      "height": 168,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-historical-57x23-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "8e1af2184f9b0ee21440a6ca92e64a0949a1ba21e8f2d8878d8b909d9e1ee339",
+      "width": 57,
+      "height": 23,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-historical-57x23-white",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "cc4684cafce84b40a19582bf3ad812bbb1489f7210934c6a5e9d66fdeba851aa",
+      "width": 57,
+      "height": 23,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-006-historical-57x23-black",
+      "renderOutcome": "renders",
+      "inputSha256": "4a921b949c4dfda7a885b27d1a4eb693bdacb33ecc7a18bc41c9b9e985938588",
+      "candidateSha256": "6cb7fb5bde1d190e7c1e063c30519f405b87870cd6d124995e3bf65e8213729e",
+      "width": 57,
+      "height": 23,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-007-small-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-007-small-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-007-small-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-007-intended-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-007-intended-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-007-intended-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-007-large-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-007-large-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-007-large-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-008-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "4c9ce2ca7cdeeab18c127ac2c0c913573b19b17d1e4e50168cb942bff0e1d1d9",
+      "candidateSha256": "9b820c78097757c7664dd12dd8ea4ccce0e4f8b7cff6781efdb064ab1d2880f3",
+      "width": 36,
+      "height": 36,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-008-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "4c9ce2ca7cdeeab18c127ac2c0c913573b19b17d1e4e50168cb942bff0e1d1d9",
+      "candidateSha256": "f46056fef1886e9aad68eb72b494601dbf95f5855689fa5bc7fa6bd651a7c216",
+      "width": 36,
+      "height": 36,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-008-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "4c9ce2ca7cdeeab18c127ac2c0c913573b19b17d1e4e50168cb942bff0e1d1d9",
+      "candidateSha256": "9ad5956b99b1645d824abee520c2ad150bd5505ccd0a4928e20a587f45534c7c",
+      "width": 36,
+      "height": 36,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-008-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "bbb81e14eab6c57ec3876c4a7e116fd38351f94b94a0a5bde954186a878b2de3",
+      "candidateSha256": "0c9091c716d06c821d252af526981476dd4acf79213b3f5e7e20ff8b8167c853",
+      "width": 72,
+      "height": 72,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-008-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "bbb81e14eab6c57ec3876c4a7e116fd38351f94b94a0a5bde954186a878b2de3",
+      "candidateSha256": "44bd9981d31a6db4ecceb751880774325863dc3449fa811c10d428104e7c6ff1",
+      "width": 72,
+      "height": 72,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-008-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "bbb81e14eab6c57ec3876c4a7e116fd38351f94b94a0a5bde954186a878b2de3",
+      "candidateSha256": "0568de8f88fef9e203354ec7aee29ebe1900ad5e8c7855e8a60a630ba835be09",
+      "width": 72,
+      "height": 72,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-008-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "f6abe21c71ce4f9b475e3253c9b2f3397ed80857f2833f17f20270fdfd087b46",
+      "candidateSha256": "494a6dc8fa5d54cd54cccaa7b0d9a37b9e37ba12a8c99841c5d7926e2aa155ce",
+      "width": 144,
+      "height": 144,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-008-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "f6abe21c71ce4f9b475e3253c9b2f3397ed80857f2833f17f20270fdfd087b46",
+      "candidateSha256": "fb3d9f366a93effade1694d809db7b79f7fde5f1e903c407a184179ca2a7aece",
+      "width": 144,
+      "height": 144,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-008-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "f6abe21c71ce4f9b475e3253c9b2f3397ed80857f2833f17f20270fdfd087b46",
+      "candidateSha256": "1ede9e00685a0ee4e8e7f5700a7fcc18e4d93cb939f8cfba34d9ae8f0b13c1a8",
+      "width": 144,
+      "height": 144,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-009-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "1aad057c5b7a4eeffdc2576fe5cbded4279caa1c71129e22cd358eb2c7e5b0d7",
+      "candidateSha256": "e549556317291f725587b2b8120664892ef8bb4f508b6a2358e39ca8c410786a",
+      "width": 250,
+      "height": 250,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-009-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "1aad057c5b7a4eeffdc2576fe5cbded4279caa1c71129e22cd358eb2c7e5b0d7",
+      "candidateSha256": "e549556317291f725587b2b8120664892ef8bb4f508b6a2358e39ca8c410786a",
+      "width": 250,
+      "height": 250,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-009-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "1aad057c5b7a4eeffdc2576fe5cbded4279caa1c71129e22cd358eb2c7e5b0d7",
+      "candidateSha256": "e549556317291f725587b2b8120664892ef8bb4f508b6a2358e39ca8c410786a",
+      "width": 250,
+      "height": 250,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-009-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
+      "candidateSha256": "eb6a8ef97c6050a0c4c527a8d1b1304e3693553f79d029285f128702ea7f2a7f",
+      "width": 500,
+      "height": 500,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-009-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
+      "candidateSha256": "eb6a8ef97c6050a0c4c527a8d1b1304e3693553f79d029285f128702ea7f2a7f",
+      "width": 500,
+      "height": 500,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-009-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
+      "candidateSha256": "eb6a8ef97c6050a0c4c527a8d1b1304e3693553f79d029285f128702ea7f2a7f",
+      "width": 500,
+      "height": 500,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-009-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "cc5668c8ee511e61e7ac24da94acb78633f12cb41985d2d70d5a41cfc49faa37",
+      "candidateSha256": "0d691e159c2f5b4774b093797d327080afa866032c9104b90ccfb274d139220e",
+      "width": 1000,
+      "height": 1000,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-009-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "cc5668c8ee511e61e7ac24da94acb78633f12cb41985d2d70d5a41cfc49faa37",
+      "candidateSha256": "0d691e159c2f5b4774b093797d327080afa866032c9104b90ccfb274d139220e",
+      "width": 1000,
+      "height": 1000,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-009-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "cc5668c8ee511e61e7ac24da94acb78633f12cb41985d2d70d5a41cfc49faa37",
+      "candidateSha256": "0d691e159c2f5b4774b093797d327080afa866032c9104b90ccfb274d139220e",
+      "width": 1000,
+      "height": 1000,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-010-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "40f1de11bc54091dfdd051cdbb521e3435484c0d8fc04429405e603c964b8878",
+      "candidateSha256": "11cf89211a3963260f6687c5a367801490d1dca1fdcece125b1684854c00e461",
+      "width": 100,
+      "height": 100,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-010-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "40f1de11bc54091dfdd051cdbb521e3435484c0d8fc04429405e603c964b8878",
+      "candidateSha256": "5bb8b47090bdb9bf06cb22504715af15ad5d11ff435c82c60236efa999c2b41a",
+      "width": 100,
+      "height": 100,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-010-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "40f1de11bc54091dfdd051cdbb521e3435484c0d8fc04429405e603c964b8878",
+      "candidateSha256": "3132b80a44d2f9a3a22c15497e9e17f16990bd287115b5d0b728c4773e51f45b",
+      "width": 100,
+      "height": 100,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-010-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "6be57e308a793eeead287b1601d31c95a1862de7fa9834625bc7c0a222d199a7",
+      "candidateSha256": "dcb6d9362f477d4cb4a522de2e2a341662ebaa1a301ad755fe675a169e1adf68",
+      "width": 200,
+      "height": 200,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-010-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "6be57e308a793eeead287b1601d31c95a1862de7fa9834625bc7c0a222d199a7",
+      "candidateSha256": "dd7166f2605de1dde8855415236b5075393432d494637999f64b3b8de7b98950",
+      "width": 200,
+      "height": 200,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-010-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "6be57e308a793eeead287b1601d31c95a1862de7fa9834625bc7c0a222d199a7",
+      "candidateSha256": "a21e538769652b7828a5cd5d2266ec077546d46ecbf195ab45a3b2203d0731ca",
+      "width": 200,
+      "height": 200,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-010-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "016935864861c537aa0bfd7c79e3fffdabbbce1a2167ab6b0b5377ff21d54367",
+      "candidateSha256": "62d69711dbbc0ba006ff529adcfc855552418228c02c953a0ee0dd65a9bcfad6",
+      "width": 400,
+      "height": 400,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-010-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "016935864861c537aa0bfd7c79e3fffdabbbce1a2167ab6b0b5377ff21d54367",
+      "candidateSha256": "b51916dabfe5c5b776c60aa388550c326e18c2063791062f85bdc0b36e60a2b7",
+      "width": 400,
+      "height": 400,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-010-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "016935864861c537aa0bfd7c79e3fffdabbbce1a2167ab6b0b5377ff21d54367",
+      "candidateSha256": "24d37c309c1301a2b21b1bd8082afc9fde07c28843bedb35cfd57e45fee9db89",
+      "width": 400,
+      "height": 400,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "c83af7dd3ab32a1705f6e8e76f225008de2ff265458e4891f6a015d5876c3d9b",
+      "width": 256,
+      "height": 250,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "692a2a4b85fcbccc4603b2d6cf4c556bb9ae09332efdda6c536aa45de19f3643",
+      "width": 256,
+      "height": 250,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "acf46791975477d107802e42f3e99dbb906047084ab97b1524626e271c6d09d0",
+      "width": 256,
+      "height": 250,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "7157760dadb69ab5dcbcada1892e33dd1db8422f0dc895df392b6a91f3445bf6",
+      "width": 512,
+      "height": 500,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "a81b08b4e9d1c4890176aacab60588359da58fb09675b63effe3ad4886f28945",
+      "width": 512,
+      "height": 500,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "17384b37ff4e289b5c536776c2e45c1cd6e0eb78b1f7b3659f75c26a4b14505b",
+      "width": 512,
+      "height": 500,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "846400c3b900a793e80851c6c6071a0b80bd01fcef4d7058d4508f150042b688",
+      "width": 1024,
+      "height": 1000,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "f0fdc372125430078ce5cd671c828f0fd59529e3fd50242bcb0b553b45e5929e",
+      "width": 1024,
+      "height": 1000,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "d2a979853bcfc0ca614675cdbb442b2b6f11a72d5cb1f32ec2c0d499787254b2",
+      "width": 1024,
+      "height": 1000,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-historical-300x150-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "82c84aed04a7d71efd5376ea4a259297b7289709af224d17e24ace23ceeed64d",
+      "width": 300,
+      "height": 150,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-historical-300x150-white",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "2186a116956720980b996bb1a2b5d0e54239d52708f2e36f16449ce6939fa6f2",
+      "width": 300,
+      "height": 150,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-historical-300x150-black",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "221d5cde49c9569a80781c405375c9fcfdbdbc4a33e86386572ec51012c8d41e",
+      "width": 300,
+      "height": 150,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-historical-300x293-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "35f9b830ce40f491c4ac7636fbb0c960bf15ab9f2eda633f2a52b994cf175666",
+      "width": 300,
+      "height": 293,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-historical-300x293-white",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "debb8c3040fb1de8cd88f400e2d9520a660726becdc67a8bc67c8b3c6c333ae1",
+      "width": 300,
+      "height": 293,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-011-historical-300x293-black",
+      "renderOutcome": "renders",
+      "inputSha256": "2be4865eaac5f4d128a6cf60dcc4f4f05e77939f96cda398ebf190e3f3190570",
+      "candidateSha256": "b747fd058d8a63e6ed509ae8ecebfa001cd4517a86f13e8d5a5979c096f72cde",
+      "width": 300,
+      "height": 293,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-012-small-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-012-small-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-012-small-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-012-intended-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-012-intended-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-012-intended-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-012-large-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-012-large-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-012-large-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-019-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+      "candidateSha256": "25bb0039501d0a0ad9d49d3d2fb52335d403b900a0827239d893d1deaa1f3af2",
+      "width": 200,
+      "height": 200,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-019-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+      "candidateSha256": "25bb0039501d0a0ad9d49d3d2fb52335d403b900a0827239d893d1deaa1f3af2",
+      "width": 200,
+      "height": 200,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-019-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+      "candidateSha256": "25bb0039501d0a0ad9d49d3d2fb52335d403b900a0827239d893d1deaa1f3af2",
+      "width": 200,
+      "height": 200,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-019-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+      "candidateSha256": "f97a47a5de61178209b101f252f9e8dcb75d21b7d4af5c4ccdadd1258d6db098",
+      "width": 400,
+      "height": 400,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-019-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+      "candidateSha256": "f97a47a5de61178209b101f252f9e8dcb75d21b7d4af5c4ccdadd1258d6db098",
+      "width": 400,
+      "height": 400,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-019-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+      "candidateSha256": "f97a47a5de61178209b101f252f9e8dcb75d21b7d4af5c4ccdadd1258d6db098",
+      "width": 400,
+      "height": 400,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-019-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+      "candidateSha256": "cd60b8378a31f4d333ffbedbff4ca1cb39948fa1eb0fce64328a2c9e25443267",
+      "width": 800,
+      "height": 800,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-019-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+      "candidateSha256": "cd60b8378a31f4d333ffbedbff4ca1cb39948fa1eb0fce64328a2c9e25443267",
+      "width": 800,
+      "height": 800,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-019-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "469234acfdb4870e675bc2ad23ed8bf84a60f6a536d15cb5bb55dcf6943f15c1",
+      "candidateSha256": "cd60b8378a31f4d333ffbedbff4ca1cb39948fa1eb0fce64328a2c9e25443267",
+      "width": 800,
+      "height": 800,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-020-small-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-020-small-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-020-small-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-020-intended-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-020-intended-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-020-intended-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-020-large-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-020-large-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-020-large-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-026-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "c7dfc595ab3184ccdedc362b925c8d05e541a5c66f8f9608e31ea6ca78200048",
+      "width": 1025,
+      "height": 280,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-026-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "480b5f623a54191f8ab0c99e9cd1479527701f64fbdb18b5b272a1c5548bf6a1",
+      "width": 1025,
+      "height": 280,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-026-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "23f23351a146480e6900c36715fc66bf1982e042bfe13a088204652d8e5f8d49",
+      "width": 1025,
+      "height": 280,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-026-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "c356580e94743474f1ccadfe32eee9659942897e0cd28b7c4b356a04893ce82c",
+      "width": 2050,
+      "height": 560,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-026-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "066c38304ea4e4359bc11239d5fb9032142279c17d488e4e823461b70613343c",
+      "width": 2050,
+      "height": 560,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-026-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "94d61ebf44fc4d6f2ef35c96ab24dce2c103508f9cedf0184ad70e5b0fb5e1af",
+      "width": 2050,
+      "height": 560,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-026-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "305b896d61ccdc0409821fe1c9069c85d96c19a7a69a5a16238feb69dca0c16c",
+      "width": 4100,
+      "height": 1120,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-026-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "de31b89a33c961b58d5be36fe80e0510554ae43d65d1e2caa08abcfb7f85b705",
+      "width": 4100,
+      "height": 1120,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-026-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "0d5b5cdb27def00a82834ffecc7195559ef9b897b362628de9eaf6c52030d502",
+      "width": 4100,
+      "height": 1120,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-026-historical-543x149-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "6b0412f586f0493a24c7a28c3f09e85988d45b7e314e4d579bfd822eb42711b2",
+      "width": 543,
+      "height": 149,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-026-historical-543x149-white",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "cdfd9b89f94e1eb3893390bb8943fdabeb92cc4147e76b6ad843fa5b1bc14d5e",
+      "width": 543,
+      "height": 149,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-026-historical-543x149-black",
+      "renderOutcome": "renders",
+      "inputSha256": "8de9a98498ab873dccc2ec90387c70572dc5298f084d4d344ab92b246a308d19",
+      "candidateSha256": "b0ba1de27dfc599f0948037da70628937db7cc0a7d0807db586e30dd23fa9557",
+      "width": 543,
+      "height": 149,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-027-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+      "candidateSha256": "003e0508644bce9bf7a6fd814a323436cad4446242f8dcfd1019b014f5413136",
+      "width": 286,
+      "height": 200,
+      "referenceSha256": "dd3be78797f0b1059c06a97e9eb7d1b15674ce619ae5c3ea4ed3f343382f04e7",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 706,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 0.13346590909090908,
+          "RootMeanSquareError": 3.93984209953023,
+          "MaximumAlphaError": 64,
+          "AlphaChangedPixelCount": 680,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 285,
+          "MaximumMismatchY": 199,
+          "IsExact": false
+        },
+        "alphaMass": 7026,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "x": 92,
+            "y": 0,
+            "reference": "gICAGA==",
+            "candidate": "hYWFFw=="
+          },
+          {
+            "x": 94,
+            "y": 0,
+            "reference": "goKCMw==",
+            "candidate": "gICAMg=="
+          },
+          {
+            "x": 100,
+            "y": 0,
+            "reference": "gICAgg==",
+            "candidate": "gICAgA=="
+          },
+          {
+            "x": 109,
+            "y": 0,
+            "reference": "gICAhA==",
+            "candidate": "gICAgg=="
+          },
+          {
+            "x": 113,
+            "y": 0,
+            "reference": "gICAvw==",
+            "candidate": "gICAvg=="
+          },
+          {
+            "x": 114,
+            "y": 0,
+            "reference": "gICA9w==",
+            "candidate": "gICAwA=="
+          },
+          {
+            "x": 125,
+            "y": 0,
+            "reference": "gICAxQ==",
+            "candidate": "gICAxA=="
+          },
+          {
+            "x": 186,
+            "y": 0,
+            "reference": "f39/dg==",
+            "candidate": "gYGBdw=="
+          },
+          {
+            "x": 188,
+            "y": 0,
+            "reference": "gYGBWw==",
+            "candidate": "gICAXA=="
+          },
+          {
+            "x": 189,
+            "y": 0,
+            "reference": "gYGBTQ==",
+            "candidate": "gICATg=="
+          },
+          {
+            "x": 69,
+            "y": 1,
+            "reference": "gICAIg==",
+            "candidate": "g4ODIQ=="
+          },
+          {
+            "x": 70,
+            "y": 1,
+            "reference": "gICAMA==",
+            "candidate": "goKCLw=="
+          }
+        ]
+      },
+      "referencePng": "inv-027-small-transparent.png",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
+        "captures": [
+          {
+            "pngSha256": "dd3be78797f0b1059c06a97e9eb7d1b15674ce619ae5c3ea4ed3f343382f04e7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "dd3be78797f0b1059c06a97e9eb7d1b15674ce619ae5c3ea4ed3f343382f04e7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "dd3be78797f0b1059c06a97e9eb7d1b15674ce619ae5c3ea4ed3f343382f04e7",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-027-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+      "candidateSha256": "885ec53f8740330a32465febdcc46bcad6b5db9c8ae4e605c738be8bc193fec9",
+      "width": 286,
+      "height": 200,
+      "referenceSha256": "404f8643bb1de816f3a3e5edd2b932a89271f9f3493881586e028828550cd834",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 639,
+          "MaximumChannelError": 32,
+          "MeanAbsoluteError": 0.04659965034965035,
+          "RootMeanSquareError": 0.7392232740864216,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 285,
+          "MaximumMismatchY": 199,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "x": 92,
+            "y": 0,
+            "reference": "8/Pz/w==",
+            "candidate": "9PT0/w=="
+          },
+          {
+            "x": 100,
+            "y": 0,
+            "reference": "vr6+/w==",
+            "candidate": "v7+//w=="
+          },
+          {
+            "x": 109,
+            "y": 0,
+            "reference": "vb29/w==",
+            "candidate": "vr6+/w=="
+          },
+          {
+            "x": 114,
+            "y": 0,
+            "reference": "hISE/w==",
+            "candidate": "n5+f/w=="
+          },
+          {
+            "x": 188,
+            "y": 0,
+            "reference": "0tLS/w==",
+            "candidate": "0dHR/w=="
+          },
+          {
+            "x": 189,
+            "y": 0,
+            "reference": "2dnZ/w==",
+            "candidate": "2NjY/w=="
+          },
+          {
+            "x": 69,
+            "y": 1,
+            "reference": "7u7u/w==",
+            "candidate": "7+/v/w=="
+          },
+          {
+            "x": 70,
+            "y": 1,
+            "reference": "5+fn/w==",
+            "candidate": "6Ojo/w=="
+          },
+          {
+            "x": 74,
+            "y": 1,
+            "reference": "zMzM/w==",
+            "candidate": "zc3N/w=="
+          },
+          {
+            "x": 75,
+            "y": 1,
+            "reference": "xcXF/w==",
+            "candidate": "xsbG/w=="
+          },
+          {
+            "x": 79,
+            "y": 1,
+            "reference": "qqqq/w==",
+            "candidate": "q6ur/w=="
+          },
+          {
+            "x": 209,
+            "y": 1,
+            "reference": "wMDA/w==",
+            "candidate": "v7+//w=="
+          }
+        ]
+      },
+      "referencePng": "inv-027-small-white.png",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
+        "captures": [
+          {
+            "pngSha256": "404f8643bb1de816f3a3e5edd2b932a89271f9f3493881586e028828550cd834",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "404f8643bb1de816f3a3e5edd2b932a89271f9f3493881586e028828550cd834",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "404f8643bb1de816f3a3e5edd2b932a89271f9f3493881586e028828550cd834",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-027-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+      "candidateSha256": "291cc8502b77e10fb5abc204361150514f7361262f75848ccadd545fbe3e685c",
+      "width": 286,
+      "height": 200,
+      "referenceSha256": "9aeba839555265e7753dcb4031cb7d22d96015ef5b0dffd189a2b8947b7326bf",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 621,
+          "MaximumChannelError": 32,
+          "MeanAbsoluteError": 0.04645541958041958,
+          "RootMeanSquareError": 0.7408621654881212,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 285,
+          "MaximumMismatchY": 199,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "x": 94,
+            "y": 0,
+            "reference": "Ghoa/w==",
+            "candidate": "GRkZ/w=="
+          },
+          {
+            "x": 100,
+            "y": 0,
+            "reference": "QUFB/w==",
+            "candidate": "QEBA/w=="
+          },
+          {
+            "x": 109,
+            "y": 0,
+            "reference": "QkJC/w==",
+            "candidate": "QUFB/w=="
+          },
+          {
+            "x": 113,
+            "y": 0,
+            "reference": "YGBg/w==",
+            "candidate": "X19f/w=="
+          },
+          {
+            "x": 114,
+            "y": 0,
+            "reference": "fHx8/w==",
+            "candidate": "YGBg/w=="
+          },
+          {
+            "x": 125,
+            "y": 0,
+            "reference": "Y2Nj/w==",
+            "candidate": "YmJi/w=="
+          },
+          {
+            "x": 186,
+            "y": 0,
+            "reference": "Ozs7/w==",
+            "candidate": "PDw8/w=="
+          },
+          {
+            "x": 72,
+            "y": 1,
+            "reference": "JiYm/w==",
+            "candidate": "JSUl/w=="
+          },
+          {
+            "x": 73,
+            "y": 1,
+            "reference": "LS0t/w==",
+            "candidate": "LCws/w=="
+          },
+          {
+            "x": 77,
+            "y": 1,
+            "reference": "SEhI/w==",
+            "candidate": "R0dH/w=="
+          },
+          {
+            "x": 80,
+            "y": 1,
+            "reference": "XFxc/w==",
+            "candidate": "W1tb/w=="
+          },
+          {
+            "x": 84,
+            "y": 1,
+            "reference": "d3d3/w==",
+            "candidate": "dnZ2/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-027-small-black.png",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
+        "captures": [
+          {
+            "pngSha256": "9aeba839555265e7753dcb4031cb7d22d96015ef5b0dffd189a2b8947b7326bf",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "9aeba839555265e7753dcb4031cb7d22d96015ef5b0dffd189a2b8947b7326bf",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "9aeba839555265e7753dcb4031cb7d22d96015ef5b0dffd189a2b8947b7326bf",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-027-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+      "candidateSha256": "012bbd28888ba49912662dd9f9f130260e0e50d02d27542091df57ac445c0078",
+      "width": 572,
+      "height": 400,
+      "referenceSha256": "8394bca8920d0b1ec5122c1893252c902fef2c073953bbfbb40e77d8d2aea9ed",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1558,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 0.0655791083916084,
+          "RootMeanSquareError": 2.7410048371869973,
+          "MaximumAlphaError": 64,
+          "AlphaChangedPixelCount": 1418,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 571,
+          "MaximumMismatchY": 399,
+          "IsExact": false
+        },
+        "alphaMass": 14622,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "x": 218,
+            "y": 0,
+            "reference": "g4ODJQ==",
+            "candidate": "gICAJA=="
+          },
+          {
+            "x": 221,
+            "y": 0,
+            "reference": "gYGBQQ==",
+            "candidate": "gICAQA=="
+          },
+          {
+            "x": 230,
+            "y": 0,
+            "reference": "gICAXg==",
+            "candidate": "gYGBXQ=="
+          },
+          {
+            "x": 247,
+            "y": 0,
+            "reference": "gICAmA==",
+            "candidate": "gICAmQ=="
+          },
+          {
+            "x": 331,
+            "y": 0,
+            "reference": "gICAqg==",
+            "candidate": "gICAqw=="
+          },
+          {
+            "x": 358,
+            "y": 0,
+            "reference": "gICAHA==",
+            "candidate": "hISEHQ=="
+          },
+          {
+            "x": 184,
+            "y": 1,
+            "reference": "g4ODJw==",
+            "candidate": "gICAJg=="
+          },
+          {
+            "x": 185,
+            "y": 1,
+            "reference": "gICAMA==",
+            "candidate": "goKCLw=="
+          },
+          {
+            "x": 186,
+            "y": 1,
+            "reference": "goKCOQ==",
+            "candidate": "gICAOA=="
+          },
+          {
+            "x": 188,
+            "y": 1,
+            "reference": "gYGBSw==",
+            "candidate": "gICASg=="
+          },
+          {
+            "x": 189,
+            "y": 1,
+            "reference": "gICAVA==",
+            "candidate": "gYGBUw=="
+          },
+          {
+            "x": 195,
+            "y": 1,
+            "reference": "gICAiw==",
+            "candidate": "gICAig=="
+          }
+        ]
+      },
+      "referencePng": "inv-027-intended-transparent.png",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
+        "captures": [
+          {
+            "pngSha256": "8394bca8920d0b1ec5122c1893252c902fef2c073953bbfbb40e77d8d2aea9ed",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "8394bca8920d0b1ec5122c1893252c902fef2c073953bbfbb40e77d8d2aea9ed",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "8394bca8920d0b1ec5122c1893252c902fef2c073953bbfbb40e77d8d2aea9ed",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-027-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+      "candidateSha256": "482f3418e86d85d65e4e287beefce68ef06da0d988f1297ea08dafba49e61168",
+      "width": 572,
+      "height": 400,
+      "referenceSha256": "56676902d3573fe918e1a3f50656d7fc4fba6ddd205a4a84909fad189a617ce2",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1395,
+          "MaximumChannelError": 32,
+          "MeanAbsoluteError": 0.024253715034965036,
+          "RootMeanSquareError": 0.5236277019789158,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 571,
+          "MaximumMismatchY": 399,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "x": 230,
+            "y": 0,
+            "reference": "0NDQ/w==",
+            "candidate": "0dHR/w=="
+          },
+          {
+            "x": 185,
+            "y": 1,
+            "reference": "5+fn/w==",
+            "candidate": "6Ojo/w=="
+          },
+          {
+            "x": 189,
+            "y": 1,
+            "reference": "1dXV/w==",
+            "candidate": "1tbW/w=="
+          },
+          {
+            "x": 196,
+            "y": 1,
+            "reference": "tbW1/w==",
+            "candidate": "tra2/w=="
+          },
+          {
+            "x": 199,
+            "y": 1,
+            "reference": "p6en/w==",
+            "candidate": "qKio/w=="
+          },
+          {
+            "x": 202,
+            "y": 1,
+            "reference": "mZmZ/w==",
+            "candidate": "mpqa/w=="
+          },
+          {
+            "x": 205,
+            "y": 1,
+            "reference": "i4uL/w==",
+            "candidate": "jIyM/w=="
+          },
+          {
+            "x": 375,
+            "y": 1,
+            "reference": "ra2t/w==",
+            "candidate": "rKys/w=="
+          },
+          {
+            "x": 385,
+            "y": 1,
+            "reference": "z8/P/w==",
+            "candidate": "zs7O/w=="
+          },
+          {
+            "x": 154,
+            "y": 2,
+            "reference": "8/Pz/w==",
+            "candidate": "9PT0/w=="
+          },
+          {
+            "x": 156,
+            "y": 2,
+            "reference": "6urq/w==",
+            "candidate": "6+vr/w=="
+          },
+          {
+            "x": 158,
+            "y": 2,
+            "reference": "4eHh/w==",
+            "candidate": "4uLi/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-027-intended-white.png",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
+        "captures": [
+          {
+            "pngSha256": "56676902d3573fe918e1a3f50656d7fc4fba6ddd205a4a84909fad189a617ce2",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "56676902d3573fe918e1a3f50656d7fc4fba6ddd205a4a84909fad189a617ce2",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "56676902d3573fe918e1a3f50656d7fc4fba6ddd205a4a84909fad189a617ce2",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-027-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+      "candidateSha256": "068c4820a55a8b3516e399874d2db2c072b625c89e286007638f0d394d696b4d",
+      "width": 572,
+      "height": 400,
+      "referenceSha256": "1d93a7ff74ab8407756d8fe5e15d185f97a294c7180e68725b96b5daacec1963",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1412,
+          "MaximumChannelError": 32,
+          "MeanAbsoluteError": 0.024594624125874126,
+          "RootMeanSquareError": 0.5263687203095181,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 571,
+          "MaximumMismatchY": 399,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "x": 218,
+            "y": 0,
+            "reference": "ExMT/w==",
+            "candidate": "EhIS/w=="
+          },
+          {
+            "x": 221,
+            "y": 0,
+            "reference": "ISEh/w==",
+            "candidate": "ICAg/w=="
+          },
+          {
+            "x": 247,
+            "y": 0,
+            "reference": "TExM/w==",
+            "candidate": "TU1N/w=="
+          },
+          {
+            "x": 331,
+            "y": 0,
+            "reference": "VVVV/w==",
+            "candidate": "VlZW/w=="
+          },
+          {
+            "x": 358,
+            "y": 0,
+            "reference": "Dg4O/w==",
+            "candidate": "Dw8P/w=="
+          },
+          {
+            "x": 184,
+            "y": 1,
+            "reference": "FBQU/w==",
+            "candidate": "ExMT/w=="
+          },
+          {
+            "x": 186,
+            "y": 1,
+            "reference": "HR0d/w==",
+            "candidate": "HBwc/w=="
+          },
+          {
+            "x": 188,
+            "y": 1,
+            "reference": "JiYm/w==",
+            "candidate": "JSUl/w=="
+          },
+          {
+            "x": 195,
+            "y": 1,
+            "reference": "RkZG/w==",
+            "candidate": "RUVF/w=="
+          },
+          {
+            "x": 200,
+            "y": 1,
+            "reference": "XV1d/w==",
+            "candidate": "XFxc/w=="
+          },
+          {
+            "x": 381,
+            "y": 1,
+            "reference": "Pj4+/w==",
+            "candidate": "Pz8//w=="
+          },
+          {
+            "x": 389,
+            "y": 1,
+            "reference": "IyMj/w==",
+            "candidate": "JCQk/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-027-intended-black.png",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
+        "captures": [
+          {
+            "pngSha256": "1d93a7ff74ab8407756d8fe5e15d185f97a294c7180e68725b96b5daacec1963",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "1d93a7ff74ab8407756d8fe5e15d185f97a294c7180e68725b96b5daacec1963",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "1d93a7ff74ab8407756d8fe5e15d185f97a294c7180e68725b96b5daacec1963",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-027-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+      "candidateSha256": "69ae90ccaeff14480bd4ece28235c03d82a05b2c71693d99a97f55ac0edc9032",
+      "width": 1144,
+      "height": 800,
+      "referenceSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 3203,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 0.03293979458041958,
+          "RootMeanSquareError": 1.8945198964676744,
+          "MaximumAlphaError": 64,
+          "AlphaChangedPixelCount": 2917,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 1143,
+          "MaximumMismatchY": 799,
+          "IsExact": false
+        },
+        "alphaMass": 28474,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "x": 497,
+            "y": 0,
+            "reference": "gYGBQQ==",
+            "candidate": "gICAQA=="
+          },
+          {
+            "x": 515,
+            "y": 0,
+            "reference": "gICAww==",
+            "candidate": "gICAwA=="
+          },
+          {
+            "x": 519,
+            "y": 0,
+            "reference": "gICAxw==",
+            "candidate": "gICAwA=="
+          },
+          {
+            "x": 520,
+            "y": 0,
+            "reference": "gICA0w==",
+            "candidate": "gICAwA=="
+          },
+          {
+            "x": 521,
+            "y": 0,
+            "reference": "gICA3w==",
+            "candidate": "gICAwA=="
+          },
+          {
+            "x": 522,
+            "y": 0,
+            "reference": "f39/7A==",
+            "candidate": "gICAwA=="
+          },
+          {
+            "x": 523,
+            "y": 0,
+            "reference": "gICA/w==",
+            "candidate": "gICAwA=="
+          },
+          {
+            "x": 540,
+            "y": 0,
+            "reference": "gICAxg==",
+            "candidate": "gICAxA=="
+          },
+          {
+            "x": 605,
+            "y": 0,
+            "reference": "gICAxw==",
+            "candidate": "gICAxA=="
+          },
+          {
+            "x": 629,
+            "y": 0,
+            "reference": "gICAgw==",
+            "candidate": "gICAhA=="
+          },
+          {
+            "x": 666,
+            "y": 0,
+            "reference": "goKCPw==",
+            "candidate": "gICAQA=="
+          },
+          {
+            "x": 667,
+            "y": 0,
+            "reference": "gICAOA==",
+            "candidate": "goKCOQ=="
+          }
+        ]
+      },
+      "referencePng": "inv-027-large-transparent.png",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
+        "captures": [
+          {
+            "pngSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-027-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+      "candidateSha256": "d1faa5a66b857e6bb7aabbb8f00de3421071002a3952063d1c480e0c6d4a32e1",
+      "width": 1144,
+      "height": 800,
+      "referenceSha256": "46bf6943af3c9b6f84df09601b54fc91039180e02f597508dc45b087e7250017",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 2932,
+          "MaximumChannelError": 32,
+          "MeanAbsoluteError": 0.011830201048951048,
+          "RootMeanSquareError": 0.34905670211830386,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 1143,
+          "MaximumMismatchY": 799,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "x": 515,
+            "y": 0,
+            "reference": "np6e/w==",
+            "candidate": "n5+f/w=="
+          },
+          {
+            "x": 519,
+            "y": 0,
+            "reference": "nJyc/w==",
+            "candidate": "n5+f/w=="
+          },
+          {
+            "x": 520,
+            "y": 0,
+            "reference": "lpaW/w==",
+            "candidate": "n5+f/w=="
+          },
+          {
+            "x": 521,
+            "y": 0,
+            "reference": "kJCQ/w==",
+            "candidate": "n5+f/w=="
+          },
+          {
+            "x": 522,
+            "y": 0,
+            "reference": "iYmJ/w==",
+            "candidate": "n5+f/w=="
+          },
+          {
+            "x": 523,
+            "y": 0,
+            "reference": "gICA/w==",
+            "candidate": "n5+f/w=="
+          },
+          {
+            "x": 540,
+            "y": 0,
+            "reference": "nJyc/w==",
+            "candidate": "nZ2d/w=="
+          },
+          {
+            "x": 605,
+            "y": 0,
+            "reference": "nJyc/w==",
+            "candidate": "nZ2d/w=="
+          },
+          {
+            "x": 629,
+            "y": 0,
+            "reference": "vr6+/w==",
+            "candidate": "vb29/w=="
+          },
+          {
+            "x": 666,
+            "y": 0,
+            "reference": "4ODg/w==",
+            "candidate": "39/f/w=="
+          },
+          {
+            "x": 442,
+            "y": 1,
+            "reference": "0dHR/w==",
+            "candidate": "0tLS/w=="
+          },
+          {
+            "x": 450,
+            "y": 1,
+            "reference": "sLCw/w==",
+            "candidate": "sbGx/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-027-large-white.png",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
+        "captures": [
+          {
+            "pngSha256": "46bf6943af3c9b6f84df09601b54fc91039180e02f597508dc45b087e7250017",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "46bf6943af3c9b6f84df09601b54fc91039180e02f597508dc45b087e7250017",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "46bf6943af3c9b6f84df09601b54fc91039180e02f597508dc45b087e7250017",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-027-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+      "candidateSha256": "cfe8f751a99551b33ab30869980c9945aa4aaeba49433908ea3256015f33424d",
+      "width": 1144,
+      "height": 800,
+      "referenceSha256": "afbc8597fffbd447241ef4a90ec96f00ddf8b85651a4075ad6a1644f6e0a9cf8",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 2980,
+          "MaximumChannelError": 32,
+          "MeanAbsoluteError": 0.011982626748251748,
+          "RootMeanSquareError": 0.350282416028868,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 1143,
+          "MaximumMismatchY": 799,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "x": 497,
+            "y": 0,
+            "reference": "ISEh/w==",
+            "candidate": "ICAg/w=="
+          },
+          {
+            "x": 515,
+            "y": 0,
+            "reference": "YmJi/w==",
+            "candidate": "YGBg/w=="
+          },
+          {
+            "x": 519,
+            "y": 0,
+            "reference": "ZGRk/w==",
+            "candidate": "YGBg/w=="
+          },
+          {
+            "x": 520,
+            "y": 0,
+            "reference": "ampq/w==",
+            "candidate": "YGBg/w=="
+          },
+          {
+            "x": 521,
+            "y": 0,
+            "reference": "cHBw/w==",
+            "candidate": "YGBg/w=="
+          },
+          {
+            "x": 522,
+            "y": 0,
+            "reference": "dnZ2/w==",
+            "candidate": "YGBg/w=="
+          },
+          {
+            "x": 523,
+            "y": 0,
+            "reference": "gICA/w==",
+            "candidate": "YGBg/w=="
+          },
+          {
+            "x": 540,
+            "y": 0,
+            "reference": "Y2Nj/w==",
+            "candidate": "YmJi/w=="
+          },
+          {
+            "x": 605,
+            "y": 0,
+            "reference": "ZGRk/w==",
+            "candidate": "YmJi/w=="
+          },
+          {
+            "x": 667,
+            "y": 0,
+            "reference": "HBwc/w==",
+            "candidate": "HR0d/w=="
+          },
+          {
+            "x": 668,
+            "y": 0,
+            "reference": "GBgY/w==",
+            "candidate": "GRkZ/w=="
+          },
+          {
+            "x": 446,
+            "y": 1,
+            "reference": "Pz8//w==",
+            "candidate": "Pj4+/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-027-large-black.png",
+      "captureProvenance": {
+        "date": "2026-10-05",
+        "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
+        "captures": [
+          {
+            "pngSha256": "afbc8597fffbd447241ef4a90ec96f00ddf8b85651a4075ad6a1644f6e0a9cf8",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "afbc8597fffbd447241ef4a90ec96f00ddf8b85651a4075ad6a1644f6e0a9cf8",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          },
+          {
+            "pngSha256": "afbc8597fffbd447241ef4a90ec96f00ddf8b85651a4075ad6a1644f6e0a9cf8",
+            "startupHealth": "healthy",
+            "profileCleaned": true
+          }
+        ]
+      },
+      "oracleState": "measured"
+    },
+    {
+      "id": "inv-040-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+      "candidateSha256": "baa72c410913d2555b6e9913c20c7cd2c39f71f42d2f12db57ff9b76cf9ddf40",
+      "width": 83,
+      "height": 11,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-040-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+      "candidateSha256": "ff0b042cc9e143c81d234700d2e9b95de9b3ffd5af626700ab3809be34f0908a",
+      "width": 83,
+      "height": 11,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-040-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+      "candidateSha256": "c26de4692919760a5d886d635d2254a6ed363a0df4ea37c1946d4a5020b30ae8",
+      "width": 83,
+      "height": 11,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-040-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+      "candidateSha256": "fdb2a60f780fbcf8b221c9c9eb1d6fb5fd9f55ae2a947ded3d52831e46bc0f1a",
+      "width": 166,
+      "height": 22,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-040-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+      "candidateSha256": "a6d70faecb36f143f3a46a87757cd7200b2da48ca5053cd77cc69c913dd3b633",
+      "width": 166,
+      "height": 22,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-040-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+      "candidateSha256": "49b24c6b4ff569659777df7e9c1001672b39dd9ce43e41f598600f288ee1326a",
+      "width": 166,
+      "height": 22,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-040-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+      "candidateSha256": "df85782f7ddf6f27f6f000953066947b0dbcbadf27af24d0c9b74569cdc178bf",
+      "width": 332,
+      "height": 44,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-040-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+      "candidateSha256": "14baef5f1c1205d26f92e5f74c969c9dc8590a2c9368bd5b88985cfcc5bc79ed",
+      "width": 332,
+      "height": 44,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-040-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
+      "candidateSha256": "aa3787d8f4b02782f89826068f62cd8399c353538ccb9242f4a32762fab38bc0",
+      "width": 332,
+      "height": 44,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-066-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "d7a0eb5f2981ac997be86c3b726a6f1686d09e562898d3f08bfb510181c71f54",
+      "candidateSha256": "bfbdd48539fdca9e38ddeeca7a37758b263d74f31360736c715ede4213b89077",
+      "width": 254,
+      "height": 71,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-066-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "d7a0eb5f2981ac997be86c3b726a6f1686d09e562898d3f08bfb510181c71f54",
+      "candidateSha256": "cba6bb12bc94cf91f0ad8d51b833904af78d4be24ccff56c869f0cdcdc3a11da",
+      "width": 254,
+      "height": 71,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-066-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "d7a0eb5f2981ac997be86c3b726a6f1686d09e562898d3f08bfb510181c71f54",
+      "candidateSha256": "a6a86ec232c80b33335cf7e1095ba4d0613fec392a89f637de3d2fc129dbb111",
+      "width": 254,
+      "height": 71,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-066-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "3d231022940ebd788637e6ac532128b65304676d2404cf88101a7e0f4190634d",
+      "candidateSha256": "f474be2088df4ac0f9f5c93ad531a9632c2506ad790ca3387555179667394d4a",
+      "width": 508,
+      "height": 142,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-066-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "3d231022940ebd788637e6ac532128b65304676d2404cf88101a7e0f4190634d",
+      "candidateSha256": "804830509ab09f47416329685cbc10eff056e6df87dea1f37033fb9453f430db",
+      "width": 508,
+      "height": 142,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-066-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "3d231022940ebd788637e6ac532128b65304676d2404cf88101a7e0f4190634d",
+      "candidateSha256": "c1cf404478f71ae845e843b77e7ca4d9d1c83735fcdd4d756e5b289941c89202",
+      "width": 508,
+      "height": 142,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-066-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "ab59b1b7435c8321e4a796e4129cdf8a757c385d112b555b2e04790f10d6772c",
+      "candidateSha256": "0bbceed03c6c0e8dd5fd07632e02b19fce658f751dd66210aebe0f8be37687c3",
+      "width": 1016,
+      "height": 284,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-066-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "ab59b1b7435c8321e4a796e4129cdf8a757c385d112b555b2e04790f10d6772c",
+      "candidateSha256": "d26aa86cf1debeb85e06da3d4380f4630d706f7d154607e1fde1eb5eb468bada",
+      "width": 1016,
+      "height": 284,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-066-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "ab59b1b7435c8321e4a796e4129cdf8a757c385d112b555b2e04790f10d6772c",
+      "candidateSha256": "ac3017488a59c8d4c930ad715728e6641d0f0b4f91838984fc51768ae842f80c",
+      "width": 1016,
+      "height": 284,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-092-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+      "candidateSha256": "cf3f942423954104aa81ec0624ed32763bf5459635f1e51e883a8603b83890d4",
+      "width": 400,
+      "height": 214,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-092-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+      "candidateSha256": "bd0c5f59fa51463a6f10df22cff7f88bb634977fd146dcd8aaf137df89fa77c1",
+      "width": 400,
+      "height": 214,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-092-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+      "candidateSha256": "39003e51cb3232833646b0dec9ae6d4ea901bf24276c6991bfc33db94b2814ae",
+      "width": 400,
+      "height": 214,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-092-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+      "candidateSha256": "af18967db297f8d78af1ae185f783cedb24291ea05f161b2ae047d5be955f038",
+      "width": 800,
+      "height": 429,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-092-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+      "candidateSha256": "e31a0e01944f43424ec45ba6c44feda0078c803e9683b541fd0dc40254bd0681",
+      "width": 800,
+      "height": 429,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-092-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+      "candidateSha256": "715f9c5872147e786122037e46bbfc0b680a61f337312d4602630dbec423405f",
+      "width": 800,
+      "height": 429,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-092-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+      "candidateSha256": "fc826fcf6652f655ff04b96e6572d1cd02335fd10f350fa6be92fbd970daafaf",
+      "width": 1600,
+      "height": 858,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-092-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+      "candidateSha256": "7864627deeb5675647e7c6cd482510c005477a728430be261458bfe0eefd0954",
+      "width": 1600,
+      "height": 858,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-092-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "71393b18081d477c03ec2f75828ccb19590d67a1f7b67068eab32f9aadad2232",
+      "candidateSha256": "6f22819039506e62087919ecd596429adcfb38d77c9b748b5f32b5cd758e0329",
+      "width": 1600,
+      "height": 858,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-095-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+      "candidateSha256": "712000fac053b6747bb48bcc2fcabff9e6a87f6a3103e89617bf3b25611e8472",
+      "width": 500,
+      "height": 178,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-095-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+      "candidateSha256": "60d03973e222556c74a72080099c28a9e80aa4652e18ccdea43cbe9226bb635d",
+      "width": 500,
+      "height": 178,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-095-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+      "candidateSha256": "ff2147b5d41b14a0e00b6c79ac97db98162e658b6613c371d6772e6f89baff1b",
+      "width": 500,
+      "height": 178,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-095-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+      "candidateSha256": "c92cce8d5163d0dcc1420316824a9d10e843e33f2f0350b3a2623e128992a1ab",
+      "width": 1000,
+      "height": 357,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-095-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+      "candidateSha256": "e7cf271b3bab0fad1470197e111ce089b94c5493f045065203a222dcb3aed38b",
+      "width": 1000,
+      "height": 357,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-095-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+      "candidateSha256": "6b62346a59c6404c99d7889dd198da7e7ad912f0dfe9b737112508df371d7029",
+      "width": 1000,
+      "height": 357,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-095-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+      "candidateSha256": "41700dcee280186d304013fc1d99073e9aea8b78e78f92c9ac0d7003fcf7398f",
+      "width": 2000,
+      "height": 714,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-095-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+      "candidateSha256": "9518289f9f4b56d8174ffef1359caa881d5e7569df2defb6a7f6c151a00bce18",
+      "width": 2000,
+      "height": 714,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-095-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "54bb728904e14583753fcde786a9901b53ca9c8401ac207fb516841f9863c55a",
+      "candidateSha256": "7600efed6cb694496ce7f6596c6e3edcfe35ccf7d80c914142b58ba3e7a9feda",
+      "width": 2000,
+      "height": 714,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-096-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+      "candidateSha256": "cf56232efcb499349148f22c5e626f87af8a7cf9acb76469577032fe1925a67e",
+      "width": 475,
+      "height": 306,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-096-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+      "candidateSha256": "8090ba2a1762ddea65b99e8d6e5a098b07338c6244d1f438312434102de73aa8",
+      "width": 475,
+      "height": 306,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-096-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+      "candidateSha256": "627656093fe50457020b1d1f1e9631be533aa6fa38f922463656b378bff7c001",
+      "width": 475,
+      "height": 306,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-096-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+      "candidateSha256": "41750367c3411d3326b4fd663b12eae759615931a94e31d66283db79c79ef183",
+      "width": 950,
+      "height": 613,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-096-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+      "candidateSha256": "a06ba7f37bfa744a7e22040f952cc9f9069e814217f94841d78f38072e8e4829",
+      "width": 950,
+      "height": 613,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-096-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+      "candidateSha256": "a2410af6159d34cae688d86c8974d98a1a7f7570d92a0b4dd388736e3278cc46",
+      "width": 950,
+      "height": 613,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-096-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+      "candidateSha256": "add669eb8be6d5bb0ae47a992556936ca44f39570c8a056a987efabac6f0489d",
+      "width": 1900,
+      "height": 1226,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-096-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+      "candidateSha256": "59d1fe3b4a1981ec25782cff33071764c82093e9d9d8e4cf23bf48b38873871b",
+      "width": 1900,
+      "height": 1226,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-096-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "0caeab22755b4ffe27adf39b595f8c8c8a16b687e600bae63666392b55afb0c4",
+      "candidateSha256": "524a595d81c8fb9ba1f0b74297cec3b52d96420e3b3422362b3cb2da3f472ad2",
+      "width": 1900,
+      "height": 1226,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-097-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+      "candidateSha256": "efb7f824cf2c22cab66036cb1aeb3297faa83634e637cf9fa5b77d167b072191",
+      "width": 400,
+      "height": 400,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-097-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+      "candidateSha256": "75fdd4f03185f44304b223410d6baf49f180f3455566b6113b4c920b084c4d10",
+      "width": 400,
+      "height": 400,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-097-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+      "candidateSha256": "3d763f3648a940bfcf7edb7086ef527002d26aa5a23c7d949db342aa2a8a649c",
+      "width": 400,
+      "height": 400,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-097-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+      "candidateSha256": "24f20dca3666ef5ef4f6db4dfb06d92cb7e3af873d20caf7b074e14432b8508b",
+      "width": 800,
+      "height": 800,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-097-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+      "candidateSha256": "87785d98a189f7032dec7d569caa0b9dac86a2ce49348cd9a8b74def239a379c",
+      "width": 800,
+      "height": 800,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-097-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+      "candidateSha256": "bf2b01dc57077259db3135eb93462b6a3069640d6402e310f3d68b5b7f363e7d",
+      "width": 800,
+      "height": 800,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-097-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+      "candidateSha256": "c134c9e71d7c0c7db364e4aa2c57aa45c3d964a9263a614c0a2ffdcb374e36be",
+      "width": 1600,
+      "height": 1600,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-097-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+      "candidateSha256": "7dd48e1b8e97dafba2641c95576850ef0215991fd8b1d2c4edae66434d36953f",
+      "width": 1600,
+      "height": 1600,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-097-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "9431dae56a362881149c18f5d9a36eed8e6875a77342057362f0b2a70ea440ff",
+      "candidateSha256": "76ca685fc0115f8d002f2ba51b2d8a046e4a92bb4cf623b43987e80946cf0d97",
+      "width": 1600,
+      "height": 1600,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-098-small-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-098-small-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-098-small-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-098-intended-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-098-intended-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-098-intended-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-098-large-transparent",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-098-large-white",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-098-large-black",
+      "renderOutcome": "MalformedInput",
+      "message": "SVG XML is malformed: For security reasons DTD is prohibited in this XML document. To enable DTD processing set the DtdProcessing property on XmlReaderSettings to Parse and pass the settings into XmlReader.Create method.",
+      "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "transport-limit-gap"
+    },
+    {
+      "id": "inv-099-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+      "candidateSha256": "8a8f3db7133c25256ef777d14fee6f43256be33dc7c49b1cb9714bb5dd49bf1b",
+      "width": 537,
+      "height": 201,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-099-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+      "candidateSha256": "f1fa18f16034cedb8ba5b9a9b932559737edf048f3012b8e03c315a573b23dd8",
+      "width": 537,
+      "height": 201,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-099-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+      "candidateSha256": "e077423c9b6d75cea11c376552c15f32d71c318ddaf85ab7c7acb64795d5ec2d",
+      "width": 537,
+      "height": 201,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-099-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+      "candidateSha256": "479dfa08588cbf910826240e87d8579b85a7f9955d95b42b2628fa2e72b6d573",
+      "width": 1075,
+      "height": 402,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-099-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+      "candidateSha256": "aeb9dfa347770faa9367484bddc112e75bb87e128b916dbac47ec09b8acee078",
+      "width": 1075,
+      "height": 402,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-099-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+      "candidateSha256": "9b81a80f9e0f33d712f1cdae3bf5039788733c19872d01e94464695157ce4f7e",
+      "width": 1075,
+      "height": 402,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-099-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+      "candidateSha256": "c1d65fba85ffe8bdbc0c58c54c3893034a194d131bb6bc363b54d5ee6b37e520",
+      "width": 2150,
+      "height": 804,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-099-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+      "candidateSha256": "6479360106a00f79bfe5a9fe19332dbe223a075eac1b66bbcc1074188eaf2e29",
+      "width": 2150,
+      "height": 804,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-099-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
+      "candidateSha256": "6a28baa832c6132a3b5e108ba57fd91f64e037fc3355aff54ad762a20d27ac16",
+      "width": 2150,
+      "height": 804,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-100-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "5d58a55dfd0c2a024c5ae742bf2fbdb549e0562a3487c6565c7e346d0de4a0dc",
+      "candidateSha256": "58ac118c0411ed01b39bcf1d0f0a98d80a56eaf88eb6218c8a0103f8a185c45d",
+      "width": 50,
+      "height": 20,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-100-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "5d58a55dfd0c2a024c5ae742bf2fbdb549e0562a3487c6565c7e346d0de4a0dc",
+      "candidateSha256": "58ac118c0411ed01b39bcf1d0f0a98d80a56eaf88eb6218c8a0103f8a185c45d",
+      "width": 50,
+      "height": 20,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-100-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "5d58a55dfd0c2a024c5ae742bf2fbdb549e0562a3487c6565c7e346d0de4a0dc",
+      "candidateSha256": "58ac118c0411ed01b39bcf1d0f0a98d80a56eaf88eb6218c8a0103f8a185c45d",
+      "width": 50,
+      "height": 20,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-100-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "d96e17feff64d1c5f61b2c2ca80e666110b6b6e2ccd3b317696905cc24ec6ae9",
+      "candidateSha256": "827e48d89b5451845d75af15a309f0105bb97cea6b1bd65e5852831641ff8985",
+      "width": 100,
+      "height": 40,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-100-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "d96e17feff64d1c5f61b2c2ca80e666110b6b6e2ccd3b317696905cc24ec6ae9",
+      "candidateSha256": "827e48d89b5451845d75af15a309f0105bb97cea6b1bd65e5852831641ff8985",
+      "width": 100,
+      "height": 40,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-100-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "d96e17feff64d1c5f61b2c2ca80e666110b6b6e2ccd3b317696905cc24ec6ae9",
+      "candidateSha256": "827e48d89b5451845d75af15a309f0105bb97cea6b1bd65e5852831641ff8985",
+      "width": 100,
+      "height": 40,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-100-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "6755a428b182624244899dddc5040a4bb7cba854eaaaf10adf31cb5b0c11f574",
+      "candidateSha256": "a2572cf95309293750bc5eac4d09c9c613d6028416df4c7e2d94cd3f92e1fc8b",
+      "width": 200,
+      "height": 80,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-100-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "6755a428b182624244899dddc5040a4bb7cba854eaaaf10adf31cb5b0c11f574",
+      "candidateSha256": "a2572cf95309293750bc5eac4d09c9c613d6028416df4c7e2d94cd3f92e1fc8b",
+      "width": 200,
+      "height": 80,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-100-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "6755a428b182624244899dddc5040a4bb7cba854eaaaf10adf31cb5b0c11f574",
+      "candidateSha256": "a2572cf95309293750bc5eac4d09c9c613d6028416df4c7e2d94cd3f92e1fc8b",
+      "width": 200,
+      "height": 80,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-101-small-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+      "candidateSha256": "e0549b84a05f7bc9bf83fc29204729e8557104ea892266bc464e21023ff0c252",
+      "width": 136,
+      "height": 46,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-101-small-white",
+      "renderOutcome": "renders",
+      "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+      "candidateSha256": "5ab9afb8677c0994bbd290d5362fdfde6a75a9d7b433e269836c549d0802c056",
+      "width": 136,
+      "height": 46,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-101-small-black",
+      "renderOutcome": "renders",
+      "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+      "candidateSha256": "243168f327f52e6fdbd37343c8abec1846743462939c3316d93dcde83fd23a22",
+      "width": 136,
+      "height": 46,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-101-intended-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+      "candidateSha256": "68cde03b98b02c4ecfb1005db4bfa2151aa8f5537b2e7930efa0d8d456599f7f",
+      "width": 272,
+      "height": 92,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-101-intended-white",
+      "renderOutcome": "renders",
+      "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+      "candidateSha256": "c277aa259a3430aca5a017ea7cc9fe7b75b0e6e3508f3b518d11f0d3a8ceb9b7",
+      "width": 272,
+      "height": 92,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-101-intended-black",
+      "renderOutcome": "renders",
+      "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+      "candidateSha256": "2285b06b51cf15c0cf1a7f1adfd8ff9da77750da3ee28ddd1c52880f0801dae0",
+      "width": 272,
+      "height": 92,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-101-large-transparent",
+      "renderOutcome": "renders",
+      "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+      "candidateSha256": "bec22745484b34e967af02d37ea34e6ebfeef9eb6a63038759cee95b4bc3eafb",
+      "width": 544,
+      "height": 184,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-101-large-white",
+      "renderOutcome": "renders",
+      "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+      "candidateSha256": "600e08c5e543c5631dc33c3de6a2fbe7eedfa68b1b69c0cfe12696157bc72c8f",
+      "width": 544,
+      "height": 184,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-101-large-black",
+      "renderOutcome": "renders",
+      "inputSha256": "a33a47a20c0ec6b0c13af43ae681bf73023e4a35f792cb055700e94d467f236d",
+      "candidateSha256": "6139c6610e9f759705ca962859715b913ee76c64f8fcd009e51656cf051faf82",
+      "width": 544,
+      "height": 184,
+      "referenceSha256": null,
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-102-small-transparent",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-102-small-white",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-102-small-black",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-102-intended-transparent",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-102-intended-white",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-102-intended-black",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-102-large-transparent",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-102-large-white",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    },
+    {
+      "id": "inv-102-large-black",
+      "renderOutcome": "UnsupportedFeature",
+      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
+      "comparison": null,
+      "referencePng": null,
+      "captureProvenance": null,
+      "oracleState": "unmeasured"
+    }
+  ]
+}

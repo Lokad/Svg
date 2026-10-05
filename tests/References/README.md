@@ -17,3 +17,10 @@ assets never enter the CC0 fixture manifest or the package. Membership/geometry
 invariant tests run offline; new references require stable healthy capture
 triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
+
+`inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
+eighteen available comparisons; gaps stay explicit. Nine new YouTube PNGs retain
+stable healthy capture triples and known failures. `inv-027-native-route.json`
+retains the byte-identical traced browser picture's raw convex flags and two
+isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
+case offline, preserves original Ford references and keeps failures measurable.
