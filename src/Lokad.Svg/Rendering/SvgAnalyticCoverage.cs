@@ -1225,21 +1225,23 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Validates retained quadratic and cubic spans for walker substitution: single clean contour with ordered non-overlapping ranges inside it.</summary>
     /// <remarks>Any anomaly falls back to flattened walking rather than failing; spans are an optimization hint and the flattened path stays canonical. Overlapping or out-of-range spans decline substitution while disjoint touching-at-joint spans tile exactly, across both channels alike.</remarks>
-    private static bool CurveSpansEligible(ReadOnlySpan<int> ends, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, bool isEvenOdd, SvgPolygonMapping mapping, SvgContourFlags structure)
+    private static bool CurveSpansEligible(ReadOnlySpan<int> ends, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, bool isEvenOdd, SvgPolygonMapping mapping, SvgContourFlags structure, CancellationToken cancellationToken)
     {
         if (quadSpans.Length == 0 && cubicSpans.Length == 0) return false;
         if (isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.None || ends.Length != 1) return false;
-        return ContourSpansValid(0, ends[0], quadSpans, 0, quadSpans.Length, cubicSpans, 0, cubicSpans.Length);
+        return ContourSpansValid(0, ends[0], quadSpans, 0, quadSpans.Length, cubicSpans, 0, cubicSpans.Length, out _, cancellationToken);
     }
 
     /// <summary>Validates one contour slice run pair for walker substitution with ordered non-overlapping ranges inside the contour.</summary>
-    private static bool ContourSpansValid(int contourStart, int contourEnd, SvgQuadSpan[] quadSpans, int quadStart, int quadEnd, SvgCubicSpan[] cubicSpans, int cubicStart, int cubicEnd)
+    private static bool ContourSpansValid(int contourStart, int contourEnd, SvgQuadSpan[] quadSpans, int quadStart, int quadEnd, SvgCubicSpan[] cubicSpans, int cubicStart, int cubicEnd, out long retainedPointDelta, CancellationToken cancellationToken)
     {
+        retainedPointDelta = 0;
         int quad = quadStart;
         int cubic = cubicStart;
         int previousEnd = contourStart;
         while (quad < quadEnd || cubic < cubicEnd)
         {
+            if (((quad - quadStart + cubic - cubicStart) & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
             bool takeQuad = cubic >= cubicEnd || (quad < quadEnd && quadSpans[quad].StartIndex <= cubicSpans[cubic].StartIndex);
             int start;
             int end;
@@ -1258,6 +1260,7 @@ internal ref partial struct SvgAnalyticCoverage
                 if (!double.IsFinite(span.FirstControl.X) || !double.IsFinite(span.FirstControl.Y) || !double.IsFinite(span.SecondControl.X) || !double.IsFinite(span.SecondControl.Y)) return false;
             }
             if (start < contourStart || end > contourEnd || end <= start || start < previousEnd) return false;
+            retainedPointDelta += (takeQuad ? 2L : 3L) - (end - (long)start);
             previousEnd = end;
         }
         return true;
@@ -1515,9 +1518,10 @@ internal ref partial struct SvgAnalyticCoverage
             bool transversalUnion = preparation.TransversalUnion.Value;
             bool evenOddCrossings = isEvenOdd && setStructure == SvgContourFlags.ProperCrossing;
             if (!evenOddCrossings && !transversalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
-            if (constructionClip is {} multiClip) return PrepareClipped(points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, preparation.UsesRunBlitter, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+            long multiPointCount = GetNativePointCount(ref preparation, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, maximumSetupWork, ref setupWork, cancellationToken);
+            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, preparation.UsesRunBlitter, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;
-            bool multiSkipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
+            bool multiSkipIntersect = multiPointCount > (long)(yEnd - yStart) * 2;
             long multiCurveEdges = (long)quadSpans.Length * 2 + (long)cubicSpans.Length * 3;
             RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth, multiCurveEdges), SvgMemoryCategory.Surface);
             try
@@ -1550,7 +1554,7 @@ internal ref partial struct SvgAnalyticCoverage
                         while (quadRunEnd < quadSpans.Length && quadSpans[quadRunEnd].Contour == contour) quadRunEnd++;
                         cubicRunEnd = cubicRun;
                         while (cubicRunEnd < cubicSpans.Length && cubicSpans[cubicRunEnd].Contour == contour) cubicRunEnd++;
-                        contourSpans = (quadRunEnd > quadRun || cubicRunEnd > cubicRun) && ContourSpansValid(start, end, quadSpans, quadRun, quadRunEnd, cubicSpans, cubicRun, cubicRunEnd);
+                        contourSpans = (quadRunEnd > quadRun || cubicRunEnd > cubicRun) && ContourSpansValid(start, end, quadSpans, quadRun, quadRunEnd, cubicSpans, cubicRun, cubicRunEnd, out _, cancellationToken);
                         quadCursor = quadRun;
                         cubicCursor = cubicRun;
                     }
@@ -1641,15 +1645,16 @@ internal ref partial struct SvgAnalyticCoverage
             }
             preparation.Convex = convexRing;
             preparation.DesnapBox = box;
-            preparation.UseCurveSpans = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure);
+            preparation.UseCurveSpans = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure, cancellationToken);
             setupWork += points.Length;
         }
         bool convex = preparation.Convex.Value;
         bool desnapBox = preparation.DesnapBox;
         bool useCurveSpans = preparation.UseCurveSpans;
-        if (constructionClip is {} singleClip) return PrepareClipped(points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, useCurveSpans, convex, preparation.UsesRunBlitter, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+        long singlePointCount = GetNativePointCount(ref preparation, useCurveSpans, maximumSetupWork, ref setupWork, cancellationToken);
+        if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, useCurveSpans, convex, preparation.UsesRunBlitter, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
         int width = xEnd - xStart;
-        bool skipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
+        bool skipIntersect = singlePointCount > (long)(yEnd - yStart) * 2;
         long curveEdges = useCurveSpans ? (long)quadSpans.Length * (convex ? 128 : 2) + (long)cubicSpans.Length * (convex ? 192 : 3) : 0;
         RenderBudget.BudgetReservation? scratch = budget.Reserve(ScratchByteCount(points.Length, width, curveEdges), SvgMemoryCategory.Surface);
         try
@@ -1727,6 +1732,44 @@ internal ref partial struct SvgAnalyticCoverage
             return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, useRunBlitter, false, window, budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }
+    }
+    /// <summary>Counts the raw points represented by usable retained verbs before edge clipping or subdivision.</summary>
+    /// <remarks>The borrowed cache is single-threaded and immutable for this fill. Validation and range traversal are charged once before work; no storage is allocated. Declined contour spans retain their flattened point count, and clipping never changes the whole-path count used for native density dispatch.</remarks>
+    private static long GetNativePointCount(scoped ref SvgAnalyticContourPreparation preparation, bool useSpans, long maximumWork, scoped ref long setupWork, CancellationToken token)
+    {
+        if (preparation.NativePointCount is long cached) return cached;
+        long count = preparation.Points.Length;
+        if (useSpans && (preparation.QuadSpans.Length > 0 || preparation.CubicSpans.Length > 0))
+        {
+            ReadOnlySpan<int> ends = preparation.Ends;
+            SvgQuadSpan[] quads = preparation.QuadSpans;
+            SvgCubicSpan[] cubics = preparation.CubicSpans;
+            // One range-discovery visit and one merged validation visit per span.
+            long units = ends.Length + 2L * (quads.Length + (long)cubics.Length);
+            CheckClippedSetupWork(setupWork + units, maximumWork, token);
+            setupWork += units;
+            int previousEnd = 0;
+            int quadCursor = 0;
+            int cubicCursor = 0;
+            for (int contour = 0; contour < ends.Length; contour++)
+            {
+                if ((contour & 63) == 0) token.ThrowIfCancellationRequested();
+                int start = previousEnd;
+                int end = ends[contour];
+                previousEnd = end;
+                while (quadCursor < quads.Length && quads[quadCursor].Contour < contour) { if ((quadCursor & 1023) == 0) token.ThrowIfCancellationRequested(); quadCursor++; }
+                while (cubicCursor < cubics.Length && cubics[cubicCursor].Contour < contour) { if ((cubicCursor & 1023) == 0) token.ThrowIfCancellationRequested(); cubicCursor++; }
+                int quadEnd = quadCursor;
+                int cubicEnd = cubicCursor;
+                while (quadEnd < quads.Length && quads[quadEnd].Contour == contour) { if ((quadEnd & 1023) == 0) token.ThrowIfCancellationRequested(); quadEnd++; }
+                while (cubicEnd < cubics.Length && cubics[cubicEnd].Contour == contour) { if ((cubicEnd & 1023) == 0) token.ThrowIfCancellationRequested(); cubicEnd++; }
+                if ((quadEnd == quadCursor || quads[quadEnd - 1].EndIndex < end) && (cubicEnd == cubicCursor || cubics[cubicEnd - 1].EndIndex < end) && ContourSpansValid(start, end, quads, quadCursor, quadEnd, cubics, cubicCursor, cubicEnd, out long delta, token)) count += delta;
+                quadCursor = quadEnd;
+                cubicCursor = cubicEnd;
+            }
+        }
+        preparation.NativePointCount = count;
+        return count;
     }
     private static int TrapezoidToAlpha(int first, int second) => (int)(((long)(first + second) / 2) >> 8);
     private static int PartialTriangleToAlpha(int edge, int inverseDY)

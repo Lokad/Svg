@@ -1,0 +1,59 @@
+{
+  "fixtureId": "original-density-small-tile-black",
+  "referencePng": "original-density-small-tile-black.png",
+  "referenceSha256": "a727e6f374e55bf149007a6080b1201c3bdf2db0016d3d2f326e2e87a6c439ff",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 80,
+    "height": 400,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "d4d12384bde0d0fdd8cbf3fe1d6995da9b9f90dc698423bb746b7f42fefd7544",
+  "materializedSha256": "d4d12384bde0d0fdd8cbf3fe1d6995da9b9f90dc698423bb746b7f42fefd7544",
+  "captureSha256": [
+    "a727e6f374e55bf149007a6080b1201c3bdf2db0016d3d2f326e2e87a6c439ff",
+    "a727e6f374e55bf149007a6080b1201c3bdf2db0016d3d2f326e2e87a6c439ff",
+    "a727e6f374e55bf149007a6080b1201c3bdf2db0016d3d2f326e2e87a6c439ff"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeGenericCountPrototype": true,
+  "candidateOutcome": "renders",
+  "candidateSha256": "5111fd4ba17716b111805f38fee2be34d9211c2b152cb049a5ed963b4b40d5ac",
+  "rendererSha256": "a8fa7a4044b14543d5d16ce001d71110a8bb123139951243ba74e9b411b21ec0",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 80,
+    "minimumMismatchY": 400,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

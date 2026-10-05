@@ -722,3 +722,48 @@ with the unchanged complete Skia/Chromium BSD notices. Local batch and input/DLL
 identities, work/peak ledgers, full 848-case comparison and delivery evidence remain
 under ignored `artifacts/native-numbers-20261005/`. Representative throughput,
 replay costs, Linux and private-font performance remain open.
+
+## Retained path-point density checkpoint (2026-10-05)
+
+Compare the validated numeric renderer at `354136a3` (documentation parent
+`54126bbd`) with the integrated count/admission validation on Windows x64
+.NET 10.0.12. Both orders run sequentially in fresh processes after all capture,
+build, test, package and bank jobs finish. Each input has 32 warmups and three
+batches: 100 tiny, ten intended Ford, three dense and three native-size
+conversions. Values are local median per-conversion milliseconds / managed
+allocated bytes, not representative BenchmarkDotNet throughput.
+
+| Input | Baseline first ms / bytes | Candidate second ms / bytes | Candidate first ms / bytes | Baseline second ms / bytes |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.13440 / 20,288 | 0.19619 / 20,288 | 0.14145 / 20,288 | 0.12409 / 20,288 |
+| ford | 21.57744 / 818,479 | 28.41666 / 816,658 | 19.38129 / 819,730 | 16.20165 / 816,602 |
+| dense | 345.34193 / 7,184,808 | 298.66123 / 7,184,728 | 280.79263 / 7,184,808 | 268.99057 / 7,184,781 |
+| native-stop | 533.43037 / 36,854,970 | 487.82120 / 36,855,656 | 453.06250 / 36,856,669 | 449.98790 / 36,856,544 |
+
+| Input | Charged work through raster, baseline → candidate | Accounted peak bytes, baseline → candidate |
+| --- | ---: | ---: |
+| tiny | 219 → 219 | 132,576 → 132,576 |
+| ford | 1,300,919 → 1,301,211 | 534,434 → 534,434 |
+| dense | 32,761,651 → 32,761,702 | 2,493,820 → 2,493,820 |
+| native-stop | 73,300,782 → 73,300,833 | 33,629,655 → 33,629,655 |
+
+Raw point counting adds one range-discovery and one merged-validation visit per
+retained span, plus contour visits; the borrowed cache charges that classification
+once. No heap buffers are added, all accounted peaks are unchanged and parser
+work is unchanged. All four measured PNGs preserve identity; the newly exact large
+Ford variant is separately validated rather than represented by the intended-size
+timing input. Native-size `inv-050` remains admitted under unchanged Default limits.
+
+Ford medians rise in both measured orders. Tiny varies, and dense/native-size
+directions depend on order; these measurements do not establish a speedup or
+representative latency. Keep the observed Ford cost and its uncertainty explicit
+and measure shared preparation/replay and representative performance before release.
+Local allocation traffic varies across runs while accounted peaks stay fixed.
+
+All 3,222 tests, 25 memory scenarios, runtime/symbol package inspection and
+installed-consumer checks pass. The final renderer/probe/memory/package/consumer
+identity is `a8fa7a4044b14543d5d16ce001d71110a8bb123139951243ba74e9b411b21ec0`,
+with unchanged complete Skia/Chromium BSD notices. Full input/DLL/PNG identities,
+batches, ledgers, negative-model tests, 872-case comparison and delivery evidence
+are under ignored `artifacts/lower-residuals-20261005/`. The outlined-wordmark
+checkpoint is established; representative throughput, Linux and S17 remain open.

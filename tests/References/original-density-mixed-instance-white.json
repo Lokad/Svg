@@ -1,0 +1,59 @@
+{
+  "fixtureId": "original-density-mixed-instance-white",
+  "referencePng": "original-density-mixed-instance-white.png",
+  "referenceSha256": "5227c266278ebab8fc5ee1500277019984df6972369b397919dd4e5594a31120",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 640,
+    "height": 400,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "c81ece5a95497b6bc6f5debde9d23e0a9354037feb3622c410ea72620dbf15d9",
+  "materializedSha256": "c81ece5a95497b6bc6f5debde9d23e0a9354037feb3622c410ea72620dbf15d9",
+  "captureSha256": [
+    "5227c266278ebab8fc5ee1500277019984df6972369b397919dd4e5594a31120",
+    "5227c266278ebab8fc5ee1500277019984df6972369b397919dd4e5594a31120",
+    "5227c266278ebab8fc5ee1500277019984df6972369b397919dd4e5594a31120"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeGenericCountPrototype": true,
+  "candidateOutcome": "renders",
+  "candidateSha256": "4931de78cf033d8af2d3b0098dea5c5bff8f109ee2610b3522b1e4741c66e6b7",
+  "rendererSha256": "a8fa7a4044b14543d5d16ce001d71110a8bb123139951243ba74e9b411b21ec0",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 139,
+    "maximumChannelError": 65,
+    "meanAbsoluteError": 0.006392578125,
+    "rootMeanSquareError": 0.46220852301747967,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 264,
+    "minimumMismatchY": 336,
+    "maximumMismatchX": 525,
+    "maximumMismatchY": 382,
+    "exact": false,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

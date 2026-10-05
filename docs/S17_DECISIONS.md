@@ -1,22 +1,20 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-05: coupled SVG numeric reading follows axis-aligned path mapping,
-horizontal clip routing, bounded CPU contexts and shared clipped preparation. Six
-small/intended Ford variants remain exact; large variants improve to 10/10/7
-differing pixels but remain known differences.
-[PLAN.md](../PLAN.md) is the current execution queue. Rows 3–7 still have
-implementation and fidelity exits; the earlier claim that rows 1–7 were complete
-within architectural limits is withdrawn. The first exact curved corporate mark
-and outlined wordmark checkpoint, and S17 itself, remain unachieved.
+Updated 2026-10-05: retained-path-point density makes all nine original Ford
+variants exact. The outlined-wordmark checkpoint is established; the flat curved
+corporate mark and S17 remain unachieved. [PLAN.md](../PLAN.md) owns the current
+queue. Rows 3–7 retain general implementation/fidelity exits; one exact wordmark
+does not complete those stages.
 
-Current validated evidence: 696 fixture entries = 552 exact + 132 known-difference
-renders + 12 rejections across 412 base documents and 284 variants; 60 research
+Current validated evidence: 720 fixture entries = 567 exact + 135 known-difference
+renders + 18 rejections across 420 base documents and 300 variants; 60 research
 probes = 59 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 3,084 core + 124 visual + six FontProbe tests pass. All 25 memory
-scenarios, package inspection and isolated installed-consumer checks pass at the
-coupled numeric-reading checkpoint. The Default inventory retains 88 renders +
-four MalformedInput rejections out of 92. These counts establish neither corporate
-coverage, full independent-variant validation nor Linux delivery.
+Release build and 3,090 core + 126 visual + six FontProbe tests pass. All 25 memory
+scenarios, runtime/symbol package inspection and installed-consumer checks pass.
+The Default inventory retains 88 renders + four MalformedInput rejections out of
+92. These counts establish neither corporate coverage, full independent-variant
+validation nor Linux delivery. Select the curved mark and freeze the cohort and
+variant recipe before further per-document tuning.
 
 ## Q1 - numeric exact-document target: selected
 
@@ -58,19 +56,16 @@ Closer agreement with ideal geometry does not establish pinned-browser equality.
 A target below 100 percent can leave documents failing in the denominator; it
 cannot waive their pixel errors or alter their references.
 
-Ford is now exact in all six small/intended variants: 250×100 and 500×200 on
-transparent/white/black. Shared clip-built construction followed by bounded CPU
-raster contexts, horizontal clip routing, axis-aligned mapping and coupled numeric
-reading improve the three large 1000×400 variants to 10/10/7 differing pixels.
-Large-transparent retains 16 total alpha error, max channel/alpha error 3/3 and
-no opaque/hole flips.
-The wordmark exit remains **all nine exact**, so the document cannot enter an
-exact-document numerator. Original references, capture provenance and every current
-candidate identity are portable under `tests/References/inventory/`; nine ordinary
-tests preserve exact successes and the three retained failures.
+Ford is exact in all nine declared variants: 250×100, 500×200 and 1000×400 on
+transparent/white/black. The final path-point density repair closes 10/10/7 changed
+pixels, with transparent alpha error 16 → 0 and no opaque/hole flips. The six
+prior exact PNGs preserve complete identity. Nine ordinary tests require exact
+output against the original references and capture provenance under
+`tests/References/inventory/`. This establishes the outlined-wordmark checkpoint;
+it does not establish a representative cohort or general rendering fidelity.
 
 The following clipped-preparation results are historical checkpoints; the current
-numeric-reading baseline is summarized above and at the end of this record.
+path-point density baseline is summarized above and at the end of this record.
 
 The 160 compiled-native inputs / 334 pieces remain the clipping-kernel evidence.
 Shared preparation now counts clipped verbs in a charged stack-only pass, reserves
@@ -149,7 +144,7 @@ residuals, representative latency/allocations and fresh Windows/Linux delivery
 and platform-appropriate oracle evidence. Meeting a numeric rate alone does not
 close those gates.
 
-## Coupled numeric-reading checkpoint (2026-10-05)
+## Historical coupled numeric-reading checkpoint (2026-10-05)
 
 The shared reader now reproduces the actual large CTM and all 436 captured authored
 points from the original Ford input. All six exact complete PNGs are preserved;
@@ -171,3 +166,17 @@ Fresh local delivery/resource gates pass; matched measurements retain their loca
 scope in [BENCHMARKS](BENCHMARKS.md). Ford remains six exact of nine and cannot
 enter an exact-document numerator. The first independent curved mark/wordmark,
 frozen representative cohort, platform/performance and S17 exits remain open.
+
+## Retained path-point density checkpoint (2026-10-05)
+
+The charged cached raw count respects admitted retained spans and preserves chord
+fallback. Clipped and uncut dispatches use the original path-point count against
+the actual walk height. All ten native witnesses and all nine original Ford
+references are exact. Restoring flattened-count dispatch fails the native witness
+and three large variant tests. The 24 predeclared controls retain 15 exact, three
+known differences and six UnsupportedFeature rejections, with 72 stable healthy
+captures; original references and all prior exact PNGs/dispositions are preserved.
+The bank executes 872 = 720 fixtures + 60 research + 92 Default cases. Four changed
+Default PNGs have no matching oracle in that sweep. General event/mapping,
+quad/convex/stroke/layer fidelity, the curved mark, representative cohort,
+performance and Linux remain open; the 80% policy and denominators are unchanged.

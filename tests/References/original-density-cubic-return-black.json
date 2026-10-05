@@ -1,0 +1,59 @@
+{
+  "fixtureId": "original-density-cubic-return-black",
+  "referencePng": "original-density-cubic-return-black.png",
+  "referenceSha256": "7f797c5891ca698a6e216c38cc155df1d35adc73aa75315de065a1c737ae9fe0",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 640,
+    "height": 400,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "11797277ad604807e9bcfc201db06fc643577ee89e865ea584987d8ae8f649f2",
+  "materializedSha256": "11797277ad604807e9bcfc201db06fc643577ee89e865ea584987d8ae8f649f2",
+  "captureSha256": [
+    "7f797c5891ca698a6e216c38cc155df1d35adc73aa75315de065a1c737ae9fe0",
+    "7f797c5891ca698a6e216c38cc155df1d35adc73aa75315de065a1c737ae9fe0",
+    "7f797c5891ca698a6e216c38cc155df1d35adc73aa75315de065a1c737ae9fe0"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeGenericCountPrototype": true,
+  "candidateOutcome": "renders",
+  "candidateSha256": "e3f916a3eae01e15ce47f18726069dd451d91421a7e9b51ff282364d6d8fc7b1",
+  "rendererSha256": "a8fa7a4044b14543d5d16ce001d71110a8bb123139951243ba74e9b411b21ec0",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 640,
+    "minimumMismatchY": 400,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

@@ -84,7 +84,8 @@ public sealed class SvgCpuRasterContextTests
             Assert.True(eligible);
         }
         int points = polygon.Points.Length;
-        Assert.Equal(points + polygon.ContourEnds.Length + polygon.QuadSpans.Length + 2L * polygon.CubicSpans.Length + (long)points * (points - 1) / 2 + points, firstSetup - secondSetup);
+        long pointCountWork = polygon.ContourEnds.Length + 2L * (polygon.QuadSpans.Length + polygon.CubicSpans.Length);
+        Assert.Equal(points + polygon.ContourEnds.Length + polygon.QuadSpans.Length + 2L * polygon.CubicSpans.Length + (long)points * (points - 1) / 2 + points + pointCountWork, firstSetup - secondSetup);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         // A narrow storage interval still uses the whole path's run dispatch.
         using SvgAnalyticCoverage narrow = SvgAnalyticCoverage.Prepare(ref preparation, 254, 270, 24, 278, new(254, 270), new(new(254, 0, 270, 256)), 1_000_000, budget, out long _, out bool narrowEligible, CancellationToken.None);

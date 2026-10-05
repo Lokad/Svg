@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the coupled numeric-reading checkpoint, all 696 current manifest entries are
-gated: 552 exact decoded-pixel references, 132 known-difference renders and 12
+At the path-point density checkpoint, all 720 current manifest entries are
+gated: 567 exact decoded-pixel references, 135 known-difference renders and 18
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -102,7 +102,17 @@ and other contact gates remain. All 12 parity/retrace controls are exact; the fu
 30-configuration bank also retains 12 known differences and six rejections.
 All 660 previous fixture PNGs and every existing render/reject disposition are
 preserved. Ford keeps six exact variants and improves large variants to 10/10/7,
-with transparent alpha error 16; all-nine corporate fidelity remains open.
+with transparent alpha error 16 at that checkpoint. The density repair below
+now closes the all-nine Ford exit; general corporate fidelity remains open.
+
+Intersection-density dispatch now uses the raw points represented by admitted
+retained curve verbs, with ordered-range validation, charged cancellation-aware
+traversal and a borrowed per-fill cache. Declined hints preserve flattened counts;
+clipping does not change whole-path point count. All nine original Ford variants
+are exact, preserving all six prior exact PNGs. The independent 24-configuration
+bank retains 15 exact controls, three known differences and six categorized
+rejections. No syntax gates or resource limits expand. General affine/instance,
+fractional events, quad/convex/stroke and layer fidelity remain explicit limits.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
@@ -122,8 +132,8 @@ Stroke widths flow through the same cascade: presentation attributes, inline sty
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms aggregate into at-most-64 KiB `IDAT` chunks under a budgeted 64 KiB cap with byte-identical output across all four forms, while memory forms accumulate budgeted segments without geometric copies; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 522 exact fixture entries; entry count is not a count of fresh capture triples |
-| Fixture corpus | 648 original CC0 fixture entries with verified hashes across 392 base documents and 256 variants; the manifest compares all 522 exact entries exactly and locks all 126 classified-unsupported entries to their observed behavior (120 known-difference renders with retained pinned-Chrome references and complete current comparisons, six categorized rejections). The independent Ford matrix is separate: six exact and three known differences, with original references and source provenance. |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 567 exact fixture entries; entry count is not a count of fresh capture triples |
+| Fixture corpus | 720 original CC0 fixture entries with verified hashes across 420 base documents and 300 variants; all 567 exact entries compare exactly, and 153 classified-unsupported entries retain their observed behavior (135 known-difference renders with pinned-Chrome references and complete comparisons, 18 categorized rejections). The independent Ford matrix is separate: all nine exact against original references/source provenance. These entry counts are not corporate-document coverage. |
 
 ### Experimental supplied-font text
 

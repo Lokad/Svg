@@ -1,0 +1,201 @@
+{
+  "BaselineHead": "354136a3",
+  "DeclarationDate": "2026-10-05",
+  "DeclaredBeforeGenericCountPrototype": true,
+  "DeclaredBeforeProductionEdit": true,
+  "SelectionReason": "Independent cubic/quadratic/mixed/relative/smooth/counter/instance controls across single and multiple CPU contexts, chosen after native operation evidence and before the counting prototype. Known failures and rejections are retained.",
+  "Cases": [
+    {
+      "Id": "density-cubic-sparse-transparent",
+      "Source": "density-cubic-sparse.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "transparent",
+      "InputSha256": "7cf27f69453fb711449c6b8983c004f3909c54978d835bb9369f608e8e680903"
+    },
+    {
+      "Id": "density-cubic-sparse-white",
+      "Source": "density-cubic-sparse.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "white",
+      "InputSha256": "7cf27f69453fb711449c6b8983c004f3909c54978d835bb9369f608e8e680903"
+    },
+    {
+      "Id": "density-cubic-sparse-black",
+      "Source": "density-cubic-sparse.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "black",
+      "InputSha256": "7cf27f69453fb711449c6b8983c004f3909c54978d835bb9369f608e8e680903"
+    },
+    {
+      "Id": "density-cubic-return-transparent",
+      "Source": "density-cubic-return.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "transparent",
+      "InputSha256": "11797277ad604807e9bcfc201db06fc643577ee89e865ea584987d8ae8f649f2"
+    },
+    {
+      "Id": "density-cubic-return-white",
+      "Source": "density-cubic-return.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "white",
+      "InputSha256": "11797277ad604807e9bcfc201db06fc643577ee89e865ea584987d8ae8f649f2"
+    },
+    {
+      "Id": "density-cubic-return-black",
+      "Source": "density-cubic-return.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "black",
+      "InputSha256": "11797277ad604807e9bcfc201db06fc643577ee89e865ea584987d8ae8f649f2"
+    },
+    {
+      "Id": "density-cubic-counter-transparent",
+      "Source": "density-cubic-counter.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "transparent",
+      "InputSha256": "9a12ca77487f5ff392658e4f662dd6f2f92ac82fa3af56d8ef88756438fdf4f3"
+    },
+    {
+      "Id": "density-cubic-counter-white",
+      "Source": "density-cubic-counter.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "white",
+      "InputSha256": "9a12ca77487f5ff392658e4f662dd6f2f92ac82fa3af56d8ef88756438fdf4f3"
+    },
+    {
+      "Id": "density-cubic-counter-black",
+      "Source": "density-cubic-counter.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "black",
+      "InputSha256": "9a12ca77487f5ff392658e4f662dd6f2f92ac82fa3af56d8ef88756438fdf4f3"
+    },
+    {
+      "Id": "density-quadratic-counter-transparent",
+      "Source": "density-quadratic-counter.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "transparent",
+      "InputSha256": "46a9d63993f043d0c96bb2482830a370e1cc8ea97068a9104a1dc393c7df6238"
+    },
+    {
+      "Id": "density-quadratic-counter-white",
+      "Source": "density-quadratic-counter.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "white",
+      "InputSha256": "46a9d63993f043d0c96bb2482830a370e1cc8ea97068a9104a1dc393c7df6238"
+    },
+    {
+      "Id": "density-quadratic-counter-black",
+      "Source": "density-quadratic-counter.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "black",
+      "InputSha256": "46a9d63993f043d0c96bb2482830a370e1cc8ea97068a9104a1dc393c7df6238"
+    },
+    {
+      "Id": "density-smooth-relative-transparent",
+      "Source": "density-smooth-relative.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "transparent",
+      "InputSha256": "ada893ac6b8b4380095933ce54c8381e46293d0952f808bab14a91646566df13"
+    },
+    {
+      "Id": "density-smooth-relative-white",
+      "Source": "density-smooth-relative.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "white",
+      "InputSha256": "ada893ac6b8b4380095933ce54c8381e46293d0952f808bab14a91646566df13"
+    },
+    {
+      "Id": "density-smooth-relative-black",
+      "Source": "density-smooth-relative.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "black",
+      "InputSha256": "ada893ac6b8b4380095933ce54c8381e46293d0952f808bab14a91646566df13"
+    },
+    {
+      "Id": "density-mixed-instance-transparent",
+      "Source": "density-mixed-instance.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "transparent",
+      "InputSha256": "c81ece5a95497b6bc6f5debde9d23e0a9354037feb3622c410ea72620dbf15d9"
+    },
+    {
+      "Id": "density-mixed-instance-white",
+      "Source": "density-mixed-instance.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "white",
+      "InputSha256": "c81ece5a95497b6bc6f5debde9d23e0a9354037feb3622c410ea72620dbf15d9"
+    },
+    {
+      "Id": "density-mixed-instance-black",
+      "Source": "density-mixed-instance.svg",
+      "Width": 640,
+      "Height": 400,
+      "Background": "black",
+      "InputSha256": "c81ece5a95497b6bc6f5debde9d23e0a9354037feb3622c410ea72620dbf15d9"
+    },
+    {
+      "Id": "density-small-tile-transparent",
+      "Source": "density-small-tile.svg",
+      "Width": 80,
+      "Height": 400,
+      "Background": "transparent",
+      "InputSha256": "d4d12384bde0d0fdd8cbf3fe1d6995da9b9f90dc698423bb746b7f42fefd7544"
+    },
+    {
+      "Id": "density-small-tile-white",
+      "Source": "density-small-tile.svg",
+      "Width": 80,
+      "Height": 400,
+      "Background": "white",
+      "InputSha256": "d4d12384bde0d0fdd8cbf3fe1d6995da9b9f90dc698423bb746b7f42fefd7544"
+    },
+    {
+      "Id": "density-small-tile-black",
+      "Source": "density-small-tile.svg",
+      "Width": 80,
+      "Height": 400,
+      "Background": "black",
+      "InputSha256": "d4d12384bde0d0fdd8cbf3fe1d6995da9b9f90dc698423bb746b7f42fefd7544"
+    },
+    {
+      "Id": "density-one-tile-transparent",
+      "Source": "density-one-tile.svg",
+      "Width": 500,
+      "Height": 200,
+      "Background": "transparent",
+      "InputSha256": "1185603a11ee1e02b5b505ba07e578afe95d77e901fe6031640073dd249ab462"
+    },
+    {
+      "Id": "density-one-tile-white",
+      "Source": "density-one-tile.svg",
+      "Width": 500,
+      "Height": 200,
+      "Background": "white",
+      "InputSha256": "1185603a11ee1e02b5b505ba07e578afe95d77e901fe6031640073dd249ab462"
+    },
+    {
+      "Id": "density-one-tile-black",
+      "Source": "density-one-tile.svg",
+      "Width": 500,
+      "Height": 200,
+      "Background": "black",
+      "InputSha256": "1185603a11ee1e02b5b505ba07e578afe95d77e901fe6031640073dd249ab462"
+    }
+  ]
+}

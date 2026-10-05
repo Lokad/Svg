@@ -1,0 +1,41 @@
+{
+  "fixtureId": "original-density-cubic-counter-transparent",
+  "referencePng": "original-density-cubic-counter-transparent.png",
+  "referenceSha256": "8bb0726034d0a6f069442b787a4f648f838f86dc8b131bf965ac8085371c94e4",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 640,
+    "height": 400,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "9a12ca77487f5ff392658e4f662dd6f2f92ac82fa3af56d8ef88756438fdf4f3",
+  "materializedSha256": "9a12ca77487f5ff392658e4f662dd6f2f92ac82fa3af56d8ef88756438fdf4f3",
+  "captureSha256": [
+    "8bb0726034d0a6f069442b787a4f648f838f86dc8b131bf965ac8085371c94e4",
+    "8bb0726034d0a6f069442b787a4f648f838f86dc8b131bf965ac8085371c94e4",
+    "8bb0726034d0a6f069442b787a4f648f838f86dc8b131bf965ac8085371c94e4"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeGenericCountPrototype": true,
+  "candidateOutcome": "UnsupportedFeature",
+  "candidateSha256": null,
+  "rendererSha256": "a8fa7a4044b14543d5d16ce001d71110a8bb123139951243ba74e9b411b21ec0",
+  "comparison": null
+}

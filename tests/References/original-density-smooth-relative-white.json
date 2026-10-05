@@ -1,0 +1,59 @@
+{
+  "fixtureId": "original-density-smooth-relative-white",
+  "referencePng": "original-density-smooth-relative-white.png",
+  "referenceSha256": "76c4457871bda41e337f1538f186b2b179ee6007a10c9614665435a2552c07cf",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 640,
+    "height": 400,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "ada893ac6b8b4380095933ce54c8381e46293d0952f808bab14a91646566df13",
+  "materializedSha256": "ada893ac6b8b4380095933ce54c8381e46293d0952f808bab14a91646566df13",
+  "captureSha256": [
+    "76c4457871bda41e337f1538f186b2b179ee6007a10c9614665435a2552c07cf",
+    "76c4457871bda41e337f1538f186b2b179ee6007a10c9614665435a2552c07cf",
+    "76c4457871bda41e337f1538f186b2b179ee6007a10c9614665435a2552c07cf"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeGenericCountPrototype": true,
+  "candidateOutcome": "renders",
+  "candidateSha256": "c2c54126c9c472263e84d4e3a4b2c923de6ab382d0bc2c611c4edaac0fbf4e45",
+  "rendererSha256": "a8fa7a4044b14543d5d16ce001d71110a8bb123139951243ba74e9b411b21ec0",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 640,
+    "minimumMismatchY": 400,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

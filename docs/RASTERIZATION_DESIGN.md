@@ -4,9 +4,10 @@ The renderer now has shared contour preparation, analytic coverage, retained
 curves and bounded paint/layer routes. General pinned-browser equality remains
 unproved. [PLAN.md](../PLAN.md) owns the current execution queue; this document
 retains chronological hypotheses, source evidence, rejected models and repairs.
-Direct paint and pending-run operations are integrated. The latest
-[authoring/map discriminator](#captured-authoring-and-transform-number-dependency-2026-10-05)
-identifies coupled numeric reading and relative arithmetic as the next boundary.
+Direct paint and pending-run operations are integrated. Coupled numeric reading and retained-path-point density have landed; all nine
+original Ford variants are now exact. The
+[latest density checkpoint](#retained-path-point-density-checkpoint-2026-10-05)
+records its native discriminator, retained failures and validation limits.
 
 ## Initial transition requirements (historical)
 
@@ -4143,3 +4144,69 @@ global/local mapping, clipped construction and operation tapes. Sampled native
 agreement still does not establish complete paint/backend parity. All-nine Ford,
 the independent curved mark/wordmark, representative cohort, Linux, throughput and
 S17 remain open.
+
+## Retained path-point density checkpoint (2026-10-05)
+
+The validated numeric baseline (`354136a3`; documentation parent `54126bbd`)
+retains ten transparent lower-row Ford residuals: (829,278), (891,278), (557,282),
+(693,282), (13,329), (100,329), (110,329), (215,329), (837,393), (845,393). An
+observer-only snapshot reproduces the complete baseline PNG before investigation.
+Actual recorded authored paths and the large CTM are reused without input edits.
+
+Compiled release-pin native mapping, clipped setup and walking under global,
+inferred tile-local CTM and translated-device models produce the same additions
+at every residual. The tile-local CTMs are models, not an independently recorded
+per-tile matrix. Holding verb input and geometry fixed and changing only
+intersection dispatch produces the original alpha at all ten pixels. This is
+independent mechanism evidence; the previously closed row-269 witness emits the
+same operations under either mode and remains a distinct mapping finding.
+
+At Skia `f8b66b7597c4cc859d3ed190e9c6872241e6721c`,
+`src/core/SkScan_AAAPath.cpp` chooses skipIntersect from raw path-point count
+versus twice the clipped walk height. The recorded paths contain 254/182 points
+(two moves + 84/60 cubics), not their managed 480/421 samples. The portable
+[native density record](../tests/References/inventory/inv-002-native-density.json)
+retains source/record/input hashes, clip/height/count identities, both event
+sequences and reference RGBA at each witness. The adapter omits projected
+vertical combination, pending-run flush and pixel paint; sampled additions alone
+do not prove a complete browser backend. Original full-image PNGs adjudicate it.
+
+The isolated prototype subtracts sampled curve endpoints and counts retained
+controls/endpoints instead; all nine original Ford PNGs become exact. Production
+adds admission and ordered-range checks: only usable retained hints alter counts,
+while declined contour ranges retain flattened points. A charged cancellable
+traversal caches this clip-independent scalar in the existing borrowed preparation.
+Clipped and uncut dispatches use it against actual walk height. No geometry,
+inputs, references, allocations, resource limits or public signatures change.
+The cache is single-threaded and valid only while borrowed geometry stays immutable.
+
+Eight CC0 sources / 24 configurations were selected after native event evidence
+and before the counting prototype. All 72 captures are healthy/cleaned and stable
+in triples. The retained bank has 15 exact, three mixed-instance known differences
+and six UnsupportedFeature counter rejections. The unrestricted prototype changes
+seven prior outputs; production retention gates reduce that to five: one known
+fixture and inv-002/011/064/065 Default outputs. The known fixture remains 164
+differing pixels / 298 alpha error with a changed complete candidate identity;
+the four Default outputs have no matching oracle in that sweep. All 552 previous
+exact fixture PNGs, all 60 research outputs and all 848 dispositions are preserved.
+The expanded bank executes 872 = 720 fixtures + 60 research + 92 Default cases.
+
+Ford large transparent/white/black improve 10/10/7 → 0/0/0 and transparent alpha
+error 16 → 0. All six previous exact complete PNGs preserve identity. Ordinary
+tests require all nine exact, bind reconstructed raw counts to the actual browser
+command record, and retain all ten native witness RGBA values. Restoring the old
+flattened-count dispatch fails the native witness plus all three large variants;
+original production bytes are restored after the mutation. Six core tests cover
+cache reuse, work denial before storage and declined mapping/parity/overlap/nonfinite
+hints; existing context accounting now includes the extra seven visits for its
+three spans. All 3,222 tests and 25 memory scenarios pass; runtime/symbol package
+and installed-consumer checks retain the complete unchanged BSD notices.
+
+Work/peak and matched sequential local timings are in [BENCHMARKS](BENCHMARKS.md).
+The renderer/probe/memory/package/consumer identity is
+`a8fa7a4044b14543d5d16ce001d71110a8bb123139951243ba74e9b411b21ec0`.
+Ignored full tapes, capture triples, comparisons, negative-model results and gates
+are under `artifacts/lower-residuals-20261005/`; committed controls and native/Ford
+records are portable. This establishes the outlined-wordmark checkpoint, not
+general affine/instance, event, quad/convex/stroke or layer parity, the curved-mark
+checkpoint, a corporate exact-document rate, representative throughput or Linux.

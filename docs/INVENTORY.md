@@ -14,13 +14,16 @@ retained files and rejects four as MalformedInput (`inv-007`, `inv-012`,
 establish completion of every declared size/background or current corporate-logo
 coverage. Fifty-seven inventory headings identify flags or flag badges/icons,
 so this whole inventory is not the representative corporate denominator.
-Ford is exact in six of nine recorded variants; coupled numeric reading reduces
-the three large differences to 10/10/7 pixels, with transparent alpha error 16.
-All three remain known differences. The latest Default sweep changes 14 PNGs
-without matching captures; those outputs' fidelity is unmeasured.
-The first all-variant corporate checkpoint and representative corporate rate remain
+Ford is now exact in all nine original small/intended/large × transparent/white/
+black variants. Retained-path-point density closes the last 10/10/7 differences
+and preserves the six prior exact PNGs. This establishes the outlined-wordmark
+checkpoint. The latest 92-file Default sweep changes four PNGs without matching
+oracles in that sweep; their fidelity remains unmeasured. Ford's separately
+captured variant matrix does not turn the Default sweep into a fidelity rate.
+The curved corporate-mark checkpoint and representative corporate rate remain
 open. S17 still requires at least 80% exact documents overall and in each corporate
-stratum. See [PLAN](../PLAN.md) and [the release criteria](S17_DECISIONS.md).
+stratum. Select the curved mark and freeze the cohort before further per-document
+tuning; see [PLAN](../PLAN.md) and [the release criteria](S17_DECISIONS.md).
 Historical batch counts below retain their dated scope.
 
 The batch history below retains original selections and contemporaneous results.
@@ -29,21 +32,20 @@ Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001.
 
 ## Current renderer checkpoint (2026-10-05)
 
-Coupled SVG numeric reading preserves all 92 Default dispositions: 88 renders
-and four MalformedInput DTD rejections. Ford remains exact in six of nine original
-variants: 250×100 and 500×200 on transparent/white/black. The three 1000×400 variants
-improve **137/137/123→10/10/7** changed pixels. Large-transparent alpha error falls
-**2,734→16**, with max channel/alpha error 3/3 and ten alpha mismatches (nine
-over-covered / one under-covered). No opaque/hole flips appear. Ford still fails
-its all-nine exit and cannot enter a corporate exact-document numerator.
+Retained-path-point density preserves all 92 Default dispositions: 88 renders and
+four MalformedInput DTD rejections. Ford is exact in all nine original variants:
+250×100, 500×200 and 1000×400 on transparent/white/black. Large differences fall
+10/10/7 → 0/0/0; transparent alpha error 16 → 0. Every original reference is
+retained, and the six prior exact complete PNGs preserve identity. The outlined
+wordmark checkpoint is established; the curved-mark checkpoint and S17 remain open.
 
-The converter retains the closed original row-6, (740,30) and (375,269) witnesses.
-Generic numeric reading and float relative arithmetic now match all 436 authored
-points and the actual recorded large CTM, closing (269,187) on the original input.
-The [authoring/map discriminator](../tests/References/inventory/inv-002-authoring-map-discriminator.json)
-remains historical changed-input evidence. Ten transparent lower-tile differences
-remain at Y=278–393, starting at (829,278). Complete tile-local/event and full-image
-parity remain open.
+The converter retains the original row-6, (740,30), (375,269) and (269,187)
+witnesses. Generic numeric reading matches all 436 authored points and the actual
+large CTM. Independent native density replay closes all ten lower-row residuals
+using 254/182 raw path points rather than 480/421 flattened samples. Its adapter
+limitations and original input identity are in
+[the density record](../tests/References/inventory/inv-002-native-density.json).
+General tile-local/event and affine/quad/convex/stroke/layer parity remain open.
 
 All original references and stable healthy 2026-10-02 capture triples remain in
 [the Ford bank](../tests/References/inventory/inv-002-variants.json), alongside
@@ -62,9 +64,9 @@ input SHA-256 `67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84`
 | 500x200-transparent | `da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69` |
 | 500x200-white | `aefac6daa9ce7dea9edddaad2ee97d91808c19871cf0e0c004736e915a119b37` |
 | 500x200-black | `a3b40ee0200c1c7bf64127fe67af0c7978349089c7129adeab03ceacdf0cc6c2` |
-| 1000x400-transparent | `d82f6ba4176240d902345af2d320f997a8a8a9c6cab08fad62461dd4de43ada9` |
-| 1000x400-white | `118b1a6bbde5ed59c8eaabc8cb43c9f38bfb8a88667ec88acc3ac4e6a4e33295` |
-| 1000x400-black | `33d6044ed858f07b750de1f766b162cd2720deaead56b0b95485a97983e32f75` |
+| 1000x400-transparent | `7b05b1ea36301247e60e91e0ad0b6109db68bc3dcc8199075f4fdcc12e809c1a` |
+| 1000x400-white | `fa8b8df70fdbc2ce99bc3d85de603a4a9afe926efc38f968553f5f896882e930` |
+| 1000x400-black | `4467fb6ee0ca86219e0d658fe2090e648475c302da5b7726b47bfa4c64cb24a0` |
 
 The 806-case comparison preserves every prior fixture PNG, research result and
 render/reject disposition. Eleven Default inventory outputs change without matching

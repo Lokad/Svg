@@ -75,6 +75,57 @@ public sealed class FordVariantTests
     }
 
     [Fact]
+    public void Recorded_native_density_closes_all_ten_lower_tile_witnesses()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "tests", "References", "inventory");
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));
+        using JsonDocument evidence = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "inv-002-native-density.json")));
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "inv-002-recorded-native-paths.json")));
+        Assert.Equal(evidence.RootElement.GetProperty("inputSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
+        SvgRenderOptions options = new(new SvgViewport(1000, 400), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        RenderBudget parsing = new(options.Limits.MaximumAccountedBytes);
+        (double scaleX, double scaleY) = SvgConverter.TryResolveOutputScales(input, options, parsing, CancellationToken.None);
+        using SvgRoot scene = SvgRootParser.Parse(input, options.Limits, parsing, null, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None, scaleX, scaleY, options.Viewport);
+        RgbaImage output = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None), 400_000);
+        RgbaImage oracle = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(directory, "inv-002-1000x400-transparent.png")), 400_000);
+        int witnessed = 0;
+        foreach (JsonElement group in evidence.RootElement.GetProperty("groups").EnumerateArray())
+        {
+            int fill = group.GetProperty("fill").GetInt32();
+            int rawPoints = native.RootElement.GetProperty("commandLog")[11 + fill].GetProperty("params").GetProperty("path").GetProperty("pathPoints").EnumerateArray().Sum(verb => verb.GetProperty("points").GetArrayLength());
+            Assert.Equal(group.GetProperty("recordedPathPoints").GetInt32(), rawPoints);
+            var polygon = scene.Geometries.Where(x => x.Kind == SvgGeometryKind.PolygonFill).ElementAt(fill).Polygon;
+            Assert.Equal(group.GetProperty("flattenedPoints").GetInt32(), polygon.Points.Length);
+            // Counting is clip-independent. This ordinary preparation proves
+            // retained metadata reconstructs the recorded native path count.
+            SvgAnalyticContourPreparation preparation = new(polygon.Points, polygon.ContourEnds, [], false, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, new(0, 0, 1000, 400), 1000, 400);
+            RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
+            {
+                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 1000, 0, 400, new(0, 1000), new(new(0, 0, 1000, 400)), options.Limits.MaximumWorkUnits, budget, out long _, out bool eligible, CancellationToken.None);
+                Assert.True(eligible);
+                Assert.Equal((long)rawPoints, preparation.NativePointCount);
+            }
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            int height = group.GetProperty("clippedWalkHeight").GetInt32();
+            Assert.True(polygon.Points.Length > 2 * height);
+            Assert.False(rawPoints > 2 * height);
+            Assert.False(group.GetProperty("nativeSkipIntersections").GetBoolean());
+            Assert.True(group.GetProperty("baselineSkipIntersections").GetBoolean());
+            foreach (JsonElement witness in group.GetProperty("witnesses").EnumerateArray())
+            {
+                int offset = (witness.GetProperty("y").GetInt32() * 1000 + witness.GetProperty("x").GetInt32()) * 4;
+                byte[] rgba = witness.GetProperty("referenceRgba").EnumerateArray().Select(x => x.GetByte()).ToArray();
+                Assert.Equal(rgba, oracle.Pixels.AsSpan(offset, 4).ToArray());
+                Assert.Equal(rgba, output.Pixels.AsSpan(offset, 4).ToArray());
+                Assert.Equal(rgba[3], witness.GetProperty("checkIntersectionsAdditions").EnumerateArray().Sum(x => x.GetInt32()));
+                Assert.NotEqual((int)rgba[3], witness.GetProperty("skipIntersectionsAdditions").EnumerateArray().Sum(x => x.GetInt32()));
+                witnessed++;
+            }
+        }
+        Assert.Equal(10, witnessed);
+    }
+
+    [Fact]
     public void Coupled_numeric_reading_closes_the_upper_tile_269_187_witness()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));
@@ -215,7 +266,8 @@ public sealed class FordVariantTests
         PixelComparison comparison = PixelComparer.Compare(reference, candidate);
         JsonElement expected = variant.GetProperty("comparison");
         Assert.True(comparison.DimensionsMatch);
-        Assert.Equal(expected.GetProperty("exact").GetBoolean(), comparison.IsExact);
+        Assert.True(expected.GetProperty("exact").GetBoolean());
+        Assert.True(comparison.IsExact);
         Assert.Equal(expected.GetProperty("changedPixelCount").GetInt64(), comparison.ChangedPixelCount);
         Assert.Equal(expected.GetProperty("maximumChannelError").GetByte(), comparison.MaximumChannelError);
         Assert.Equal(expected.GetProperty("maximumAlphaError").GetByte(), comparison.MaximumAlphaError);

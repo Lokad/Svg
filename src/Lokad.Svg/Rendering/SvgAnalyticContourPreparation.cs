@@ -20,6 +20,8 @@ internal ref struct SvgAnalyticContourPreparation
     /// <summary>Complete horizontal raw path bounds for clip-wrapper selection, distinct from clamped storage.</summary>
     internal double LeftWithControls;
     internal double RightWithControls;
+    /// <summary>Raw points represented by admitted retained verbs, cached independently of the construction clip.</summary>
+    internal long? NativePointCount;
     internal bool BasicChecked;
     internal bool PointValuesEligible;
     internal bool PointsFitCanvas;
