@@ -1,42 +1,31 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06: convex rectangular-strip rounding closes YouTube's opaque
-triangle residuals at intended and large sizes while preserving all nine exact
-Ford PNGs. Declaration-only DOCTYPE admission remains landed in `1876cf6e`.
-The retained AA-clip checkpoint improves every YouTube variant; the flat curved corporate mark
-and S17 remain unachieved. [PLAN.md](../PLAN.md) owns the current queue. Rows 3–7
-retain general implementation/fidelity exits; one exact wordmark does not
-complete those stages.
+Updated 2026-10-06: rectangle clip-byte arithmetic makes all nine YouTube variants
+exact against their original references while preserving all nine exact Ford
+PNGs. Both selected logo checkpoints are achieved. [PLAN.md](../PLAN.md) owns the
+current queue; rows 3–7 and S17 retain their general implementation/fidelity exits.
 
-Current checkpoint evidence: 799 fixture entries = 614 exact + 158 known-difference
-renders + 27 rejections across 449 base documents and 350 variants; 60 research
-probes = 59 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 3,299 core + 143 visual + six FontProbe tests pass (3,448 total)
-at the convex rectangle-strip checkpoint recorded in PLAN.
-All 25 memory scenarios, runtime/symbol
-package inspection and installed-consumer checks pass at that same source
-snapshot. The shared AA dispatch retains geometric clip
-boundary provenance separately from mask allocation regions. Original inputs and
-references stay unchanged. Native predicate/setup vectors and independent browser
-controls prove this bounded contract, not general AA mask/cache/clip-stack parity.
-The Default inventory now renders all 92 files; its four former DOCTYPE
-rejections advance without changing any prior PNG. These counts establish
-neither corporate coverage, full independent-variant
-validation nor Linux delivery. YouTube is now selected as the curved mark, and
-the first corporate cohort and variant recipe are frozen before fresh comparison;
-all 258 renderer cases are executed: 240 render and eighteen are unsupported.
-Eighteen fidelity comparisons are available; 240 cases lack references
-(225 unmeasured / fifteen verified transport gaps). Renderer rejection and
-oracle availability overlap: three large Target cases are both unsupported
-and transport gaps. PLAN retains the complete cross-tabulation.
-Ford is the only currently verified exact document; YouTube has nine known
-differences, with transparent alpha error 30/37/26 and maximum alpha error one.
-Its native raw-path classification and AA caller discriminators are integrated.
-The triangle cause is established: native coverage 96 versus the former managed
-95. Transparent changed pixels are now 30/37/26. Next resolve the independent
-boundary clip-byte residuals while preserving the landed DOCTYPE policy.
-Complete frozen references alongside this work. Curved-mark, general fidelity,
-representative performance, Linux and S17 exits remain open.
+Current evidence: 823 fixtures = 628 exact + 168 known-difference renders + 27
+rejections across 457 base documents / 366 variants; research remains 59 known
+renders + one rejection. Windows locked restore, nine-project Release build,
+3,314 core + 143 visual + six FontProbe tests (3,463 total), all 25 memory scenarios
+and package/installed-consumer checks pass. The 975-case bank preserves all 614
+prior exact PNGs and dispositions. One existing fixture graduates; twelve fresh
+path configurations and one rectangle configuration are exact. Eleven rectangle
+fast-path controls retain their baseline failures.
+
+All 258 corporate cases are executed: 240 render and eighteen are unsupported.
+The eighteen available fidelity comparisons are all exact, establishing only
+Ford and YouTube: **2/27 documents**, marks **1/13**, wordmarks **1/14**.
+The other 240 cases lack references (225 unmeasured / fifteen transport gaps).
+Three large Target cases are both unsupported and transport gaps. Membership,
+original inputs/references, holdouts and all denominators remain unchanged.
+
+Native rectangle-mask fringes and all 65,536 byte products prove this shared
+cause. The remaining rectangle paint route, successive clip intersections,
+cache history, general fidelity, representative performance and Linux remain
+open. Next complete frozen references and bounded capture transport alongside
+shared rectangle paint/clip work. The 23-document stratum target is unachieved.
 
 ## Q1 - numeric exact-document target: selected
 

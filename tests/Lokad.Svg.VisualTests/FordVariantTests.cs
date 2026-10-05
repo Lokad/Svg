@@ -212,13 +212,13 @@ public sealed class FordVariantTests
             whole.PrepareRow(row, out long _, CancellationToken.None);
             tile.PrepareRow(row, out long _, CancellationToken.None);
             byte[] pixel = new byte[4];
-            whole.PaintPixel(witness.GetProperty("x").GetInt32() - left, pixel, SvgAnalyticPaint.Solid(polygon.Color), 1);
+            whole.PaintPixel(witness.GetProperty("x").GetInt32() - left, pixel, SvgAnalyticPaint.Solid(polygon.Color), SvgAnalyticClipCoverage.Full);
             Assert.Equal(witness.GetProperty("wholeCanvasAlpha").GetByte(), pixel[3]);
             JsonElement interior = witness.GetProperty("comparedInterior");
             for (int x = interior.GetProperty("left").GetInt32(); x < interior.GetProperty("rightExclusive").GetInt32(); x++)
             {
                 pixel.AsSpan().Clear();
-                tile.PaintPixel(x - left, pixel, SvgAnalyticPaint.Solid(polygon.Color), 1);
+                tile.PaintPixel(x - left, pixel, SvgAnalyticPaint.Solid(polygon.Color), SvgAnalyticClipCoverage.Full);
                 Assert.Equal(reference.Pixels[(row * 1000 + x) * 4 + 3], pixel[3]);
                 Assert.Equal(reference.Pixels[(row * 1000 + x) * 4 + 3], rendered.Pixels[(row * 1000 + x) * 4 + 3]);
             }

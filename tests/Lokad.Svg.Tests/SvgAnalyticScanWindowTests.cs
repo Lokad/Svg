@@ -29,8 +29,8 @@ public sealed class SvgAnalyticScanWindowTests
         byte[] canvasPixel = new byte[4];
         byte[] tightPixel = new byte[4];
         SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(polygon.Color);
-        canvas.PaintPixel(0, canvasPixel, paint, 1);
-        tight.PaintPixel(0, tightPixel, paint, 1);
+        canvas.PaintPixel(0, canvasPixel, paint, SvgAnalyticClipCoverage.Full);
+        tight.PaintPixel(0, tightPixel, paint, SvgAnalyticClipCoverage.Full);
         // Native unclipped and tight-clip captures differ at this fringe.
         Assert.Equal((byte)250, canvasPixel[3]);
         Assert.Equal((byte)245, tightPixel[3]);
@@ -53,8 +53,8 @@ public sealed class SvgAnalyticScanWindowTests
         SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(polygon.Color);
         for (int x = 0; x < 32; x++)
         {
-            canvas.PaintPixel(x, canvasPixels.AsSpan(x * 4, 4), paint, 1);
-            tight.PaintPixel(x, tightPixels.AsSpan(x * 4, 4), paint, 1);
+            canvas.PaintPixel(x, canvasPixels.AsSpan(x * 4, 4), paint, SvgAnalyticClipCoverage.Full);
+            tight.PaintPixel(x, tightPixels.AsSpan(x * 4, 4), paint, SvgAnalyticClipCoverage.Full);
         }
         Assert.Equal(canvasPixels, tightPixels);
     }

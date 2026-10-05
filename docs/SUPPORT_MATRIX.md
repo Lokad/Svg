@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the convex rectangle-strip checkpoint, the 799 current manifest entries contain
-614 exact decoded-pixel references, 158 known-difference renders and 27
+At the rectangle clip-byte checkpoint, the 823 current manifest entries contain
+628 exact decoded-pixel references, 168 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -23,16 +23,20 @@ eighteen corporate cases.
 Convex rectangular strips round coverage separately from the raw-rectangle
 calibration. Native event evidence closes YouTube's opaque triangle witness;
 thirteen fresh configurations become exact and one shader control retains known
-paint differences. Intended/large YouTube transparent differences fall to 37/26
-pixels; every declared YouTube variant still differs at boundary clips.
+paint differences. Rectangle clip bytes now close the remaining YouTube boundary
+differences: all nine variants are exact against their original references.
+Twelve new nonrectangular path configurations are exact across horizontal,
+vertical, corner, opacity and nearly integral clips. Separate lowered-rectangle
+controls retain eleven known differences and one exact configuration; their
+baseline outputs are unchanged. General rectangle paint and clip stacks remain open.
 
 Single clean retained contours now distinguish raw control-polygon convexity
 from sampled-ring convexity. Float sign/turn/reversal classification is charged
 once and cached across raster contexts, preserving genuine convex routes and
 declined-hint fallback. The 75 native vectors match; twelve independent controls
 and one existing fractional shoulder become exact. All nine Ford variants retain
-exact PNG identity. YouTube improves on every frozen variant but remains inexact;
-the corporate matrix still has only eighteen fidelity comparisons and one verified
+exact PNG identity. Ford and YouTube now complete both selected checkpoints;
+the corporate matrix still has only eighteen fidelity comparisons and two verified
 exact document. General mapped curve/paint events remain open.
 
 Rectangle paint-clip classification is independent of construction clipping and

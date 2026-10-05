@@ -4634,3 +4634,58 @@ native adapter, capture attempts, comparisons, resources and gates are under
 ignored `artifacts/triangle-paint-20261005/`. Portable regressions are the tests,
 fixture manifest/images and current corporate measurements; source history uses
 Git rather than per-file renderer hash inventories.
+
+
+## Rectangle clip-byte coverage (2026-10-06)
+
+All remaining YouTube differences were in the first/last pixel columns. The
+pinned native convex rectangle walker, using its original edge construction,
+emits left/right clip bytes 217/216, 179/178 and 103/102 at the three output sizes.
+`SkAAClip::Builder::blitPath` forces run-based analytic construction; its
+rectangle fringes reach `addAntiRectRun` without being painted. `SkAAClipBlitter`
+then merges each path byte with the mask using `SkMulDiv255Round`.
+
+The managed caller instead supplied the rectangle's floating area. At small
+YouTube (0,74), pending path alpha 50 multiplied by .85 rounded to 42. The native
+clip byte 217 instead produces 43. This also explains the original straight RGBA
+reference [130,130,130,43] versus the prior [128,128,128,42], through the existing
+premultiplied direct-paint route. The isolated observer preserves the complete
+baseline PNG; original native rectangle walking and browser references agree.
+
+`SvgAnalyticClipCoverage` now distinguishes geometric fallback from byte masks.
+Analytic polygon paints obtain the admitted rectangle's mask byte and apply it
+separately to each direct operation, full span and pending row coverage. Native
+X truncation to 1/256, quarter-Y snapping, partial-row run-alpha snapping and the
+initially-BW nearly-integral shortcut are preserved. Allocation-only bounds keep
+their previous area arithmetic. Full interior coverage returns immediately.
+The value is immutable, owns no storage and adds no buffers or geometry work.
+The native table covers every one of the 65,536 path/clip byte products.
+
+Eight authored CC0 sources have 72 healthy, cleaned, stable fresh captures across
+24 configurations. The first twelve rectangle controls were declared before
+production editing and captured afterward. They exposed the existing lowered
+rectangle route, which bypasses analytic painting: eleven failures and one exact
+black-background configuration retain their complete baseline outputs.
+The twelve supplemental nonrectangular path controls were declared after the
+initial production edit and before their captures. All are exact, covering
+horizontal, vertical, corner, opacity and nearly integral rectangles. These
+controls retain both successful and failed routes; references were not replaced.
+
+All nine original YouTube variants become exact, completing the selected curved
+mark. All nine Ford PNGs and all 614 prior exact fixture PNGs are unchanged.
+The clipped-phase fixture graduates from two differing pixels to exact; one
+legacy Default output changes without a matching reference. The expanded bank
+is 975 cases: 823 fixtures (628 exact / 168 known / 27 rejects), 60 research and
+92 legacy Default cases. Corporate dispositions are unchanged; two unmeasured
+small `inv-005` PNGs also change. The 18 available corporate comparisons are all
+exact, establishing two complete documents out of 27, not the S17 target.
+
+Locked restore and the normal nine-project Release build, all 3,463 tests
+(3,314 core / 143 visual / six FontProbe), 25 memory scenarios and package plus
+installed-consumer checks pass. Matching six-input ledgers preserve all charged
+work and four peaks; intended/large YouTube peaks grow by 16/4 bytes with encoded
+output changes. Timings remain local observations in [BENCHMARKS](BENCHMARKS.md).
+Complete adapters, observers, captures and run diagnostics stay under ignored
+`artifacts/boundary-clip-20261006/`. The tests, original references and compact
+current measurements are the portable evidence. General rectangle paint,
+successive clip intersections and native cache history remain open.

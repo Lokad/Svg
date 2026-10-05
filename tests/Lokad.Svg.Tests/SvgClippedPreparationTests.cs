@@ -37,7 +37,7 @@ public sealed class SvgClippedPreparationTests
             Assert.True(eligible);
             walker.PrepareRow(12, out long _, CancellationToken.None);
             byte[] pixel = new byte[4];
-            walker.PaintPixel(86, pixel, SvgAnalyticPaint.Solid(polygon.Color), 1);
+            walker.PaintPixel(86, pixel, SvgAnalyticPaint.Solid(polygon.Color), SvgAnalyticClipCoverage.Full);
             // The independently frozen scaled control is alpha 168 here;
             // uncut construction produces 192 from the identical retained verb.
             Assert.Equal((byte)168, pixel[3]);

@@ -253,9 +253,9 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Replays this pixel's direct paints in order, then paints its pending coverage at row flush.</summary>
     /// <remarks>Indexed relative to the preparation x start. Paint samples belong to the caller; this method borrows one destination pixel, allocates nothing, and observes the row token between events. PrepareRow charges fringe/overlap event work and span indexing; the caller's per-pixel raster charge covers the first full-span paint. Clip coverage is applied to each paint operation, not to their combined alpha.</remarks>
-    internal void PaintPixel(int x, Span<byte> destination, SvgAnalyticPaint paint, double clipCoverage)
+    internal void PaintPixel(int x, Span<byte> destination, SvgAnalyticPaint paint, SvgAnalyticClipCoverage clipCoverage)
     {
-        if (clipCoverage <= 0) return;
+        if (clipCoverage.IsEmpty) return;
         if (_useRunBlitter)
         {
             int next = _directLinks[x].First;
@@ -270,24 +270,24 @@ internal ref partial struct SvgAnalyticCoverage
                 }
                 SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeReplay, span.Sequence);
                 _rowCancellationToken.ThrowIfCancellationRequested();
-                byte alpha = clipCoverage == 1 ? (byte)255 : (byte)Math.Round(255 * clipCoverage, MidpointRounding.AwayFromZero);
+                byte alpha = clipCoverage.Apply(255);
                 paint.Blend(destination, alpha, SvgAnalyticPaintKind.Direct);
             }
             while (next != 0) ReplayOperation(ref next, _directOperations, _rowCancellationToken, destination, paint, clipCoverage);
 
-            static void ReplayOperation(ref int next, ReadOnlySpan<SvgDirectPaintOperation> operations, CancellationToken cancellationToken, Span<byte> destination, SvgAnalyticPaint paint, double clipCoverage)
+            static void ReplayOperation(ref int next, ReadOnlySpan<SvgDirectPaintOperation> operations, CancellationToken cancellationToken, Span<byte> destination, SvgAnalyticPaint paint, SvgAnalyticClipCoverage clipCoverage)
             {
                 SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeReplay, next - 1);
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgDirectPaintOperation operation = operations[next - 1];
-                byte alpha = clipCoverage == 1 ? operation.Alpha : (byte)Math.Round(operation.Alpha * clipCoverage, MidpointRounding.AwayFromZero);
+                byte alpha = clipCoverage.Apply(operation.Alpha);
                 paint.Blend(destination, alpha, operation.Kind);
                 next = operation.Next;
             }
         }
         byte pending = _row[x + 1];
         if (_useRunBlitter) pending = pending > 247 ? (byte)255 : pending < 8 ? (byte)0 : pending;
-        if (clipCoverage != 1) pending = (byte)Math.Round(pending * clipCoverage, MidpointRounding.AwayFromZero);
+        pending = clipCoverage.Apply(pending);
         paint.Blend(destination, pending, _useRunBlitter ? SvgAnalyticPaintKind.Direct : SvgAnalyticPaintKind.Mask);
     }
 

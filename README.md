@@ -33,14 +33,16 @@ fidelity remain open; the support matrix records those limits.
 
 Antialiased rectangle paint clips now have independent native/browser regressions
 and preserve the distinction between geometric clip edges and mask allocation
-bounds. Ford is exact in all nine declared variants; YouTube improves but remains
-inexact in all nine. The frozen corporate matrix still has eighteen measured
+bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
+paints apply the rectangle's snapped byte mask to each ordered operation.
+The frozen corporate matrix still has eighteen measured
 variants out of 258, so these checkpoints do not establish general logo coverage.
 
 Convex paths now round coverage for rectangular strips created by clipping a
 slanted edge, while raw rectangles retain their separate calibration. This closes
-YouTube's opaque triangle residuals at intended and large sizes; boundary clip
-differences remain.
+YouTube's opaque triangle residuals at intended and large sizes. The subsequent
+clip-byte repair closes the remaining boundary differences. General rectangle
+paint, clip-stack and layer parity remain open.
 
 ## Development
 

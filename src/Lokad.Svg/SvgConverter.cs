@@ -646,7 +646,7 @@ public static class SvgConverter
                         if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                         double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, x, y, cancellationToken) : 0.0;
                         int offset = (y * outputWidth + x) * 4;
-                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), analyticPaint, raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), analyticPaint, raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                         else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(polygon.Color, pixelCoverage));
                     }
                 }
@@ -762,13 +762,13 @@ public static class SvgConverter
                     {
                         (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, outline.Opacity);
                         int gradientCoverage = CoverageAlpha(255, pixelCoverage) + 1;
-                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), new((byte)gradientRed, (byte)gradientGreen, (byte)gradientBlue, gradientMask, false), raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), new((byte)gradientRed, (byte)gradientGreen, (byte)gradientBlue, gradientMask, false), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                         else BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
                     }
                     else
                     {
                         SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
-                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(tileColor), raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(tileColor), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                         else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(tileColor, pixelCoverage));
                     }
                 }
@@ -936,13 +936,13 @@ public static class SvgConverter
                     {
                         (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, outline.Opacity);
                         int gradientCoverage = CoverageAlpha(255, pixelCoverage) + 1;
-                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), new((byte)gradientRed, (byte)gradientGreen, (byte)gradientBlue, gradientMask, false), raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), new((byte)gradientRed, (byte)gradientGreen, (byte)gradientBlue, gradientMask, false), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                         else BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
                     }
                     else
                     {
                         SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
-                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(tileColor), raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(tileColor), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                         else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(tileColor, pixelCoverage));
                     }
                 }
@@ -1026,7 +1026,7 @@ public static class SvgConverter
                     int tileBlue = (blitted[tileOffset + 2] * tileOpacityScale) >> 8;
                     int tileCoverage = CoverageAlpha(255, pixelCoverage) + 1;
                     int offset = (y * outputWidth + x) * 4;
-                    if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), new((byte)tileRed, (byte)tileGreen, (byte)tileBlue, (byte)tileAlpha, false), raster.Clip is null ? 1 : ClipBoxCoverage(raster.Clip.Value, x, y));
+                    if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), new((byte)tileRed, (byte)tileGreen, (byte)tileBlue, (byte)tileAlpha, false), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                     else BlendPremultipliedOver(destination.AsSpan(offset, 4), (tileRed * tileCoverage) >> 8, (tileGreen * tileCoverage) >> 8, (tileBlue * tileCoverage) >> 8, (tileAlpha * tileCoverage) >> 8);
                 }
                 }

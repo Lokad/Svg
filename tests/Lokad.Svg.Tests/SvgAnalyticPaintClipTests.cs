@@ -141,7 +141,7 @@ public sealed class SvgAnalyticPaintClipTests
             Assert.True(eligible);
             walker.PrepareRow(10, out long _, token);
             byte[] pixel = new byte[4];
-            for (int x = 0; x < 32; x++) walker.PaintPixel(x, pixel, SvgAnalyticPaint.Solid(new(0, 52, 120, 255)), 1);
+            for (int x = 0; x < 32; x++) walker.PaintPixel(x, pixel, SvgAnalyticPaint.Solid(new(0, 52, 120, 255)), SvgAnalyticClipCoverage.Full);
         }
     }
 

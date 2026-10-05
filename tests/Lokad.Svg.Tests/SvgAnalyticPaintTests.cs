@@ -50,7 +50,7 @@ public sealed class SvgAnalyticPaintTests
             Assert.InRange(rowWork, width, width * 3);
             Assert.Equal(preparedBytes + spanBufferBytes, budget.Snapshot().CurrentBytes);
             byte[] destination = new byte[4];
-            walker.PaintPixel(width / 2, destination, SvgAnalyticPaint.Solid(new(195, 78, 151, 64)), 1);
+            walker.PaintPixel(width / 2, destination, SvgAnalyticPaint.Solid(new(195, 78, 151, 64)), SvgAnalyticClipCoverage.Full);
             Assert.Equal(new byte[] { 49, 20, 38, 64 }, destination);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

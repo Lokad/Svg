@@ -23,7 +23,7 @@ public sealed class SvgOneChordCubicTests
             Assert.True(eligible);
             walker.PrepareRow(8, out long _, CancellationToken.None);
             byte[] pixel = new byte[4];
-            walker.PaintPixel(1, pixel, SvgAnalyticPaint.Solid(polygon.Color), 1);
+            walker.PaintPixel(1, pixel, SvgAnalyticPaint.Solid(polygon.Color), SvgAnalyticClipCoverage.Full);
             // Pinned native shoulder capture is fully covered at (9,8).
             Assert.Equal((byte)255, pixel[3]);
         }

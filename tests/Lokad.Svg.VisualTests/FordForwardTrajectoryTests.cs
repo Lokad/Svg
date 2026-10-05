@@ -293,7 +293,7 @@ public sealed class FordForwardTrajectoryTests
         SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(color);
         for (int x = 0; x < width; x++)
         {
-            walker.PaintPixel(x, pixels.AsSpan(x * 4, 4), paint, 1);
+            walker.PaintPixel(x, pixels.AsSpan(x * 4, 4), paint, SvgAnalyticClipCoverage.Full);
             alphas[x] = pixels[x * 4 + 3];
         }
         return alphas;

@@ -92,25 +92,25 @@ public sealed class CorporateCohortReferenceTests
         Assert.Equal(0, malformed);
         Assert.Equal(18, unsupported);
         Assert.Equal(18, measured);
-        Assert.Equal(9, exact);
-        Assert.Equal(9, known);
+        Assert.Equal(18, exact);
+        Assert.Equal(0, known);
         Assert.Equal(15, gaps);
         Assert.Equal(225, unmeasured);
-        Assert.Equal(new[] { "inv-002" }, exactDocuments);
+        Assert.Equal(new[] { "inv-002", "inv-027" }, exactDocuments);
         Assert.Equal(15, measurements.RootElement.GetProperty("oracleTransportFailures").GetProperty("failures").GetArrayLength());
     }
 
     [Theory]
-    [InlineData("small", "transparent", 30, 1)]
-    [InlineData("small", "white", 8, 0)]
-    [InlineData("small", "black", 22, 0)]
-    [InlineData("intended", "transparent", 37, 1)]
-    [InlineData("intended", "white", 23, 0)]
-    [InlineData("intended", "black", 14, 0)]
-    [InlineData("large", "transparent", 26, 1)]
-    [InlineData("large", "white", 10, 0)]
-    [InlineData("large", "black", 16, 0)]
-    public void Selected_curved_mark_reports_remaining_differences_against_original_references(string size, string background, int changedPixels, int maximumAlpha)
+    [InlineData("small", "transparent", 0, 0)]
+    [InlineData("small", "white", 0, 0)]
+    [InlineData("small", "black", 0, 0)]
+    [InlineData("intended", "transparent", 0, 0)]
+    [InlineData("intended", "white", 0, 0)]
+    [InlineData("intended", "black", 0, 0)]
+    [InlineData("large", "transparent", 0, 0)]
+    [InlineData("large", "white", 0, 0)]
+    [InlineData("large", "black", 0, 0)]
+    public void Selected_curved_mark_matches_every_original_reference(string size, string background, int changedPixels, int maximumAlpha)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Resolve("tests/References/inventory/corporate-cohort-v1.json")));
         JsonElement document = manifest.RootElement.GetProperty("documents").EnumerateArray().Single(item => Required(item, "id") == "inv-027");
@@ -124,7 +124,7 @@ public sealed class CorporateCohortReferenceTests
         RgbaImage oracle = PngRgbaDecoder.Decode(File.ReadAllBytes(Resolve("tests/References/inventory/" + Required(variant, "id") + ".png")), pixels);
         PixelComparison diff = PixelComparer.Compare(oracle, candidate);
         Assert.True(diff.DimensionsMatch);
-        Assert.False(diff.IsExact);
+        Assert.True(diff.IsExact);
         Assert.Equal(changedPixels, diff.ChangedPixelCount);
         Assert.Equal(maximumAlpha, diff.MaximumAlphaError);
     }

@@ -24,7 +24,7 @@ public sealed class SvgConvexRectangleStripTests
             walker.PrepareRow(258, 1_000_000, out long _, CancellationToken.None);
             Assert.Equal((byte)96, walker.Row[0]);
             byte[] pixel = [128, 128, 128, 255];
-            walker.PaintPixel(0, pixel, SvgAnalyticPaint.Solid(new(255, 255, 255, 255)), 1);
+            walker.PaintPixel(0, pixel, SvgAnalyticPaint.Solid(new(255, 255, 255, 255)), SvgAnalyticClipCoverage.Full);
             Assert.Equal(new byte[] { 176, 176, 176, 255 }, pixel);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

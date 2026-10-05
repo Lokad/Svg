@@ -1,7 +1,7 @@
 Lokad.Svg contains managed adaptations of Skia analytic curve/line clipping,
 polynomial solvers, vertical edge combination, horizontal clip paint routing,
 axis-aligned path mapping, raw control-point convexity classification and
-antialiased rectangle paint-clip dispatch.
+antialiased rectangle paint-clip dispatch and byte coverage.
 These adaptations do not depend on native Skia.
 
 Source revision: f8b66b7597c4cc859d3ed190e9c6872241e6721c
@@ -9,9 +9,10 @@ Source files: src/core/SkEdgeClipper.cpp, src/core/SkLineClipper.cpp, src/core/S
 src/core/SkGeometry.cpp, src/core/SkCubics.cpp, src/core/SkQuads.cpp,
 src/core/SkBezierCurves.cpp, src/core/SkFloatingPoint.cpp, src/core/SkScan_Path.cpp,
 src/core/SkBlitter.h, src/core/SkMatrix.cpp, src/core/SkPathPriv.cpp,
-src/core/SkRasterClip.cpp, src/core/SkScan_AntiPath.cpp, src/core/SkAnalyticEdge.cpp
-and src/core/SkAnalyticEdge.h.
-Copyright 2006, 2009 The Android Open Source Project;
+src/core/SkRasterClip.cpp, src/core/SkAAClip.cpp, src/core/SkScan_AAAPath.cpp,
+src/core/SkScan_AntiPath.cpp, src/core/SkAnalyticEdge.cpp, src/core/SkAnalyticEdge.h
+and include/private/SkMath.h.
+Copyright 2006, 2009, 2016 The Android Open Source Project;
 2010, 2011, 2012 Google Inc.; 2023, 2025 Google LLC.
 
 Skia license:

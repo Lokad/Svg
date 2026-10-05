@@ -24,8 +24,8 @@
     "transport-limit-gap": 15
   },
   "fidelityCounts": {
-    "exact": 9,
-    "known-difference": 9,
+    "exact": 18,
+    "known-difference": 0,
     "withoutReference": 240
   },
   "oracleTransportFailures": {
@@ -139,7 +139,8 @@
     ]
   },
   "verifiedExactDocuments": [
-    "inv-002"
+    "inv-002",
+    "inv-027"
   ],
   "documents": [
     {
@@ -427,7 +428,7 @@
         "inv-027-large-white",
         "inv-027-large-black"
       ],
-      "verifiedExact": false
+      "verifiedExact": true
     },
     {
       "id": "inv-040",
@@ -1450,7 +1451,7 @@
       "id": "inv-005-small-transparent",
       "renderOutcome": "renders",
       "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
-      "candidateSha256": "63e1f758a85b7db82af4ed83bc5ce0cd0925f2eb9330d1983c55ca3619008c58",
+      "candidateSha256": "243caa8a46872821e038e5e621662d49bfd79e5e3fab736d45ca50ebbad40166",
       "width": 407,
       "height": 116,
       "referenceSha256": null,
@@ -1463,7 +1464,7 @@
       "id": "inv-005-small-white",
       "renderOutcome": "renders",
       "inputSha256": "1f631699b6559197bf7a1163546388dd095f84e2b2e77a47a4dc2703b6c628b6",
-      "candidateSha256": "aed29f22c63cd4ad9e02bfe95f4fd6a9dc6c3737c25d4103c4480d58447ae77d",
+      "candidateSha256": "4532142be9fcc4ee464b50147d04ddc3bf53d8b445ded3d1ccf1a279f8bfdcad",
       "width": 407,
       "height": 116,
       "referenceSha256": null,
@@ -2932,126 +2933,29 @@
       "id": "inv-027-small-transparent",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "870d07f89ae58422ec3313fcc4bfed5e94acb58753fc49f7d5274c6dbd1a7d7a",
+      "candidateSha256": "4b262431680e0aab59ed57349b81eed54bbb77af40120cd9c03ef7b9b188abb4",
       "width": 286,
       "height": 200,
       "referenceSha256": "dd3be78797f0b1059c06a97e9eb7d1b15674ce619ae5c3ea4ed3f343382f04e7",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 30,
-          "MaximumChannelError": 5,
-          "MeanAbsoluteError": 0.0004195804195804196,
-          "RootMeanSquareError": 0.02851205118782342,
-          "MaximumAlphaError": 1,
-          "AlphaChangedPixelCount": 30,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 74,
-          "MaximumMismatchX": 285,
-          "MaximumMismatchY": 125,
-          "IsExact": false
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 286,
+          "MinimumMismatchY": 200,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
-        "alphaMass": 30,
+        "alphaMass": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "x": 0,
-            "y": 74,
-            "reference": "goKCKw==",
-            "candidate": "gICAKg=="
-          },
-          {
-            "x": 285,
-            "y": 79,
-            "reference": "gICAOg==",
-            "candidate": "goKCOw=="
-          },
-          {
-            "x": 285,
-            "y": 82,
-            "reference": "gICAUA==",
-            "candidate": "gYGBUQ=="
-          },
-          {
-            "x": 0,
-            "y": 84,
-            "reference": "gICAhg==",
-            "candidate": "gICAhQ=="
-          },
-          {
-            "x": 285,
-            "y": 87,
-            "reference": "gICAcg==",
-            "candidate": "gYGBcw=="
-          },
-          {
-            "x": 285,
-            "y": 88,
-            "reference": "f39/eA==",
-            "candidate": "gYGBeQ=="
-          },
-          {
-            "x": 0,
-            "y": 89,
-            "reference": "gICAqA==",
-            "candidate": "gICApw=="
-          },
-          {
-            "x": 285,
-            "y": 92,
-            "reference": "gICAig==",
-            "candidate": "gICAiw=="
-          },
-          {
-            "x": 285,
-            "y": 94,
-            "reference": "gICAkA==",
-            "candidate": "gICAkQ=="
-          },
-          {
-            "x": 0,
-            "y": 95,
-            "reference": "gICAxQ==",
-            "candidate": "gICAxA=="
-          },
-          {
-            "x": 285,
-            "y": 95,
-            "reference": "gICAlA==",
-            "candidate": "gICAlQ=="
-          },
-          {
-            "x": 285,
-            "y": 96,
-            "reference": "gICAlQ==",
-            "candidate": "gICAlg=="
-          },
-          {
-            "x": 0,
-            "y": 97,
-            "reference": "gICAyw==",
-            "candidate": "f39/yg=="
-          },
-          {
-            "x": 0,
-            "y": 99,
-            "reference": "gICAyw==",
-            "candidate": "f39/yg=="
-          },
-          {
-            "x": 285,
-            "y": 99,
-            "reference": "gICAng==",
-            "candidate": "gICAnw=="
-          },
-          {
-            "x": 0,
-            "y": 100,
-            "reference": "gICAug==",
-            "candidate": "gICAuQ=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-027-small-transparent.png",
       "captureProvenance": {
@@ -3081,78 +2985,29 @@
       "id": "inv-027-small-white",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "e772bde0444d7201e05a1ce7a342371a654dcd6719ad7e191653a50a3b5806ba",
+      "candidateSha256": "0f29f91783f66f8ab71c25ed5df2adb93b0ac067bd8f16a318cb74ffccbad6fa",
       "width": 286,
       "height": 200,
       "referenceSha256": "404f8643bb1de816f3a3e5edd2b932a89271f9f3493881586e028828550cd834",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 8,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.0001048951048951049,
-          "RootMeanSquareError": 0.010241831129983782,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 84,
-          "MaximumMismatchX": 285,
-          "MaximumMismatchY": 124,
-          "IsExact": false
+          "MinimumMismatchX": 286,
+          "MinimumMismatchY": 200,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "x": 0,
-            "y": 84,
-            "reference": "vLy8/w==",
-            "candidate": "vb29/w=="
-          },
-          {
-            "x": 0,
-            "y": 89,
-            "reference": "q6ur/w==",
-            "candidate": "rKys/w=="
-          },
-          {
-            "x": 285,
-            "y": 96,
-            "reference": "tbW1/w==",
-            "candidate": "tLS0/w=="
-          },
-          {
-            "x": 0,
-            "y": 100,
-            "reference": "oqKi/w==",
-            "candidate": "o6Oj/w=="
-          },
-          {
-            "x": 285,
-            "y": 101,
-            "reference": "p6en/w==",
-            "candidate": "pqam/w=="
-          },
-          {
-            "x": 285,
-            "y": 114,
-            "reference": "xsbG/w==",
-            "candidate": "xcXF/w=="
-          },
-          {
-            "x": 285,
-            "y": 117,
-            "reference": "0tLS/w==",
-            "candidate": "0dHR/w=="
-          },
-          {
-            "x": 285,
-            "y": 124,
-            "reference": "8/Pz/w==",
-            "candidate": "8vLy/w=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-027-small-white.png",
       "captureProvenance": {
@@ -3182,126 +3037,29 @@
       "id": "inv-027-small-black",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "6e10d30c6f3abce7e06679195cbd9b30ffda12de772704677c9129bbb27d2c23",
+      "candidateSha256": "b8aee2328e744a1653c20e0d67db6ad39471b5ce5d2d3ed4a1a7d125325c00e7",
       "width": 286,
       "height": 200,
       "referenceSha256": "9aeba839555265e7753dcb4031cb7d22d96015ef5b0dffd189a2b8947b7326bf",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 22,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.0002884615384615385,
-          "RootMeanSquareError": 0.016984155512168937,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 74,
-          "MaximumMismatchX": 285,
-          "MaximumMismatchY": 125,
-          "IsExact": false
+          "MinimumMismatchX": 286,
+          "MinimumMismatchY": 200,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "x": 0,
-            "y": 74,
-            "reference": "FhYW/w==",
-            "candidate": "FRUV/w=="
-          },
-          {
-            "x": 285,
-            "y": 79,
-            "reference": "HR0d/w==",
-            "candidate": "Hh4e/w=="
-          },
-          {
-            "x": 285,
-            "y": 82,
-            "reference": "KCgo/w==",
-            "candidate": "KSkp/w=="
-          },
-          {
-            "x": 285,
-            "y": 87,
-            "reference": "OTk5/w==",
-            "candidate": "Ojo6/w=="
-          },
-          {
-            "x": 285,
-            "y": 88,
-            "reference": "PDw8/w==",
-            "candidate": "PT09/w=="
-          },
-          {
-            "x": 285,
-            "y": 92,
-            "reference": "RUVF/w==",
-            "candidate": "RkZG/w=="
-          },
-          {
-            "x": 285,
-            "y": 94,
-            "reference": "SEhI/w==",
-            "candidate": "SUlJ/w=="
-          },
-          {
-            "x": 0,
-            "y": 95,
-            "reference": "Y2Nj/w==",
-            "candidate": "YmJi/w=="
-          },
-          {
-            "x": 285,
-            "y": 95,
-            "reference": "SkpK/w==",
-            "candidate": "S0tL/w=="
-          },
-          {
-            "x": 0,
-            "y": 97,
-            "reference": "ZmZm/w==",
-            "candidate": "ZWVl/w=="
-          },
-          {
-            "x": 0,
-            "y": 99,
-            "reference": "ZmZm/w==",
-            "candidate": "ZWVl/w=="
-          },
-          {
-            "x": 285,
-            "y": 99,
-            "reference": "T09P/w==",
-            "candidate": "UFBQ/w=="
-          },
-          {
-            "x": 285,
-            "y": 100,
-            "reference": "Wlpa/w==",
-            "candidate": "W1tb/w=="
-          },
-          {
-            "x": 0,
-            "y": 101,
-            "reference": "XV1d/w==",
-            "candidate": "XFxc/w=="
-          },
-          {
-            "x": 285,
-            "y": 102,
-            "reference": "V1dX/w==",
-            "candidate": "WFhY/w=="
-          },
-          {
-            "x": 285,
-            "y": 103,
-            "reference": "VlZW/w==",
-            "candidate": "V1dX/w=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-027-small-black.png",
       "captureProvenance": {
@@ -3331,126 +3089,29 @@
       "id": "inv-027-intended-transparent",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "cbd65666a6b7da7547a3c636286c1365c768861f917e1abba9a16c93fd7a6c68",
+      "candidateSha256": "8dacda3da9cab396993d2a358c078b0d529031582ff5f273a0a51d7fde1f89cf",
       "width": 572,
       "height": 400,
       "referenceSha256": "8394bca8920d0b1ec5122c1893252c902fef2c073953bbfbb40e77d8d2aea9ed",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 37,
-          "MaximumChannelError": 7,
-          "MeanAbsoluteError": 0.00022727272727272727,
-          "RootMeanSquareError": 0.025174218135649393,
-          "MaximumAlphaError": 1,
-          "AlphaChangedPixelCount": 37,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 166,
-          "MaximumMismatchX": 571,
-          "MaximumMismatchY": 233,
-          "IsExact": false
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 572,
+          "MinimumMismatchY": 400,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
-        "alphaMass": 37,
+        "alphaMass": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "x": 0,
-            "y": 166,
-            "reference": "hYWFGQ==",
-            "candidate": "gICAGA=="
-          },
-          {
-            "x": 0,
-            "y": 169,
-            "reference": "gICALA==",
-            "candidate": "goKCKw=="
-          },
-          {
-            "x": 0,
-            "y": 174,
-            "reference": "gICASg==",
-            "candidate": "gYGBSQ=="
-          },
-          {
-            "x": 0,
-            "y": 175,
-            "reference": "gYGBTw==",
-            "candidate": "gICATg=="
-          },
-          {
-            "x": 571,
-            "y": 175,
-            "reference": "h4eHEQ==",
-            "candidate": "gICAEg=="
-          },
-          {
-            "x": 0,
-            "y": 181,
-            "reference": "gYGBbQ==",
-            "candidate": "gICAbA=="
-          },
-          {
-            "x": 571,
-            "y": 184,
-            "reference": "gICANg==",
-            "candidate": "goKCNw=="
-          },
-          {
-            "x": 0,
-            "y": 185,
-            "reference": "gICAfg==",
-            "candidate": "gYGBfQ=="
-          },
-          {
-            "x": 0,
-            "y": 189,
-            "reference": "gICAig==",
-            "candidate": "gICAiQ=="
-          },
-          {
-            "x": 0,
-            "y": 191,
-            "reference": "gICAkA==",
-            "candidate": "gICAjw=="
-          },
-          {
-            "x": 0,
-            "y": 192,
-            "reference": "gICAkw==",
-            "candidate": "gICAkg=="
-          },
-          {
-            "x": 571,
-            "y": 192,
-            "reference": "gYGBTQ==",
-            "candidate": "gICATg=="
-          },
-          {
-            "x": 0,
-            "y": 195,
-            "reference": "gICAnA==",
-            "candidate": "gICAmw=="
-          },
-          {
-            "x": 571,
-            "y": 195,
-            "reference": "gICAUg==",
-            "candidate": "gYGBUw=="
-          },
-          {
-            "x": 0,
-            "y": 196,
-            "reference": "gICAng==",
-            "candidate": "gICAnQ=="
-          },
-          {
-            "x": 571,
-            "y": 201,
-            "reference": "gYGBdQ==",
-            "candidate": "f39/dg=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-027-intended-transparent.png",
       "captureProvenance": {
@@ -3480,126 +3141,29 @@
       "id": "inv-027-intended-white",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "305de6113fc12b410b1218b5b3c600754f932740241ac669d635feb1c9de956b",
+      "candidateSha256": "3381b04f1c4e491fe326b9dfb54be95f243e2e689e573766c666e59fce6a03a9",
       "width": 572,
       "height": 400,
       "referenceSha256": "56676902d3573fe918e1a3f50656d7fc4fba6ddd205a4a84909fad189a617ce2",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 23,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 7.539335664335664e-05,
-          "RootMeanSquareError": 0.008682934794374344,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 169,
-          "MaximumMismatchX": 571,
-          "MaximumMismatchY": 233,
-          "IsExact": false
+          "MinimumMismatchX": 572,
+          "MinimumMismatchY": 400,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "x": 0,
-            "y": 169,
-            "reference": "6enp/w==",
-            "candidate": "6urq/w=="
-          },
-          {
-            "x": 0,
-            "y": 174,
-            "reference": "2tra/w==",
-            "candidate": "29vb/w=="
-          },
-          {
-            "x": 571,
-            "y": 175,
-            "reference": "9/f3/w==",
-            "candidate": "9vb2/w=="
-          },
-          {
-            "x": 0,
-            "y": 185,
-            "reference": "wMDA/w==",
-            "candidate": "wcHB/w=="
-          },
-          {
-            "x": 0,
-            "y": 189,
-            "reference": "urq6/w==",
-            "candidate": "u7u7/w=="
-          },
-          {
-            "x": 0,
-            "y": 191,
-            "reference": "t7e3/w==",
-            "candidate": "uLi4/w=="
-          },
-          {
-            "x": 571,
-            "y": 192,
-            "reference": "2dnZ/w==",
-            "candidate": "2NjY/w=="
-          },
-          {
-            "x": 0,
-            "y": 195,
-            "reference": "sbGx/w==",
-            "candidate": "srKy/w=="
-          },
-          {
-            "x": 0,
-            "y": 196,
-            "reference": "sLCw/w==",
-            "candidate": "sbGx/w=="
-          },
-          {
-            "x": 571,
-            "y": 201,
-            "reference": "xcXF/w==",
-            "candidate": "xMTE/w=="
-          },
-          {
-            "x": 0,
-            "y": 203,
-            "reference": "wMDA/w==",
-            "candidate": "wcHB/w=="
-          },
-          {
-            "x": 0,
-            "y": 204,
-            "reference": "wMDA/w==",
-            "candidate": "wcHB/w=="
-          },
-          {
-            "x": 571,
-            "y": 206,
-            "reference": "ysrK/w==",
-            "candidate": "ycnJ/w=="
-          },
-          {
-            "x": 0,
-            "y": 212,
-            "reference": "yMjI/w==",
-            "candidate": "ycnJ/w=="
-          },
-          {
-            "x": 571,
-            "y": 212,
-            "reference": "09PT/w==",
-            "candidate": "0tLS/w=="
-          },
-          {
-            "x": 571,
-            "y": 215,
-            "reference": "2dnZ/w==",
-            "candidate": "2NjY/w=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-027-intended-white.png",
       "captureProvenance": {
@@ -3629,114 +3193,29 @@
       "id": "inv-027-intended-black",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "d3780b6831a98c98f8e89af9c5b0cee1ed23c12b52621d17017c6577d58344e3",
+      "candidateSha256": "3c0335dca1aff3409af2a075507f5fc05a2bc4b29cc256ee055231f61a88dff3",
       "width": 572,
       "height": 400,
       "referenceSha256": "1d93a7ff74ab8407756d8fe5e15d185f97a294c7180e68725b96b5daacec1963",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 14,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 4.589160839160839e-05,
-          "RootMeanSquareError": 0.006774334534964183,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 166,
-          "MaximumMismatchX": 571,
-          "MaximumMismatchY": 227,
-          "IsExact": false
+          "MinimumMismatchX": 572,
+          "MinimumMismatchY": 400,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "x": 0,
-            "y": 166,
-            "reference": "DQ0N/w==",
-            "candidate": "DAwM/w=="
-          },
-          {
-            "x": 0,
-            "y": 175,
-            "reference": "KCgo/w==",
-            "candidate": "Jycn/w=="
-          },
-          {
-            "x": 0,
-            "y": 181,
-            "reference": "Nzc3/w==",
-            "candidate": "NjY2/w=="
-          },
-          {
-            "x": 571,
-            "y": 184,
-            "reference": "Gxsb/w==",
-            "candidate": "HBwc/w=="
-          },
-          {
-            "x": 0,
-            "y": 192,
-            "reference": "SkpK/w==",
-            "candidate": "SUlJ/w=="
-          },
-          {
-            "x": 571,
-            "y": 195,
-            "reference": "KSkp/w==",
-            "candidate": "Kioq/w=="
-          },
-          {
-            "x": 571,
-            "y": 205,
-            "reference": "Nzc3/w==",
-            "candidate": "ODg4/w=="
-          },
-          {
-            "x": 0,
-            "y": 206,
-            "reference": "Pj4+/w==",
-            "candidate": "PT09/w=="
-          },
-          {
-            "x": 571,
-            "y": 210,
-            "reference": "MDAw/w==",
-            "candidate": "MTEx/w=="
-          },
-          {
-            "x": 0,
-            "y": 213,
-            "reference": "NjY2/w==",
-            "candidate": "NTU1/w=="
-          },
-          {
-            "x": 0,
-            "y": 218,
-            "reference": "Li4u/w==",
-            "candidate": "LS0t/w=="
-          },
-          {
-            "x": 0,
-            "y": 221,
-            "reference": "KCgo/w==",
-            "candidate": "Jycn/w=="
-          },
-          {
-            "x": 0,
-            "y": 224,
-            "reference": "ISEh/w==",
-            "candidate": "ICAg/w=="
-          },
-          {
-            "x": 0,
-            "y": 227,
-            "reference": "Ghoa/w==",
-            "candidate": "GRkZ/w=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-027-intended-black.png",
       "captureProvenance": {
@@ -3766,126 +3245,29 @@
       "id": "inv-027-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "41e03c6e9b86b4fa002f722f30b137c2ae3c8772e1946ce0bb29e901c3529101",
+      "candidateSha256": "10ea9fe06d030277d787b51c82a332020001456ae4207589150df962a9917307",
       "width": 1144,
       "height": 800,
       "referenceSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 26,
-          "MaximumChannelError": 9,
-          "MeanAbsoluteError": 8.085664335664336e-05,
-          "RootMeanSquareError": 0.01816542092775495,
-          "MaximumAlphaError": 1,
-          "AlphaChangedPixelCount": 26,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 371,
-          "MaximumMismatchX": 0,
-          "MaximumMismatchY": 428,
-          "IsExact": false
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 1144,
+          "MinimumMismatchY": 800,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
-        "alphaMass": 26,
+        "alphaMass": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "x": 0,
-            "y": 371,
-            "reference": "hoaGFQ==",
-            "candidate": "gICAFA=="
-          },
-          {
-            "x": 0,
-            "y": 376,
-            "reference": "gICAIA==",
-            "candidate": "hISEHw=="
-          },
-          {
-            "x": 0,
-            "y": 377,
-            "reference": "gICAIg==",
-            "candidate": "g4ODIQ=="
-          },
-          {
-            "x": 0,
-            "y": 378,
-            "reference": "gICAJA==",
-            "candidate": "g4ODIw=="
-          },
-          {
-            "x": 0,
-            "y": 380,
-            "reference": "g4ODJw==",
-            "candidate": "gICAJg=="
-          },
-          {
-            "x": 0,
-            "y": 381,
-            "reference": "g4ODKQ==",
-            "candidate": "gICAKA=="
-          },
-          {
-            "x": 0,
-            "y": 386,
-            "reference": "gICAMA==",
-            "candidate": "goKCLw=="
-          },
-          {
-            "x": 0,
-            "y": 388,
-            "reference": "goKCMw==",
-            "candidate": "gICAMg=="
-          },
-          {
-            "x": 0,
-            "y": 389,
-            "reference": "gICANA==",
-            "candidate": "goKCMw=="
-          },
-          {
-            "x": 0,
-            "y": 391,
-            "reference": "goKCNw==",
-            "candidate": "gICANg=="
-          },
-          {
-            "x": 0,
-            "y": 392,
-            "reference": "gICAOA==",
-            "candidate": "goKCNw=="
-          },
-          {
-            "x": 0,
-            "y": 393,
-            "reference": "goKCOQ==",
-            "candidate": "gICAOA=="
-          },
-          {
-            "x": 0,
-            "y": 394,
-            "reference": "goKCOw==",
-            "candidate": "gICAOg=="
-          },
-          {
-            "x": 0,
-            "y": 395,
-            "reference": "f39/PA==",
-            "candidate": "goKCOw=="
-          },
-          {
-            "x": 0,
-            "y": 396,
-            "reference": "goKCPQ==",
-            "candidate": "f39/PA=="
-          },
-          {
-            "x": 0,
-            "y": 397,
-            "reference": "gICAPg==",
-            "candidate": "goKCPQ=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-027-large-transparent.png",
       "captureProvenance": {
@@ -3915,90 +3297,29 @@
       "id": "inv-027-large-white",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "3cd52dff2ad22476e63db925b8c13f4e9c2681a1b5df2baa00394759d8e6c5fd",
+      "candidateSha256": "047cb7d00249cfee4e7996687cffdc7c18530c1ed66afe8f941261ae84f0f15d",
       "width": 1144,
       "height": 800,
       "referenceSha256": "46bf6943af3c9b6f84df09601b54fc91039180e02f597508dc45b087e7250017",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 10,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 8.19493006993007e-06,
-          "RootMeanSquareError": 0.002862678827589653,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 376,
-          "MaximumMismatchX": 0,
-          "MaximumMismatchY": 412,
-          "IsExact": false
+          "MinimumMismatchX": 1144,
+          "MinimumMismatchY": 800,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "x": 0,
-            "y": 376,
-            "reference": "7+/v/w==",
-            "candidate": "8PDw/w=="
-          },
-          {
-            "x": 0,
-            "y": 377,
-            "reference": "7u7u/w==",
-            "candidate": "7+/v/w=="
-          },
-          {
-            "x": 0,
-            "y": 378,
-            "reference": "7e3t/w==",
-            "candidate": "7u7u/w=="
-          },
-          {
-            "x": 0,
-            "y": 386,
-            "reference": "5+fn/w==",
-            "candidate": "6Ojo/w=="
-          },
-          {
-            "x": 0,
-            "y": 389,
-            "reference": "5eXl/w==",
-            "candidate": "5ubm/w=="
-          },
-          {
-            "x": 0,
-            "y": 392,
-            "reference": "4+Pj/w==",
-            "candidate": "5OTk/w=="
-          },
-          {
-            "x": 0,
-            "y": 395,
-            "reference": "4eHh/w==",
-            "candidate": "4uLi/w=="
-          },
-          {
-            "x": 0,
-            "y": 397,
-            "reference": "4ODg/w==",
-            "candidate": "4eHh/w=="
-          },
-          {
-            "x": 0,
-            "y": 410,
-            "reference": "7Ozs/w==",
-            "candidate": "7e3t/w=="
-          },
-          {
-            "x": 0,
-            "y": 412,
-            "reference": "7e3t/w==",
-            "candidate": "7u7u/w=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-027-large-white.png",
       "captureProvenance": {
@@ -4028,126 +3349,29 @@
       "id": "inv-027-large-black",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "f81503d759990e1d23903e152830fa278342307e6da9ae3a4ee8fb6b29b6b4ca",
+      "candidateSha256": "770712fa7487a213de1a0802eab8639dfc5296b7138e466a1387d7c49b286092",
       "width": 1144,
       "height": 800,
       "referenceSha256": "afbc8597fffbd447241ef4a90ec96f00ddf8b85651a4075ad6a1644f6e0a9cf8",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 16,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 1.3111888111888112e-05,
-          "RootMeanSquareError": 0.0036210341218895067,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 371,
-          "MaximumMismatchX": 0,
-          "MaximumMismatchY": 428,
-          "IsExact": false
+          "MinimumMismatchX": 1144,
+          "MinimumMismatchY": 800,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "x": 0,
-            "y": 371,
-            "reference": "CwsL/w==",
-            "candidate": "CgoK/w=="
-          },
-          {
-            "x": 0,
-            "y": 380,
-            "reference": "FBQU/w==",
-            "candidate": "ExMT/w=="
-          },
-          {
-            "x": 0,
-            "y": 381,
-            "reference": "FRUV/w==",
-            "candidate": "FBQU/w=="
-          },
-          {
-            "x": 0,
-            "y": 388,
-            "reference": "Ghoa/w==",
-            "candidate": "GRkZ/w=="
-          },
-          {
-            "x": 0,
-            "y": 391,
-            "reference": "HBwc/w==",
-            "candidate": "Gxsb/w=="
-          },
-          {
-            "x": 0,
-            "y": 393,
-            "reference": "HR0d/w==",
-            "candidate": "HBwc/w=="
-          },
-          {
-            "x": 0,
-            "y": 394,
-            "reference": "Hh4e/w==",
-            "candidate": "HR0d/w=="
-          },
-          {
-            "x": 0,
-            "y": 396,
-            "reference": "Hx8f/w==",
-            "candidate": "Hh4e/w=="
-          },
-          {
-            "x": 0,
-            "y": 402,
-            "reference": "FRUV/w==",
-            "candidate": "FBQU/w=="
-          },
-          {
-            "x": 0,
-            "y": 405,
-            "reference": "FRUV/w==",
-            "candidate": "FBQU/w=="
-          },
-          {
-            "x": 0,
-            "y": 409,
-            "reference": "FBQU/w==",
-            "candidate": "ExMT/w=="
-          },
-          {
-            "x": 0,
-            "y": 416,
-            "reference": "EBAQ/w==",
-            "candidate": "Dw8P/w=="
-          },
-          {
-            "x": 0,
-            "y": 418,
-            "reference": "Dw8P/w==",
-            "candidate": "Dg4O/w=="
-          },
-          {
-            "x": 0,
-            "y": 422,
-            "reference": "DAwM/w==",
-            "candidate": "CwsL/w=="
-          },
-          {
-            "x": 0,
-            "y": 427,
-            "reference": "CAgI/w==",
-            "candidate": "BwcH/w=="
-          },
-          {
-            "x": 0,
-            "y": 428,
-            "reference": "BwcH/w==",
-            "candidate": "BgYG/w=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-027-large-black.png",
       "captureProvenance": {
@@ -5407,7 +4631,7 @@
       "oracleState": "unmeasured"
     }
   ],
-  "rendererSourceBaselineCommit": "1876cf6e",
-  "rendererSourceState": "Validated working tree with convex rectangle-strip rounding; raw-box coverage calibration preserved. Windows build/tests, memory, bank and package checks pass.",
-  "measurementCheckpoint": "convex-rectangle-strips-2026-10-06"
+  "rendererSourceBaselineCommit": "19630e52",
+  "rendererSourceState": "AA rectangle byte coverage is applied independently to each ordered paint operation; geometric fallback is preserved.",
+  "measurementCheckpoint": "rectangle-clip-byte-coverage-2026-10-06"
 }

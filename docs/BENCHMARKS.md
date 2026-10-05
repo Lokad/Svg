@@ -947,3 +947,22 @@ native-size 481.081 → 417.031, intended YouTube 11.385 → 11.068 and large Yo
 35.266 → 34.434. The single ordering and host load limit these observations;
 there is no speedup or representative-throughput claim. Raw batch allocation/time
 records remain in ignored artifacts rather than a new source hash inventory.
+
+
+## Rectangle clip-byte observations (2026-10-06)
+
+Matching six-input ledgers preserve parser/raster work and the tiny, Ford, dense
+and native-size accounted peaks. Intended/large YouTube peaks grow by 16/4 bytes
+to 942,655 / 3,732,659; PNG lengths grow 12,236 → 12,244 and 34,028 → 34,030.
+The immutable coverage value adds no heap buffers. Complete ledgers and timing
+batches remain under ignored `artifacts/boundary-clip-20261006/`.
+
+One sequential baseline-first/current-second pair uses the original six recipes,
+32 warmups and three batches per input, after capture/build/test/bank jobs finish.
+Median milliseconds are tiny .137 → .136, Ford 16.981 → 16.618, dense
+271.422 → 278.765, native-size 448.159 → 487.200, intended YouTube 11.301 → 11.683
+and large YouTube 34.707 → 32.401. The native-size median increases in this pair;
+the single ordering and shared-host variation do not establish a causal cost or
+representative throughput. Managed allocation traffic is unchanged for tiny and
+dense; other medians vary by -2,980 / +760 / +1,240 / -1,275 bytes for
+Ford/native/intended/large respectively. Broader performance and Linux remain open.
