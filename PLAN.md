@@ -890,12 +890,12 @@ check cancellation within bounded chunks and release owners on every exit.
 
 ### Validation and evidence policy
 
-- Use Git revisions for renderer source identity. Keep detailed per-run
+- Use Git revisions for source and build identity. Keep detailed per-run
   diagnostics under ignored artifacts; commit reusable regressions and concise
   reproduction details. Tests assert behavior and protect input/reference
-  identity. Do not commit renderer source inventories or assembly hashes in
-  reference metadata, or require current source/assemblies to match a frozen
-  checkpoint hash. Refresh measured outcomes when behavior changes; ordinary
+  identity. Do not record or validate inventories of solution source, script or
+  assembly hashes in references or run reports. Identify CI runs through their
+  workflow revision. Refresh measured outcomes when behavior changes; ordinary
   source edits require no reference metadata refresh.
 - Each implementation slice includes locked restore/Release build/tests,
   independent semantic/numeric/negative vectors and relevant documentation.

@@ -10,13 +10,6 @@ $ErrorActionPreference = 'Stop'
 if ($TimeoutMilliseconds -le 0) { throw 'TimeoutMilliseconds must be positive.' }
 if ($XmlReaderProbeRuns -le 0) { throw 'XmlReaderProbeRuns must be positive.' }
 
-function Get-TextSha256 {
-    param([Parameter(Mandatory = $true)] [string] $Path)
-
-    $text = [IO.File]::ReadAllText($Path).Replace("`r`n", "`n").Replace("`r", "`n")
-    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.UTF8Encoding]::new($false).GetBytes($text))).ToLowerInvariant()
-}
-
 $probeTool = Join-Path $PSScriptRoot 'Lokad.Svg.MemoryProbe/bin/Release/net10.0/Lokad.Svg.MemoryProbe.dll'
 $rendererAssembly = Join-Path (Split-Path -Parent $probeTool) 'Lokad.Svg.dll'
 $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
@@ -237,9 +230,6 @@ $runtime = $reports[0].report
 $summary = [ordered]@{
     schemaVersion = 3
     runId = $runId
-    scenarioScriptSha256 = Get-TextSha256 $PSCommandPath
-    probeToolSha256 = (Get-FileHash -LiteralPath $probeTool -Algorithm SHA256).Hash.ToLowerInvariant()
-    rendererAssemblySha256 = (Get-FileHash -LiteralPath $rendererAssembly -Algorithm SHA256).Hash.ToLowerInvariant()
     fixtureSha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant()
     runtimeFingerprint = [ordered]@{
         operatingSystem = $runtime.operatingSystem

@@ -218,9 +218,10 @@ and counts text/CDATA nodes without retrieving their values; property access is 
 traversal. This makes the probe's attribution inspectable without claiming
 cross-runtime exactness. Each child report records its exact input byte count and
 SHA-256, which the parent verifies against the launched input. One retained
-schema-2 JSON summary then groups every child report under its shared platform/runtime
-fingerprint, binds the newline-normalized scenario-script source plus byte-exact
-probe, renderer and fixed fixture hashes, and fails a mixed fingerprint.
+schema-3 JSON summary then groups every child report under its shared platform/runtime
+information, retains the fixed fixture hash and fails mixed runtime/platform data.
+Git and CI workflow revisions identify the code; solution sources, scripts and
+assemblies are not hashed into reports.
 The definition table reserves a two-times requested-capacity allowance before the
 BCL selects its prime backing capacity, and verifies that returned capacity is
 within the allowance.

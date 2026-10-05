@@ -18,13 +18,6 @@ function Get-Hash([string] $Path)
     return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
 }
 
-function Get-TextHash([string] $Path)
-{
-    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { Fail "Missing file: $Path" }
-    $text = [IO.File]::ReadAllText($Path).Replace("`r`n", "`n").Replace("`r", "`n")
-    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.UTF8Encoding]::new($false).GetBytes($text))).ToLowerInvariant()
-}
-
 function Get-RequiredProperty([object] $Object, [string] $Name, [string] $Context)
 {
     $property = $Object.PSObject.Properties[$Name]
@@ -80,16 +73,9 @@ function Test-ChromeArtifact
         Assert-Equal (Get-RequiredProperty $pin $name 'Chrome pin') (Get-RequiredProperty $fingerprint $fingerprintName 'Chrome fingerprint') "Chrome $name"
     }
 
-    $smokeScript = Join-Path $PSScriptRoot 'test-chrome.ps1'
-    $setupScript = Join-Path $PSScriptRoot 'setup-chrome.ps1'
-    $captureTool = Join-Path $PSScriptRoot 'Lokad.Svg.Chrome/bin/Release/net10.0/Lokad.Svg.Chrome.dll'
     $comparisonTool = Join-Path $PSScriptRoot 'Lokad.Svg.VisualDiff/bin/Release/net10.0/Lokad.Svg.VisualDiff.dll'
     $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
     $reference = Join-Path $PSScriptRoot '../tests/References/original-solid-red.png'
-    Assert-Hash (Get-RequiredProperty $fingerprint 'smokeScriptSha256' 'Chrome fingerprint') (Get-TextHash $smokeScript) 'Chrome smoke-script hash'
-    Assert-Hash (Get-RequiredProperty $fingerprint 'setupScriptSha256' 'Chrome fingerprint') (Get-TextHash $setupScript) 'Chrome setup-script hash'
-    Assert-Hash (Get-RequiredProperty $fingerprint 'captureToolSha256' 'Chrome fingerprint') (Get-Hash $captureTool) 'Chrome capture-tool hash'
-    Assert-Hash (Get-RequiredProperty $fingerprint 'comparisonToolSha256' 'Chrome fingerprint') (Get-Hash $comparisonTool) 'Chrome comparison-tool hash'
     Assert-Hash (Get-RequiredProperty $fingerprint 'fixtureSha256' 'Chrome fingerprint') (Get-Hash $fixture) 'Chrome fixture hash'
     $referenceHash = Get-Hash $reference
     Assert-Hash (Get-RequiredProperty $fingerprint 'referenceSha256' 'Chrome fingerprint') $referenceHash 'Chrome reference hash'
@@ -163,13 +149,7 @@ function Test-MemoryArtifact
     Assert-Equal 3 (Get-RequiredProperty $summary 'schemaVersion' 'Memory summary') 'Memory summary schema version'
     $runId = [string](Get-RequiredProperty $summary 'runId' 'Memory summary')
     if ($runId -notmatch '^[0-9a-f]{32}$') { Fail 'Memory summary run id is not a lowercase GUID without separators.' }
-    $scenarioScript = Join-Path $PSScriptRoot 'test-memory-probe.ps1'
-    $probeTool = Join-Path $PSScriptRoot 'Lokad.Svg.MemoryProbe/bin/Release/net10.0/Lokad.Svg.MemoryProbe.dll'
-    $rendererAssembly = Join-Path (Split-Path -Parent $probeTool) 'Lokad.Svg.dll'
     $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
-    Assert-Hash (Get-RequiredProperty $summary 'scenarioScriptSha256' 'Memory summary') (Get-TextHash $scenarioScript) 'Memory scenario-script hash'
-    Assert-Hash (Get-RequiredProperty $summary 'probeToolSha256' 'Memory summary') (Get-Hash $probeTool) 'Memory probe-tool hash'
-    Assert-Hash (Get-RequiredProperty $summary 'rendererAssemblySha256' 'Memory summary') (Get-Hash $rendererAssembly) 'Memory renderer hash'
     $fixtureHash = Get-Hash $fixture
     Assert-Hash (Get-RequiredProperty $summary 'fixtureSha256' 'Memory summary') $fixtureHash 'Memory fixture hash'
     $runtimeFingerprint = Get-RequiredProperty $summary 'runtimeFingerprint' 'Memory summary'

@@ -50,9 +50,8 @@ or changing research-oracle metadata.
 Each smoke output directory receives three independent fresh-process PNG captures,
 each exact against the stored smoke reference and byte-identical to the other two,
 plus redacted per-launch stderr files and a JSON runtime fingerprint. The fingerprint records the capture count and
-each candidate hash as well as the pin JSON, archive and executable hashes, the
-newline-normalized smoke/setup script source hashes and capture/comparison-tool binary hashes, executable file
-version when exposed by the platform, input/reference hashes,
+each candidate hash as well as the pin JSON, archive and executable hashes,
+executable file version when exposed by the platform, input/reference hashes,
 OS/architecture/runtime, locale, time zone, recipe, actual capture deadline and
 headless/GPU/sandbox/viewport policy. Schema 4 additionally hashes each retained
 stderr file and records parent capture time. Its child report records Chrome's
@@ -75,25 +74,26 @@ Linux job so successful smoke provenance can be reviewed; the broader diagnostic
 artifact remains failure-only. No arbitrary user SVG is uploaded.
 
 After downloading a successful job's `chrome-smoke-*` and `memory-probe-*`
-artifacts into local directories, validate their contents against the same source
-revision and Release build with:
+artifacts into local directories, validate their contents with the tools from the
+same workflow revision:
 
 ```powershell
 tools/validate-ci-artifacts.ps1 -Platform Windows -ChromeDirectory path/to/chrome-smoke-windows -MemoryDirectory path/to/memory-probe-windows
 tools/validate-ci-artifacts.ps1 -Platform Linux -ChromeDirectory path/to/chrome-smoke-linux -MemoryDirectory path/to/memory-probe-linux
 ```
 
-The validator checks the current pins, scripts, tools, renderer, fixture and
-reference hashes; all three exact PNG captures; and every retained memory-probe
+The validator checks the current browser pin, fixture and reference hashes;
+all three exact PNG captures; and every retained memory-probe
 report/input pair. It checks artifact consistency, not GitHub provenance: record
 the successful workflow URL, commit and job conclusion separately before calling
 the captures remote evidence or admitting a Linux baseline.
 
 Chrome fingerprint schema 4 requires the startup-health diagnostics; the memory
-summary remains schema 3. Both retain newline-normalized script hashes introduced
-in schema 2. Version 1 raw working-tree script hashes are not portable across
-checkout line-ending policies. Old Chrome schema-3 fingerprints do not establish
-observed sandbox health and are rejected by the current validator.
+summary remains schema 3. Reports identify inputs, outputs, browser and runtime;
+Git and CI workflow revisions identify the code. Solution source, script and
+assembly hashes are no longer recorded or required. Older reports may retain
+these unused fields. Old Chrome schema-3 fingerprints do not establish observed
+sandbox health and are rejected by the current validator.
 
 The setup script refuses an archive or extracted executable whose SHA-256 differs
 from the pin; `-Offline` also refuses a cache miss rather than downloading. The

@@ -12,13 +12,6 @@ $ErrorActionPreference = 'Stop'
 if ($CaptureRuns -ne 3) { throw 'Pinned Chrome smoke requires exactly three fresh-process captures.' }
 if ($CaptureTimeoutMilliseconds -le 0) { throw 'CaptureTimeoutMilliseconds must be positive.' }
 
-function Get-TextSha256 {
-    param([Parameter(Mandatory = $true)] [string] $Path)
-
-    $text = [IO.File]::ReadAllText($Path).Replace("`r`n", "`n").Replace("`r", "`n")
-    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.UTF8Encoding]::new($false).GetBytes($text))).ToLowerInvariant()
-}
-
 $pin = Get-Content -LiteralPath $PinPath -Raw | ConvertFrom-Json
 $setupChrome = Join-Path $PSScriptRoot 'setup-chrome.ps1'
 $executable = & $setupChrome -CacheDirectory $CacheDirectory -PinPath $PinPath
@@ -125,10 +118,6 @@ $fingerprint = [ordered]@{
     executableSha256 = $pin.executableSha256
     executableFileVersion = $executableVersion
     captureRecipeRevision = $pin.captureRecipeRevision
-    smokeScriptSha256 = Get-TextSha256 $PSCommandPath
-    setupScriptSha256 = Get-TextSha256 $setupChrome
-    captureToolSha256 = (Get-FileHash -LiteralPath $chromeTool -Algorithm SHA256).Hash.ToLowerInvariant()
-    comparisonToolSha256 = (Get-FileHash -LiteralPath $diffTool -Algorithm SHA256).Hash.ToLowerInvariant()
     fixtureSha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant()
     referenceSha256 = (Get-FileHash -LiteralPath $reference -Algorithm SHA256).Hash.ToLowerInvariant()
     operatingSystem = [System.Runtime.InteropServices.RuntimeInformation]::OSDescription

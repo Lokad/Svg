@@ -30,7 +30,6 @@
     "measuredRendererRejections": 3
   },
   "oracleTransportFailures": {
-    "captureToolSha256": "2b6390104d73c844f251d87b999d872cae0728f107cc3736ab623fb29a303c5f",
     "failures": [
       {
         "id": "inv-020-large-transparent",

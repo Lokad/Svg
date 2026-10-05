@@ -16,16 +16,9 @@ $probeTool = Join-Path $PSScriptRoot 'Lokad.Svg.MemoryProbe/bin/Release/net10.0/
 $fixture = Join-Path $PSScriptRoot '../tests/Fixtures/original/solid-red.svg'
 $reference = Join-Path $PSScriptRoot '../tests/References/original-solid-red.png'
 $pinPath = Join-Path $PSScriptRoot $(if ($Platform -eq 'Windows') { 'chrome-for-testing.json' } else { 'chrome-for-testing.linux64.json' })
-$smokeScript = Join-Path $PSScriptRoot 'test-chrome.ps1'
-$setupScript = Join-Path $PSScriptRoot 'setup-chrome.ps1'
 $chromeTool = Join-Path $PSScriptRoot 'Lokad.Svg.Chrome/bin/Release/net10.0/Lokad.Svg.Chrome.dll'
-foreach ($required in @($validator, $comparisonTool, $chromeTool, $probeTool, $fixture, $reference, $pinPath, $smokeScript, $setupScript)) {
+foreach ($required in @($validator, $comparisonTool, $chromeTool, $probeTool, $fixture, $reference, $pinPath)) {
     if (-not (Test-Path -LiteralPath $required)) { throw "Validator fixture dependency is missing: $required" }
-}
-
-function Get-TextSha256([string] $Path) {
-    $text = [IO.File]::ReadAllText($Path).Replace("`r`n", "`n").Replace("`r", "`n")
-    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.UTF8Encoding]::new($false).GetBytes($text))).ToLowerInvariant()
 }
 
 function Invoke-Tool([string] $Tool, [string[]] $ToolArguments, [string] $Context) {
@@ -61,10 +54,6 @@ function Write-Fingerprint([string] $Directory, [string] $RunId, [string[]] $Can
         archiveSha256 = $pin.archiveSha256
         executableSha256 = $pin.executableSha256
         captureRecipeRevision = $pin.captureRecipeRevision
-        smokeScriptSha256 = Get-TextSha256 $smokeScript
-        setupScriptSha256 = Get-TextSha256 $setupScript
-        captureToolSha256 = (Get-FileHash -LiteralPath (Join-Path $PSScriptRoot 'Lokad.Svg.Chrome/bin/Release/net10.0/Lokad.Svg.Chrome.dll') -Algorithm SHA256).Hash.ToLowerInvariant()
-        comparisonToolSha256 = (Get-FileHash -LiteralPath $comparisonTool -Algorithm SHA256).Hash.ToLowerInvariant()
         fixtureSha256 = (Get-FileHash -LiteralPath $fixture -Algorithm SHA256).Hash.ToLowerInvariant()
         referenceSha256 = (Get-FileHash -LiteralPath $reference -Algorithm SHA256).Hash.ToLowerInvariant()
         operatingSystem = [System.Runtime.InteropServices.RuntimeInformation]::OSDescription
