@@ -1,7 +1,8 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-05. Bounded CPU raster contexts now carry bordered construction
-clips and exclusively owned interiors through all four shared polygon paints.
+Reconciled 2026-10-05 against renderer checkpoint `9a87b8fd`. Bounded CPU raster
+contexts now carry bordered construction clips and exclusively owned interiors
+through all four shared polygon paints.
 Ford remains **six exact of nine**; its three large variants improve to
 929/1,245/560 differing pixels (transparent/white/black), with transparent alpha
 error 3,573. **Next: compare native and managed tile-local mapping/setup/paint at
@@ -36,6 +37,10 @@ not a prerequisite to improving the shared renderer.
 
 ## 1. Current baseline and its limits
 
+The table describes the last validated renderer checkpoint (`9a87b8fd`), not a
+new validation run performed during this plan review. Historical checkpoint
+counts below do not replace this current baseline.
+
 | Current validated evidence | Assessment |
 | --- | --- |
 | Fresh Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
@@ -47,6 +52,8 @@ not a prerequisite to improving the shared renderer.
 | Latest recorded Ford all-variant evidence | Small 250×100 and intended 500×200 × transparent/white/black are exact: **six exact of nine**. Large 1000×400 retains 929/1,245/560 changed pixels (transparent/white/black); transparent total alpha error is 3,573, max channel/alpha error 128/68. CPU contexts improve all three large variants while preserving the six exact complete PNGs; zero opaque/hole flips. All nine original references and current candidate identities are portable regressions. |
 | Representativeness | 57 of the 92 inventory headings identify flags or flag badges/icons. Corporate marks and outlined wordmarks need a separate frozen cohort; the whole inventory is not a representative corporate denominator. |
 | Not refreshed by the baseline/checkpoint gates | Linux/remote CI, a full browser-reference refresh, full independent inventory variant regeneration, BenchmarkDotNet throughput, private-font metrics and pixels. The bounded overlap captures below are separate evidence. |
+
+### Historical checkpoint evidence
 
 The original review and full-canvas checkpoint retain their dated evidence under
 ignored `artifacts/review-2026-10-04/` and `artifacts/span-dispatch-20261004/`.
@@ -178,13 +185,38 @@ completed stage: the remaining exit evidence below governs completion.
 | 1 | **Complete: bounded semantic repairs.** S12 miter threshold and R41 zero-area objectBoundingBox gradient path strokes are repaired. | Preserve acute-limit branches, degenerate path/use and userSpace controls; no reopened defect. |
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
 | 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. General coverage/alpha and layer composition need independent controls; group-opacity on white still differs. |
-| 4 | **Active with rows 3 and 5: shared scan conversion.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows and one-chord cubic admission have landed. Shared clipped line/quad/cubic construction and bounded CPU raster contexts now land across all four paints. | Preserve clipping for escaping path/control bounds, X/Y splitting, projected-edge winding and bounded two-pass storage. Preserve whole-path dispatch, bitmap-bounded row storage and exclusive interiors; resolve remaining large Ford events from tile-local native evidence; general fractional events, crossings, counters and overlaps remain open. |
-| 5 | **Open with row 4: retained curves and final device mapping.** Double maps, retained controls, live non-convex cubic stepping, curve/walk state separation and one-chord cubic admission have landed. | Preserve transform/instance and large-translation evidence. The original uncut tip's setup/advance and its existing-edge scan operations match compiled native code. Clipped preparation now removes the small/intended mismatches. The first large mismatch is reproduced by the observed native tile construction clip; integrate that context before changing recurrence. Native parsing/mapping and full-image paint parity remain unproven. Fractional-event, quad/convex/stroke work retains its separate fallback/gates until proved. |
+| 4 | **Active with rows 3 and 5: shared scan conversion.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows and one-chord cubic admission have landed. Shared clipped line/quad/cubic construction and bounded CPU raster contexts have landed across all four paints. | Preserve clipping for escaping path/control bounds, X/Y splitting, projected-edge winding and bounded two-pass storage. Preserve whole-path dispatch, bitmap-bounded row storage and exclusive interiors; resolve remaining large Ford events from tile-local native evidence; general fractional events, crossings, counters and overlaps remain open. |
+| 5 | **Open with row 4: retained curves and final device mapping.** Double maps, retained controls, live non-convex cubic stepping, curve/walk state separation and one-chord cubic admission have landed. | Preserve transform/instance and large-translation evidence. Identical supplied geometry/prepared edges match compiled native setup and sampled walks; that does not prove browser authoring or mapping parity. Clipped preparation makes the small/intended variants exact, and integrated CPU contexts close the original row-6 large witness. Compare actual native authored verbs, tile-local mapping, setup, walk and paint at the remaining (740,30) event before changing recurrence or arithmetic. Full-image parity and separately gated fractional-event, quad/convex/stroke work remain open. |
 | 6 | **Partial: curve-aware stroke completion.** Width/cascade, cap/join/dash, zero-width and straight-source union repairs are retained. | True curve tangents/dash cuts, curved/dashed overlap and seam handling, remaining round/miter/hairline/pathLength/non-scaling cases through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Not achieved: independent milestone and delivery, S8/S17.** The 92-file inventory and all-variant records are useful evidence, not a release rate. | First exact curved corporate mark and outlined wordmark; then a frozen representative cohort meeting the 80% exact-document target overall and per corporate stratum, complete declared variants and fresh platform/package/resource/performance evidence. |
 
-### Active work order: native raster clip contexts (2026-10-05)
+### Active work order: tile-local mapping, setup and paint (2026-10-05)
+
+Preserve the landed generic CPU contexts. The first remaining large-transparent
+Ford event is (740,30): reference RGBA (0,50,120,91), candidate (0,51,119,90).
+Compare the actual browser-authored retained verbs and transforms through
+tile-local mapping, clipped edge setup, walk operations and paint. A native walker
+fed managed geometry proves agreement for that supplied state; it cannot establish
+the browser's mapped geometry or identify paint as the cause. Establish the
+earliest differing state before changing recurrence, density or material arithmetic.
+
+A bounded shared repair may land with independent mechanism-level improvement
+and nonregression across all nine Ford variants, even if Ford is unchanged. A
+Ford-targeted improvement must preserve the six exact complete PNGs, strictly
+reduce changed-pixel count or total alpha error in at least one remaining large
+variant and record complete before/after comparisons for all nine. Changed-pixel
+counts and total alpha error must not worsen on any
+Ford variant, and no new opaque/hole flips may appear. **Ford is repaired only
+when all nine variants have zero differences.** None of these slice criteria
+changes the S17 target or denominator.
+
+Keep the original references, independent exact controls, clipped
+rounded-rectangle witness, Default admissions and ownership/work/cancellation
+contracts. Tile-local mapping and complete paint parity still require proof;
+a smaller mismatch census is not an exit.
+
+### Landed renderer checkpoints and retained evidence
 
 **Implemented mechanism.** Small native path bounds select an accumulated mask;
 larger bounds preserve ordered direct single/pair/full-span paints separately from
@@ -203,8 +235,9 @@ Reservations precede allocation, cover old/new growth peaks and release on denia
 or cancellation. Recording, indexing, overlap replay, copying and traversal are
 charged; cancellation preserves its token during growth and replay. Ten focused
 tests cover material arithmetic, compact spans, denial, growth peaks and cleanup.
-Native-size `inv-050` still has a measured replay slowdown; retain its matching
-before/after timing and work evidence and address that cost before release.
+The paint checkpoint recorded a native-size `inv-050` replay slowdown. Retain its
+matching before/after evidence alongside the later CPU-context timings; measure
+the remaining replay cost and representative performance before release.
 
 **Measured result.** All 12 original dispatch controls and the 12 new solid
 material/background configurations are exact. Two blue triangles and a 768-path
@@ -214,7 +247,7 @@ The latter guards the axis-aligned route; the polygon grid is a separate input
 identity, not a replacement reference. Native solid/pattern ellipse captures
 also disprove the old same-renderer identity assertion; both failures stay banked.
 
-| Ford size | Changed pixels, before paint → window → one-chord → clipped → CPU context (transparent / white / black) | Transparent alpha error, before paint → window → one-chord → clipped → CPU context |
+| Ford size | Changed pixels, pre-paint → paint/window → one-chord → clipped → CPU context (transparent / white / black) | Transparent alpha error, pre-paint → paint/window → one-chord → clipped → CPU context |
 | --- | --- | --- |
 | 250×100 | 592/576/469 → 268/268/230 → 222/222/185 → 0/0/0 → **0/0/0** | 2,842 → 1,945 → 1,457 → 0 → **0** |
 | 500×200 | 1,200/1,186/945 → 550/548/476 → 433/432/364 → 0/0/0 → **0/0/0** | 6,761 → 5,092 → 3,176 → 0 → **0** |
@@ -370,23 +403,6 @@ ledgers, capture triples and negative control are under
 `artifacts/cpu-raster-context-20261005/`; declarations, references, policy/source
 fingerprints and regression tests are portable.
 
-**Next concrete slice.** Preserve the generic context mechanism and compare the
-first remaining large-transparent event at (740,30), reference RGBA (0,50,120,91)
-versus candidate (0,51,119,90), against actual native tile-local retained-verb
-mapping, setup, walk and paint. Establish the earliest differing state before
-changing recurrence, density or material arithmetic. Keep the original nine
-references, independent controls, exact fixtures, clipped rounded-rectangle
-witness and Default admissions. Resolve remaining large events without weakening
-the all-nine zero-difference wordmark exit. Tile-local mapping and complete paint
-parity still require proof; a smaller mismatch census is not an exit.
-
-A bounded shared repair may land with independent mechanism-level improvement and
-all-nine Ford nonregression. A claim to repair Ford requires improvement on all
-nine. This replaces the previous requirement that any scan-window repair improve
-Ford: the measured window dependency is real but neutral on that wordmark; the
-cubic admission repair improves six variants. Neither
-acceptance rule changes the zero-difference wordmark exit or S17 denominator.
-
 Subsequent slices must preserve all exact fixtures, output API parity, existing
 admission and categorized failures, cancellation/ownership behavior and Default
 resource limits. Record complete candidate/reference identities, total and
@@ -418,13 +434,13 @@ step in the design record instead of expanding the calibration census.
 | R31 | CI artifact-validator hooks, Windows sandbox setup/health, wrapper deadline/drain and atomic publication are repaired. One opt-in corpus capture/compare/report workflow and representative performance evidence remain; reuse existing tools. |
 | R33 | Original scaled clip-coordinate fault repaired; fractional mapped coverage and exact independent controls exist. Contained raw edges use a distinct scan window. Escaping control bounds trigger native clipped construction, even when the tip fits: this is demonstrated on Ford. That boundary is now integrated; preserve its exact controls while resolving remaining large-size events and general clip combinations. |
 | R34 | Shared scan conversion, analytic coverage, contact/union, straight-source sibling-stroke separation, operation/material preservation, contained-edge scan windows and one-chord cubic admission have landed. Native clipped construction now makes six Ford variants exact; uncut tip recurrence and sampled existing-edge operations match compiled native code. Complex parity/contact cases and curved/dashed stroke unions retain their gates or known differences. Preserve the exact twin-ring repair; rows 4/6. |
-| R35 | Retained controls, device-map threading, live non-convex cubic fills, curve/walk state separation and one-chord cubic admission have landed. The mapping discriminator confirms large-translation float precision but rejects the measured casts as a leading Ford repair. Fractional-event fidelity, quad/convex/stroke migration and wider scalable-instance evidence remain bounded follow-ups; row 5. |
+| R35 | Retained controls, device-map threading, live non-convex cubic fills, curve/walk state separation and one-chord cubic admission have landed. The earlier mapping discriminator confirms large-translation float precision and rejects its measured early casts as a Ford repair; it does not prove late tile-local mapping. Compare actual browser-authored verbs and transforms at the remaining large witness. Fractional-event fidelity, quad/convex/stroke migration and wider scalable-instance evidence remain bounded follow-ups; row 5. |
 | R36 | Cascaded cap/join/dash/width values are carried and many spelling twins pass. Finish shared typed state and practical inheritance without reopening repaired attribute/inline cases. |
 | R37 | Fractional/scientific curves, root sizing, relative-moveto repairs, similarity maps and arc-free path-fill skew admission have landed. Preserve the support matrix's remaining arc/stroke/instance and general-transform gates; new admissions require the active target's dependency evidence. |
 | R38 | Maximum scratch allocations substantially reduced; continue actual-size storage, ownership transfer and measured many-curve/wordmark allocation work. |
 | R39 | Mapping/definition lifetime and shared preparation reservation repairs are retained. Audit each new curve-state buffer, growth peak and setup/advance/coverage cost before allocation or work; preserve during-phase cancellation and cleanup. Passing existing memory scenarios does not prove every new allocation bounded. |
 
-### Completed original repairs: preserve their regressions
+### Original finding dispositions and retained regressions
 
 | IDs / stages | Disposition |
 | --- | --- |
@@ -456,7 +472,7 @@ step in the design record instead of expanding the calibration census.
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
 | S12 | Caps/joins/dashes/stroke outlines and the bounded row-1 repairs exist. Remaining curved/dashed union, tangent and antialiasing errors belong to row 6 using common coverage. |
 | S13 | Gradient/pattern paint maps and premultiplied composition exist; R41 is closed. Bounded full-canvas paint routing is repaired in row 3; remaining coverage/paint alpha, dither, group composition and paint combinations need exact controls. |
-| S14 | Rectangle clips, contained-edge scan windows, limited masks and isolated opacity exist. Bounded clipped construction is integrated when path/control bounds escape the canvas or explicit clip, including curves whose geometry fits. Preserve X/Y pieces, projected winding, storage and fractional paint coverage; general clipped event fidelity remains open. General clips, mask regions/content and bounded nested composition remain. |
+| S14 | Rectangle clips, contained-edge scan windows, limited masks and isolated opacity exist. Bounded CPU raster contexts separate bitmap construction bounds from owned interiors. Clipped construction is integrated when path/control bounds escape the bitmap, canvas or explicit clip, including curves whose geometry fits. Preserve X/Y pieces, projected winding, whole-path dispatch, bitmap-bounded storage, exclusive interiors and fractional paint coverage. General clipped event fidelity, clips, mask regions/content and bounded nested composition remain open. |
 | S15 | Live-text wordmarks are experimental, not required for outlined wordmarks. Follow section 6 and shared glyph contours, not a separate renderer. |
 | S16 | Uniform embedded PNGs and narrow patterns exist. General raster decoding/resampling, multi-element patterns, markers, filters/blending and additional static CSS only for measured blockers. |
 | S17 | Not achieved. Requires a frozen representative corporate cohort meeting at least 80% exact documents overall and per corporate stratum, every declared variant exact for counted documents and fresh delivery evidence. |

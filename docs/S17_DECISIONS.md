@@ -1,20 +1,21 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-05: shared clipped-edge preparation follows the independently
-verified kernel (`57c6a7e3`), retained one-chord cubics, operation-preserving paint
-and contained-edge scan windows. Six small/intended Ford variants are exact;
+Updated 2026-10-05 at renderer checkpoint `9a87b8fd`: bounded CPU raster contexts
+follow shared clipped-edge preparation, the independently verified kernel
+(`57c6a7e3`), retained one-chord cubics, operation-preserving paint and contained-edge
+scan windows. Six small/intended Ford variants are exact;
 the three large variants improve but remain known differences.
 [PLAN.md](../PLAN.md) is the current execution queue. Rows 3–7 still have
 implementation and fidelity exits; the earlier claim that rows 1–7 were complete
 within architectural limits is withdrawn. The first exact curved corporate mark
 and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 
-Current validated evidence: 613 fixture entries = 495 exact + 113 known-difference
-renders + five rejections across 362 base documents and 251 variants; 67 research
+Current validated evidence: 629 fixture entries = 499 exact + 124 known-difference
+renders + six rejections across 378 base documents and 251 variants; 67 research
 probes = 66 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 3,054 core + 115 visual + six FontProbe tests pass. All 25 memory
+Release build and 3,071 core + 117 visual + six FontProbe tests pass. All 25 memory
 scenarios, package inspection and isolated installed-consumer checks pass at the
-clipped-preparation checkpoint. The Default inventory retains 88 renders +
+CPU-context checkpoint. The Default inventory retains 88 renders +
 four MalformedInput rejections out of 92. These counts establish neither corporate
 coverage, full independent-variant validation nor Linux delivery.
 
@@ -67,6 +68,9 @@ The wordmark exit remains **all nine exact**, so the document cannot enter an
 exact-document numerator. Original references, capture provenance and every current
 candidate identity are portable under `tests/References/inventory/`; nine ordinary
 tests preserve exact successes and the three retained failures.
+
+The following clipped-preparation results are historical checkpoints; the current
+CPU-context baseline is summarized above and at the end of this record.
 
 The 160 compiled-native inputs / 334 pieces remain the clipping-kernel evidence.
 Shared preparation now counts clipped verbs in a charged stack-only pass, reserves
