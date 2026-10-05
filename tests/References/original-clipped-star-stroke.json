@@ -1,0 +1,55 @@
+{
+  "fixtureId": "original-clipped-star-stroke",
+  "referencePng": "original-clipped-star-stroke.png",
+  "referenceSha256": "035619a4d03ff3ae37da88bb8e47d3ae3a2f405299ede5c5541fc892ab726571",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "ea7241086c19407d95bf08d6ab749a39faa00a49a5ac30b504f9157cf6b42dcb",
+  "candidateSha256": "53c1d14823db5d1e5bc0739b18fa49bb6666f7976395667de44398b0628f1b9f",
+  "admittedAt": "Clipped preparation construction witness, 2026-10-05",
+  "captureSha256": [
+    "035619a4d03ff3ae37da88bb8e47d3ae3a2f405299ede5c5541fc892ab726571",
+    "035619a4d03ff3ae37da88bb8e47d3ae3a2f405299ede5c5541fc892ab726571",
+    "035619a4d03ff3ae37da88bb8e47d3ae3a2f405299ede5c5541fc892ab726571"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeImplementation": false,
+  "declarationReason": "Existing unit-test construction witness; declared after first integrated render and before independent captures.",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 173,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 27,
+    "alphaChangedPixelCount": 173,
+    "minimumMismatchX": 2,
+    "minimumMismatchY": 0,
+    "maximumMismatchX": 31,
+    "maximumMismatchY": 31,
+    "exact": false,
+    "alphaErrorMass": 1128,
+    "overCoveragePixelCount": 119,
+    "underCoveragePixelCount": 54,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

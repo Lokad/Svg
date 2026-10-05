@@ -2227,46 +2227,7 @@
         "decodedPixelStability": "identical"
       }
     },
-    {
-      "id": "research-dashed-cubic-16x16",
-      "path": "dashed-cubic-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-10-02",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "d3edcfb5c67deeb726f4335f03d2c69ae36900fe0bd9ca41f339b6a04ecd9d2d",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "dash",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "admittedRendering": {
-        "changedPixelCount": 38,
-        "maximumChannelError": 70,
-        "maximumAlphaError": 70,
-        "alphaChangedPixelCount": 38,
-        "minimumMismatchX": 1,
-        "minimumMismatchY": 4,
-        "maximumMismatchX": 15,
-        "maximumMismatchY": 10
-      },
-      "oracle": {
-        "referencePng": "references/dashed-cubic-16x16.png",
-        "referenceSha256": "8e57c632348274f2d5edcdf82b9825176056fb1ff6c3969e41a22c3b1da5fdf0",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
+    {"id":"research-dashed-cubic-16x16","path":"dashed-cubic-16x16.svg","creator":"Lokad.Svg contributors","retrievalDate":"2026-10-02","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","sourceSha256":"d3edcfb5c67deeb726f4335f03d2c69ae36900fe0bd9ca41f339b6a04ecd9d2d","featureTags":["geometry","stroke","dash","calibration"],"width":16,"height":16,"admittedRendering":{"changedPixelCount":36,"maximumChannelError":58,"maximumAlphaError":58,"alphaChangedPixelCount":36,"minimumMismatchX":1,"minimumMismatchY":4,"maximumMismatchX":15,"maximumMismatchY":10},"oracle":{"referencePng":"references/dashed-cubic-16x16.png","referenceSha256":"8e57c632348274f2d5edcdf82b9825176056fb1ff6c3969e41a22c3b1da5fdf0","chromeVersion":"153.0.8010.52","chromiumRevision":"1681091","chromeExecutableSha256":"f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9","platform":"win64","captureRecipeRevision":"3","deviceScaleFactor":1,"background":"transparent","freshProcessCaptures":3,"decodedPixelStability":"identical"},"admittedRenderingCandidateSha256":"d0f90ec40b32dcbd9402b9f8812c423ee98aabddd618738b48ac49ec08ab6a20"},
     {
       "id": "research-quad-stroke-16x16",
       "path": "quad-stroke-16x16.svg",
@@ -2306,45 +2267,7 @@
         "decodedPixelStability": "identical"
       }
     },
-    {
-      "id": "research-cubic-stroke-16x16",
-      "path": "cubic-stroke-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-10-02",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "dfd952c6e3e056df59b991f88dc751df51338326349381a1d969d8702cca780a",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "admittedRendering": {
-        "changedPixelCount": 31,
-        "maximumChannelError": 70,
-        "maximumAlphaError": 70,
-        "alphaChangedPixelCount": 31,
-        "minimumMismatchX": 0,
-        "minimumMismatchY": 4,
-        "maximumMismatchX": 15,
-        "maximumMismatchY": 11
-      },
-      "oracle": {
-        "referencePng": "references/cubic-stroke-16x16.png",
-        "referenceSha256": "4b3322f39a5209d10dc3b3e3ecc4150801353013d6d715140cbde521298ce74a",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
+    {"id":"research-cubic-stroke-16x16","path":"cubic-stroke-16x16.svg","creator":"Lokad.Svg contributors","retrievalDate":"2026-10-02","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","sourceSha256":"dfd952c6e3e056df59b991f88dc751df51338326349381a1d969d8702cca780a","featureTags":["geometry","stroke","calibration"],"width":16,"height":16,"admittedRendering":{"changedPixelCount":31,"maximumChannelError":68,"maximumAlphaError":68,"alphaChangedPixelCount":31,"minimumMismatchX":0,"minimumMismatchY":4,"maximumMismatchX":15,"maximumMismatchY":11},"oracle":{"referencePng":"references/cubic-stroke-16x16.png","referenceSha256":"4b3322f39a5209d10dc3b3e3ecc4150801353013d6d715140cbde521298ce74a","chromeVersion":"153.0.8010.52","chromiumRevision":"1681091","chromeExecutableSha256":"f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9","platform":"win64","captureRecipeRevision":"3","deviceScaleFactor":1,"background":"transparent","freshProcessCaptures":3,"decodedPixelStability":"identical"},"admittedRenderingCandidateSha256":"a82726960059ef55f0b289699e53c3be5487e31593d5818a843f8ebdadd4c721"},
     {
       "id": "research-spike-join-bevel-16x16",
       "path": "spike-join-bevel-16x16.svg",
@@ -2428,47 +2351,7 @@
         "decodedPixelStability": "identical"
       }
     },
-    {
-      "id": "research-skewed-quad-64x64",
-      "path": "skewed-quad-64x64.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-10-03",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "dc1ca31688fe4994d1212fdab7915e14509a41817365f7306a6714764f933b2e",
-      "featureTags": [
-        "geometry",
-        "transform",
-        "quad",
-        "calibration"
-      ],
-      "width": 64,
-      "height": 64,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 62,
-        "maximumChannelError": 255,
-        "maximumAlphaError": 39,
-        "alphaChangedPixelCount": 62,
-        "minimumMismatchX": 25,
-        "minimumMismatchY": 28,
-        "maximumMismatchX": 63,
-        "maximumMismatchY": 47
-      },
-      "oracle": {
-        "referencePng": "references/skewed-quad-64x64.png",
-        "referenceSha256": "a0d6f0ab23ad1a0137205ba367c9a595488bd3d1538ab5c1ef34f161c59f06bb",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
+    {"id":"research-skewed-quad-64x64","path":"skewed-quad-64x64.svg","creator":"Lokad.Svg contributors","retrievalDate":"2026-10-03","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","sourceSha256":"dc1ca31688fe4994d1212fdab7915e14509a41817365f7306a6714764f933b2e","featureTags":["geometry","transform","quad","calibration"],"width":64,"height":64,"candidateError":"UnsupportedFeature","admittedRendering":{"changedPixelCount":9,"maximumChannelError":1,"maximumAlphaError":1,"alphaChangedPixelCount":9,"minimumMismatchX":26,"minimumMismatchY":32,"maximumMismatchX":63,"maximumMismatchY":42},"oracle":{"referencePng":"references/skewed-quad-64x64.png","referenceSha256":"a0d6f0ab23ad1a0137205ba367c9a595488bd3d1538ab5c1ef34f161c59f06bb","chromeVersion":"153.0.8010.52","chromiumRevision":"1681091","chromeExecutableSha256":"f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9","platform":"win64","captureRecipeRevision":"3","deviceScaleFactor":1,"background":"transparent","freshProcessCaptures":3,"decodedPixelStability":"identical"},"admittedRenderingCandidateSha256":"0a2367334952ecb7027b289c9d53aaa578b4bad2cb7d3627083598e0d76bbaf4"},
     {
       "id": "research-gradient-outline-quad-16x16",
       "path": "gradient-outline-quad-16x16.svg",

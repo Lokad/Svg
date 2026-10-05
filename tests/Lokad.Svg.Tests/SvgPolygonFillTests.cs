@@ -711,11 +711,12 @@ public sealed class SvgPolygonFillTests
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L4.5,0.5 L7.5,0.5' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 0));
-        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 8, 4, 1));
-        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(pixels, 8, 0, 0));
-        Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 8, 0, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 127), Pixel(pixels, 8, 4, 1));
+        Assert.Equal(new SvgColor(255, 0, 0, 127), Pixel(pixels, 8, 0, 0));
+        Assert.Equal(new SvgColor(255, 0, 0, 63), Pixel(pixels, 8, 0, 1));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 0, 2));
-        Assert.Equal(2682, AlphaSum(pixels));
+        // Fresh pinned captures establish these exact clipped band values.
+        Assert.Equal(2672, AlphaSum(pixels));
     }
 
     [Fact]

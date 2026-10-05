@@ -15,7 +15,13 @@ public static class SvgConverter
     {
         public void Dispose() => Reservation?.Dispose();
 
-        /// <summary>Gets the raw-edge walk window; paths needing clip-built edges retain their existing post-coverage clip route.</summary>
+        /// <summary>Gets optional clipped construction when complete mapped path/control bounds escape the clip.</summary>
+        internal SvgAnalyticClipContext? GetConstructionClip(int canvasWidth, int canvasHeight)
+            => ClipContainsPath ? null : new(Clip is {} bounds
+                ? new((int)Math.Clamp(Math.Floor(bounds.Left), 0, canvasWidth), (int)Math.Clamp(Math.Floor(bounds.Top), 0, canvasHeight), (int)Math.Clamp(Math.Ceiling(bounds.Right), 0, canvasWidth), (int)Math.Clamp(Math.Ceiling(bounds.Bottom), 0, canvasHeight))
+                : new(0, 0, canvasWidth, canvasHeight));
+
+        /// <summary>Gets the uncut walk window; clipped preparation selects its construction clip after eligibility.</summary>
         internal SvgAnalyticScanWindow GetScanWindow(int canvasWidth)
             => !ClipContainsPath ? new(PathStartX, PathEndX)
                 : Clip is {} bounds ? new((int)Math.Clamp(Math.Floor(bounds.Left), 0, canvasWidth), (int)Math.Clamp(Math.Ceiling(bounds.Right), 0, canvasWidth))
@@ -528,8 +534,8 @@ public static class SvgConverter
                     var bounds = mappedClip.Value;
                     // Native raw-edge walking requires the complete path bounds,
                     // including retained controls, to be inside the clip. Otherwise
-                    // native edge construction clips first; that migration remains
-                    // separate from this window repair and retains the existing route.
+                    // shared edge construction clips first, then uses that clip
+                    // for walking while fractional clip coverage stays in paint.
                     clipContainsPath = clipContainsPath && bounds.Left <= Math.Floor(left) && bounds.Top <= Math.Floor(top) && bounds.Right >= Math.Ceiling(right) && bounds.Bottom >= Math.Ceiling(bottom);
                     if (clipContainsPath)
                     {
@@ -567,7 +573,7 @@ public static class SvgConverter
             SvgAnalyticPaint analyticPaint = SvgAnalyticPaint.Solid(polygon.Color);
             ReadOnlySpan<int> contourEnds = polygon.ContourEnds;
             ReadOnlySpan<int> nestingSigns = polygon.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, raster.QuadSpans, raster.CubicSpans, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, raster.GetScanWindow(outputWidth), budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, raster.QuadSpans, raster.CubicSpans, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, raster.GetScanWindow(outputWidth), raster.GetConstructionClip(outputWidth, outputHeight), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
             // Charge the taken traversal: analytic rows cost pixels while the fan evaluates every contour per pixel.
@@ -627,7 +633,7 @@ public static class SvgConverter
             }
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, raster.GetScanWindow(outputWidth), budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, raster.GetScanWindow(outputWidth), raster.GetConstructionClip(outputWidth, outputHeight), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
             long coverage = useAnalytic ? (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) : (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
@@ -726,7 +732,7 @@ public static class SvgConverter
             }
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, raster.GetScanWindow(outputWidth), budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, raster.GetScanWindow(outputWidth), raster.GetConstructionClip(outputWidth, outputHeight), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
             long coverage = useAnalytic ? (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) : (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;
@@ -879,7 +885,7 @@ public static class SvgConverter
             BlitPatternTile(tile, blitted);
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, raster.GetScanWindow(outputWidth), budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, raster.PathStartX, raster.PathEndX, raster.PathStartY, raster.PathEndY, outputWidth, outputHeight, raster.GetScanWindow(outputWidth), raster.GetConstructionClip(outputWidth, outputHeight), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
             if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
             workUnits += analyticSetup;
             long coverage = useAnalytic ? (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) : (long)(raster.EndY - raster.StartY) * (raster.EndX - raster.StartX) * raster.Points.Length;

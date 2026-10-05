@@ -1,0 +1,55 @@
+{
+  "fixtureId": "original-clipped-fractional-stroke",
+  "referencePng": "original-clipped-fractional-stroke.png",
+  "referenceSha256": "bd99be560ec20871b1e6c487be376cb42885cf12a0a2473d6747d256d9018cfa",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "dfb0b1393f645e7f24664493b7378d3bd47055992927525c1780e3d4930ab8a0",
+  "candidateSha256": "5c218e08511988fa7d7f6e3047fdda8417d0ad2905770a797222204d7e0e9634",
+  "admittedAt": "Clipped preparation construction witness, 2026-10-05",
+  "captureSha256": [
+    "bd99be560ec20871b1e6c487be376cb42885cf12a0a2473d6747d256d9018cfa",
+    "bd99be560ec20871b1e6c487be376cb42885cf12a0a2473d6747d256d9018cfa",
+    "bd99be560ec20871b1e6c487be376cb42885cf12a0a2473d6747d256d9018cfa"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeImplementation": false,
+  "declarationReason": "Existing unit-test construction witness; declared after first integrated render and before independent captures.",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 8,
+    "minimumMismatchY": 8,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

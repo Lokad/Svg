@@ -1,0 +1,388 @@
+{
+  "documentId": "inv-002",
+  "input": "Fixtures/candidates/inv-002.svg",
+  "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+  "source": "Wikimedia Commons, File:Ford simple text logo.svg; retrieved 2026-09-26",
+  "license": "PD-textlogo; source and trademark disclosure retained in docs/INVENTORY.md",
+  "provenance": "docs/INVENTORY.md#inv-002--ford-simple-text-logo",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "captureDate": "2026-10-02",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "rendererSha256": "f86147ae178b9586b49e4f46bfc2ccb4df7d50d918357cc4eaad775bae764f5a",
+  "variants": [
+    {
+      "id": "inv-002-250x100-transparent",
+      "width": 250,
+      "height": 100,
+      "background": "transparent",
+      "referencePng": "inv-002-250x100-transparent.png",
+      "referenceSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+      "captureSha256": [
+        "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+        "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+        "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a"
+      ],
+      "captureStartupHealth": [
+        "healthy",
+        "healthy",
+        "healthy"
+      ],
+      "captureProfilesCleaned": [
+        true,
+        true,
+        true
+      ],
+      "candidateSha256": "cd677106b94bc25589abded976835552f88b70450d89ac94e4cbe9a568137937",
+      "comparison": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 250,
+        "minimumMismatchY": 100,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      }
+    },
+    {
+      "id": "inv-002-250x100-white",
+      "width": 250,
+      "height": 100,
+      "background": "white",
+      "referencePng": "inv-002-250x100-white.png",
+      "referenceSha256": "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+      "captureSha256": [
+        "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+        "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+        "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227"
+      ],
+      "captureStartupHealth": [
+        "healthy",
+        "healthy",
+        "healthy"
+      ],
+      "captureProfilesCleaned": [
+        true,
+        true,
+        true
+      ],
+      "candidateSha256": "a81bec90bc3a183134cdaa21eeb1e0d4031e11f292c157920d6a02b78be78493",
+      "comparison": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 250,
+        "minimumMismatchY": 100,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      }
+    },
+    {
+      "id": "inv-002-250x100-black",
+      "width": 250,
+      "height": 100,
+      "background": "black",
+      "referencePng": "inv-002-250x100-black.png",
+      "referenceSha256": "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+      "captureSha256": [
+        "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+        "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+        "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b"
+      ],
+      "captureStartupHealth": [
+        "healthy",
+        "healthy",
+        "healthy"
+      ],
+      "captureProfilesCleaned": [
+        true,
+        true,
+        true
+      ],
+      "candidateSha256": "c5e9db9836b16c738a70805f9038708ab3368e0d28f009e38ba12c2bd68d6859",
+      "comparison": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 250,
+        "minimumMismatchY": 100,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      }
+    },
+    {
+      "id": "inv-002-500x200-transparent",
+      "width": 500,
+      "height": 200,
+      "background": "transparent",
+      "referencePng": "inv-002-500x200-transparent.png",
+      "referenceSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+      "captureSha256": [
+        "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+        "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+        "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7"
+      ],
+      "captureStartupHealth": [
+        "healthy",
+        "healthy",
+        "healthy"
+      ],
+      "captureProfilesCleaned": [
+        true,
+        true,
+        true
+      ],
+      "candidateSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69",
+      "comparison": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 500,
+        "minimumMismatchY": 200,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      }
+    },
+    {
+      "id": "inv-002-500x200-white",
+      "width": 500,
+      "height": 200,
+      "background": "white",
+      "referencePng": "inv-002-500x200-white.png",
+      "referenceSha256": "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+      "captureSha256": [
+        "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+        "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+        "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57"
+      ],
+      "captureStartupHealth": [
+        "healthy",
+        "healthy",
+        "healthy"
+      ],
+      "captureProfilesCleaned": [
+        true,
+        true,
+        true
+      ],
+      "candidateSha256": "aefac6daa9ce7dea9edddaad2ee97d91808c19871cf0e0c004736e915a119b37",
+      "comparison": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 500,
+        "minimumMismatchY": 200,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      }
+    },
+    {
+      "id": "inv-002-500x200-black",
+      "width": 500,
+      "height": 200,
+      "background": "black",
+      "referencePng": "inv-002-500x200-black.png",
+      "referenceSha256": "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+      "captureSha256": [
+        "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+        "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+        "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245"
+      ],
+      "captureStartupHealth": [
+        "healthy",
+        "healthy",
+        "healthy"
+      ],
+      "captureProfilesCleaned": [
+        true,
+        true,
+        true
+      ],
+      "candidateSha256": "a3b40ee0200c1c7bf64127fe67af0c7978349089c7129adeab03ceacdf0cc6c2",
+      "comparison": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 500,
+        "minimumMismatchY": 200,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      }
+    },
+    {
+      "id": "inv-002-1000x400-transparent",
+      "width": 1000,
+      "height": 400,
+      "background": "transparent",
+      "referencePng": "inv-002-1000x400-transparent.png",
+      "referenceSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+      "captureSha256": [
+        "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+        "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+        "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0"
+      ],
+      "captureStartupHealth": [
+        "healthy",
+        "healthy",
+        "healthy"
+      ],
+      "captureProfilesCleaned": [
+        true,
+        true,
+        true
+      ],
+      "candidateSha256": "9787467e268618242e3a590e7a57b30e3ae3fcfff6e2a2b5cb486a925104bfa8",
+      "comparison": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 4900,
+        "maximumChannelError": 128,
+        "maximumAlphaError": 80,
+        "alphaChangedPixelCount": 4900,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 991,
+        "maximumMismatchY": 390,
+        "exact": false,
+        "alphaErrorMass": 51395,
+        "overCoveragePixelCount": 2106,
+        "underCoveragePixelCount": 2794,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      }
+    },
+    {
+      "id": "inv-002-1000x400-white",
+      "width": 1000,
+      "height": 400,
+      "background": "white",
+      "referencePng": "inv-002-1000x400-white.png",
+      "referenceSha256": "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+      "captureSha256": [
+        "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+        "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+        "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9"
+      ],
+      "captureStartupHealth": [
+        "healthy",
+        "healthy",
+        "healthy"
+      ],
+      "captureProfilesCleaned": [
+        true,
+        true,
+        true
+      ],
+      "candidateSha256": "1dbe1729ea97a8204f1eb75f48672cc47a212ea86c4d8be2df9d2e4eafde1c8a",
+      "comparison": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 4956,
+        "maximumChannelError": 80,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 991,
+        "maximumMismatchY": 390,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      }
+    },
+    {
+      "id": "inv-002-1000x400-black",
+      "width": 1000,
+      "height": 400,
+      "background": "black",
+      "referencePng": "inv-002-1000x400-black.png",
+      "referenceSha256": "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+      "captureSha256": [
+        "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+        "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+        "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da"
+      ],
+      "captureStartupHealth": [
+        "healthy",
+        "healthy",
+        "healthy"
+      ],
+      "captureProfilesCleaned": [
+        true,
+        true,
+        true
+      ],
+      "candidateSha256": "61b2cb1bfcbf46e9b1e20d9125d682ca68d8dcfb65d6eb2da741c8cb434e52cf",
+      "comparison": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 4404,
+        "maximumChannelError": 37,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 991,
+        "maximumMismatchY": 390,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      }
+    }
+  ]
+}

@@ -7,14 +7,15 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Current assessment (2026-10-04): the Default-options sweep renders 88 of the 92
+Current assessment (2026-10-05): the Default-options sweep renders 88 of the 92
 retained files and rejects four as MalformedInput (`inv-007`, `inv-012`,
 `inv-014`, `inv-020`). Renderability is separate from fidelity. The historical
 27-of-92 exact tally below describes its narrower captured variants; it does not
 establish completion of every declared size/background or current corporate-logo
 coverage. Fifty-seven inventory headings identify flags or flag badges/icons,
 so this whole inventory is not the representative corporate denominator.
-Ford remains zero exact of nine recorded variants. S17's selected target is at
+Ford is exact in six of nine recorded variants; all three large variants remain
+known differences. S17's selected target is at
 least 80% exact documents overall and per corporate-mark/outlined-wordmark
 stratum; the representative cohort and explicit variant freeze remain open.
 See [PLAN.md](../PLAN.md) and [the release criteria](S17_DECISIONS.md).
@@ -25,60 +26,52 @@ Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001.
 
 ## Current renderer checkpoint (2026-10-05)
 
-The one-chord cubic checkpoint keeps all 92 Default inventory
-dispositions: 88 renders and four MalformedInput DTD rejections. Ford is zero
-exact of nine. Against its unchanged pinned captures, transparent/white/black
-changed-pixel counts now read 222/222/185 (250×100), 433/432/364 (500×200) and
-5,194/5,249/4,739 (1000×400). Transparent total alpha errors are 1,457/3,176/56,482,
-max alpha errors 60/54/80 and alpha mismatch counts 222/433/5,194. All nine
-improve at the preceding paint checkpoint; scan-window separation leaves all nine
-complete PNGs unchanged. One-chord cubic admission improves six small/intended
-variants and preserves the three large PNGs. None has an opaque-to-hole or
-hole-to-opaque alpha flip. The following
-complete PNG identities supersede earlier Ford candidate checkpoints, while
-their input and oracle identities remain the original banked evidence.
+Shared clipped-edge preparation preserves all 92 Default inventory dispositions:
+88 renders and four MalformedInput DTD rejections. Against the original pinned
+captures, all six small/intended Ford variants are pixel-exact: 250×100 and 500×200
+on transparent/white/black. The three 1000×400 variants improve from
+5,194/5,249/4,739 to **4,900/4,956/4,404** changed pixels. Large-transparent alpha
+error falls 56,482 → **51,395**, with max channel/alpha error 128/80 and 4,900 alpha
+mismatches (2,106 over-covered / 2,794 under-covered). Every variant improves with
+zero opaque/hole flips. The wordmark document still fails its all-nine exit.
+
+The current complete candidate identities below supersede earlier checkpoints.
+The input remains SHA-256 `67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84`.
+All nine original reference PNGs, their stable healthy 2026-10-02 capture triples,
+options, source/license provenance and complete current comparisons are portable
+in [the Ford bank](../tests/References/inventory/inv-002-variants.json) and exercised
+by ordinary tests. The original third-party SVG stays in `candidates/`.
 
 | Variant | Current candidate PNG SHA-256 |
 | --- | --- |
-| 250x100-transparent | `032bd1bbc24de1654a936479ebb84390372493293cb18a7de69aee15ece038b9` |
-| 250x100-white | `6ef92717907fd73e284ab1d91793e43230d3322ec9abbc97794d5d92554dd1f8` |
-| 250x100-black | `83d9b40a5887dbe8e110c79b6a2e92e5e646a515a9eb158557a02ff6206587f8` |
-| 500x200-transparent | `149be2ba67d14f3d8ddeef4eaf59608b5fc2e05658613d017cc6a60d5b133768` |
-| 500x200-white | `7151bd142548e661dd9eb67cf51f7292572fcdd2fae1c9e564874d1094578336` |
-| 500x200-black | `cf0d2443c5a1f51984d15326e33585bbb618ae4301558cc44ac5c3d4ad6c52ac` |
-| 1000x400-transparent | `31d3c392db880e4e161cffbca119c5b8a7e8fdc6ed526c99eed72d91f17eb0ee` |
-| 1000x400-white | `3f5d5d9d1e08f2c42c752e061c42079a6e942a876f34d31279c300531736d790` |
-| 1000x400-black | `81299b5a1593f7c34351140c297f68e9deb6fa79863c15b4b5c1de7a5ebc6cd6` |
+| 250x100-transparent | `cd677106b94bc25589abded976835552f88b70450d89ac94e4cbe9a568137937` |
+| 250x100-white | `a81bec90bc3a183134cdaa21eeb1e0d4031e11f292c157920d6a02b78be78493` |
+| 250x100-black | `c5e9db9836b16c738a70805f9038708ab3368e0d28f009e38ba12c2bd68d6859` |
+| 500x200-transparent | `da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69` |
+| 500x200-white | `aefac6daa9ce7dea9edddaad2ee97d91808c19871cf0e0c004736e915a119b37` |
+| 500x200-black | `a3b40ee0200c1c7bf64127fe67af0c7978349089c7129adeab03ceacdf0cc6c2` |
+| 1000x400-transparent | `9787467e268618242e3a590e7a57b30e3ae3fcfff6e2a2b5cb486a925104bfa8` |
+| 1000x400-white | `1dbe1729ea97a8204f1eb75f48672cc47a212ea86c4d8be2df9d2e4eafde1c8a` |
+| 1000x400-black | `61b2cb1bfcbf46e9b1e20d9125d682ca68d8dcfb65d6eb2da741c8cb434e52cf` |
 
-This Default sweep is not complete independent-variant validation or a corporate
-coverage rate. At the one-chord repair, portable banks contain 584 fixtures (493 exact, 86 known
-renders, five rejects) and 67 research probes (66 known renders, one reject).
-Relative to `9e77c0fa`, eleven Default inventory PNGs change: `inv-001`, `inv-002`,
-`inv-004`, `inv-006`, `inv-011`, `inv-026`, `inv-065`, `inv-066`, `inv-081`,
-`inv-082`, `inv-092`. That Default sweep has no matching oracle evidence; Ford's
-nine explicitly sized variants are measured separately above. Fidelity of the
-other ten changed outputs remains unmeasured. All 572 prior fixture PNGs and all
-67 research results remain unchanged. Twelve new cubic configurations bank eight
-exact and four known differences; these and the previous window controls are
-calibration evidence, with no new independent corporate checkpoint.
-Earlier batch counts below remain dated history. PLAN.md owns the current queue;
-the design record lists mixed remaining curve/stroke errors and resource gates.
+The 770-case before/after comparison preserves every prior exact PNG and every
+render/reject disposition. Fifty-two outputs change, including eleven Default
+inventory files without matching captures in this sweep: `inv-001`, `inv-003`,
+`inv-004`, `inv-016`, `inv-035`, `inv-040`, `inv-063`, `inv-066`, `inv-085`,
+`inv-090`, `inv-094`. Their fidelity remains unmeasured. Explicitly sized Ford
+variants are measured separately and do not imply Default or other sizes are exact.
 
-Compiled diagnostic investigation on `429ea226` identifies native clipped-edge
-construction as a Ford dependency. First-path control bounds reach Y=100.3335,
-200.6671 and 401.3341 on the three canvases; native clipping splits at X extrema
-as well as Y extrema. This matches the sampled small/intended/large tip alpha
-values, but no production repair or full-image/all-nine improvement is yet claimed.
-The candidate identities and current tuples above remain unchanged.
-
-The following kernel checkpoint preserves all 743 prior corpus results and all
-nine Ford complete PNGs. Its line/quad/cubic pieces match 160 compiled-native cases,
-but shared contour integration remains open. Nineteen CC0 sources / 27 independently
-declared browser configurations are added as known differences, with 81 stable,
-healthy fresh-process captures. The current portable bank is 611 fixtures = 493
-exact + 113 known renders + five rejects, across 360 base documents / 251 variants;
-research remains 67 probes. These controls establish no independent corporate exit
-or change to the measured Ford candidates above.
+The updated portable bank contains **613 fixtures = 495 exact + 113 known renders
++ five rejections**, across 362 base documents / 251 variants; research retains
+67 probes = 66 known renders + one rejection. One predeclared clipping control
+graduates to exact. Two later stroke witnesses retain their post-implementation
+declaration and six stable healthy captures: a fractional band is exact; a star
+improves but remains inexact. Full bank execution covers **772 cases**, with Ford's
+nine independently referenced variants checked separately. No original reference
+is replaced. These counts do not establish a representative corporate rate or
+an all-variant wordmark checkpoint. Earlier batch counts below remain dated history.
+[PLAN.md](../PLAN.md) owns the next large-size event slice; the design and benchmark
+records retain complete comparisons, mixed changes and resource/timing evidence.
 
 ## Purpose and non-goals
 

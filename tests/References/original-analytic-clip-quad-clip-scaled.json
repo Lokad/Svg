@@ -16,7 +16,7 @@
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
   "inputSha256": "a9d673e63136f4acbb39b6623777c87cc177d64eab0730f8f00d12d23673e566",
-  "candidateSha256": "e4f50942ed5282d24967bb5228d12ec71fd3d6c1a2a0951768bda728c4508677",
+  "candidateSha256": "b8c0bfdc1ebbc9462b73ec435899be8f4fdbfb84b5ff9c8e78f8967340189146",
   "admittedAt": "2026-10-05",
   "captureSha256": [
     "3c6423313c332ca7a3625cb809c5e6b95b08f4874730aa503ed5dd0e5e6f0917",
@@ -29,19 +29,20 @@
   "declaredHoldout": true,
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 184,
-    "maximumChannelError": 128,
-    "maximumAlphaError": 50,
-    "alphaChangedPixelCount": 184,
+    "changedPixelCount": 93,
+    "maximumChannelError": 118,
+    "maximumAlphaError": 26,
+    "alphaChangedPixelCount": 93,
     "minimumMismatchX": 16,
     "minimumMismatchY": 21,
-    "maximumMismatchX": 111,
+    "maximumMismatchX": 108,
     "maximumMismatchY": 111,
     "exact": false,
-    "alphaErrorMass": 2229,
-    "overCoveragePixelCount": 120,
-    "underCoveragePixelCount": 64,
+    "alphaErrorMass": 652,
+    "overCoveragePixelCount": 31,
+    "underCoveragePixelCount": 62,
     "opaqueLostPixelCount": 0,
     "opaqueAddedPixelCount": 0
-  }
+  },
+  "candidateCheckpoint": "Shared clipped-edge preparation, 2026-10-05"
 }

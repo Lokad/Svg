@@ -134,11 +134,11 @@ public sealed class FordForwardTrajectoryTests
         Assert.Equal(500, transparent.Width);
         Assert.Equal(200, transparent.Height);
         (long opaque, long fringe, long clear) = CensusAlpha(transparent);
-        Assert.Equal(31565, opaque);
-        Assert.Equal(3639, fringe);
-        Assert.Equal(64796, clear);
-        Assert.Equal(35210, CountNonBackground(white, 255, 255, 255));
-        Assert.Equal(35198, CountNonBackground(black, 0, 0, 0));
+        Assert.Equal(31560, opaque);
+        Assert.Equal(3640, fringe);
+        Assert.Equal(64800, clear);
+        Assert.Equal(35206, CountNonBackground(white, 255, 255, 255));
+        Assert.Equal(35194, CountNonBackground(black, 0, 0, 0));
     }
 
     private static RgbaImage RenderAt(byte[] svg, SvgColor background)

@@ -524,3 +524,41 @@ orders and allocation traffic before landing integration. No fresh throughput or
 Linux result is claimed here, and the earlier native-size replay slowdown remains
 open. Ignored evidence is `artifacts/analytic-clip-20261005/kernel-ledger.json`;
 all 25 existing memory scenarios and the kernel's work/cancellation tests pass.
+
+## Clipped-preparation checkpoint (2026-10-05)
+
+Compare the saved `e8a8820a` assembly with shared clip-built preparation on the
+same .NET 10 Windows x64 environment. Run sequentially after build/test/capture/
+package jobs finish, in both orders: baseline → candidate, then candidate →
+baseline. Each process uses 32 warmups per input and three measured batches
+(100 tiny, ten Ford, three dense, three native-stop conversions per batch).
+Values below are median per-conversion milliseconds and managed allocated bytes.
+These short local measurements retain run-order variation and establish no
+representative throughput or universal speedup.
+
+| Input | Baseline first ms / bytes | Candidate second ms / bytes | Candidate first ms / bytes | Baseline second ms / bytes |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.12675 / 20,288 | 0.12759 / 20,288 | 0.12595 / 20,288 | 0.12824 / 20,288 |
+| ford | 21.82782 / 814,194 | 16.23303 / 816,602 | 15.56230 / 816,602 | 16.29280 / 817,322 |
+| dense | 345.38657 / 5,749,104 | 349.32113 / 5,748,704 | 376.01257 / 5,748,792 | 347.90183 / 5,748,792 |
+| native-stop | 592.00290 / 34,036,912 | 591.34813 / 34,036,965 | 590.80467 / 34,037,925 | 608.26900 / 34,036,965 |
+
+Ford charged raster work grows **1,267,660 → 1,298,734**, including both clipping
+passes and numerical/traversal/setup costs. Accounted peak falls **559,396 →
+534,434 bytes** with actual clipped-piece sizing. Tiny retains 218 work / 132,576
+peak bytes; dense retains 34,929,955 / 3,044,921; native-stop retains 90,740,612 /
+33,626,765. Their complete PNGs remain unchanged. Ford's measured 500×200
+transparent output becomes exact against its original reference.
+
+The two-pass preparation uses stack piece scratch and reserves complete emitted
+edge objects/list growth before allocation. It does not raise limits. All Default
+inventory admissions, 25 memory scenarios and delivery checks pass. Timing and
+allocation vary between orders; the earlier native-size paint replay slowdown
+and representative BenchmarkDotNet throughput remain open. These observations do
+not establish Linux, private-font or full corporate-variant performance.
+
+Full batches, input and assembly identities, complete PNGs and matching work/peak
+ledgers are under ignored `artifacts/clipped-preparation-20261005/`. The first
+exploratory timing set is also retained there; the table uses the final assembly's
+`delivery-timing-*` measurements. The previous paint/window/cubic/kernel records
+retain their dated evidence.

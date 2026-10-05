@@ -3543,3 +3543,109 @@ fixtures and all nine original Ford variants. The kernel's local proof does not
 replace those remaining product gates or S17 exits. Ignored capture triples,
 baseline/current/banked corpus reports, native driver, negative control and delivery
 evidence are under `artifacts/analytic-clip-20261005/`.
+
+## Shared clipped-edge preparation (2026-10-05)
+
+Integrate the `57c6a7e3` kernel at the shared mapped-contour boundary. The caller
+supplies a typed optional construction clip and its remaining work limit to all
+four paints. Escaping complete path/control bounds select clipping even when
+flattened geometry fits. Existing contour/contact and retained-span eligibility
+remain; within clipped construction, every retained eligible curve verb is consumed
+independently of chord count and an empty clipped result stays empty.
+
+Use two charged passes over caller-owned stack scratch, with no heap piece tape.
+The first counts emitted pieces and proves complete edge capacity: one edge per
+live monotonic piece, at most 64 pre-stepped edges per convex curve, plus projected
+lines. Reserve edge objects, old/new list growth, final arrays, sentinels and row
+storage before construction. The second pass builds edges. Clip/root search,
+contour/span/index/piece traversal, empty/rejected setup, initial curve stepping,
+sorting/linking and run indexing are bounded by remaining work. Numerical edge
+phases check their complete 132-unit upper bound before entry and report actual
+cost; cancellation is checked between bounded phases. Constructor denial releases
+both edge scratch and any run-link reservation.
+
+Projected vertical lines now follow the pinned builder's partial/total combination:
+trim opposite windings, consume the incoming piece, and remove the previous edge
+on complete cancellation. The adaptation retains the source pin and BSD notice,
+including `SkEdgeBuilder.cpp`. The independent line/quad/cubic kernel remains
+unchanged and matches all 160 native cases / 334 ordered pieces.
+
+Run walking uses construction bounds; mask walking intersects them with path
+storage. Storage/dispatch stay tied to mapped path dimensions. Fractional clip
+coverage stays per paint operation. Convex pieces retain the existing pre-stepped
+walker, and contact/curve/transform gates remain explicit. This does not establish
+general quad/convex/stroke/event fidelity or change admitted syntax.
+
+### Independent results and retained failures
+
+All six original 250×100 and 500×200 Ford variants (transparent/white/black) are
+exact. The 1000×400 variants improve 5,194/5,249/4,739 → 4,900/4,956/4,404 changed
+pixels. Large-transparent alpha error falls 56,482 → 51,395; max channel/alpha
+error remains 128/80, with 2,106 over-covered and 2,794 under-covered pixels and
+zero opaque/hole flips. All nine original 2026-10-02 capture references, options,
+source/license provenance and current complete candidate identities are committed
+in `tests/References/inventory/`, with nine ordinary regression cases. Six exact
+variants do not close the all-nine wordmark exit or count the document for S17.
+
+The 770-case pre-bank comparison preserves every existing exact complete PNG and
+every disposition. Fifty-two complete PNGs change: 38 known fixtures, three research
+probes and eleven Default inventory outputs. The latter have no matching captures
+in that sweep and remain fidelity-unmeasured. All 41 changed oracle-backed cases
+retain full candidate/reference identity and directional alpha comparisons: 31
+reduce alpha error, eight retain it and two worsen. Quadratic clip phase rises
+4,012 → 4,242 alpha error; dashed-cubic research rises 579 → 596. No changed
+oracle-backed case has an opaque/hole flip.
+
+One of the 27 configurations frozen before the kernel becomes exact: scaled
+control-bounds. Its native alpha at (86,12) is 168; disabling shared clipped
+preparation produces 192 and fails the focused witness. The other 26 configurations
+remain banked failures. The clipped rounded-rectangle return witness and every
+prior exact fixture are preserved.
+
+The first full test run exposed two old same-renderer stroke assertions. Declare
+both unchanged construction inputs after integration and before independent capture.
+Six fresh-process Chrome 153.0.8010.52 win64 recipe-3 captures are healthy, cleaned
+and stable. The fractional clipped band changes from ten one-alpha differences
+to exact (native alpha sum 2,672, versus the old 2,682). The star changes from
+206 pixels / 1,422 alpha error to 173 / 1,128; candidate alpha sum 52,900 still
+differs from native 52,518. Bank both the exact band and the failing star; the
+latter is not relabelled exact or discarded. These two post-implementation witnesses
+are distinguished from the 27 predeclared configurations.
+
+The final portable corpus executes **772 = 613 fixtures + 67 research + 92 Default
+inventory cases**. Fixtures retain 495 exact, 113 known renders and five rejections,
+with 362 base documents / 251 variants. Research retains 66 known renders / one
+rejection. The nine Ford references remain a separate independent-document matrix.
+
+### Resource, cancellation and delivery evidence
+
+Nine focused core cases cover the independent alpha witness, cancellation of
+opposite projected lines to an empty result, setup-work denial after sizing,
+run-link memory denial after edge reservation, cleanup, token identity and all
+six outputs across solid/linear/radial/pattern consumers. Fresh locked restore,
+nine-project Release build with zero warnings/errors and 3,174 tests pass:
+3,054 core, 114 visual-project, six FontProbe. All 25 memory scenarios, runtime/
+symbol package inspection and isolated installed-consumer checks pass. Packages
+retain the adapted code's BSD notice and add no native/runtime dependencies.
+
+Matching four-input ledgers preserve tiny/dense/native-stop work, peaks and PNGs.
+Ford charged work is 1,267,660 → 1,298,734 (+31,074); accounted peak is
+559,396 → 534,434 bytes. Default limits and every inventory admission are preserved.
+Sequential local timings run both renderer orders after other validation jobs
+finish; complete times/managed allocations are in `BENCHMARKS.md`. Variation between
+orders prevents a general throughput claim. The prior native-size paint replay
+cost, representative throughput, Linux delivery and full independent variants
+remain open.
+
+Ignored evidence is under `artifacts/clipped-preparation-20261005/`: baseline and
+candidate assemblies, complete corpus/Ford PNGs and reports, change ledger,
+negative control, post-implementation declarations/capture triples, resource
+ledgers, timing batches and delivery checks. Committed inputs, original references,
+metadata and tests remain portable and do not consume optional native checkouts.
+
+Next compare prepared state and operations at the earliest remaining large-size
+Ford mismatch with pinned native verb construction/walking. The earlier trace's
+identical-edge/sampled-row parity does not establish every native-built edge or
+paint. Attribute the first divergence before changing construction, advancement,
+interval handoff or paint; preserve all six exact variants and the retained large
+failures. Do not repeat global endpoint, float-cast or density replacements.

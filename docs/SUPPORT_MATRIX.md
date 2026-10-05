@@ -5,7 +5,7 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-All 611 current manifest entries are gated: 493 exact decoded-pixel references,
+All 613 current manifest entries are gated: 495 exact decoded-pixel references,
 113 known-difference renders and five categorized rejections. These are fixture
 entries, including variants, and do not establish corporate-document coverage.
 
@@ -33,9 +33,9 @@ but remains inexact; circle/stroke residuals include mixed alpha-error changes.
 Run walking now uses a scan window distinct from path storage/dispatch when the
 complete raw path and retained controls fit inside the clip. The mask route keeps
 its path window. Eighteen independent phase/scale/clip/material configurations are
-exact; five research controls graduate with unchanged references. This leaves all
-nine Ford PNGs unchanged. Paths crossing a clip retain the existing route until
-native clipped-edge construction is implemented; general clipping remains open.
+exact; five research controls graduate with unchanged references. At that checkpoint all
+nine Ford PNGs were unchanged. The later clip-built construction below preserves
+that boundary; general clipping remains open.
 
 Retained cubics now enter the existing live/pre-stepped paths even when their
 flattening has only one chord; quadratic gates stay separate. Every cubic setup
@@ -43,19 +43,27 @@ attempt, including zero-height pieces, is charged within existing complete-span
 reservations. Twelve independent phase/scale/material configurations retain eight
 exact and four known differences. All prior fixture/research PNGs are unchanged;
 six small/intended Ford variants improve and the three large PNGs are unchanged.
-Intended-transparent retains 433 differing pixels, so general cubic event fidelity
+At that checkpoint intended-transparent retained 433 differing pixels; general cubic event fidelity
 and the all-nine wordmark exit remain open. Default inventory renderability is
 preserved; ten changed non-Ford outputs lack matched oracle evidence.
 
-Native clipped-edge preparation remains unintegrated for escaping path/control
-bounds. Compiled diagnostics demonstrate that this affects Ford even at a tip
-inside the canvas: its native clipper splits at X extrema as well as Y extrema.
-The production renderer still uses its existing raw-edge/coverage-clip fallback;
-the diagnostic matches do not change the current support or exactness counts.
-The bounded line/quad/cubic clipping kernel independently matches 160 native inputs
-and 334 ordered pieces, with work limits and cancellation. Twenty-seven declared
-browser controls retain their current known differences. Kernel verification does
-not admit new syntax or alter rendering, clipping support or exact-image counts.
+Shared clipped-edge preparation now uses the independently verified line/quad/cubic
+kernel when complete path/control bounds escape the canvas or explicit clip.
+It clips every retained eligible verb, preserving X/Y monotonic splitting,
+projected winding and empty pieces. Two charged stack-scratch passes size and
+construct complete edge storage under existing limits. All four paints share the
+boundary; fractional clip coverage remains per operation. Mask walking intersects
+construction bounds with path storage, while run walking uses construction bounds.
+Existing contact/retention gates remain; this does not admit new syntax.
+
+All six small/intended Ford variants are exact; large variants improve but retain
+4,900/4,956/4,404 changed pixels. All nine original references and current candidate
+identities are portable regressions. All 493 prior exact fixture PNGs remain exact.
+One predeclared clip configuration and the subsequent fractional clipped-stroke
+witness are exact; the star-stroke witness remains a known difference. Twenty-six
+clip configurations retain failures, including the quadratic phase's increased
+alpha error. The updated bank retains both directions and every rejection.
+General curve/event, convex/quad/stroke, clip/mask and layer fidelity remains open.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 
@@ -75,8 +83,8 @@ Stroke widths flow through the same cascade: presentation attributes, inline sty
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms aggregate into at-most-64 KiB `IDAT` chunks under a budgeted 64 KiB cap with byte-identical output across all four forms, while memory forms accumulate budgeted segments without geometric copies; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 493 exact fixture entries; entry count is not a count of fresh capture triples |
-| Fixture corpus | 584 original CC0 fixture entries with verified hashes across 355 base documents and 229 variants; the manifest gate compares all 493 exact entries exactly and locks all 91 classified-unsupported entries to their observed behavior (86 known-difference renders with retained pinned-Chrome references and ratcheted decoded-RGBA measures, five categorized rejections) |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 495 exact fixture entries; entry count is not a count of fresh capture triples |
+| Fixture corpus | 613 original CC0 fixture entries with verified hashes across 362 base documents and 251 variants; the manifest compares all 495 exact entries exactly and locks all 118 classified-unsupported entries to their observed behavior (113 known-difference renders with retained pinned-Chrome references and complete current comparisons, five categorized rejections). The independent Ford matrix is separate: six exact and three known differences, with original references and source provenance. |
 
 ### Experimental supplied-font text
 

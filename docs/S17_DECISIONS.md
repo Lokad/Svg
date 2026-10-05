@@ -1,19 +1,20 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-05: reviewed baseline `f633c86b`; current one-chord cubic renderer
-follows operation-preserving paint (`c9f0eea2`) and scan windows (`9e77c0fa`).
-The bounded clipping kernel is verified but not yet integrated into rendering.
+Updated 2026-10-05: shared clipped-edge preparation follows the independently
+verified kernel (`57c6a7e3`), retained one-chord cubics, operation-preserving paint
+and contained-edge scan windows. Six small/intended Ford variants are exact;
+the three large variants improve but remain known differences.
 [PLAN.md](../PLAN.md) is the current execution queue. Rows 3–7 still have
 implementation and fidelity exits; the earlier claim that rows 1–7 were complete
 within architectural limits is withdrawn. The first exact curved corporate mark
 and outlined wordmark checkpoint, and S17 itself, remain unachieved.
 
-Current validated evidence: 611 fixture entries = 493 exact + 113 known-difference
-renders + five rejections across 360 base documents and 251 variants; 67 research
+Current validated evidence: 613 fixture entries = 495 exact + 113 known-difference
+renders + five rejections across 362 base documents and 251 variants; 67 research
 probes = 66 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 3,045 core + 105 visual + six FontProbe tests pass. All 25 memory
+Release build and 3,054 core + 114 visual + six FontProbe tests pass. All 25 memory
 scenarios, package inspection and isolated installed-consumer checks pass at the
-clipping-kernel checkpoint. The Default inventory retains 88 renders +
+clipped-preparation checkpoint. The Default inventory retains 88 renders +
 four MalformedInput rejections out of 92. These counts establish neither corporate
 coverage, full independent-variant validation nor Linux delivery.
 
@@ -57,47 +58,36 @@ Closer agreement with ideal geometry does not establish pinned-browser equality.
 A target below 100 percent can leave documents failing in the denominator; it
 cannot waive their pixel errors or alter their references.
 
-Ford remains zero exact of nine recorded variants. It uses opaque solid cubic
-fills without stroke, dash or gradients. Curve/walk state separation and bounded
-full-canvas paint routing are retained; rejected endpoint and float-cast variants
-remain falsifications in the design record. Operation-preserving mask/run paint,
-material quantization and float capture conversion now improve all nine Ford
-variants: intended-transparent falls from 1,200 to 550 differing pixels and 6,761
-to 5,092 total alpha error. All previous exact fixture PNGs are preserved. The 12
-original dispatch controls are exact; 24 further material configurations retain
-15 exact and nine known differences. Compact full spans preserve native-size
-Default admission without raising limits. Some circle/stroke alpha errors worsen
-and remain recorded failures; group-opacity-white remains inexact. Scan-window
-separation now makes all 18 independent controls exact and graduates five research
-controls, preserving all 462 prior exact PNGs. All nine Ford PNGs stay unchanged.
-Paths crossing clips retain their earlier route until native clipped-edge
-construction is implemented; unconditional clip-window migration is rejected.
-Retained one-chord cubics now enter native stepping instead of straight-line
-fallback. This improves six small/intended Ford variants, preserves all three
-large PNGs and every prior fixture/research PNG, and leaves Ford zero exact of nine.
-Intended-transparent changes from 550 pixels / 5,092 alpha error to 433 / 3,176;
-small-transparent changes from 268 / 1,945 to 222 / 1,457. Twelve independent
-configurations retain eight exact and four known differences, with healthy stable
-capture triples. Nine were declared before implementation; the three paired-material
-holdouts were declared after the first trial and before their independent captures.
-The first Ford tip is a two-chord cubic, so its remaining event error is not
-explained by this admission repair. Eleven Default inventory PNGs change; the ten
-other than separately measured Ford lack matching fidelity evidence.
-Compiled native diagnostics now show that the uncut first tip's setup/advance
-matches. Its missing dependency is clipped-edge construction: the path's control
-bounds escape the canvas, so native clipping also splits the tip at X extrema.
-That diagnostic construction matches the small/intended/large sampled tip alphas;
-the production renderer and its all-nine results above are unchanged. The next
-wordmark slice is this shared clipped-edge preparation, with bounded resources and
-independent controls, not another recurrence or endpoint adjustment.
-The line/quad/cubic kernel now matches 160 compiled-native inputs / 334 ordered
-pieces, including all float bits. Its 27 predeclared browser configurations are
-banked as known differences; all prior outputs and Ford variants are unchanged.
-Kernel verification does not close shared preparation, edge-storage or walk-window
-integration, and it establishes no new exact-image or corporate-document count.
-A bounded shared repair may land with independent progress and Ford nonregression; a Ford-repair
-claim requires all-nine progress and its exit remains all-nine exact. See PLAN and
-[the design record](RASTERIZATION_DESIGN.md) for evidence and remaining limits.
+Ford is now exact in all six small/intended variants: 250×100 and 500×200 on
+transparent/white/black. Shared clip-built construction improves the three large
+1000×400 variants to 4,900/4,956/4,404 differing pixels. Large-transparent retains
+51,395 total alpha error, max channel/alpha error 128/80 and no opaque/hole flips.
+The wordmark exit remains **all nine exact**, so the document cannot enter an
+exact-document numerator. Original references, capture provenance and every current
+candidate identity are portable under `tests/References/inventory/`; nine ordinary
+tests preserve exact successes and the three retained failures.
+
+The 160 compiled-native inputs / 334 pieces remain the clipping-kernel evidence.
+Shared preparation now counts clipped verbs in a charged stack-only pass, reserves
+complete edge/list/row storage, then constructs them in a second charged pass.
+Existing contact/retention gates and fractional paint coverage remain. Every prior
+exact complete PNG and render/reject disposition is preserved. One of the 27
+predeclared clip configurations graduates to exact; 26 remain known differences.
+Two subsequent stroke witnesses were declared after implementation and before
+capture: the fractional clipped band is exact, while the star remains inexact.
+All six fresh captures are healthy and stable. The resulting 772-case bank has
+613 fixtures, 67 research probes and 92 Default inventory cases. It does not
+replace the corporate cohort or full independent variants.
+
+Mixed results remain recorded: the quadratic clip phase's alpha error grows
+4,012 → 4,242 and the dashed-cubic research probe grows 579 → 596. Eleven changed
+Default inventory PNGs have no matching capture in that sweep. No reference was
+regenerated from the candidate. Kernel, contour and output tests, memory/package
+checks and local resource/timing ledgers prove this bounded slice's validation;
+they do not close general coverage, quad/convex/stroke/layer fidelity, representative
+throughput or Linux delivery. The next wordmark slice compares prepared state and
+events at the first remaining large-size mismatch before changing recurrence.
+See [PLAN](../PLAN.md) and [the design record](RASTERIZATION_DESIGN.md).
 
 S17 additionally requires reproducible per-variant identities/diffs, categorized
 residuals, representative latency/allocations and fresh Windows/Linux delivery
