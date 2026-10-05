@@ -39,7 +39,7 @@
     {
       "id": "inv-001",
       "sourcePath": "tests/Fixtures/candidates/inv-001.svg",
-      "inputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+      "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
       "sourceMetadata": {
         "source": "Wikimedia Commons, File:SimpleLogin logo.svg. Retrieval 2026-09-26.",
         "license": "PD-logo (simplelogin.io/press via Commons).",
@@ -69,9 +69,9 @@
           "height": 29,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-001.svg",
-          "renderInputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+          "renderInputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-001-small.svg",
-          "oracleInputSha256": "ffec65bc8765bb70040c7e739a29b9c91f5732913b292053e7fed72032cbc0db",
+          "oracleInputSha256": "a3b527fa3c70c9a67bc18fde17df0655b467d4a4727cc9612f99b856122c395b",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -87,9 +87,9 @@
           "height": 29,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-001.svg",
-          "renderInputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+          "renderInputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-001-small.svg",
-          "oracleInputSha256": "ffec65bc8765bb70040c7e739a29b9c91f5732913b292053e7fed72032cbc0db",
+          "oracleInputSha256": "a3b527fa3c70c9a67bc18fde17df0655b467d4a4727cc9612f99b856122c395b",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -105,9 +105,9 @@
           "height": 29,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-001.svg",
-          "renderInputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+          "renderInputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-001-small.svg",
-          "oracleInputSha256": "ffec65bc8765bb70040c7e739a29b9c91f5732913b292053e7fed72032cbc0db",
+          "oracleInputSha256": "a3b527fa3c70c9a67bc18fde17df0655b467d4a4727cc9612f99b856122c395b",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -123,9 +123,9 @@
           "height": 58,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-001.svg",
-          "renderInputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+          "renderInputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-001-intended.svg",
-          "oracleInputSha256": "11ba9eb35b6e081a00e40c52941599699d277d44073da7d6f6a2a57f0f092e25",
+          "oracleInputSha256": "d733aa6449121d643f05afffd525e41437f90771e2ca8cde5558bc93f4129af7",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -141,9 +141,9 @@
           "height": 58,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-001.svg",
-          "renderInputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+          "renderInputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-001-intended.svg",
-          "oracleInputSha256": "11ba9eb35b6e081a00e40c52941599699d277d44073da7d6f6a2a57f0f092e25",
+          "oracleInputSha256": "d733aa6449121d643f05afffd525e41437f90771e2ca8cde5558bc93f4129af7",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -159,9 +159,9 @@
           "height": 58,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-001.svg",
-          "renderInputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+          "renderInputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-001-intended.svg",
-          "oracleInputSha256": "11ba9eb35b6e081a00e40c52941599699d277d44073da7d6f6a2a57f0f092e25",
+          "oracleInputSha256": "d733aa6449121d643f05afffd525e41437f90771e2ca8cde5558bc93f4129af7",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -177,9 +177,9 @@
           "height": 116,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-001.svg",
-          "renderInputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+          "renderInputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-001-large.svg",
-          "oracleInputSha256": "c91a3096f731b1daa3016d376a92ff626ff74f1fba981ec75d89573cc309b539",
+          "oracleInputSha256": "69f8328c4a40362b09d5666d34bb0b6e69c99a1bb852af7191a64e6d2611e0a1",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -195,9 +195,9 @@
           "height": 116,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-001.svg",
-          "renderInputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+          "renderInputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-001-large.svg",
-          "oracleInputSha256": "c91a3096f731b1daa3016d376a92ff626ff74f1fba981ec75d89573cc309b539",
+          "oracleInputSha256": "69f8328c4a40362b09d5666d34bb0b6e69c99a1bb852af7191a64e6d2611e0a1",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -213,13 +213,14 @@
           "height": 116,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-001.svg",
-          "renderInputSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710",
+          "renderInputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-001-large.svg",
-          "oracleInputSha256": "c91a3096f731b1daa3016d376a92ff626ff74f1fba981ec75d89573cc309b539",
+          "oracleInputSha256": "69f8328c4a40362b09d5666d34bb0b6e69c99a1bb852af7191a64e6d2611e0a1",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         }
-      ]
+      ],
+      "selectionWorktreeSha256": "292bb12afd92929cc51372c651b221770b65461331e839187f83fc582d60e710"
     },
     {
       "id": "inv-002",
@@ -1256,7 +1257,7 @@
     {
       "id": "inv-007",
       "sourcePath": "tests/Fixtures/candidates/inv-007.svg",
-      "inputSha256": "90009e03c20b43565a4d2e4903a9f07402fe07d37e3ec0f66184e4286d6e6ac5",
+      "inputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
       "sourceMetadata": {
         "source": "Wikimedia Commons, File:Zeppelin logo.svg. Retrieval 2026-09-26.",
         "license": "PD (Commons).",
@@ -1285,9 +1286,9 @@
           "height": 71,
           "background": "transparent",
           "renderInput": "tests/References/inventory/cohort-inputs/inv-007-small.svg",
-          "renderInputSha256": "a04701984e8131488c4c1321596bf51f976f5eddbd08c1c25c8e7293928cd908",
+          "renderInputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-007-small.svg",
-          "oracleInputSha256": "a04701984e8131488c4c1321596bf51f976f5eddbd08c1c25c8e7293928cd908",
+          "oracleInputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
           "addedViewBox": "0 0 500 143",
           "oracleTransportAdmitted": true
         },
@@ -1303,9 +1304,9 @@
           "height": 71,
           "background": "white",
           "renderInput": "tests/References/inventory/cohort-inputs/inv-007-small.svg",
-          "renderInputSha256": "a04701984e8131488c4c1321596bf51f976f5eddbd08c1c25c8e7293928cd908",
+          "renderInputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-007-small.svg",
-          "oracleInputSha256": "a04701984e8131488c4c1321596bf51f976f5eddbd08c1c25c8e7293928cd908",
+          "oracleInputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
           "addedViewBox": "0 0 500 143",
           "oracleTransportAdmitted": true
         },
@@ -1321,9 +1322,9 @@
           "height": 71,
           "background": "black",
           "renderInput": "tests/References/inventory/cohort-inputs/inv-007-small.svg",
-          "renderInputSha256": "a04701984e8131488c4c1321596bf51f976f5eddbd08c1c25c8e7293928cd908",
+          "renderInputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-007-small.svg",
-          "oracleInputSha256": "a04701984e8131488c4c1321596bf51f976f5eddbd08c1c25c8e7293928cd908",
+          "oracleInputSha256": "30a794fa691b0435dfb3ca44ac86957892122e42e5618a8cf5c9db5a9ef08ea8",
           "addedViewBox": "0 0 500 143",
           "oracleTransportAdmitted": true
         },
@@ -1339,9 +1340,9 @@
           "height": 143,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-007.svg",
-          "renderInputSha256": "90009e03c20b43565a4d2e4903a9f07402fe07d37e3ec0f66184e4286d6e6ac5",
+          "renderInputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-007-intended.svg",
-          "oracleInputSha256": "90009e03c20b43565a4d2e4903a9f07402fe07d37e3ec0f66184e4286d6e6ac5",
+          "oracleInputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -1357,9 +1358,9 @@
           "height": 143,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-007.svg",
-          "renderInputSha256": "90009e03c20b43565a4d2e4903a9f07402fe07d37e3ec0f66184e4286d6e6ac5",
+          "renderInputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-007-intended.svg",
-          "oracleInputSha256": "90009e03c20b43565a4d2e4903a9f07402fe07d37e3ec0f66184e4286d6e6ac5",
+          "oracleInputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -1375,9 +1376,9 @@
           "height": 143,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-007.svg",
-          "renderInputSha256": "90009e03c20b43565a4d2e4903a9f07402fe07d37e3ec0f66184e4286d6e6ac5",
+          "renderInputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-007-intended.svg",
-          "oracleInputSha256": "90009e03c20b43565a4d2e4903a9f07402fe07d37e3ec0f66184e4286d6e6ac5",
+          "oracleInputSha256": "dd9881fb39562630e4c13c97d8cf78c905f456d5461c77df8b18c91dd521658c",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -1393,9 +1394,9 @@
           "height": 286,
           "background": "transparent",
           "renderInput": "tests/References/inventory/cohort-inputs/inv-007-large.svg",
-          "renderInputSha256": "77624b3c9901d6e6685c45e10feca042f69e7d93d46cf6616b8ec14f0b31f9b3",
+          "renderInputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-007-large.svg",
-          "oracleInputSha256": "77624b3c9901d6e6685c45e10feca042f69e7d93d46cf6616b8ec14f0b31f9b3",
+          "oracleInputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
           "addedViewBox": "0 0 500 143",
           "oracleTransportAdmitted": true
         },
@@ -1411,9 +1412,9 @@
           "height": 286,
           "background": "white",
           "renderInput": "tests/References/inventory/cohort-inputs/inv-007-large.svg",
-          "renderInputSha256": "77624b3c9901d6e6685c45e10feca042f69e7d93d46cf6616b8ec14f0b31f9b3",
+          "renderInputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-007-large.svg",
-          "oracleInputSha256": "77624b3c9901d6e6685c45e10feca042f69e7d93d46cf6616b8ec14f0b31f9b3",
+          "oracleInputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
           "addedViewBox": "0 0 500 143",
           "oracleTransportAdmitted": true
         },
@@ -1429,13 +1430,14 @@
           "height": 286,
           "background": "black",
           "renderInput": "tests/References/inventory/cohort-inputs/inv-007-large.svg",
-          "renderInputSha256": "77624b3c9901d6e6685c45e10feca042f69e7d93d46cf6616b8ec14f0b31f9b3",
+          "renderInputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-007-large.svg",
-          "oracleInputSha256": "77624b3c9901d6e6685c45e10feca042f69e7d93d46cf6616b8ec14f0b31f9b3",
+          "oracleInputSha256": "5ffef1935892ac774f0a56803f103eac58f1ec83180c65c11b1f128fe848c632",
           "addedViewBox": "0 0 500 143",
           "oracleTransportAdmitted": true
         }
-      ]
+      ],
+      "selectionWorktreeSha256": "90009e03c20b43565a4d2e4903a9f07402fe07d37e3ec0f66184e4286d6e6ac5"
     },
     {
       "id": "inv-008",
@@ -2283,7 +2285,7 @@
     {
       "id": "inv-012",
       "sourcePath": "tests/Fixtures/candidates/inv-012.svg",
-      "inputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+      "inputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
       "sourceMetadata": {
         "source": "Wikimedia Commons, File:SG Rotation Leipzig.svg. Retrieval 2026-09-26.",
         "license": "PD (Commons).",
@@ -2313,9 +2315,9 @@
           "height": 201,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-012.svg",
-          "renderInputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+          "renderInputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-012-small.svg",
-          "oracleInputSha256": "1acb2d627acf201347d101fd8d792535c4ac2ba71351d13642ea7c606bf03558",
+          "oracleInputSha256": "8a7bf5170eece4fa8f9b647d5ed35af1b913a70d5e5b61a49f8e5c0535ec0783",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2331,9 +2333,9 @@
           "height": 201,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-012.svg",
-          "renderInputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+          "renderInputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-012-small.svg",
-          "oracleInputSha256": "1acb2d627acf201347d101fd8d792535c4ac2ba71351d13642ea7c606bf03558",
+          "oracleInputSha256": "8a7bf5170eece4fa8f9b647d5ed35af1b913a70d5e5b61a49f8e5c0535ec0783",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2349,9 +2351,9 @@
           "height": 201,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-012.svg",
-          "renderInputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+          "renderInputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-012-small.svg",
-          "oracleInputSha256": "1acb2d627acf201347d101fd8d792535c4ac2ba71351d13642ea7c606bf03558",
+          "oracleInputSha256": "8a7bf5170eece4fa8f9b647d5ed35af1b913a70d5e5b61a49f8e5c0535ec0783",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2367,9 +2369,9 @@
           "height": 403,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-012.svg",
-          "renderInputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+          "renderInputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-012-intended.svg",
-          "oracleInputSha256": "10b309f26516371d46846b87af2e57c3f19821685e4eeb96f16f5b1f69762d44",
+          "oracleInputSha256": "75fd1c16e86119a845fd5a8666e731d85f4df1a31d0d8ff97b386ee9615e1e6d",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2385,9 +2387,9 @@
           "height": 403,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-012.svg",
-          "renderInputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+          "renderInputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-012-intended.svg",
-          "oracleInputSha256": "10b309f26516371d46846b87af2e57c3f19821685e4eeb96f16f5b1f69762d44",
+          "oracleInputSha256": "75fd1c16e86119a845fd5a8666e731d85f4df1a31d0d8ff97b386ee9615e1e6d",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2403,9 +2405,9 @@
           "height": 403,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-012.svg",
-          "renderInputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+          "renderInputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-012-intended.svg",
-          "oracleInputSha256": "10b309f26516371d46846b87af2e57c3f19821685e4eeb96f16f5b1f69762d44",
+          "oracleInputSha256": "75fd1c16e86119a845fd5a8666e731d85f4df1a31d0d8ff97b386ee9615e1e6d",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2421,9 +2423,9 @@
           "height": 806,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-012.svg",
-          "renderInputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+          "renderInputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-012-large.svg",
-          "oracleInputSha256": "1865c490507bb2a0311409dd2b156be84917e89378189cf08ff02d874176afe9",
+          "oracleInputSha256": "4abe58b95432132dc9357fd9fa628fe29832414cd8aa4a4d8ff86161f5936f37",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2439,9 +2441,9 @@
           "height": 806,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-012.svg",
-          "renderInputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+          "renderInputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-012-large.svg",
-          "oracleInputSha256": "1865c490507bb2a0311409dd2b156be84917e89378189cf08ff02d874176afe9",
+          "oracleInputSha256": "4abe58b95432132dc9357fd9fa628fe29832414cd8aa4a4d8ff86161f5936f37",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2457,13 +2459,14 @@
           "height": 806,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-012.svg",
-          "renderInputSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97",
+          "renderInputSha256": "4dff5554049c7acd23a96f57abe7e40d5d6651b52b6a4c21a2e0fb586548d7b2",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-012-large.svg",
-          "oracleInputSha256": "1865c490507bb2a0311409dd2b156be84917e89378189cf08ff02d874176afe9",
+          "oracleInputSha256": "4abe58b95432132dc9357fd9fa628fe29832414cd8aa4a4d8ff86161f5936f37",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         }
-      ]
+      ],
+      "selectionWorktreeSha256": "2d65278fecbd7325ba26120123e61a588364e0314dd89a41f548b92ccdf2ff97"
     },
     {
       "id": "inv-019",
@@ -2653,7 +2656,7 @@
     {
       "id": "inv-020",
       "sourcePath": "tests/Fixtures/candidates/inv-020.svg",
-      "inputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+      "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
       "sourceMetadata": {
         "source": "Wikimedia Commons, File:Artsy-logo-mask.svg. Retrieval 2026-09-26.",
         "license": "PD (Commons).",
@@ -2683,9 +2686,9 @@
           "height": 547,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-020.svg",
-          "renderInputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+          "renderInputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-020-small.svg",
-          "oracleInputSha256": "c5ca1bf1d3a1f55132e36e37a909314beffc9c27435c62238e14495ff2dbd995",
+          "oracleInputSha256": "7e5e496103629845a41992e627477677beaafc15d77dbeac4ab1772678f6d12c",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2701,9 +2704,9 @@
           "height": 547,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-020.svg",
-          "renderInputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+          "renderInputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-020-small.svg",
-          "oracleInputSha256": "c5ca1bf1d3a1f55132e36e37a909314beffc9c27435c62238e14495ff2dbd995",
+          "oracleInputSha256": "7e5e496103629845a41992e627477677beaafc15d77dbeac4ab1772678f6d12c",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2719,9 +2722,9 @@
           "height": 547,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-020.svg",
-          "renderInputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+          "renderInputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-020-small.svg",
-          "oracleInputSha256": "c5ca1bf1d3a1f55132e36e37a909314beffc9c27435c62238e14495ff2dbd995",
+          "oracleInputSha256": "7e5e496103629845a41992e627477677beaafc15d77dbeac4ab1772678f6d12c",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2737,9 +2740,9 @@
           "height": 1094,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-020.svg",
-          "renderInputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+          "renderInputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-020-intended.svg",
-          "oracleInputSha256": "1d779dddd545e3ae22f8aa687fd02db7602cb6b8a5d8352ac73662b04771042b",
+          "oracleInputSha256": "4cec07342805aad5a0ad5442546360f033282aa3d2109b01507ee6eaa2704191",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2755,9 +2758,9 @@
           "height": 1094,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-020.svg",
-          "renderInputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+          "renderInputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-020-intended.svg",
-          "oracleInputSha256": "1d779dddd545e3ae22f8aa687fd02db7602cb6b8a5d8352ac73662b04771042b",
+          "oracleInputSha256": "4cec07342805aad5a0ad5442546360f033282aa3d2109b01507ee6eaa2704191",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2773,9 +2776,9 @@
           "height": 1094,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-020.svg",
-          "renderInputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+          "renderInputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-020-intended.svg",
-          "oracleInputSha256": "1d779dddd545e3ae22f8aa687fd02db7602cb6b8a5d8352ac73662b04771042b",
+          "oracleInputSha256": "4cec07342805aad5a0ad5442546360f033282aa3d2109b01507ee6eaa2704191",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -2791,9 +2794,9 @@
           "height": 2188,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-020.svg",
-          "renderInputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+          "renderInputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-020-large.svg",
-          "oracleInputSha256": "39daeb55960cf08a374f5804321551ef6fa890aec05021d8dcfbe7d4da4c745a",
+          "oracleInputSha256": "c85b83f2a76156b522129c9d129c69b29783a32a015b9241219b27170faf19e1",
           "addedViewBox": null,
           "oracleTransportAdmitted": false
         },
@@ -2809,9 +2812,9 @@
           "height": 2188,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-020.svg",
-          "renderInputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+          "renderInputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-020-large.svg",
-          "oracleInputSha256": "39daeb55960cf08a374f5804321551ef6fa890aec05021d8dcfbe7d4da4c745a",
+          "oracleInputSha256": "c85b83f2a76156b522129c9d129c69b29783a32a015b9241219b27170faf19e1",
           "addedViewBox": null,
           "oracleTransportAdmitted": false
         },
@@ -2827,13 +2830,14 @@
           "height": 2188,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-020.svg",
-          "renderInputSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f",
+          "renderInputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-020-large.svg",
-          "oracleInputSha256": "39daeb55960cf08a374f5804321551ef6fa890aec05021d8dcfbe7d4da4c745a",
+          "oracleInputSha256": "c85b83f2a76156b522129c9d129c69b29783a32a015b9241219b27170faf19e1",
           "addedViewBox": null,
           "oracleTransportAdmitted": false
         }
-      ]
+      ],
+      "selectionWorktreeSha256": "8a899be3b4fbedf1fc81c8e3f315278d0ba250496968dfb01fcd75e72ae0410f"
     },
     {
       "id": "inv-026",
@@ -3077,7 +3081,7 @@
     {
       "id": "inv-027",
       "sourcePath": "tests/Fixtures/candidates/inv-027.svg",
-      "inputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+      "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
       "sourceMetadata": {
         "source": "Wikimedia Commons, File:YouTube grey icon (2017).svg. Retrieval 2026-09-26.",
         "license": "PD-shape (Commons; depicted mark may carry trademark considerations).",
@@ -3106,9 +3110,9 @@
           "height": 200,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-027.svg",
-          "renderInputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+          "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-small.svg",
-          "oracleInputSha256": "e33dca440950be148ff9c74d72dc06f88aa08335a1f638333a46dedbdcb32f33",
+          "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -3124,9 +3128,9 @@
           "height": 200,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-027.svg",
-          "renderInputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+          "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-small.svg",
-          "oracleInputSha256": "e33dca440950be148ff9c74d72dc06f88aa08335a1f638333a46dedbdcb32f33",
+          "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -3142,9 +3146,9 @@
           "height": 200,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-027.svg",
-          "renderInputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+          "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-small.svg",
-          "oracleInputSha256": "e33dca440950be148ff9c74d72dc06f88aa08335a1f638333a46dedbdcb32f33",
+          "oracleInputSha256": "7125a33490974cdb3c396051850b98f39c51117b97500f955f6d82a8d9ed1967",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -3160,9 +3164,9 @@
           "height": 400,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-027.svg",
-          "renderInputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+          "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-intended.svg",
-          "oracleInputSha256": "bf650cc50bd232964262f981ea335160b07ed785073f5d21ea06cb9c2296f2a5",
+          "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -3178,9 +3182,9 @@
           "height": 400,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-027.svg",
-          "renderInputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+          "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-intended.svg",
-          "oracleInputSha256": "bf650cc50bd232964262f981ea335160b07ed785073f5d21ea06cb9c2296f2a5",
+          "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -3196,9 +3200,9 @@
           "height": 400,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-027.svg",
-          "renderInputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+          "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-intended.svg",
-          "oracleInputSha256": "bf650cc50bd232964262f981ea335160b07ed785073f5d21ea06cb9c2296f2a5",
+          "oracleInputSha256": "ddc987599512a069d24bc1fbcf04933796f16a19d1a15299896639e3feaf5d5c",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -3214,9 +3218,9 @@
           "height": 800,
           "background": "transparent",
           "renderInput": "tests/Fixtures/candidates/inv-027.svg",
-          "renderInputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+          "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-large.svg",
-          "oracleInputSha256": "27dd1fcc05fcecffbcbce535f38affba0d8358a4f73554706ad99568a7694b47",
+          "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -3232,9 +3236,9 @@
           "height": 800,
           "background": "white",
           "renderInput": "tests/Fixtures/candidates/inv-027.svg",
-          "renderInputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+          "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-large.svg",
-          "oracleInputSha256": "27dd1fcc05fcecffbcbce535f38affba0d8358a4f73554706ad99568a7694b47",
+          "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         },
@@ -3250,13 +3254,14 @@
           "height": 800,
           "background": "black",
           "renderInput": "tests/Fixtures/candidates/inv-027.svg",
-          "renderInputSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee",
+          "renderInputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
           "oracleInput": "tests/References/inventory/cohort-inputs/inv-027-large.svg",
-          "oracleInputSha256": "27dd1fcc05fcecffbcbce535f38affba0d8358a4f73554706ad99568a7694b47",
+          "oracleInputSha256": "97e3c11172b26eda6d2ba50ae2775cc7ee9a6bf3ead94b8a36356caf6bb4df31",
           "addedViewBox": null,
           "oracleTransportAdmitted": true
         }
-      ]
+      ],
+      "selectionWorktreeSha256": "59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee"
     },
     {
       "id": "inv-040",
@@ -5393,5 +5398,6 @@
         }
       ]
     }
-  ]
+  ],
+  "sourceBytePolicy": "Repository SVG blobs and all materializations use canonical LF under .gitattributes. Five retained worktree files had CRLF at selection; selectionWorktreeSha256 and the unchanged predeclaration retain those identities. Only line-ending normalization separates them from committed source hashes. Upstream raw hashes remain in source provenance."
 }

@@ -36,6 +36,7 @@ public sealed class CorporateCohortTests
         foreach (JsonElement document in documents)
         {
             byte[] input = File.ReadAllBytes(Resolve(Required(document, "sourcePath")));
+            Assert.DoesNotContain((byte)'\r', input);
             Assert.Equal(Required(document, "inputSha256"), Hash(input));
             JsonElement[] cases = document.GetProperty("variants").EnumerateArray().ToArray();
             foreach (string size in new[] { "small", "intended", "large" })
@@ -50,7 +51,9 @@ public sealed class CorporateCohortTests
                 Assert.Equal(width, item.GetProperty("logicalViewport").GetProperty("width").GetInt32());
                 Assert.Equal(height, item.GetProperty("logicalViewport").GetProperty("height").GetInt32());
                 Assert.Equal(Required(item, "renderInputSha256"), Hash(File.ReadAllBytes(Resolve(Required(item, "renderInput")))));
-                Assert.Equal(Required(item, "oracleInputSha256"), Hash(File.ReadAllBytes(Resolve(Required(item, "oracleInput")))));
+                byte[] oracleInput = File.ReadAllBytes(Resolve(Required(item, "oracleInput")));
+                Assert.DoesNotContain((byte)'\r', oracleInput);
+                Assert.Equal(Required(item, "oracleInputSha256"), Hash(oracleInput));
                 bool admitted = item.GetProperty("oracleTransportAdmitted").GetBoolean();
                 Assert.Equal((long)width * height <= 2_000_000, admitted);
                 if (!admitted) gaps++;

@@ -36,7 +36,7 @@ Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001.
 YouTube grey icon (`inv-027`) is the selected flat curved mark: 286×200,
 572×400 and 1144×800 × transparent/white/black. Selection followed its original
 curved outline/nested viewport, before fresh candidate comparison. Its original
-input SHA-256 is `59563e953fc358d4d7c244ed7be4b463dd401ceb16aacb57979adc53e413ffee`; source/license evidence remains in its entry below.
+LF-canonical input SHA-256 is `2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f`; source/license evidence remains in its entry below.
 
 The [portable manifest](../tests/References/inventory/corporate-cohort-v1.json)
 freezes **27 documents / 258 variants**. Every one of the 19 retained
@@ -104,6 +104,10 @@ all non-sizing root attributes remain intact. This matches the established
 viewBox-less variant policy without silently treating a cropped screenshot as
 a scaled reference. Hashes identify source, renderer and oracle inputs separately;
 materialized inputs are committed under `tests/References/inventory/cohort-inputs/`.
+Repository blobs and materializations use canonical LF. Five old worktree inputs
+had CRLF at selection; their original selection-time hashes remain in the unchanged
+predeclaration and manifest, separately from the corrected committed-byte hashes.
+The checkout audit resolved this before fresh candidate comparison or capture.
 Offline tests protect the membership and byte/attribute invariants. Historical
 narrower/cropped references retain their dated identities and are not overwritten
 by the newly explicit cohort recipes.
