@@ -126,11 +126,23 @@ PNG identities and Default dispositions hold. Twelve fresh mapping controls have
 66 research, 92 Default cases). Eleven changed Default PNGs lack matching captures;
 their fidelity remains unmeasured. Six Ford variants remain exact; large variants
 are 137/137/123 differences, with 2,734 transparent alpha error and no opaque/hole
-flips. Relative-coordinate rounding still has intended-size counterexamples.
-The next event is (269,187), requiring captured authoring/device-map evidence.
+flips. At that checkpoint, relative-coordinate rounding still had intended-size
+counterexamples and the next event was (269,187).
 All 3,202 tests, 25 memory and package/installed-consumer checks pass. Dense charged
 work grows about six percent; local matching timings and peaks are retained.
 This establishes no complete mapping, wordmark, cohort, Linux or performance exit.
+
+The subsequent authoring/CTM discriminator explains that counterexample: float
+relative arithmetic matches every recorded authored point, but the actual captured
+transform differs from a normally parsed decimal cast to float. Injecting the
+captured transform together with float-relative authoring preserves all six exact
+PNGs and gives 10/10/7 large differences, transparent alpha error 16. This changes
+the diagnostic input; it does not update production, the original-input baseline,
+manifest counts or any release status. Small/intended CTMs are inferred from the
+large recording. The next shared slice implements compatible numeric reading and
+relative arithmetic together, with independent controls and the full existing
+nonregression/delivery gates. See [the portable discriminator](../tests/References/inventory/inv-002-authoring-map-discriminator.json)
+and [PLAN](../PLAN.md).
 
 S17 additionally requires reproducible per-variant identities/diffs, categorized
 residuals, representative latency/allocations and fresh Windows/Linux delivery

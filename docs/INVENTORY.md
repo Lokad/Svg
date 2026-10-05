@@ -40,8 +40,13 @@ fails its all-nine exit and cannot enter a corporate exact-document numerator.
 The public converter now integrates CPU raster contexts and horizontal clip paint
 routing; the original row-6 and (740,30) witnesses remain exact. Axis-aligned float
 path mapping closes (375,269). On identical prepared edges, either native
-intersection mode emits the same row-269 operations. The next event is (269,187);
-complete authoring and tile-local mapping parity remain open.
+intersection mode emits the same row-269 operations. The first remaining production
+event is (269,187). The subsequent [authoring/map discriminator](../tests/References/inventory/inv-002-authoring-map-discriminator.json)
+explains its coupled numeric dependency and the intended-size relative-only
+counterexample. Injecting the captured CTM together with float-relative authoring
+preserves six exact PNGs and gives 10/10/7 large differences, transparent alpha
+error 16. This changed-input diagnostic is unlanded; the original-input baseline
+above still applies. Shared numeric compatibility and tile-local parity remain open.
 
 All original references and stable healthy 2026-10-02 capture triples remain in
 [the Ford bank](../tests/References/inventory/inv-002-variants.json), alongside

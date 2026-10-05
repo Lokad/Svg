@@ -1,0 +1,869 @@
+{
+  "date": "2026-10-05",
+  "status": "Unlanded diagnostic; production, manifest dispositions and original PNGs are unchanged.",
+  "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+  "recordedNativePathsFile": "inv-002-recorded-native-paths.json",
+  "recordedNativePathsSha256": "34c25f3ca8009692b8c12a19b9b5f361f8be7420b522779edc247fa8971dd457",
+  "chromeVersion": "153.0.8010.52",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "skiaRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "capturedPictureSha256": "f2b454de2c94c922168a42588ae0a1053d2acf8492176086ff1befc98fa452ca",
+  "sourceTransformLiteral": "matrix(1.3453761,0,0,1.3453761,-191.56772,-250.70661)",
+  "sourceCoefficientParsedDoubleThenFloat": {
+    "value": 1.3453761339187622,
+    "bits": "3fac3549"
+  },
+  "capturedLargeCtmScale": {
+    "value": 2.6907520294189453,
+    "bits": "402c3548",
+    "recordedValue": 2.69075202941895
+  },
+  "capturedCtmHalfScale": {
+    "value": 1.3453760147094727,
+    "bits": "3fac3548",
+    "recordedValue": 1.345376014709475
+  },
+  "diagnosticInput": {
+    "operation": "Replace only the original transform literal, retaining all other original SVG bytes.",
+    "replacementLiteral": "matrix(1.3453760147094751,0,0,1.3453760147094751,-191.56771850585949,-250.70660400390651)",
+    "inputSha256": "3271119d534f558aeb04896b7c6c0e312e58e3c92540b33c8c0ad24cfc7b59f4",
+    "limitations": "The small/intended transform is inferred by halving the actual recorded large CTM. This injected value is a discriminator, never an admitted production repair or an original-input checkpoint."
+  },
+  "authoredCoordinateComparisons": [
+    {
+      "model": "current",
+      "fill": 0,
+      "coordinateDifferences": 425,
+      "firstDifferences": [
+        {
+          "verb": 3,
+          "point": 0,
+          "axis": "x",
+          "native": 493.099975585938,
+          "managed": 493.1000061035156,
+          "nativeBits": "cc8cf643",
+          "managedBits": "cd8cf643"
+        },
+        {
+          "verb": 3,
+          "point": 1,
+          "axis": "y",
+          "native": 231.200012207031,
+          "managed": 231.1999969482422,
+          "nativeBits": "34336743",
+          "managedBits": "33336743"
+        }
+      ]
+    },
+    {
+      "model": "current",
+      "fill": 1,
+      "coordinateDifferences": 269,
+      "firstDifferences": [
+        {
+          "verb": 1,
+          "point": 0,
+          "axis": "y",
+          "native": 330.300018310547,
+          "managed": 330.29998779296875,
+          "nativeBits": "6726a543",
+          "managedBits": "6626a543"
+        },
+        {
+          "verb": 1,
+          "point": 1,
+          "axis": "y",
+          "native": 319.800018310547,
+          "managed": 319.79998779296875,
+          "nativeBits": "67e69f43",
+          "managedBits": "66e69f43"
+        }
+      ]
+    },
+    {
+      "model": "relative-float",
+      "fill": 0,
+      "coordinateDifferences": 0,
+      "firstDifferences": []
+    },
+    {
+      "model": "relative-float",
+      "fill": 1,
+      "coordinateDifferences": 0,
+      "firstDifferences": []
+    }
+  ],
+  "models": [
+    {
+      "name": "current-original",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "rendererSha256": "f35355e301642740495cf891f6bba3dbc8fcf09729404d4b0c1d0958b1560431",
+      "variants": [
+        {
+          "id": "inv-002-250x100-transparent",
+          "referenceSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+          "candidateSha256": "cd677106b94bc25589abded976835552f88b70450d89ac94e4cbe9a568137937",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-250x100-white",
+          "referenceSha256": "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+          "candidateSha256": "a81bec90bc3a183134cdaa21eeb1e0d4031e11f292c157920d6a02b78be78493",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-250x100-black",
+          "referenceSha256": "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+          "candidateSha256": "c5e9db9836b16c738a70805f9038708ab3368e0d28f009e38ba12c2bd68d6859",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-500x200-transparent",
+          "referenceSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+          "candidateSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-500x200-white",
+          "referenceSha256": "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+          "candidateSha256": "aefac6daa9ce7dea9edddaad2ee97d91808c19871cf0e0c004736e915a119b37",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-500x200-black",
+          "referenceSha256": "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+          "candidateSha256": "a3b40ee0200c1c7bf64127fe67af0c7978349089c7129adeab03ceacdf0cc6c2",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-1000x400-transparent",
+          "referenceSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+          "candidateSha256": "d82f6ba4176240d902345af2d320f997a8a8a9c6cab08fad62461dd4de43ada9",
+          "changedPixelCount": 137,
+          "maximumChannelError": 128,
+          "maximumAlphaError": 68,
+          "alphaErrorMass": 2734,
+          "over": 126,
+          "under": 11,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-1000x400-white",
+          "referenceSha256": "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+          "candidateSha256": "118b1a6bbde5ed59c8eaabc8cb43c9f38bfb8a88667ec88acc3ac4e6a4e33295",
+          "changedPixelCount": 137,
+          "maximumChannelError": 68,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-1000x400-black",
+          "referenceSha256": "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+          "candidateSha256": "33d6044ed858f07b750de1f766b162cd2720deaead56b0b95485a97983e32f75",
+          "changedPixelCount": 123,
+          "maximumChannelError": 32,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        }
+      ]
+    },
+    {
+      "name": "relative-float-original",
+      "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+      "rendererSha256": "fec8163aa9d2b74ae75170dd619254d519e41682f52183094e0cd140cde281b4",
+      "variants": [
+        {
+          "id": "inv-002-250x100-transparent",
+          "referenceSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+          "candidateSha256": "cd677106b94bc25589abded976835552f88b70450d89ac94e4cbe9a568137937",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-250x100-white",
+          "referenceSha256": "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+          "candidateSha256": "a81bec90bc3a183134cdaa21eeb1e0d4031e11f292c157920d6a02b78be78493",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-250x100-black",
+          "referenceSha256": "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+          "candidateSha256": "c5e9db9836b16c738a70805f9038708ab3368e0d28f009e38ba12c2bd68d6859",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-500x200-transparent",
+          "referenceSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+          "candidateSha256": "c75dada396dda177f38d5395e8885ad315a702b9c3fc8844ce8422a4cee21940",
+          "changedPixelCount": 3,
+          "maximumChannelError": 7,
+          "maximumAlphaError": 3,
+          "alphaErrorMass": 5,
+          "over": 3,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0,
+          "samples": [
+            {
+              "X": 218,
+              "Y": 91,
+              "Reference": "ADR6LA==",
+              "Candidate": "ADF3Lw=="
+            },
+            {
+              "X": 218,
+              "Y": 92,
+              "Reference": "ADN3Dw==",
+              "Candidate": "ADBwEA=="
+            },
+            {
+              "X": 217,
+              "Y": 93,
+              "Reference": "ADN3jQ==",
+              "Candidate": "ADR4jg=="
+            }
+          ]
+        },
+        {
+          "id": "inv-002-500x200-white",
+          "referenceSha256": "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+          "candidateSha256": "92679ee701aa697d6ede33245a5e292b524a85f0da54cde0aea3f0de58bfe1de",
+          "changedPixelCount": 3,
+          "maximumChannelError": 3,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0,
+          "samples": [
+            {
+              "X": 218,
+              "Y": 91,
+              "Reference": "09zo/w==",
+              "Candidate": "0Nnm/w=="
+            },
+            {
+              "X": 218,
+              "Y": 92,
+              "Reference": "8PP3/w==",
+              "Candidate": "7/L2/w=="
+            },
+            {
+              "X": 217,
+              "Y": 93,
+              "Reference": "co60/w==",
+              "Candidate": "cY60/w=="
+            }
+          ]
+        },
+        {
+          "id": "inv-002-500x200-black",
+          "referenceSha256": "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+          "candidateSha256": "e89e7f83964d2750e57903b677fcab59d643b2313800cfbf45c3f3c94cc84117",
+          "changedPixelCount": 2,
+          "maximumChannelError": 1,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0,
+          "samples": [
+            {
+              "X": 218,
+              "Y": 91,
+              "Reference": "AAkV/w==",
+              "Candidate": "AAkW/w=="
+            },
+            {
+              "X": 217,
+              "Y": 93,
+              "Reference": "ABxC/w==",
+              "Candidate": "AB1D/w=="
+            }
+          ]
+        },
+        {
+          "id": "inv-002-1000x400-transparent",
+          "referenceSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+          "candidateSha256": "33df57887670da35547af966c2f22b1f100ca47bb82320b369dde96cd4b0ad54",
+          "changedPixelCount": 126,
+          "maximumChannelError": 128,
+          "maximumAlphaError": 68,
+          "alphaErrorMass": 2711,
+          "over": 115,
+          "under": 11,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-1000x400-white",
+          "referenceSha256": "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+          "candidateSha256": "5078a8b9e25651494b1a5524228a3600138be772da895c4ec61e7d87dc232a77",
+          "changedPixelCount": 126,
+          "maximumChannelError": 68,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-1000x400-black",
+          "referenceSha256": "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+          "candidateSha256": "156cfe40a4dcfa62e14d883802cd226b85cfad95cfdb9e3e5209220c42f07fb4",
+          "changedPixelCount": 114,
+          "maximumChannelError": 32,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        }
+      ]
+    },
+    {
+      "name": "captured-transform-only",
+      "inputSha256": "3271119d534f558aeb04896b7c6c0e312e58e3c92540b33c8c0ad24cfc7b59f4",
+      "rendererSha256": "39dbf5988a2b5819477b7a803b15d3be2c9f55450209ce1ab5e42bcf573e82da",
+      "variants": [
+        {
+          "id": "inv-002-250x100-transparent",
+          "referenceSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+          "candidateSha256": "cd677106b94bc25589abded976835552f88b70450d89ac94e4cbe9a568137937",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-250x100-white",
+          "referenceSha256": "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+          "candidateSha256": "a81bec90bc3a183134cdaa21eeb1e0d4031e11f292c157920d6a02b78be78493",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-250x100-black",
+          "referenceSha256": "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+          "candidateSha256": "c5e9db9836b16c738a70805f9038708ab3368e0d28f009e38ba12c2bd68d6859",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-500x200-transparent",
+          "referenceSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+          "candidateSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-500x200-white",
+          "referenceSha256": "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+          "candidateSha256": "aefac6daa9ce7dea9edddaad2ee97d91808c19871cf0e0c004736e915a119b37",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-500x200-black",
+          "referenceSha256": "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+          "candidateSha256": "a3b40ee0200c1c7bf64127fe67af0c7978349089c7129adeab03ceacdf0cc6c2",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-1000x400-transparent",
+          "referenceSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+          "candidateSha256": "b9bada7bbca279d97fe424bb8e257ecd705d7d1a3e7ffe8722b9050432336d41",
+          "changedPixelCount": 96,
+          "maximumChannelError": 128,
+          "maximumAlphaError": 56,
+          "alphaErrorMass": 617,
+          "over": 64,
+          "under": 32,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-1000x400-white",
+          "referenceSha256": "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+          "candidateSha256": "bb5332adf09224b32bf90d0f2f01e96c9bff648841c5aa34257d3da18e6484e2",
+          "changedPixelCount": 96,
+          "maximumChannelError": 56,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-1000x400-black",
+          "referenceSha256": "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+          "candidateSha256": "1bcb5cd02c65ed26ac07d5832ccb218f0838cf21074920486c3fff1510eb5014",
+          "changedPixelCount": 86,
+          "maximumChannelError": 26,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        }
+      ]
+    },
+    {
+      "name": "captured-transform-and-relative-float",
+      "inputSha256": "3271119d534f558aeb04896b7c6c0e312e58e3c92540b33c8c0ad24cfc7b59f4",
+      "rendererSha256": "22b6020a160c83be28d32a5ec5027e6bea2bc2163e5761aac9bafac0175093da",
+      "variants": [
+        {
+          "id": "inv-002-250x100-transparent",
+          "referenceSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
+          "candidateSha256": "cd677106b94bc25589abded976835552f88b70450d89ac94e4cbe9a568137937",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-250x100-white",
+          "referenceSha256": "efc9f310e37a265f734b6fe33f4ba550178ff9645edd2d5f5f6098f2df55d227",
+          "candidateSha256": "a81bec90bc3a183134cdaa21eeb1e0d4031e11f292c157920d6a02b78be78493",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-250x100-black",
+          "referenceSha256": "ab64440c91623369158563734909e7b8447d1e8c17aea311624e22bdbc86456b",
+          "candidateSha256": "c5e9db9836b16c738a70805f9038708ab3368e0d28f009e38ba12c2bd68d6859",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-500x200-transparent",
+          "referenceSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
+          "candidateSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-500x200-white",
+          "referenceSha256": "96bc9dd552f04c0da6d09b27d68b18f913b595ab719b0daa0bb602fe15d66b57",
+          "candidateSha256": "aefac6daa9ce7dea9edddaad2ee97d91808c19871cf0e0c004736e915a119b37",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-500x200-black",
+          "referenceSha256": "1308b3fe502c608742c00d84c9ec580a2ac6ba1ecd1d4272aa7da72f982fb245",
+          "candidateSha256": "a3b40ee0200c1c7bf64127fe67af0c7978349089c7129adeab03ceacdf0cc6c2",
+          "changedPixelCount": 0,
+          "maximumChannelError": 0,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-1000x400-transparent",
+          "referenceSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
+          "candidateSha256": "891ef7e22901be6a13cb16acaaeccfa1a29f1aa6aadafe128e71a4dec42fec66",
+          "changedPixelCount": 10,
+          "maximumChannelError": 3,
+          "maximumAlphaError": 3,
+          "alphaErrorMass": 16,
+          "over": 9,
+          "under": 1,
+          "opaqueLost": 0,
+          "opaqueAdded": 0,
+          "samples": [
+            {
+              "X": 829,
+              "Y": 278,
+              "Reference": "ADN49Q==",
+              "Candidate": "ADR49w=="
+            },
+            {
+              "X": 891,
+              "Y": 278,
+              "Reference": "ADR4vw==",
+              "Candidate": "ADN3vg=="
+            },
+            {
+              "X": 557,
+              "Y": 282,
+              "Reference": "ADV5Pw==",
+              "Candidate": "ADR4QA=="
+            },
+            {
+              "X": 693,
+              "Y": 282,
+              "Reference": "ADR3yw==",
+              "Candidate": "ADN4zA=="
+            },
+            {
+              "X": 13,
+              "Y": 329,
+              "Reference": "ADR3pw==",
+              "Candidate": "ADR4qA=="
+            },
+            {
+              "X": 100,
+              "Y": 329,
+              "Reference": "ADN3xw==",
+              "Candidate": "ADR4yg=="
+            },
+            {
+              "X": 110,
+              "Y": 329,
+              "Reference": "ADN4uQ==",
+              "Candidate": "ADR4uw=="
+            },
+            {
+              "X": 215,
+              "Y": 329,
+              "Reference": "ADR4hA==",
+              "Candidate": "ADR3hQ=="
+            },
+            {
+              "X": 837,
+              "Y": 393,
+              "Reference": "ADN4wg==",
+              "Candidate": "ADN3ww=="
+            },
+            {
+              "X": 845,
+              "Y": 393,
+              "Reference": "ADR4xg==",
+              "Candidate": "ADR3yQ=="
+            }
+          ]
+        },
+        {
+          "id": "inv-002-1000x400-white",
+          "referenceSha256": "cadca66e2aac82ab16165e3451c065dc51236ae9af17bec86cc137e5558d94e9",
+          "candidateSha256": "b32b56cebf65c80df6e2e562ca52db7131d33d8390dafddc196621be6efc2bef",
+          "changedPixelCount": 10,
+          "maximumChannelError": 3,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        },
+        {
+          "id": "inv-002-1000x400-black",
+          "referenceSha256": "17f9c3db226b284af6bab73856430fad5247f6e973e10b2bab0ae6898647e3da",
+          "candidateSha256": "d10c7f836c7dcaa3e0def997ae9b3dc4479bfa55ad1184a842d3a966f7b5df4f",
+          "changedPixelCount": 7,
+          "maximumChannelError": 2,
+          "maximumAlphaError": 0,
+          "alphaErrorMass": 0,
+          "over": 0,
+          "under": 0,
+          "opaqueLost": 0,
+          "opaqueAdded": 0
+        }
+      ]
+    }
+  ],
+  "witnesses": [
+    {
+      "width": 1000,
+      "height": 400,
+      "x": 269,
+      "y": 187,
+      "managedCurrentAdds": [
+        64,
+        27,
+        12,
+        3
+      ],
+      "nativeCapturedAdds": [
+        64,
+        27,
+        13,
+        3
+      ],
+      "coupledTrialAdds": [
+        64,
+        27,
+        13,
+        3
+      ]
+    },
+    {
+      "width": 500,
+      "height": 200,
+      "x": 218,
+      "y": 91,
+      "managedCurrentAdds": [
+        10,
+        12,
+        22
+      ],
+      "relativeOnlyAdds": [
+        11,
+        13,
+        23
+      ],
+      "nativeCapturedAdds": [
+        10,
+        12,
+        22
+      ],
+      "coupledTrialAdds": [
+        10,
+        12,
+        22
+      ]
+    },
+    {
+      "width": 500,
+      "height": 200,
+      "x": 218,
+      "y": 92,
+      "managedCurrentAdds": [
+        9,
+        6,
+        0
+      ],
+      "relativeOnlyAdds": [
+        10,
+        6,
+        0
+      ],
+      "nativeCapturedAdds": [
+        9,
+        6,
+        0
+      ],
+      "coupledTrialAdds": [
+        9,
+        6,
+        0
+      ]
+    },
+    {
+      "width": 500,
+      "height": 200,
+      "x": 217,
+      "y": 93,
+      "managedCurrentAdds": [
+        53,
+        43,
+        29,
+        16
+      ],
+      "relativeOnlyAdds": [
+        53,
+        43,
+        30,
+        16
+      ],
+      "nativeCapturedAdds": [
+        53,
+        43,
+        29,
+        16
+      ],
+      "coupledTrialAdds": [
+        53,
+        43,
+        29,
+        16
+      ]
+    }
+  ],
+  "nativeAdapterLimitations": "Exact Scale_pts and pinned SkVx; bounded clipped line/cubic builder and exact nonconvex run walker. Projected vertical combination and pending-run flush omitted. Testing inferred-500 and actual-1000 matrices, global and upper-tile local origins; explicit implicit-fill closing lines leave sampled walk outputs unchanged. No complete browser backend parity claimed.",
+  "coupledMappedVerbComparison": {
+    "widths": [
+      500,
+      1000
+    ],
+    "cubicCount": [
+      84,
+      60
+    ],
+    "coordinateLaneCount": [
+      672,
+      480
+    ],
+    "differentLanes": [
+      0,
+      0
+    ]
+  },
+  "remainingCoupledLargeTransparent": {
+    "changedPixelCount": 10,
+    "alphaErrorMass": 16,
+    "over": 9,
+    "under": 1,
+    "maximumChannelError": 3,
+    "maximumAlphaError": 3,
+    "minimumMismatchY": 278,
+    "maximumMismatchY": 393,
+    "firstPixel": {
+      "x": 829,
+      "y": 278
+    },
+    "opaqueLost": 0,
+    "opaqueAdded": 0
+  },
+  "next": "Implement shared browser-compatible SVG number reading and relative arithmetic together, with independent controls, exact nonregression and all delivery gates. Then compare tile-local mapping at the retained lower-tile diagnostic witnesses.",
+  "recordedNativePathsHashing": "SHA-256 of UTF-8 bytes after CRLF-to-LF normalization, matching the committed Git blob.",
+  "authoredCoordinateBitEncoding": "Little-endian float32 byte strings in firstDifferences; coefficient bits are hexadecimal uint32 values.",
+  "chromiumResearchSources": [
+    {
+      "url": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/svg/svg_parser_utilities.cc?format=TEXT",
+      "sha256": "b52e323c34f7b26c0bb0f9a881b08aa75749c2de5a10b7b586cf72e276408705"
+    },
+    {
+      "url": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/svg/svg_transform_list.cc?format=TEXT",
+      "sha256": "7157ea47c3d72fbf8176d60dba99198f7c75006cecd1fd8fa511cee42afdad2f"
+    }
+  ],
+  "chromiumResearchSourcesUse": "Read-only investigation at the pinned Chrome release; no source is copied into production."
+}

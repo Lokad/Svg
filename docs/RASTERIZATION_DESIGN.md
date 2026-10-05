@@ -4,8 +4,9 @@ The renderer now has shared contour preparation, analytic coverage, retained
 curves and bounded paint/layer routes. General pinned-browser equality remains
 unproved. [PLAN.md](../PLAN.md) owns the current execution queue; this document
 retains chronological hypotheses, source evidence, rejected models and repairs.
-The latest [dispatch investigation](#native-maskrun-dispatch-and-paint-operations-2026-10-04)
-selects separate direct paint and pending-run operations as the next boundary.
+Direct paint and pending-run operations are integrated. The latest
+[authoring/map discriminator](#captured-authoring-and-transform-number-dependency-2026-10-05)
+identifies coupled numeric reading and relative arithmetic as the next boundary.
 
 ## Initial transition requirements (historical)
 
@@ -4011,3 +4012,73 @@ capture triples, comparisons and negative control are under ignored
 `artifacts/lower-tile-count-20261005/`; native vectors, all exact controls and Ford
 references are portable ordinary regressions. All-nine Ford, the independent curved
 corporate mark, representative cohort, Linux, throughput and S17 remain open.
+
+## Captured authoring and transform-number dependency (2026-10-05)
+
+Continue from the original-input axis-aligned mapping checkpoint, six exact Ford
+variants and large 137/137/123 differences / transparent alpha error 2,734. No
+production or original reference changes in this investigation. Snapshot HEAD
+`2ebc2675`, apply observer-only hooks and verify the complete large-transparent
+candidate PNG matches the checkpoint. All mutations below affect ignored snapshots
+and restore their original source bytes after each terminal run.
+
+Compare path authoring with the actual captured native path record, independently
+of device mapping. Both Ford paths contain only moveto and relative cubic
+commands. The recording has two moves plus 84/60 cubics, with 254/182 authored
+points. It contains no explicit closes; the fill iterator's implicit closing lines
+are included separately in the native builder experiment. Their inclusion leaves
+all four sampled witness rows unchanged. Current authoring differs from recorded
+float coordinates in 425/269 coordinate lanes. The float-token/relative model
+matches every recorded coordinate bit, but retains its intended-size 3/3/2-pixel
+counterexample on the original transform. Correct authoring alone is insufficient.
+
+The source transform's `1.3453761`, parsed normally then cast to float, becomes
+`1.3453761339187622`. The actual captured 1000×400 CTM scale is
+`2.69075202941895`, with half-value `1.3453760147094727`: one adjacent float below
+that cast. Normal token parsing followed by narrowing therefore does not reproduce
+the browser transform. The pinned Blink transform list reads float arguments;
+its numeric reader accumulates fractional digits in float lanes. This source
+inspection supports the recorded value; it does not replace the actual CTM evidence.
+The research sources and their identities stay under ignored
+`artifacts/authoring-next-20261005/chromium-source/`.
+
+Pass the captured authored coordinates and CTM through exact pinned `Scale_pts`
+and `SkVx`, then the bounded native clipped builder/walk. At (269,187), fill one
+adds 64+27+13+3 = 107; current managed preparation adds 64+27+12+3 = 106. The native
+global and upper-tile-local origins agree at this witness. For intended-size
+witnesses (218,91), (218,92), (217,93), infer the CTM by halving the actual large
+recording. Native additions produce 44/15/141, matching the original pixels;
+the relative-only managed model produces 47/16/142. Intersection dispatch is false
+in these fill-one cases. The builder adapter still omits projected vertical
+combination and pending-run flush, so sampled addition agreement is not complete
+browser backend parity.
+
+Inject the captured CTM half-values into the original SVG's transform literal,
+retaining every other byte. This is a changed-input discriminator; no injected
+coefficient is a proposed implementation. With existing authoring it preserves
+all six exact PNGs and gives 96/96/86 large differences / alpha error 617. Together
+with float-relative authoring it still preserves all six exact PNGs and gives
+**10/10/7**, transparent alpha error **16**, max channel/alpha error 3/3, nine
+over-covered pixels and one under-covered pixel, with zero opaque/hole flips.
+All mapped cubic lanes match the compiled mapper at 500 and 1000 widths. The three
+intended witnesses recover 44/15/141, and the large witness recovers 107. All ten
+transparent residuals lie at Y=278–393; the first is (829,278). Tile-local mapping
+remains a follow-up discriminator after the shared numeric repair is validated.
+
+Keep all four complete nine-variant comparisons, original/candidate input and PNG
+identities, captured path/picture provenance, float bits and witness additions in
+[the portable discriminator](../tests/References/inventory/inv-002-authoring-map-discriminator.json).
+The ignored source snapshots, raw paths, native map/walk outputs, tapes and coupled
+trial candidates remain under `artifacts/authoring-next-20261005/`. This experiment
+adds no fixture, changes no disposition, performs no oracle refresh and supersedes
+no original-input candidate identity. The 818-case bank and latest full delivery
+gates still belong to the preceding production checkpoint.
+
+Decision: implement shared compatible numeric reading and relative arithmetic
+together, with independent predeclared decimal/exponent, smooth/relative,
+transform/instance and translation controls. Preserve syntax, range categorization,
+work/cancellation and ownership contracts, all 534 exact fixture PNGs and Default
+dispositions; then run the complete bank, nine original-input Ford variants and
+matching delivery/resource/timing gates. The diagnostic explains the earlier
+counterexample but is not the shared repair. All-nine Ford, corporate checkpoints,
+representative coverage, platform/performance and S17 remain open.
