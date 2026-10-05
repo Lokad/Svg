@@ -999,7 +999,7 @@ internal static class SvgDefinitionParser
             if (vectorEffect is not null && SvgStrokeStyleSyntax.ParseVectorEffect(vectorEffect)) return null;
             if (transformAttribute is not null)
             {
-                SvgAffineTransform elementMap = SvgGeometrySyntax.ParseTransform(transformAttribute);
+                SvgAffineTransform elementMap = SvgGeometrySyntax.ParseTransform(transformAttribute, workCounter, cancellationToken);
                 if (!elementMap.TryGetUniformScale(out double definitionScale) || Math.Abs(definitionScale - 1) > 1e-9) return null;
             }
             if (!SvgPathDataParser.IsSingleClosedPath(pathData, workCounter, cancellationToken)) return null;

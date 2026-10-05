@@ -1,0 +1,61 @@
+{
+  "fixtureId": "original-number-relative-smooth-white",
+  "referencePng": "original-number-relative-smooth-white.png",
+  "referenceSha256": "2499bf5ae81f93dbbccd2f27817ae8934974094bdcfb0748aca743d0c40c1a7a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 160,
+    "height": 160,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "2a8de05724550675a92244c8f1f6424618ef49bc05e5d673a8a9e57b6ad43534",
+  "materializedSha256": "e5e3077ca2ad84f31c3053778cedc2ca41f2f4827faa917db8129bc9ca0b85f0",
+  "materialization": "Only a leading SPDX XML comment was added to the captured original source for the fixture asset. Removing that prefix recovers the byte-identical captured input.",
+  "captureSha256": [
+    "2499bf5ae81f93dbbccd2f27817ae8934974094bdcfb0748aca743d0c40c1a7a",
+    "2499bf5ae81f93dbbccd2f27817ae8934974094bdcfb0748aca743d0c40c1a7a",
+    "2499bf5ae81f93dbbccd2f27817ae8934974094bdcfb0748aca743d0c40c1a7a"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeGenericPrototype": true,
+  "declaredAfterNumericPrototype": false,
+  "candidateOutcome": "renders",
+  "candidateSha256": "424c35057914a6b39a9358cb9004980b328ad71ec39f454cfe2f081cb145239b",
+  "rendererSha256": "d73f76cdcb6a5512bf09e754024a7b8e44af90a9c4ae20af5c3f8909ef45a201",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 84,
+    "maximumChannelError": 96,
+    "meanAbsoluteError": 0.01939453125,
+    "rootMeanSquareError": 0.6909289489520611,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 45,
+    "minimumMismatchY": 81,
+    "maximumMismatchX": 118,
+    "maximumMismatchY": 111,
+    "exact": false,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

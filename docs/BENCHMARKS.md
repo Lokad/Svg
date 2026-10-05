@@ -681,3 +681,44 @@ ledgers and delivery evidence are under ignored `artifacts/lower-tile-count-2026
 The final memory runner and runtime package contain the exact final renderer DLL
 and complete Skia/Chromium notices. Representative throughput, earlier native-size
 replay costs, Linux and private-font performance remain open.
+
+## Coupled SVG numeric-reading checkpoint (2026-10-05)
+
+Compare frozen `9e62e3dd` with the generic float numeric reader and bounded parity/
+closing-adjacency repair on the same Windows x64 .NET 10.0.12 environment. Both
+orders run sequentially in fresh processes after capture/build/test/package jobs
+finish: 32 warmups per input, then three batches of 100 tiny, ten Ford, three dense
+and three native-stop conversions. These medians are local per-conversion
+milliseconds / managed bytes, not representative BenchmarkDotNet throughput.
+
+| Input | Baseline first ms / bytes | Candidate second ms / bytes | Candidate first ms / bytes | Baseline second ms / bytes |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.12088 / 20,288 | 0.12382 / 20,288 | 0.12956 / 20,288 | 0.12267 / 20,288 |
+| ford | 17.60753 / 817,988 | 17.19330 / 816,602 | 15.55862 / 816,674 | 19.12220 / 816,628 |
+| dense | 321.06177 / 7,212,752 | 275.21973 / 7,184,808 | 269.33853 / 7,184,808 | 318.25920 / 7,212,672 |
+| native-stop | 464.09583 / 36,857,184 | 455.80463 / 36,855,821 | 488.83080 / 36,857,413 | 555.88150 / 36,856,205 |
+
+| Input | Charged work through raster, baseline → candidate | Accounted peak bytes, baseline → candidate |
+| --- | ---: | ---: |
+| tiny | 219 → 219 | 132,576 → 132,576 |
+| ford | 1,299,452 → 1,300,919 | 534,434 → 534,434 |
+| dense | 32,695,333 → 32,761,651 | 2,493,276 → 2,493,820 |
+| native-stop | 73,300,601 → 73,300,782 | 33,629,691 → 33,629,655 |
+
+The additional bounded, allocation-free numeric pass and transform traversal are
+charged. Ford parser work grows 3,188→4,655; dense parser work grows
+244,679→245,770. Numerical changes also alter taken flattening/cleanup work and
+retained geometry storage: dense peak grows 544 bytes, native-stop falls 36 bytes.
+Parity/closing classification adds no heap buffers. Tiny and exact intended Ford
+PNG identities are preserved; dense/native-stop outputs change without matching
+captures in the Default sweep, so these timings establish no fidelity claim.
+
+Ford and dense are faster in both measured orders; tiny/native-stop variation
+remains visible. Do not extrapolate a universal throughput claim from these four
+inputs. All Default admissions/limits, 25 memory scenarios and runtime/symbol
+package plus installed-consumer checks pass. Final runner/package/consumer DLL
+identity is `d73f76cdcb6a5512bf09e754024a7b8e44af90a9c4ae20af5c3f8909ef45a201`,
+with the unchanged complete Skia/Chromium BSD notices. Local batch and input/DLL/PNG
+identities, work/peak ledgers, full 848-case comparison and delivery evidence remain
+under ignored `artifacts/native-numbers-20261005/`. Representative throughput,
+replay costs, Linux and private-font performance remain open.

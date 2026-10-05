@@ -363,11 +363,11 @@ internal static class SvgFontRequestDiscovery
         specifiedWhiteSpace = SvgInlineStyleParser.MergeWithImportance(inlineStyle.WhiteSpace, inlineStyle.Important, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important);
         if (SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
         {
-            SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inlineStyle, computedStyle, styleSheet, new SvgInheritedPresentation(inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, inherited.Transform), inherited.FillRule, inherited.Text, SvgInheritedStrokeStyle.Default, inherited.HasOpacityScope, SvgRootParser.CssNamedColors);
+            SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inlineStyle, computedStyle, styleSheet, new SvgInheritedPresentation(inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, inherited.Transform), inherited.FillRule, inherited.Text, SvgInheritedStrokeStyle.Default, inherited.HasOpacityScope, SvgRootParser.CssNamedColors, workCounter, cancellationToken);
             return new TextStyle(resolved.TextStyle, resolved.Presentation.Paint, resolved.Presentation.IsDisplayed, resolved.Presentation.IsVisible, resolved.Presentation.Transform, resolved.FillRule, computedStyle.Stroke ?? inherited.Stroke, resolved.HasOpacityScope);
         }
         SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), specifiedWhiteSpace, SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important));
-        SvgAffineTransform transform = inherited.Transform.ComposeChecked(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform")));
+        SvgAffineTransform transform = inherited.Transform.ComposeChecked(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken));
         SvgResolvedShapePresentation textPresentation = SvgShapePresentationResolver.Resolve(computedStyle, inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, false, SvgRootParser.CssNamedColors);
         bool isDisplayed = inherited.IsDisplayed && SvgPresentationResolver.ParseDisplay(computedStyle.Display);
         bool isVisible = SvgPresentationResolver.ParseVisibility(computedStyle.Visibility, inherited.IsVisible);

@@ -120,8 +120,8 @@ public sealed class FordForwardTrajectoryTests
             fills.Add("points=" + polygon.Points.Length + " quads=" + polygon.QuadSpans.Length + " cubics=" + polygon.CubicSpans.Length + " liveEligible=" + liveEligible + " flatEligible=" + flatEligible + " firstRow=" + firstRow + " differingBytes=" + differingBytes + " liveMass=" + liveMass + " flatMass=" + flatMass);
         }
         Assert.Equal(2, fills.Count);
-        Assert.Equal("points=338 quads=0 cubics=84 liveEligible=True flatEligible=True firstRow=60 differingBytes=1806 liveMass=4334755 flatMass=4338689", fills[0]);
-        Assert.Equal("points=298 quads=0 cubics=60 liveEligible=True flatEligible=True firstRow=3 differingBytes=1943 liveMass=4177791 flatMass=4174661", fills[1]);
+        Assert.Equal("points=338 quads=0 cubics=84 liveEligible=True flatEligible=True firstRow=60 differingBytes=1806 liveMass=4334755 flatMass=4338688", fills[0]);
+        Assert.Equal("points=298 quads=0 cubics=60 liveEligible=True flatEligible=True firstRow=3 differingBytes=1943 liveMass=4177791 flatMass=4174655", fills[1]);
     }
 
     [Fact]

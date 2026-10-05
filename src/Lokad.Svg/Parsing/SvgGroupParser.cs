@@ -12,7 +12,7 @@ internal static class SvgGroupParser
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet);
-        SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, context.StyleSheet, context.InheritedPresentation, context.InheritedFillRule, context.InheritedTextStyle, context.InheritedStroke, root.Opacity != 255 || state.HasOpacityScope, namedColors);
+        SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, context.StyleSheet, context.InheritedPresentation, context.InheritedFillRule, context.InheritedTextStyle, context.InheritedStroke, root.Opacity != 255 || state.HasOpacityScope, namedColors, workCounter, cancellationToken);
         string? maskReference = reader.GetAttribute("mask");
         byte? mask = null;
         string? deferredMask = null;

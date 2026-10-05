@@ -1,0 +1,28 @@
+{
+  "chromeVersion": "153.0.8010.52",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureDate": "2026-10-05",
+  "freshProcessCaptures": 3,
+  "decodedStability": "byte-identical numeric records",
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "provenance": "Actual pinned-browser SVG path getPointAtLength(0).x and transform.baseVal.consolidate().matrix.a. M[number] 0v1 isolates authored start-point reading; scale([number]) isolates transform reading. No C++ implementation is copied. Grammar remains independently validated by each production caller.",
+  "dataSha256": "767d38d6b995c003f838adb7ddfd19892a3340d2d93293cc7af6698c77b00efb",
+  "captureSha256": [
+    "0a61bcb3c2be0e1b0dd0546ea8a1da0a90013e919ccb2625a0ed34a57f60dc74",
+    "0a61bcb3c2be0e1b0dd0546ea8a1da0a90013e919ccb2625a0ed34a57f60dc74",
+    "0a61bcb3c2be0e1b0dd0546ea8a1da0a90013e919ccb2625a0ed34a57f60dc74"
+  ],
+  "rows": 31,
+  "browserRejectedTrailingDot": "5.",
+  "admissionNote": "The library preserves its existing trailing-dot number grammar. 5. is excluded from the numeric-bit vectors because Chrome rejects it. Transform owners retain finite-double/int-range and nonsingular admission checks."
+}

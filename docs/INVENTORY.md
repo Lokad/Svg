@@ -14,10 +14,10 @@ retained files and rejects four as MalformedInput (`inv-007`, `inv-012`,
 establish completion of every declared size/background or current corporate-logo
 coverage. Fifty-seven inventory headings identify flags or flag badges/icons,
 so this whole inventory is not the representative corporate denominator.
-Ford is exact in six of nine recorded variants; axis-aligned path device mapping
-reduces the three large differences to 137/137/123 pixels, with transparent alpha
-error 2,734. All three remain known differences. The latest Default sweep changes
-eleven PNGs without matching captures; those outputs' fidelity is unmeasured.
+Ford is exact in six of nine recorded variants; coupled numeric reading reduces
+the three large differences to 10/10/7 pixels, with transparent alpha error 16.
+All three remain known differences. The latest Default sweep changes 14 PNGs
+without matching captures; those outputs' fidelity is unmeasured.
 The first all-variant corporate checkpoint and representative corporate rate remain
 open. S17 still requires at least 80% exact documents overall and in each corporate
 stratum. See [PLAN](../PLAN.md) and [the release criteria](S17_DECISIONS.md).
@@ -29,24 +29,21 @@ Framework defined 2026-09-26. Batch 1 selected 2026-09-26: 5 documents (inv-001.
 
 ## Current renderer checkpoint (2026-10-05)
 
-Axis-aligned path device mapping preserves all 92 Default dispositions: 88 renders
+Coupled SVG numeric reading preserves all 92 Default dispositions: 88 renders
 and four MalformedInput DTD rejections. Ford remains exact in six of nine original
 variants: 250×100 and 500×200 on transparent/white/black. The three 1000×400 variants
-improve 174/174/159→**137/137/123** changed pixels. Large-transparent alpha error
-falls 2,835→**2,734**, with max channel/alpha error 128/68 and 137 alpha mismatches
-(126 over-covered / 11 under-covered). No opaque/hole flips appear. Ford still
-fails its all-nine exit and cannot enter a corporate exact-document numerator.
+improve **137/137/123→10/10/7** changed pixels. Large-transparent alpha error falls
+**2,734→16**, with max channel/alpha error 3/3 and ten alpha mismatches (nine
+over-covered / one under-covered). No opaque/hole flips appear. Ford still fails
+its all-nine exit and cannot enter a corporate exact-document numerator.
 
-The public converter now integrates CPU raster contexts and horizontal clip paint
-routing; the original row-6 and (740,30) witnesses remain exact. Axis-aligned float
-path mapping closes (375,269). On identical prepared edges, either native
-intersection mode emits the same row-269 operations. The first remaining production
-event is (269,187). The subsequent [authoring/map discriminator](../tests/References/inventory/inv-002-authoring-map-discriminator.json)
-explains its coupled numeric dependency and the intended-size relative-only
-counterexample. Injecting the captured CTM together with float-relative authoring
-preserves six exact PNGs and gives 10/10/7 large differences, transparent alpha
-error 16. This changed-input diagnostic is unlanded; the original-input baseline
-above still applies. Shared numeric compatibility and tile-local parity remain open.
+The converter retains the closed original row-6, (740,30) and (375,269) witnesses.
+Generic numeric reading and float relative arithmetic now match all 436 authored
+points and the actual recorded large CTM, closing (269,187) on the original input.
+The [authoring/map discriminator](../tests/References/inventory/inv-002-authoring-map-discriminator.json)
+remains historical changed-input evidence. Ten transparent lower-tile differences
+remain at Y=278–393, starting at (829,278). Complete tile-local/event and full-image
+parity remain open.
 
 All original references and stable healthy 2026-10-02 capture triples remain in
 [the Ford bank](../tests/References/inventory/inv-002-variants.json), alongside

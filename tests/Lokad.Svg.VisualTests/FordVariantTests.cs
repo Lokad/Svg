@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Xml.Linq;
 using Lokad.Svg.VisualDiff;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
@@ -8,6 +9,83 @@ namespace Lokad.Svg.VisualTests;
 
 public sealed class FordVariantTests
 {
+    [Fact]
+    public void Numeric_authoring_matches_every_recorded_Ford_point_and_transform_lane()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "inventory", "inv-002-recorded-native-paths.json")));
+        Assert.Equal(native.RootElement.GetProperty("inputSha256").GetString(), Convert.ToHexStringLower(SHA256.HashData(input)));
+        using MemoryStream stream = new(input);
+        XDocument source = XDocument.Load(stream);
+        XNamespace svg = "http://www.w3.org/2000/svg";
+        XElement[] paths = source.Descendants(svg + "path").ToArray();
+        JsonElement[] draws = native.RootElement.GetProperty("commandLog").EnumerateArray().Where(x => x.GetProperty("method").GetString() == "drawPath").ToArray();
+        Assert.Equal(2, paths.Length);
+        Assert.Equal(2, draws.Length);
+        int compared = 0;
+        for (int fill = 0; fill < paths.Length; fill++)
+        {
+            string data = paths[fill].Attribute("d")?.Value ?? throw new InvalidDataException("Missing Ford path data.");
+            Assert.All(data.Where(char.IsLetter), command => Assert.Contains(command, new[] { 'M', 'm', 'c' }));
+            SvgContourBuilder builder = new(10_000, 8);
+            builder.EnableCubicSpanRetention();
+            SvgPathDataParser.ParsePath(data, SvgAffineTransform.Identity, builder, new(0.5, 64, 10_000), 1000, new(1_000_000), CancellationToken.None, null);
+            SvgCubicSpan[] cubics = builder.GetCubicSpans();
+            Assert.Equal(fill == 0 ? 84 : 60, cubics.Length);
+            Assert.Equal(2, builder.ContourCount);
+            int contour = -1;
+            int cubic = 0;
+            foreach (JsonElement verb in draws[fill].GetProperty("params").GetProperty("path").GetProperty("pathPoints").EnumerateArray())
+            {
+                JsonElement points = verb.GetProperty("points");
+                if (verb.GetProperty("verb").GetString() == "Move")
+                {
+                    Assert.Equal(1, points.GetArrayLength());
+                    ComparePoint(points[0], builder.GetContour(++contour)[0]);
+                }
+                else
+                {
+                    Assert.Equal("Cubic", verb.GetProperty("verb").GetString());
+                    Assert.Equal(3, points.GetArrayLength());
+                    SvgCubicSpan span = cubics[cubic++];
+                    Assert.Equal(contour, span.Contour);
+                    ComparePoint(points[0], span.FirstControl);
+                    ComparePoint(points[1], span.SecondControl);
+                    ComparePoint(points[2], builder.GetContour(contour)[span.EndIndex]);
+                }
+            }
+            Assert.Equal(cubics.Length, cubic);
+        }
+        Assert.Equal(436, compared);
+        XElement group = Assert.Single(source.Descendants(svg + "g"), x => x.Attribute("transform") is not null);
+        SvgAffineTransform transform = SvgGeometrySyntax.ParseTransform(group.Attribute("transform")?.Value, new(1000), CancellationToken.None);
+        JsonElement matrix = native.RootElement.GetProperty("commandLog")[10].GetProperty("params").GetProperty("matrix44");
+        Assert.Equal(0x3fac3548, BitConverter.SingleToInt32Bits((float)transform.A));
+        Assert.Equal(BitConverter.SingleToInt32Bits((float)matrix[0].GetDouble()), BitConverter.SingleToInt32Bits((float)(transform.A * 2)));
+        Assert.Equal(BitConverter.SingleToInt32Bits((float)matrix[5].GetDouble()), BitConverter.SingleToInt32Bits((float)(transform.D * 2)));
+        Assert.Equal(BitConverter.SingleToInt32Bits((float)matrix[12].GetDouble()), BitConverter.SingleToInt32Bits((float)(transform.E * 2)));
+        Assert.Equal(BitConverter.SingleToInt32Bits((float)matrix[13].GetDouble()), BitConverter.SingleToInt32Bits((float)(transform.F * 2)));
+
+        void ComparePoint(JsonElement expected, SvgDevicePoint actual)
+        {
+            Assert.Equal(BitConverter.SingleToInt32Bits((float)expected.GetProperty("x").GetDouble()), BitConverter.SingleToInt32Bits((float)actual.X));
+            Assert.Equal(BitConverter.SingleToInt32Bits((float)expected.GetProperty("y").GetDouble()), BitConverter.SingleToInt32Bits((float)actual.Y));
+            compared++;
+        }
+    }
+
+    [Fact]
+    public void Coupled_numeric_reading_closes_the_upper_tile_269_187_witness()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-002.svg"));
+        SvgRenderOptions options = new(new SvgViewport(1000, 400), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        RgbaImage output = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None), 400_000);
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "inventory", "inv-002-1000x400-transparent.png")), 400_000);
+        int offset = (187 * 1000 + 269) * 4;
+        Assert.Equal(new byte[] { 0, 50, 119, 107 }, reference.Pixels.AsSpan(offset, 4).ToArray());
+        Assert.Equal(reference.Pixels.AsSpan(offset, 4).ToArray(), output.Pixels.AsSpan(offset, 4).ToArray());
+    }
+
     [Fact]
     public void Axis_aligned_path_mapping_closes_the_lower_tile_row_269_witness()
     {

@@ -1,0 +1,287 @@
+{
+  "DeclaredBeforeProductionEdit": true,
+  "DeclaredBeforeGenericPrototype": true,
+  "DeclarationDate": "2026-10-05",
+  "BaselineHead": "9e62e3dd274cae5bc3ea79cac6be5ac869abb9ee",
+  "License": "CC0-1.0 original controls",
+  "Cases": [
+    {
+      "Id": "number-map-decimal-transparent",
+      "Source": "number-map-decimal.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "78eb555e69bb2115dfda22826d21811724b287d96b963dc38a681f88d5c53b23"
+    },
+    {
+      "Id": "number-map-decimal-white",
+      "Source": "number-map-decimal.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "78eb555e69bb2115dfda22826d21811724b287d96b963dc38a681f88d5c53b23"
+    },
+    {
+      "Id": "number-map-decimal-black",
+      "Source": "number-map-decimal.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "78eb555e69bb2115dfda22826d21811724b287d96b963dc38a681f88d5c53b23"
+    },
+    {
+      "Id": "number-map-exponent-transparent",
+      "Source": "number-map-exponent.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "d2c4fb5c5564094249044bee0000eb603d49652f6ce796db20eff018a9f82c10"
+    },
+    {
+      "Id": "number-map-exponent-white",
+      "Source": "number-map-exponent.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "d2c4fb5c5564094249044bee0000eb603d49652f6ce796db20eff018a9f82c10"
+    },
+    {
+      "Id": "number-map-exponent-black",
+      "Source": "number-map-exponent.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "d2c4fb5c5564094249044bee0000eb603d49652f6ce796db20eff018a9f82c10"
+    },
+    {
+      "Id": "number-map-mirrored-transparent",
+      "Source": "number-map-mirrored.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "8a362eae03ff3688f8562b8c3984ac00e59c563922f105b630bc6b8305464dcf"
+    },
+    {
+      "Id": "number-map-mirrored-white",
+      "Source": "number-map-mirrored.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "8a362eae03ff3688f8562b8c3984ac00e59c563922f105b630bc6b8305464dcf"
+    },
+    {
+      "Id": "number-map-mirrored-black",
+      "Source": "number-map-mirrored.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "8a362eae03ff3688f8562b8c3984ac00e59c563922f105b630bc6b8305464dcf"
+    },
+    {
+      "Id": "number-relative-smooth-transparent",
+      "Source": "number-relative-smooth.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2a8de05724550675a92244c8f1f6424618ef49bc05e5d673a8a9e57b6ad43534"
+    },
+    {
+      "Id": "number-relative-smooth-white",
+      "Source": "number-relative-smooth.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2a8de05724550675a92244c8f1f6424618ef49bc05e5d673a8a9e57b6ad43534"
+    },
+    {
+      "Id": "number-relative-smooth-black",
+      "Source": "number-relative-smooth.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2a8de05724550675a92244c8f1f6424618ef49bc05e5d673a8a9e57b6ad43534"
+    },
+    {
+      "Id": "number-transform-instance-transparent",
+      "Source": "number-transform-instance.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "68db0a2bffe2fcea6a9f41d0b2544e7401fda4c2cecfc236b72e27b6c399aa12"
+    },
+    {
+      "Id": "number-transform-instance-white",
+      "Source": "number-transform-instance.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "68db0a2bffe2fcea6a9f41d0b2544e7401fda4c2cecfc236b72e27b6c399aa12"
+    },
+    {
+      "Id": "number-transform-instance-black",
+      "Source": "number-transform-instance.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "68db0a2bffe2fcea6a9f41d0b2544e7401fda4c2cecfc236b72e27b6c399aa12"
+    },
+    {
+      "Id": "number-general-map-transparent",
+      "Source": "number-general-map.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2c446635d30722fc2e1ef8d7052b379fc060b98c4424c878a21ac890860cf9b6"
+    },
+    {
+      "Id": "number-general-map-white",
+      "Source": "number-general-map.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2c446635d30722fc2e1ef8d7052b379fc060b98c4424c878a21ac890860cf9b6"
+    },
+    {
+      "Id": "number-general-map-black",
+      "Source": "number-general-map.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2c446635d30722fc2e1ef8d7052b379fc060b98c4424c878a21ac890860cf9b6"
+    },
+    {
+      "Id": "number-evenodd-crossing-pair-transparent",
+      "Source": "number-evenodd-crossing-pair.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2595ec6caca857b789fd009f5317a0c3998df436092316f9a67764b8008d4854"
+    },
+    {
+      "Id": "number-evenodd-crossing-pair-white",
+      "Source": "number-evenodd-crossing-pair.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2595ec6caca857b789fd009f5317a0c3998df436092316f9a67764b8008d4854"
+    },
+    {
+      "Id": "number-evenodd-crossing-pair-black",
+      "Source": "number-evenodd-crossing-pair.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2595ec6caca857b789fd009f5317a0c3998df436092316f9a67764b8008d4854"
+    },
+    {
+      "Id": "number-evenodd-crossing-counter-transparent",
+      "Source": "number-evenodd-crossing-counter.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "cd3e6ae1612b10b39af09d749be0a7174e6780ef3218146903564f74daf7e35c"
+    },
+    {
+      "Id": "number-evenodd-crossing-counter-white",
+      "Source": "number-evenodd-crossing-counter.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "cd3e6ae1612b10b39af09d749be0a7174e6780ef3218146903564f74daf7e35c"
+    },
+    {
+      "Id": "number-evenodd-crossing-counter-black",
+      "Source": "number-evenodd-crossing-counter.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "cd3e6ae1612b10b39af09d749be0a7174e6780ef3218146903564f74daf7e35c"
+    },
+    {
+      "Id": "number-horizontal-closing-retrace-transparent",
+      "Source": "number-horizontal-closing-retrace.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "f0b4f5fa7db2b9ab0d2f0339c3b240a440be2873394d1f297c82e4daf4f67b52"
+    },
+    {
+      "Id": "number-horizontal-closing-retrace-white",
+      "Source": "number-horizontal-closing-retrace.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "f0b4f5fa7db2b9ab0d2f0339c3b240a440be2873394d1f297c82e4daf4f67b52"
+    },
+    {
+      "Id": "number-horizontal-closing-retrace-black",
+      "Source": "number-horizontal-closing-retrace.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "f0b4f5fa7db2b9ab0d2f0339c3b240a440be2873394d1f297c82e4daf4f67b52"
+    },
+    {
+      "Id": "number-vertical-closing-retrace-transparent",
+      "Source": "number-vertical-closing-retrace.svg",
+      "Background": "transparent",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2731e2d3e2cfadfcf0f0711d30c578ee6933ef7a9ca01830c2018d5b3d703312"
+    },
+    {
+      "Id": "number-vertical-closing-retrace-white",
+      "Source": "number-vertical-closing-retrace.svg",
+      "Background": "white",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2731e2d3e2cfadfcf0f0711d30c578ee6933ef7a9ca01830c2018d5b3d703312"
+    },
+    {
+      "Id": "number-vertical-closing-retrace-black",
+      "Source": "number-vertical-closing-retrace.svg",
+      "Background": "black",
+      "Width": 160,
+      "Height": 160,
+      "InputSha256": "2731e2d3e2cfadfcf0f0711d30c578ee6933ef7a9ca01830c2018d5b3d703312"
+    }
+  ],
+  "NativeNumberTokens": [
+    "0",
+    "-0",
+    ".5",
+    "5.",
+    "1.3453761",
+    "1.9283746",
+    "-1.9283746",
+    "001.9283746",
+    "1.9283746e0",
+    "1.9283746e1",
+    "1.9283746e-1",
+    "+1.9283746E+2",
+    "0.123456789",
+    "0.876543219",
+    "27.1234567",
+    "119.87654321",
+    "-191.56772",
+    "-250.70661",
+    "1000000.2222",
+    "16777215",
+    "16777217",
+    "123456789",
+    "123456789.25",
+    "1e-5",
+    "1.23456789e-5",
+    "4.56789123e5",
+    "9.999999e-20",
+    "1e-40",
+    "1e-50",
+    "2.1474835e9",
+    "2147483647",
+    "-2147483648"
+  ],
+  "SubsequentControlsDeclaredAfterNumericPrototype": true,
+  "InitialConfigurationsDeclaredBeforeGenericPrototype": 18,
+  "SupplementaryConfigurationsDeclaredAfterNumericPrototype": 12,
+  "DeclaredBeforeGenericPrototypeScope": "Initial 18 SVG configurations and 32 numeric tokens only. Supplementary parity/retrace controls were declared after the numeric prototype and before production edits."
+}

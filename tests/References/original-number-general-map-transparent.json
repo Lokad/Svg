@@ -1,0 +1,43 @@
+{
+  "fixtureId": "original-number-general-map-transparent",
+  "referencePng": "original-number-general-map-transparent.png",
+  "referenceSha256": "02e78d589d2c6bfae79134bca7e3744b50df0a3287b6400febf2faceee69903f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 160,
+    "height": 160,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "2c446635d30722fc2e1ef8d7052b379fc060b98c4424c878a21ac890860cf9b6",
+  "materializedSha256": "2b37bacdf5752a507367c7ed3c0fa74b7eb33210fd7d825d85f489b1b3220641",
+  "materialization": "Only a leading SPDX XML comment was added to the captured original source for the fixture asset. Removing that prefix recovers the byte-identical captured input.",
+  "captureSha256": [
+    "02e78d589d2c6bfae79134bca7e3744b50df0a3287b6400febf2faceee69903f",
+    "02e78d589d2c6bfae79134bca7e3744b50df0a3287b6400febf2faceee69903f",
+    "02e78d589d2c6bfae79134bca7e3744b50df0a3287b6400febf2faceee69903f"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeGenericPrototype": true,
+  "declaredAfterNumericPrototype": false,
+  "candidateOutcome": "UnsupportedFeature",
+  "candidateSha256": null,
+  "rendererSha256": "d73f76cdcb6a5512bf09e754024a7b8e44af90a9c4ae20af5c3f8909ef45a201",
+  "comparison": null
+}

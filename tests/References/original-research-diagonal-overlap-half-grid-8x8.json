@@ -1,0 +1,43 @@
+{
+  "referencePng": "original-research-diagonal-overlap-half-grid-8x8.png",
+  "referenceSha256": "4729358f75abccc014b2cf66b2e9fa34732c9eb7d63049d66b55571a540f76f2",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "2",
+  "deviceScaleFactor": 1,
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-research-diagonal-overlap-half-grid-8x8",
+  "inputSha256": "bcef9fcc3f75d86093c331f98814d2bde2d16a8a119122a56da78cbc2c893eeb",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "candidateSha256": "c9a9b312f3a56c9dd49ee8d975a1c14b5e04c90ab44056fd9f4804fdfe7399d6",
+  "rendererSha256": "d73f76cdcb6a5512bf09e754024a7b8e44af90a9c4ae20af5c3f8909ef45a201",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 8,
+    "minimumMismatchY": 8,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  },
+  "graduatedFrom": "research-diagonal-overlap-half-grid-8x8",
+  "graduatedAt": "Coupled SVG numeric reading, 2026-10-05"
+}

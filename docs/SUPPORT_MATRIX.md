@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the horizontal clip-routing checkpoint, all 648 current manifest entries are
-gated: 522 exact decoded-pixel references, 120 known-difference renders and six
+At the coupled numeric-reading checkpoint, all 696 current manifest entries are
+gated: 552 exact decoded-pixel references, 132 known-difference renders and 12
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -90,6 +90,19 @@ transparent alpha error to 2,835. Two quadratic clip controls gain three alpha-e
 units each; 26 changed Default inventory outputs lack matching captures in that
 sweep. Those failures and evidence gaps remain explicit. General curve/event,
 convex/quad/stroke, clip/mask and layer fidelity remains open.
+
+Path numbers and transform arguments now share independently verified float
+reading; relative/smooth path updates use float lanes, while general affine
+computation keeps doubles and its existing gates. Thirty-one browser numeric
+vectors, all 436 captured Ford points and the actual large CTM are reproduced.
+Proper crossings in separated multi-contour even-odd fills keep their directed
+contours and zero signed-area lobes. Exact terminal axis adjacency preserves raw
+points and closes an `inv-040` admission regression; single-ring split/admission
+and other contact gates remain. All 12 parity/retrace controls are exact; the full
+30-configuration bank also retains 12 known differences and six rejections.
+All 660 previous fixture PNGs and every existing render/reject disposition are
+preserved. Ford keeps six exact variants and improves large variants to 10/10/7,
+with transparent alpha error 16; all-nine corporate fidelity remains open.
 
 R36 line dashes also admit presentation attributes, inline styles and stylesheets on the line, with group and root inheritance rendering identically to direct attributes.
 

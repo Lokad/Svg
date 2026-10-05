@@ -1,14 +1,13 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-05. Axis-aligned path device mapping now uses the independently
-verified native float lanes while authored relative arithmetic and general affine
-maps retain their existing doubles. Ford remains **six exact of nine**; large
-transparent/white/black differences fall to **137/137/123 pixels**, with transparent
-alpha error **2,734**. The (375,269) witness is closed; intersection density does
-not explain it. Captured authoring and CTM evidence now explain why relative
-rounding alone regresses intended-size pixels. **Next: implement compatible SVG
-number reading and relative arithmetic together, then validate the shared repair.**
-The first all-variant corporate checkpoints and S17 remain open.
+Updated 2026-10-05. SVG path-number and transform-number reading now use the
+independently verified float arithmetic together with relative/smooth updates.
+Ford remains **six exact of nine**; large transparent/white/black differences fall
+to **10/10/7 pixels**, with transparent alpha error **16**. The original-input
+(269,187) witness is closed, and all six exact complete PNGs are preserved.
+**Next: compare the ten remaining lower-tile pixels, starting at (829,278), with
+the recorded native path and tile-local mapping.** The first all-variant corporate
+checkpoints and S17 remain open.
 
 The reviewed renderer baseline
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
@@ -38,18 +37,18 @@ not a prerequisite to improving the shared renderer.
 
 ## 1. Current baseline and its limits
 
-The table describes the validated axis-aligned path-mapping checkpoint. Historical
+The table describes the validated coupled numeric-reading checkpoint. Historical
 checkpoint counts below retain their dated scope and do not replace this baseline.
 
 | Current validated evidence | Assessment |
 | --- | --- |
 | Fresh Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Fresh full tests | **3,202 passed**: 3,075 core, 121 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Fresh memory and delivery checks, at the path-mapping checkpoint | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. The package retains the adapted Skia/Chromium BSD notices. No runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **660 entries = 534 exact + 120 known-difference renders + six rejections**; 396 base documents / 264 variants. Synthetic coverage is not corporate-logo coverage. |
-| Executed research manifest | **66 probes = 65 known-difference renders + one rejection**. Useful exact controls graduate to fixtures with their provenance. |
+| Fresh full tests | **3,214 passed**: 3,084 core, 124 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Fresh memory and delivery checks, at the numeric-reading checkpoint | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. The package retains the adapted Skia/Chromium BSD notices. No runtime package dependencies, native assets or packaged SVG fixtures. |
+| Executed fixture manifest | **696 entries = 552 exact + 132 known-difference renders + 12 rejections**; 412 base documents / 284 variants. Synthetic coverage is not corporate-logo coverage. |
+| Executed research manifest | **60 probes = 59 known-difference renders + one rejection**. Useful exact controls graduate to fixtures with their provenance. |
 | Fresh independent-file Default-options sweep | **92 files = 88 render + four MalformedInput rejections** (`inv-007`, `inv-012`, `inv-014`, `inv-020`). Renderability does not establish fidelity or all-variant completion. |
-| Latest recorded Ford all-variant evidence | Small 250×100 and intended 500×200 × transparent/white/black are exact: **six exact of nine**. Large 1000×400 retains 137/137/123 changed pixels (transparent/white/black); transparent total alpha error is 2,734, max channel/alpha error 128/68. Axis-aligned path mapping improves all three large variants while preserving the six exact complete PNGs; zero opaque/hole flips. All nine original references and current candidate identities are portable regressions. |
+| Latest recorded Ford all-variant evidence | Small 250×100 and intended 500×200 × transparent/white/black are exact: **six exact of nine**. Large 1000×400 retains 10/10/7 changed pixels (transparent/white/black); transparent total alpha error is 16, max channel/alpha error 3/3. Coupled numeric reading improves all three large variants on the original SVG while preserving the six exact complete PNGs; zero opaque/hole flips. All nine original references and current candidate identities are portable regressions. |
 | Representativeness | 57 of the 92 inventory headings identify flags or flag badges/icons. Corporate marks and outlined wordmarks need a separate frozen cohort; the whole inventory is not a representative corporate denominator. |
 | Not refreshed by the baseline/checkpoint gates | Linux/remote CI, a full browser-reference refresh, full independent inventory variant regeneration, BenchmarkDotNet throughput, private-font metrics and pixels. The bounded overlap captures below are separate evidence. |
 
@@ -186,58 +185,65 @@ completed stage: the remaining exit evidence below governs completion.
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
 | 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. General coverage/alpha and layer composition need independent controls; group-opacity on white still differs. |
 | 4 | **Active with rows 3 and 5: shared scan conversion.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows and one-chord cubic admission have landed. Shared clipped line/quad/cubic construction and bounded CPU raster contexts have landed across all four paints. | Preserve clipping for escaping path/control bounds, X/Y splitting, projected-edge winding and bounded two-pass storage. Preserve whole-path dispatch, bitmap-bounded row storage and exclusive interiors; resolve remaining large Ford events from tile-local native evidence; general fractional events, crossings, counters and overlaps remain open. |
-| 5 | **Open with row 4: retained curves and final device mapping.** Device-map threading, retained controls, live non-convex cubic stepping, curve/walk state separation and one-chord cubic admission have landed. | Preserve transform/instance and large-translation evidence. Identical supplied geometry/prepared edges match compiled native setup and sampled walks; that does not prove browser authoring or mapping parity. Clipped preparation makes the small/intended variants exact, and integrated CPU contexts close the original row-6 large witness. Horizontal clip paint routing closes (740,30), and axis-aligned float path mapping closes (375,269). Identical prepared edges emit the same row-269 operations under either intersection mode. Implement compatible SVG number reading and relative arithmetic together: the injected captured-CTM discriminator explains the intended-size counterexample and (269,187), but is not a production repair. Full-image/tile-local parity and separately gated fractional-event, quad/convex/stroke work remain open. |
+| 5 | **Open with row 4: retained curves and final device mapping.** Device-map threading, retained controls, live non-convex cubic stepping, curve/walk state separation and one-chord cubic admission have landed. | Preserve transform/instance and large-translation evidence. Identical supplied geometry/prepared edges match compiled native setup and sampled walks; that does not prove browser authoring or mapping parity. Clipped preparation makes the small/intended variants exact, and integrated CPU contexts close the original row-6 large witness. Horizontal clip paint routing closes (740,30), and axis-aligned float path mapping closes (375,269). Identical prepared edges emit the same row-269 operations under either intersection mode. Shared number reading and relative/smooth arithmetic now close (269,187) on the original input and match all 436 recorded authored points and the actual large CTM. The injected-CTM discriminator remains historical evidence. Compare the ten remaining lower-tile pixels, beginning at (829,278). Full-image/tile-local parity and separately gated fractional-event, quad/convex/stroke work remain open. |
 | 6 | **Partial: curve-aware stroke completion.** Width/cascade, cap/join/dash, zero-width and straight-source union repairs are retained. | True curve tangents/dash cuts, curved/dashed overlap and seam handling, remaining round/miter/hairline/pathLength/non-scaling cases through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Not achieved: independent milestone and delivery, S8/S17.** The 92-file inventory and all-variant records are useful evidence, not a release rate. | First exact curved corporate mark and outlined wordmark; then a frozen representative cohort meeting the 80% exact-document target overall and per corporate stratum, complete declared variants and fresh platform/package/resource/performance evidence. |
 
-### Active work order: numeric authoring and transform compatibility (2026-10-05)
+### Active work order: remaining lower-tile mapping and event parity (2026-10-05)
 
-Preserve CPU contexts, horizontal clip paint routing and axis-aligned path mapping.
-The first remaining large-transparent Ford event is (269,187): reference RGBA
-(0,50,119,107), candidate (0,51,120,106). This upper-tile pixel was previously exact;
-the large variants improve in total while retaining mixed per-pixel changes.
-Captured browser-authored coordinates and CTM now identify a coupled numeric
-dependency at this event. Native paths contain 254/182 authored points versus
-managed 480/421 flattened points,
-but toggling intersection dispatch on identical prepared edges reproduces all
-1,088 operations in the five row-269 contexts. Do not treat the count difference
-as the cause of the closed (375,269) witness.
+Preserve CPU contexts, horizontal clip paint routing, axis-aligned path mapping
+and the landed coupled numeric reader. The generic reader reproduces the captured
+large CTM from the original transform literal; float relative arithmetic matches
+all **436** recorded authored points. Thirty-one independent browser number
+vectors include decimal/exponent, large-integer, subnormal and negative-zero bits.
+The original trailing-dot grammar and existing transform/instance/general-affine
+gates remain; general affine computation still uses doubles.
 
-The actual captured path through the pinned native float mapper and bounded
-clipped builder/walk emits coverage 107 at (375,269), in both global and tile-local
-origins; old prepared edges emit 106. The shared axis-aligned map closes that
-pixel without changing recurrence. Production general affine and relative/smooth
-authoring arithmetic still retain doubles.
+The original-input (269,187) pixel now matches reference RGBA (0,50,119,107).
+The intended-size relative-only counterexample is closed with no coefficient
+injection or original asset edits. Ford keeps six exact complete PNGs and improves
+large variants **137/137/123 → 10/10/7**, transparent alpha error **2,734 → 16**,
+with zero opaque/hole flips. This is landed original-input evidence; the earlier
+[injected discriminator](tests/References/inventory/inv-002-authoring-map-discriminator.json)
+keeps its historical identities and limitations.
 
-Float-relative arithmetic matches all 436 recorded authored points; current
-authoring differs in 425/269 coordinate lanes across the two fills. However,
-casting a normally parsed `1.3453761` to float gives `1.3453761339187622`, while the
-actual captured CTM has half-scale `1.3453760147094727`. Changing authoring alone
-against that different transform produces the retained intended-size 3/3/2-pixel
-counterexample. Both numeric boundaries must be validated together.
+Numeric rounding exposed the previously admitted `inv-040` contour's terminal
+axis retrace and tiny proper crossing. Exact closing adjacency preserves raw
+points and bounds; separated multi-contour even-odd crossings retain directed
+contours, including zero signed-area lobes. Single-ring splitting/admission,
+other self-touch/coincidence/inter-loop gates and source bounds remain unchanged.
+All **12** independent parity/retrace configurations are exact. The broader 30
+configuration bank retains **12 exact + 12 known differences + six rejections**,
+with 90 healthy stable browser captures. Initial 18 configurations and 32 numeric
+tokens were declared before the numeric prototype; the supplementary 12 parity/
+retrace configurations were declared after that prototype and before production
+edits. Fixture copies add only an SPDX XML comment; original capture-input hashes
+and recoverable source bytes are retained in their metadata.
 
-The diagnostic injects the recorded CTM's half-values into an otherwise unchanged
-SVG, then applies float-relative authoring. It preserves all six exact complete
-PNGs and reduces large differences to **10/10/7**, transparent alpha error **16**,
-with zero opaque/hole flips. Its mapped cubic lanes match the pinned mapper;
-pending additions at (269,187) change from 64+27+12+3 to 64+27+13+3. The three
-intended-size witnesses recover the original 44/15/141 coverages. These are
-**unlanded diagnostic results on a changed input**; the validated original-input
-baseline remains 137/137/123 and alpha error 2,734. Small/intended CTMs are inferred
-from the recorded large CTM. Portable identities and all four nine-variant model
-comparisons are in [the discriminator](tests/References/inventory/inv-002-authoring-map-discriminator.json).
+The prior 818-case comparison preserves all 660 fixture PNGs, every previous exact
+PNG and every render/reject disposition. Six research probes graduate with their
+original references. Fourteen Default inventory outputs change without matching
+captures in that sweep; their fidelity remains unmeasured. Ford separately has all
+nine original references. The expanded bank executes **848 = 696 fixtures + 60
+research + 92 Default inventory cases**. Numeric/parity/adjacency mutations fail
+their regressions; ownership, setup-work, memory denial, cancellation and all six
+output APIs are exercised. Fresh delivery gates and matching local measurements
+are recorded in the baseline table and [BENCHMARKS](docs/BENCHMARKS.md).
 
-Implement the shared numeric boundary without injecting values or changing input
-assets. Declare independent decimal/exponent, relative/smooth, transform/instance
-and large-translation controls before production edits. Preserve syntax/admission,
-categorized range failures, charged traversal and cancellation; keep general
-affine computation separately evidenced. Preserve all 534 exact fixture PNGs and
-all render/reject dispositions, compare the complete 818-case bank and nine Ford
-variants, and run the existing output/resource/package and matching timing gates.
-The injected trial's ten transparent residuals lie at Y=278–393, beginning at
-(829,278); compare their tile-local mapping after the generic numeric repair is
-proved. Complete authoring/map, intersection and full-image parity remain open.
+All ten remaining transparent residuals lie at Y=278–393, starting at **(829,278)**.
+Compare exact recorded-path inputs through global and lower-tile-local mapping,
+then native clipped construction and operation tapes. Preserve the closed
+(375,269), (740,30) and original row-6 witnesses; identical prepared edges emitted
+the same row-269 operations under both intersection modes. Do not infer an
+intersection fault from flattened versus authored point counts. The actual large
+CTM is recorded; inferred small/intended CTMs are diagnostic evidence only.
+
+Keep all 552 exact fixture PNGs and every categorized disposition, compare the
+complete 848-case bank and all nine Ford variants, and rerun the appropriate
+resource/output/package and matching timing gates for the next shared repair.
+Complete tile-local mapping, event/intersection and full-image paint parity remain
+open; full affine, quad/convex/stroke and layer fidelity keep their separate gates.
 
 A bounded shared repair may land with independent mechanism-level improvement
 and nonregression across all nine Ford variants, even if Ford is unchanged. A
@@ -285,11 +291,11 @@ The latter guards the axis-aligned route; the polygon grid is a separate input
 identity, not a replacement reference. Native solid/pattern ellipse captures
 also disprove the old same-renderer identity assertion; both failures stay banked.
 
-| Ford size | Changed pixels, pre-paint → paint/window → one-chord → clipped → CPU context → horizontal wrapper → path mapping (transparent / white / black) | Transparent alpha error, pre-paint → paint/window → one-chord → clipped → CPU context → horizontal wrapper → path mapping |
+| Ford size | Changed pixels, pre-paint → paint/window → one-chord → clipped → CPU context → horizontal wrapper → path mapping → numeric reading (transparent / white / black) | Transparent alpha error, pre-paint → paint/window → one-chord → clipped → CPU context → horizontal wrapper → path mapping → numeric reading |
 | --- | --- | --- |
-| 250×100 | 592/576/469 → 268/268/230 → 222/222/185 → 0/0/0 → 0/0/0 → 0/0/0 → **0/0/0** | 2,842 → 1,945 → 1,457 → 0 → 0 → 0 → **0** |
-| 500×200 | 1,200/1,186/945 → 550/548/476 → 433/432/364 → 0/0/0 → 0/0/0 → 0/0/0 → **0/0/0** | 6,761 → 5,092 → 3,176 → 0 → 0 → 0 → **0** |
-| 1000×400 | 5,729/5,670/5,173 → 5,194/5,249/4,739 → 5,194/5,249/4,739 → 4,900/4,956/4,404 → 929/1,245/560 → 174/174/159 → **137/137/123** | 57,568 → 56,482 → 56,482 → 51,395 → 3,573 → 2,835 → **2,734** |
+| 250×100 | 592/576/469 → 268/268/230 → 222/222/185 → 0/0/0 → 0/0/0 → 0/0/0 → 0/0/0 → **0/0/0** | 2,842 → 1,945 → 1,457 → 0 → 0 → 0 → 0 → **0** |
+| 500×200 | 1,200/1,186/945 → 550/548/476 → 433/432/364 → 0/0/0 → 0/0/0 → 0/0/0 → 0/0/0 → **0/0/0** | 6,761 → 5,092 → 3,176 → 0 → 0 → 0 → 0 → **0** |
+| 1000×400 | 5,729/5,670/5,173 → 5,194/5,249/4,739 → 5,194/5,249/4,739 → 4,900/4,956/4,404 → 929/1,245/560 → 174/174/159 → 137/137/123 → **10/10/7** | 57,568 → 56,482 → 56,482 → 51,395 → 3,573 → 2,835 → 2,734 → **16** |
 
 At the paint checkpoint, the retained cubic twin falls from 56 changed pixels /
 120 alpha error to two / six; the cubic crescent and two quadratic controls also

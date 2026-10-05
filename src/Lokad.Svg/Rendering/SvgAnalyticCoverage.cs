@@ -1363,7 +1363,7 @@ internal ref partial struct SvgAnalyticCoverage
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Analytic coverage storage exceeds the supported accounting range."); }
         return bytes;
     }
-    /// <summary>Validates retained contours like the shared fan path, then reserves analytic scratch for one fill without rigid contacts.</summary>
+    /// <summary>Validates retained contours like the shared fan path, then reserves analytic scratch within the admitted contact gates.</summary>
     /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically. Single rings keep the exact legacy sequence, extended to nonzero pure-crossing rings on curve-flattened payloads whose signed winding the edge walk accumulates directly; multi-contour sets additionally admit disjoint-or-nested contact-free loops with per-contour area and vote filtering plus a set-level contact scan, extended to nonzero crossing-, touching- or self-touching sets on curve-flattened payloads without coincident contacts, keeping integer and fractional straight-edge payloads on the exact fan path, with self-touching loops walking their shared vertices through the same signed-winding accumulation, reporting ineligible without reserving otherwise, so the caller keeps the legacy path; the returned value still requires disposal. The setup cost covers validation, area, convexity and self-contact scoring, edge setup and a sorting upper bound for the caller work ledger.</remarks>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
     {
@@ -1386,7 +1386,7 @@ internal ref partial struct SvgAnalyticCoverage
         => Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, window, null, long.MaxValue, budget, out setupWork, out eligible, cancellationToken);
 
     /// <summary>Prepares uncut or clip-built edges under one explicit remaining setup-work limit.</summary>
-    /// <remarks>Clipping uses caller-owned stack scratch and two charged passes, reserving complete emitted-edge storage before allocation. Existing structure gates and fractional paint clipping remain in force. Returned ownership is single-threaded and must be disposed on every exit.</remarks>
+    /// <remarks>Clipping uses caller-owned stack scratch and two charged passes, reserving complete emitted-edge storage before allocation. Proper even-odd crossings preserve directed contours, including zero signed-area lobes; other rigid-contact gates and fractional paint clipping remain in force. Returned ownership is single-threaded and must be disposed on every exit.</remarks>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, long maximumSetupWork, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
     {
         SvgAnalyticContourPreparation preparation = new(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, new(xStart, yStart, xEnd, yEnd), outputWidth, outputHeight);
@@ -1483,7 +1483,7 @@ internal ref partial struct SvgAnalyticCoverage
                     int end = ends[contour];
                     previousEnd = end;
                     int count = end - start;
-                    if (count < 3 || TwiceArea(points.Slice(start, count)) == 0 || (hasVotes && votes[contour] == 0)) continue;
+                    if (count < 3 || (!isEvenOdd && TwiceArea(points.Slice(start, count)) == 0) || (hasVotes && votes[contour] == 0)) continue;
                     keptContours++;
                 }
                 preparation.KeptContours = keptContours;
@@ -1513,7 +1513,8 @@ internal ref partial struct SvgAnalyticCoverage
                 preparation.TransversalUnion = transversal;
             }
             bool transversalUnion = preparation.TransversalUnion.Value;
-            if (!transversalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
+            bool evenOddCrossings = isEvenOdd && setStructure == SvgContourFlags.ProperCrossing;
+            if (!evenOddCrossings && !transversalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
             if (constructionClip is {} multiClip) return PrepareClipped(points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, preparation.UsesRunBlitter, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
@@ -1534,7 +1535,7 @@ internal ref partial struct SvgAnalyticCoverage
                     priorEnd = end;
                     int count = end - start;
                     if (count < 3) continue;
-                    if (TwiceArea(points.Slice(start, count)) == 0) continue;
+                    if (!isEvenOdd && TwiceArea(points.Slice(start, count)) == 0) continue;
                     if (hasVotes && votes[contour] == 0) continue;
                     bool contourSpans = false;
                     int quadRun = quadCursor;
@@ -1612,7 +1613,7 @@ internal ref partial struct SvgAnalyticCoverage
             }
             catch { multiScratch?.Dispose(); throw; }
         }
-        preparation.HasArea ??= TwiceArea(points) != 0;
+        preparation.HasArea ??= isEvenOdd || TwiceArea(points) != 0;
         if (!preparation.HasArea.Value) return default;
         if (preparation.Structure is null)
         {
@@ -1621,7 +1622,7 @@ internal ref partial struct SvgAnalyticCoverage
             setupWork += (long)points.Length * (points.Length - 1) / 2;
         }
         SvgContourFlags structure = preparation.Structure.Value;
-        bool rigidRing = isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.ProperCrossing;
+        bool rigidRing = structure != SvgContourFlags.ProperCrossing || (!isEvenOdd && mapping != SvgPolygonMapping.FlattenedCurves);
         if (rigidRing && (structure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) != SvgContourFlags.None) return default;
         if (preparation.Convex is null)
         {

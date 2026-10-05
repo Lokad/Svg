@@ -10,9 +10,9 @@ namespace Lokad.Svg.Parsing;
 /// <remarks>
 /// <para>Supports absolute and relative M, L, H, V, C, S, Q, T, A and Z with repeated parameters,
 /// implicit lineto pairs after moveto, reflected smooth controls, strict single-character arc flags,
-/// compact signed decimals and exponents, and sign-abutted numbers. Coordinates are finite doubles mapped
-/// through the caller transform at parse time; axis-aligned device maps use float lanes while general
-/// affine maps retain doubles. Authored numbers and relative updates stay double; curves flatten eagerly with the caller policy. Overflowing
+/// compact signed decimals and exponents, and sign-abutted numbers. Validated authored numbers and relative/smooth
+/// updates use independently verified float lanes. The caller maps coordinates at parse time: axis-aligned
+/// device maps use float lanes while general affine computation retains doubles. Curves flatten eagerly with the caller policy. Overflowing
 /// relative offsets or mapped results fail with <see cref="SvgErrorCode.LimitExceeded"/>.</para>
 /// <para>Error taxonomy: grammar and shape violations (missing moveto, truncated parameters, stray values,
 /// unexpected letters, non-numeric coordinates) fail as <see cref="SvgErrorCode.MalformedInput"/>.
@@ -209,8 +209,8 @@ internal static class SvgPathDataParser
                     bool absolute = command == 'S';
                     do
                     {
-                        double control1X = hasPreviousCubic ? RequireFinite(2 * currentX - previousCubicX) : currentX;
-                        double control1Y = hasPreviousCubic ? RequireFinite(2 * currentY - previousCubicY) : currentY;
+                        double control1X = hasPreviousCubic ? RequireFinite(currentX + RequireFinite(currentX - previousCubicX)) : currentX;
+                        double control1Y = hasPreviousCubic ? RequireFinite(currentY + RequireFinite(currentY - previousCubicY)) : currentY;
                         (double secondX, double secondY) = reader.ReadPoint();
                         (double x, double y) = reader.ReadPoint();
                         double control2X = absolute ? secondX : RequireFinite(currentX + secondX);
@@ -271,8 +271,8 @@ internal static class SvgPathDataParser
                     bool absolute = command == 'T';
                     do
                     {
-                        double controlX = hasPreviousQuadratic ? RequireFinite(2 * currentX - previousQuadraticX) : currentX;
-                        double controlY = hasPreviousQuadratic ? RequireFinite(2 * currentY - previousQuadraticY) : currentY;
+                        double controlX = hasPreviousQuadratic ? RequireFinite(currentX + RequireFinite(currentX - previousQuadraticX)) : currentX;
+                        double controlY = hasPreviousQuadratic ? RequireFinite(currentY + RequireFinite(currentY - previousQuadraticY)) : currentY;
                         (double x, double y) = reader.ReadPoint();
                         double endX = absolute ? x : RequireFinite(currentX + x);
                         double endY = absolute ? y : RequireFinite(currentY + y);
@@ -329,9 +329,8 @@ internal static class SvgPathDataParser
 
         if (open) SealContour(false);
 
-        // Retain authored doubles and relative/smooth arithmetic. Only the
-        // demonstrated axis-aligned device map uses native float lanes; general
-        // affine composition remains on its separately gated double route.
+        // Authored floats enter the demonstrated axis-aligned device map directly;
+        // general affine computation remains on its separately gated double route.
         static SvgDevicePoint MapPathPoint(SvgAffineTransform deviceMap, double x, double y)
         {
             if (!deviceMap.IsAxisAligned) return deviceMap.Apply(x, y);
@@ -362,8 +361,9 @@ internal static class SvgPathDataParser
 
     private static double RequireFinite(double value)
     {
-        if (!double.IsFinite(value)) throw new SvgException(SvgErrorCode.LimitExceeded, "Path-data coordinates exceed the admitted numeric range.");
-        return value;
+        float narrowed = (float)value;
+        if (!float.IsFinite(narrowed)) throw new SvgException(SvgErrorCode.LimitExceeded, "Path-data coordinates exceed the admitted numeric range.");
+        return narrowed;
     }
 
     private ref struct PathDataReader
@@ -427,7 +427,7 @@ internal static class SvgPathDataParser
             ReadOnlySpan<char> token = _value[start.._position];
             if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Path number values exceed the configured syntax limit.");
             if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data coordinates must be finite numbers.");
-            return result;
+            return SvgFloatNumber.ReadValidated(token, _workCounter, _cancellationToken);
         }
 
         internal (double X, double Y) ReadPoint()

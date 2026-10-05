@@ -265,7 +265,7 @@ internal static class SvgLeafParser
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         if ((syntax.CornerX ?? syntax.CornerY ?? 0) != 0 || (syntax.CornerY ?? syntax.CornerX ?? 0) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rounded rectangles in definitions stay unsupported.");
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
-        SvgAffineTransform localTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"));
+        SvgAffineTransform localTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), context.WorkCounter, context.CancellationToken);
         SvgRectangle rectangle = localTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
         SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, localTransform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
         if (stroke is not null && SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");

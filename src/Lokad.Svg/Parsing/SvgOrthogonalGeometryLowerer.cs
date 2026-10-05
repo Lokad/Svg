@@ -1620,7 +1620,10 @@ internal ref struct SvgOrthogonalGeometryLowering
             bool mixedResolved = false;
             bool interLoopResolved = false;
             bool subdividedCrossings = false;
-            bool resolvedUnions = true;
+            // Separated multi-contour proper even-odd crossings keep their directed
+            // contours, including lobes whose signed areas cancel. Single-ring
+            // syntax retains its existing split/admission gates.
+            bool resolvedUnions = !(_isEvenOdd && ends.Length > 1 && structure == SvgContourFlags.ProperCrossing);
             if (keepUnresolved && (structure & (SvgContourFlags.ProperCrossing | SvgContourFlags.CoincidentOverlap | SvgContourFlags.SelfTouch)) == 0) resolvedUnions = false;
             if (structure != SvgContourFlags.None && resolvedUnions)
             {

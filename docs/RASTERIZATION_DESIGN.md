@@ -4082,3 +4082,64 @@ dispositions; then run the complete bank, nine original-input Ford variants and
 matching delivery/resource/timing gates. The diagnostic explains the earlier
 counterexample but is not the shared repair. All-nine Ford, corporate checkpoints,
 representative coverage, platform/performance and S17 remain open.
+
+## Coupled SVG numeric reading and separated parity integration (2026-10-05)
+
+The preceding injected-CTM trial retains its changed-input scope. Production now
+reads validated path and transform numbers with elementary float place values,
+then rounds relative offsets and each smooth-reflection operation in float lanes.
+No captured coefficient is injected and no LGPL implementation is copied. Grammar,
+token bounds and finite-double validation remain with the callers; the additional
+bounded allocation-free pass charges shared work and observes cancellation.
+General affine computation retains doubles and its admission gates.
+
+Thirty-one actual browser vectors match authored-start and transform-argument bits,
+including negative zero, large integers, exponents, underflow and subnormals. Three
+fresh processes produced identical records, with healthy starts and cleaned
+profiles. Chrome rejects `5.`; the library's existing trailing-dot grammar is
+preserved and tested separately. Ordinary tests match all 436 captured Ford points,
+84/60 cubics and the actual large CTM, preserving the recording's implicit closes.
+The original-input (269,187) pixel recovers RGBA (0,50,119,107). Six exact Ford PNGs
+are preserved; large variants fall 137/137/123→10/10/7, transparent alpha error
+2,734→16, maximum channel/alpha 3/3, nine over / one under and no opaque/hole flips.
+The remaining ten pixels lie at Y=278–393, beginning at (829,278).
+
+The numeric trial exposed an `inv-040` regression at an exact axis-aligned terminal
+retrace and a tiny proper crossing. Closing endpoint adjacency is classified
+without epsilon, snapping, or geometry/bounds changes. Separated multi-contour
+proper even-odd crossings bypass subdivision and retain the raw directed contours.
+The parity walker retains zero signed-area lobes in single/multi raw preparations;
+single-ring parser split/admission and other contact/coincidence/inter-loop gates
+remain unchanged. No additional heap buffers or traversal are introduced by those
+classification/parity fixes. Existing reservation and charged work cover edge
+construction, including setup denial, memory denial and cancellation cleanup.
+
+Ten original CC0 sources provide 30 configurations / 90 healthy stable browser
+captures: 12 parity/retrace exact, 12 numeric/curve known differences, six instance/
+general-affine rejections. Initial 18 configurations and 32 numeric tokens were
+declared before the numeric prototype; the supplementary 12 parity/retrace
+configurations were declared after that prototype and before production edits.
+Fixture materialization adds only a leading SPDX XML comment; removing it recovers
+the byte-identical capture input and the metadata records both hashes.
+The [declaration](../tests/References/svg-number-declaration.json), per-control
+original PNGs/metadata, numeric vectors and actual Ford path record are portable.
+
+The 818-case before/after comparison preserves all 660 fixture PNGs and every
+render/reject disposition. Six research controls graduate with their original
+references; 14 Default inventory outputs change without matching captures in that
+sweep. Inv-040 keeps its prior PNG identity. The expanded 848-case bank executes
+696 fixtures + 60 research + 92 Default inventory cases; Ford is separately checked
+against all nine original references. Replacing number reading with normal parsing,
+discarding zero-area parity lobes and removing closing adjacency each fails the
+intended regressions. All source bytes are restored after terminal mutation runs.
+Fresh locked restore, nine-project Release build and 3,214 tests pass, alongside
+25 memory scenarios and runtime/symbol package plus isolated-consumer checks.
+Matching measurements and resource ledgers are in [BENCHMARKS](BENCHMARKS.md);
+complete snapshots, capture triples and local logs remain under ignored
+`artifacts/native-numbers-20261005/`.
+
+Next compare the ten lower-tile pixels using actual recorded path and CTM inputs,
+global/local mapping, clipped construction and operation tapes. Sampled native
+agreement still does not establish complete paint/backend parity. All-nine Ford,
+the independent curved mark/wordmark, representative cohort, Linux, throughput and
+S17 remain open.

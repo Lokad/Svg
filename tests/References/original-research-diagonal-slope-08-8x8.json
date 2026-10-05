@@ -1,0 +1,43 @@
+{
+  "referencePng": "original-research-diagonal-slope-08-8x8.png",
+  "referenceSha256": "6d35915aed04a454c4c61a813230d26933116f408d5d0dc36fb825d299b6199e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-research-diagonal-slope-08-8x8",
+  "inputSha256": "4ea66d5d1e3fd56a661d948e16217733b7191168a6313f6614e320a7e46e5cd2",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "candidateSha256": "1b00c7c82d49d5f03d189afdf747937e04c18a94e3419d6f400e0fb559f7f5e0",
+  "rendererSha256": "d73f76cdcb6a5512bf09e754024a7b8e44af90a9c4ae20af5c3f8909ef45a201",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 8,
+    "minimumMismatchY": 8,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  },
+  "graduatedFrom": "research-diagonal-slope-08-8x8",
+  "graduatedAt": "Coupled SVG numeric reading, 2026-10-05"
+}

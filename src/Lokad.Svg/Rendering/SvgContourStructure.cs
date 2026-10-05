@@ -62,7 +62,15 @@ internal static class SvgContourStructure
                 if (second == first + 1 || (first == 0 && second == edges - 1)) continue;
                 (SvgDevicePoint secondStart, SvgDevicePoint secondEnd) = EdgeAt(points, start, edges, second);
                 if (secondStart == secondEnd) continue;
-                flags |= TestEdgePair(firstStart, firstEnd, secondStart, secondEnd, ref pairs, cancellationToken);
+                SvgContourFlags hit = TestEdgePair(firstStart, firstEnd, secondStart, secondEnd, ref pairs, cancellationToken);
+                // An axis-aligned terminal retrace meets the first edge at the
+                // implicit closing join. Keep the original points and raw bounds;
+                // only this endpoint adjacency is excluded from self-contact.
+                bool closingRetrace = first == 0 && second == edges - 2 && hit == SvgContourFlags.SelfTouch
+                    && ((firstStart.Y == secondStart.Y && firstStart.Y == secondEnd.Y)
+                        || (firstStart.X == secondStart.X && firstStart.X == secondEnd.X))
+                    && WithinBox(firstStart, secondStart, secondEnd);
+                if (!closingRetrace) flags |= hit;
             }
         }
 
