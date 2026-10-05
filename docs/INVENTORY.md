@@ -7,7 +7,7 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Current assessment (2026-10-05): declaration-only DOCTYPE admission makes all
+Current assessment (2026-10-06): declaration-only DOCTYPE admission makes all
 92 legacy-bank files render. The four prior rejections (`inv-007`, `inv-012`,
 `inv-014`, `inv-020`) advance with their original bytes; every previously rendered
 PNG is unchanged. Renderability is separate from fidelity. The historical
@@ -19,12 +19,14 @@ Ford is now exact in all nine original small/intended/large × transparent/white
 black variants. Retained-path-point density closes the last 10/10/7 differences
 and preserves the six prior exact PNGs. This establishes the outlined-wordmark
 checkpoint. The AA repair changes only YouTube's Default PNG in the legacy sweep;
-its nine frozen corporate variants have separate reference evidence and remain
-inexact. The earlier density sweep's four changed PNGs retain their historical
+its nine frozen corporate variants are now exact after the rectangle clip-byte
+repair. The earlier density sweep's four changed PNGs retain their historical
 scope below. Ford's separately
 captured variant matrix does not turn the Default sweep into a fidelity rate.
-The curved corporate-mark checkpoint and representative corporate rate remain
-open. S17 still requires at least 80% exact documents overall and in each corporate
+The selected curved corporate-mark checkpoint is achieved. The representative
+corporate rate remains open: 33 reference images cover thirty rendered
+comparisons (nineteen exact, eleven differences) and three Target rejections;
+225 variants still lack references. All fifteen former capture gaps are closed. S17 still requires at least 80% exact documents overall and in each corporate
 stratum. YouTube is the selected curved mark; the first cohort is frozen below
 before fresh comparison and further per-document tuning. See [PLAN](../PLAN.md)
 and [the release criteria](S17_DECISIONS.md).
@@ -95,7 +97,9 @@ obligations are additional cases for SimpleX (300×293), Omega (57×23), Red Cro
 (300×150 and 300×293) and Party of Changes (543×149). Ford's original nine inputs,
 references and provenance remain authoritative. The original Party large case
 is **4100×1120**. Fifteen large cases (Artsy, Party of Changes, Toyota, Pepsi and
-Target) exceed the current two-million-pixel capture cap; they stay in the matrix.
+Target) exceeded the two-million-pixel capture cap at freeze; they stayed in the
+matrix. All fifteen now have stable healthy references from the bounded
+2026-10-06 transport extension.
 Measurement is pending at this freeze; this selection establishes no exact rate.
 
 Explicit logical viewports and outputScale 1 are recorded per case. Root-only

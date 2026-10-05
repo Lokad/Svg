@@ -49,6 +49,66 @@ public sealed class DevToolsConnectionTests
     }
 
     [Fact]
+    public async Task Screenshot_reply_can_cross_the_control_message_limit()
+    {
+        string reply = "{\"id\":1,\"result\":{\"data\":\"" + new string('A', DevToolsConnection.MaximumMessageBytes) + "\"}}";
+        await using DevToolsConnection connection = new(SocketFor(reply));
+
+        Assert.Equal(reply, await connection.SendAsync("Page.captureScreenshot", "{}", CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Other_replies_keep_the_control_message_limit()
+    {
+        string reply = "{\"id\":1,\"result\":{\"data\":\"" + new string('A', DevToolsConnection.MaximumMessageBytes) + "\"}}";
+        await using DevToolsConnection connection = new(SocketFor(reply));
+
+        InvalidDataException error = await Assert.ThrowsAsync<InvalidDataException>(async () => await connection.SendAsync("Runtime.evaluate", "{}", CancellationToken.None));
+        Assert.Contains("16 MiB", error.Message);
+    }
+
+    [Fact]
+    public async Task Screenshot_allowance_does_not_enlarge_retained_events()
+    {
+        string message = "{\"method\":\"Flood.event\",\"params\":{\"data\":\"" + new string('A', DevToolsConnection.MaximumMessageBytes) + "\"}}";
+        await using DevToolsConnection connection = new(SocketFor(message));
+
+        InvalidDataException error = await Assert.ThrowsAsync<InvalidDataException>(async () => await connection.SendAsync("Page.captureScreenshot", "{}", CancellationToken.None));
+        Assert.Contains("Unmatched", error.Message);
+    }
+
+    [Fact]
+    public async Task Screenshot_reply_still_has_a_fragmented_message_bound()
+    {
+        RepeatingTextWebSocket socket = new(DevToolsConnection.MaximumScreenshotMessageBytes + 1);
+
+        InvalidDataException error = await Assert.ThrowsAsync<InvalidDataException>(async () => await DevToolsConnection.ReceiveTextMessageAsync(socket, DevToolsConnection.MaximumScreenshotMessageBytes, CancellationToken.None));
+        Assert.Contains("64 MiB", error.Message);
+    }
+
+    [Fact]
+    public async Task Cancellation_interrupts_a_partially_received_screenshot_reply()
+    {
+        using CancellationTokenSource cancellation = new();
+        int receives = 0;
+        RepeatingTextWebSocket socket = new(DevToolsConnection.MaximumScreenshotMessageBytes) { OnReceive = () => { if (++receives == 5) cancellation.Cancel(); } };
+
+        OperationCanceledException error = await Assert.ThrowsAsync<OperationCanceledException>(async () => await DevToolsConnection.ReceiveTextMessageAsync(socket, DevToolsConnection.MaximumScreenshotMessageBytes, cancellation.Token));
+        Assert.Equal(cancellation.Token, error.CancellationToken);
+        Assert.Equal(5, receives);
+    }
+
+    [Theory]
+    [InlineData(16_385, 1)]
+    [InlineData(1, 16_385)]
+    [InlineData(4096, 2049)]
+    [InlineData(int.MaxValue, int.MaxValue)]
+    public async Task Oversized_capture_dimensions_fail_before_launch(int width, int height)
+    {
+        await Assert.ThrowsAsync<InvalidDataException>(async () => await ChromeSvgCapture.CaptureAsync("missing", "<svg/>"u8.ToArray(), width, height, ChromeSvgCapture.CaptureBackground.Transparent, CancellationToken.None));
+    }
+
+    [Fact]
     public void Rejects_protocol_error_responses()
     {
         using JsonDocument response = JsonDocument.Parse("""{"error":{"message":"bad request"}}""");
@@ -153,6 +213,18 @@ public sealed class DevToolsConnectionTests
     }
     private readonly record struct Frame(WebSocketMessageType MessageType, bool EndOfMessage, byte[] Data);
 
+    private static FakeWebSocket SocketFor(string message)
+    {
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(message);
+        List<Frame> frames = new();
+        for (int offset = 0; offset < bytes.Length; offset += 64 * 1024)
+        {
+            int length = Math.Min(64 * 1024, bytes.Length - offset);
+            frames.Add(new(WebSocketMessageType.Text, offset + length == bytes.Length, bytes.AsSpan(offset, length).ToArray()));
+        }
+        return new(frames.ToArray());
+    }
+
     private sealed class FakeWebSocket : WebSocket
     {
         private readonly Queue<Frame> _frames;
@@ -198,6 +270,8 @@ public sealed class DevToolsConnectionTests
 
         internal RepeatingTextWebSocket(int remainingBytes) => _remainingBytes = remainingBytes;
 
+        internal Action? OnReceive { get; init; }
+
         public override WebSocketCloseStatus? CloseStatus => null;
         public override string? CloseStatusDescription => null;
         public override WebSocketState State => WebSocketState.Open;
@@ -213,6 +287,7 @@ public sealed class DevToolsConnectionTests
 
         public override Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
         {
+            OnReceive?.Invoke();
             cancellationToken.ThrowIfCancellationRequested();
             int count = Math.Min(buffer.Count, _remainingBytes);
             buffer.AsSpan(0, count).Clear();

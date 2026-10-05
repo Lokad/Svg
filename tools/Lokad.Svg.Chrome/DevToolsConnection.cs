@@ -8,6 +8,9 @@ namespace Lokad.Svg.Chrome;
 internal sealed class DevToolsConnection : IAsyncDisposable
 {
     internal const int MaximumMessageBytes = 16 * 1024 * 1024;
+    // 8,388,608 RGBA pixels need about 43 MiB after PNG/base64 expansion even
+    // without useful compression. Only the screenshot reply gets this allowance.
+    internal const int MaximumScreenshotMessageBytes = 64 * 1024 * 1024;
     internal const int MaximumRetainedEvents = 64;
     internal static readonly TimeSpan CloseHandshakeTimeout = TimeSpan.FromSeconds(5);
     private readonly WebSocket _socket;
@@ -60,17 +63,20 @@ internal sealed class DevToolsConnection : IAsyncDisposable
         }
     }
 
+    /// <remarks>Commands are serialized by the caller. Only Page.captureScreenshot admits a 64 MiB reply; commands, events and other replies retain the 16 MiB bound. Incoming buffers grow within that bound and are released on success, failure or cancellation. The caller owns cancellation and disposes the connection.</remarks>
     internal async Task<string> SendAsync(string method, string parametersJson, CancellationToken cancellationToken)
     {
         int id = checked(++_nextCommandId);
         byte[] command = CreateCommand(id, method, parametersJson);
         await _socket.SendAsync(command, WebSocketMessageType.Text, true, cancellationToken);
+        int maximumReplyBytes = method == "Page.captureScreenshot" ? MaximumScreenshotMessageBytes : MaximumMessageBytes;
         while (true)
         {
-            string message = await ReceiveTextMessageAsync(cancellationToken);
+            string message = await ReceiveTextMessageAsync(_socket, maximumReplyBytes, cancellationToken);
             using JsonDocument response = JsonDocument.Parse(message);
             if (!response.RootElement.TryGetProperty("id", out JsonElement responseId) || !responseId.TryGetInt32(out int responseCommandId) || responseCommandId != id)
             {
+                if (Encoding.UTF8.GetByteCount(message) > MaximumMessageBytes) throw new InvalidDataException("Unmatched DevTools message exceeds the configured 16 MiB transport limit.");
                 if (response.RootElement.TryGetProperty("method", out JsonElement methodName) && methodName.ValueKind == JsonValueKind.String) RetainEvent(message);
                 continue;
             }
@@ -138,7 +144,12 @@ internal sealed class DevToolsConnection : IAsyncDisposable
         => await ReceiveTextMessageAsync(_socket, cancellationToken);
 
     internal static async Task<string> ReceiveTextMessageAsync(WebSocket socket, CancellationToken cancellationToken)
+        => await ReceiveTextMessageAsync(socket, MaximumMessageBytes, cancellationToken);
+
+    /// <remarks>The explicit limit applies to assembled UTF-8 bytes, including fragmented frames. Storage grows only to that limit; cancellation is passed to each receive. The socket remains owned by the caller.</remarks>
+    internal static async Task<string> ReceiveTextMessageAsync(WebSocket socket, int maximumMessageBytes, CancellationToken cancellationToken)
     {
+        if (maximumMessageBytes is <= 0 or > MaximumScreenshotMessageBytes) throw new ArgumentOutOfRangeException(nameof(maximumMessageBytes));
         byte[] buffer = new byte[64 * 1024];
         using MemoryStream message = new();
         while (true)
@@ -147,19 +158,19 @@ internal sealed class DevToolsConnection : IAsyncDisposable
             if (received.MessageType == WebSocketMessageType.Close) throw new WebSocketException("DevTools closed its WebSocket before replying.");
             if (received.MessageType != WebSocketMessageType.Text) throw new InvalidDataException("DevTools sent a non-text protocol message.");
             long requiredLength = message.Length + received.Count;
-            if (requiredLength > MaximumMessageBytes) throw new InvalidDataException("DevTools message exceeds the configured 16 MiB transport limit.");
-            if (requiredLength > message.Capacity) message.Capacity = GetExpandedMessageCapacity(message.Capacity, checked((int)requiredLength));
+            if (requiredLength > maximumMessageBytes) throw new InvalidDataException("DevTools message exceeds the configured " + maximumMessageBytes / (1024 * 1024) + " MiB transport limit.");
+            if (requiredLength > message.Capacity) message.Capacity = GetExpandedMessageCapacity(message.Capacity, checked((int)requiredLength), maximumMessageBytes);
             message.Write(buffer, 0, received.Count);
             if (received.EndOfMessage) return Encoding.UTF8.GetString(message.GetBuffer(), 0, checked((int)message.Length));
         }
     }
 
-    private static int GetExpandedMessageCapacity(int currentCapacity, int requiredLength)
+    private static int GetExpandedMessageCapacity(int currentCapacity, int requiredLength, int maximumMessageBytes)
     {
-        int capacity = Math.Max(currentCapacity, 64 * 1024);
+        int capacity = Math.Min(maximumMessageBytes, Math.Max(currentCapacity, 64 * 1024));
         while (capacity < requiredLength)
         {
-            if (capacity > MaximumMessageBytes / 2) return MaximumMessageBytes;
+            if (capacity > maximumMessageBytes / 2) return maximumMessageBytes;
             capacity *= 2;
         }
         return capacity;

@@ -17,8 +17,9 @@ declared entities or defaults are loaded. Original byte encodings and structural
 limits are preserved across root parsing, font discovery and scale probing.
 The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
 27 cases to rendering and nine Target cases to the existing unsupported `marker`
-style gate. All previous PNGs are unchanged. Fidelity remains measured for only
-eighteen corporate cases.
+style gate. All previous PNGs are unchanged. Fidelity is measured for thirty
+rendered corporate cases; three additional
+references retain renderer rejections. Another 225 cases still lack references.
 
 Convex rectangular strips round coverage separately from the raw-rectangle
 calibration. Native event evidence closes YouTube's opaque triangle witness;
@@ -36,8 +37,9 @@ once and cached across raster contexts, preserving genuine convex routes and
 declined-hint fallback. The 75 native vectors match; twelve independent controls
 and one existing fractional shoulder become exact. All nine Ford variants retain
 exact PNG identity. Ford and YouTube now complete both selected checkpoints;
-the corporate matrix still has only eighteen fidelity comparisons and two verified
-exact document. General mapped curve/paint events remain open.
+the corporate matrix still has only thirty fidelity comparisons and two verified
+exact documents. The fifteen former capture gaps now have stable references;
+three retain Target renderer rejections. General mapped curve/paint events remain open.
 
 Rectangle paint-clip classification is independent of construction clipping and
 path containment. Native float nearly-integral/edge-snapping rules select binary
@@ -174,7 +176,7 @@ Stroke widths flow through the same cascade: presentation attributes, inline sty
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
 | Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 601 exact fixture entries; entry count is not a count of fresh capture triples |
-| Fixture corpus | 785 original CC0 fixture entries with verified hashes across 443 base documents and 342 variants; all 601 exact entries compare exactly, and 184 classified-unsupported entries retain their observed behavior (157 known-difference renders with pinned-Chrome references and complete comparisons, 27 categorized rejections). The independent Ford matrix is separate: all nine exact against original references/source provenance. These entry counts are not corporate-document coverage. |
+| Fixture corpus | 823 original CC0 fixture entries with verified hashes across 457 base documents and 366 variants; all 628 exact entries compare exactly, and 195 other entries retain their observed behavior (168 known-difference renders with pinned-Chrome references and complete comparisons, 27 categorized rejections). The independent Ford matrix is separate: all nine exact against original references/source provenance. These entry counts are not corporate-document coverage. |
 
 ### Experimental supplied-font text
 

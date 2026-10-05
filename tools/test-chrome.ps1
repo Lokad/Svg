@@ -162,10 +162,10 @@ Copy-Item -LiteralPath $reference -Destination $wrapperOutput
 $preservedHash = (Get-FileHash -LiteralPath $wrapperOutput -Algorithm SHA256).Hash
 $captureScript = Join-Path $PSScriptRoot 'capture-chrome.ps1'
 try {
-    & $captureScript -InputPath $fixture -OutputPath $wrapperOutput -Width 100000 -Height 100000 -CacheDirectory $CacheDirectory -PinPath $PinPath
+    & $captureScript -InputPath $fixture -OutputPath $wrapperOutput -Width 4096 -Height 2049 -CacheDirectory $CacheDirectory -PinPath $PinPath
     throw 'Wrapper unexpectedly accepted excessive dimensions.'
 }
-catch { if ($_.Exception.Message -notlike '*2-million-pixel transport limit*') { throw } }
+catch { if ($_.Exception.Message -notlike '*8,388,608-pixel transport limit*') { throw } }
 try {
     & $captureScript -InputPath $fixture -OutputPath $wrapperOutput -Width 2 -Height 2 -CacheDirectory $CacheDirectory -PinPath $PinPath -CaptureTimeoutMilliseconds 1
     throw 'Wrapper unexpectedly completed inside the forced deadline.'

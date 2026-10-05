@@ -23,7 +23,10 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-eighteen available comparisons; gaps stay explicit. All nine original YouTube
+33 available references: thirty rendered comparisons (nineteen exact, eleven
+known differences) and three Target renderer rejections. The fifteen former
+transport gaps are closed; 225 variants still lack references. All nine original
+YouTube
 references and all nine Ford references are now exact. The YouTube PNGs retain
 stable healthy capture triples. `inv-027-native-route.json`
 retains the byte-identical traced browser picture's raw convex flags and two

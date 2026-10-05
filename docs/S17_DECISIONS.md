@@ -7,24 +7,29 @@ current queue; rows 3–7 and S17 retain their general implementation/fidelity e
 
 Current evidence: 823 fixtures = 628 exact + 168 known-difference renders + 27
 rejections across 457 base documents / 366 variants; research remains 59 known
-renders + one rejection. Windows locked restore, nine-project Release build,
-3,314 core + 143 visual + six FontProbe tests (3,463 total), all 25 memory scenarios
-and package/installed-consumer checks pass. The 975-case bank preserves all 614
+renders + one rejection. Windows locked restore, nine-project Release build and
+3,314 core + 152 visual + six FontProbe tests (3,472 total) pass. Memory/package
+and installed-consumer evidence remains the validated clip-byte renderer
+checkpoint, including all 25 memory scenarios. The 975-case bank preserves all 614
 prior exact PNGs and dispositions. One existing fixture graduates; twelve fresh
 path configurations and one rectangle configuration are exact. Eleven rectangle
 fast-path controls retain their baseline failures.
 
 All 258 corporate cases are executed: 240 render and eighteen are unsupported.
-The eighteen available fidelity comparisons are all exact, establishing only
-Ford and YouTube: **2/27 documents**, marks **1/13**, wordmarks **1/14**.
-The other 240 cases lack references (225 unmeasured / fifteen transport gaps).
-Three large Target cases are both unsupported and transport gaps. Membership,
-original inputs/references, holdouts and all denominators remain unchanged.
+Thirty-three references are available: thirty rendered comparisons (**19 exact /
+11 known differences**) and three retained Target renderer rejections. All
+fifteen former transport gaps now have stable healthy capture triples at their
+frozen dimensions. Another **225 variants lack references**. Ford and YouTube
+remain the only verified exact documents: **2/27**, marks **1/13**, wordmarks
+**1/14**. Membership, original inputs/references, holdouts and denominators remain
+unchanged. All 258 dispositions and all 240 rendered PNGs are preserved.
 
 Native rectangle-mask fringes and all 65,536 byte products prove this shared
 cause. The remaining rectangle paint route, successive clip intersections,
 cache history, general fidelity, representative performance and Linux remain
-open. Next complete frozen references and bounded capture transport alongside
+open. The capture transport now admits 8,388,608 pixels with a screenshot-only
+64 MiB reply bound; commands/events retain 16 MiB. Next complete frozen references
+alongside
 shared rectangle paint/clip work. The 23-document stratum target is unachieved.
 
 ## Q1 - numeric exact-document target: selected
@@ -59,8 +64,10 @@ brand/organization exports plus eight predeclared fresh evaluation holdouts.
 Primary strata contain 13 marks and 14 outlined wordmarks, requiring at least
 11 and 12 exact documents respectively, alongside the overall 22-document
 minimum; both strata together require at least 23 exact documents. All cases of a
-document must pass. Fifteen large cases exceed the
-current oracle transport cap; they remain declared gaps. The retained exports
+document must pass. Fifteen large cases exceeded the
+original oracle transport cap at freeze. The 2026-10-06 bounded transport
+extension supplies stable references for all fifteen, without changing variants.
+The retained exports
 were measured historically, so they are development inputs rather than unseen
 holdouts. The new eight receive no document-specific tuning.
 

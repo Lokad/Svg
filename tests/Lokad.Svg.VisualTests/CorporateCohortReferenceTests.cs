@@ -42,6 +42,28 @@ public sealed class CorporateCohortReferenceTests
                 }
                 else if (state == "unmeasured") unmeasured++;
                 else Assert.Equal("measured", state);
+                int width = variant.GetProperty("width").GetInt32();
+                int height = variant.GetProperty("height").GetInt32();
+                RgbaImage? oracle = null;
+                if (state == "measured")
+                {
+                    byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(result, "referencePng")));
+                    Assert.Equal(Required(result, "referenceSha256"), Hash(reference));
+                    JsonElement provenance = result.GetProperty("captureProvenance");
+                    Assert.Equal(Required(variant, "oracleInputSha256"), Required(provenance, "oracleInputSha256"));
+                    JsonElement[] captures = provenance.GetProperty("captures").EnumerateArray().ToArray();
+                    Assert.Equal(3, captures.Length);
+                    Assert.All(captures, capture =>
+                    {
+                        Assert.Equal(Hash(reference), Required(capture, "pngSha256"));
+                        Assert.Equal("healthy", Required(capture, "startupHealth"));
+                        Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
+                    });
+                    oracle = PngRgbaDecoder.Decode(reference, checked(width * height));
+                    Assert.Equal(width, oracle.Width);
+                    Assert.Equal(height, oracle.Height);
+                    measured++;
+                }
                 string outcome = Required(result, "renderOutcome");
                 if (outcome != "renders")
                 {
@@ -56,33 +78,18 @@ public sealed class CorporateCohortReferenceTests
                 }
                 byte[] png = SvgConverter.ConvertToPng(input, Options(variant), CancellationToken.None).ToArray();
                 Assert.Equal(Required(result, "candidateSha256"), Hash(png));
-                int width = variant.GetProperty("width").GetInt32();
-                int height = variant.GetProperty("height").GetInt32();
                 RgbaImage candidate = PngRgbaDecoder.Decode(png, checked(width * height));
                 Assert.Equal(width, candidate.Width);
                 Assert.Equal(height, candidate.Height);
                 renders++;
-                if (state != "measured") { allExact = false; continue; }
-                byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(result, "referencePng")));
-                Assert.Equal(Required(result, "referenceSha256"), Hash(reference));
-                JsonElement provenance = result.GetProperty("captureProvenance");
-                Assert.Equal(Required(variant, "oracleInputSha256"), Required(provenance, "oracleInputSha256"));
-                JsonElement[] captures = provenance.GetProperty("captures").EnumerateArray().ToArray();
-                Assert.Equal(3, captures.Length);
-                Assert.All(captures, capture =>
-                {
-                    Assert.Equal(Hash(reference), Required(capture, "pngSha256"));
-                    Assert.Equal("healthy", Required(capture, "startupHealth"));
-                    Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
-                });
-                PixelComparison diff = PixelComparer.Compare(PngRgbaDecoder.Decode(reference, checked(width * height)), candidate);
+                if (oracle is null) { allExact = false; continue; }
+                PixelComparison diff = PixelComparer.Compare(oracle, candidate);
                 JsonElement expected = result.GetProperty("comparison").GetProperty("diff");
                 Assert.True(diff.DimensionsMatch);
                 Assert.Equal(expected.GetProperty("IsExact").GetBoolean(), diff.IsExact);
                 Assert.Equal(expected.GetProperty("ChangedPixelCount").GetInt64(), diff.ChangedPixelCount);
                 Assert.Equal(expected.GetProperty("MaximumChannelError").GetByte(), diff.MaximumChannelError);
                 Assert.Equal(expected.GetProperty("MaximumAlphaError").GetByte(), diff.MaximumAlphaError);
-                measured++;
                 if (diff.IsExact) exact++;
                 else { known++; allExact = false; }
             }
@@ -91,11 +98,15 @@ public sealed class CorporateCohortReferenceTests
         Assert.Equal(240, renders);
         Assert.Equal(0, malformed);
         Assert.Equal(18, unsupported);
-        Assert.Equal(18, measured);
-        Assert.Equal(18, exact);
-        Assert.Equal(0, known);
-        Assert.Equal(15, gaps);
+        Assert.Equal(33, measured);
+        Assert.Equal(19, exact);
+        Assert.Equal(11, known);
+        Assert.Equal(0, gaps);
         Assert.Equal(225, unmeasured);
+        Assert.Equal(measured, measurements.RootElement.GetProperty("oracleCounts").GetProperty("measured").GetInt32());
+        Assert.Equal(exact, measurements.RootElement.GetProperty("fidelityCounts").GetProperty("exact").GetInt32());
+        Assert.Equal(known, measurements.RootElement.GetProperty("fidelityCounts").GetProperty("known-difference").GetInt32());
+        Assert.Equal(measured - exact - known, measurements.RootElement.GetProperty("fidelityCounts").GetProperty("measuredRendererRejections").GetInt32());
         Assert.Equal(new[] { "inv-002", "inv-027" }, exactDocuments);
         Assert.Equal(15, measurements.RootElement.GetProperty("oracleTransportFailures").GetProperty("failures").GetArrayLength());
     }

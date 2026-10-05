@@ -181,5 +181,33 @@ proof shows Chrome negotiates height from the intrinsic ratio and screenshots th
 meets the viewBox into its viewport. Compare at explicit integer-scale viewports with matching aspect
 ratio instead, as in batches 84-89 and 101-103.
 
-- Hard transport limits: SVG input at most 8 MiB; capture area at most 2,000,000 pixels. A 3000x2000
-request fails before launch, see batch-103.
+- Hard capture limits: SVG input at most 8 MiB, each side at most 16,384 pixels,
+  and capture area at most 8,388,608 pixels. Screenshot replies alone admit
+  64 MiB of assembled UTF-8 JSON, including PNG base64; commands, other replies
+  and retained events remain bounded at 16 MiB. Fragmentation and cancellation
+  are checked while receiving. The old 3000x2000 request failed at the historical
+  two-million-pixel cap (batch-103); its dimensions are now admitted.
+
+## Frozen corporate captures
+
+After a Release build, capture every frozen case, or a named subset:
+
+```powershell
+tools/capture-corporate-cohort.ps1 -OutputDirectory artifacts/corporate-captures -CacheDirectory artifacts/chrome
+tools/capture-corporate-cohort.ps1 -OutputDirectory artifacts/corporate-large -CacheDirectory artifacts/chrome -CaseId inv-020-large-transparent,inv-026-large-transparent
+```
+
+The opt-in script verifies the manifest's pin and input hashes, launches three
+sequential fresh processes per configuration, and retains PNGs, launch stderr and
+`captures.json` under the supplied output directory. Failures remain recorded;
+only stable healthy triples qualify as references. It preserves the declared
+geometry, sizing and backgrounds. Capturing an image does not establish renderer
+fidelity. Ordinary `CorporateCohortReferenceTests` compare the admitted reference
+matrix offline, including independently captured renderer rejections.
+
+The 2026-10-06 transport checkpoint supplies all fifteen formerly blocked large
+references. Forty-five captures are stable, healthy and cleaned; eighteen
+Ford/YouTube overlap captures preserve all six original reference identities.
+A separate 4096x2048 noise capture yields a 32,270,774-byte PNG, requiring more
+than 41 MiB of base64 in the reply, with healthy diagnostics and cleanup.
+The browser pin and recipe 3 remain unchanged.

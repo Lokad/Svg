@@ -14,14 +14,16 @@ internal static class ChromeSvgCapture
     }
 
     internal const int MaximumSvgBytes = 8 * 1024 * 1024;
-    private const int MaximumCapturePixels = 2_000_000;
+    internal const int MaximumCapturePixels = 8_388_608;
+    internal const int MaximumCaptureDimension = 16_384;
 
     internal static async Task<byte[]> CaptureAsync(string executable, ReadOnlyMemory<byte> svg, int width, int height, CaptureBackground background, CancellationToken cancellationToken)
     {
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+        if (width > MaximumCaptureDimension || height > MaximumCaptureDimension) throw new InvalidDataException("Chrome capture dimensions exceed the 16,384-pixel side limit.");
         if (svg.Length > MaximumSvgBytes) throw new InvalidDataException("SVG input exceeds the Chrome capture limit of 8 MiB.");
-        if ((long)width * height > MaximumCapturePixels) throw new InvalidDataException("Chrome capture dimensions exceed the 2-million-pixel transport limit.");
+        if ((long)width * height > MaximumCapturePixels) throw new InvalidDataException("Chrome capture dimensions exceed the 8,388,608-pixel transport limit.");
         string svgDataUrl = "data:image/svg+xml;base64," + Convert.ToBase64String(svg.Span);
         string pageBackground = background == CaptureBackground.White ? "#ffffff" : background == CaptureBackground.Black ? "#000000" : "transparent";
         string html = "<style>html,body{margin:0;overflow:hidden;background:" + pageBackground + "}</style><img id=svg src='" + svgDataUrl + "' style='display:block'>";

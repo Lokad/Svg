@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "All 258 renderer cases executed. Eighteen fidelity comparisons: original Ford nine plus fresh stable healthy YouTube nine. Every remaining source/variant, reject, known difference and oracle gap stays declared. Only 1/27 documents is currently verified exact; this partial measurement is not a market/release coverage claim.",
+  "scope": "All 258 renderer cases executed. Thirty-three references are available, including three retained Target rejections; thirty rendered cases have fidelity comparisons. Ford and YouTube are two verified exact documents. The remaining 225 variants are unmeasured; this is partial cohort evidence, not a market/release coverage claim.",
   "rendererCounts": {
     "renders": 240,
     "MalformedInput": 0,
@@ -20,13 +20,14 @@
   },
   "oracleCounts": {
     "unmeasured": 225,
-    "measured": 18,
-    "transport-limit-gap": 15
+    "measured": 33,
+    "transport-limit-gap": 0
   },
   "fidelityCounts": {
-    "exact": 18,
-    "known-difference": 0,
-    "withoutReference": 240
+    "exact": 19,
+    "known-difference": 11,
+    "withoutReference": 225,
+    "measuredRendererRejections": 3
   },
   "oracleTransportFailures": {
     "captureToolSha256": "2b6390104d73c844f251d87b999d872cae0728f107cc3736ab623fb29a303c5f",
@@ -136,7 +137,8 @@
         "error": "Chrome capture dimensions exceed the 2-million-pixel transport limit.",
         "browserLaunched": false
       }
-    ]
+    ],
+    "status": "Historical two-million-pixel rejections; all fifteen references acquired with the bounded transport extension on 2026-10-06."
   },
   "verifiedExactDocuments": [
     "inv-002",
@@ -2738,40 +2740,300 @@
       "id": "inv-020-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 10,
+          "MaximumChannelError": 8,
+          "MeanAbsoluteError": 4.0769664359033975e-06,
+          "RootMeanSquareError": 0.005646589083755164,
+          "MaximumAlphaError": 8,
+          "AlphaChangedPixelCount": 10,
+          "MinimumMismatchX": 929,
+          "MinimumMismatchY": 715,
+          "MaximumMismatchX": 948,
+          "MaximumMismatchY": 751,
+          "IsExact": false
+        },
+        "alphaMass": 78,
+        "overCoveredPixels": 6,
+        "underCoveredPixels": 4,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 945,
+            "Y": 715,
+            "Reference": "AAAAcA==",
+            "Candidate": "AAAAaA=="
+          },
+          {
+            "X": 945,
+            "Y": 716,
+            "Reference": "AAAAyA==",
+            "Candidate": "AAAAwA=="
+          },
+          {
+            "X": 941,
+            "Y": 719,
+            "Reference": "AAAAeA==",
+            "Candidate": "AAAAgA=="
+          },
+          {
+            "X": 941,
+            "Y": 720,
+            "Reference": "AAAA0A==",
+            "Candidate": "AAAA2A=="
+          },
+          {
+            "X": 948,
+            "Y": 722,
+            "Reference": "AAAADA==",
+            "Candidate": "AAAABQ=="
+          },
+          {
+            "X": 948,
+            "Y": 723,
+            "Reference": "AAAAWA==",
+            "Candidate": "AAAAUA=="
+          },
+          {
+            "X": 935,
+            "Y": 735,
+            "Reference": "AAAAaA==",
+            "Candidate": "AAAAcA=="
+          },
+          {
+            "X": 935,
+            "Y": 736,
+            "Reference": "AAAAwA==",
+            "Candidate": "AAAAyA=="
+          },
+          {
+            "X": 929,
+            "Y": 750,
+            "Reference": "AAAABQ==",
+            "Candidate": "AAAADA=="
+          },
+          {
+            "X": 929,
+            "Y": 751,
+            "Reference": "AAAAUA==",
+            "Candidate": "AAAAWA=="
+          }
+        ]
+      },
+      "referencePng": "inv-020-large-transparent.png",
+      "captureProvenance": {
+        "oracleInputSha256": "c85b83f2a76156b522129c9d129c69b29783a32a015b9241219b27170faf19e1",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "d0c67f64f7b04cb3e9a0cfedfea1ab9d50b9e672a009323bcb32330f9229afbf",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "d0c67f64f7b04cb3e9a0cfedfea1ab9d50b9e672a009323bcb32330f9229afbf",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "d0c67f64f7b04cb3e9a0cfedfea1ab9d50b9e672a009323bcb32330f9229afbf",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured",
       "candidateSha256": "de60ae4cf84ad3ab3a2251ab566188ee743bf1dcce45317715ed4ba19937e1fd",
       "width": 2186,
       "height": 2188,
-      "referenceSha256": null
+      "referenceSha256": "d0c67f64f7b04cb3e9a0cfedfea1ab9d50b9e672a009323bcb32330f9229afbf"
     },
     {
       "id": "inv-020-large-white",
       "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 10,
+          "MaximumChannelError": 8,
+          "MeanAbsoluteError": 1.2230899307710192e-05,
+          "RootMeanSquareError": 0.009780179182527738,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 929,
+          "MinimumMismatchY": 715,
+          "MaximumMismatchX": 948,
+          "MaximumMismatchY": 751,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 945,
+            "Y": 715,
+            "Reference": "j4+P/w==",
+            "Candidate": "l5eX/w=="
+          },
+          {
+            "X": 945,
+            "Y": 716,
+            "Reference": "Nzc3/w==",
+            "Candidate": "Pz8//w=="
+          },
+          {
+            "X": 941,
+            "Y": 719,
+            "Reference": "h4eH/w==",
+            "Candidate": "f39//w=="
+          },
+          {
+            "X": 941,
+            "Y": 720,
+            "Reference": "Ly8v/w==",
+            "Candidate": "Jycn/w=="
+          },
+          {
+            "X": 948,
+            "Y": 722,
+            "Reference": "8/Pz/w==",
+            "Candidate": "+vr6/w=="
+          },
+          {
+            "X": 948,
+            "Y": 723,
+            "Reference": "p6en/w==",
+            "Candidate": "r6+v/w=="
+          },
+          {
+            "X": 935,
+            "Y": 735,
+            "Reference": "l5eX/w==",
+            "Candidate": "j4+P/w=="
+          },
+          {
+            "X": 935,
+            "Y": 736,
+            "Reference": "Pz8//w==",
+            "Candidate": "Nzc3/w=="
+          },
+          {
+            "X": 929,
+            "Y": 750,
+            "Reference": "+vr6/w==",
+            "Candidate": "8/Pz/w=="
+          },
+          {
+            "X": 929,
+            "Y": 751,
+            "Reference": "r6+v/w==",
+            "Candidate": "p6en/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-020-large-white.png",
+      "captureProvenance": {
+        "oracleInputSha256": "c85b83f2a76156b522129c9d129c69b29783a32a015b9241219b27170faf19e1",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "4019db2d4f0e88541eeddbf1991f562a5268a969b89db9bd272a47e80efdbece",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "4019db2d4f0e88541eeddbf1991f562a5268a969b89db9bd272a47e80efdbece",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "4019db2d4f0e88541eeddbf1991f562a5268a969b89db9bd272a47e80efdbece",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured",
       "candidateSha256": "04e5270a2c58c2fe28eb5dca44b332a7db5a6aff01bd60fae3dfadde18745b85",
       "width": 2186,
       "height": 2188,
-      "referenceSha256": null
+      "referenceSha256": "4019db2d4f0e88541eeddbf1991f562a5268a969b89db9bd272a47e80efdbece"
     },
     {
       "id": "inv-020-large-black",
       "renderOutcome": "renders",
       "inputSha256": "1a167a1dc279a88a60d2386b959613bcde05a8b487b064668d1585ef880e6889",
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 2186,
+          "MinimumMismatchY": 2188,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": []
+      },
+      "referencePng": "inv-020-large-black.png",
+      "captureProvenance": {
+        "oracleInputSha256": "c85b83f2a76156b522129c9d129c69b29783a32a015b9241219b27170faf19e1",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "7b272a3810498dd1e3758f2b2d34972ac4109d6b91ca8a7d3207e95b210e7492",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "7b272a3810498dd1e3758f2b2d34972ac4109d6b91ca8a7d3207e95b210e7492",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "7b272a3810498dd1e3758f2b2d34972ac4109d6b91ca8a7d3207e95b210e7492",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured",
       "candidateSha256": "cb447b6d791048d0fd7ae7ba43e5c59ba4e8f46fe420187740aeac41212b222d",
       "width": 2186,
       "height": 2188,
-      "referenceSha256": null
+      "referenceSha256": "7b272a3810498dd1e3758f2b2d34972ac4109d6b91ca8a7d3207e95b210e7492"
     },
     {
       "id": "inv-026-small-transparent",
@@ -2858,11 +3120,154 @@
       "candidateSha256": "18956b1a54e3baa73d0efabb8405b0d9f68e028ee261664b31f753ea349dc917",
       "width": 4100,
       "height": 1120,
-      "referenceSha256": null,
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referenceSha256": "5d896ce413a3515a77c621b5397c09653a583270234a73e9c95a55adda2c8b8e",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 2382,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 0.0052349738675958185,
+          "RootMeanSquareError": 0.7547834536121535,
+          "MaximumAlphaError": 78,
+          "AlphaChangedPixelCount": 2372,
+          "MinimumMismatchX": 407,
+          "MinimumMismatchY": 8,
+          "MaximumMismatchX": 4035,
+          "MaximumMismatchY": 1111,
+          "IsExact": false
+        },
+        "alphaMass": 34702,
+        "overCoveredPixels": 874,
+        "underCoveredPixels": 1498,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 2820,
+            "Y": 8,
+            "Reference": "AJLOFQ==",
+            "Candidate": "AAAAAA=="
+          },
+          {
+            "X": 2821,
+            "Y": 8,
+            "Reference": "B47NJA==",
+            "Candidate": "AAAAAA=="
+          },
+          {
+            "X": 2822,
+            "Y": 8,
+            "Reference": "CpHNMw==",
+            "Candidate": "AJXUDA=="
+          },
+          {
+            "X": 2823,
+            "Y": 8,
+            "Reference": "CI/NQg==",
+            "Candidate": "CI/PIA=="
+          },
+          {
+            "X": 2824,
+            "Y": 8,
+            "Reference": "CZHNUQ==",
+            "Candidate": "CpHNMw=="
+          },
+          {
+            "X": 2825,
+            "Y": 8,
+            "Reference": "C4/KYA==",
+            "Candidate": "C5DNRw=="
+          },
+          {
+            "X": 2826,
+            "Y": 8,
+            "Reference": "CZHKbw==",
+            "Candidate": "CI/KWw=="
+          },
+          {
+            "X": 2827,
+            "Y": 8,
+            "Reference": "Co/KfQ==",
+            "Candidate": "CZDMbg=="
+          },
+          {
+            "X": 2828,
+            "Y": 8,
+            "Reference": "C4/LjQ==",
+            "Candidate": "CpHLfw=="
+          },
+          {
+            "X": 2829,
+            "Y": 8,
+            "Reference": "CpDLnA==",
+            "Candidate": "CY/LiQ=="
+          },
+          {
+            "X": 2830,
+            "Y": 8,
+            "Reference": "Co/Lqw==",
+            "Candidate": "C5DKkQ=="
+          },
+          {
+            "X": 2831,
+            "Y": 8,
+            "Reference": "C5DLug==",
+            "Candidate": "Co/LmQ=="
+          },
+          {
+            "X": 2832,
+            "Y": 8,
+            "Reference": "CpDLww==",
+            "Candidate": "Co/KoA=="
+          },
+          {
+            "X": 2833,
+            "Y": 8,
+            "Reference": "CpDLyA==",
+            "Candidate": "C5DLqA=="
+          },
+          {
+            "X": 2834,
+            "Y": 8,
+            "Reference": "Co/LzQ==",
+            "Candidate": "Co/LsA=="
+          },
+          {
+            "X": 2835,
+            "Y": 8,
+            "Reference": "C4/L0g==",
+            "Candidate": "CpDKuA=="
+          }
+        ]
+      },
+      "referencePng": "inv-026-large-transparent.png",
+      "captureProvenance": {
+        "oracleInputSha256": "f250fb5a18076e61590da12454a1cb37efc5fad06e45d3669ebf35eb78d251d6",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "5d896ce413a3515a77c621b5397c09653a583270234a73e9c95a55adda2c8b8e",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "5d896ce413a3515a77c621b5397c09653a583270234a73e9c95a55adda2c8b8e",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "5d896ce413a3515a77c621b5397c09653a583270234a73e9c95a55adda2c8b8e",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured"
     },
     {
       "id": "inv-026-large-white",
@@ -2871,11 +3276,154 @@
       "candidateSha256": "8cea2c1dc63fd3ca7477064d9164b1fcb9fe5d99f719d38d9601e939f4d56b96",
       "width": 4100,
       "height": 1120,
-      "referenceSha256": null,
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referenceSha256": "86e1daae62eeef02c3861dc17f279ccd7a37e80d13a6e2988817ead9b78c9438",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 2338,
+          "MaximumChannelError": 75,
+          "MeanAbsoluteError": 0.003074858449477352,
+          "RootMeanSquareError": 0.251407730838643,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 407,
+          "MinimumMismatchY": 8,
+          "MaximumMismatchX": 4035,
+          "MaximumMismatchY": 1111,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 2820,
+            "Y": 8,
+            "Reference": "6vb7/w==",
+            "Candidate": "/////w=="
+          },
+          {
+            "X": 2821,
+            "Y": 8,
+            "Reference": "3O/4/w==",
+            "Candidate": "/////w=="
+          },
+          {
+            "X": 2822,
+            "Y": 8,
+            "Reference": "zun1/w==",
+            "Candidate": "8/r9/w=="
+          },
+          {
+            "X": 2823,
+            "Y": 8,
+            "Reference": "v+Ly/w==",
+            "Candidate": "4PH5/w=="
+          },
+          {
+            "X": 2824,
+            "Y": 8,
+            "Reference": "sdzv/w==",
+            "Candidate": "zun1/w=="
+          },
+          {
+            "X": 2825,
+            "Y": 8,
+            "Reference": "o9Xr/w==",
+            "Candidate": "u+Dx/w=="
+          },
+          {
+            "X": 2826,
+            "Y": 8,
+            "Reference": "lM/o/w==",
+            "Candidate": "p9fs/w=="
+          },
+          {
+            "X": 2827,
+            "Y": 8,
+            "Reference": "h8jl/w==",
+            "Candidate": "lc/p/w=="
+          },
+          {
+            "X": 2828,
+            "Y": 8,
+            "Reference": "eMHi/w==",
+            "Candidate": "hcjl/w=="
+          },
+          {
+            "X": 2829,
+            "Y": 8,
+            "Reference": "abvf/w==",
+            "Candidate": "e8Pj/w=="
+          },
+          {
+            "X": 2830,
+            "Y": 8,
+            "Reference": "W7Tc/w==",
+            "Candidate": "dMDh/w=="
+          },
+          {
+            "X": 2831,
+            "Y": 8,
+            "Reference": "Ta7Z/w==",
+            "Candidate": "bLzg/w=="
+          },
+          {
+            "X": 2832,
+            "Y": 8,
+            "Reference": "RKrX/w==",
+            "Candidate": "Zbne/w=="
+          },
+          {
+            "X": 2833,
+            "Y": 8,
+            "Reference": "P6jW/w==",
+            "Candidate": "Xrbd/w=="
+          },
+          {
+            "X": 2834,
+            "Y": 8,
+            "Reference": "OqXV/w==",
+            "Candidate": "VrLb/w=="
+          },
+          {
+            "X": 2835,
+            "Y": 8,
+            "Reference": "NqPU/w==",
+            "Candidate": "Tq/Z/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-026-large-white.png",
+      "captureProvenance": {
+        "oracleInputSha256": "f250fb5a18076e61590da12454a1cb37efc5fad06e45d3669ebf35eb78d251d6",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "86e1daae62eeef02c3861dc17f279ccd7a37e80d13a6e2988817ead9b78c9438",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "86e1daae62eeef02c3861dc17f279ccd7a37e80d13a6e2988817ead9b78c9438",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "86e1daae62eeef02c3861dc17f279ccd7a37e80d13a6e2988817ead9b78c9438",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured"
     },
     {
       "id": "inv-026-large-black",
@@ -2884,11 +3432,154 @@
       "candidateSha256": "13886faa23398cb4b47ac8f93c6368ab9a6e9fba608f6022f4fb939527308658",
       "width": 4100,
       "height": 1120,
-      "referenceSha256": null,
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referenceSha256": "b2a4c8b77496b467b8613e31b989f0d8cc685ebcabe85caf1ae81cc038f429f9",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 2357,
+          "MaximumChannelError": 62,
+          "MeanAbsoluteError": 0.002591082317073171,
+          "RootMeanSquareError": 0.21787561682681592,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 407,
+          "MinimumMismatchY": 8,
+          "MaximumMismatchX": 4032,
+          "MaximumMismatchY": 1111,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 2820,
+            "Y": 8,
+            "Reference": "AAwR/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 2821,
+            "Y": 8,
+            "Reference": "ARQd/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 2822,
+            "Y": 8,
+            "Reference": "Ah0p/w==",
+            "Candidate": "AAcK/w=="
+          },
+          {
+            "X": 2823,
+            "Y": 8,
+            "Reference": "AiU1/w==",
+            "Candidate": "ARIa/w=="
+          },
+          {
+            "X": 2824,
+            "Y": 8,
+            "Reference": "Ay5B/w==",
+            "Candidate": "Ah0p/w=="
+          },
+          {
+            "X": 2825,
+            "Y": 8,
+            "Reference": "BDZM/w==",
+            "Candidate": "Ayg5/w=="
+          },
+          {
+            "X": 2826,
+            "Y": 8,
+            "Reference": "BD9Y/w==",
+            "Candidate": "AzNI/w=="
+          },
+          {
+            "X": 2827,
+            "Y": 8,
+            "Reference": "BUZj/w==",
+            "Candidate": "BD5Y/w=="
+          },
+          {
+            "X": 2828,
+            "Y": 8,
+            "Reference": "Bk9w/w==",
+            "Candidate": "BUhl/w=="
+          },
+          {
+            "X": 2829,
+            "Y": 8,
+            "Reference": "Blh8/w==",
+            "Candidate": "BU1t/w=="
+          },
+          {
+            "X": 2830,
+            "Y": 8,
+            "Reference": "B2CI/w==",
+            "Candidate": "BlJz/w=="
+          },
+          {
+            "X": 2831,
+            "Y": 8,
+            "Reference": "CGmU/w==",
+            "Candidate": "BlZ6/w=="
+          },
+          {
+            "X": 2832,
+            "Y": 8,
+            "Reference": "CG6b/w==",
+            "Candidate": "Blp//w=="
+          },
+          {
+            "X": 2833,
+            "Y": 8,
+            "Reference": "CHGf/w==",
+            "Candidate": "B1+G/w=="
+          },
+          {
+            "X": 2834,
+            "Y": 8,
+            "Reference": "CHOj/w==",
+            "Candidate": "B2OM/w=="
+          },
+          {
+            "X": 2835,
+            "Y": 8,
+            "Reference": "CXan/w==",
+            "Candidate": "B2iS/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-026-large-black.png",
+      "captureProvenance": {
+        "oracleInputSha256": "f250fb5a18076e61590da12454a1cb37efc5fad06e45d3669ebf35eb78d251d6",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "b2a4c8b77496b467b8613e31b989f0d8cc685ebcabe85caf1ae81cc038f429f9",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "b2a4c8b77496b467b8613e31b989f0d8cc685ebcabe85caf1ae81cc038f429f9",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "b2a4c8b77496b467b8613e31b989f0d8cc685ebcabe85caf1ae81cc038f429f9",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured"
     },
     {
       "id": "inv-026-historical-543x149-transparent",
@@ -3950,11 +4641,154 @@
       "candidateSha256": "add669eb8be6d5bb0ae47a992556936ca44f39570c8a056a987efabac6f0489d",
       "width": 1900,
       "height": 1226,
-      "referenceSha256": null,
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referenceSha256": "84411b37f2e9cd101b265d53a49fd40c548ddcf931b5de899f1e004053d55b4c",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 17029,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 0.07181130333991585,
+          "RootMeanSquareError": 2.980182192023845,
+          "MaximumAlphaError": 110,
+          "AlphaChangedPixelCount": 17029,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 1899,
+          "MaximumMismatchY": 1225,
+          "IsExact": false
+        },
+        "alphaMass": 283614,
+        "overCoveredPixels": 8847,
+        "underCoveredPixels": 8182,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 893,
+            "Y": 0,
+            "Reference": "6gAVDA==",
+            "Candidate": "AAAAAA=="
+          },
+          {
+            "X": 894,
+            "Y": 0,
+            "Reference": "8AAeEQ==",
+            "Candidate": "AAAAAA=="
+          },
+          {
+            "X": 895,
+            "Y": 0,
+            "Reference": "9AAWFw==",
+            "Candidate": "AAAAAA=="
+          },
+          {
+            "X": 896,
+            "Y": 0,
+            "Reference": "7QkaHQ==",
+            "Candidate": "AAAAAA=="
+          },
+          {
+            "X": 897,
+            "Y": 0,
+            "Reference": "8AcdIw==",
+            "Candidate": "AAAAAA=="
+          },
+          {
+            "X": 898,
+            "Y": 0,
+            "Reference": "7AYZKQ==",
+            "Candidate": "/wAXCw=="
+          },
+          {
+            "X": 899,
+            "Y": 0,
+            "Reference": "7wUbLw==",
+            "Candidate": "7wAQEA=="
+          },
+          {
+            "X": 900,
+            "Y": 0,
+            "Reference": "7AodNQ==",
+            "Candidate": "8wAYFQ=="
+          },
+          {
+            "X": 901,
+            "Y": 0,
+            "Reference": "7gkeOw==",
+            "Candidate": "6wodGg=="
+          },
+          {
+            "X": 902,
+            "Y": 0,
+            "Reference": "6wgcQA==",
+            "Candidate": "7ggaHg=="
+          },
+          {
+            "X": 903,
+            "Y": 0,
+            "Reference": "7QcdRg==",
+            "Candidate": "8AcdIw=="
+          },
+          {
+            "X": 904,
+            "Y": 0,
+            "Reference": "6woeTA==",
+            "Candidate": "7AYaKA=="
+          },
+          {
+            "X": 905,
+            "Y": 0,
+            "Reference": "7AkcUg==",
+            "Candidate": "7gYcLQ=="
+          },
+          {
+            "X": 906,
+            "Y": 0,
+            "Reference": "6wkdWA==",
+            "Candidate": "6gUaMQ=="
+          },
+          {
+            "X": 907,
+            "Y": 0,
+            "Reference": "7AgeXg==",
+            "Candidate": "7AkcNg=="
+          },
+          {
+            "X": 908,
+            "Y": 0,
+            "Reference": "6wgcZA==",
+            "Candidate": "7gkeOw=="
+          }
+        ]
+      },
+      "referencePng": "inv-096-large-transparent.png",
+      "captureProvenance": {
+        "oracleInputSha256": "e511710d3a2ac8bcadb4e32bb1eb88d3fc1ec57419828224b3a432273439a147",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "84411b37f2e9cd101b265d53a49fd40c548ddcf931b5de899f1e004053d55b4c",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "84411b37f2e9cd101b265d53a49fd40c548ddcf931b5de899f1e004053d55b4c",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "84411b37f2e9cd101b265d53a49fd40c548ddcf931b5de899f1e004053d55b4c",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured"
     },
     {
       "id": "inv-096-large-white",
@@ -3963,11 +4797,154 @@
       "candidateSha256": "59d1fe3b4a1981ec25782cff33071764c82093e9d9d8e4cf23bf48b38873871b",
       "width": 1900,
       "height": 1226,
-      "referenceSha256": null,
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referenceSha256": "589c0dd1f784cc09b58ee83ad62d01dbcd064fc4b465bf3a971633c1e51a235e",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 16764,
+          "MaximumChannelError": 105,
+          "MeanAbsoluteError": 0.05848469562977591,
+          "RootMeanSquareError": 1.2586982073265844,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 1899,
+          "MaximumMismatchY": 1225,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 893,
+            "Y": 0,
+            "Reference": "/vP0/w==",
+            "Candidate": "/////w=="
+          },
+          {
+            "X": 894,
+            "Y": 0,
+            "Reference": "/u7w/w==",
+            "Candidate": "/////w=="
+          },
+          {
+            "X": 895,
+            "Y": 0,
+            "Reference": "/ujq/w==",
+            "Candidate": "/////w=="
+          },
+          {
+            "X": 896,
+            "Y": 0,
+            "Reference": "/ePl/w==",
+            "Candidate": "/////w=="
+          },
+          {
+            "X": 897,
+            "Y": 0,
+            "Reference": "/d3g/w==",
+            "Candidate": "/////w=="
+          },
+          {
+            "X": 898,
+            "Y": 0,
+            "Reference": "/Nfa/w==",
+            "Candidate": "//T1/w=="
+          },
+          {
+            "X": 899,
+            "Y": 0,
+            "Reference": "/NHV/w==",
+            "Candidate": "/u/w/w=="
+          },
+          {
+            "X": 900,
+            "Y": 0,
+            "Reference": "+8zQ/w==",
+            "Candidate": "/urs/w=="
+          },
+          {
+            "X": 901,
+            "Y": 0,
+            "Reference": "+8bL/w==",
+            "Candidate": "/ebo/w=="
+          },
+          {
+            "X": 902,
+            "Y": 0,
+            "Reference": "+sHG/w==",
+            "Candidate": "/eLk/w=="
+          },
+          {
+            "X": 903,
+            "Y": 0,
+            "Reference": "+rvB/w==",
+            "Candidate": "/d3g/w=="
+          },
+          {
+            "X": 904,
+            "Y": 0,
+            "Reference": "+ba8/w==",
+            "Candidate": "/Njb/w=="
+          },
+          {
+            "X": 905,
+            "Y": 0,
+            "Reference": "+bC2/w==",
+            "Candidate": "/NPX/w=="
+          },
+          {
+            "X": 906,
+            "Y": 0,
+            "Reference": "+Kqx/w==",
+            "Candidate": "+8/T/w=="
+          },
+          {
+            "X": 907,
+            "Y": 0,
+            "Reference": "+KSs/w==",
+            "Candidate": "+8vP/w=="
+          },
+          {
+            "X": 908,
+            "Y": 0,
+            "Reference": "956m/w==",
+            "Candidate": "+8bL/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-096-large-white.png",
+      "captureProvenance": {
+        "oracleInputSha256": "e511710d3a2ac8bcadb4e32bb1eb88d3fc1ec57419828224b3a432273439a147",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "589c0dd1f784cc09b58ee83ad62d01dbcd064fc4b465bf3a971633c1e51a235e",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "589c0dd1f784cc09b58ee83ad62d01dbcd064fc4b465bf3a971633c1e51a235e",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "589c0dd1f784cc09b58ee83ad62d01dbcd064fc4b465bf3a971633c1e51a235e",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured"
     },
     {
       "id": "inv-096-large-black",
@@ -3976,11 +4953,154 @@
       "candidateSha256": "524a595d81c8fb9ba1f0b74297cec3b52d96420e3b3422362b3cb2da3f472ad2",
       "width": 1900,
       "height": 1226,
-      "referenceSha256": null,
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referenceSha256": "e33d167bc94bd0f17ee3799a15cf1f0d3a5450748382ae80989ffb9adbb510d2",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 16985,
+          "MaximumChannelError": 101,
+          "MeanAbsoluteError": 0.0328310938439083,
+          "RootMeanSquareError": 0.8928176750466816,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 1899,
+          "MaximumMismatchY": 1225,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 893,
+            "Y": 0,
+            "Reference": "CwAB/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 894,
+            "Y": 0,
+            "Reference": "EAAC/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 895,
+            "Y": 0,
+            "Reference": "FgAC/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 896,
+            "Y": 0,
+            "Reference": "GwED/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 897,
+            "Y": 0,
+            "Reference": "IQEE/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 898,
+            "Y": 0,
+            "Reference": "JgEE/w==",
+            "Candidate": "CwAB/w=="
+          },
+          {
+            "X": 899,
+            "Y": 0,
+            "Reference": "LAEF/w==",
+            "Candidate": "DwAB/w=="
+          },
+          {
+            "X": 900,
+            "Y": 0,
+            "Reference": "MQIG/w==",
+            "Candidate": "FAAC/w=="
+          },
+          {
+            "X": 901,
+            "Y": 0,
+            "Reference": "NwIH/w==",
+            "Candidate": "GAED/w=="
+          },
+          {
+            "X": 902,
+            "Y": 0,
+            "Reference": "OwIH/w==",
+            "Candidate": "HAED/w=="
+          },
+          {
+            "X": 903,
+            "Y": 0,
+            "Reference": "QQII/w==",
+            "Candidate": "IQEE/w=="
+          },
+          {
+            "X": 904,
+            "Y": 0,
+            "Reference": "RgMJ/w==",
+            "Candidate": "JQEE/w=="
+          },
+          {
+            "X": 905,
+            "Y": 0,
+            "Reference": "TAMJ/w==",
+            "Candidate": "KgEF/w=="
+          },
+          {
+            "X": 906,
+            "Y": 0,
+            "Reference": "UQMK/w==",
+            "Candidate": "LQEF/w=="
+          },
+          {
+            "X": 907,
+            "Y": 0,
+            "Reference": "VwML/w==",
+            "Candidate": "MgIG/w=="
+          },
+          {
+            "X": 908,
+            "Y": 0,
+            "Reference": "XAML/w==",
+            "Candidate": "NwIH/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-096-large-black.png",
+      "captureProvenance": {
+        "oracleInputSha256": "e511710d3a2ac8bcadb4e32bb1eb88d3fc1ec57419828224b3a432273439a147",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "e33d167bc94bd0f17ee3799a15cf1f0d3a5450748382ae80989ffb9adbb510d2",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "e33d167bc94bd0f17ee3799a15cf1f0d3a5450748382ae80989ffb9adbb510d2",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "e33d167bc94bd0f17ee3799a15cf1f0d3a5450748382ae80989ffb9adbb510d2",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured"
     },
     {
       "id": "inv-097-small-transparent",
@@ -4067,11 +5187,154 @@
       "candidateSha256": "c134c9e71d7c0c7db364e4aa2c57aa45c3d964a9263a614c0a2ffdcb374e36be",
       "width": 1600,
       "height": 1600,
-      "referenceSha256": null,
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referenceSha256": "4e996e73bf93d6f2e7fc82939cd1daf05170b11c65490f0e1312688b7b6f140a",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 11736,
+          "MaximumChannelError": 117,
+          "MeanAbsoluteError": 0.06062802734375,
+          "RootMeanSquareError": 1.467674905728871,
+          "MaximumAlphaError": 47,
+          "AlphaChangedPixelCount": 314,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 30,
+          "MaximumMismatchX": 1599,
+          "MaximumMismatchY": 1569,
+          "IsExact": false
+        },
+        "alphaMass": 1594,
+        "overCoveredPixels": 71,
+        "underCoveredPixels": 243,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 578,
+            "Y": 30,
+            "Reference": "AAAAAA==",
+            "Candidate": "AAAABw=="
+          },
+          {
+            "X": 579,
+            "Y": 30,
+            "Reference": "AAAARw==",
+            "Candidate": "AAAASQ=="
+          },
+          {
+            "X": 580,
+            "Y": 30,
+            "Reference": "AAAAlA==",
+            "Candidate": "AAAAkw=="
+          },
+          {
+            "X": 581,
+            "Y": 30,
+            "Reference": "AAAA3Q==",
+            "Candidate": "AAAA3A=="
+          },
+          {
+            "X": 761,
+            "Y": 30,
+            "Reference": "FhYW/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 762,
+            "Y": 30,
+            "Reference": "JiYm/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 763,
+            "Y": 30,
+            "Reference": "Dg4O/w==",
+            "Candidate": "CQkJ/w=="
+          },
+          {
+            "X": 764,
+            "Y": 30,
+            "Reference": "GBgY/w==",
+            "Candidate": "Dw8P/w=="
+          },
+          {
+            "X": 765,
+            "Y": 30,
+            "Reference": "IiIi/w==",
+            "Candidate": "FhYW/w=="
+          },
+          {
+            "X": 766,
+            "Y": 30,
+            "Reference": "LCws/w==",
+            "Candidate": "HR0d/w=="
+          },
+          {
+            "X": 767,
+            "Y": 30,
+            "Reference": "NjY2/w==",
+            "Candidate": "JCQk/w=="
+          },
+          {
+            "X": 768,
+            "Y": 30,
+            "Reference": "QUFB/w==",
+            "Candidate": "Kysr/w=="
+          },
+          {
+            "X": 769,
+            "Y": 30,
+            "Reference": "S0tL/w==",
+            "Candidate": "MTEx/w=="
+          },
+          {
+            "X": 770,
+            "Y": 30,
+            "Reference": "VVVV/w==",
+            "Candidate": "ODg4/w=="
+          },
+          {
+            "X": 771,
+            "Y": 30,
+            "Reference": "X19f/w==",
+            "Candidate": "Pz8//w=="
+          },
+          {
+            "X": 772,
+            "Y": 30,
+            "Reference": "aWlp/w==",
+            "Candidate": "RkZG/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-097-large-transparent.png",
+      "captureProvenance": {
+        "oracleInputSha256": "d0879f38733a7e587f011dbc2cb6a9fabc4e930a6aefa748a2fe5dc70230dbc9",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "4e996e73bf93d6f2e7fc82939cd1daf05170b11c65490f0e1312688b7b6f140a",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "4e996e73bf93d6f2e7fc82939cd1daf05170b11c65490f0e1312688b7b6f140a",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "4e996e73bf93d6f2e7fc82939cd1daf05170b11c65490f0e1312688b7b6f140a",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured"
     },
     {
       "id": "inv-097-large-white",
@@ -4080,11 +5343,154 @@
       "candidateSha256": "7dd48e1b8e97dafba2641c95576850ef0215991fd8b1d2c4edae66434d36953f",
       "width": 1600,
       "height": 1600,
-      "referenceSha256": null,
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referenceSha256": "ffda71a20b0e084c6129ec6df0809dfc674b0da7e5f6dbacbb290f01a3ca0a26",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 11736,
+          "MaximumChannelError": 117,
+          "MeanAbsoluteError": 0.06093935546875,
+          "RootMeanSquareError": 1.469111690837783,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 0,
+          "MinimumMismatchY": 30,
+          "MaximumMismatchX": 1599,
+          "MaximumMismatchY": 1569,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 578,
+            "Y": 30,
+            "Reference": "/////w==",
+            "Candidate": "+Pj4/w=="
+          },
+          {
+            "X": 579,
+            "Y": 30,
+            "Reference": "uLi4/w==",
+            "Candidate": "tra2/w=="
+          },
+          {
+            "X": 580,
+            "Y": 30,
+            "Reference": "a2tr/w==",
+            "Candidate": "bGxs/w=="
+          },
+          {
+            "X": 581,
+            "Y": 30,
+            "Reference": "IiIi/w==",
+            "Candidate": "IyMj/w=="
+          },
+          {
+            "X": 761,
+            "Y": 30,
+            "Reference": "FhYW/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 762,
+            "Y": 30,
+            "Reference": "JiYm/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 763,
+            "Y": 30,
+            "Reference": "Dg4O/w==",
+            "Candidate": "CQkJ/w=="
+          },
+          {
+            "X": 764,
+            "Y": 30,
+            "Reference": "GBgY/w==",
+            "Candidate": "Dw8P/w=="
+          },
+          {
+            "X": 765,
+            "Y": 30,
+            "Reference": "IiIi/w==",
+            "Candidate": "FhYW/w=="
+          },
+          {
+            "X": 766,
+            "Y": 30,
+            "Reference": "LCws/w==",
+            "Candidate": "HR0d/w=="
+          },
+          {
+            "X": 767,
+            "Y": 30,
+            "Reference": "NjY2/w==",
+            "Candidate": "JCQk/w=="
+          },
+          {
+            "X": 768,
+            "Y": 30,
+            "Reference": "QUFB/w==",
+            "Candidate": "Kysr/w=="
+          },
+          {
+            "X": 769,
+            "Y": 30,
+            "Reference": "S0tL/w==",
+            "Candidate": "MTEx/w=="
+          },
+          {
+            "X": 770,
+            "Y": 30,
+            "Reference": "VVVV/w==",
+            "Candidate": "ODg4/w=="
+          },
+          {
+            "X": 771,
+            "Y": 30,
+            "Reference": "X19f/w==",
+            "Candidate": "Pz8//w=="
+          },
+          {
+            "X": 772,
+            "Y": 30,
+            "Reference": "aWlp/w==",
+            "Candidate": "RkZG/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-097-large-white.png",
+      "captureProvenance": {
+        "oracleInputSha256": "d0879f38733a7e587f011dbc2cb6a9fabc4e930a6aefa748a2fe5dc70230dbc9",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "ffda71a20b0e084c6129ec6df0809dfc674b0da7e5f6dbacbb290f01a3ca0a26",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "ffda71a20b0e084c6129ec6df0809dfc674b0da7e5f6dbacbb290f01a3ca0a26",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "ffda71a20b0e084c6129ec6df0809dfc674b0da7e5f6dbacbb290f01a3ca0a26",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured"
     },
     {
       "id": "inv-097-large-black",
@@ -4093,11 +5499,154 @@
       "candidateSha256": "76ca685fc0115f8d002f2ba51b2d8a046e4a92bb4cf623b43987e80946cf0d97",
       "width": 1600,
       "height": 1600,
-      "referenceSha256": null,
-      "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referenceSha256": "c96a252b37526cb4465e761345afe8a7501e0e84143dca9ea158ee5c02de0a21",
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 11422,
+          "MaximumChannelError": 117,
+          "MeanAbsoluteError": 0.06047236328125,
+          "RootMeanSquareError": 1.466955985461476,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 30,
+          "MinimumMismatchY": 30,
+          "MaximumMismatchX": 1569,
+          "MaximumMismatchY": 1569,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0,
+        "witnesses": [
+          {
+            "X": 761,
+            "Y": 30,
+            "Reference": "FhYW/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 762,
+            "Y": 30,
+            "Reference": "JiYm/w==",
+            "Candidate": "AAAA/w=="
+          },
+          {
+            "X": 763,
+            "Y": 30,
+            "Reference": "Dg4O/w==",
+            "Candidate": "CQkJ/w=="
+          },
+          {
+            "X": 764,
+            "Y": 30,
+            "Reference": "GBgY/w==",
+            "Candidate": "Dw8P/w=="
+          },
+          {
+            "X": 765,
+            "Y": 30,
+            "Reference": "IiIi/w==",
+            "Candidate": "FhYW/w=="
+          },
+          {
+            "X": 766,
+            "Y": 30,
+            "Reference": "LCws/w==",
+            "Candidate": "HR0d/w=="
+          },
+          {
+            "X": 767,
+            "Y": 30,
+            "Reference": "NjY2/w==",
+            "Candidate": "JCQk/w=="
+          },
+          {
+            "X": 768,
+            "Y": 30,
+            "Reference": "QUFB/w==",
+            "Candidate": "Kysr/w=="
+          },
+          {
+            "X": 769,
+            "Y": 30,
+            "Reference": "S0tL/w==",
+            "Candidate": "MTEx/w=="
+          },
+          {
+            "X": 770,
+            "Y": 30,
+            "Reference": "VVVV/w==",
+            "Candidate": "ODg4/w=="
+          },
+          {
+            "X": 771,
+            "Y": 30,
+            "Reference": "X19f/w==",
+            "Candidate": "Pz8//w=="
+          },
+          {
+            "X": 772,
+            "Y": 30,
+            "Reference": "aWlp/w==",
+            "Candidate": "RkZG/w=="
+          },
+          {
+            "X": 773,
+            "Y": 30,
+            "Reference": "dHR0/w==",
+            "Candidate": "TExM/w=="
+          },
+          {
+            "X": 774,
+            "Y": 30,
+            "Reference": "fn5+/w==",
+            "Candidate": "U1NT/w=="
+          },
+          {
+            "X": 775,
+            "Y": 30,
+            "Reference": "iIiI/w==",
+            "Candidate": "Wlpa/w=="
+          },
+          {
+            "X": 776,
+            "Y": 30,
+            "Reference": "kpKS/w==",
+            "Candidate": "YWFh/w=="
+          }
+        ]
+      },
+      "referencePng": "inv-097-large-black.png",
+      "captureProvenance": {
+        "oracleInputSha256": "d0879f38733a7e587f011dbc2cb6a9fabc4e930a6aefa748a2fe5dc70230dbc9",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "c96a252b37526cb4465e761345afe8a7501e0e84143dca9ea158ee5c02de0a21",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "c96a252b37526cb4465e761345afe8a7501e0e84143dca9ea158ee5c02de0a21",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "c96a252b37526cb4465e761345afe8a7501e0e84143dca9ea158ee5c02de0a21",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured"
     },
     {
       "id": "inv-098-small-transparent",
@@ -4165,9 +5714,35 @@
       "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referencePng": "inv-098-large-transparent.png",
+      "captureProvenance": {
+        "oracleInputSha256": "d9a4afd843567dbcd8301998e9fdac68fd491953dba3278384a657e74475d929",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "209abf8b4c45276da2bcf1f8357b57e1369074efde566795d872dcc409acd18b",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "209abf8b4c45276da2bcf1f8357b57e1369074efde566795d872dcc409acd18b",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "209abf8b4c45276da2bcf1f8357b57e1369074efde566795d872dcc409acd18b",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured",
+      "referenceSha256": "209abf8b4c45276da2bcf1f8357b57e1369074efde566795d872dcc409acd18b"
     },
     {
       "id": "inv-098-large-white",
@@ -4175,9 +5750,35 @@
       "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referencePng": "inv-098-large-white.png",
+      "captureProvenance": {
+        "oracleInputSha256": "d9a4afd843567dbcd8301998e9fdac68fd491953dba3278384a657e74475d929",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "0dc377db4c7e1d225b26f0565e2875920cfe9940577e5a4ef218677131fb1e69",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "0dc377db4c7e1d225b26f0565e2875920cfe9940577e5a4ef218677131fb1e69",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "0dc377db4c7e1d225b26f0565e2875920cfe9940577e5a4ef218677131fb1e69",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured",
+      "referenceSha256": "0dc377db4c7e1d225b26f0565e2875920cfe9940577e5a4ef218677131fb1e69"
     },
     {
       "id": "inv-098-large-black",
@@ -4185,9 +5786,35 @@
       "message": "Inline style property 'marker' is not implemented.",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
       "comparison": null,
-      "referencePng": null,
-      "captureProvenance": null,
-      "oracleState": "transport-limit-gap"
+      "referencePng": "inv-098-large-black.png",
+      "captureProvenance": {
+        "oracleInputSha256": "d9a4afd843567dbcd8301998e9fdac68fd491953dba3278384a657e74475d929",
+        "captureRecipeRevision": "3",
+        "captureDate": "2026-10-06",
+        "captures": [
+          {
+            "pngSha256": "ed320da36056c1ef1741e6bbd3050ea3c91dd76da3dd3a8c6317cb1796090ebf",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "ed320da36056c1ef1741e6bbd3050ea3c91dd76da3dd3a8c6317cb1796090ebf",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          },
+          {
+            "pngSha256": "ed320da36056c1ef1741e6bbd3050ea3c91dd76da3dd3a8c6317cb1796090ebf",
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "stderrTruncated": false
+          }
+        ],
+        "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
+      },
+      "oracleState": "measured",
+      "referenceSha256": "ed320da36056c1ef1741e6bbd3050ea3c91dd76da3dd3a8c6317cb1796090ebf"
     },
     {
       "id": "inv-099-small-transparent",
@@ -4633,5 +6260,6 @@
   ],
   "rendererSourceBaselineCommit": "19630e52",
   "rendererSourceState": "AA rectangle byte coverage is applied independently to each ordered paint operation; geometric fallback is preserved.",
-  "measurementCheckpoint": "rectangle-clip-byte-coverage-2026-10-06"
+  "measurementCheckpoint": "rectangle-clip-byte-coverage-2026-10-06",
+  "referenceCheckpoint": "bounded-cohort-capture-2026-10-06"
 }

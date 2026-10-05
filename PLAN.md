@@ -5,19 +5,23 @@ coverage.** Analytic paints apply the snapped rectangle's byte mask to each
 ordered operation. All nine YouTube variants are now pixel-exact against their
 original references, completing the selected flat curved-mark checkpoint.
 All nine exact Ford PNGs and all 614 previously exact fixture PNGs are unchanged.
-Validation passes **3,463 tests**, all 25 memory scenarios, the 975-case bank and
+Validation passes **3,472 tests**, all 25 memory scenarios, the 975-case bank and
 package/consumer checks. One existing fixture graduates; twelve fresh path
 configurations and one separate rectangle configuration are exact. Eleven
 lowered-rectangle controls retain their baseline differences.
 
 The first corporate cohort is frozen: **27 documents / 258 explicit variants**,
 including eight fresh evaluation holdouts. All renderer cases are executed:
-240 render and eighteen are unsupported. Eighteen variants have fidelity
-comparisons, establishing Ford and YouTube as **two verified exact documents**.
+240 render and eighteen are unsupported. Thirty-three references are available:
+thirty rendered comparisons (nineteen
+exact, eleven differences) and three retained Target renderer rejections. Ford
+and YouTube remain **two verified exact documents**. All fifteen former capture
+gaps are closed; 225 cases still lack references.
 Declaration-only DOCTYPE admission remains established in `1876cf6e`.
 
-**Next: complete the frozen reference matrix and bounded capture transport,
-alongside shared rectangle paint/clip work.** The new lowered-rectangle controls
+**Next: complete the remaining frozen reference matrix alongside shared
+rectangle paint/clip work.** Bounded capture transport now covers every declared
+size without shrinking variants or changing renderer limits. The new lowered-rectangle controls
 make that separate arithmetic gap explicit. General browser fidelity,
 representative performance, Linux delivery and S17 remain open.
 
@@ -69,15 +73,39 @@ their dated scopes and counts.
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Recorded Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Recorded full tests, including corporate selection/measurement | **3,463 passed**: 3,314 core, 143 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Recorded full tests, including corporate selection/measurement | **3,472 passed**: 3,314 core, 152 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Recorded memory and delivery checks | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. The package retains the complete Skia/Chromium BSD notices, including the added 2010 AA-dispatch and prior 2025 classifier notices. No runtime package dependencies, native assets or packaged SVG fixtures. |
 | Executed fixture manifest | **823 entries = 628 exact + 168 known-difference renders + 27 rejections**; 457 base documents / 366 variants. Synthetic coverage is not corporate-logo coverage. |
 | Executed research manifest | **60 probes = 59 known-difference renders + one rejection**. Useful exact controls graduate to fixtures with their provenance. |
 | Legacy independent-file Default-options sweep | **92 files = 92 render**. The four prior DOCTYPE rejections (`inv-007`, `inv-012`, `inv-014`, `inv-020`) now render. The clip-byte repair changes one Default YouTube PNG without a reference in that sweep; no new fidelity claim follows. The candidate directory now has **100 files**; the eight new holdouts are covered by the explicit corporate matrix, not this historical Default-options sweep. Renderability does not establish fidelity or all-variant completion. |
 | Validated Ford all-variant evidence | **All nine exact**: 250×100, 500×200 and 1000×400 × transparent/white/black. Large variants improve 10/10/7 → 0/0/0 changed pixels; transparent alpha error 16 → 0. The six prior exact PNGs retain complete identity. All original references and current candidate identities remain portable regressions. This establishes the outlined-wordmark checkpoint, not a corporate-cohort rate. |
-| Corporate cohort freeze | **27 documents / 258 variants**, independent of fresh candidate success: every one of the 19 retained brand/organization exports plus eight predeclared new holdouts. Primary strata: 13 marks / 14 wordmarks. Every original source and historical reference is preserved; materializations change only root sizing. Fifteen large cases are verified rejected by the actual oracle transport limit and remain in the denominator. The legacy 92-file Default bank and calibration bank are separate. |
-| Recorded corporate measurement | **258 cases = 240 renders + eighteen UnsupportedFeature**. Zeppelin, SG Rotation Leipzig and Artsy render in all nine cases; Target advances to the unsupported `marker` style gate. Coca-Cola retains its touching-contour rejection. Fidelity: **18 measured = nine original Ford exact + nine original YouTube exact**; **240 without references**. The 225 unmeasured and fifteen transport-gap cases include all eighteen rejections; these are independent axes, detailed in section 5. Currently verified exact documents: **2/27**, marks **1/13**, wordmarks **1/14**. This is partial cohort evidence, not a market/release rate. |
+| Corporate cohort freeze | **27 documents / 258 variants**, independent of fresh candidate success: every one of the 19 retained brand/organization exports plus eight predeclared new holdouts. Primary strata: 13 marks / 14 wordmarks. Every original source and historical reference is preserved; materializations change only root sizing. Fifteen large cases exceeded the transport cap at freeze; all now have stable references at their original dimensions. The legacy 92-file Default bank and calibration bank are separate. |
+| Recorded corporate measurement | **258 cases = 240 renders + eighteen UnsupportedFeature**. All 258 dispositions and all 240 candidate PNGs are preserved by the capture-tool extension. **33 references = thirty rendered comparisons (nineteen exact, eleven known differences) + three retained Target rejections**; **225 without references** (210 renders / fifteen rejections). All fifteen former transport gaps have stable healthy triples. Currently verified exact documents remain **2/27**, marks **1/13**, wordmarks **1/14**. This is partial cohort evidence, not a market/release rate. |
 | Not refreshed by the baseline/checkpoint gates | Linux/remote CI, a full browser-reference refresh, full independent inventory variant regeneration, BenchmarkDotNet throughput, private-font metrics and pixels. The bounded overlap captures below are separate evidence. |
+
+### Bounded corporate capture checkpoint (2026-10-06)
+
+The oracle tool now admits 8,388,608 pixels with a 16,384-pixel side bound.
+Only screenshot replies receive a 64 MiB allowance; commands, other replies
+and retained events keep 16 MiB. Fragmented receive, cancellation, event bounds,
+startup diagnostics, profile cleanup and atomic PNG publication remain checked.
+The capture recipe and browser pin are unchanged. An opt-in
+`tools/capture-corporate-cohort.ps1` uses the immutable manifest, verifies input
+and pin identity, and records fresh triples and failures under ignored artifacts.
+
+All fifteen former gaps have 45 stable healthy captures. Eighteen additional
+Ford/YouTube overlap captures are byte-identical to their six original references.
+All 258 renderer dispositions and 240 candidate PNGs are unchanged. Newly
+available comparisons show one exact Artsy black variant and eleven differences;
+three Target variants retain UnsupportedFeature. Exact documents remain 2/27.
+A separate maximum-area noise capture returns a 32,270,774-byte PNG (more than
+41 MiB as base64), proving the enlarged screenshot-reply path is exercised.
+Locked restore, the nine-project Release build, all **3,472 tests** (3,314 core,
+152 visual, six FontProbe), and the three-process Chrome smoke pass. Wrapper
+failure/timeout controls preserve the destination and leave no partial files or
+profiles. The renderer's resource/package evidence remains the preceding
+clip-byte checkpoint. Full evidence is under
+`artifacts/cohort-transport-20261006/`.
 
 ### Rectangle clip-byte checkpoint (2026-10-06)
 
@@ -376,10 +404,10 @@ affect a counted document, even when our geometry is closer to ideal area.
    now admitted after the validated AA-clip checkpoint; regression repairs may interrupt.
 5. **Keep release policy separate from implementation.** S17's exact-document
    target is 80%, overall and in each corporate stratum. The
-   first cohort and its explicit variants are frozen; 18 of 258 fidelity cases
-   are measured and the remaining 240 lack references, including eighteen
-   renderer rejections and fifteen capture gaps that overlap in three cases;
-   that evidence blocks a coverage claim, not renderer work. There is no
+   first cohort and its explicit variants are frozen; 33 of 258 references are
+   available, covering thirty rendered comparisons and three retained rejections.
+   The remaining 225 lack references; all fifteen former capture gaps are closed.
+   That partial evidence blocks a coverage claim, not renderer work. There is no
    pixel-tolerance or oracle-quirk budget. The aligned policy record is
    [S17_DECISIONS.md](docs/S17_DECISIONS.md).
 
@@ -460,17 +488,16 @@ shared work when the active target or cohort acceptance threshold requires it.
 Holdouts receive no document-specific tuning. All failures/gaps keep their
 denominators.
 
-**Separate evidence queue: frozen references and capture transport.** All 258
-renderer cases are executed; eighteen fidelity comparisons are available and
-240 cases lack references. Oracle availability is **225 unmeasured + fifteen
-transport gaps**; renderer rejections overlap these states as shown in section 5.
-The fifteen large gaps are verified rejected by the actual capture tool before
-launch. Complete references and extend that
-bounded transport without shrinking variants or changing renderer limits;
-retain bounded messages/storage, cancellation and cleanup. Interleave this
-evidence work with bounded renderer slices while retaining one implementation
-owner. The complete matrix is not a prerequisite for the AA-clip or measured
-DOCTYPE checkpoint, but its missing results block S8 completion and an S17 claim.
+**Separate evidence queue: remaining frozen references.** All 258 renderer
+cases are executed; 33 references provide thirty rendered fidelity comparisons
+and three retained rejections. The remaining **225 unmeasured** cases comprise
+210 renders and fifteen rejections. All fifteen former transport gaps now have
+stable healthy fresh-process triples at their frozen dimensions. The bounded
+capture extension retains 16 MiB commands/events, a screenshot-only 64 MiB
+reply, cancellation, cleanup and publication checks. Finish the remaining matrix
+without shrinking variants, changing renderer limits or tuning holdouts.
+Interleave reference measurement with bounded shared renderer slices. Missing
+results still block S8 completion and an S17 claim.
 
 A bounded shared repair may land with independent mechanism-level improvement
 and nonregression across all nine Ford variants. Preserve all **628 currently
@@ -774,7 +801,7 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 
 | ID | Current disposition and remaining closure |
 | --- | --- |
-| R26 | The first corporate cohort is frozen: 27 documents / 258 variants including eight fresh holdouts. All renderer cases are executed; complete the remaining 240 oracle cases, including fifteen capture gaps. Historical exact labels and the legacy 92-file Default bank are not S17 rates. Preserve failures and original assets. |
+| R26 | The first corporate cohort is frozen: 27 documents / 258 variants including eight fresh holdouts. All renderer cases are executed; complete the remaining 225 oracle cases. All fifteen former capture gaps now have stable references. Historical exact labels and the legacy 92-file Default bank are not S17 rates. Preserve failures and original assets. |
 | R27 | Every fixture is executed. Still retain complete decoded candidate identity/diff, validate historical/current oracle identity, distinguish render/reject from fidelity, and graduate positive research controls instead of deleting them. |
 | R28 | Original pattern/root-map repair and inverse gradient maps retained. Paint/alpha one-step residuals remain S11/S13. |
 | R30 | Shared contour preparation, ownership and coverage traversal have landed across the four paints. Preserve that boundary while changing curve state; remaining repeated binding/typed-state work follows demonstrated dependencies, not a repository rewrite. |
@@ -813,7 +840,7 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 | S1–S5 | Core foundations and original repairs exist; preserve API, parser, memory/work and output contracts throughout. |
 | S6 | Disposable single-use preparation exists; preserve resource leases and six-output behavior. |
 | S7 | Generic local/stdin/HTTP supplied-font host exists; actual-pack and same-font metrics/pixels remain separate work under section 6. |
-| S8 | Partial: first corporate cohort frozen, 27 documents / 258 variants including eight fresh holdouts. All renderer cases executed; eighteen fidelity comparisons available, 240 without references. Oracle availability is 225 unmeasured + fifteen capture-limit gaps; renderer rejections overlap those states (section 5). Complete the pinned reference matrix and reproducible per-variant reporting; S17 additionally requires the exact-document threshold. The historical 92-file bank stays separate. |
+| S8 | Partial: first corporate cohort frozen, 27 documents / 258 variants including eight fresh holdouts. All renderer cases executed; 33 references supply thirty fidelity comparisons and three retained rejections; 225 cases remain unmeasured. All fifteen former transport gaps are closed. Complete the remaining reference matrix and reproducible reporting; S17 additionally requires the exact-document threshold. The historical 92-file bank stays separate. |
 | S9 | Styles/references/viewports, declaration-only DOCTYPEs and measured inventory admissions are implemented in explicit subsets. Remaining combinations follow independent corporate-cohort evidence and shared semantics. |
 | S10 | Full path-command/affine kernels, retained controls, live non-convex cubics, curve/walk state separation and one-chord cubic admission exist. Raw-control classification is integrated; fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
@@ -909,9 +936,10 @@ CC0 originals; preserve their provenance and keep private assets untracked.
 Turn inventory declarations into explicit options per variant: logical viewport,
 outputScale, resulting dimensions and background, with input and materialized-input
 hashes if capture requires materialization. Changing screenshot dimensions alone
-crops a fixed-size SVG image; it does not implement scaling. The current browser
-transport's two-million-pixel limit is an oracle-tool constraint, not permission
-to drop a declared large variant or change the renderer's pixel limit.
+crops a fixed-size SVG image; it does not implement scaling. The browser
+transport now admits up to 8,388,608 pixels, with a screenshot-only
+64 MiB reply allowance. Transport bounds never permit dropping a declared large
+variant or changing the renderer's pixel limit.
 
 Renderer outcomes and oracle availability are independent axes. The
 [current measurement](tests/References/inventory/corporate-cohort-current.json)
@@ -919,17 +947,17 @@ records this cross-tabulation:
 
 | Renderer outcome | Measured | Unmeasured | Transport gap | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Renders | 18 | 210 | 12 | 240 |
-| UnsupportedFeature | 0 | 15 | 3 | 18 |
-| Total | 18 | 225 | 15 | 258 |
+| Renders | 30 | 210 | 0 | 240 |
+| UnsupportedFeature | 3 | 15 | 0 | 18 |
+| Total | 33 | 225 | 0 | 258 |
 
-The eighteen measured renders are nine Ford exact variants and nine YouTube
-known differences. The 240 cases without references comprise 222 renders and
-eighteen rejections. Three large Target variants are both unsupported and
-transport gaps; do not add those categories as disjoint failures. The full
-reference matrix remains an S8 obligation, including independently recording
-browser behavior for rejected inputs. The 601 exact calibration fixture entries
-do not supply the missing corporate comparisons.
+The thirty measured renders contain nineteen exact variants and eleven known
+differences. Three large Target variants have browser references but retain
+UnsupportedFeature outcomes; reference availability and renderability are
+independent axes. The 225 cases without references comprise 210 renders and
+fifteen rejections. The full reference matrix remains an S8 obligation,
+including browser behavior for rejected inputs. The 628 exact calibration
+fixture entries do not supply missing corporate comparisons.
 
 Report render/reject separately from exact/known-difference/oracle-failure and
 unmeasured. A document counts only when **all declared variants** are measured
@@ -949,7 +977,7 @@ The first corporate cohort and explicit variant recipe are frozen in the
 outcomes did not filter membership: all 19 retained brand/organization exports
 and eight predeclared fresh holdouts remain. The 22/27 rounded overall minimum
 and the 11/13 mark plus 12/14 wordmark minima all apply: **23 exact documents is
-the effective minimum** for this cohort. All 258 cases, including fifteen
+the effective minimum** for this cohort. All 258 cases, including the fifteen former
 transport-limit gaps and eighteen UnsupportedFeature cases (Coca-Cola's touching
 contours and Target's `marker` style), retain their denominator. Combined identities
 already have a declared primary stratum. Public-domain source selection and the organizational
