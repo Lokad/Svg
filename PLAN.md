@@ -8,8 +8,10 @@ outlined-wordmark checkpoint is established.
 cohort is frozen: 27 documents / 258 explicit variants, including eight fresh
 evaluation holdouts. All 258 renderer cases are executed; fidelity is measured
 for 18 cases. YouTube still has nine known differences, with transparent alpha
-error reduced to 356/787/1,634. Compare the remaining mapped curve events against
-the native construction while completing the fixed reference matrix and gaps.**
+error reduced to 356/787/1,634. The next shared dependency is antialiased clip
+dispatch: a measured context-local model reduces alpha error to 30/37/26 but is
+not integrated. Prove that clip contract while completing the fixed reference
+matrix and gaps.**
 The curved-mark checkpoint, general browser fidelity and S17 remain open.
 
 The reviewed renderer baseline
@@ -290,7 +292,7 @@ density witnesses. This bounded repair does not complete rows 3–7.
 retain identities, licensing, roles and the policy. Tests protect membership,
 all declared variants and unchanged geometry outside root sizing.
 
-1. **Raw-control classification landed; resolve the remaining mapped events.** All
+1. **Raw-control classification landed; implement compatible AA-clip dispatch.** All
    nine YouTube variants have stable healthy reference triples and known
    differences. Its actual traced large PNG is byte-identical to the frozen
    reference. The [browser path record](tests/References/inventory/inv-027-native-route.json)
@@ -299,10 +301,22 @@ all declared variants and unchanged geometry outside root sizing.
    classifier now selects the interval/live route and realizes the isolated
    model's 356/787/1,634 transparent alpha error on original inputs. All 75 native
    vectors and genuine-convex controls are preserved; disabling retention remains
-   a rejected model. Next compare actual authored/mapped floats, CTM and CPU-context
-   edge construction at the first large residual **(179,14), alpha 0 versus 3**.
-   Establish the native edge/paint event before changing recurrence or mapping.
-   Preserve the charged cache, original references, convex controls and Ford.
+   a rejected model. The [AA-clip discriminator](tests/References/inventory/inv-027-antialiased-clip-discriminator.json)
+   now establishes the native edge/paint event at **(179,14), alpha 0 versus 3**.
+   All 41 authored float points match; outer float mapping alone changes no
+   YouTube/Ford PNG. The pinned caller forces additive runs for AA clips, so the
+   same alpha-3 event snaps to zero at flush. A context-local fractional-border
+   model improves every YouTube variant to 56/177/312 transparent changed pixels
+   and 30/37/26 alpha error, with maximum error one. A blanket override introduces
+   an extra intended-size failure and is rejected as the implementation.
+   Prove a shared AA-clip context contract independently of construction clipping
+   and path containment, including native nearly-integral/BW conversion, tiny
+   mask-to-run cases, materials/opacity, six outputs and work/ownership/cancellation.
+   Then separate clip-mask byte multiplication at canvas boundaries from opaque
+   triangle paint, whose first large model residual is **(457,258), gray 176 versus
+   175**. These are unintegrated diagnostic results, not new exactness or fresh
+   delivery/resource/performance gates. Preserve the charged cache, original
+   references, convex controls, all exact controls and Ford.
 2. **Complete the frozen reference matrix and bounded capture transport.**
    All 258 renderer cases are executed;
    eighteen fidelity comparisons are available, 225 cases remain unmeasured and

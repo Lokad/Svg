@@ -4333,3 +4333,87 @@ Classify the native event before changing recurrence, mapping or paint. General
 curve/convex/stroke/layer fidelity, complete corporate references and bounded
 capture transport, measured DOCTYPE admission, representative performance, Linux
 and S17 remain open.
+
+## YouTube antialiased-clip caller discriminator (2026-10-05)
+
+Production remains at `dfcac0ef`; the compatible raw-control repair and its
+3,244-test/resource/delivery checkpoint are unchanged. This investigation uses
+ignored diagnostic copies and all nine original YouTube references. No new
+reference, exact case, corporate document or integration gate is claimed. The
+[portable discriminator](../tests/References/inventory/inv-027-antialiased-clip-discriminator.json)
+retains source/adapter hashes, all variant comparisons and declarations, native
+events, point bits, saved browser tiles and model residuals. Full tapes and
+binaries remain under ignored `artifacts/mapped-events-20261005/`.
+The 54 diagnostic model cases complete, five diagnostic C# builds have zero
+warnings/errors, and all 139 existing visual-project tests pass again with the
+unchanged validated production renderer. These checks do not substitute for the
+full integration gates required by a subsequent runtime change.
+
+The original browser trace's complete PNG still matches the frozen large
+transparent reference. Its saved 256×256 bordered contexts and identity raster
+transform agree with the first managed bitmap context. All 41 authored float
+points match the browser picture: 37 body points and four triangle points. The
+observer-only candidate preserves the complete current measured PNG.
+The body's outer double mapping differs after float narrowing at 30 of 100
+repeated verb coordinates. However, compiling the pinned mapping, clipped edge
+construction and general walker with either device point set yields the same
+alpha-3 direct event at (179,14), where the reference is transparent. Mapping is
+therefore not established as this event's cause.
+
+The relevant caller distinction is in the pinned
+[SkScan_AntiPath.cpp](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_AntiPath.cpp).
+The raster-clip overload passes `forceRLE=false` for a BW clip; an AA clip installs
+`SkAAClipBlitter` and passes `forceRLE=true`. The general walker initializes its
+no-real-blitter decision from that flag. Holding the original mapped verbs and
+bitmap clip fixed, the compiled native event adapter changes the witness from
+`direct,14,179,3` to `add,14,179,3`. The original run flush snaps alpha below eight
+to zero. The managed model's resulting witness is transparent as required.
+The adapter observes events rather than implementing native pending-run storage,
+clip-mask construction or full pixel painting; its limits remain explicit.
+
+The saved antialiased nested viewport maps to horizontal boundaries
+0.600006103515625 and 1143.39990234375. A surviving fractional border requires AA;
+an interior context can remain a fully opaque BW rectangle. This caller state is
+inferred from the recorded clips and pinned source, not a browser-observed
+`forceRLE` field. `SkRasterClip::op` has an all-four-coordinate nearly-integral
+shortcut, shifted by 1/8 with a 1/4 domain, and can convert an opaque AA rectangle
+back to BW. Those native float and conversion details must be independently
+proven before implementation; testing only whether a path crosses a clip is
+insufficient because an AA clip also affects a wholly contained path.
+
+The isolated models were declared before their runs:
+
+| Model | Transparent changed pixels, small / intended / large | Alpha error mass | Maximum alpha error |
+| --- | --- | --- | --- |
+| Current production | 307 / 673 / 1,410 | 356 / 787 / 1,634 | 7 / 8 / 8 |
+| Blanket non-convex no-real-blitter override | 56 / 183 / 312 | 30 / 53 / 26 | 1 / 7 / 1 |
+| Context-local fractional-border model | 56 / 177 / 312 | 30 / 37 / 26 | 1 / 1 / 1 |
+| Outer float mapping only | 307 / 673 / 1,410 | 356 / 787 / 1,634 | 7 / 8 / 8 |
+| Outer float mapping plus context-local clip model | 56 / 177 / 312 | 30 / 37 / 26 | 1 / 1 / 1 |
+
+Every background improves under the context-local model. The blanket override's
+extra intended failure at (486,8) changes native alpha 254 to 255; retaining the
+interior context's direct route preserves that result. Both outer-float models
+preserve all nine exact Ford PNGs. Float mapping alone preserves every current
+YouTube PNG; adding it to the clip model preserves every clip-model PNG. There is
+no evidence here for landing that mapping change to improve this target.
+
+All remaining transparent alpha differences in the bounded model are one and
+lie on X=0 or X=width−1: 30, 37 and 26 pixels by size. Large output also has 286
+opaque color-only differences. The first is (457,258), native RGBA
+(176,176,176,255) versus managed (175,175,175,255), on the triangle.
+`SkAAClipBlitter` merges path and clip byte alphas with `SkMulDiv255Round`; current
+managed paint clipping uses a double area factor. Separate that clip-mask/merge
+witness from the triangle paint event instead of altering a common rounding rule
+on the strength of either residual class alone.
+
+Next implement and validate a shared AA-clip context contract, independently of
+edge-construction clipping and path containment. Include the native rectangle
+shortcut and opaque-rectangle conversion, tiny mask-to-run routing, materials/
+opacity, six public outputs, charged traversal, ownership and cancellation. Use
+independent controls and preserve the 580 exact fixture images, required
+dispositions and all nine Ford references. Compare the full 896-case regression
+bank and the separate 258-case corporate matrix, then run fresh resource,
+package/consumer and matching performance gates before integration. Full nested
+clip intersection, general mapping, the remaining curved-mark pixels, reference
+transport/matrix completion, DOCTYPE admission, Linux and S17 remain open.
