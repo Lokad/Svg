@@ -18,7 +18,6 @@
   "inputSha256": "b88d5f47d55b52b693185d9d6c8c2941e3f32ca0c3f2334ec8bc2de92e943be5",
   "candidateOutcome": "renders",
   "candidateSha256": "2967287e64013faf9fda2f314cf274d02f9b7eeeb38b46fe5c2c4b63ca8a93c2",
-  "rendererSha256": "17054299c24fe27c9d185481eceaedfd218596fc65fbd45ef105a4755494fade",
   "admittedAt": "Horizontal clip paint routing, 2026-10-05",
   "captureSha256": [
     "a0e6d8af40e04d3d9986afc716ade45756d9506d12190fdd4f819531bfd93e3f",

@@ -37,6 +37,11 @@ bounds. Ford is exact in all nine declared variants; YouTube improves but remain
 inexact in all nine. The frozen corporate matrix still has eighteen measured
 variants out of 258, so these checkpoints do not establish general logo coverage.
 
+Convex paths now round coverage for rectangular strips created by clipping a
+slanted edge, while raw rectangles retain their separate calibration. This closes
+YouTube's opaque triangle residuals at intended and large sizes; boundary clip
+differences remain.
+
 ## Development
 
 ```powershell

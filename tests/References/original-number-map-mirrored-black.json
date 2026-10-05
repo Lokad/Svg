@@ -38,7 +38,6 @@
   "declaredAfterNumericPrototype": false,
   "candidateOutcome": "renders",
   "candidateSha256": "f794a8a4c6ddadbd252a04e595397016c5f8a74af88bfe110b1a04e2cbbaa440",
-  "rendererSha256": "d73f76cdcb6a5512bf09e754024a7b8e44af90a9c4ae20af5c3f8909ef45a201",
   "comparison": {
     "dimensionsMatch": true,
     "changedPixelCount": 119,

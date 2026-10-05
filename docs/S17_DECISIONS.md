@@ -1,33 +1,40 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-05: shared antialiased paint-clip dispatch improves every YouTube variant and
-preserves all nine exact Ford PNGs. The outlined-wordmark checkpoint is established;
-the flat curved
-corporate mark and S17 remain unachieved. [PLAN.md](../PLAN.md) owns the current
-queue. Rows 3–7 retain general implementation/fidelity exits; one exact wordmark
-does not complete those stages.
+Updated 2026-10-06: convex rectangular-strip rounding closes YouTube's opaque
+triangle residuals at intended and large sizes while preserving all nine exact
+Ford PNGs. Declaration-only DOCTYPE admission remains landed in `1876cf6e`.
+The retained AA-clip checkpoint improves every YouTube variant; the flat curved corporate mark
+and S17 remain unachieved. [PLAN.md](../PLAN.md) owns the current queue. Rows 3–7
+retain general implementation/fidelity exits; one exact wordmark does not
+complete those stages.
 
-Current checkpoint evidence: 785 fixture entries = 601 exact + 157 known-difference
-renders + 27 rejections across 443 base documents and 342 variants; 60 research
+Current checkpoint evidence: 799 fixture entries = 614 exact + 158 known-difference
+renders + 27 rejections across 449 base documents and 350 variants; 60 research
 probes = 59 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 3,109 core + 142 visual + six FontProbe tests pass (3,257 total,
-including the newer corporate bank). All 25 memory scenarios, runtime/symbol
-package inspection and installed-consumer checks pass at the AA-clip checkpoint,
-including the new 2010 Skia notice. The shared dispatch retains geometric clip
+Release build and 3,299 core + 143 visual + six FontProbe tests pass (3,448 total)
+at the convex rectangle-strip checkpoint recorded in PLAN.
+All 25 memory scenarios, runtime/symbol
+package inspection and installed-consumer checks pass at that same source
+snapshot. The shared AA dispatch retains geometric clip
 boundary provenance separately from mask allocation regions. Original inputs and
 references stay unchanged. Native predicate/setup vectors and independent browser
 controls prove this bounded contract, not general AA mask/cache/clip-stack parity.
-The Default inventory retains 88 renders + four MalformedInput rejections out of
-92. These counts establish neither corporate coverage, full independent-variant
+The Default inventory now renders all 92 files; its four former DOCTYPE
+rejections advance without changing any prior PNG. These counts establish
+neither corporate coverage, full independent-variant
 validation nor Linux delivery. YouTube is now selected as the curved mark, and
 the first corporate cohort and variant recipe are frozen before fresh comparison;
-all 258 renderer cases are executed, with eighteen fidelity comparisons and
-240 cases lacking references (225 unmeasured / fifteen verified transport gaps).
+all 258 renderer cases are executed: 240 render and eighteen are unsupported.
+Eighteen fidelity comparisons are available; 240 cases lack references
+(225 unmeasured / fifteen verified transport gaps). Renderer rejection and
+oracle availability overlap: three large Target cases are both unsupported
+and transport gaps. PLAN retains the complete cross-tabulation.
 Ford is the only currently verified exact document; YouTube has nine known
 differences, with transparent alpha error 30/37/26 and maximum alpha error one.
 Its native raw-path classification and AA caller discriminators are integrated.
-Next admit declaration-only DOCTYPE syntax through shared root/font-discovery
-policy, then separate clip-byte multiplication and triangle paint witnesses.
+The triangle cause is established: native coverage 96 versus the former managed
+95. Transparent changed pixels are now 30/37/26. Next resolve the independent
+boundary clip-byte residuals while preserving the landed DOCTYPE policy.
 Complete frozen references alongside this work. Curved-mark, general fidelity,
 representative performance, Linux and S17 exits remain open.
 

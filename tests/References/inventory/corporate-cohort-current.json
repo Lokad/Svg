@@ -1,8 +1,7 @@
 {
   "cohortId": "corporate-2026-10-05-v1",
-  "measurementDate": "2026-10-05",
+  "measurementDate": "2026-10-06",
   "freezeHead": "649233b2ba315b63fdd43a7cca4b7147de4f24e2",
-  "rendererSha256": "fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54",
   "oraclePin": {
     "version": "153.0.8010.52",
     "chromiumRevision": "1681091",
@@ -3332,23 +3331,23 @@
       "id": "inv-027-intended-transparent",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "36c545aae1851cc0d2113dbc04ff2da5121d886e3b16bcc9075e89b4e389b6b0",
+      "candidateSha256": "cbd65666a6b7da7547a3c636286c1365c768861f917e1abba9a16c93fd7a6c68",
       "width": 572,
       "height": 400,
       "referenceSha256": "8394bca8920d0b1ec5122c1893252c902fef2c073953bbfbb40e77d8d2aea9ed",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 177,
+          "ChangedPixelCount": 37,
           "MaximumChannelError": 7,
-          "MeanAbsoluteError": 0.0006861888111888112,
-          "RootMeanSquareError": 0.03305536783424657,
+          "MeanAbsoluteError": 0.00022727272727272727,
+          "RootMeanSquareError": 0.025174218135649393,
           "MaximumAlphaError": 1,
           "AlphaChangedPixelCount": 37,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 130,
+          "MinimumMismatchY": 166,
           "MaximumMismatchX": 571,
-          "MaximumMismatchY": 269,
+          "MaximumMismatchY": 233,
           "IsExact": false
         },
         "alphaMass": 37,
@@ -3356,100 +3355,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "x": 228,
-            "y": 130,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 166,
+            "reference": "hYWFGQ==",
+            "candidate": "gICAGA=="
           },
           {
-            "x": 228,
-            "y": 131,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 169,
+            "reference": "gICALA==",
+            "candidate": "goKCKw=="
           },
           {
-            "x": 228,
-            "y": 132,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 174,
+            "reference": "gICASg==",
+            "candidate": "gYGBSQ=="
           },
           {
-            "x": 228,
-            "y": 133,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 175,
+            "reference": "gYGBTw==",
+            "candidate": "gICATg=="
           },
           {
-            "x": 228,
-            "y": 134,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 175,
+            "reference": "h4eHEQ==",
+            "candidate": "gICAEg=="
           },
           {
-            "x": 228,
-            "y": 135,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 181,
+            "reference": "gYGBbQ==",
+            "candidate": "gICAbA=="
           },
           {
-            "x": 228,
-            "y": 136,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 184,
+            "reference": "gICANg==",
+            "candidate": "goKCNw=="
           },
           {
-            "x": 228,
-            "y": 137,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 185,
+            "reference": "gICAfg==",
+            "candidate": "gYGBfQ=="
           },
           {
-            "x": 228,
-            "y": 138,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 189,
+            "reference": "gICAig==",
+            "candidate": "gICAiQ=="
           },
           {
-            "x": 228,
-            "y": 139,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 191,
+            "reference": "gICAkA==",
+            "candidate": "gICAjw=="
           },
           {
-            "x": 228,
-            "y": 140,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 192,
+            "reference": "gICAkw==",
+            "candidate": "gICAkg=="
           },
           {
-            "x": 228,
-            "y": 141,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 192,
+            "reference": "gYGBTQ==",
+            "candidate": "gICATg=="
           },
           {
-            "x": 228,
-            "y": 142,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 195,
+            "reference": "gICAnA==",
+            "candidate": "gICAmw=="
           },
           {
-            "x": 228,
-            "y": 143,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 195,
+            "reference": "gICAUg==",
+            "candidate": "gYGBUw=="
           },
           {
-            "x": 228,
-            "y": 144,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 196,
+            "reference": "gICAng==",
+            "candidate": "gICAnQ=="
           },
           {
-            "x": 228,
-            "y": 145,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 201,
+            "reference": "gYGBdQ==",
+            "candidate": "f39/dg=="
           }
         ]
       },
@@ -3481,23 +3480,23 @@
       "id": "inv-027-intended-white",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "cf3c8a3be0131f97ee8440cdd55c7b2a4e44aacc98c869235b57c2710f4941a4",
+      "candidateSha256": "305de6113fc12b410b1218b5b3c600754f932740241ac669d635feb1c9de956b",
       "width": 572,
       "height": 400,
       "referenceSha256": "56676902d3573fe918e1a3f50656d7fc4fba6ddd205a4a84909fad189a617ce2",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 163,
+          "ChangedPixelCount": 23,
           "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.0005343094405594406,
-          "RootMeanSquareError": 0.023115134448223322,
+          "MeanAbsoluteError": 7.539335664335664e-05,
+          "RootMeanSquareError": 0.008682934794374344,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 130,
+          "MinimumMismatchY": 169,
           "MaximumMismatchX": 571,
-          "MaximumMismatchY": 269,
+          "MaximumMismatchY": 233,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -3505,100 +3504,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "x": 228,
-            "y": 130,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 169,
+            "reference": "6enp/w==",
+            "candidate": "6urq/w=="
           },
           {
-            "x": 228,
-            "y": 131,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 174,
+            "reference": "2tra/w==",
+            "candidate": "29vb/w=="
           },
           {
-            "x": 228,
-            "y": 132,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 175,
+            "reference": "9/f3/w==",
+            "candidate": "9vb2/w=="
           },
           {
-            "x": 228,
-            "y": 133,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 185,
+            "reference": "wMDA/w==",
+            "candidate": "wcHB/w=="
           },
           {
-            "x": 228,
-            "y": 134,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 189,
+            "reference": "urq6/w==",
+            "candidate": "u7u7/w=="
           },
           {
-            "x": 228,
-            "y": 135,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 191,
+            "reference": "t7e3/w==",
+            "candidate": "uLi4/w=="
           },
           {
-            "x": 228,
-            "y": 136,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 192,
+            "reference": "2dnZ/w==",
+            "candidate": "2NjY/w=="
           },
           {
-            "x": 228,
-            "y": 137,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 195,
+            "reference": "sbGx/w==",
+            "candidate": "srKy/w=="
           },
           {
-            "x": 228,
-            "y": 138,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 196,
+            "reference": "sLCw/w==",
+            "candidate": "sbGx/w=="
           },
           {
-            "x": 228,
-            "y": 139,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 201,
+            "reference": "xcXF/w==",
+            "candidate": "xMTE/w=="
           },
           {
-            "x": 228,
-            "y": 140,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 203,
+            "reference": "wMDA/w==",
+            "candidate": "wcHB/w=="
           },
           {
-            "x": 228,
-            "y": 141,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 204,
+            "reference": "wMDA/w==",
+            "candidate": "wcHB/w=="
           },
           {
-            "x": 228,
-            "y": 142,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 206,
+            "reference": "ysrK/w==",
+            "candidate": "ycnJ/w=="
           },
           {
-            "x": 228,
-            "y": 143,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 212,
+            "reference": "yMjI/w==",
+            "candidate": "ycnJ/w=="
           },
           {
-            "x": 228,
-            "y": 144,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 212,
+            "reference": "09PT/w==",
+            "candidate": "0tLS/w=="
           },
           {
-            "x": 228,
-            "y": 145,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 215,
+            "reference": "2dnZ/w==",
+            "candidate": "2NjY/w=="
           }
         ]
       },
@@ -3630,23 +3629,23 @@
       "id": "inv-027-intended-black",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "6d36d42058fda3c715a2f4ac3330c17aaea22d9653b5626dc18d89bce080eadb",
+      "candidateSha256": "d3780b6831a98c98f8e89af9c5b0cee1ed23c12b52621d17017c6577d58344e3",
       "width": 572,
       "height": 400,
       "referenceSha256": "1d93a7ff74ab8407756d8fe5e15d185f97a294c7180e68725b96b5daacec1963",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 154,
+          "ChangedPixelCount": 14,
           "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.0005048076923076923,
-          "RootMeanSquareError": 0.02246792585682293,
+          "MeanAbsoluteError": 4.589160839160839e-05,
+          "RootMeanSquareError": 0.006774334534964183,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 130,
+          "MinimumMismatchY": 166,
           "MaximumMismatchX": 571,
-          "MaximumMismatchY": 269,
+          "MaximumMismatchY": 227,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -3654,100 +3653,88 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "x": 228,
-            "y": 130,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 166,
+            "reference": "DQ0N/w==",
+            "candidate": "DAwM/w=="
           },
           {
-            "x": 228,
-            "y": 131,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 175,
+            "reference": "KCgo/w==",
+            "candidate": "Jycn/w=="
           },
           {
-            "x": 228,
-            "y": 132,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 181,
+            "reference": "Nzc3/w==",
+            "candidate": "NjY2/w=="
           },
           {
-            "x": 228,
-            "y": 133,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 184,
+            "reference": "Gxsb/w==",
+            "candidate": "HBwc/w=="
           },
           {
-            "x": 228,
-            "y": 134,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 192,
+            "reference": "SkpK/w==",
+            "candidate": "SUlJ/w=="
           },
           {
-            "x": 228,
-            "y": 135,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 195,
+            "reference": "KSkp/w==",
+            "candidate": "Kioq/w=="
           },
           {
-            "x": 228,
-            "y": 136,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 205,
+            "reference": "Nzc3/w==",
+            "candidate": "ODg4/w=="
           },
           {
-            "x": 228,
-            "y": 137,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 206,
+            "reference": "Pj4+/w==",
+            "candidate": "PT09/w=="
           },
           {
-            "x": 228,
-            "y": 138,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 571,
+            "y": 210,
+            "reference": "MDAw/w==",
+            "candidate": "MTEx/w=="
           },
           {
-            "x": 228,
-            "y": 139,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 213,
+            "reference": "NjY2/w==",
+            "candidate": "NTU1/w=="
           },
           {
-            "x": 228,
-            "y": 140,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 218,
+            "reference": "Li4u/w==",
+            "candidate": "LS0t/w=="
           },
           {
-            "x": 228,
-            "y": 141,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 221,
+            "reference": "KCgo/w==",
+            "candidate": "Jycn/w=="
           },
           {
-            "x": 228,
-            "y": 142,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 224,
+            "reference": "ISEh/w==",
+            "candidate": "ICAg/w=="
           },
           {
-            "x": 228,
-            "y": 143,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
-          },
-          {
-            "x": 228,
-            "y": 144,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
-          },
-          {
-            "x": 228,
-            "y": 145,
-            "reference": "mZmZ/w==",
-            "candidate": "mJiY/w=="
+            "x": 0,
+            "y": 227,
+            "reference": "Ghoa/w==",
+            "candidate": "GRkZ/w=="
           }
         ]
       },
@@ -3779,23 +3766,23 @@
       "id": "inv-027-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "90f8c8e25e17b4237ffd940601ef3be994c4ae9555b8f92787d90cbae7740467",
+      "candidateSha256": "41e03c6e9b86b4fa002f722f30b137c2ae3c8772e1946ce0bb29e901c3529101",
       "width": 1144,
       "height": 800,
       "referenceSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 312,
+          "ChangedPixelCount": 26,
           "MaximumChannelError": 9,
-          "MeanAbsoluteError": 0.0003201486013986014,
-          "RootMeanSquareError": 0.024268133584853774,
+          "MeanAbsoluteError": 8.085664335664336e-05,
+          "RootMeanSquareError": 0.01816542092775495,
           "MaximumAlphaError": 1,
           "AlphaChangedPixelCount": 26,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 258,
-          "MaximumMismatchX": 508,
-          "MaximumMismatchY": 541,
+          "MinimumMismatchY": 371,
+          "MaximumMismatchX": 0,
+          "MaximumMismatchY": 428,
           "IsExact": false
         },
         "alphaMass": 26,
@@ -3803,100 +3790,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "x": 457,
-            "y": 258,
-            "reference": "sLCw/w==",
-            "candidate": "r6+v/w=="
+            "x": 0,
+            "y": 371,
+            "reference": "hoaGFQ==",
+            "candidate": "gICAFA=="
           },
           {
-            "x": 508,
-            "y": 258,
-            "reference": "/////w==",
-            "candidate": "+/v7/w=="
+            "x": 0,
+            "y": 376,
+            "reference": "gICAIA==",
+            "candidate": "hISEHw=="
           },
           {
-            "x": 457,
-            "y": 259,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 377,
+            "reference": "gICAIg==",
+            "candidate": "g4ODIQ=="
           },
           {
-            "x": 457,
-            "y": 260,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 378,
+            "reference": "gICAJA==",
+            "candidate": "g4ODIw=="
           },
           {
-            "x": 457,
-            "y": 261,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 380,
+            "reference": "g4ODJw==",
+            "candidate": "gICAJg=="
           },
           {
-            "x": 457,
-            "y": 262,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 381,
+            "reference": "g4ODKQ==",
+            "candidate": "gICAKA=="
           },
           {
-            "x": 457,
-            "y": 263,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 386,
+            "reference": "gICAMA==",
+            "candidate": "goKCLw=="
           },
           {
-            "x": 457,
-            "y": 264,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 388,
+            "reference": "goKCMw==",
+            "candidate": "gICAMg=="
           },
           {
-            "x": 457,
-            "y": 265,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 389,
+            "reference": "gICANA==",
+            "candidate": "goKCMw=="
           },
           {
-            "x": 457,
-            "y": 266,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 391,
+            "reference": "goKCNw==",
+            "candidate": "gICANg=="
           },
           {
-            "x": 457,
-            "y": 267,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 392,
+            "reference": "gICAOA==",
+            "candidate": "goKCNw=="
           },
           {
-            "x": 457,
-            "y": 268,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 393,
+            "reference": "goKCOQ==",
+            "candidate": "gICAOA=="
           },
           {
-            "x": 457,
-            "y": 269,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 394,
+            "reference": "goKCOw==",
+            "candidate": "gICAOg=="
           },
           {
-            "x": 457,
-            "y": 270,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 395,
+            "reference": "f39/PA==",
+            "candidate": "goKCOw=="
           },
           {
-            "x": 457,
-            "y": 271,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 396,
+            "reference": "goKCPQ==",
+            "candidate": "f39/PA=="
           },
           {
-            "x": 457,
-            "y": 272,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 397,
+            "reference": "gICAPg==",
+            "candidate": "goKCPQ=="
           }
         ]
       },
@@ -3928,23 +3915,23 @@
       "id": "inv-027-large-white",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "9c7aa3f21a4a12f57a012e86c1c5c28e3dfd23ec31ecb31eb223d486a969d55d",
+      "candidateSha256": "3cd52dff2ad22476e63db925b8c13f4e9c2681a1b5df2baa00394759d8e6c5fd",
       "width": 1144,
       "height": 800,
       "referenceSha256": "46bf6943af3c9b6f84df09601b54fc91039180e02f597508dc45b087e7250017",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 296,
-          "MaximumChannelError": 4,
-          "MeanAbsoluteError": 0.0002474868881118881,
-          "RootMeanSquareError": 0.016344868316377475,
+          "ChangedPixelCount": 10,
+          "MaximumChannelError": 1,
+          "MeanAbsoluteError": 8.19493006993007e-06,
+          "RootMeanSquareError": 0.002862678827589653,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 258,
-          "MaximumMismatchX": 508,
-          "MaximumMismatchY": 541,
+          "MinimumMismatchY": 376,
+          "MaximumMismatchX": 0,
+          "MaximumMismatchY": 412,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -3952,100 +3939,64 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "x": 457,
-            "y": 258,
-            "reference": "sLCw/w==",
-            "candidate": "r6+v/w=="
+            "x": 0,
+            "y": 376,
+            "reference": "7+/v/w==",
+            "candidate": "8PDw/w=="
           },
           {
-            "x": 508,
-            "y": 258,
-            "reference": "/////w==",
-            "candidate": "+/v7/w=="
+            "x": 0,
+            "y": 377,
+            "reference": "7u7u/w==",
+            "candidate": "7+/v/w=="
           },
           {
-            "x": 457,
-            "y": 259,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 378,
+            "reference": "7e3t/w==",
+            "candidate": "7u7u/w=="
           },
           {
-            "x": 457,
-            "y": 260,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 386,
+            "reference": "5+fn/w==",
+            "candidate": "6Ojo/w=="
           },
           {
-            "x": 457,
-            "y": 261,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 389,
+            "reference": "5eXl/w==",
+            "candidate": "5ubm/w=="
           },
           {
-            "x": 457,
-            "y": 262,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 392,
+            "reference": "4+Pj/w==",
+            "candidate": "5OTk/w=="
           },
           {
-            "x": 457,
-            "y": 263,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 395,
+            "reference": "4eHh/w==",
+            "candidate": "4uLi/w=="
           },
           {
-            "x": 457,
-            "y": 264,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 397,
+            "reference": "4ODg/w==",
+            "candidate": "4eHh/w=="
           },
           {
-            "x": 457,
-            "y": 265,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 410,
+            "reference": "7Ozs/w==",
+            "candidate": "7e3t/w=="
           },
           {
-            "x": 457,
-            "y": 266,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
-          },
-          {
-            "x": 457,
-            "y": 267,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
-          },
-          {
-            "x": 457,
-            "y": 268,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
-          },
-          {
-            "x": 457,
-            "y": 269,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
-          },
-          {
-            "x": 457,
-            "y": 270,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
-          },
-          {
-            "x": 457,
-            "y": 271,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
-          },
-          {
-            "x": 457,
-            "y": 272,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 412,
+            "reference": "7e3t/w==",
+            "candidate": "7u7u/w=="
           }
         ]
       },
@@ -4077,23 +4028,23 @@
       "id": "inv-027-large-black",
       "renderOutcome": "renders",
       "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
-      "candidateSha256": "90f495fcd2aa2de07ddacba542e5a653708bf14bfed81bb54ab5094012d011d0",
+      "candidateSha256": "f81503d759990e1d23903e152830fa278342307e6da9ae3a4ee8fb6b29b6b4ca",
       "width": 1144,
       "height": 800,
       "referenceSha256": "afbc8597fffbd447241ef4a90ec96f00ddf8b85651a4075ad6a1644f6e0a9cf8",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 302,
-          "MaximumChannelError": 4,
-          "MeanAbsoluteError": 0.00025240384615384616,
-          "RootMeanSquareError": 0.016494595427644726,
+          "ChangedPixelCount": 16,
+          "MaximumChannelError": 1,
+          "MeanAbsoluteError": 1.3111888111888112e-05,
+          "RootMeanSquareError": 0.0036210341218895067,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 258,
-          "MaximumMismatchX": 508,
-          "MaximumMismatchY": 541,
+          "MinimumMismatchY": 371,
+          "MaximumMismatchX": 0,
+          "MaximumMismatchY": 428,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -4101,100 +4052,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "x": 457,
-            "y": 258,
-            "reference": "sLCw/w==",
-            "candidate": "r6+v/w=="
+            "x": 0,
+            "y": 371,
+            "reference": "CwsL/w==",
+            "candidate": "CgoK/w=="
           },
           {
-            "x": 508,
-            "y": 258,
-            "reference": "/////w==",
-            "candidate": "+/v7/w=="
+            "x": 0,
+            "y": 380,
+            "reference": "FBQU/w==",
+            "candidate": "ExMT/w=="
           },
           {
-            "x": 457,
-            "y": 259,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 381,
+            "reference": "FRUV/w==",
+            "candidate": "FBQU/w=="
           },
           {
-            "x": 457,
-            "y": 260,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 388,
+            "reference": "Ghoa/w==",
+            "candidate": "GRkZ/w=="
           },
           {
-            "x": 457,
-            "y": 261,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 391,
+            "reference": "HBwc/w==",
+            "candidate": "Gxsb/w=="
           },
           {
-            "x": 457,
-            "y": 262,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 393,
+            "reference": "HR0d/w==",
+            "candidate": "HBwc/w=="
           },
           {
-            "x": 457,
-            "y": 263,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 394,
+            "reference": "Hh4e/w==",
+            "candidate": "HR0d/w=="
           },
           {
-            "x": 457,
-            "y": 264,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 396,
+            "reference": "Hx8f/w==",
+            "candidate": "Hh4e/w=="
           },
           {
-            "x": 457,
-            "y": 265,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 402,
+            "reference": "FRUV/w==",
+            "candidate": "FBQU/w=="
           },
           {
-            "x": 457,
-            "y": 266,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 405,
+            "reference": "FRUV/w==",
+            "candidate": "FBQU/w=="
           },
           {
-            "x": 457,
-            "y": 267,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 409,
+            "reference": "FBQU/w==",
+            "candidate": "ExMT/w=="
           },
           {
-            "x": 457,
-            "y": 268,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 416,
+            "reference": "EBAQ/w==",
+            "candidate": "Dw8P/w=="
           },
           {
-            "x": 457,
-            "y": 269,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 418,
+            "reference": "Dw8P/w==",
+            "candidate": "Dg4O/w=="
           },
           {
-            "x": 457,
-            "y": 270,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 422,
+            "reference": "DAwM/w==",
+            "candidate": "CwsL/w=="
           },
           {
-            "x": 457,
-            "y": 271,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 427,
+            "reference": "CAgI/w==",
+            "candidate": "BwcH/w=="
           },
           {
-            "x": 457,
-            "y": 272,
-            "reference": "srKy/w==",
-            "candidate": "sbGx/w=="
+            "x": 0,
+            "y": 428,
+            "reference": "BwcH/w==",
+            "candidate": "BgYG/w=="
           }
         ]
       },
@@ -5057,7 +5008,7 @@
       "id": "inv-099-intended-transparent",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "479dfa08588cbf910826240e87d8579b85a7f9955d95b42b2628fa2e72b6d573",
+      "candidateSha256": "3a1d1e89edca1fb458a85f8213b7bd1108dbb6199d5241c6a6886f863cd2fdc4",
       "width": 1075,
       "height": 402,
       "referenceSha256": null,
@@ -5070,7 +5021,7 @@
       "id": "inv-099-intended-white",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "aeb9dfa347770faa9367484bddc112e75bb87e128b916dbac47ec09b8acee078",
+      "candidateSha256": "ab818752d426e441873c9ae872267b1e12e3f3f209a8968c87eacc93cbd4dee2",
       "width": 1075,
       "height": 402,
       "referenceSha256": null,
@@ -5083,7 +5034,7 @@
       "id": "inv-099-intended-black",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "9b81a80f9e0f33d712f1cdae3bf5039788733c19872d01e94464695157ce4f7e",
+      "candidateSha256": "7f9c3173f22dcdef62bad99e7d874f898c18da783e8025c7393ccc9b008acba7",
       "width": 1075,
       "height": 402,
       "referenceSha256": null,
@@ -5096,7 +5047,7 @@
       "id": "inv-099-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "c1d65fba85ffe8bdbc0c58c54c3893034a194d131bb6bc363b54d5ee6b37e520",
+      "candidateSha256": "5f07df26e7ffd04b07a8975651c693bb4e904e8f449825b54ce996fc056670f6",
       "width": 2150,
       "height": 804,
       "referenceSha256": null,
@@ -5109,7 +5060,7 @@
       "id": "inv-099-large-white",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "6479360106a00f79bfe5a9fe19332dbe223a075eac1b66bbcc1074188eaf2e29",
+      "candidateSha256": "f0f170ce49ceb3e7b9145337b982c1ef82e762c9ffa68c0ff3a0bfa7ca7a8b3b",
       "width": 2150,
       "height": 804,
       "referenceSha256": null,
@@ -5122,7 +5073,7 @@
       "id": "inv-099-large-black",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "6a28baa832c6132a3b5e108ba57fd91f64e037fc3355aff54ad762a20d27ac16",
+      "candidateSha256": "b1999faaa5398fae03dedd705f4638f49ab82108dd5a69940532c3797b390b1f",
       "width": 2150,
       "height": 804,
       "referenceSha256": null,
@@ -5456,9 +5407,7 @@
       "oracleState": "unmeasured"
     }
   ],
-  "rendererSourceBaselineCommit": "86554a94",
-  "rendererSourceState": "Precommit shared declaration-only DOCTYPE admission across root parsing, font discovery and output-scale probing; no external resolution, entity expansion or internal subsets. Source fingerprint normalizes C# UTF-8 bytes to LF.",
-  "rendererSourceFingerprintSha256": "7800b716dcabebf99eb6033a6c163fb6e808195fcafed48dfa053bd27aaee007",
-  "measurementCheckpoint": "declaration-only-doctype-2026-10-05",
-  "rendererAssemblyBuildHead": "86554a94"
+  "rendererSourceBaselineCommit": "1876cf6e",
+  "rendererSourceState": "Validated working tree with convex rectangle-strip rounding; raw-box coverage calibration preserved. Windows build/tests, memory, bank and package checks pass.",
+  "measurementCheckpoint": "convex-rectangle-strips-2026-10-06"
 }

@@ -13,7 +13,6 @@
   "fixtureId": "original-research-skewed-quad-64x64",
   "inputSha256": "dc1ca31688fe4994d1212fdab7915e14509a41817365f7306a6714764f933b2e",
   "candidateSha256": "c0a61374f6e1f129ee4f33fce896895881444e9fc59073618aa85845a2bee7e0",
-  "rendererSha256": "17054299c24fe27c9d185481eceaedfd218596fc65fbd45ef105a4755494fade",
   "comparison": {
     "dimensionsMatch": true,
     "changedPixelCount": 0,

@@ -175,6 +175,7 @@ internal ref partial struct SvgAnalyticCoverage
     private readonly int _stopY;
     private readonly bool _isEvenOdd;
     private readonly bool _convex;
+    private readonly bool _rawBox;
     private readonly int _leftClip;
     private readonly int _rightClip;
     private readonly int[] _alphas;
@@ -206,7 +207,7 @@ internal ref partial struct SvgAnalyticCoverage
     /// <summary>Native horizontal rectangle and AA clip wrappers forward fringe pairs as ordinary runs.</summary>
     internal readonly SvgAnalyticPaintKind PairPaintKind => _usesHorizontalClip || _forceRle ? SvgAnalyticPaintKind.Direct : SvgAnalyticPaintKind.Pair;
 
-    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, int[] temp, int[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool useRunBlitter, bool usesHorizontalClip, SvgAnalyticPaintClip paintClip, SvgAnalyticScanWindow window, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
+    private SvgAnalyticCoverage(AnalyticEdge[] edges, AnalyticEdge head, AnalyticEdge tail, byte[] row, int[] temp, int[] alphas, int xStart, int width, int stopY, bool skipIntersect, bool isEvenOdd, bool convex, bool rawBox, bool useRunBlitter, bool usesHorizontalClip, SvgAnalyticPaintClip paintClip, SvgAnalyticScanWindow window, RenderBudget budget, RenderBudget.BudgetReservation? reservation)
     {
         _edges = edges;
         _head = head;
@@ -220,6 +221,7 @@ internal ref partial struct SvgAnalyticCoverage
         _stopY = stopY;
         _isEvenOdd = isEvenOdd;
         _convex = convex;
+        _rawBox = rawBox;
         _leftClip = (int)Math.Min((long)(useRunBlitter ? window.Left : Math.Max(xStart, window.Left)) << 16, int.MaxValue);
         _rightClip = (int)Math.Min((long)(useRunBlitter ? window.Right : Math.Min(xStart + width, window.Right)) << 16, int.MaxValue);
         _reservation = reservation;
@@ -1522,7 +1524,7 @@ internal ref partial struct SvgAnalyticCoverage
             bool evenOddCrossings = isEvenOdd && setStructure == SvgContourFlags.ProperCrossing;
             if (!evenOddCrossings && !transversalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
             long multiPointCount = GetNativePointCount(ref preparation, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, maximumSetupWork, ref setupWork, cancellationToken);
-            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = multiPointCount > (long)(yEnd - yStart) * 2;
             long multiCurveEdges = (long)quadSpans.Length * 2 + (long)cubicSpans.Length * 3;
@@ -1617,7 +1619,7 @@ internal ref partial struct SvgAnalyticCoverage
                 bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
                 if (useRunBlitter) setupWork += multiWidth;
                 CheckClippedSetupWork(setupWork, maximumSetupWork, cancellationToken);
-                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, useRunBlitter, false, paintClip, window, budget, multiScratch);
+                return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, false, useRunBlitter, false, paintClip, window, budget, multiScratch);
             }
             catch { multiScratch?.Dispose(); throw; }
         }
@@ -1666,7 +1668,7 @@ internal ref partial struct SvgAnalyticCoverage
         bool desnapBox = preparation.DesnapBox;
         bool useCurveSpans = preparation.UseCurveSpans;
         long singlePointCount = GetNativePointCount(ref preparation, useCurveSpans, maximumSetupWork, ref setupWork, cancellationToken);
-        if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, useCurveSpans, convex, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+        if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, useCurveSpans, convex, desnapBox, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
         int width = xEnd - xStart;
         bool skipIntersect = singlePointCount > (long)(yEnd - yStart) * 2;
         long curveEdges = useCurveSpans ? (long)quadSpans.Length * (convex ? 128 : 2) + (long)cubicSpans.Length * (convex ? 192 : 3) : 0;
@@ -1744,7 +1746,7 @@ internal ref partial struct SvgAnalyticCoverage
             bool useRunBlitter = preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased;
             if (useRunBlitter) setupWork += width;
             CheckClippedSetupWork(setupWork, maximumSetupWork, cancellationToken);
-            return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, useRunBlitter, false, paintClip, window, budget, scratch);
+            return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, desnapBox, useRunBlitter, false, paintClip, window, budget, scratch);
         }
         catch { scratch?.Dispose(); throw; }
     }
@@ -2234,22 +2236,22 @@ internal ref partial struct SvgAnalyticCoverage
         {
             if (partialTop > 0 && fullTop - 1 == target)
             {
-                if (partialLeft > 0) AddMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(FixedMul(partialTop, partialLeft)));
-                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, FixedToAlphaTrunc(partialTop), false);
-                if (partialRite > 0) AddMask(fullRite - _xStart, FixedToAlphaTrunc(FixedMul(partialTop, partialRite)));
+                if (partialLeft > 0) AddMask(fullLeft - 1 - _xStart, ToAlpha(FixedMul(partialTop, partialLeft), _rawBox));
+                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, ToAlpha(partialTop, _rawBox), false);
+                if (partialRite > 0) AddMask(fullRite - _xStart, ToAlpha(FixedMul(partialTop, partialRite), _rawBox));
             }
-            if (fullBot > fullTop && (fullRite > fullLeft || FixedToAlphaTrunc(partialLeft) > 0 || FixedToAlphaTrunc(partialRite) > 0) && target >= fullTop && target < fullBot)
+            if (fullBot > fullTop && (fullRite > fullLeft || ToAlpha(partialLeft, _rawBox) > 0 || ToAlpha(partialRite, _rawBox) > 0) && target >= fullTop && target < fullBot)
             {
-                if (partialLeft > 0) SetMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(partialLeft));
+                if (partialLeft > 0) SetMask(fullLeft - 1 - _xStart, ToAlpha(partialLeft, _rawBox));
                 if (_useRunBlitter) RecordDirectSpan(fullLeft - _xStart, fullRite - fullLeft);
                 else for (int index = 0; index < fullRite - fullLeft; index++) SetMask(fullLeft + index - _xStart, 255);
-                if (partialRite > 0) SetMask(fullRite - _xStart, FixedToAlphaTrunc(partialRite));
+                if (partialRite > 0) SetMask(fullRite - _xStart, ToAlpha(partialRite, _rawBox));
             }
             if (partialBot > 0 && fullBot == target)
             {
-                if (partialLeft > 0) AddMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(FixedMul(partialBot, partialLeft)));
-                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, FixedToAlphaTrunc(partialBot), false);
-                if (partialRite > 0) AddMask(fullRite - _xStart, FixedToAlphaTrunc(FixedMul(partialBot, partialRite)));
+                if (partialLeft > 0) AddMask(fullLeft - 1 - _xStart, ToAlpha(FixedMul(partialBot, partialLeft), _rawBox));
+                BlitFullAlpha(fullLeft - _xStart, fullRite - fullLeft, ToAlpha(partialBot, _rawBox), false);
+                if (partialRite > 0) AddMask(fullRite - _xStart, ToAlpha(FixedMul(partialBot, partialRite), _rawBox));
             }
         }
         else
@@ -2257,11 +2259,14 @@ internal ref partial struct SvgAnalyticCoverage
             int width = rite - left;
             if (width > 0)
             {
-                if (partialTop > 0 && fullTop - 1 == target) AddMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(FixedMul(partialTop, width)));
-                if (fullBot > fullTop && target >= fullTop && target < fullBot) SetMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(width));
-                if (partialBot > 0 && fullBot == target) AddMask(fullLeft - 1 - _xStart, FixedToAlphaTrunc(FixedMul(partialBot, width)));
+                if (partialTop > 0 && fullTop - 1 == target) AddMask(fullLeft - 1 - _xStart, ToAlpha(FixedMul(partialTop, width), _rawBox));
+                if (fullBot > fullTop && target >= fullTop && target < fullBot) SetMask(fullLeft - 1 - _xStart, ToAlpha(width, _rawBox));
+                if (partialBot > 0 && fullBot == target) AddMask(fullLeft - 1 - _xStart, ToAlpha(FixedMul(partialBot, width), _rawBox));
             }
         }
+        // A slanted convex path can acquire a rectangular strip through clipping.
+        // Its native walker rounds; raw boxes retain their separate calibration.
+        static int ToAlpha(int value, bool rawBox) => rawBox ? FixedToAlphaTrunc(value) : FixedToAlpha(value);
     }
     private (int Left, int Rite, int Y) SlopeFlow(int left, int rite, int deltaLeft, int deltaRite, int leftDY, int rightDY, int y, int localBot, int target, CancellationToken cancellationToken)
     {

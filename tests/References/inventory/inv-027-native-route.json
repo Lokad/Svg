@@ -494,7 +494,6 @@
   "isolatedModels": [
     {
       "model": "baseline",
-      "isolatedRendererSha256": "e2e53839124ecb93534f0df3160f83ddc569dabe9d7d192de562d6fb75818089",
       "cases": [
         {
           "id": "inv-027-small-transparent",
@@ -1373,7 +1372,6 @@
     },
     {
       "model": "interval-live",
-      "isolatedRendererSha256": "e0455f3106b19c579a710749fce3f4e12d13380fe72626358818f42f64297925",
       "cases": [
         {
           "id": "inv-027-small-transparent",
@@ -2252,7 +2250,6 @@
     },
     {
       "model": "flattened",
-      "isolatedRendererSha256": "d71dacea3847f25f7d5867abed53dc43e9af2d93256d7b7e9a61fd733eb2131e",
       "cases": [
         {
           "id": "inv-027-small-transparent",

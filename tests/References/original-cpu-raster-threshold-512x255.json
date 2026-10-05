@@ -18,7 +18,6 @@
   "inputSha256": "3c4072518846a2677186d7e52c2729e6ffceb5ed765fb91e17a477b95254d3ee",
   "candidateOutcome": "renders",
   "candidateSha256": "ace747d14305ca7b30d25009585803ce27a4e8fd8f9435e4094c1b98c25283be",
-  "rendererSha256": "11eb7371e78c69fa5927f8b4c87909c4da37c4f7443ec6961fb7695f54946bd5",
   "admittedAt": "CPU raster context, 2026-10-05",
   "captureSha256": [
     "0d76842ef2f40442ef6dc0f5616783f7bd92114e20f536eef38747e292d2d312",

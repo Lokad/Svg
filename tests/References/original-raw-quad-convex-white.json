@@ -36,7 +36,6 @@
   "declaredBeforeGenericConvexityPrototype": true,
   "candidateOutcome": "renders",
   "candidateSha256": "4f08cde8dac0567ed303433435e4c6708897526f55ec1b2474ae6e495f7b9715",
-  "rendererSha256": "69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006",
   "comparison": {
     "dimensionsMatch": true,
     "changedPixelCount": 10,

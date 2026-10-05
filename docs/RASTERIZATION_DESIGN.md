@@ -3724,7 +3724,7 @@ preparation and paint methods. It verifies whole-canvas alpha 55, then exact
 original alpha across that complete owned row interior under the observed clip,
 with every reservation released. Removing construction clipping fails at expected
 54 versus actual 55. Portable tile summaries, original capture identities, native
-witness fields and source fingerprints are in
+witness fields and native source provenance are in
 [the clip-context evidence](../tests/References/inventory/inv-002-native-clip-context.json).
 Original Ford PNGs and source/trademark provenance remain in their existing bank.
 
@@ -4204,8 +4204,6 @@ three spans. All 3,222 tests and 25 memory scenarios pass; runtime/symbol packag
 and installed-consumer checks retain the complete unchanged BSD notices.
 
 Work/peak and matched sequential local timings are in [BENCHMARKS](BENCHMARKS.md).
-The renderer/probe/memory/package/consumer identity is
-`a8fa7a4044b14543d5d16ce001d71110a8bb123139951243ba74e9b411b21ec0`.
 Ignored full tapes, capture triples, comparisons, negative-model results and gates
 are under `artifacts/lower-residuals-20261005/`; committed controls and native/Ford
 records are portable. This establishes the outlined-wordmark checkpoint, not
@@ -4504,8 +4502,8 @@ fringe witnesses and mask/browser twins. The original mask equality test remains
 unchanged. Shared cache/geometry state is not contaminated by the paint context.
 
 The [portable checkpoint](../tests/References/antialiased-paint-clip-dispatch.json)
-records normalized sources and the validated precommit DLL separately from
-Git/assembly metadata. Full gates and complete image identities remain under
+identifies implementation commit `86554a94` and the validated precommit DLL.
+Full gates and complete image identities remain under
 ignored `artifacts/aa-clip-dispatch-20261005/`; matching six-input timings and
 resource ledgers are in [BENCHMARKS](BENCHMARKS.md#antialiased-rectangle-paint-clip-checkpoint-2026-10-05).
 Per-side clip metadata increases some unchanged-input storage; AA run dispatch
@@ -4573,10 +4571,7 @@ and fifteen transport gaps remain. Suppressing admission in an isolated build of
 the final source restores every complete baseline report in both banks.
 
 Normal locked restore and the nine-project Release build pass with zero warnings
-or errors. The final renderer is
-`fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54`, built at
-HEAD `86554a94`; normalized C# source fingerprint is
-`7800b716dcabebf99eb6033a6c163fb6e808195fcafed48dfa053bd27aaee007`.
+or errors. The implementation is committed in `1876cf6e`.
 All 3,445 tests pass (3,296 core, 143 visual and six FontProbe), as do all 25 memory
 scenarios and runtime/symbol package plus isolated installed-consumer checks.
 Matching observations retain the guard's work, allocation and workspace cost in
@@ -4584,3 +4579,58 @@ Matching observations retain the guard's work, allocation and workspace cost in
 `artifacts/doctype-20261005/`; the portable checkpoint retains their identities
 and summaries. No wider browser-fidelity, representative-performance, Linux or
 S17 completion follows from this syntax admission.
+
+
+## Convex rectangle-strip coverage (2026-10-06)
+
+YouTube's opaque triangle witness at (457,258) was a coverage defect. The original
+large transparent reference is gray 176; the prior renderer painted gray 175 over
+opaque gray 128. An ignored observer reproduces the complete baseline PNG and
+records ordinary direct white paint with accumulated coverage 71 + 24 = 95.
+
+The original convex walker at Skia pin
+`f8b66b7597c4cc859d3ed190e9c6872241e6721c`, `src/core/SkScan_AAAPath.cpp`, emits
+71 + 25 = 96. Three routes agree: supplied managed edge states, native edge
+construction from mapped lines, and the actual browser path through the pinned
+native matrix mapper and clipper. The bitmap is [254,254,510,510]. The last strip
+is vertical after clipping; its quarter-height/partial-width product rounds to
+25. The managed `RectFlow` incorrectly applied its raw-rectangle truncation to
+this ordinary convex strip. Coverage 96 through the existing direct paint gives
+reference gray 176.
+
+The walker now receives the cached raw-box identity and rounds ordinary convex
+rectangular strips. True raw boxes preserve their existing fractional calibration;
+this does not claim full native rectangle shortcut/dispatch parity. No geometry,
+buffers, parser admission or clipping bounds change. Three core regressions cover
+the native coverage/paint witness under binary and AA contexts and the separate
+raw-box control. The existing exact fractional rectangle families remain exact.
+
+Six supplemental CC0 sources / fourteen configurations were declared after the
+initial isolated/production trial and before their own captures. All 42 accepted
+fresh-process captures are healthy, cleaned and byte-stable in triples. Thirteen
+become exact, covering mask/run, phase, scale and opacity; the shader improves
+76 → 66 changed pixels and remains a failure. Earlier percentage-dimension
+controls and noncanonical header attempts stay under ignored artifacts; those
+inputs were not admitted as positive controls. No reference was replaced to
+match the candidate.
+
+All 601 prior exact fixture PNGs and all nine Ford PNGs are unchanged. The
+937-case comparison changes one known fixture (11 → nine pixels, alpha error
+34 → 32) and four Default outputs without references. The expanded bank is
+951 cases: 799 fixtures (614 exact / 158 known / 27 rejections), 60 research and
+92 legacy Default cases. All 258 corporate dispositions are unchanged; six
+YouTube and six unmeasured Arkema PNGs change. Every original source/reference
+and the holdout policy remain intact. YouTube transparent differences are now
+30/37/26; white 8/23/10; black 22/14/16. A full decoded scan verifies that every
+remaining difference in all nine variants lies in the first or last pixel column.
+The opaque triangle residuals are closed; boundary clip-byte work is next.
+
+Locked restore/nine-project Release, 3,448 tests (3,299 core / 143 visual /
+six FontProbe), all 25 memory scenarios and runtime/symbol package plus installed
+consumer checks pass. Six matching ledgers preserve charged work; four peaks
+are unchanged and YouTube peaks grow by 18/40 bytes with encoded output changes.
+Local timings remain observations, not representative throughput. Complete
+native adapter, capture attempts, comparisons, resources and gates are under
+ignored `artifacts/triangle-paint-20261005/`. Portable regressions are the tests,
+fixture manifest/images and current corporate measurements; source history uses
+Git rather than per-file renderer hash inventories.

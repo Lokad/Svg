@@ -34,7 +34,6 @@
   "declaredBeforeProductionEdit": true,
   "declaredAfterInitialMappingTrials": true,
   "candidateSha256": "4349f31bb387885a6d058b24cf61f2bb6f715b10b7f644f36ef183bec7f7f47c",
-  "rendererSha256": "f35355e301642740495cf891f6bba3dbc8fcf09729404d4b0c1d0958b1560431",
   "comparison": {
     "dimensionsMatch": true,
     "changedPixelCount": 0,

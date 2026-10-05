@@ -36,7 +36,6 @@
   "declaredBeforeGenericCountPrototype": true,
   "candidateOutcome": "renders",
   "candidateSha256": "229085544e08e7e3d8c12ee23e6cd54135ec2509b6095479730439480868ada6",
-  "rendererSha256": "a8fa7a4044b14543d5d16ce001d71110a8bb123139951243ba74e9b411b21ec0",
   "comparison": {
     "dimensionsMatch": true,
     "changedPixelCount": 0,

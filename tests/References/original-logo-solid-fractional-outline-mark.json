@@ -35,6 +35,5 @@
     "opaqueAddedPixelCount": 0
   },
   "admittedAt": "Horizontal clip paint routing, 2026-10-05",
-  "candidateCheckpoint": "Shared clipped-edge preparation, 2026-10-05",
-  "rendererSha256": "17054299c24fe27c9d185481eceaedfd218596fc65fbd45ef105a4755494fade"
+  "candidateCheckpoint": "Shared clipped-edge preparation, 2026-10-05"
 }

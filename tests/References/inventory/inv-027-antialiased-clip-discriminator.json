@@ -16,8 +16,7 @@
       "passed": 139,
       "failed": 0,
       "skipped": 0,
-      "trxSha256": "0bae2262588753ed9159b8e2b71042eeaad319090d9f76c2886f97d1cd556833",
-      "rendererSha256": "69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006"
+      "trxSha256": "0bae2262588753ed9159b8e2b71042eeaad319090d9f76c2886f97d1cd556833"
     },
     "currentRuntimeSourcesUnchanged": true,
     "integrationGates": "Not run: no production change. Prior full 3244-test, 25-memory and delivery checkpoint remains the recorded production baseline."
@@ -2014,7 +2013,6 @@
   "isolatedModels": [
     {
       "model": "blanket non-convex no-real-blitter override",
-      "isolatedRendererSha256": "6a04c600cbdeb207e177e163e743cc2ae03134c2ebfbb6b0c5732ee820a94092",
       "cases": [
         {
           "id": "inv-027-small-transparent",
@@ -2371,7 +2369,6 @@
     },
     {
       "model": "context-local fractional-border no-real-blitter model",
-      "isolatedRendererSha256": "e2e51f0cd48a4ac7841c3d203354414aa9fe484d98682396a2274c1101931d4f",
       "cases": [
         {
           "id": "inv-027-small-transparent",
@@ -2728,7 +2725,6 @@
     },
     {
       "model": "staged float outer mapping only",
-      "isolatedRendererSha256": "1ba0aca9962492332774b04ee2ea850ec337912210c93f9b01b34df729648984",
       "cases": [
         {
           "id": "inv-027-small-transparent",
@@ -3085,7 +3081,6 @@
     },
     {
       "model": "staged float outer mapping plus context-local clip model",
-      "isolatedRendererSha256": "47f5871a6109c540123e9cf0fc69f99926d6179a1894c5a77965da999978c1ee",
       "cases": [
         {
           "id": "inv-027-small-transparent",

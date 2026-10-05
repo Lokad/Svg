@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the antialiased paint-clip checkpoint, all 785 current manifest entries are
-gated: 601 exact decoded-pixel references, 157 known-difference renders and 27
+At the convex rectangle-strip checkpoint, the 799 current manifest entries contain
+614 exact decoded-pixel references, 158 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -19,6 +19,12 @@ The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
 27 cases to rendering and nine Target cases to the existing unsupported `marker`
 style gate. All previous PNGs are unchanged. Fidelity remains measured for only
 eighteen corporate cases.
+
+Convex rectangular strips round coverage separately from the raw-rectangle
+calibration. Native event evidence closes YouTube's opaque triangle witness;
+thirteen fresh configurations become exact and one shader control retains known
+paint differences. Intended/large YouTube transparent differences fall to 37/26
+pixels; every declared YouTube variant still differs at boundary clips.
 
 Single clean retained contours now distinguish raw control-polygon convexity
 from sampled-ring convexity. Float sign/turn/reversal classification is charged

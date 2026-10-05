@@ -99,7 +99,6 @@
     {
       "name": "current-original",
       "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
-      "rendererSha256": "f35355e301642740495cf891f6bba3dbc8fcf09729404d4b0c1d0958b1560431",
       "variants": [
         {
           "id": "inv-002-250x100-transparent",
@@ -223,7 +222,6 @@
     {
       "name": "relative-float-original",
       "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
-      "rendererSha256": "fec8163aa9d2b74ae75170dd619254d519e41682f52183094e0cd140cde281b4",
       "variants": [
         {
           "id": "inv-002-250x100-transparent",
@@ -401,7 +399,6 @@
     {
       "name": "captured-transform-only",
       "inputSha256": "3271119d534f558aeb04896b7c6c0e312e58e3c92540b33c8c0ad24cfc7b59f4",
-      "rendererSha256": "39dbf5988a2b5819477b7a803b15d3be2c9f55450209ce1ab5e42bcf573e82da",
       "variants": [
         {
           "id": "inv-002-250x100-transparent",
@@ -525,7 +522,6 @@
     {
       "name": "captured-transform-and-relative-float",
       "inputSha256": "3271119d534f558aeb04896b7c6c0e312e58e3c92540b33c8c0ad24cfc7b59f4",
-      "rendererSha256": "22b6020a160c83be28d32a5ec5027e6bea2bc2163e5761aac9bafac0175093da",
       "variants": [
         {
           "id": "inv-002-250x100-transparent",

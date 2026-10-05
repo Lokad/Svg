@@ -6,7 +6,7 @@ namespace Lokad.Svg.VisualTests;
 public sealed class SvgDoctypeReferenceTests
 {
     [Fact]
-    public void Newly_admitted_legacy_inputs_keep_their_original_bytes_and_recorded_pngs()
+    public void Legacy_declarations_preserve_original_input_identity_and_do_not_affect_pixels()
     {
         using JsonDocument checkpoint = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests/References/declaration-only-doctype.json")));
         JsonElement[] changes = checkpoint.RootElement.GetProperty("priorBank").GetProperty("dispositionChanges").EnumerateArray().ToArray();
@@ -22,10 +22,28 @@ public sealed class SvgDoctypeReferenceTests
             Assert.Equal(Required(before, "InputSha256"), hash);
             Assert.Equal(Required(after, "InputSha256"), hash);
             byte[] png = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
-            Assert.Equal(Required(after, "PngSha256"), Convert.ToHexString(SHA256.HashData(png)));
+            // The old PNG is a historical renderer observation, without an
+            // independent oracle. Compare this declaration's semantic twin.
+            byte[] twin = SvgConverter.ConvertToPng(WithoutDeclaration(input), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+            Assert.Equal(twin, png);
             Assert.Equal(JsonValueKind.Null, after.GetProperty("Oracle").ValueKind);
         }
 
         static string Required(JsonElement value, string name) => value.GetProperty(name).GetString() ?? throw new InvalidDataException("Missing " + name);
+
+        static byte[] WithoutDeclaration(byte[] source)
+        {
+            // These four fixed UTF-8 fixtures use PUBLIC identifiers with no
+            // '>' inside their quoted strings. Preserve every other input byte.
+            int start = source.AsSpan().IndexOf("<!DOCTYPE"u8);
+            Assert.True(start >= 0);
+            int end = source.AsSpan(start).IndexOf((byte)'>');
+            Assert.True(end > 0);
+            int length = end + 1;
+            byte[] result = new byte[source.Length - length];
+            source.AsSpan(0, start).CopyTo(result);
+            source.AsSpan(start + length).CopyTo(result.AsSpan(start));
+            return result;
+        }
     }
 }

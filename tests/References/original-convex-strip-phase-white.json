@@ -1,0 +1,50 @@
+{
+  "fixtureId": "original-convex-strip-phase-white",
+  "referencePng": "original-convex-strip-phase-white.png",
+  "referenceSha256": "7a0de1415030a9cc46e080a250a290c0f4b7031385e57f4a9f19005c465eb135",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 40,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "37432860bc19e559e81e28e21f02e32b95099a6fd41a795a42047ad476fe0cf4",
+  "captureSha256": [
+    "7a0de1415030a9cc46e080a250a290c0f4b7031385e57f4a9f19005c465eb135",
+    "7a0de1415030a9cc46e080a250a290c0f4b7031385e57f4a9f19005c465eb135",
+    "7a0de1415030a9cc46e080a250a290c0f4b7031385e57f4a9f19005c465eb135"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredAfterProductionEditBeforeCaptures": true,
+  "candidateSha256": "6ca9ed82b4058c68bbcad4672c5421ca9f3c58edc12efbc432ff3f8b5a329445",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 32,
+    "minimumMismatchY": 40,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}

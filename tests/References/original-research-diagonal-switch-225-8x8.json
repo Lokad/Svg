@@ -18,7 +18,6 @@
     "deviceScaleFactor": 1
   },
   "candidateSha256": "46cb56e9fe4fcb92ade757c22973b8c9c0cbc6f9c0d482e3a27faca6d67f180f",
-  "rendererSha256": "d73f76cdcb6a5512bf09e754024a7b8e44af90a9c4ae20af5c3f8909ef45a201",
   "comparison": {
     "dimensionsMatch": true,
     "changedPixelCount": 0,

@@ -104,13 +104,13 @@ public sealed class CorporateCohortReferenceTests
     [InlineData("small", "transparent", 30, 1)]
     [InlineData("small", "white", 8, 0)]
     [InlineData("small", "black", 22, 0)]
-    [InlineData("intended", "transparent", 177, 1)]
-    [InlineData("intended", "white", 163, 0)]
-    [InlineData("intended", "black", 154, 0)]
-    [InlineData("large", "transparent", 312, 1)]
-    [InlineData("large", "white", 296, 0)]
-    [InlineData("large", "black", 302, 0)]
-    public void Selected_curved_mark_keeps_every_original_failure(string size, string background, int changedPixels, int maximumAlpha)
+    [InlineData("intended", "transparent", 37, 1)]
+    [InlineData("intended", "white", 23, 0)]
+    [InlineData("intended", "black", 14, 0)]
+    [InlineData("large", "transparent", 26, 1)]
+    [InlineData("large", "white", 10, 0)]
+    [InlineData("large", "black", 16, 0)]
+    public void Selected_curved_mark_reports_remaining_differences_against_original_references(string size, string background, int changedPixels, int maximumAlpha)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Resolve("tests/References/inventory/corporate-cohort-v1.json")));
         JsonElement document = manifest.RootElement.GetProperty("documents").EnumerateArray().Single(item => Required(item, "id") == "inv-027");

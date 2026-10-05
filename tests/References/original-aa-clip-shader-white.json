@@ -35,6 +35,5 @@
   "declaredBeforeProductionEdit": true,
   "declaredBeforeCaptures": true,
   "candidateOutcome": "UnsupportedFeature",
-  "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
   "rejectionMessage": "Only defined local gradient references are implemented."
 }

@@ -38,6 +38,5 @@
   "declaredAfterNumericPrototype": false,
   "candidateOutcome": "UnsupportedFeature",
   "candidateSha256": null,
-  "rendererSha256": "d73f76cdcb6a5512bf09e754024a7b8e44af90a9c4ae20af5c3f8909ef45a201",
   "comparison": null
 }

@@ -35,7 +35,6 @@
   "declaredBeforeProductionEdit": true,
   "declaredBeforeCaptures": true,
   "candidateOutcome": "renders",
-  "rendererSha256": "3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac",
   "candidateSha256": "365c44eb7494922432b42719b5f08d776551301e2720c44058575daf3ad59e2b",
   "comparison": {
     "dimensionsMatch": true,

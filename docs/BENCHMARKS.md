@@ -716,9 +716,8 @@ captures in the Default sweep, so these timings establish no fidelity claim.
 Ford and dense are faster in both measured orders; tiny/native-stop variation
 remains visible. Do not extrapolate a universal throughput claim from these four
 inputs. All Default admissions/limits, 25 memory scenarios and runtime/symbol
-package plus installed-consumer checks pass. Final runner/package/consumer DLL
-identity is `d73f76cdcb6a5512bf09e754024a7b8e44af90a9c4ae20af5c3f8909ef45a201`,
-with the unchanged complete Skia/Chromium BSD notices. Local batch and input/DLL/PNG
+package plus installed-consumer checks pass, with the unchanged complete
+Skia/Chromium BSD notices. Local batch and input/DLL/PNG
 identities, work/peak ledgers, full 848-case comparison and delivery evidence remain
 under ignored `artifacts/native-numbers-20261005/`. Representative throughput,
 replay costs, Linux and private-font performance remain open.
@@ -761,9 +760,8 @@ and measure shared preparation/replay and representative performance before rele
 Local allocation traffic varies across runs while accounted peaks stay fixed.
 
 All 3,222 tests, 25 memory scenarios, runtime/symbol package inspection and
-installed-consumer checks pass. The final renderer/probe/memory/package/consumer
-identity is `a8fa7a4044b14543d5d16ce001d71110a8bb123139951243ba74e9b411b21ec0`,
-with unchanged complete Skia/Chromium BSD notices. Full input/DLL/PNG identities,
+installed-consumer checks pass, with unchanged complete Skia/Chromium BSD notices.
+Full input/DLL/PNG identities,
 batches, ledgers, negative-model tests, 872-case comparison and delivery evidence
 are under ignored `artifacts/lower-residuals-20261005/`. The outlined-wordmark
 checkpoint is established; representative throughput, Linux and S17 remain open.
@@ -812,9 +810,8 @@ in the other inputs remains substantial. These local measurements do not replace
 representative BenchmarkDotNet latency/throughput or Linux evidence.
 
 Fresh locked restore/Release build, all 3,244 tests, all 25 memory scenarios and
-runtime/symbol package plus installed-consumer checks pass. The measured current
-renderer/probe/memory/package identity is `69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006`,
-with the complete Skia/Chromium notices and new 2025 classifier notice in the
+runtime/symbol package plus installed-consumer checks pass, with the complete
+Skia/Chromium notices and new 2025 classifier notice in the
 runtime package. Local input/DLL/PNG identities, all timing batches, six resource
 ledgers, 896-case final bank, 258-case corporate comparison, rollback and delivery
 evidence remain under ignored `artifacts/raw-convexity-20261005/`. The curved-mark,
@@ -822,10 +819,8 @@ representative performance, Linux and S17 exits remain open.
 
 ## Antialiased rectangle paint-clip checkpoint (2026-10-05)
 
-Compare the validated raw-control DLL at documentation baseline `7aefe975`
-(`69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006`)
-with the shared AA paint-context/provenance implementation
-(`3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac`)
+Compare the validated raw-control source at documentation baseline `7aefe975`
+with the shared AA paint-context/provenance implementation in `86554a94`
 on Windows x64 .NET 10.0.12. The four measurements run sequentially in fresh
 processes, baseline/candidate and candidate/baseline, after SVG capture/build/test/
 bank jobs finish. Each input receives 32 warmups and three batches: 100 tiny, ten
@@ -879,16 +874,15 @@ Fresh locked restore/normal nine-project Release build, all 3,257 tests, all 25
 memory scenarios and runtime/symbol package plus installed-consumer checks pass.
 Final package/consumer/probe/memory/timing identities match the candidate above.
 The prior measurement set before the documentation metadata rebuild remains
-separately archived; its C# source fingerprint and all image outputs are unchanged.
+separately archived; its renderer source and all image outputs are unchanged.
 
 
 ## Declaration-only DOCTYPE observations (2026-10-05)
 
 These are matching local observations of the declaration-only input policy,
 separate from BenchmarkDotNet throughput and the retained AA observations above.
-Baseline renderer is `3a14844f3dc36e1bdc51d04a464040ab107b70961d66952d31aa13c601eba5ac`;
-final renderer is `fd65c4beede663a0ebe9ee82357a38334308b66d2f166970f8f67867f45d4d54`,
-built normally at HEAD `86554a94`. The
+Baseline source is `86554a94`; declaration-only admission is committed in
+`1876cf6e`. The
 [portable checkpoint](../tests/References/declaration-only-doctype.json) retains
 source identity, full ledgers, all raw batches and both process orders.
 
@@ -935,3 +929,21 @@ ledger. The no-prolog dense and YouTube examples preserve work and peaks. Long
 prologs charge proportional chunk traversal rather than this fixed short-input
 cost. Resource/cancellation tests retain denial and cleanup evidence. Broader
 throughput, platforms and release completion remain open.
+
+
+## Convex rectangle-strip observations (2026-10-06)
+
+Matching six-input ledgers preserve parser and raster work. Accounted peaks for
+tiny/Ford/dense/native-size inputs are unchanged. Intended/large YouTube peaks
+increase 942,621 → 942,639 and 3,732,615 → 3,732,655 bytes; encoded PNG lengths
+increase 12,227 → 12,236 and 34,008 → 34,028 bytes. The repair adds no coverage
+buffers. Complete observations are under ignored
+`artifacts/triangle-paint-20261005/`.
+
+One sequential baseline-first/current-second process pair uses the retained
+32-warmup/three-batch harness and original six input/options recipes. Median
+milliseconds are tiny 0.200 → 0.135, Ford 26.544 → 17.637, dense 293.640 → 276.281,
+native-size 481.081 → 417.031, intended YouTube 11.385 → 11.068 and large YouTube
+35.266 → 34.434. The single ordering and host load limit these observations;
+there is no speedup or representative-throughput claim. Raw batch allocation/time
+records remain in ignored artifacts rather than a new source hash inventory.
