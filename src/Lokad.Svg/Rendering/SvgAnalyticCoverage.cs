@@ -1382,83 +1382,113 @@ internal ref partial struct SvgAnalyticCoverage
     /// <remarks>Clipping uses caller-owned stack scratch and two charged passes, reserving complete emitted-edge storage before allocation. Existing structure gates and fractional paint clipping remain in force. Returned ownership is single-threaded and must be disposed on every exit.</remarks>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, long maximumSetupWork, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
     {
+        SvgAnalyticContourPreparation preparation = new(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, new(xStart, yStart, xEnd, yEnd), outputWidth, outputHeight);
+        return Prepare(ref preparation, xStart, xEnd, yStart, yEnd, window, constructionClip, maximumSetupWork, budget, out setupWork, out eligible, cancellationToken);
+    }
+
+    /// <summary>Builds one raster context from borrowed geometry, charging clip-independent classification once.</summary>
+    /// <remarks>The preparation and geometry remain immutable except for cached classifications in this single-threaded scope. Each returned walker independently owns its reserved edges, rows and events; it retains no borrowed spans or reference to the cache. Cancellation and remaining work apply before classification and construction.</remarks>
+    internal static SvgAnalyticCoverage Prepare(scoped ref SvgAnalyticContourPreparation preparation, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticScanWindow window, SvgAnalyticClipContext? constructionClip, long maximumSetupWork, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
+    {
+        ReadOnlySpan<SvgDevicePoint> points = preparation.Points;
+        ReadOnlySpan<int> ends = preparation.Ends;
+        ReadOnlySpan<int> nestingSigns = preparation.NestingSigns;
+        bool isEvenOdd = preparation.IsEvenOdd;
+        int[]? signs = preparation.Signs;
+        SvgPolygonMapping mapping = preparation.Mapping;
+        SvgQuadSpan[] quadSpans = preparation.QuadSpans;
+        SvgCubicSpan[] cubicSpans = preparation.CubicSpans;
+        int outputWidth = preparation.OutputWidth;
+        int outputHeight = preparation.OutputHeight;
         ArgumentNullException.ThrowIfNull(budget);
-        ArgumentNullException.ThrowIfNull(quadSpans);
-        ArgumentNullException.ThrowIfNull(cubicSpans);
         if (window.Left < 0 || window.Right > outputWidth || window.Right < window.Left) throw new ArgumentOutOfRangeException(nameof(window));
         if (maximumSetupWork < 0) throw new ArgumentOutOfRangeException(nameof(maximumSetupWork));
         if (constructionClip is {} context && (context.Bounds.Left < 0 || context.Bounds.Top < 0 || context.Bounds.Right > outputWidth || context.Bounds.Bottom > outputHeight || context.Bounds.Right < context.Bounds.Left || context.Bounds.Bottom < context.Bounds.Top)) throw new ArgumentOutOfRangeException(nameof(constructionClip));
-        SvgPolygonCoverage.ValidateContourEnds(points, ends);
         ReadOnlySpan<int> votes = isEvenOdd ? nestingSigns : (signs is int[] roles ? roles : ReadOnlySpan<int>.Empty);
-        if (!isEvenOdd && signs is not null && signs.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(signs));
-        if (isEvenOdd && nestingSigns.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(nestingSigns));
         bool hasVotes = isEvenOdd || signs is not null;
-        for (int contour = 0; contour < ends.Length; contour++)
-        {
-            if ((contour & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-            if (hasVotes && votes[contour] is not (-1 or 0 or 1)) throw new ArgumentOutOfRangeException(isEvenOdd ? nameof(nestingSigns) : nameof(signs));
-        }
-        setupWork = (long)points.Length + ends.Length;
+        setupWork = 0;
         eligible = false;
-        if (ends.Length < 1 || points.Length < 3 || xEnd <= xStart) return default;
-        double maxAbs = 0;
-        double minX = double.PositiveInfinity;
-        double minY = double.PositiveInfinity;
-        double maxX = double.NegativeInfinity;
-        double maxY = double.NegativeInfinity;
-        for (int index = 0; index < points.Length; index++)
+        if (!preparation.BasicChecked)
         {
-            if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-            double px = points[index].X;
-            double py = points[index].Y;
-            if (!double.IsFinite(px) || !double.IsFinite(py)) return default;
-            double ax = Math.Abs(px);
-            double ay = Math.Abs(py);
-            if (ax > maxAbs) maxAbs = ax;
-            if (ay > maxAbs) maxAbs = ay;
-            if (px < minX) minX = px;
-            if (px > maxX) maxX = px;
-            if (py < minY) minY = py;
-            if (py > maxY) maxY = py;
+            setupWork = (long)points.Length + ends.Length;
+            CheckClippedSetupWork(setupWork, maximumSetupWork, cancellationToken);
+            SvgPolygonCoverage.ValidateContourEnds(points, ends);
+            if (!isEvenOdd && signs is not null && signs.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(signs));
+            if (isEvenOdd && nestingSigns.Length != ends.Length) throw new ArgumentOutOfRangeException(nameof(nestingSigns));
+            for (int contour = 0; contour < ends.Length; contour++)
+            {
+                if ((contour & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                if (hasVotes && votes[contour] is not (-1 or 0 or 1)) throw new ArgumentOutOfRangeException(isEvenOdd ? nameof(nestingSigns) : nameof(signs));
+            }
+            double maxAbs = 0;
+            double minX = double.PositiveInfinity;
+            double minY = double.PositiveInfinity;
+            double maxX = double.NegativeInfinity;
+            double maxY = double.NegativeInfinity;
+            for (int index = 0; index < points.Length; index++)
+            {
+                if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                double px = points[index].X;
+                double py = points[index].Y;
+                if (!double.IsFinite(px) || !double.IsFinite(py)) { preparation.BasicChecked = true; return default; }
+                maxAbs = Math.Max(maxAbs, Math.Max(Math.Abs(px), Math.Abs(py)));
+                minX = Math.Min(minX, px);
+                maxX = Math.Max(maxX, px);
+                minY = Math.Min(minY, py);
+                maxY = Math.Max(maxY, py);
+            }
+            preparation.BasicChecked = true;
+            preparation.PointValuesEligible = maxAbs <= MaxRange;
+            preparation.PointsFitCanvas = Math.Floor(minX) >= 0 && Math.Floor(minY) >= 0 && Math.Ceiling(maxX) <= outputWidth && Math.Ceiling(maxY) <= outputHeight;
         }
-        if (maxAbs > MaxRange) return default;
-        if (constructionClip is null && (Math.Floor(minX) < 0 || Math.Floor(minY) < 0 || Math.Ceiling(maxX) > outputWidth || Math.Ceiling(maxY) > outputHeight)) return default;
-        if (constructionClip is not null) CheckClippedSetupWork(setupWork, maximumSetupWork, cancellationToken);
+        if (ends.Length < 1 || points.Length < 3 || xEnd <= xStart || !preparation.PointValuesEligible || (constructionClip is null && !preparation.PointsFitCanvas)) return default;
+        cancellationToken.ThrowIfCancellationRequested();
         if (ends.Length > 1)
         {
 
-            int keptContours = 0;
-            int previousEnd = 0;
-            for (int contour = 0; contour < ends.Length; contour++)
+            if (preparation.KeptContours is null)
             {
-                if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                int start = previousEnd;
-                int end = ends[contour];
-                previousEnd = end;
-                int count = end - start;
-                if (count < 3) continue;
-                if (TwiceArea(points.Slice(start, count)) == 0) continue;
-                if (hasVotes && votes[contour] == 0) continue;
-                keptContours++;
+                int keptContours = 0;
+                int previousEnd = 0;
+                for (int contour = 0; contour < ends.Length; contour++)
+                {
+                    if ((contour & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    int start = previousEnd;
+                    int end = ends[contour];
+                    previousEnd = end;
+                    int count = end - start;
+                    if (count < 3 || TwiceArea(points.Slice(start, count)) == 0 || (hasVotes && votes[contour] == 0)) continue;
+                    keptContours++;
+                }
+                preparation.KeptContours = keptContours;
             }
-            if (keptContours == 0) return default;
-            if (constructionClip is not null) CheckClippedSetupWork(setupWork + (long)points.Length * points.Length, maximumSetupWork, cancellationToken);
-            SvgContourFlags setStructure = SvgContourStructure.ClassifySet(points, ends, cancellationToken);
-            setupWork += (long)points.Length * points.Length;
+            if (preparation.KeptContours == 0) return default;
+            if (preparation.Structure is null)
+            {
+                CheckClippedSetupWork(setupWork + (long)points.Length * points.Length, maximumSetupWork, cancellationToken);
+                preparation.Structure = SvgContourStructure.ClassifySet(points, ends, cancellationToken);
+                setupWork += (long)points.Length * points.Length;
+            }
+            SvgContourFlags setStructure = preparation.Structure.Value;
             bool hasRigidContact = isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || (setStructure & SvgContourFlags.CoincidentOverlap) != SvgContourFlags.None;
             // Transversal-only unions walk exact signed-winding intervals on any mapping: strict
             // crossings carry no shared vertices, so event handoff stays clean while each interval
             // keeps its own trapezoid fringe instead of the fan exact-area underestimate.
             // Touches, self-touches, coincident spans and even-odd sets keep their gates.
-            bool transversalUnion = false;
-            if (!isEvenOdd && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) == SvgContourFlags.None)
+            if (preparation.TransversalUnion is null)
             {
-                setupWork += (long)points.Length * points.Length;
-                if (constructionClip is not null) CheckClippedSetupWork(setupWork, maximumSetupWork, cancellationToken);
-                transversalUnion = SvgContourStructure.AllInterLoopContactsTransversal(points, ends, cancellationToken);
+                bool transversal = false;
+                if (!isEvenOdd && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) == SvgContourFlags.None)
+                {
+                    CheckClippedSetupWork(setupWork + (long)points.Length * points.Length, maximumSetupWork, cancellationToken);
+                    transversal = SvgContourStructure.AllInterLoopContactsTransversal(points, ends, cancellationToken);
+                    setupWork += (long)points.Length * points.Length;
+                }
+                preparation.TransversalUnion = transversal;
             }
+            bool transversalUnion = preparation.TransversalUnion.Value;
             if (!transversalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
-            if (constructionClip is {} multiClip) return PrepareClipped(points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, xStart, xEnd, yStart, yEnd, multiClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+            if (constructionClip is {} multiClip) return PrepareClipped(points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, preparation.UsesRunBlitter, xStart, xEnd, yStart, yEnd, multiClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
             long multiCurveEdges = (long)quadSpans.Length * 2 + (long)cubicSpans.Length * 3;
@@ -1550,41 +1580,47 @@ internal ref partial struct SvgAnalyticCoverage
                 for (int level = multiEdges.Length; level > 0; level >>= 1) multiLevels++;
                 setupWork += (long)multiEdges.Length * (multiLevels + 3);
                 eligible = true;
-                bool useRunBlitter = !(multiWidth <= 32 && ((multiWidth + 3L) & ~3L) * (yEnd - yStart) <= 1024);
+                bool useRunBlitter = preparation.UsesRunBlitter;
                 if (useRunBlitter) setupWork += multiWidth;
                 return new SvgAnalyticCoverage(multiEdges, multiHead, multiTail, multiRow, multiTemp, multiAlphas, xStart, multiWidth, yEnd, multiSkipIntersect, isEvenOdd, false, useRunBlitter, window, budget, multiScratch);
             }
             catch { multiScratch?.Dispose(); throw; }
         }
-        if (TwiceArea(points) == 0) return default;
-        if (constructionClip is not null) CheckClippedSetupWork(setupWork + (long)points.Length * (points.Length - 1) / 2, maximumSetupWork, cancellationToken);
-        SvgContourFlags structure = SvgContourStructure.ClassifyContour(points, 0, points.Length, cancellationToken);
-        setupWork += (long)points.Length * (points.Length - 1) / 2;
+        preparation.HasArea ??= TwiceArea(points) != 0;
+        if (!preparation.HasArea.Value) return default;
+        if (preparation.Structure is null)
+        {
+            CheckClippedSetupWork(setupWork + (long)points.Length * (points.Length - 1) / 2, maximumSetupWork, cancellationToken);
+            preparation.Structure = SvgContourStructure.ClassifyContour(points, 0, points.Length, cancellationToken);
+            setupWork += (long)points.Length * (points.Length - 1) / 2;
+        }
+        SvgContourFlags structure = preparation.Structure.Value;
         bool rigidRing = isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.ProperCrossing;
         if (rigidRing && (structure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) != SvgContourFlags.None) return default;
-        if (constructionClip is not null) CheckClippedSetupWork(setupWork + points.Length, maximumSetupWork, cancellationToken);
-        bool convex = IsConvexRing(points, cancellationToken);
-        // Desnap only proven axis-aligned boxes: identical doubles convert identically, so shared
-        // vertices stay shared without snap, and the convex walk consumes true fractional events
-        // directly. Everything else keeps quarter snap for event-handoff topology.
-        bool desnapBox = convex;
-        if (desnapBox)
+        if (preparation.Convex is null)
         {
-            for (int boxIndex = 0; boxIndex < points.Length; boxIndex++)
+            CheckClippedSetupWork(setupWork + points.Length, maximumSetupWork, cancellationToken);
+            bool convexRing = IsConvexRing(points, cancellationToken);
+            bool box = convexRing;
+            if (box)
             {
-                if ((boxIndex & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                SvgDevicePoint boxFirst = points[boxIndex];
-                SvgDevicePoint boxSecond = points[(boxIndex + 1) % points.Length];
-                if (boxFirst.X != boxSecond.X && boxFirst.Y != boxSecond.Y)
+                for (int boxIndex = 0; boxIndex < points.Length; boxIndex++)
                 {
-                    desnapBox = false;
-                    break;
+                    if ((boxIndex & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    SvgDevicePoint first = points[boxIndex];
+                    SvgDevicePoint second = points[(boxIndex + 1) % points.Length];
+                    if (first.X != second.X && first.Y != second.Y) { box = false; break; }
                 }
             }
+            preparation.Convex = convexRing;
+            preparation.DesnapBox = box;
+            preparation.UseCurveSpans = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure);
+            setupWork += points.Length;
         }
-        bool useCurveSpans = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure);
-        setupWork += points.Length;
-        if (constructionClip is {} singleClip) return PrepareClipped(points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, useCurveSpans, convex, xStart, xEnd, yStart, yEnd, singleClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+        bool convex = preparation.Convex.Value;
+        bool desnapBox = preparation.DesnapBox;
+        bool useCurveSpans = preparation.UseCurveSpans;
+        if (constructionClip is {} singleClip) return PrepareClipped(points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, useCurveSpans, convex, preparation.UsesRunBlitter, xStart, xEnd, yStart, yEnd, singleClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
         int width = xEnd - xStart;
         bool skipIntersect = (long)points.Length > (long)(yEnd - yStart) * 2;
         long curveEdges = useCurveSpans ? (long)quadSpans.Length * (convex ? 128 : 2) + (long)cubicSpans.Length * (convex ? 192 : 3) : 0;
@@ -1659,7 +1695,7 @@ internal ref partial struct SvgAnalyticCoverage
             for (int level = edges.Length; level > 0; level >>= 1) levels++;
             setupWork += (long)edges.Length * (levels + 3);
             eligible = true;
-            bool useRunBlitter = !(width <= 32 && ((width + 3L) & ~3L) * (yEnd - yStart) <= 1024);
+            bool useRunBlitter = preparation.UsesRunBlitter;
             if (useRunBlitter) setupWork += width;
             return new SvgAnalyticCoverage(edges, head, tail, row, temp, alphas, xStart, width, yEnd, skipIntersect, isEvenOdd, convex, useRunBlitter, window, budget, scratch);
         }

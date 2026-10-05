@@ -35,6 +35,7 @@ public sealed class FordVariantTests
         ReadOnlySpan<int> votes = polygon.Signs is int[] signs ? signs : [];
         RenderBudget budget = new(options.Limits.MaximumAccountedBytes);
         RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", "inventory", "inv-002-1000x400-transparent.png")), 400_000);
+        RgbaImage rendered = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None), 400_000);
         {
             using SvgAnalyticCoverage whole = SvgAnalyticCoverage.Prepare(points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, [], cubics, left, right, top, bottom, 1000, 400, new(0, 1000), null, options.Limits.MaximumWorkUnits, budget, out long _, out bool wholeEligible, CancellationToken.None);
             // The pinned Chrome trace records the bitmap rectangle (254,0,256,256).
@@ -54,6 +55,7 @@ public sealed class FordVariantTests
                 pixel.AsSpan().Clear();
                 tile.PaintPixel(x - left, pixel, SvgAnalyticPaint.Solid(polygon.Color), 1);
                 Assert.Equal(reference.Pixels[(row * 1000 + x) * 4 + 3], pixel[3]);
+                Assert.Equal(reference.Pixels[(row * 1000 + x) * 4 + 3], rendered.Pixels[(row * 1000 + x) * 4 + 3]);
             }
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

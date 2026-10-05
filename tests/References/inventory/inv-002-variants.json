@@ -13,7 +13,7 @@
   "captureDate": "2026-10-02",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "rendererSha256": "f86147ae178b9586b49e4f46bfc2ccb4df7d50d918357cc4eaad775bae764f5a",
+  "rendererSha256": "11eb7371e78c69fa5927f8b4c87909c4da37c4f7443ec6961fb7695f54946bd5",
   "variants": [
     {
       "id": "inv-002-250x100-transparent",
@@ -283,21 +283,21 @@
         true,
         true
       ],
-      "candidateSha256": "9787467e268618242e3a590e7a57b30e3ae3fcfff6e2a2b5cb486a925104bfa8",
+      "candidateSha256": "e39d6eb89804ef07a00db478bf841d08c090904510aabb2b706597daf603c53c",
       "comparison": {
         "dimensionsMatch": true,
-        "changedPixelCount": 4900,
+        "changedPixelCount": 929,
         "maximumChannelError": 128,
-        "maximumAlphaError": 80,
-        "alphaChangedPixelCount": 4900,
+        "maximumAlphaError": 68,
+        "alphaChangedPixelCount": 929,
         "minimumMismatchX": 8,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 991,
-        "maximumMismatchY": 390,
+        "minimumMismatchY": 30,
+        "maximumMismatchX": 988,
+        "maximumMismatchY": 393,
         "exact": false,
-        "alphaErrorMass": 51395,
-        "overCoveragePixelCount": 2106,
-        "underCoveragePixelCount": 2794,
+        "alphaErrorMass": 3573,
+        "overCoveragePixelCount": 159,
+        "underCoveragePixelCount": 770,
         "opaqueLostPixelCount": 0,
         "opaqueAddedPixelCount": 0
       }
@@ -324,17 +324,17 @@
         true,
         true
       ],
-      "candidateSha256": "1dbe1729ea97a8204f1eb75f48672cc47a212ea86c4d8be2df9d2e4eafde1c8a",
+      "candidateSha256": "9c200eac81ef30f8473587bee4db1f773b2092845bb05b0e41e97c2c0225fb50",
       "comparison": {
         "dimensionsMatch": true,
-        "changedPixelCount": 4956,
-        "maximumChannelError": 80,
+        "changedPixelCount": 1245,
+        "maximumChannelError": 69,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
         "minimumMismatchX": 8,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 991,
-        "maximumMismatchY": 390,
+        "minimumMismatchY": 30,
+        "maximumMismatchX": 988,
+        "maximumMismatchY": 393,
         "exact": false,
         "alphaErrorMass": 0,
         "overCoveragePixelCount": 0,
@@ -365,17 +365,17 @@
         true,
         true
       ],
-      "candidateSha256": "61b2cb1bfcbf46e9b1e20d9125d682ca68d8dcfb65d6eb2da741c8cb434e52cf",
+      "candidateSha256": "b77b4bede301cbe8f664346e49478b594763af32326fbc0130b5aed31a91357a",
       "comparison": {
         "dimensionsMatch": true,
-        "changedPixelCount": 4404,
-        "maximumChannelError": 37,
+        "changedPixelCount": 560,
+        "maximumChannelError": 32,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
         "minimumMismatchX": 8,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 991,
-        "maximumMismatchY": 390,
+        "minimumMismatchY": 30,
+        "maximumMismatchX": 988,
+        "maximumMismatchY": 393,
         "exact": false,
         "alphaErrorMass": 0,
         "overCoveragePixelCount": 0,
@@ -384,5 +384,6 @@
         "opaqueAddedPixelCount": 0
       }
     }
-  ]
+  ],
+  "rendererCheckpoint": "Bounded CPU raster context, 2026-10-05"
 }

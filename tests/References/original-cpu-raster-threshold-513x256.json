@@ -1,0 +1,57 @@
+{
+  "fixtureId": "original-cpu-raster-threshold-513x256",
+  "referencePng": "original-cpu-raster-threshold-513x256.png",
+  "referenceSha256": "23d6b55c5a28dcac56aaf4ce734d78147edb2238ad00b21d24fb8f71b2f6fff8",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 513,
+    "height": 256,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "3b765cfa97b214575ce5963bcb884618ffca066cc2b5e0b3bb4180bd6eb5482c",
+  "candidateOutcome": "renders",
+  "candidateSha256": "1002e2e70f0c420dbf88b37160cd95921bf984220effc9f11d999067844e4f89",
+  "rendererSha256": "11eb7371e78c69fa5927f8b4c87909c4da37c4f7443ec6961fb7695f54946bd5",
+  "admittedAt": "CPU raster context, 2026-10-05",
+  "captureSha256": [
+    "23d6b55c5a28dcac56aaf4ce734d78147edb2238ad00b21d24fb8f71b2f6fff8",
+    "23d6b55c5a28dcac56aaf4ce734d78147edb2238ad00b21d24fb8f71b2f6fff8",
+    "23d6b55c5a28dcac56aaf4ce734d78147edb2238ad00b21d24fb8f71b2f6fff8"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeImplementation": true,
+  "declarationReason": "CPU small-dimension/untiled threshold; no case-specific raster boundary.",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 4,
+    "maximumChannelError": 7,
+    "maximumAlphaError": 1,
+    "alphaChangedPixelCount": 4,
+    "minimumMismatchX": 494,
+    "minimumMismatchY": 24,
+    "maximumMismatchX": 503,
+    "maximumMismatchY": 30,
+    "exact": false,
+    "alphaErrorMass": 4,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 4,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

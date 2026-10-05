@@ -59,9 +59,10 @@ A target below 100 percent can leave documents failing in the denominator; it
 cannot waive their pixel errors or alter their references.
 
 Ford is now exact in all six small/intended variants: 250×100 and 500×200 on
-transparent/white/black. Shared clip-built construction improves the three large
-1000×400 variants to 4,900/4,956/4,404 differing pixels. Large-transparent retains
-51,395 total alpha error, max channel/alpha error 128/80 and no opaque/hole flips.
+transparent/white/black. Shared clip-built construction followed by bounded CPU
+raster contexts improves the three large 1000×400 variants to 929/1,245/560
+differing pixels. Large-transparent retains 3,573 total alpha error, max
+channel/alpha error 128/68 and no opaque/hole flips.
 The wordmark exit remains **all nine exact**, so the document cannot enter an
 exact-document numerator. Original references, capture provenance and every current
 candidate identity are portable under `tests/References/inventory/`; nine ordinary
@@ -88,8 +89,17 @@ they do not close general coverage, quad/convex/stroke/layer fidelity, represent
 throughput or Linux delivery. A later traced investigation attributes the first
 large-size mismatch to the CPU raster tile construction clip: the existing shared
 clipper matches the original row-6 tile interior when given the observed context.
-The next wordmark slice integrates bounded raster contexts before changing
-recurrence; the three large complete PNGs are still the same retained failures.
+Bounded contexts now reproduce the original row-6 interior through the converter
+and preserve all six exact PNGs. The first remaining event is (740,30); native
+tile-local mapping/setup/walk/paint must be compared before changing recurrence.
+The updated bank executes 788 cases (629 fixtures, 67 research, 92 Default cases),
+including 16 CPU controls with 48 healthy stable captures. Four are exact, eleven
+retain differences, and the original two-child pattern remains unsupported.
+Twenty-nine Default inventory outputs change without matching captures in that
+sweep; their fidelity remains unmeasured. Fresh output/resource/cancellation tests,
+25 memory scenarios and package/installed-consumer checks pass. Dense/native-stop
+local timing improves in the first measured order, with higher total allocation;
+this establishes no representative performance or Linux claim.
 See [PLAN](../PLAN.md) and [the design record](RASTERIZATION_DESIGN.md).
 
 S17 additionally requires reproducible per-variant identities/diffs, categorized

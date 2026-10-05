@@ -1,0 +1,151 @@
+{
+  "SchemaVersion": 1,
+  "SourceRendererCommit": "5e12e887",
+  "DeclarationDate": "2026-10-05",
+  "Cases": [
+    {
+      "Id": "cpu-raster-cubic-solid",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "b88d5f47d55b52b693185d9d6c8c2941e3f32ca0c3f2334ec8bc2de92e943be5",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "Same independent concave cubic crossing bordered CPU tiles, across all four material consumers."
+    },
+    {
+      "Id": "cpu-raster-cubic-linear",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "1621bb60d9ef05df9ae505a9cfed5733fa421bbd3d4013f986d5e05f3128f63c",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "Same independent concave cubic crossing bordered CPU tiles, across all four material consumers."
+    },
+    {
+      "Id": "cpu-raster-cubic-radial",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "068b03dd704c7d26ce3f6edf2e9ac6a04bcdf68499361e42be08e41a6c40a92c",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "Same independent concave cubic crossing bordered CPU tiles, across all four material consumers."
+    },
+    {
+      "Id": "cpu-raster-cubic-pattern",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "9da020f258a58a205f8daf6f8a8055ff603847ada71dabe154672557d8acc76d",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "Same independent concave cubic crossing bordered CPU tiles, across all four material consumers."
+    },
+    {
+      "Id": "cpu-raster-cubic-phase",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "1b91c5b870c60c88c6f9990fee3809fb6dcd88c23efe280f657cbd7c339c33c5",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "Fractional phase at both internal tile boundaries."
+    },
+    {
+      "Id": "cpu-raster-threshold-512x255",
+      "Width": 512,
+      "Height": 255,
+      "Background": "transparent",
+      "InputSha256": "3c4072518846a2677186d7e52c2729e6ffceb5ed765fb91e17a477b95254d3ee",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "CPU small-dimension/untiled threshold; no case-specific raster boundary."
+    },
+    {
+      "Id": "cpu-raster-threshold-513x255",
+      "Width": 513,
+      "Height": 255,
+      "Background": "transparent",
+      "InputSha256": "fc037d51a7b061562d2493d9d056b525033c4025cf1fa8d67ae3fc9092e01c87",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "CPU small-dimension/untiled threshold; no case-specific raster boundary."
+    },
+    {
+      "Id": "cpu-raster-threshold-512x256",
+      "Width": 512,
+      "Height": 256,
+      "Background": "transparent",
+      "InputSha256": "56974c0f9d7355fd41ac0b626bb09330fb59c3f646b2c23545507eff8c489f0b",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "CPU small-dimension/untiled threshold; no case-specific raster boundary."
+    },
+    {
+      "Id": "cpu-raster-threshold-513x256",
+      "Width": 513,
+      "Height": 256,
+      "Background": "transparent",
+      "InputSha256": "3b765cfa97b214575ce5963bcb884618ffca066cc2b5e0b3bb4180bd6eb5482c",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "CPU small-dimension/untiled threshold; no case-specific raster boundary."
+    },
+    {
+      "Id": "cpu-raster-threshold-255x513",
+      "Width": 255,
+      "Height": 513,
+      "Background": "transparent",
+      "InputSha256": "0b2ea21bc526fedb666f8678e59fcbb965d8ddad04ded9996e243e202ad6dbc5",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "CPU small-dimension/untiled threshold; no case-specific raster boundary."
+    },
+    {
+      "Id": "cpu-raster-threshold-256x513",
+      "Width": 256,
+      "Height": 513,
+      "Background": "transparent",
+      "InputSha256": "71dcf374f7363692b8b0475eda70c8d5297234fbfb0e7077521dc24d3352393c",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "CPU small-dimension/untiled threshold; no case-specific raster boundary."
+    },
+    {
+      "Id": "cpu-raster-border-band",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "85034aed4920c575f4e8304c79fbaa2b49c6b816012e2b38bc42f2fd32005da6",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "Translucent straight-source fill verifies owned interiors do not double-paint shared border texels."
+    },
+    {
+      "Id": "cpu-raster-clipped-phase",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "e0afeed62af6a26932f2616f65b7bb21fb36edbcb85b5af0a47692720bdc1b98",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "Fractional explicit clip intersects multiple CPU bitmap construction contexts."
+    },
+    {
+      "Id": "cpu-raster-opacity-layer",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "586744cbdd61a9b748b93372bd64654f17e389d65f5d9201f2c4f3e29fb791f0",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "Ordered overlapping cubic paints within a bounded opacity layer."
+    },
+    {
+      "Id": "cpu-raster-curved-stroke",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "c401121374e3032288a294ffa91eed431f5457cdb0dc2dd0f97c9f8b0811c097",
+      "DeclaredBeforeImplementation": true,
+      "Reason": "Generated curved stroke outlines crossing both tile axes."
+    },
+    {
+      "Id": "cpu-raster-cubic-pattern-admitted",
+      "Width": 640,
+      "Height": 320,
+      "Background": "transparent",
+      "InputSha256": "0e98c5379ac0cdd2c97f39e9ea69d2ec5321545add8154bd912ca380d6f375ec",
+      "DeclaredBeforeImplementation": false,
+      "Reason": "Post-trial holdout: admitted one-rectangle pattern crosses the same cubic tiles. The original two-child pattern and its UnsupportedFeature outcome remain banked."
+    }
+  ]
+}

@@ -527,7 +527,8 @@ public sealed class RenderBudgetTests
             using SvgRoot root = new(new SvgRootLength(8, false), new SvgRootLength(8, false), null, [geometry], [new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1)], false, 0, null);
             SvgRenderLimits limits = new(100_000, 8_192, 16, 4_096, 4_096, 16, 16, 375);
             using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
-            Assert.Equal(250, surface.WorkUnits);
+            // The single CPU raster context adds one charged visit.
+            Assert.Equal(251, surface.WorkUnits);
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);

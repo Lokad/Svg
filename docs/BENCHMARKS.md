@@ -562,3 +562,46 @@ ledgers are under ignored `artifacts/clipped-preparation-20261005/`. The first
 exploratory timing set is also retained there; the table uses the final assembly's
 `delivery-timing-*` measurements. The previous paint/window/cubic/kernel records
 retain their dated evidence.
+
+## CPU raster context checkpoint (2026-10-05)
+
+Compare the frozen `5e12e887` renderer with generic bordered CPU construction on
+.NET 10 Windows x64, sequentially in both orders after capture/build/test jobs.
+Each fresh process uses 32 warmups per input and three measured batches of 100
+tiny, ten Ford, three dense and three native-stop conversions. Values are median
+per-conversion milliseconds and managed allocated bytes; short local timings
+establish no representative throughput or universal speedup.
+
+| Input | Baseline first ms / bytes | Candidate second ms / bytes | Candidate first ms / bytes | Baseline second ms / bytes |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.12323 / 20,288 | 0.12328 / 20,288 | 0.12322 / 20,288 | 0.12391 / 20,288 |
+| ford | 16.61234 / 817,109 | 16.68937 / 818,479 | 15.51870 / 816,602 | 15.86656 / 816,602 |
+| dense | 338.62490 / 5,748,792 | 284.78667 / 7,232,744 | 284.40137 / 7,232,744 | 471.33313 / 5,748,704 |
+| native-stop | 563.51737 / 34,036,965 | 417.91943 / 36,857,122 | 433.45647 / 36,856,725 | 596.18387 / 34,036,965 |
+
+| Input | Charged work through raster, baseline → candidate | Accounted peak bytes, baseline → candidate |
+| --- | ---: | ---: |
+| tiny | 218 → 219 | 132,576 → 132,576 |
+| ford | 1,298,734 → 1,298,880 | 534,434 → 534,434 |
+| dense | 34,929,955 → 30,826,616 | 3,044,921 → 2,493,732 |
+| native-stop | 90,740,612 → 73,302,547 | 33,626,765 → 33,630,409 |
+
+Whole-path mask/run dispatch remains independent of bounded bitmap row storage.
+The first whole-width-buffer trial denied Default native-stop work; intersecting
+actual row storage with each bitmap restores admission without changing trial
+Ford/control pixels or discounting real traversal. Classification/contact work
+is cached once per mapped fill; context visits, clipping, validation, construction,
+row clearing, event recording/growth/replay and painting remain charged. Every
+reservation releases before the next context or on denial/cancellation.
+
+Tiny and exact 500×200 Ford PNGs retain their identities. Dense/native-stop outputs
+change without matching captures in the Default sweep; timing does not prove
+fidelity. Tiled inputs allocate more total bytes because they construct several
+individually bounded walkers. The dense accounted peak falls, while native-stop's
+peak grows by 3,644 bytes; this is distinct from cumulative allocation traffic.
+All unchanged Default limits, 25 memory scenarios, package inspection and isolated
+installed consumers pass. Chromium policy is managed code with its BSD notice;
+there are no runtime dependencies or native assets. Representative BenchmarkDotNet
+throughput, earlier native-size replay costs, Linux and private-font performance
+remain open. Complete batches, PNG/input/assembly identities, ledgers and delivery
+results are under ignored `artifacts/cpu-raster-context-20261005/`.

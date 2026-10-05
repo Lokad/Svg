@@ -3745,3 +3745,100 @@ snapshot identities, unchanged candidate PNG, corrected tapes, native drivers an
 comparisons, complete Chrome traces/screenshots, release-tag source files and the
 negative-control log. Ordinary tests remain offline and do not reference native
 checkouts or browser binaries. PLAN owns the current execution queue.
+
+## Bounded CPU raster contexts (2026-10-05)
+
+Shared polygon preparation now follows the declared software oracle's CPU tile
+policy across solid, linear, radial and pattern consumers. The adapted calculator
+uses default 256×256, maximum untiled 512×512, one border texel, small-dimension
+expansion and 64-pixel rounding. Enumeration retains no tile tape and visits only
+interiors intersecting the drawing bounds. Source fingerprints/settings are in
+[the portable policy](../tests/References/cpu-raster-context-policy.json); the
+Chromium BSD notice ships beside the existing Skia notice. No native renderer or
+Chromium dependency is introduced.
+
+Three domains remain distinct. Complete mapped vertices and controls decide
+whether retained verbs need bordered construction clipping. Whole-path bounds
+select the native mask/run route. Bitmap-intersected row storage serves that route,
+while exclusively owned interiors constrain output writes. SVG fractional clips
+still apply at paint time. This prevents border double-paint without substituting
+a cropped whole-canvas coverage mask for native retained-verb construction.
+
+Each mapped fill borrows an immutable contour preparation in a stack-scoped cache.
+Finite-point, area, structure, contact and convex classifications are reused across
+contexts; no quadratic contact scan is repeated per tile. Per-contour area and
+retained-verb validation still traverse and charge in each clipping pass. Each context charges
+its visit and its actual clip/edge/row/replay work. Its two-pass clipped setup
+reserves edge/list/row storage before allocation, and every walker disposes before
+the next context. Existing structural fallback renders the original fill once.
+Pattern tiles and shader definitions are prepared once per fill. Source order
+remains unchanged for each owned output pixel.
+
+The first whole-path-width row-buffer trial preserved old exact pixels but denied
+Default intrinsic `inv-050`: every horizontal context cleared/charged the entire
+path width. Bounding the row buffer to the bitmap restores admission without
+changing any trial Ford/control PNG or whole-path mask/run dispatch. Final charged
+native-stop work is 73,302,547 versus baseline 90,740,612, below unchanged Default
+100,000,000. This bounds actual buffers and visits; it does not discount repeated
+construction. Total allocated traffic increases for dense/native-stop even as
+local timing falls, so throughput remains a separate release obligation.
+
+Fifteen independent CC0 controls were declared before implementation and captured
+in healthy, cleaned, byte-stable triples. The initial two-child pattern is not
+admitted; its input and original triple remain as an UnsupportedFeature regression.
+A one-child pattern holdout was declared after the first trial and before capture,
+then evaluated with both frozen baseline and candidate. All sixteen sources, 48
+capture identities, reference PNGs, dispositions and complete candidate hashes are
+portable. Four are exact, eleven are known differences and one rejects. Notable
+mismatch changes are:
+
+| Control | Baseline → CPU-context changed pixels |
+| --- | ---: |
+| Concave cubic solid | 986 → 22 |
+| Fractional translated cubic | 1,032 → 46 |
+| 512×256 threshold | 386 → 4 |
+| 513×256 threshold | 685 → 4 |
+| Admitted pattern holdout | 597 → 353 |
+| Explicit fractional clip | 948 → 178 |
+| Group-opacity layer | 2,201 → 1,549 |
+| Curved stroke | 1,646 → 1,650 |
+
+The four exact threshold configurations stay exact. The translucent border band's
+alpha matches the original across all owned interiors; its RGB differences stay
+banked. Linear/radial shaders retain many differences (21,124 / 20,526), both with
+exact alpha. No failed control is removed or recaptured from a candidate.
+
+The pre-bank sweep preserves every fixture/research PNG and all 495 exact complete
+PNGs, with every render/reject disposition unchanged. Twenty-nine Default inventory
+outputs change without matching captures in that sweep; those changes establish
+no fidelity rate. Updated execution covers 788 cases: 629 fixtures (499 exact,
+124 known differences, six rejections), 67 research and 92 Default inventory cases.
+The source cohort contains 378 base documents and 251 variants; synthetic control
+counts cannot become a corporate denominator.
+
+All nine original Ford variants are independently checked. Six exact small/
+intended PNGs retain byte identity; large transparent/white/black differences fall
+4,900/4,956/4,404 → 929/1,245/560. Transparent total alpha error falls 51,395 →
+3,573 (159 over-covered, 770 under-covered pixels), maximum channel/alpha error
+128/68, with no opaque/hole flips. Public conversion now matches the original
+row-6 tile interior previously demonstrated only by explicit-context preparation.
+Removing CPU construction clipping reproduces expected alpha 54 versus actual 55
+in that public witness; source bytes are restored afterward.
+
+Seventeen new core cases cover threshold policy, single ownership, empty/bounded
+visits, large-dimension arithmetic, cached classification charges, remaining-work
+and memory denial, disposal, cancellation token identity, and six outputs across
+four paints. Two visual facts validate all sixteen original capture/candidate
+identities and translucent border ownership. Fresh locked restore, nine-project
+Release build, all 3,194 tests (3,071 core, 117 visual, six FontProbe), 25 memory
+scenarios, package inspection and isolated installed consumers pass. Notices ship;
+no runtime dependencies, native assets or SVG fixtures are packaged. Performance
+measurements are in [BENCHMARKS](BENCHMARKS.md).
+
+The first remaining large-transparent mismatch is now (740,30): native RGBA
+(0,50,120,91), managed (0,51,119,90). Compare actual native tile-local retained-verb
+mapping, edge setup, walk operations and paint there before changing recurrence,
+density or color arithmetic. Generic CPU context integration is established;
+whole native-image parity, the all-nine wordmark exit, corporate cohort, Linux
+and representative performance remain open. Ignored evidence is under
+`artifacts/cpu-raster-context-20261005/`; ordinary tests remain offline.

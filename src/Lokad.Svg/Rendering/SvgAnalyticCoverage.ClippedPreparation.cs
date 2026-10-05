@@ -15,7 +15,7 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Counts and constructs clipped verbs without retaining an intermediate piece tape.</summary>
     /// <remarks>Both passes charge clipping, validation and traversal. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Convex fills preserve their separately gated pre-stepped walker. Reservations transfer to the returned instance or release on every exception.</remarks>
-    private static SvgAnalyticCoverage PrepareClipped(scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
+    private static SvgAnalyticCoverage PrepareClipped(scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool useRunBlitter, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
     {
         eligible = false;
         int width = xEnd - xStart;
@@ -119,7 +119,6 @@ internal ref partial struct SvgAnalyticCoverage
             if (kept is null) throw new InvalidOperationException("Clipped edge storage was not constructed.");
             int levels = 0;
             for (int level = kept.Count; level > 0; level >>= 1) levels++;
-            bool useRunBlitter = !(width <= 32 && ((width + 3L) & ~3L) * (yEnd - yStart) <= 1024);
             ChargeClippedSetupWork(ref setupWork, (long)kept.Count * (levels + 3) + (useRunBlitter ? width : 0), maximumWork, token);
             AnalyticEdge[] edges = kept.ToArray();
             Array.Sort(edges, EdgeOrder.Instance);
